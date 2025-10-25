@@ -94,7 +94,7 @@
 </section>
 
 <!-- EXPLORE BY STATE -->
-<section class="py-20 bg-gray-50 text-center">
+<section class="py-20 bg-white text-center">
     <div class="px-4">
         <h2 class="text-3xl font-bold mb-6">Explore by State</h2>
         <p class="text-gray-700 mb-10">Click on a state to see all its official symbols.</p>
@@ -104,18 +104,26 @@
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-5xl mx-auto">
                 @foreach (var state in Model.FeaturedStates)
                 {
-                    <a href="/states/@state.Slug" class="bg-white rounded-lg p-5 shadow hover:shadow-lg transition">
-                        @if (!string.IsNullOrEmpty(state.FlagImageUrl))
-                        {
-                            <img src="@state.FlagImageUrl" alt="@state.Name flag" class="mx-auto w-16 h-10 mb-2 object-cover">
+                    <a href="/states/@state.Slug" class="bg-gray-50 rounded-lg p-5 shadow hover:shadow-lg transition group">
+                        @{
+                            var flagPath = $"/images/states/flags/small/{state.Abbreviation.ToLower()}.webp";
                         }
-                        else
-                        {
-                            <div class="mx-auto w-16 h-10 mb-2 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
-                                @state.Abbreviation
+
+                        <!-- Flag Image -->
+                        <div class="w-full aspect-[3/2] mb-3 rounded overflow-hidden bg-gray-200">
+                            <img src="@flagPath"
+                                 alt="@state.Name flag"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                 loading="lazy">
+
+                            <!-- Fallback -->
+                            <div class="w-full h-full hidden items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700">
+                                <span class="text-2xl font-bold text-white">@state.Abbreviation</span>
                             </div>
-                        }
-                        <h3 class="font-semibold">@state.Name</h3>
+                        </div>
+
+                        <h3 class="font-semibold text-gray-900">@state.Name</h3>
                         <p class="text-xs text-gray-500 mt-1">@state.Capital</p>
                     </a>
                 }
