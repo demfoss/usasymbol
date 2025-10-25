@@ -1,0 +1,243 @@
+﻿@model USASymbol.Models.ViewModels.StateViewModel
+
+@{
+    ViewData["Title"] = $"{Model.State.Name} State Symbols";
+}
+
+<!-- Breadcrumbs -->
+<nav class="bg-gray-50 py-3 border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ol class="flex items-center space-x-2 text-sm">
+            <li><a href="/" class="text-blue-700 hover:underline">Home</a></li>
+            <li class="text-gray-400">/</li>
+            <li><a href="/states" class="text-blue-700 hover:underline">States</a></li>
+            <li class="text-gray-400">/</li>
+            <li class="text-gray-600">@Model.State.Name</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-blue-900 to-blue-700 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-8 items-center">
+            <!-- State Flag -->
+            <div class="md:col-span-1">
+                @if (!string.IsNullOrEmpty(Model.State.FlagImageUrl))
+                {
+                    <img src="@Model.State.FlagImageUrl"
+                         alt="@Model.State.Name flag"
+                         class="w-full max-w-sm mx-auto rounded-lg shadow-2xl border-4 border-white">
+                }
+            </div>
+
+            <!-- State Info -->
+            <div class="md:col-span-2">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">@Model.State.Name</h1>
+                <p class="text-xl text-blue-100 mb-6">The @(Model.State.Region ?? "Unknown") State</p>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="bg-white bg-opacity-10 p-4 rounded-lg">
+                        <div class="text-sm text-blue-200 mb-1">Abbreviation</div>
+                        <div class="text-2xl font-bold">@Model.State.Abbreviation</div>
+                    </div>
+                    <div class="bg-white bg-opacity-10 p-4 rounded-lg">
+                        <div class="text-sm text-blue-200 mb-1">Capital</div>
+                        <div class="text-2xl font-bold">@Model.State.Capital</div>
+                    </div>
+                    @if (Model.State.Population.HasValue)
+                    {
+                        <div class="bg-white bg-opacity-10 p-4 rounded-lg">
+                            <div class="text-sm text-blue-200 mb-1">Population</div>
+                            <div class="text-2xl font-bold">@Model.State.Population.Value.ToString("N0")</div>
+                        </div>
+                    }
+                    @if (Model.State.StateHoodDate.HasValue)
+                    {
+                        <div class="bg-white bg-opacity-10 p-4 rounded-lg">
+                            <div class="text-sm text-blue-200 mb-1">Statehood</div>
+                            <div class="text-2xl font-bold">@Model.State.StateHoodDate.Value.Year</div>
+                        </div>
+                    }
+                    <div class="bg-white bg-opacity-10 p-4 rounded-lg">
+                        <div class="text-sm text-blue-200 mb-1">Region</div>
+                        <div class="text-2xl font-bold">@(Model.State.Region ?? "N/A")</div>
+                    </div>
+                    <div class="bg-white bg-opacity-10 p-4 rounded-lg">
+                        <div class="text-sm text-blue-200 mb-1">Symbols</div>
+                        <div class="text-2xl font-bold">@Model.Symbols.Count</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Main Content - Symbols -->
+            <div class="lg:col-span-2">
+                <h2 class="text-3xl font-bold mb-8">Official State Symbols</h2>
+
+                @if (Model.Symbols.Any())
+                {
+                    <div class="grid md:grid-cols-2 gap-6">
+                        @foreach (var symbol in Model.Symbols)
+                        {
+                            <a href="/states/@Model.State.Slug/@symbol.Type"
+                               class="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition smooth-transition border-2 border-transparent hover:border-blue-500">
+                                @if (!string.IsNullOrEmpty(symbol.ImageUrl))
+                                {
+                                    <img src="@symbol.ImageUrl"
+                                         alt="@symbol.Name"
+                                         class="w-full h-48 object-cover rounded-lg mb-4">
+                                }
+                                else
+                                {
+                                    <div class="w-full h-48 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+                                        <span class="text-4xl">@GetSymbolIcon(symbol.Type)</span>
+                                    </div>
+                                }
+
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <div class="text-sm text-blue-700 font-semibold uppercase mb-1">@GetSymbolTypeName(symbol.Type)</div>
+                                        <h3 class="text-xl font-bold text-gray-800">@symbol.Name</h3>
+                                    </div>
+                                    @if (symbol.AdoptedYear.HasValue)
+                                    {
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">@symbol.AdoptedYear</span>
+                                    }
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(symbol.ScientificName))
+                                {
+                                    <p class="text-sm text-gray-600 italic mb-2">@symbol.ScientificName</p>
+                                }
+
+                                <div class="flex items-center text-blue-700 text-sm font-semibold mt-3">
+                                    Learn More →
+                                </div>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="bg-gray-50 rounded-lg p-8 text-center">
+                        <p class="text-gray-600">No symbols available for this state yet.</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <!-- Quick Facts -->
+                <div class="bg-blue-50 rounded-xl p-6 mb-6 sticky top-20">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <span class="mr-2">📊</span> Quick Facts
+                    </h3>
+                    <dl class="space-y-3">
+                        <div class="border-b border-blue-200 pb-2">
+                            <dt class="text-sm text-gray-600">Official Name</dt>
+                            <dd class="font-semibold text-gray-800">@Model.State.Name</dd>
+                        </div>
+                        <div class="border-b border-blue-200 pb-2">
+                            <dt class="text-sm text-gray-600">Abbreviation</dt>
+                            <dd class="font-semibold text-gray-800">@Model.State.Abbreviation</dd>
+                        </div>
+                        <div class="border-b border-blue-200 pb-2">
+                            <dt class="text-sm text-gray-600">Capital City</dt>
+                            <dd class="font-semibold text-gray-800">@Model.State.Capital</dd>
+                        </div>
+                        @if (Model.State.Population.HasValue)
+                        {
+                            <div class="border-b border-blue-200 pb-2">
+                                <dt class="text-sm text-gray-600">Population</dt>
+                                <dd class="font-semibold text-gray-800">@Model.State.Population.Value.ToString("N0")</dd>
+                            </div>
+                        }
+                        @if (Model.State.StateHoodDate.HasValue)
+                        {
+                            <div class="border-b border-blue-200 pb-2">
+                                <dt class="text-sm text-gray-600">Statehood Date</dt>
+                                <dd class="font-semibold text-gray-800">@Model.State.StateHoodDate.Value.ToString("MMMM d, yyyy")</dd>
+                            </div>
+                        }
+                        <div class="border-b border-blue-200 pb-2">
+                            <dt class="text-sm text-gray-600">Region</dt>
+                            <dd class="font-semibold text-gray-800">@(Model.State.Region ?? "N/A")</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm text-gray-600">Number of Symbols</dt>
+                            <dd class="font-semibold text-gray-800">@Model.Symbols.Count</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <!-- Related States -->
+                @if (Model.RelatedStates.Any())
+                {
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4 flex items-center">
+                            <span class="mr-2">🗺️</span> Other @(Model.State.Region ?? "Related") States
+                        </h3>
+                        <div class="space-y-3">
+                            @foreach (var relatedState in Model.RelatedStates)
+                            {
+                                <a href="/states/@relatedState.Slug"
+                                   class="flex items-center p-3 bg-white rounded-lg hover:shadow-md transition">
+                                    @if (!string.IsNullOrEmpty(relatedState.FlagImageUrl))
+                                    {
+                                        <img src="@relatedState.FlagImageUrl"
+                                             alt="@relatedState.Name flag"
+                                             class="w-12 h-8 object-cover rounded mr-3">
+                                    }
+                                    <div>
+                                        <div class="font-semibold text-gray-800">@relatedState.Name</div>
+                                        <div class="text-xs text-gray-600">@relatedState.Capital</div>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                        <a href="/states" class="block mt-4 text-center text-blue-700 font-semibold hover:underline">
+                            View All States →
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@functions {
+    string GetSymbolTypeName(string type)
+    {
+        return type switch
+        {
+            "bird" => "State Bird",
+            "flower" => "State Flower",
+            "tree" => "State Tree",
+            "motto" => "State Motto",
+            "animal" => "State Animal",
+            "flag" => "State Flag",
+            _ => $"State {char.ToUpper(type[0]) + type.Substring(1)}"
+        };
+    }
+
+    string GetSymbolIcon(string type)
+    {
+        return type switch
+        {
+            "bird" => "🦅",
+            "flower" => "🌸",
+            "tree" => "🌳",
+            "motto" => "📜",
+            "animal" => "🦌",
+            "flag" => "🏴",
+            _ => "⭐"
+        };
+    }
+}
