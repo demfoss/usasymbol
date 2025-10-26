@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using USASymbol.Data;
 using USASymbol.Services;
+using USASymbol.Services.Content;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IMarkdownService, MarkdownService>();
 builder.Services.AddScoped<IStateService, StateService>();
 builder.Services.AddScoped<ISymbolService, SymbolService>();
+
+// Content Services
+builder.Services.AddScoped<IBirdService, BirdService>();
+//builder.Services.AddScoped<IFlowerService, FlowerService>();
+// TODO: Add TreeService, MottoService when implemented
 
 // Response Caching
 builder.Services.AddResponseCaching();

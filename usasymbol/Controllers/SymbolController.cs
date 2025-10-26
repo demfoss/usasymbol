@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using USASymbol.Models;
 using USASymbol.Models.ViewModels;
 using USASymbol.Services;
+using USASymbol.Services.Content;
 
 namespace USASymbol.Controllers
 {
@@ -8,19 +10,29 @@ namespace USASymbol.Controllers
     {
         private readonly IStateService _stateService;
         private readonly ISymbolService _symbolService;
-        private readonly IMarkdownService _markdownService;
+        private readonly IBirdService _birdService;
+        //private readonly IFlowerService _flowerService;
+        // TODO: Add other content services as they are implemented
+        // private readonly ITreeService _treeService;
+        // private readonly IMottoService _mottoService;
+        private readonly ILogger<SymbolController> _logger;
 
         public SymbolController(
             IStateService stateService,
             ISymbolService symbolService,
-            IMarkdownService markdownService)
+            IBirdService birdService,
+            //IFlowerService flowerService,
+            ILogger<SymbolController> logger)
         {
             _stateService = stateService;
             _symbolService = symbolService;
-            _markdownService = markdownService;
+            _birdService = birdService;
+            //_flowerService = flowerService;
+            _logger = logger;
         }
 
         // GET: /symbols
+        [Route("symbols")]
         public async Task<IActionResult> Categories()
         {
             ViewData["Title"] = "All State Symbol Categories";
@@ -30,7 +42,8 @@ namespace USASymbol.Controllers
             return View(symbolTypes);
         }
 
-        // GET: /symbols/birds
+        // GET: /symbols/birds - UNCHANGED
+        [Route("symbols/{type}")]
         public async Task<IActionResult> Listing(string type)
         {
             var symbols = await _symbolService.GetSymbolsByTypeAsync(type);
@@ -53,36 +66,173 @@ namespace USASymbol.Controllers
             return View(model);
         }
 
-        // GET: /states/illinois/bird
-        // GET: /states/illinois/bird
-        public async Task<IActionResult> Detail(string stateSlug, string symbolType)
+        // GET: /states/{stateSlug}/bird - Specialized for Birds
+        [Route("states/{stateSlug}/bird")]
+        public async Task<IActionResult> Bird(string stateSlug)
+        {
+            // Get state
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            // Get bird symbol for this state
+            var birdSymbol = await _symbolService.GetSymbolAsync(state.Id, "bird");
+            if (birdSymbol == null)
+            {
+                _logger.LogWarning("Bird symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            // Get specialized bird content from markdown
+            var birdContent = await _birdService.GetBirdContentAsync(stateSlug);
+
+            // Get other symbols from this state for "Related Symbols" section
+            var allSymbols = await _symbolService.GetSymbolsByStateAsync(state.Id);
+            var relatedSymbols = allSymbols.Where(s => s.Type != "bird").Take(6).ToList();
+
+            var model = new BirdDetailViewModel
+            {
+                State = state,
+                Symbol = birdSymbol,
+                BirdContent = birdContent,
+                RelatedSymbols = relatedSymbols
+            };
+
+            // SEO
+            ViewData["Title"] = $"{birdSymbol.Name} - {state.Name} State Bird";
+            ViewData["Description"] = $"Learn about the {birdSymbol.Name}, the official state bird of {state.Name}. " +
+                                     $"Discover its history, characteristics, habitat, and significance to {state.Name}.";
+            ViewData["OgImage"] = birdSymbol.ImageUrl ?? "/images/default-bird.jpg";
+
+            return View(model);
+        }
+
+        // GET: /states/{stateSlug}/flower - Specialized for Flowers
+        [Route("states/{stateSlug}/flower")]
+        public async Task<IActionResult> Flower(string stateSlug)
+        {
+            // Get state
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            // Get flower symbol for this state
+            var flowerSymbol = await _symbolService.GetSymbolAsync(state.Id, "flower");
+            if (flowerSymbol == null)
+            {
+                _logger.LogWarning("Flower symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            // Get specialized flower content from markdown
+            //var flowerContent = await _flowerService.GetFlowerContentAsync(stateSlug);
+
+            // Get other symbols from this state
+            var allSymbols = await _symbolService.GetSymbolsByStateAsync(state.Id);
+            var relatedSymbols = allSymbols.Where(s => s.Type != "flower").Take(6).ToList();
+
+            var model = new FlowerDetailViewModel
+            {
+                State = state,
+                Symbol = flowerSymbol,
+                //FlowerContent = flowerContent,
+                RelatedSymbols = relatedSymbols
+            };
+
+            // SEO
+            ViewData["Title"] = $"{flowerSymbol.Name} - {state.Name} State Flower";
+            ViewData["Description"] = $"Learn about the {flowerSymbol.Name}, the official state flower of {state.Name}. " +
+                                     $"Discover its blooming season, growing conditions, and cultural significance.";
+            ViewData["OgImage"] = flowerSymbol.ImageUrl ?? "/images/default-flower.jpg";
+
+            return View(model);
+        }
+
+        // GET: /states/{stateSlug}/tree - Placeholder for Trees
+        [Route("states/{stateSlug}/tree")]
+        public async Task<IActionResult> Tree(string stateSlug)
         {
             var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                return NotFound();
+            }
 
+            var treeSymbol = await _symbolService.GetSymbolAsync(state.Id, "tree");
+            if (treeSymbol == null)
+            {
+                return NotFound();
+            }
+
+            // TODO: Implement TreeService and TreeContent
+            // var treeContent = await _treeService.GetTreeContentAsync(stateSlug);
+
+            var allSymbols = await _symbolService.GetSymbolsByStateAsync(state.Id);
+            var relatedSymbols = allSymbols.Where(s => s.Type != "tree").Take(6).ToList();
+
+            // Use base SymbolDetailViewModel until TreeDetailViewModel is created
+            var model = new SymbolDetailViewModel
+            {
+                State = state,
+                Symbol = treeSymbol,
+                Content = null, // Will be replaced with TreeContent
+                RelatedSymbols = relatedSymbols
+            };
+
+            ViewData["Title"] = $"{treeSymbol.Name} - {state.Name} State Tree";
+            ViewData["Description"] = $"Learn about the {treeSymbol.Name}, the official state tree of {state.Name}.";
+            ViewData["OgImage"] = treeSymbol.ImageUrl ?? "/images/default-tree.jpg";
+
+            return View("Tree", model);
+        }
+
+        // GET: /states/{stateSlug}/{symbolType} - Generic fallback for other symbol types
+        [Route("states/{stateSlug}/{symbolType}")]
+        public async Task<IActionResult> Detail(string stateSlug, string symbolType)
+        {
+            // Redirect to specialized actions if they exist
+            switch (symbolType)
+            {
+                case "bird":
+                    return RedirectToAction(nameof(Bird), new { stateSlug });
+                case "flower":
+                    return RedirectToAction(nameof(Flower), new { stateSlug });
+                case "tree":
+                    return RedirectToAction(nameof(Tree), new { stateSlug });
+                default:
+                    // Handle other symbol types generically
+                    break;
+            }
+
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
             if (state == null)
             {
                 return NotFound();
             }
 
             var symbol = await _symbolService.GetSymbolAsync(state.Id, symbolType);
-
             if (symbol == null)
             {
                 return NotFound();
             }
 
-            // Get markdown content
-            var content = await _markdownService.GetSymbolContentAsync(stateSlug, symbolType);
+            // For other symbol types, use the generic MarkdownService (if still needed)
+            // This is a fallback for symbol types not yet migrated to specialized services
 
-            // Get other symbols from the same state
             var relatedSymbols = await _symbolService.GetSymbolsByStateAsync(state.Id);
-            relatedSymbols = relatedSymbols.Where(s => s.Id != symbol.Id).Take(3).ToList();
+            relatedSymbols = relatedSymbols.Where(s => s.Id != symbol.Id).Take(6).ToList();
 
             var model = new SymbolDetailViewModel
             {
                 State = state,
                 Symbol = symbol,
-                Content = content ?? new USASymbol.Models.SymbolContent(),
+                Content = null,
                 RelatedSymbols = relatedSymbols
             };
 
@@ -90,19 +240,8 @@ namespace USASymbol.Controllers
             ViewData["Description"] = $"Learn about {symbol.Name}, the official state {symbolType} of {state.Name}.";
             ViewData["OgImage"] = symbol.ImageUrl ?? state.FlagImageUrl;
 
-            // Выбираем View в зависимости от типа символа
-            var viewName = symbolType switch
-            {
-                "bird" => "Detail_Bird",
-                "flower" => "Detail_Flower",
-                "tree" => "Detail_Tree",
-                "motto" => "Detail_Motto",
-                "animal" => "Detail_Animal",
-                "flag" => "Detail_Flag",
-                _ => "Detail" // Fallback на общий шаблон
-            };
-
-            return View(viewName, model);
+            // Use a generic detail view for unspecialized symbol types
+            return View("Detail", model);
         }
 
         private string GetSymbolTypeName(string type)

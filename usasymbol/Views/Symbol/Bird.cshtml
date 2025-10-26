@@ -1,4 +1,4 @@
-﻿@model USASymbol.Models.ViewModels.SymbolDetailViewModel
+@model USASymbol.Models.ViewModels.BirdDetailViewModel
 
 @{
     ViewData["Title"] = $"{Model.Symbol.Name} - {Model.State.Name} State Bird";
@@ -6,31 +6,27 @@
 
 <!-- Schema.org Structured Data -->
 <script type="application/ld+json">
-    {
-      "@@context": "https://schema.org",
-      "@@type": "Article",
-      "headline": "@Model.State.Name State Bird - @Model.Symbol.Name",
-      "description": "Complete guide to @Model.State.Name's official state bird, the @Model.Symbol.Name",
-      "image": "@(Model.Symbol.ImageUrl ?? "/images/default-bird.jpg")",
-      "datePublished": "@(Model.Symbol.AdoptedYear.HasValue ? new DateTime(Model.Symbol.AdoptedYear.Value, 1, 1).ToString("yyyy-MM-dd") : "2020-01-01")",
-      "dateModified": "@DateTime.Now.ToString("yyyy-MM-dd")",
-      "author": {
-        "@@type": "Organization",
-        "name": "USA Symbol"
-      },
-      "publisher": {
-        "@@type": "Organization",
-        "name": "USA Symbol",
-        "logo": {
-          "@@type": "ImageObject",
-          "url": "@(Context.Request.Scheme)://@(Context.Request.Host)/logo.png"
-        }
-      },
-      "mainEntityOfPage": {
-        "@@type": "WebPage",
-        "@@id": "@(Context.Request.Scheme)://@(Context.Request.Host)/states/@Model.State.Slug/bird"
-      }
+{
+  "@@context": "https://schema.org",
+  "@@type": "Article",
+  "headline": "@Model.State.Name State Bird - @Model.Symbol.Name",
+  "description": "Complete guide to @Model.State.Name's official state bird, the @Model.Symbol.Name",
+  "image": "@(Model.Symbol.ImageUrl ?? "/images/default-bird.jpg")",
+  "datePublished": "@(Model.BirdContent?.DatePublished?.ToString("yyyy-MM-dd") ?? (Model.Symbol.AdoptedYear.HasValue ? new DateTime(Model.Symbol.AdoptedYear.Value, 1, 1).ToString("yyyy-MM-dd") : "2020-01-01"))",
+  "dateModified": "@(Model.BirdContent?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))",
+  "author": {
+    "@@type": "Organization",
+    "name": "@(Model.BirdContent?.Author ?? "USA Symbol")"
+  },
+  "publisher": {
+    "@@type": "Organization",
+    "name": "USA Symbol",
+    "logo": {
+      "@@type": "ImageObject",
+      "url": "@(Context.Request.Scheme)://@(Context.Request.Host)/logo.png"
     }
+  }
+}
 </script>
 
 <!-- BREADCRUMBS -->
@@ -47,11 +43,11 @@
     <!-- PAGE TITLE -->
     <div class="mb-6">
         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-            @Model.State.Name State Bird: @Model.Symbol.Name
+            @Model.State.Name State Bird: @(Model.BirdContent?.Title ?? Model.Symbol.Name)
         </h1>
         @if (Model.Symbol.AdoptedYear.HasValue)
         {
-            <p class="text-xl text-gray-600">A Symbol of Vitality and Resilience Since @Model.Symbol.AdoptedYear</p>
+            <p class="text-xl text-gray-600">A Symbol of Vitality and Resilience Since @(Model.BirdContent?.AdoptedYear ?? Model.Symbol.AdoptedYear)</p>
         }
         else
         {
@@ -68,12 +64,16 @@
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="text-sm font-semibold text-gray-800">Researched by USA Symbol Team</span>
+                        <span class="text-sm font-semibold text-gray-800">
+                            Researched by @(Model.BirdContent?.Author ?? "USA Symbol Team")
+                        </span>
                         <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <p class="text-xs text-gray-500">Fact-checked • Updated @DateTime.Now.ToString("MMMM d, yyyy")</p>
+                    <p class="text-xs text-gray-500">
+                        Fact-checked • Updated @(Model.BirdContent?.DateModified?.ToString("MMMM d, yyyy") ?? DateTime.Now.ToString("MMMM d, yyyy"))
+                    </p>
                 </div>
             </div>
             <div class="flex items-center gap-3 text-xs">
@@ -107,11 +107,11 @@
                         @Model.State.Name State Bird
                     </div>
 
-                    <h2 class="text-3xl font-bold text-gray-900 mb-4">@Model.Symbol.Name</h2>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">@(Model.BirdContent?.Title ?? Model.Symbol.Name)</h2>
 
-                    @if (!string.IsNullOrEmpty(Model.Symbol.ScientificName))
+                    @if (!string.IsNullOrEmpty(Model.BirdContent?.ScientificName) || !string.IsNullOrEmpty(Model.Symbol.ScientificName))
                     {
-                        <p class="text-lg text-gray-600 italic mb-6">@Model.Symbol.ScientificName</p>
+                        <p class="text-lg text-gray-600 italic mb-6">@(Model.BirdContent?.ScientificName ?? Model.Symbol.ScientificName)</p>
                     }
 
                     <div class="space-y-3">
@@ -125,7 +125,7 @@
                             </div>
                         </div>
 
-                        @if (Model.Symbol.AdoptedYear.HasValue)
+                        @if (Model.BirdContent?.AdoptedYear.HasValue == true || Model.Symbol.AdoptedYear.HasValue)
                         {
                             <div class="flex items-start gap-2">
                                 <svg class="w-5 h-5 text-blue-700 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -133,20 +133,33 @@
                                 </svg>
                                 <div>
                                     <span class="font-semibold text-gray-900">Adopted:</span>
-                                    <span class="ml-1">@Model.Symbol.AdoptedYear</span>
+                                    <span class="ml-1">@(Model.BirdContent?.AdoptedYear ?? Model.Symbol.AdoptedYear)</span>
                                 </div>
                             </div>
                         }
 
-                        @if (!string.IsNullOrEmpty(Model.Symbol.ScientificName))
+                        @if (!string.IsNullOrEmpty(Model.BirdContent?.ConservationStatus))
                         {
                             <div class="flex items-start gap-2">
                                 <svg class="w-5 h-5 text-blue-700 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                                 </svg>
                                 <div>
-                                    <span class="font-semibold text-gray-900">Scientific Name:</span>
-                                    <span class="ml-1 italic">@Model.Symbol.ScientificName</span>
+                                    <span class="font-semibold text-gray-900">Conservation Status:</span>
+                                    <span class="ml-1">@Model.BirdContent.ConservationStatus</span>
+                                </div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.BirdContent?.Habitat))
+                        {
+                            <div class="flex items-start gap-2">
+                                <svg class="w-5 h-5 text-blue-700 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    <span class="font-semibold text-gray-900">Habitat:</span>
+                                    <span class="ml-1">@Model.BirdContent.Habitat</span>
                                 </div>
                             </div>
                         }
@@ -165,51 +178,94 @@
         </div>
     </section>
 
-    <!-- MARKDOWN CONTENT OR DEFAULT CONTENT -->
-    @if (Model.Content != null && !string.IsNullOrEmpty(Model.Content.Html))
+    <!-- PHYSICAL CHARACTERISTICS (если есть данные) -->
+    @if (Model.HasPhysicalData)
     {
-        <!-- Если есть markdown контент -->
-        <section class="prose prose-lg max-w-none mb-10">
-            <div class="bg-white rounded-xl p-8 shadow-sm">
-                @Html.Raw(Model.Content.Html)
+        <section class="mb-10">
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <h2 class="text-xl font-bold mb-4 text-gray-900">Physical Characteristics</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    @if (!string.IsNullOrEmpty(Model.BirdContent?.Size))
+                    {
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">📏</div>
+                            <div class="font-semibold text-gray-900">Size</div>
+                            <div class="text-gray-600">@Model.BirdContent.Size</div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.BirdContent?.Wingspan))
+                    {
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">🦅</div>
+                            <div class="font-semibold text-gray-900">Wingspan</div>
+                            <div class="text-gray-600">@Model.BirdContent.Wingspan</div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.BirdContent?.Weight))
+                    {
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">⚖️</div>
+                            <div class="font-semibold text-gray-900">Weight</div>
+                            <div class="text-gray-600">@Model.BirdContent.Weight</div>
+                        </div>
+                    }
+                </div>
             </div>
         </section>
     }
-    else
+
+    <!-- MARKDOWN CONTENT -->
+    @if (Model.HasContent)
     {
-        <!-- Placeholder контент если нет markdown -->
-        <section class="bg-white rounded-xl p-8 shadow-sm mb-10">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">About the @Model.Symbol.Name</h2>
+        <section class="prose prose-lg max-w-none mb-10">
+            <div class="bg-white rounded-xl p-8 shadow-sm">
+                @Html.Raw(Model.BirdContent!.HtmlContent)
+            </div>
+        </section>
+    }
 
-            <div class="prose prose-lg max-w-none">
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    The <strong>@Model.Symbol.Name</strong>
-                    @if (!string.IsNullOrEmpty(Model.Symbol.ScientificName))
+    <!-- SHARED WITH OTHER STATES -->
+    @if (Model.HasSharedStates)
+    {
+        <section class="mb-10">
+            <div class="bg-yellow-50 rounded-xl p-6 border-2 border-yellow-200">
+                <h3 class="text-lg font-bold mb-3 text-gray-900">Also the State Bird of:</h3>
+                <div class="flex flex-wrap gap-2">
+                    @foreach (var state in Model.BirdContent!.SharedStates)
                     {
-                        <text>(<em>@Model.Symbol.ScientificName</em>)</text>
+                        <a href="/states/@state.ToLower().Replace(" ", "-")/bird" 
+                           class="px-4 py-2 bg-white rounded-lg border border-yellow-300 text-sm font-medium hover:bg-yellow-100 transition">
+                            @state
+                        </a>
                     }
-                    is the official state bird of @Model.State.Name.
-                    @if (Model.Symbol.AdoptedYear.HasValue)
-                    {
-                        <text>This designation was officially adopted in @Model.Symbol.AdoptedYear, making it a cherished symbol of the state's natural heritage.</text>
-                    }
-                </p>
+                </div>
+            </div>
+        </section>
+    }
 
-                <h3 class="text-xl font-bold mt-8 mb-4 text-gray-900">Why This Bird Represents @Model.State.Name</h3>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    State birds are chosen to represent the unique character and natural beauty of each state.
-                    The @Model.Symbol.Name was selected as @Model.State.Name's official bird due to its
-                    significance to the state's ecosystem and cultural identity.
-                </p>
-
-                <h3 class="text-xl font-bold mt-8 mb-4 text-gray-900">Interesting Facts</h3>
-                <ul class="list-disc pl-6 space-y-2 text-gray-700">
-                    <li>The @Model.Symbol.Name is one of the most recognizable birds in @Model.State.Name</li>
-                    @if (Model.Symbol.AdoptedYear.HasValue)
+    <!-- SOURCES -->
+    @if (Model.HasSources)
+    {
+        <section class="mb-10">
+            <div class="bg-gray-50 rounded-xl p-6">
+                <h3 class="text-lg font-bold mb-4 text-gray-900">Sources & References</h3>
+                <ul class="space-y-3">
+                    @foreach (var source in Model.BirdContent!.Sources)
                     {
-                        <li>This bird has been @Model.State.Name's official state symbol for over @(DateTime.Now.Year - Model.Symbol.AdoptedYear.Value) years</li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <a href="@source.Url" target="_blank" rel="noopener noreferrer" 
+                                   class="text-blue-700 hover:underline font-medium">@source.Name</a>
+                                @if (!string.IsNullOrEmpty(source.Description))
+                                {
+                                    <p class="text-sm text-gray-600">@source.Description</p>
+                                }
+                            </div>
+                        </li>
                     }
-                    <li>State birds play an important role in environmental education and conservation efforts</li>
                 </ul>
             </div>
         </section>
@@ -224,7 +280,7 @@
                 @foreach (var symbol in Model.RelatedSymbols)
                 {
                     <a href="/states/@Model.State.Slug/@symbol.Type"
-                       class="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition border-2 border-transparent hover:border-blue-500 smooth-transition">
+                       class="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition border-2 border-transparent hover:border-blue-500">
                         <div class="text-5xl mb-4 text-center">@GetSymbolIcon(symbol.Type)</div>
                         <div class="text-center">
                             <div class="text-sm text-blue-700 font-semibold uppercase mb-2">@GetSymbolTypeName(symbol.Type)</div>
