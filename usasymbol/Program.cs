@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using USASymbol.Data;
 using USASymbol.Services;
-using USASymbol.Services.Content;
 
 var builder = WebApplication.CreateBuilder(args);
 

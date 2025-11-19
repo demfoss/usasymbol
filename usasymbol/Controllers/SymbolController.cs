@@ -2,7 +2,6 @@
 using USASymbol.Models;
 using USASymbol.Models.ViewModels;
 using USASymbol.Services;
-using USASymbol.Services.Content;
 
 namespace USASymbol.Controllers
 {
@@ -100,12 +99,6 @@ namespace USASymbol.Controllers
                 BirdContent = birdContent,
                 RelatedSymbols = relatedSymbols
             };
-
-            // SEO
-            ViewData["Title"] = $"{birdSymbol.Name} - {state.Name} State Bird";
-            ViewData["Description"] = $"Learn about the {birdSymbol.Name}, the official state bird of {state.Name}. " +
-                                     $"Discover its history, characteristics, habitat, and significance to {state.Name}.";
-            ViewData["OgImage"] = birdSymbol.ImageUrl ?? "/images/default-bird.jpg";
 
             return View(model);
         }

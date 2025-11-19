@@ -3,17 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
     <title>@ViewData["Title"] - USA Symbol</title>
 
     <!-- SEO Meta Tags -->
     <meta name="description" content="@ViewData["Description"] ?? " Comprehensive guide to official state symbols across all 50 U.S. states. Explore state birds, flowers, trees, flags, and more."" />
-    <meta name="keywords" content="state symbols, state birds, state flowers, US states, American symbols" />
+    <meta name="keywords" content="@(ViewData["Keywords"] ?? "state symbols, state birds, state flowers, US states, American symbols")" />
     <meta name="author" content="USA Symbol" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="@ViewData["Title"] - USA Symbol" />
     <meta property="og:description" content="@ViewData["Description"] ?? " Explore official state symbols across all 50 U.S. states"" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="@(ViewData["OgType"] ?? "website")" />
     <meta property="og:url" content="@Context.Request.Scheme://@Context.Request.Host@Context.Request.Path" />
     <meta property="og:image" content="@(ViewData["OgImage"] ?? "/images/og-default.jpg")" />
 
@@ -21,6 +24,10 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="@ViewData["Title"] - USA Symbol" />
     <meta name="twitter:description" content="@ViewData["Description"] ?? " Explore official state symbols"" />
+    <meta name="twitter:image" content="@(ViewData["OgImage"] ?? "/images/og-default.jpg")" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="@Context.Request.Scheme://@Context.Request.Host@(ViewData["Canonical"] ?? Context.Request.Path)" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -164,8 +171,30 @@
         </div>
     </footer>
 
+    <!-- Organization Schema (Global) -->
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "Organization",
+          "name": "USA Symbol",
+          "url": "@Context.Request.Scheme://@Context.Request.Host",
+          "logo": "@Context.Request.Scheme://@Context.Request.Host/images/logo.png",
+          "description": "Comprehensive educational resource for official U.S. state symbols across all 50 states",
+          "sameAs": [
+            "https://twitter.com/usasymbol",
+            "https://facebook.com/usasymbol"
+          ],
+          "contactPoint": {
+            "@@type": "ContactPoint",
+            "contactType": "Customer Service",
+            "url": "@Context.Request.Scheme://@Context.Request.Host/contact"
+          }
+        }
+    </script>
+
     <!-- JavaScript -->
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+</body>
 </body>
 </html>
