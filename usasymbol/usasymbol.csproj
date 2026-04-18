@@ -4,7 +4,19 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj-verify\**;bin-verify\**</DefaultItemExcludes>
+
+    <!-- важно: оставляем true (по умолчанию), чтобы wwwroot НЕ дублировался -->
+    <!-- <EnableDefaultContentItems>true</EnableDefaultContentItems> -->
+    <UserSecretsId>a86db447-8619-4573-b754-b05ecb9673a5</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="obj-verify\**\*.cs;bin-verify\**\*.cs" />
+    <Content Remove="obj-verify\**;bin-verify\**" />
+    <None Remove="obj-verify\**;bin-verify\**" />
+    <EmbeddedResource Remove="obj-verify\**;bin-verify\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.43.0" />
@@ -19,8 +31,55 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageReference Include="System.Linq" Version="4.3.0" />
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
+    <PackageReference Include="QuestPDF" Version="2024.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ✅ Копируем YAML/YML в publish (wwwroot тут вообще ни при чем) -->
+    <Content Include="Content\**\*.yaml;Content\**\*.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+
+    <Content Update="Content\ai-prompts\**\*.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+
+    <!-- ✅ Если sounds реально лежат в Content/sounds -->
+    <Content Include="Content\sounds\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+
+    <!-- ✅ Явно копируем CSS при publish -->
+    <Content Include="wwwroot\css\**\*.*">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\images\flags\iowa\versions\" />
+    <Folder Include="wwwroot\images\flags\indiana\versions\" />
+    <Folder Include="wwwroot\images\flags\illinois\versions\" />
+    <Folder Include="wwwroot\images\flags\idaho\versions\" />
+    <Folder Include="wwwroot\images\flags\kentucky\versions\" />
+    <Folder Include="wwwroot\images\flags\maryland\versions\" />
+    <Folder Include="wwwroot\images\flags\missouri\versions\" />
+    <Folder Include="wwwroot\images\flags\nebraska\versions\" />
+    <Folder Include="wwwroot\images\flags\new-jersey\versions\" />
+    <Folder Include="wwwroot\images\flags\new-hampshire\versions\" />
+    <Folder Include="wwwroot\images\flags\ohio\versions\" />
+    <Folder Include="wwwroot\images\flags\north-dakota\versions\" />
+    <Folder Include="wwwroot\images\flags\pennsylvania\versions\" />
+    <Folder Include="wwwroot\images\flags\oregon\versions\" />
+    <Folder Include="wwwroot\images\flags\washington\versions\" />
+    <Folder Include="wwwroot\images\flags\virginia\versions\" />
+    <Folder Include="wwwroot\images\flags\wyoming\versions\" />
   </ItemGroup>
 
 </Project>
