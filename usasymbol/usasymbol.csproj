@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <DefaultItemExcludes>$(DefaultItemExcludes);obj-verify\**;bin-verify\**</DefaultItemExcludes>
 
-    <!-- важно: оставляем true (по умолчанию), чтобы wwwroot НЕ дублировался -->
     <!-- <EnableDefaultContentItems>true</EnableDefaultContentItems> -->
     <UserSecretsId>a86db447-8619-4573-b754-b05ecb9673a5</UserSecretsId>
   </PropertyGroup>
@@ -38,7 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- ✅ Копируем YAML/YML в publish (wwwroot тут вообще ни при чем) -->
     <Content Include="Content\**\*.yaml;Content\**\*.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -49,13 +47,11 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
 
-    <!-- ✅ Если sounds реально лежат в Content/sounds -->
     <Content Include="Content\sounds\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
 
-    <!-- ✅ Явно копируем CSS при publish -->
     <Content Include="wwwroot\css\**\*.*">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
