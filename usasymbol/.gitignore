@@ -1,0 +1,23 @@
+# Build output
+bin/
+obj/
+bin-verify/
+obj-verify/
+
+# Sensitive config
+appsettings.Production.json
+
+# SQLite WAL files (transient, not needed in repo)
+*.db-shm
+*.db-wal
+
+# User-specific VS files
+.vs/
+*.user
+
+# Rider
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

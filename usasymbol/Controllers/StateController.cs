@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using usasymbol.Services.Interface;
 using USASymbol.Models.ViewModels;
-using USASymbol.Services;
 
 namespace USASymbol.Controllers
 {
@@ -15,13 +15,9 @@ namespace USASymbol.Controllers
             _symbolService = symbolService;
         }
 
-        // GET: /states
         [Route("states")]
         public async Task<IActionResult> Listing(string? region = null)
         {
-            ViewData["Title"] = "All 50 U.S. States";
-            ViewData["Description"] = "Browse all 50 U.S. states and explore their official symbols, capitals, and unique characteristics.";
-
             var states = string.IsNullOrEmpty(region)
                 ? await _stateService.GetAllStatesAsync()
                 : await _stateService.GetStatesByRegionAsync(region);
@@ -36,7 +32,6 @@ namespace USASymbol.Controllers
             return View(model);
         }
 
-        // GET: /states/illinois
         public async Task<IActionResult> Index(string slug)
         {
             var state = await _stateService.GetStateBySlugAsync(slug);
@@ -56,8 +51,6 @@ namespace USASymbol.Controllers
                 RelatedStates = relatedStates.Where(s => s.Id != state.Id).Take(3).ToList()
             };
 
-            ViewData["Title"] = $"{state.Name} State Symbols";
-            ViewData["Description"] = $"Discover the official symbols of {state.Name} including state bird, flower, tree, flag, and more.";
             ViewData["OgImage"] = state.FlagImageUrl;
 
             return View(model);

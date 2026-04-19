@@ -1,181 +1,975 @@
-﻿@model USASymbol.Models.ViewModels.HomeViewModel
+@using System.Text.Json
+@model USASymbol.Models.ViewModels.HomeViewModel
+@inject IImageUrlService Images
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Official State Symbols of All 50 U.S. States";
+    ViewData["Description"] = "Find official state symbols for all 50 states, from birds and flowers to trees and flags. A clear guide to every symbol in the United States.";
+    ViewData["Keywords"] = "state symbols, state birds, state flowers, state flags, state trees, US states, American symbols, state emblems, official state symbols";
+    ViewData["BodyClass"] = "home-page";
+
+    var typeLabels = Model.SymbolCategories
+        .Where(c => !string.IsNullOrEmpty(c.Type))
+        .ToDictionary(
+            c => c.Type,
+            c => c.Name.EndsWith("s", StringComparison.OrdinalIgnoreCase) ? c.Name[..^1] : c.Name
+        );
+
+    var poolJson = JsonSerializer.Serialize(
+        Model.SymbolOfTheDayPool.Select(item => new
+        {
+            name      = item.Symbol.Name,
+            type      = item.Symbol.Type,
+            typeLabel = typeLabels.TryGetValue(item.Symbol.Type, out var lbl) ? lbl : "State Symbol",
+            stateName = item.State.Name,
+            stateAbbr = item.State.Abbreviation,
+            stateSlug = item.State.Slug,
+            imageUrl  = Images.Hero(item.Symbol.ImageUrl),
+            flagUrl   = Images.Thumb($"/images/states/flags/small/{item.State.Abbreviation.ToLowerInvariant()}.webp"),
+            meaning   = item.Symbol.Meaning ?? "",
+            url       = item.Symbol.ToSymbolUrl(item.State.Slug),
+        })
+    );
+
+    var first = Model.SymbolOfTheDayPool.FirstOrDefault();
+    var firstTypeLabel = first != null && typeLabels.TryGetValue(first.Symbol.Type, out var fl) ? fl : "State Symbol";
+    var stateMapJson = JsonSerializer.Serialize(
+        Model.StateMapItems.Select(item => new
+        {
+            name = item.Name,
+            slug = item.Slug,
+            abbr = item.Abbreviation,
+            capital = item.Capital,
+            population = item.Population
+        })
+    );
 }
 
-<!-- HERO SECTION -->
-<section class="relative bg-blue-900 text-white py-20 text-center">
-    <div class="max-w-4xl mx-auto px-4">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">Discover All 50 U.S. State Symbols</h1>
-        <p class="text-lg md:text-xl text-blue-100 mb-6">
-            Explore the official birds, flowers, trees, and flags that represent each U.S. state.
+@section Styles {
+<style>
+    /* === HOME PAGE — Editorial Redesign ======================== */
+
+    .home-hero {
+        padding: clamp(3.75rem, 7vw, 5.75rem) 0 clamp(2.5rem, 5vw, 3.5rem);
+        text-align: center;
+    }
+    .home-hero .hero-title {
+        font-size: clamp(2.5rem, 5vw, 3.95rem);
+        max-width: 34rem;
+        margin: 1rem auto 1rem;
+    }
+    .home-hero .hero-subtitle {
+        max-width: 40rem;
+        margin: 0 auto 2rem;
+        font-size: 1rem;
+        line-height: 1.65;
+    }
+    .hero-cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .9rem 1.75rem;
+        border-radius: 9999px;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: .9rem;
+        text-decoration: none;
+        transition: transform .2s, background .2s, box-shadow .2s;
+    }
+    .hero-cta-btn:hover { transform: translateY(-2px); }
+    .hero-cta-btn--light {
+        background: var(--cream);
+        color: var(--navy);
+        box-shadow: 0 8px 24px rgba(0,0,0,.18);
+    }
+    .hero-cta-btn--light:hover { background: white; }
+    .hero-cta-btn--ghost {
+        background: rgba(255,255,255,.1);
+        color: var(--cream);
+        border: 1px solid rgba(255,255,255,.24);
+    }
+    .hero-cta-btn--ghost:hover { background: rgba(255,255,255,.18); }
+
+    .home-map-shell {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+    .home-map-card {
+        background: linear-gradient(180deg, rgba(255,249,240,.96), rgba(255,255,255,.92));
+        border: 1px solid rgba(216, 196, 171, .95);
+        border-radius: 1.75rem;
+        box-shadow: 0 20px 48px rgba(27,42,74,.08);
+        padding: 1.1rem;
+    }
+    .home-map-top {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    .home-map-copy h2 {
+        margin: .2rem 0 0;
+        color: var(--navy);
+    }
+    .home-map-copy p {
+        margin: .55rem 0 0;
+        max-width: 38rem;
+        color: var(--slate-ed);
+        font-size: .95rem;
+        line-height: 1.65;
+    }
+    .home-map-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding: .55rem .85rem;
+        border-radius: 9999px;
+        border: 1px solid var(--cream-dark);
+        background: rgba(255,255,255,.72);
+        color: var(--navy);
+        font-size: .78rem;
+        font-weight: 700;
+    }
+    .home-map-frame {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.25rem;
+        border: 1px solid rgba(216, 196, 171, .9);
+        background: linear-gradient(180deg, #fbf6ee 0%, #fffdf8 100%);
+    }
+    .home-map-frame svg {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+    .home-map-tooltip {
+        position: absolute;
+        z-index: 20;
+        min-width: 180px;
+        max-width: 240px;
+        padding: .85rem .95rem;
+        border-radius: 1rem;
+        border: 1px solid rgba(15,23,42,.58);
+        background: rgba(15,23,42,.96);
+        box-shadow: 0 18px 40px rgba(15,23,42,.3);
+        color: white;
+        pointer-events: none;
+    }
+    .home-map-tooltip[hidden] { display: none; }
+    .home-map-tooltip__state {
+        font-size: .8rem;
+        font-weight: 800;
+        line-height: 1.25;
+        letter-spacing: .01em;
+        color: #fff;
+    }
+    .home-map-tooltip__meta {
+        margin-top: .45rem;
+        display: grid;
+        gap: .28rem;
+    }
+    .home-map-tooltip__row {
+        display: grid;
+        gap: .1rem;
+    }
+    .home-map-tooltip__label {
+        font-size: .62rem;
+        font-weight: 800;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: #94a3b8;
+    }
+    .home-map-tooltip__value {
+        font-size: .75rem;
+        font-weight: 600;
+        line-height: 1.35;
+        color: #f8fafc;
+    }
+
+    /* Section chrome */
+    .hs { padding: clamp(3.5rem, 7vw, 5.5rem) 0; }
+    .hs-cream { background: var(--cream); }
+    .hs-white { background: #fff; }
+    .hs-navy  { background: var(--navy); color: var(--cream); }
+
+    .hs-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: .4rem;
+        font-family: 'Manrope', sans-serif;
+        font-size: .62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .16em;
+        color: var(--gold);
+        margin-bottom: .6rem;
+    }
+    .hs-eyebrow i { font-size: .7em; }
+
+    /* ── SOTD ───────────────────────────────────────────────── */
+    .sotd-card {
+        background: white;
+        border: 1px solid var(--cream-dark);
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 2px 20px rgba(27,42,74,.06);
+    }
+    .sotd-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: .875rem 1.25rem;
+        border-bottom: 1px solid var(--cream-dark);
+        background: var(--cream);
+    }
+    .sotd-next-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .5rem 1rem;
+        background: white;
+        border: 1px solid var(--cream-dark);
+        border-radius: 9999px;
+        font-size: .8rem;
+        font-weight: 600;
+        color: var(--navy);
+        cursor: pointer;
+        transition: border-color .2s, background .2s;
+    }
+    .sotd-next-btn:hover { border-color: var(--gold); background: var(--cream); }
+    .sotd-inner { display: flex; flex-direction: column; }
+    @@media (min-width: 768px) {
+        .sotd-inner { display: grid; grid-template-columns: 300px 1fr; }
+    }
+    .sotd-media {
+        background: var(--cream);
+        min-height: 240px;
+        position: relative;
+        overflow: hidden;
+    }
+    .sotd-media img {
+        position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    }
+    .sotd-type-badge {
+        position: absolute;
+        top: .75rem; left: .75rem;
+        background: rgba(27,42,74,.72);
+        backdrop-filter: blur(12px);
+        color: var(--cream);
+        font-size: .62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .12em;
+        padding: .3rem .75rem;
+        border-radius: 9999px;
+    }
+    .sotd-info {
+        padding: clamp(1.5rem, 3vw, 2.25rem);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .sotd-state-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; }
+    .sotd-flag {
+        height: 1.2rem; width: 1.65rem;
+        object-fit: cover; border-radius: 2px;
+        border: 1px solid var(--cream-dark);
+    }
+    .sotd-state-text {
+        font-size: .7rem; font-weight: 700;
+        letter-spacing: .12em; text-transform: uppercase;
+        color: var(--slate-ed);
+    }
+    .sotd-name {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1.15;
+        letter-spacing: -.025em;
+        margin: 0 0 .75rem;
+    }
+    .sotd-meaning {
+        font-size: .9rem; color: var(--slate-ed);
+        line-height: 1.7; max-width: 30rem;
+    }
+    .sotd-actions { margin-top: 1.25rem; display: flex; gap: .75rem; flex-wrap: wrap; }
+    .sotd-btn-primary {
+        display: inline-flex; align-items: center; gap: .5rem;
+        padding: .7rem 1.4rem; background: var(--navy); color: var(--cream);
+        border-radius: 9999px; font-weight: 700; font-size: .85rem;
+        text-decoration: none; transition: background .2s, transform .2s;
+    }
+    .sotd-btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); }
+    .sotd-btn-secondary {
+        display: inline-flex; align-items: center; gap: .5rem;
+        padding: .7rem 1.2rem; background: var(--cream); color: var(--navy);
+        border: 1px solid var(--cream-dark); border-radius: 9999px;
+        font-weight: 700; font-size: .85rem;
+        text-decoration: none; transition: border-color .2s, transform .2s;
+    }
+    .sotd-btn-secondary:hover { border-color: var(--gold); transform: translateY(-1px); }
+
+    /* ── Category cards ────────────────────────────────────── */
+    .cat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: .85rem;
+    }
+    @@media (min-width: 640px)  { .cat-grid { grid-template-columns: repeat(3, 1fr); } }
+    @@media (min-width: 1024px) { .cat-grid { grid-template-columns: repeat(4, 1fr); } }
+    .cat-card {
+        background: white;
+        border: 1px solid var(--cream-dark);
+        border-radius: .875rem;
+        overflow: hidden;
+        text-decoration: none;
+        display: flex; flex-direction: column;
+        transition: box-shadow .25s, transform .25s, border-color .25s;
+    }
+    .cat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(27,42,74,.1);
+        border-color: var(--gold-border);
+    }
+    .cat-card:hover .cat-card__thumb {
+        background: var(--cream-dark);
+    }
+    .cat-card__thumb {
+        aspect-ratio: 1 / .9;
+        background: var(--cream);
+        display: flex; align-items: center; justify-content: center;
+        padding: 1rem;
+    }
+    .cat-card__thumb img {
+        width: 100%; height: 100%; object-fit: contain;
+        transition: transform .35s ease;
+    }
+    .cat-card:hover .cat-card__thumb img { transform: scale(1.1); }
+    .cat-card__thumb .cat-icon { font-size: 2.5rem; color: var(--navy); opacity: .35; }
+    .cat-card__body { padding: .65rem .7rem .75rem; text-align: center; }
+    .cat-card__title {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        font-size: .84rem; font-weight: 700; color: var(--navy); line-height: 1.25;
+    }
+
+    /* ── State cards ──────────────────────────────────────── */
+    .state-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    @@media (min-width: 640px)  { .state-grid { grid-template-columns: repeat(3, 1fr); } }
+    @@media (min-width: 1024px) { .state-grid { grid-template-columns: repeat(5, 1fr); } }
+    .st-card {
+        background: var(--cream);
+        border: 1px solid var(--cream-dark);
+        border-radius: .875rem;
+        overflow: hidden;
+        text-decoration: none;
+        transition: box-shadow .25s, transform .25s, border-color .25s, background .25s;
+    }
+    .st-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 28px rgba(27,42,74,.1);
+        border-color: var(--gold-border);
+        background: white;
+    }
+    .st-card__flag {
+        aspect-ratio: 3/2; overflow: hidden;
+        background: linear-gradient(135deg, rgba(27,42,74,.08), rgba(27,42,74,.04));
+    }
+    .st-card__flag img {
+        width: 100%; height: 100%; object-fit: cover;
+        transition: transform .4s ease;
+    }
+    .st-card:hover .st-card__flag img { transform: scale(1.05); }
+    .st-card__body { padding: .75rem; }
+    .st-card__name {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        font-size: .9rem; font-weight: 700; color: var(--navy);
+    }
+    .st-card__capital { font-size: .7rem; color: var(--slate-ed); margin-top: .15rem; }
+
+    /* ── Discovery cards ──────────────────────────────────── */
+    .disc-grid {
+        display: grid; grid-template-columns: 1fr; gap: 1.25rem;
+    }
+    @@media (min-width: 640px)  { .disc-grid { grid-template-columns: repeat(2, 1fr); } }
+    @@media (min-width: 1024px) { .disc-grid { grid-template-columns: repeat(4, 1fr); } }
+    .disc-card {
+        background: white;
+        border: 1px solid var(--cream-dark);
+        border-radius: 1rem;
+        overflow: hidden;
+        text-decoration: none;
+        display: flex; flex-direction: column;
+        transition: box-shadow .25s, transform .25s, border-color .25s;
+    }
+    .disc-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 40px rgba(27,42,74,.1);
+        border-color: var(--gold-border);
+    }
+    .disc-card__banner {
+        aspect-ratio: 16/8;
+        display: flex; align-items: center; justify-content: center;
+        position: relative; overflow: hidden;
+    }
+    .disc-card__body { padding: 1.15rem; flex: 1; display: flex; flex-direction: column; }
+    .disc-card__eyebrow {
+        font-size: .6rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .14em; color: var(--gold); margin-bottom: .4rem;
+    }
+    .disc-card__title {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        font-size: 1.05rem; font-weight: 700; color: var(--navy);
+        line-height: 1.3; margin-bottom: .5rem;
+    }
+    .disc-card__desc {
+        font-size: .82rem; color: var(--slate-ed); line-height: 1.65; flex: 1;
+    }
+    .disc-card__cta {
+        margin-top: .75rem; font-size: .8rem; font-weight: 700;
+        color: var(--navy); display: inline-flex; align-items: center; gap: .375rem;
+    }
+
+    /* ── Fact section ─────────────────────────────────────── */
+    .fact-quote-mark {
+        font-size: 5rem; line-height: .8;
+        color: var(--gold); font-family: Georgia, serif;
+        margin-bottom: .5rem; display: block;
+    }
+    .fact-quote-text {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        font-style: italic;
+        font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+        color: var(--cream);
+        line-height: 1.7;
+        max-width: 44rem;
+        margin: 0 auto 2rem;
+    }
+
+    /* ── CTA buttons ──────────────────────────────────────── */
+    .cta-btn {
+        display: inline-flex; align-items: center; gap: .5rem;
+        padding: .875rem 1.75rem; border-radius: 9999px;
+        font-family: 'Manrope', sans-serif; font-weight: 700;
+        font-size: .9rem; text-decoration: none;
+        transition: transform .2s, background .2s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); }
+    .cta-btn-navy {
+        background: var(--navy); color: var(--cream);
+        box-shadow: 0 8px 24px rgba(27,42,74,.2);
+    }
+    .cta-btn-navy:hover { background: var(--navy-light); }
+    .cta-btn-outline {
+        background: transparent; color: var(--navy);
+        border: 1.5px solid var(--navy);
+    }
+    .cta-btn-outline:hover { background: rgba(27,42,74,.06); }
+    .cta-btn-ghost {
+        background: transparent; color: var(--navy);
+        border: 1.5px solid var(--cream-dark);
+    }
+    .cta-btn-ghost:hover { border-color: var(--navy); }
+    .cta-btn-gold {
+        background: var(--gold); color: var(--navy);
+        box-shadow: 0 8px 24px rgba(192,155,79,.25);
+    }
+    .cta-btn-gold:hover { background: #b08a42; color: white; }
+</style>
+}
+
+<!-- ════════════════════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════════════════════ -->
+<section class="editorial-hero home-hero">
+    <div class="max-w-5xl mx-auto px-4" style="position:relative;z-index:1">
+        <div class="hero-pill inline-flex mb-5">
+            <i class="fa-solid fa-feather-pointed"></i>
+            Official State Encyclopedia
+        </div>
+        <h1 class="hero-title">
+            Discover America's<br>Official State Symbols
+        </h1>
+        <p class="hero-subtitle">
+            The complete reference for all 50 states — birds, flowers, trees, flags, mottos, and hundreds more official emblems.
         </p>
-        <div class="flex justify-center gap-4 flex-wrap">
-            <a href="/states" class="bg-white text-blue-900 px-6 py-3 rounded-lg font-semibold hover:bg-blue-100 transition">Explore by State</a>
-            <a href="/symbols" class="bg-red-600 px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition">Explore by Symbol</a>
-            <a asp-controller="Home" asp-action="About" class="border border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-900 transition">Learn More</a>
-        </div>
-    </div>
-</section>
-
-<!-- INTERACTIVE QUIZ SECTION -->
-<section class="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
-    <div class="max-w-4xl mx-auto px-4">
-        <div class="text-center mb-10">
-            <h2 class="text-3xl font-bold mb-3">🎯 Test Your Knowledge!</h2>
-            <p class="text-gray-600">How well do you know U.S. state symbols?</p>
-        </div>
-
-        <!-- Quiz Card -->
-        <div class="bg-white rounded-2xl shadow-xl p-8 quiz-card fade-in">
-            <!-- Score Display -->
-            <div class="flex justify-between items-center mb-6 pb-4 border-b">
-                <div class="flex items-center gap-2">
-                    <span class="text-2xl">🏆</span>
-                    <span class="text-lg font-semibold">Score: <span id="score" class="text-blue-700">0</span>/<span id="total" class="text-gray-500">0</span></span>
-                </div>
-                <div class="text-sm text-gray-500">
-                    Question <span id="questionNum">1</span>
-                </div>
-            </div>
-
-            <!-- Question -->
-            <div class="mb-8">
-                <h3 class="text-2xl font-bold text-gray-800 mb-2" id="question">Loading question...</h3>
-                <p class="text-gray-600" id="questionHint"></p>
-            </div>
-
-            <!-- Answer Options -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" id="answers">
-                <!-- Answer buttons will be inserted here -->
-            </div>
-
-            <!-- Feedback Message -->
-            <div id="feedback" class="text-center mb-6 min-h-[60px] flex items-center justify-center">
-                <p id="feedbackText" class="text-lg font-semibold"></p>
-            </div>
-
-            <!-- Next Question Button -->
-            <div class="text-center">
-                <button id="nextBtn" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
-                    Next Question →
-                </button>
-            </div>
-        </div>
-
-        <!-- Link to Full Quiz -->
-        <div class="text-center mt-8">
-            <a asp-controller="Home" asp-action="Quiz" class="text-blue-700 font-semibold hover:underline">
-                Want more questions? Try our full quiz →
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="/states" class="hero-cta-btn hero-cta-btn--light">
+                <i class="fa-solid fa-map-location-dot"></i>
+                Explore by State
+            </a>
+            <a href="/symbols" class="hero-cta-btn hero-cta-btn--ghost">
+                <i class="fa-solid fa-layer-group"></i>
+                Browse Symbols
             </a>
         </div>
     </div>
 </section>
 
-<!-- CATEGORY GRID -->
-<section class="py-16 bg-white">
-    <div class="max-w-6xl mx-auto text-center mb-10 px-4">
-        <h2 class="text-3xl font-bold mb-4">Explore by Category</h2>
-        <p class="text-gray-600">Browse official symbols by type - from birds and flowers to flags and mottos.</p>
-    </div>
+@if (!string.IsNullOrWhiteSpace(Model.HomeMapSvg) && Model.StateMapItems.Any())
+{
+    <section class="pt-6 lg:pt-8 pb-10 lg:pb-12">
+        <div class="home-map-shell">
+            <div class="home-map-card">
+                <div class="home-map-top">
+                    <div class="home-map-copy">
+                        <div class="hs-eyebrow">
+                            <i class="fa-solid fa-map"></i>
+                            State Map
+                        </div>
+                        <h2 class="content-h2">Browse the United States by map</h2>
+                        <p>Hover any state to see its capital and population. Click any state to open its page right away.</p>
+                    </div>
+                    <div class="home-map-hint">
+                        <i class="fa-solid fa-arrow-pointer"></i>
+                        Hover for details, click to open
+                    </div>
+                </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
-        @foreach (var category in Model.SymbolCategories)
-        {
-            <a href="@category.Url" class="bg-gray-50 p-6 rounded-xl hover:shadow-lg transition cursor-pointer text-center">
-                <div class="text-5xl mb-3">@category.Icon</div>
-                <h3 class="font-semibold text-lg mb-2">@category.Name</h3>
-                <p class="text-sm text-gray-600 mb-4">@category.Description</p>
-                <span class="text-blue-700 font-semibold">View All →</span>
-            </a>
-        }
-    </div>
-</section>
-
-<!-- EXPLORE BY STATE -->
-<section class="py-20 bg-white text-center">
-    <div class="px-4">
-        <h2 class="text-3xl font-bold mb-6">Explore by State</h2>
-        <p class="text-gray-700 mb-10">Click on a state to see all its official symbols.</p>
-
-        @if (Model.FeaturedStates.Any())
-        {
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-5xl mx-auto">
-                @foreach (var state in Model.FeaturedStates)
-                {
-                    <a href="/states/@state.Slug" class="bg-gray-50 rounded-lg p-5 shadow hover:shadow-lg transition group">
-                        @{
-                            var flagPath = $"/images/states/flags/small/{state.Abbreviation.ToLower()}.webp";
-                        }
-
-                        <!-- Flag Image -->
-                        <div class="w-full aspect-[3/2] mb-3 rounded overflow-hidden bg-gray-200">
-                            <img src="@flagPath"
-                                 alt="@state.Name flag"
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                                 loading="lazy">
-
-                            <!-- Fallback -->
-                            <div class="w-full h-full hidden items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700">
-                                <span class="text-2xl font-bold text-white">@state.Abbreviation</span>
+                <div class="home-map-frame" id="home-state-map">
+                    @Html.Raw(Model.HomeMapSvg)
+                    <div class="home-map-tooltip" id="home-map-tooltip" hidden>
+                        <div class="home-map-tooltip__state" id="home-map-state"></div>
+                        <div class="home-map-tooltip__meta">
+                            <div class="home-map-tooltip__row">
+                                <span class="home-map-tooltip__label">Capital</span>
+                                <span class="home-map-tooltip__value" id="home-map-capital"></span>
+                            </div>
+                            <div class="home-map-tooltip__row">
+                                <span class="home-map-tooltip__label">Population</span>
+                                <span class="home-map-tooltip__value" id="home-map-population"></span>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <h3 class="font-semibold text-gray-900">@state.Name</h3>
-                        <p class="text-xs text-gray-500 mt-1">@state.Capital</p>
+                <script type="application/json" id="home-map-data">@Html.Raw(stateMapJson)</script>
+            </div>
+        </div>
+    </section>
+}
+
+<!-- ════════════════════════════════════════════════════════
+     SYMBOL OF THE DAY
+     ════════════════════════════════════════════════════════ -->
+
+<!-- ════════════════════════════════════════════════════════
+     BROWSE BY SYMBOL TYPE
+     ════════════════════════════════════════════════════════ -->
+<section class="hs hs-white">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="hs-eyebrow">
+            <i class="fa-solid fa-bookmark"></i>
+            Symbol Types
+        </div>
+        <h2 class="content-h2 mb-6" style="font-size:clamp(2rem,3.6vw,2.75rem)">Explore by Symbol</h2>
+        <div class="cat-grid">
+            @foreach (var category in Model.SymbolCategories)
+            {
+                <a href="@category.Url" class="cat-card">
+                    <div class="cat-card__thumb">
+                        @if (!string.IsNullOrEmpty(category.ImageUrl))
+                        {
+                            <img src="@Images.Card(category.ImageUrl)"
+                                 srcset="@(Images.Card(category.ImageUrl, 240)) 240w,
+                                         @(Images.Card(category.ImageUrl, 360)) 360w,
+                                         @(Images.Card(category.ImageUrl, 480)) 480w"
+                                 sizes="(max-width: 639px) 44vw, (max-width: 1023px) 30vw, 22vw"
+                                 alt="@category.Name"
+                                 loading="lazy">
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-leaf cat-icon"></i>
+                        }
+                    </div>
+                    <div class="cat-card__body">
+                        <div class="cat-card__title">@category.Name</div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     FEATURED STATES
+     ════════════════════════════════════════════════════════ -->
+@if (Model.FeaturedStates.Any())
+{
+    <section class="hs hs-cream">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-end justify-between mb-8 gap-4 flex-wrap">
+                <div>
+                    <div class="hs-eyebrow">
+                        <i class="fa-solid fa-flag-usa"></i>
+                        All 50 States
+                    </div>
+                    <h2 class="content-h2">Browse by State</h2>
+                </div>
+                <a href="/states" class="cta-btn cta-btn-outline" style="font-size:.85rem;padding:.7rem 1.4rem">
+                    View All States <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+            <div class="state-grid">
+                @foreach (var state in Model.FeaturedStates)
+                {
+                    var flagPath = $"/images/states/flags/small/{state.Abbreviation.ToLowerInvariant()}.webp";
+                    <a href="/states/@state.Slug" class="st-card">
+                        <div class="st-card__flag">
+                            <img src="@Images.Card(flagPath)"
+                                 srcset="@(Images.Card(flagPath, 320)) 320w,
+                                         @(Images.Card(flagPath, 480)) 480w,
+                                         @(Images.Card(flagPath, 640)) 640w"
+                                 sizes="(max-width: 639px) 48vw, (max-width: 1023px) 31vw, (max-width: 1279px) 18vw, 220px"
+                                 alt="@state.Name flag"
+                                 loading="lazy"
+                                 onerror="this.style.display='none'" />
+                        </div>
+                        <div class="st-card__body">
+                            <div class="st-card__name">@state.Name</div>
+                            <div class="st-card__capital">@state.Capital</div>
+                        </div>
                     </a>
                 }
             </div>
+        </div>
+    </section>
+}
+
+<!-- ════════════════════════════════════════════════════════
+     EXPLORE MORE
+     ════════════════════════════════════════════════════════ -->
+<section class="hs hs-white">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="hs-eyebrow">
+            <i class="fa-solid fa-compass"></i>
+            Explore More
+        </div>
+        <h2 class="content-h2 mb-8">Guides &amp; Collections</h2>
+        <div class="disc-grid">
+            <a asp-controller="StateGuides" asp-action="BordersListing" class="disc-card">
+                <div class="disc-card__banner" style="background:linear-gradient(135deg,#1B3A6B,#2C5F9E)">
+                    <i class="fa-solid fa-map text-5xl" style="color:rgba(255,255,255,.75)"></i>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">Geography</div>
+                    <div class="disc-card__title">State Borders</div>
+                    <p class="disc-card__desc">What borders each state? Neighbors, coastlines, rivers, and waterways for all 50 states.</p>
+                    <span class="disc-card__cta">Explore Borders <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
+            <a asp-controller="Rankings" asp-action="Index" class="disc-card">
+                <div class="disc-card__banner" style="background:linear-gradient(135deg,#2d3a8c,#5b4fcf)">
+                    <i class="fa-solid fa-ranking-star text-5xl" style="color:rgba(255,255,255,.75)"></i>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">Data</div>
+                    <div class="disc-card__title">State Rankings</div>
+                    <p class="disc-card__desc">Compare all 50 states by population, land area, statehood date, and more.</p>
+                    <span class="disc-card__cta">View Rankings <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
+            <a href="/collections" class="disc-card">
+                <div class="disc-card__banner" style="background:linear-gradient(135deg,#145940,#1E8A5E)">
+                    <i class="fa-solid fa-list text-5xl" style="color:rgba(255,255,255,.75)"></i>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">Curated</div>
+                    <div class="disc-card__title">Collections</div>
+                    <p class="disc-card__desc">Themed lists — states sharing the same bird, oldest symbols, flags with bears, and more.</p>
+                    <span class="disc-card__cta">Browse Collections <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
+            <a href="/compare-states" class="disc-card">
+                <div class="disc-card__banner" style="background:linear-gradient(135deg,#1A4A6E,#1E7EA8)">
+                    <i class="fa-solid fa-scale-balanced text-5xl" style="color:rgba(255,255,255,.75)"></i>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">Compare</div>
+                    <div class="disc-card__title">Compare States</div>
+                    <p class="disc-card__desc">Side-by-side comparison of population, area, income, taxes, climate, and more.</p>
+                    <span class="disc-card__cta">Compare Now <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
+            <a href="/guides/surnames" class="disc-card">
+                <div class="disc-card__banner" style="background:linear-gradient(135deg,#1c1c2e,#2d2d44)">
+                    <i class="fa-solid fa-users text-5xl" style="color:rgba(255,255,255,.75)"></i>
+                    <div style="position:absolute;bottom:12px;left:14px;display:flex;gap:6px">
+                        <span style="width:10px;height:10px;border-radius:50%;background:#3b82f6;opacity:.85"></span>
+                        <span style="width:10px;height:10px;border-radius:50%;background:#22c55e;opacity:.85"></span>
+                        <span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;opacity:.85"></span>
+                        <span style="width:10px;height:10px;border-radius:50%;background:#ef4444;opacity:.85"></span>
+                        <span style="width:10px;height:10px;border-radius:50%;background:#a855f7;opacity:.85"></span>
+                    </div>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">Genealogy</div>
+                    <div class="disc-card__title">Last Names by State</div>
+                    <p class="disc-card__desc">Top 20 most common surnames per state — with origins, meanings, and heritage context. Is yours on the list?</p>
+                    <span class="disc-card__cta">Explore Last Names <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     DID YOU KNOW
+     ════════════════════════════════════════════════════════ -->
+@if (Model.SymbolOfTheDayPool.Any() && first != null)
+{
+    <section class="hs hs-white">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="hs-eyebrow">
+                <i class="fa-solid fa-star"></i>
+                Symbol of the Day
+            </div>
+            <div class="sotd-card" id="sotd-card">
+                <div class="sotd-toolbar">
+                    <span class="hero-pill">
+                        <i class="fa-solid fa-star"></i>
+                        Featured Symbol
+                    </span>
+                    <button id="sotd-next" class="sotd-next-btn">
+                        <i class="fa-solid fa-shuffle"></i>
+                        Next Symbol
+                    </button>
+                </div>
+                <div class="sotd-inner">
+                    <div class="sotd-media">
+                        <img id="sotd-img"
+                             src="@Images.Hero(first.Symbol.ImageUrl)"
+                             alt="@(first.Symbol.Name)"
+                             loading="eager" />
+                        <span id="sotd-type-badge" class="sotd-type-badge">@firstTypeLabel</span>
+                    </div>
+                    <div class="sotd-info">
+                        <div class="sotd-state-row">
+                            <img id="sotd-flag"
+                                 src="@Images.Thumb($"/images/states/flags/small/{first.State.Abbreviation.ToLowerInvariant()}.webp")"
+                                 alt="@(first.State.Name) flag"
+                                 class="sotd-flag"
+                                 onerror="this.style.display='none'" />
+                            <span id="sotd-state" class="sotd-state-text">@first.State.Name</span>
+                        </div>
+                        <h2 id="sotd-name" class="sotd-name">@first.Symbol.Name</h2>
+                        <p id="sotd-meaning" class="sotd-meaning">
+                            @if (!string.IsNullOrWhiteSpace(first.Symbol.Meaning))
+                            {
+                                @(first.Symbol.Meaning.Length > 200 ? first.Symbol.Meaning[..200] + "..." : first.Symbol.Meaning)
+                            }
+                            else
+                            {
+                                <text>The official @firstTypeLabel of @first.State.Name.</text>
+                            }
+                        </p>
+                        <div class="sotd-actions">
+                            <a id="sotd-link"
+                               href="@first.Symbol.ToSymbolUrl(first.State.Slug)"
+                               class="sotd-btn-primary">
+                                View Symbol <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                            <a id="sotd-state-link"
+                               href="/states/@(first.State.Slug)"
+                               class="sotd-btn-secondary">
+                                @first.State.Name
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script type="application/json" id="sotd-pool">@Html.Raw(poolJson)</script>
+}
+
+<section class="hs hs-navy text-center">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="hs-eyebrow justify-center" style="color:var(--gold)">
+            <i class="fa-solid fa-lightbulb"></i>
+            Did You Know?
+        </div>
+        <span class="fact-quote-mark">&ldquo;</span>
+        <p class="fact-quote-text">
+            The Northern Cardinal is the most popular state bird, chosen by seven states: Illinois, Indiana, Kentucky, North Carolina, Ohio, Virginia, and West Virginia.
+        </p>
+        <a href="/symbols/birds" class="cta-btn cta-btn-gold">
+            <i class="fa-solid fa-dove"></i>
+            Explore State Birds
+        </a>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     CTA
+     ════════════════════════════════════════════════════════ -->
+<section class="hs hs-cream text-center">
+    <div class="max-w-3xl mx-auto px-4">
+        <div class="hs-eyebrow justify-center">
+            <i class="fa-solid fa-book-open"></i>
+            Full Coverage
+        </div>
+        <h2 class="content-h2 mb-4">Start Your Journey Through America's Symbols</h2>
+        <p style="color:var(--slate-ed);max-width:36rem;margin:0 auto 2rem;line-height:1.7;font-size:.95rem">
+            Explore fascinating facts about each state's unique identity, natural heritage, and cultural emblems.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="/states"      class="cta-btn cta-btn-navy"><i class="fa-solid fa-map-location-dot"></i> Browse States</a>
+            <a href="/symbols"     class="cta-btn cta-btn-outline"><i class="fa-solid fa-layer-group"></i> Browse Symbols</a>
+            <a href="/collections" class="cta-btn cta-btn-ghost"><i class="fa-solid fa-list"></i> Collections</a>
+        </div>
+    </div>
+</section>
+
+<!-- Organization Schema -->
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "Organization",
+  "@@id": "https://usasymbol.com/",
+  "name": "USA Symbol",
+  "url": "https://usasymbol.com",
+  "logo": "https://usasymbol.com/images/profile/logo.png",
+  "description": "Comprehensive educational resource about official state symbols across the United States.",
+  "founder": { "@@type": "Person", "name": "Artsiom Dusau", "@@id": "https://usasymbol.com/about" },
+  "sameAs": [
+    "https://www.linkedin.com/in/artsiom-dusau/",
+    "https://www.pinterest.com/usasymbol/",
+    "https://www.facebook.com/profile.php?id=61586291576329",
+    "https://www.linkedin.com/company/usasymbol/"
+  ],
+  "contactPoint": { "@@type": "ContactPoint", "email": "contact@usasymbol.com", "contactType": "Customer Service" }
+}
+</script>
+
+<script>
+(() => {
+    const mapEl = document.getElementById('home-state-map');
+    const mapDataEl = document.getElementById('home-map-data');
+    const tooltipEl = document.getElementById('home-map-tooltip');
+    const tooltipStateEl = document.getElementById('home-map-state');
+    const tooltipCapitalEl = document.getElementById('home-map-capital');
+    const tooltipPopulationEl = document.getElementById('home-map-population');
+
+    if (mapEl && mapDataEl && tooltipEl && tooltipStateEl && tooltipCapitalEl && tooltipPopulationEl) {
+        let states = [];
+        try { states = JSON.parse(mapDataEl.textContent || '[]'); } catch { states = []; }
+
+        const lookup = Object.fromEntries(states.map(item => [String(item.abbr || '').toLowerCase(), item]));
+        const numberFmt = new Intl.NumberFormat('en-US');
+
+        function getPathKey(target) {
+            if (!target || target.tagName !== 'path') return null;
+            return Array.from(target.classList).find(cls => /^[a-z]{2}$/.test(cls)) || null;
         }
 
-        <div class="mt-10">
-            <a href="/states" class="text-blue-700 font-semibold hover:underline">View All 50 States →</a>
-        </div>
-    </div>
-</section>
+        function showTooltip(target, item, clientX, clientY) {
+            tooltipStateEl.textContent = item.name || '';
+            tooltipCapitalEl.textContent = item.capital || 'Unknown';
+            tooltipPopulationEl.textContent = item.population ? numberFmt.format(item.population) : 'Unknown';
 
-<!-- DID YOU KNOW SECTION -->
-<section class="py-16 bg-white">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-6">Did You Know?</h2>
-        <div class="bg-blue-50 p-8 rounded-xl shadow-md">
-            <p class="text-lg text-gray-700 mb-4">
-                The Northern Cardinal is the most popular state bird, chosen by seven different states: Illinois, Indiana, Kentucky, North Carolina, Ohio, Virginia, and West Virginia.
-            </p>
-            <a href="/symbols/birds" class="text-blue-700 font-semibold hover:underline">Explore State Birds →</a>
-        </div>
-    </div>
-</section>
+            const rect = mapEl.getBoundingClientRect();
+            const ttW = tooltipEl.offsetWidth || 210;
+            const ttH = tooltipEl.offsetHeight || 120;
+            let left = clientX - rect.left + 18;
+            let top = clientY - rect.top - ttH - 14;
 
-<!-- LEARN SECTION -->
-<section class="py-16 bg-gray-50 text-center">
-    <div class="px-4">
-        <h2 class="text-3xl font-bold mb-4">Learn About State Symbols</h2>
-        <p class="text-gray-600 mb-8">Understand the meaning and history behind America's state symbols.</p>
-        <div class="flex flex-wrap justify-center gap-6">
-            <a asp-controller="Home" asp-action="About" class="bg-white px-8 py-4 rounded-lg hover:shadow-md transition font-semibold">What Are State Symbols?</a>
-            <a href="/states" class="bg-white px-8 py-4 rounded-lg hover:shadow-md transition font-semibold">Browse All States</a>
-            <a asp-controller="Home" asp-action="Quiz" class="bg-white px-8 py-4 rounded-lg hover:shadow-md transition font-semibold">Take a Quiz</a>
-        </div>
-    </div>
-</section>
+            if (left + ttW > rect.width - 10) left = clientX - rect.left - ttW - 18;
+            if (top < 10) top = clientY - rect.top + 18;
 
-<!-- CTA SECTION -->
-<section class="py-16 bg-gradient-to-r from-blue-900 to-blue-700 text-white text-center">
-    <div class="max-w-4xl mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-4">Start Your Journey Through America's Symbols</h2>
-        <p class="text-blue-100 text-lg mb-8">
-            Explore fascinating facts about each state's unique identity and heritage.
-        </p>
-        <div class="flex justify-center gap-4 flex-wrap">
-            <a href="/states" class="bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">Browse States</a>
-            <a href="/symbols" class="bg-red-600 px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition">Browse Symbols</a>
-        </div>
-    </div>
-</section>
+            tooltipEl.style.left = left + 'px';
+            tooltipEl.style.top = top + 'px';
+            tooltipEl.hidden = false;
+            target.style.fill = '#c38e63';
+        }
 
-@section Scripts {
-    <script src="~/js/quiz.js" asp-append-version="true"></script>
-}
+        function hideTooltip(target) {
+            tooltipEl.hidden = true;
+            if (target) target.style.fill = '';
+        }
+
+        mapEl.querySelectorAll('g.state path').forEach(path => {
+            const key = getPathKey(path);
+            const item = key ? lookup[key] : null;
+            if (!item) return;
+
+            path.setAttribute('tabindex', '0');
+            path.setAttribute('role', 'link');
+            path.setAttribute('aria-label', item.name);
+
+            path.addEventListener('mouseenter', e => showTooltip(path, item, e.clientX, e.clientY));
+            path.addEventListener('mousemove', e => showTooltip(path, item, e.clientX, e.clientY));
+            path.addEventListener('mouseleave', () => hideTooltip(path));
+            path.addEventListener('focus', () => {
+                const rect = path.getBoundingClientRect();
+                showTooltip(path, item, rect.left + rect.width / 2, rect.top + rect.height / 2);
+            });
+            path.addEventListener('blur', () => hideTooltip(path));
+            path.addEventListener('click', () => {
+                window.location.href = '/states/' + item.slug;
+            });
+            path.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    window.location.href = '/states/' + item.slug;
+                }
+            });
+        });
+    }
+
+    const poolEl = document.getElementById('sotd-pool');
+    if (!poolEl) return;
+    let pool;
+    try { pool = JSON.parse(poolEl.textContent); } catch { return; }
+    if (!pool || pool.length === 0) return;
+
+    let idx = Math.floor(Math.random() * pool.length);
+
+    const elImg       = document.getElementById('sotd-img');
+    const elBadge     = document.getElementById('sotd-type-badge');
+    const elFlag      = document.getElementById('sotd-flag');
+    const elState     = document.getElementById('sotd-state');
+    const elName      = document.getElementById('sotd-name');
+    const elMeaning   = document.getElementById('sotd-meaning');
+    const elLink      = document.getElementById('sotd-link');
+    const elStateLink = document.getElementById('sotd-state-link');
+    const elCard      = document.getElementById('sotd-card');
+
+    function render(s) {
+        elCard.style.opacity = '0';
+        setTimeout(() => {
+            elImg.src             = s.imageUrl;
+            elImg.alt             = s.name;
+            elBadge.textContent   = s.typeLabel;
+            elFlag.src            = s.flagUrl;
+            elFlag.alt            = s.stateName + ' flag';
+            elState.textContent   = s.stateName;
+            elName.textContent    = s.name;
+            elMeaning.textContent = s.meaning
+                ? (s.meaning.length > 200 ? s.meaning.slice(0, 200) + '\u2026' : s.meaning)
+                : 'The official ' + s.typeLabel + ' of ' + s.stateName + '.';
+            elLink.href           = s.url;
+            elStateLink.href      = '/states/' + s.stateSlug;
+            elStateLink.textContent = s.stateName;
+            elCard.style.opacity  = '1';
+        }, 180);
+    }
+
+    elCard.style.transition = 'opacity 0.18s ease';
+    render(pool[idx]);
+
+    document.getElementById('sotd-next')?.addEventListener('click', () => {
+        idx = (idx + 1) % pool.length;
+        render(pool[idx]);
+    });
+})();
+</script>

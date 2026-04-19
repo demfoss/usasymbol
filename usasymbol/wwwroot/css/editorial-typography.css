@@ -1,0 +1,503 @@
+/* =====================================================
+   MUSEUM EDITORIAL DESIGN SYSTEM
+   Typography + palette for USA Symbol encyclopedia
+   ===================================================== */
+
+:root {
+    /* ── Museum Palette ───────────────────────────────── */
+    --navy:          #1B2A4A;    /* Deep Navy — headers, hero, UI */
+    --navy-light:    #2C3E6B;    /* Lighter navy for hover states */
+    --cream:         #F8F4ED;    /* Parchment — article backgrounds */
+    --cream-dark:    #EDE8DF;    /* Slightly deeper cream for borders */
+    --gold:          #C09B4F;    /* Muted Gold — accent, timeline, active */
+    --gold-border:   rgba(192, 155, 79, 0.35);
+    --gold-muted:    rgba(192, 155, 79, 0.12);
+    --ink:           #1A1A2E;    /* Near-black for body text */
+    --slate-ed:      #6B7D8A;    /* Slate grey for labels, muted text */
+    --white:         #FFFFFF;
+
+    /* ── 8px Spacing Scale ────────────────────────────── */
+    --sp-1: 0.5rem;   /* 8px  */
+    --sp-2: 1rem;     /* 16px */
+    --sp-3: 1.5rem;   /* 24px */
+    --sp-4: 2rem;     /* 32px */
+    --sp-6: 3rem;     /* 48px */
+    --sp-8: 4rem;     /* 64px */
+    --sp-12: 6rem;    /* 96px */
+
+    /* ── Heritage Font Stack ──────────────────────────── */
+    --font-article:  "Libre Baskerville", Georgia, Cambria, "Times New Roman", serif;
+    --font-ui:       "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+    /* Legacy aliases (keep existing references working) */
+    --ui-color:      var(--ink);
+    --article-color: var(--ink);
+    --link-color:    #2563eb;
+    --link-hover:    #1e40af;
+}
+
+/* =====================================================
+   BASE & RESET
+   ===================================================== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}
+
+body {
+    font-family: var(--font-ui);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* UI elements use sans-serif (Manrope/Inter) */
+button, input, select, textarea,
+nav, header, footer,
+.toc, .sidebar, .card,
+table, th, td {
+    font-family: var(--font-ui);
+}
+
+/* UI headings stay sans-serif (content headings use .content-h2/.content-h3) */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-ui);
+}
+
+/* =====================================================
+   ARTICLE TYPOGRAPHY
+   Applies to sections with prose content
+   ===================================================== */
+
+.site-content section p {
+    color: var(--article-color);
+    font-family: var(--font-article);
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 34px;
+    letter-spacing: 0.19px;
+    margin: 0;
+}
+
+/* Paragraph spacing */
+.site-content section p + p {
+    margin-top: 1.25rem;
+}
+
+/* Lead paragraph — same size as body text per design spec */
+.site-content section > p:first-of-type,
+.site-content section .max-w-prose > p:first-of-type {
+    font-size: 19px;
+    line-height: 34px;
+    color: #2d2d2d;
+}
+
+/* =====================================================
+   HEADINGS
+   ===================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+}
+
+h1 { font-size: 2.5rem;  font-weight: 800; }
+h2 { font-size: 41px; font-weight: 700; color: #161B26; line-height: 50px; letter-spacing: -0.02em; margin-top: 2rem; margin-bottom: 1rem; }
+h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; margin-bottom: 0.625rem; }
+
+@media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 26px; line-height: 37px; letter-spacing: -0.405px; }
+    h3 { font-size: 19px; line-height: 24px; letter-spacing: 0.38px; }
+    .site-content section p { font-size: 18px; line-height: 29px; letter-spacing: 0.18px; }
+    .site-content section > p:first-of-type,
+    .site-content section .max-w-prose > p:first-of-type { font-size: 18px; line-height: 29px; }
+}
+
+/* =====================================================
+   LISTS (inside prose sections)
+   ===================================================== */
+
+.site-content section ul,
+.site-content section ol {
+    font-family: var(--font-article);
+    color: var(--article-color);
+    font-size: 1rem;
+    line-height: 1.75;
+    margin: 1.25rem 0;
+}
+
+.site-content section li {
+    margin-bottom: 0.5rem;
+}
+
+.site-content section ul.list-none {
+    list-style: none;
+    padding-left: 0;
+}
+
+/* =====================================================
+   BLOCKQUOTES
+   ===================================================== */
+
+.site-content section blockquote {
+    font-family: var(--font-article);
+    font-size: 1.125rem;
+    line-height: 1.75;
+    font-style: italic;
+    color: #4b5563;
+    margin: 2rem 0;
+    padding-left: 1.5rem;
+    border-left: 3px solid var(--gold);
+}
+
+/* =====================================================
+   EDITORIAL HERO COMPONENT
+   Full-bleed dark navy header
+   ===================================================== */
+
+.editorial-hero {
+    background-color: var(--navy);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle dot-grid texture */
+.editorial-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+}
+
+/* Bottom fade into page background */
+.editorial-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, rgba(27,42,74,0.6));
+    pointer-events: none;
+}
+
+/* Category pill inside hero */
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid var(--gold-border);
+    background: var(--gold-muted);
+    color: #E2BE7A;
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+/* Hero H1 — uses serif for gravitas */
+.hero-title {
+    font-family: var(--font-article);
+    color: var(--cream);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+/* Hero subtitle (scientific name, action type, etc.) */
+.hero-subtitle {
+    font-family: var(--font-article);
+    color: rgba(248, 244, 237, 0.6);
+    font-style: italic;
+    line-height: 1.5;
+}
+
+/* =====================================================
+   QUICK FACTS BAR (horizontal strip inside hero)
+   ===================================================== */
+
+.facts-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0.875rem;
+    overflow: hidden;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.facts-bar__cell {
+    flex: 1 1 110px;
+    padding: 0.875rem 1.25rem;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    font-family: var(--font-ui);
+}
+
+.facts-bar__cell:last-child {
+    border-right: none;
+}
+
+.facts-bar__value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.2;
+}
+
+.facts-bar__label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.4);
+    margin-top: 3px;
+}
+
+/* =====================================================
+   READING PROGRESS BAR
+   ===================================================== */
+
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background-color: var(--gold);
+    z-index: 9999;
+    width: 0%;
+    transition: width 80ms linear;
+    will-change: width;
+}
+
+/* =====================================================
+   EDITORIAL TOC SIDEBAR
+   Minimalist strip with progress line
+   ===================================================== */
+
+.toc-editorial {
+    position: relative;
+    padding-left: 1rem;
+}
+
+.toc-editorial__track {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: rgba(107, 125, 138, 0.2);
+}
+
+.toc-editorial__progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2px;
+    background-color: var(--gold);
+    height: 0%;
+    transition: height 120ms ease-out;
+    margin-left: -0.5px;
+}
+
+.toc-editorial__heading {
+    font-family: var(--font-ui);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--slate-ed);
+    margin-bottom: 0.75rem;
+}
+
+.toc-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+    font-family: var(--font-ui);
+    font-size: 0.875rem; /* 14px — consistent across desktop and mobile */
+    line-height: 1.4;
+    color: rgba(107, 125, 138, 0.8);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: color 0.15s ease;
+}
+
+.toc-link:hover {
+    color: var(--navy);
+}
+
+/* Active state — overrides JS-injected classes */
+.toc-link.toc-active,
+.toc-link[aria-current="true"] {
+    color: var(--navy) !important;
+    font-weight: 600;
+    background: transparent !important;
+    border-left-color: var(--gold) !important;
+    padding-left: 0.5rem;
+}
+
+.toc-link.toc-active span,
+.toc-link.toc-active i,
+.toc-link[aria-current="true"] span,
+.toc-link[aria-current="true"] i {
+    color: var(--navy) !important;
+}
+
+/* =====================================================
+   SECTION HEADERS (in _FirearmSections)
+   ===================================================== */
+
+.section-label {
+    font-family: var(--font-ui);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+}
+
+/* =====================================================
+   LINKS (prose content only)
+   ===================================================== */
+
+/* =====================================================
+   OPTIMAL READING WIDTH
+   ===================================================== */
+
+.max-w-prose {
+    max-width: 65ch;
+}
+
+/* =====================================================
+   SUBSECTION DIVIDERS
+   ===================================================== */
+
+.subsection-divider {
+    margin: 30px auto 0 0;
+    width: 100%;
+    max-width: 600px;
+    padding: 30px 0;
+    border-top: 1px solid rgba(2, 7, 20, 0.15);
+}
+
+.subsection-divider:first-of-type {
+    border-top: none;
+    padding-top: 0;
+}
+
+/* =====================================================
+   STICKY SIDEBAR
+   ===================================================== */
+
+@media (min-width: 1024px) {
+    .sticky-sidebar {
+        position: sticky;
+        top: 6rem;
+        align-self: flex-start;
+    }
+}
+
+/* =====================================================
+   MOBILE OPTIMIZATIONS
+   ===================================================== */
+
+@media (max-width: 640px) {
+    button,
+    a.btn,
+    .toc-mobile-link {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .site-content article {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* =====================================================
+   CONTENT TYPOGRAPHY UTILITIES
+   Single source of truth — use these classes instead of
+   hardcoding Tailwind font sizes on every page.
+   ===================================================== */
+
+/* Serif headings like Audubon — Libre Baskerville for content sections */
+.content-h2 {
+    font-family: var(--font-article); /* Libre Baskerville */
+    font-size: 41px;
+    font-weight: 700;
+    color: #161B26;
+    line-height: 50px;
+    letter-spacing: -0.02em;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.content-h3 {
+    font-family: var(--font-article); /* Libre Baskerville */
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 50px;
+    letter-spacing: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.content-p {
+    font-size: 19px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 34px;
+    letter-spacing: 0.19px;
+}
+
+@media (max-width: 768px) {
+    .content-h2 {
+        font-size: 26px;
+        line-height: 37px;
+        letter-spacing: -0.405px;
+    }
+    .content-h3 {
+        font-size: 19px;
+        line-height: 24px;
+        letter-spacing: 0.38px;
+    }
+    .content-p {
+        font-size: 18px;
+        line-height: 29px;
+        letter-spacing: 0.18px;
+    }
+}
+
+/* TOC link consistent size across all contexts */
+.toc-link {
+    font-size: 0.875rem; /* 14px everywhere */
+}
+
+/* =====================================================
+   PRINT STYLES
+   ===================================================== */
+
+@media print {
+    .no-print, nav, aside, button, .toc, .share-buttons { display: none !important; }
+    .site-content section p { font-size: 12pt; line-height: 1.5; }
+    h1, h2, h3 { page-break-after: avoid; }
+    img { max-width: 100%; page-break-inside: avoid; }
+}

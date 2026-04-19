@@ -1,0 +1,104 @@
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@* Model: (IReadOnlyList<VersionDisplayItem> Items, string ImageBasePath) *@
+@model (IReadOnlyList<VersionDisplayItem> Items, string ImageBasePath)
+@inject IImageUrlService Images
+
+@{
+    var items = Model.Items;
+    var basePath = Model.ImageBasePath.TrimEnd('/');
+}
+
+@if (items?.Any() == true)
+{
+    <div class="mt-8 relative">
+
+        @* Vertical timeline track *@
+        <div class="absolute left-[1.125rem] top-3 bottom-3 w-px bg-gradient-to-b from-slate-300/0 via-slate-200 to-slate-300/0 hidden sm:block" aria-hidden="true"></div>
+
+        <div class="space-y-6">
+            @for (var i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                var isLast = i == items.Count - 1;
+
+                var imageUrl = string.IsNullOrWhiteSpace(item.Image)
+                    ? null
+                    : item.Image.StartsWith("/", StringComparison.Ordinal)
+                        ? item.Image
+                        : $"{basePath}/{item.Image.TrimStart('/')}";
+
+                <article class="relative sm:pl-14">
+
+                    @* Timeline dot *@
+                    <div class="absolute left-0 top-[1.15rem] hidden sm:flex h-9 w-9 shrink-0 items-center justify-center rounded-full z-10 @(isLast ? "bg-[#7b2d38] text-white shadow-[0_0_0_4px_rgba(123,45,56,0.12)]" : "bg-white border-2 border-slate-200 text-slate-500")"
+                         aria-hidden="true">
+                        <i class="fa-solid fa-flag text-[10px]"></i>
+                    </div>
+
+                    @* Card *@
+                    <div class="overflow-hidden border @(isLast ? "border-[#d4a0a8]/60 bg-[linear-gradient(135deg,rgba(255,246,247,0.9),rgba(255,255,255,0.7))]" : "border-slate-200/70 bg-white/60")">
+
+                        @* Card header *@
+                        <div class="flex items-center justify-between gap-4 border-b @(isLast ? "border-[#d4a0a8]/40 bg-[rgba(180,60,80,0.04)]" : "border-slate-200/70 bg-slate-50/60") px-5 py-3">
+                            <div class="flex items-center gap-3">
+                                <span class="inline-flex sm:hidden h-2 w-2 shrink-0 rounded-full @(isLast ? "bg-[#7b2d38]" : "bg-slate-400")" aria-hidden="true"></span>
+                                <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">@item.Years</span>
+                            </div>
+
+                            @if (isLast)
+                            {
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-700">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                    Current
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
+                                    Historical
+                                </span>
+                            }
+                        </div>
+
+                        @* Card body *@
+                        <div class="p-5 sm:p-6 @(!string.IsNullOrWhiteSpace(imageUrl) ? "grid sm:grid-cols-[180px_minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)] gap-5 sm:gap-6 items-start" : "")">
+
+                            @if (!string.IsNullOrWhiteSpace(imageUrl))
+                            {
+                                <figure class="shrink-0 group">
+                                    <div class="relative overflow-hidden border border-slate-200/70"
+                                         style="aspect-ratio:4/3;background-image:repeating-conic-gradient(#f1f5f9 0% 25%, #ffffff 0% 50%);background-size:12px 12px;">
+                                        <img src="@Images.Card(imageUrl)"
+                                             alt="@item.Name"
+                                             class="absolute inset-0 h-full w-full object-contain p-2 sm:p-3 transition-transform duration-300 group-hover:scale-[1.03]"
+                                             loading="lazy" />
+                                    </div>
+                                    <figcaption class="mt-1.5 text-[11px] font-medium uppercase tracking-[0.15em] text-slate-400 text-center">
+                                        @item.Years
+                                    </figcaption>
+                                </figure>
+                            }
+
+                            <div class="min-w-0">
+                                <h3 class="text-[1.25rem] font-semibold leading-tight text-slate-900 lg:text-[1.45rem]">
+                                    @item.Name
+                                </h3>
+
+                                @if (!string.IsNullOrWhiteSpace(item.Description))
+                                {
+                                    <p class="mt-3 text-[0.9625rem] leading-[1.75] text-slate-600">
+                                        @item.Description.RenderAutoLinks()
+                                    </p>
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+                </article>
+            }
+        </div>
+
+    </div>
+}

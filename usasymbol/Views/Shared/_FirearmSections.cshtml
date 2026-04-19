@@ -1,0 +1,151 @@
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using USASymbol.Models.ViewModels
+@using USASymbol.Models.Content
+@using USASymbol.Extensions
+@model USASymbol.Models.ViewModels.FirearmDetailViewModel
+
+@{
+    var sections = Model.FirearmContent?.Sections;
+
+    int secIdx = 0;
+    bool quoteDone = false;
+    bool timelineDone = false;
+    bool statDone = false;
+    var quoteAfterSectionId = Model.FirearmContent?.ExpertQuoteAfterSectionId ?? string.Empty;
+    var timelineAfterSectionId = Model.FirearmContent?.TimelineAfterSectionId ?? string.Empty;
+    var statAfterSectionId = Model.FirearmContent?.BigStatAfterSectionId ?? string.Empty;
+}
+
+@if (sections?.Any() == true)
+{
+    var visualAssets = Model.FirearmContent?.VisualAssets?.ToList() ?? new List<VisualAsset>();
+    var orphanVisualAssets = visualAssets
+        .Where(asset => asset != null &&
+                        !string.IsNullOrWhiteSpace(asset.Src) &&
+                        !string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                        string.IsNullOrWhiteSpace(asset.Section))
+        .ToList();
+    var fullWidthVisualAsset = visualAssets
+        .FirstOrDefault(asset => asset != null &&
+                                 !string.IsNullOrWhiteSpace(asset.Src) &&
+                                 string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase));
+
+    foreach (var item in sections!)
+    {
+        var section = item as FirearmSection;
+
+        <section id="section-@item.Id" class="scroll-mt-28 py-4 lg:py-5 border-t border-slate-100 first:border-t-0">
+
+            @await Html.PartialAsync("Components/Content/_SectionHeader", item)
+
+            @{
+                var sectionAssets = visualAssets
+                    .Where(asset => asset != null &&
+                                    !string.IsNullOrWhiteSpace(asset.Src) &&
+                                    string.Equals(asset.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            @foreach (var asset in sectionAssets)
+            {
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+            }
+
+            @* Paragraphs *@
+            @if (item.Paragraphs?.Any() == true)
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800 mb-6">
+                    @foreach (var p in item.Paragraphs)
+                    {
+                        <p class="first:text-xl first:font-medium first:text-slate-900 first:leading-snug">@p.RenderAutoLinks()</p>
+                    }
+                </div>
+            }
+
+            @* Calibers grid *@
+            @if (section?.CalibersGrid?.Any() == true)
+            {
+                <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 clear-both">
+                    @foreach (var cal in section.CalibersGrid)
+                    {
+                        <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-sm hover:border-slate-300 transition-colors">
+                            <h4 class="text-sm font-bold text-slate-900 mb-0.5">@cal.Name</h4>
+                            <p class="text-[12px] text-slate-600 leading-snug">@cal.Description</p>
+                        </div>
+                    }
+                </div>
+            }
+
+            @* Subsections + Facts routed to dispatcher *@
+            @if (section != null)
+            {
+                @await Html.PartialAsync("Components/Content/_SectionRenderer", (Model, section))
+            }
+
+            <div class="clear-both"></div>
+        </section>
+
+        @if (!quoteDone &&
+            !string.IsNullOrWhiteSpace(quoteAfterSectionId) &&
+            string.Equals(item.Id, quoteAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FirearmContent?.ExpertQuote != null)
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.FirearmContent.ExpertQuote)
+            quoteDone = true;
+        }
+        else if (secIdx == 0 && !quoteDone && Model.FirearmContent?.ExpertQuote != null)
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.FirearmContent.ExpertQuote)
+            quoteDone = true;
+        }
+
+        @if (!timelineDone &&
+            !string.IsNullOrWhiteSpace(timelineAfterSectionId) &&
+            string.Equals(item.Id, timelineAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FirearmContent?.Timeline?.Any() == true)
+        {
+            @await Html.PartialAsync("Components/Story/_Timeline", Model.FirearmContent.Timeline)
+            timelineDone = true;
+        }
+        else if (secIdx == 1 && !timelineDone && Model.FirearmContent?.Timeline?.Any() == true)
+        {
+            @await Html.PartialAsync("Components/Story/_Timeline", Model.FirearmContent.Timeline)
+            timelineDone = true;
+        }
+
+        @if (!statDone &&
+            !string.IsNullOrWhiteSpace(statAfterSectionId) &&
+            string.Equals(item.Id, statAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FirearmContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", Model.FirearmContent.BigStat)
+            statDone = true;
+        }
+        else if (secIdx == 2 && !statDone && Model.FirearmContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", Model.FirearmContent.BigStat)
+            statDone = true;
+        }
+
+        secIdx++;
+    }
+
+    if (orphanVisualAssets.Any())
+    {
+        foreach (var asset in orphanVisualAssets)
+        {
+            @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+        }
+    }
+
+    if (fullWidthVisualAsset != null)
+    {
+        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", fullWidthVisualAsset)
+    }
+}
+else
+{
+    <div class="text-sm text-slate-500">
+        No sections rendered: Model.FirearmContent.Sections is null/empty (YAML not loaded or parsing failed).
+    </div>
+}

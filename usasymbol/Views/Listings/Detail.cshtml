@@ -1,0 +1,455 @@
+@using System.Text.Json
+@using System.Text.RegularExpressions
+@using System.Globalization
+@using Usasymbol.Helpers
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+@inject IImageUrlService Images
+
+@{
+    var content = Model.Content;
+    var categoryTitle = string.IsNullOrWhiteSpace(Model.CategoryTitle) ? "Symbols" : Model.CategoryTitle;
+
+    ViewData["Title"] = content?.Seo?.Title;
+    ViewData["Description"] = content?.Seo?.Description;
+    ViewData["OgType"] = "article";
+
+    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var canonicalPath = !string.IsNullOrWhiteSpace(content?.Url) ? content.Url : Context.Request.Path.Value ?? "/symbols";
+    var canonicalUrl = canonicalPath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+        ? canonicalPath
+        : $"{baseUrl}{canonicalPath}";
+    var currentUrl = canonicalUrl;
+    ViewData["Canonical"] = canonicalUrl;
+
+    var heroAlt = content?.HeroImageAlt ?? content?.Page?.H1 ?? "USA state symbols";
+    var heroImage = content?.HeroImage;
+
+    if (string.IsNullOrWhiteSpace(heroImage))
+    {
+        heroImage = content?.VisualAssets?.FirstOrDefault(v =>
+            !string.IsNullOrWhiteSpace(v?.Src) &&
+            !string.Equals(v.Layout, "full-width", StringComparison.OrdinalIgnoreCase))?.Src;
+    }
+
+    if (string.IsNullOrWhiteSpace(heroImage) && content?.Table?.Rows?.Any() == true)
+    {
+        var firstRow = content.Table.Rows.First();
+        heroImage = new[]
+        {
+            firstRow.GetString("hero_image"),
+            firstRow.GetString("symbol_image"),
+            firstRow.GetString("image")
+        }.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+    }
+
+    var heroImageResolved = string.IsNullOrWhiteSpace(heroImage) ? "/images/og-default.webp" : heroImage!;
+    var heroImageUrl = Images.Full(heroImageResolved);
+    ViewData["OgImage"] = heroImageUrl;
+
+    var categoryUrl = "/symbols";
+
+    if (!string.IsNullOrWhiteSpace(content?.Url))
+    {
+        var parts = content.Url.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length >= 2 && parts[0].Equals("symbols", StringComparison.OrdinalIgnoreCase))
+        {
+            categoryUrl = $"/{parts[0]}/{parts[1]}";
+        }
+        else if (parts.Length >= 1 && parts[0].Equals("symbols", StringComparison.OrdinalIgnoreCase))
+        {
+            categoryUrl = "/symbols";
+        }
+    }
+
+    // =========================
+    // JSON-LD (no Razor inside)
+    // =========================
+    var articleSchema = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "Article",
+        ["headline"] = content?.Page?.H1,
+        ["description"] = content?.Seo?.Description,
+        ["datePublished"] = (content?.DatePublished?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd")),
+        ["dateModified"] = (content?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd")),
+        ["author"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "Person",
+            ["name"] = (content?.Author ?? "USA Symbol Team"),
+            ["url"] = $"{baseUrl}/about"
+        },
+        ["publisher"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "Organization",
+            ["name"] = "USA Symbol",
+            ["url"] = baseUrl,
+            ["logo"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "ImageObject",
+                ["url"] = $"{baseUrl}/images/logo.png"
+            }
+        },
+        ["mainEntityOfPage"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "WebPage",
+            ["@id"] = currentUrl
+        }
+    };
+
+    var breadcrumbSchema = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "BreadcrumbList",
+        ["itemListElement"] = new object[]
+        {
+            new Dictionary<string, object?>
+            {
+                ["@type"] = "ListItem",
+                ["position"] = 1,
+                ["name"] = "Home",
+                ["item"] = $"{baseUrl}/"
+            },
+            new Dictionary<string, object?>
+            {
+                ["@type"] = "ListItem",
+                ["position"] = 2,
+                ["name"] = "Symbols",
+                ["item"] = $"{baseUrl}/symbols"
+            },
+            new Dictionary<string, object?>
+            {
+                ["@type"] = "ListItem",
+                ["position"] = 3,
+                ["name"] = categoryTitle,
+                ["item"] = $"{baseUrl}{categoryUrl}"
+            },
+            new Dictionary<string, object?>
+            {
+                ["@type"] = "ListItem",
+                ["position"] = 4,
+                ["name"] = content?.Page?.H1,
+                ["item"] = currentUrl
+            }
+        }
+    };
+
+    Dictionary<string, object?>? faqSchema = null;
+    if (content?.Faq?.Any() == true)
+    {
+        faqSchema = new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "FAQPage",
+            ["mainEntity"] = content.Faq.Select(f => new Dictionary<string, object?>
+            {
+                ["@type"] = "Question",
+                ["name"] = f.Question,
+                ["acceptedAnswer"] = new Dictionary<string, object?>
+                {
+                    ["@type"] = "Answer",
+                    ["text"] = f.Answer
+                }
+            }).ToArray()
+        };
+    }
+
+    var jsonOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = null,
+        WriteIndented = false
+    };
+
+    var articleSchemaJson = JsonSerializer.Serialize(articleSchema, jsonOptions);
+    var breadcrumbSchemaJson = JsonSerializer.Serialize(breadcrumbSchema, jsonOptions);
+    var faqSchemaJson = faqSchema != null ? JsonSerializer.Serialize(faqSchema, jsonOptions) : null;
+
+    var hasFaq = Model.HasFaq;
+    var hasMethodology = !string.IsNullOrWhiteSpace(Model.Content?.Page?.Methodology) || Model.HasSources;
+}
+
+<div id="top"></div>
+
+<!-- Slim progress bar (new style, no ISymbolDetail dependency) -->
+<div id="progressBar"
+     class="fixed top-0 left-0 h-0.5 bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 z-50 transition-all duration-150"
+     style="width:0%"></div>
+
+<!-- Sticky breadcrumb bar (same as new pages) -->
+<div class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-3">
+        <nav aria-label="Breadcrumb">
+            <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
+                <li class="text-slate-300">/</li>
+                <li><a href="/symbols" class="hover:text-slate-900 transition">Symbols</a></li>
+                <li class="text-slate-300">/</li>
+                <li class="text-slate-900 font-semibold truncate max-w-[75vw]">@categoryTitle</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <section class="mb-10 lg:mb-12">
+        <div class="relative overflow-hidden bg-[linear-gradient(180deg,#1b2230_0%,#1f2735_100%)] text-white">
+            <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-amber-200/0"></div>
+            <div class="absolute right-8 top-14 hidden h-48 w-48 rounded-full bg-amber-300/10 blur-3xl lg:block"></div>
+            <div class="absolute left-1/3 top-0 hidden h-40 w-40 rounded-full bg-sky-200/10 blur-3xl lg:block"></div>
+
+            <div class="relative px-5 pb-7 pt-6 sm:px-6 lg:px-8 lg:pb-9 lg:pt-8 xl:px-10">
+                <div class="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(300px,420px)] xl:grid-cols-[minmax(0,1fr)_460px] lg:items-start xl:gap-10">
+                    <div class="min-w-0 order-1 pt-2 lg:pt-6">
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">
+                            <span class="inline-flex items-center gap-2 text-white">
+                                <span class="block h-1.5 w-1.5 rounded-full bg-amber-300"></span>
+                                Guide
+                            </span>
+                            <span>Symbols</span>
+                            @if (!string.IsNullOrWhiteSpace(categoryTitle))
+                            {
+                                <span>@categoryTitle</span>
+                            }
+                            <span>Updated @(content?.DateModified?.ToString("MMMM d, yyyy") ?? DateTime.UtcNow.ToString("MMMM d, yyyy"))</span>
+                        </div>
+
+                        <div class="mt-6 max-w-4xl">
+                            <h1 class="max-w-4xl text-4xl font-bold tracking-tight text-white leading-[0.98] sm:text-5xl lg:text-[4.15rem]">
+                                @content?.Page?.H1
+                            </h1>
+
+                            @if (!string.IsNullOrWhiteSpace(content?.Seo?.Description))
+                            {
+                                <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-100 sm:text-xl">
+                                    @content.Seo.Description
+                                </p>
+                            }
+
+                            <div class="mt-7 flex flex-wrap items-center gap-3 text-sm text-slate-300">
+                                <a href="/about"
+                                   class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1.5 font-semibold text-slate-200 transition hover:bg-white/5 hover:text-white">
+                                    <i class="fa-regular fa-user text-[12px]" aria-hidden="true"></i>
+                                    <span>@(content?.Author ?? "USA Symbol Team")</span>
+                                </a>
+
+                                <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1.5 font-semibold text-slate-200">
+                                    <i class="fa-solid fa-circle-check text-emerald-300 text-[12px]" aria-hidden="true"></i>
+                                    <span>Fact-checked</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-2 lg:pt-5">
+                        <figure>
+                            <div class="relative aspect-[16/9] overflow-hidden bg-slate-100/10">
+                                <img src="@Images.Hero(heroImageResolved)"
+                                     srcset="@(Images.Hero(heroImageResolved, 480)) 480w,
+                                             @(Images.Hero(heroImageResolved, 768)) 768w,
+                                             @(Images.Hero(heroImageResolved, 1200)) 1200w"
+                                     sizes="(max-width: 1023px) 100vw, 460px"
+                                     alt="@heroAlt"
+                                     class="absolute inset-0 h-full w-full object-cover"
+                                     loading="eager"
+                                     fetchpriority="high" />
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(content?.HeroImageCaption))
+                            {
+                                <figcaption class="mt-3 border-t border-white/15 pt-3">
+                                    <p class="text-sm font-semibold text-white">Image Note</p>
+                                    <p class="mt-1 text-sm leading-6 text-slate-300">@content.HeroImageCaption</p>
+                                </figcaption>
+                            }
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)] 2xl:gap-12">
+        <aside class="hidden lg:block relative h-full">
+            <div class="sticky top-24 pb-10">
+                @await Html.PartialAsync("_TocSidebar", Model)
+            </div>
+        </aside>
+
+        <div class="min-w-0">
+            @if (Model.HasQuickAnswer)
+            {
+                @await Html.PartialAsync("Pages/_QuickAnswer", Model)
+                <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+            }
+
+            <section id="listing-table" class="scroll-mt-24">
+                <div class="flex items-baseline justify-between gap-4">
+                    @{
+                        var slugRaw = (content?.Slug ?? "").Trim();
+                        var slugWords = Regex.Replace(slugRaw, @"[-_]+", " ");
+                        var slugTitle = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(slugWords.ToLowerInvariant());
+                    }
+
+                    <h2 class="content-h2">
+                        List of US State @slugTitle
+                    </h2>
+
+                    <span class="hidden md:inline text-sm text-slate-500">Search, filter, and compare</span>
+                </div>
+
+                <div class="mt-5">
+                    @{ var tableVM = Model.ToTableSection(); }
+                    @await Html.PartialAsync("Components/Tables/_Controls", tableVM)
+                    @await Html.PartialAsync("Components/Tables/_Cards", tableVM)
+                    @await Html.PartialAsync("Components/Tables/_Table", tableVM)
+                </div>
+
+                @if (Model.HasRows)
+                {
+                    @await Html.PartialAsync("_PrintableWidget", Model)
+                }
+            </section>
+
+            @if (content?.Map != null)
+            {
+                <div class="mt-10">
+                    @await Html.RenderMapBlockAsync(content.Map)
+                </div>
+            }
+
+            <div class="mt-10 xl:grid xl:grid-cols-[minmax(0,1fr)_288px] xl:gap-10">
+                <div class="min-w-0">
+                    <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+
+                    <section id="sections" class="scroll-mt-24">
+                        @await Html.PartialAsync("Pages/_Sections", Model)
+                    </section>
+
+                    @if (hasFaq)
+                    {
+                        <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+
+                        @await Html.PartialAsync("Pages/_Faq", Model)
+                    }
+
+                    @if (hasMethodology)
+                    {
+                        <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+
+                        <section id="sources" class="scroll-mt-24">
+                            @await Html.PartialAsync("Pages/_MethodologySources", Model)
+                        </section>
+                    }
+
+                    <section id="author" class="scroll-mt-24 mt-8">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </section>
+                </div>
+
+                <aside class="mt-10 hidden xl:block xl:mt-0 relative self-start">
+                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                        <div class="sticky top-32 pr-2">
+                            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                        </div>
+                    </section>
+
+                    <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                        <div class="sticky top-32 pr-2 border-t border-slate-200 pt-6">
+                            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Browse More</p>
+                            <a href="/symbols"
+                               class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
+                                <i class="fa-solid fa-arrow-left text-xs"></i>
+                                <span>Back to all symbols</span>
+                            </a>
+                        </div>
+                    </section>
+                </aside>
+            </div>
+
+            <div class="mt-10 space-y-8 xl:hidden">
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                <div class="border-t border-slate-200 pt-6">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Browse More</p>
+                    <a href="/symbols"
+                       class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
+                        <i class="fa-solid fa-arrow-left text-xs"></i>
+                        <span>Back to all symbols</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCHEMA.ORG -->
+<script type="application/ld+json">
+    @Html.Raw(articleSchemaJson)
+</script>
+
+<script type="application/ld+json">
+    @Html.Raw(breadcrumbSchemaJson)
+</script>
+
+@if (!string.IsNullOrEmpty(faqSchemaJson))
+{
+    <script type="application/ld+json">
+        @Html.Raw(faqSchemaJson)
+    </script>
+}
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+
+<script src="~/js/rankings/rankingTable.js" asp-append-version="true"></script>
+
+<script>
+    // Reading Progress Bar
+    window.addEventListener('scroll', () => {
+        const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrolled = (windowHeight > 0) ? (window.scrollY / windowHeight) * 100 : 0;
+        const progressBar = document.getElementById('progressBar');
+        if (progressBar) progressBar.style.width = Math.min(scrolled, 100) + '%';
+    });
+</script>
+
+<script>
+    const shareButton = document.getElementById("shareButton");
+    const copyBtn = document.getElementById("copyLinkBtn");
+
+    if (shareButton) {
+        shareButton.addEventListener("click", async () => {
+            const shareData = { title: document.title, text: "Check out this list!", url: window.location.href };
+
+            if (navigator.share) {
+                try { await navigator.share(shareData); return; } catch (err) { }
+            }
+
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                shareButton.innerHTML = `<i class="fas fa-check"></i> Copied!`;
+                shareButton.classList.add("bg-green-600");
+                setTimeout(() => {
+                    shareButton.innerHTML = `<i class="fas fa-share-nodes"></i> Share`;
+                    shareButton.classList.remove("bg-green-600");
+                }, 1500);
+            } catch (err) {
+                alert("Your browser does not support copying.");
+            }
+        });
+    }
+
+    if (copyBtn) {
+        copyBtn.addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                copyBtn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
+                copyBtn.classList.add("bg-green-600");
+                setTimeout(() => {
+                    copyBtn.innerHTML = `<i class="fas fa-copy"></i> Copy Link`;
+                    copyBtn.classList.remove("bg-green-600");
+                }, 1500);
+            } catch (err) {
+                alert("Copy failed.");
+            }
+        });
+    }
+</script>

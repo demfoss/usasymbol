@@ -1,0 +1,68 @@
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@model (FirearmDetailViewModel Vm, FirearmSection? Section)
+
+@{
+    var vm = Model.Vm;
+    var section = Model.Section;
+    if (section == null) { return; }
+
+    var style = section.Style ?? "";
+}
+
+@* Subsections — routed by style *@
+@if (section.Subsections?.Any() == true)
+{
+    if (style == "compare-cards")
+    {
+        @await Html.PartialAsync("Components/Cards/_CompareCards", (vm, (IContentSection)section))
+    }
+    else
+    {
+        <div class="mt-8 space-y-8">
+            @foreach (var sub in section.Subsections)
+            {
+                <article class="pt-8 border-t border-slate-100 first:pt-0 first:border-t-0">
+                    <h3 class="text-lg lg:text-xl font-semibold text-slate-900 mb-3">@sub.Subtitle</h3>
+
+                    @if (!string.IsNullOrEmpty(sub.Text))
+                    {
+                        <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-700">
+                            <p>@sub.Text.RenderAutoLinks()</p>
+                        </div>
+                    }
+
+                    @if (sub.ListItems?.Any() == true)
+                    {
+                        <ul class="mt-4 space-y-2 text-sm text-slate-700 max-w-prose">
+                            @foreach (var li in sub.ListItems)
+                            {
+                                <li class="pl-5 relative before:content-['—'] before:absolute before:left-0 before:text-slate-400">
+                                    @li.RenderListItem()
+                                </li>
+                            }
+                        </ul>
+                    }
+
+                    @if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
+                    {
+                        <div class="mt-4">
+                            <a href="@sub.Link.Url"
+                               class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                                <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
+                                <i class="fas fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    }
+                </article>
+            }
+        </div>
+    }
+}
+
+@* Facts carousel *@
+@if (section.Facts?.Any() == true)
+{
+    @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)section.Facts)
+}

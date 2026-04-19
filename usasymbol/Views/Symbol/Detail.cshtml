@@ -1,7 +1,10 @@
 ﻿@model USASymbol.Models.ViewModels.SymbolDetailViewModel
 
+@inject IImageUrlService Images
+
 @{
     ViewData["Title"] = $"{Model.Symbol.Name} - {Model.State.Name} State {GetSymbolTypeName(Model.Symbol.Type)}";
+    var heroImage = Model.Symbol.ImageUrl ?? "/images/default-symbol.jpg";
 }
 
 <!-- Schema.org Structured Data -->
@@ -11,7 +14,7 @@
       "@@type": "Article",
       "headline": "@Model.Symbol.Name - @Model.State.Name State @GetSymbolTypeName(Model.Symbol.Type)",
       "description": "Complete guide to @Model.State.Name's official state @Model.Symbol.Type, the @Model.Symbol.Name",
-      "image": "@(Model.Symbol.ImageUrl ?? "/images/default-symbol.jpg")",
+      "image": "@Images.Full(heroImage)",
       "datePublished": "@(Model.Symbol.AdoptedYear.HasValue ? new DateTime(Model.Symbol.AdoptedYear.Value, 1, 1).ToString("yyyy-MM-dd") : "2020-01-01")",
       "dateModified": "@DateTime.Now.ToString("yyyy-MM-dd")",
       "author": {
@@ -82,7 +85,13 @@
                 <div class="w-full md:w-1/2 h-64 md:h-96 @GetBackgroundColor(Model.Symbol.Type) flex items-center justify-center">
                     @if (!string.IsNullOrEmpty(Model.Symbol.ImageUrl))
                     {
-                        <img src="@Model.Symbol.ImageUrl" alt="@Model.Symbol.Name" class="w-full h-full object-cover">
+                        <img src="@Images.Hero(Model.Symbol.ImageUrl)"
+                             srcset="@(Images.Hero(Model.Symbol.ImageUrl, 480)) 480w,
+                                     @(Images.Hero(Model.Symbol.ImageUrl, 768)) 768w,
+                                     @(Images.Hero(Model.Symbol.ImageUrl, 1200)) 1200w"
+                             sizes="(max-width: 767px) 100vw, 50vw"
+                             alt="@Model.Symbol.Name"
+                             class="w-full h-full object-cover">
                     }
                     else
                     {
@@ -170,7 +179,7 @@
             <div class="grid md:grid-cols-3 gap-6">
                 @foreach (var symbol in Model.RelatedSymbols)
                 {
-                    <a href="/states/@Model.State.Slug/@symbol.Type"
+                    <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
                        class="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition border-2 border-transparent hover:border-blue-500">
                         <div class="text-4xl mb-3 text-center">@GetSymbolIcon(symbol.Type)</div>
                         <div class="text-center">
@@ -210,8 +219,12 @@
             "trees" => "Trees",
             "motto" => "Motto",
             "mottos" => "Mottos",
-            "animal" => "Animal",
-            "animals" => "Animals",
+            "mammal" => "Mammal",
+            "mammals" => "Mammals",
+            "beverage" => "Beverage",
+            "beverages" => "Beverages",
+            "dinosaur" => "Dinosaur",
+            "dinosaurs" => "Dinosaurs",
             "flag" => "Flag",
             "flags" => "Flags",
             _ => char.ToUpper(type[0]) + type.Substring(1)
@@ -226,7 +239,9 @@
             "flower" => "🌸",
             "tree" => "🌳",
             "motto" => "📜",
-            "animal" => "🦌",
+            "mammal" => "🦌",
+            "beverage" => "🥤",
+            "dinosaur" => "🦖",
             "flag" => "🏴",
             _ => "⭐"
         };
@@ -240,7 +255,9 @@
             "flower" => "bg-gradient-to-br from-pink-100 to-rose-200",
             "tree" => "bg-gradient-to-br from-green-100 to-emerald-200",
             "motto" => "bg-gradient-to-br from-gray-100 to-slate-200",
-            "animal" => "bg-gradient-to-br from-amber-100 to-orange-200",
+            "mammal" => "bg-gradient-to-br from-amber-100 to-orange-200",
+            "beverage" => "bg-gradient-to-br from-orange-100 to-amber-200",
+            "dinosaur" => "bg-gradient-to-br from-amber-100 to-yellow-200",
             "flag" => "bg-gradient-to-br from-red-100 to-blue-200",
             _ => "bg-gradient-to-br from-gray-100 to-gray-200"
         };

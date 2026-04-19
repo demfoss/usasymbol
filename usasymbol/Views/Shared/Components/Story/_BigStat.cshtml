@@ -1,0 +1,10 @@
+@using USASymbol.Models.Content
+@model BigStatData
+
+<section class="py-16">
+    <div class="flex flex-col items-center rounded-[1.75rem] bg-[linear-gradient(180deg,rgba(248,250,252,0.72),rgba(255,255,255,0.96))] px-6 py-12 text-center">
+        <span class="mb-5 block text-[10px] font-bold uppercase tracking-[0.26em] text-slate-500">Key Figure</span>
+        <div class="mb-4 text-8xl font-black leading-none tracking-tighter text-slate-900 lg:text-9xl">@Model.Number</div>
+        <p class="mx-auto max-w-md text-center text-lg font-medium leading-relaxed text-slate-600">@Model.Description</p>
+    </div>
+</section>

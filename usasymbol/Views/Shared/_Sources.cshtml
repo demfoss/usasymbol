@@ -1,0 +1,45 @@
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+
+@{
+    var colors = Model.Colors;
+}
+
+@if (Model.HasSources)
+{
+    <section id="sources" class="scroll-mt-32">
+        <div class="bg-transparent">
+            <div class="border-b border-slate-200/80 pb-4">
+                <h2 class="text-[1.8rem] font-semibold leading-none text-slate-900 sm:text-[2rem]">
+                    Sources
+                </h2>
+            </div>
+
+            <div class="pt-5">
+                <ul class="space-y-2.5">
+                    @foreach (var source in Model.Sources!)
+                    {
+                        <li>
+                            <a href="@source.Url"
+                               target="_blank"
+                               rel="nofollow noopener noreferrer"
+                               class="inline-flex items-center gap-2 text-[1rem] leading-7 text-slate-600 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-900 hover:decoration-slate-500">
+                                <span>@source.Name</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[11px] opacity-70"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                <div class="mt-6 border-t border-slate-200/70 pt-4">
+                    <div class="flex flex-col gap-2 text-[12px] text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+                        <div>Information is cross-referenced with official state archives.</div>
+                        <div>
+                            Found an error?
+                            <a href="/contact" class="@colors.Text hover:underline font-semibold">Report it here</a>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}

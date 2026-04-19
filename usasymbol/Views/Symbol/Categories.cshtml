@@ -1,0 +1,84 @@
+﻿@model IEnumerable<USASymbol.Models.ViewModels.SymbolCategoryViewModel>
+
+@inject IImageUrlService Images
+
+@{
+    ViewData["Title"] = "U.S. State Symbol Categories";
+    ViewData["Description"] = "All U.S. state symbols in one place, from birds and flowers to flags, mottos, and other official emblems adopted by each state.";
+}
+
+<!-- HERO SECTION -->
+<section class="bg-blue-900 text-white py-12 md:py-16">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <span class="inline-flex items-center px-3 py-1 mb-4 text-xs font-semibold uppercase tracking-wide rounded-full bg-blue-800/70 border border-blue-500/40">
+            <i class="fa-solid fa-layer-group mr-2"></i>
+            State Symbols Directory
+        </span>
+
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-3">
+            Browse State Symbol Categories
+        </h1>
+
+        <p class="text-lg md:text-xl text-blue-100 mb-4">
+            Explore official birds, flowers, trees, flags, and other symbols chosen by each U.S. state.
+        </p>
+    </div>
+</section>
+
+<!-- CATEGORIES GRID -->
+<section class="py-10 md:py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+
+                @foreach (var category in Model)
+                {
+                    <a href="@category.Url"
+                       class="group rounded-xl bg-white border border-gray-100 p-6
+                                      hover:border-blue-300 hover:shadow-lg transition flex flex-col items-center text-center">
+
+                        <!-- SMALL ROUND ICON -->
+                        <div class="w-16 h-16 mb-4 rounded-full bg-gray-100
+                                            flex items-center justify-center overflow-hidden">
+                            @if (!string.IsNullOrEmpty(category.ImageUrl))
+                            {
+                                <img src="@Images.Card(category.ImageUrl)"
+                                     srcset="@(Images.Card(category.ImageUrl, 160)) 160w,
+                                             @(Images.Card(category.ImageUrl, 240)) 240w,
+                                             @(Images.Card(category.ImageUrl, 320)) 320w"
+                                     sizes="(max-width: 639px) 96px, 128px"
+                                     alt="@category.Name"
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                     loading="lazy" />
+                            }
+                            else
+                            {
+                                <span class="text-3xl" aria-hidden="true">@category.Icon</span>
+                            }
+                        </div>
+
+                        <!-- TITLE -->
+                        <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition">
+                            @category.Name
+                        </h3>
+
+                        <!-- STATE COUNT -->
+@*                         <p class="text-xs text-gray-500 mt-1">
+                            @category.StateCount state@(category.StateCount == 1 ? "" : "s")
+                        </p> *@
+
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-12">
+                <p class="text-gray-500 text-lg">No symbol categories available yet.</p>
+            </div>
+        }
+
+    </div>
+</section>

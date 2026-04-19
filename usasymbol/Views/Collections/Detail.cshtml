@@ -1,0 +1,266 @@
+@using System.Text.Json
+@using Usasymbol.Helpers
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+@inject IImageUrlService Images
+
+@{
+    var content = Model.Content;
+
+    ViewData["Title"] = content?.Seo?.Title;
+    ViewData["Description"] = content?.Seo?.Description;
+    ViewData["OgType"] = "article";
+    ViewData["BodyClass"] = "symbols-surface";
+
+    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var canonicalPath = !string.IsNullOrWhiteSpace(content?.Url) ? content.Url : Context.Request.Path.Value ?? "/collections";
+    var canonicalUrl = canonicalPath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+        ? canonicalPath
+        : $"{baseUrl}{canonicalPath}";
+    var currentUrl = canonicalUrl;
+    ViewData["Canonical"] = canonicalUrl;
+
+    var groupSlug = "";
+    var groupTitle = "Collections";
+    var groupUrl = "/collections";
+
+    if (!string.IsNullOrWhiteSpace(content?.Url))
+    {
+        var parts = content.Url.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length >= 2 && parts[0].Equals("collections", StringComparison.OrdinalIgnoreCase))
+        {
+            groupSlug = parts[1];
+            groupTitle = Model.CategoryTitle;
+            groupUrl = $"/collections/{groupSlug}";
+        }
+    }
+
+    var heroAlt = content?.HeroImageAlt ?? content?.Page?.H1 ?? "USA collections";
+    var heroImage = content?.HeroImage;
+
+    if (string.IsNullOrWhiteSpace(heroImage))
+    {
+        heroImage = content?.VisualAssets?.FirstOrDefault(v =>
+            !string.IsNullOrWhiteSpace(v?.Src) &&
+            !string.Equals(v.Layout, "full-width", StringComparison.OrdinalIgnoreCase))?.Src;
+    }
+
+    if (string.IsNullOrWhiteSpace(heroImage) && content?.Table?.Rows?.Any() == true)
+    {
+        var firstRow = content.Table.Rows.First();
+        heroImage = new[]
+        {
+            firstRow.GetString("hero_image"),
+            firstRow.GetString("symbol_image"),
+            firstRow.GetString("image")
+        }.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+    }
+
+    var heroImageResolved = string.IsNullOrWhiteSpace(heroImage) ? "/images/og-default.webp" : heroImage!;
+    var heroImageUrl = Images.Full(heroImageResolved);
+    ViewData["OgImage"] = heroImageUrl;
+
+    var articleSchema = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "Article",
+        ["headline"] = content?.Page?.H1,
+        ["description"] = content?.Seo?.Description,
+        ["datePublished"] = content?.DatePublished?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
+        ["dateModified"] = content?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
+        ["author"] = new Dictionary<string, object?> { ["@type"] = "Person", ["name"] = content?.Author ?? "USA Symbol Team", ["url"] = $"{baseUrl}/about" },
+        ["publisher"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "Organization",
+            ["name"] = "USA Symbol",
+            ["url"] = baseUrl,
+            ["logo"] = new Dictionary<string, object?> { ["@type"] = "ImageObject", ["url"] = $"{baseUrl}/images/logo.png" }
+        },
+        ["mainEntityOfPage"] = new Dictionary<string, object?> { ["@type"] = "WebPage", ["@id"] = currentUrl }
+    };
+
+    var breadcrumbSchema = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "BreadcrumbList",
+        ["itemListElement"] = new object[]
+        {
+            new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{baseUrl}/" },
+            new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "Collections", ["item"] = $"{baseUrl}/collections" },
+            new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 3, ["name"] = groupTitle, ["item"] = $"{baseUrl}{groupUrl}" },
+            new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 4, ["name"] = content?.Page?.H1, ["item"] = currentUrl }
+        }
+    };
+
+    Dictionary<string, object?>? faqSchema = null;
+    if (content?.Faq?.Any() == true)
+    {
+        faqSchema = new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "FAQPage",
+            ["mainEntity"] = content.Faq.Select(f => new Dictionary<string, object?>
+            {
+                ["@type"] = "Question",
+                ["name"] = f.Question,
+                ["acceptedAnswer"] = new Dictionary<string, object?> { ["@type"] = "Answer", ["text"] = f.Answer }
+            }).ToArray()
+        };
+    }
+
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = null, WriteIndented = false };
+    var articleJson = JsonSerializer.Serialize(articleSchema, jsonOptions);
+    var breadcrumbJson = JsonSerializer.Serialize(breadcrumbSchema, jsonOptions);
+    var faqJson = faqSchema != null ? JsonSerializer.Serialize(faqSchema, jsonOptions) : null;
+
+    var hasFaq = Model.HasFaq;
+    var hasSections = Model.HasSections;
+    var hasMethodology = !string.IsNullOrWhiteSpace(content?.Page?.Methodology) || Model.HasSources;
+    var heroModel = new PageHeroViewModel
+    {
+        PageModel = Model,
+        HeroLabel = "Guide",
+        FallbackIconClass = "fa-solid fa-layer-group",
+        Title = content?.Page?.H1 ?? "Collection",
+        Description = content?.Seo?.Description,
+        ImageUrl = heroImageResolved,
+        ImageAlt = heroAlt,
+        FigureTitle = content?.Page?.H1,
+        FigureSubtitle = $"Collection - {groupTitle}",
+        FigureCaption = content?.HeroImageCaption,
+        ImageLinkUrl = heroImageResolved,
+        EyebrowItems = new List<string>
+        {
+            "Collections",
+            groupTitle,
+            $"Updated {(content?.DateModified?.ToString("MMMM d, yyyy") ?? DateTime.UtcNow.ToString("MMMM d, yyyy"))}"
+        }
+    };
+}
+
+<div id="top"></div>
+
+<div id="progressBar"
+     class="fixed top-0 left-0 h-0.5 bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 z-50 transition-all duration-150"
+     style="width:0%"></div>
+
+<div class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-3">
+        <nav aria-label="Breadcrumb">
+            <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
+                <li class="text-slate-300">/</li>
+                <li><a href="/collections" class="hover:text-slate-900 transition">Collections</a></li>
+                <li class="text-slate-300">/</li>
+                <li><a href="@groupUrl" class="hover:text-slate-900 transition">@groupTitle</a></li>
+                <li class="text-slate-300">/</li>
+                <li class="text-slate-900 font-semibold truncate max-w-[55vw]">@content?.Page?.H1</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="w-full">
+        @await Html.PartialAsync("_PageHero", heroModel)
+
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[244px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[256px_minmax(0,912px)] 2xl:gap-12 relative">
+        <aside class="hidden lg:block relative h-full">
+            <div class="sticky top-24 pb-10">
+                @await Html.PartialAsync("_TocSidebar", Model)
+            </div>
+        </aside>
+
+            <div class="min-w-0">
+                <div class="relative content-flow site-content">
+                @if (Model.HasQuickAnswer)
+                {
+                    <section id="quick-answer" class="scroll-mt-24">
+                        @await Html.PartialAsync("Pages/_QuickAnswer", Model)
+                    </section>
+                }
+
+                @if (content?.Map != null)
+                {
+                    <section class="content-divider">
+                        @await Html.RenderMapBlockAsync(content.Map, content?.Table)
+                    </section>
+                }
+
+                @if (Model.HasRows)
+                {
+                    <section id="collection-table" class="scroll-mt-24 content-divider">
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
+                                @content?.Page?.H1
+                            </h2>
+                            <span class="hidden md:inline text-sm text-slate-500">Search, sort, and compare</span>
+                        </div>
+
+                        <div class="mt-5">
+                            @{ var tableVM = Model.ToTableSection(); }
+                            @await Html.PartialAsync("Components/Tables/_Controls", tableVM)
+                            @await Html.PartialAsync("Components/Tables/_Cards", tableVM)
+                            @await Html.PartialAsync("Components/Tables/_Table", tableVM)
+                        </div>
+
+                        @await Html.PartialAsync("_PrintableWidget", Model)
+                    </section>
+                }
+
+                @if (hasSections)
+                {
+                    <section id="sections" class="scroll-mt-24 content-divider">
+                        @await Html.PartialAsync("Pages/_Sections", Model)
+                    </section>
+                }
+
+                @if (hasFaq)
+                {
+                    <section id="faq" class="scroll-mt-24 content-divider">
+                        @await Html.PartialAsync("_Faq", Model)
+                    </section>
+                }
+
+                @if (hasMethodology)
+                {
+                    <section id="sources" class="scroll-mt-24 content-divider">
+                        @await Html.PartialAsync("Pages/_MethodologySources", Model)
+                    </section>
+                }
+
+                <div class="content-divider">
+                    @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                </div>
+                </div>
+            </div>
+        </div>
+
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+        {
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+            </div>
+        }
+    </article>
+</main>
+
+<script type="application/ld+json">@Html.Raw(articleJson)</script>
+<script type="application/ld+json">@Html.Raw(breadcrumbJson)</script>
+@if (!string.IsNullOrEmpty(faqJson))
+{
+    <script type="application/ld+json">@Html.Raw(faqJson)</script>
+}
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+
+<script src="~/js/rankings/rankingTable.js" asp-append-version="true"></script>
+
+<script>
+    window.addEventListener('scroll', () => {
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+        const bar = document.getElementById('progressBar');
+        if (bar) bar.style.width = Math.min(pct, 100) + '%';
+    });
+
+</script>

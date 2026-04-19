@@ -1,0 +1,261 @@
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@using System.Linq
+@model FlagDetailViewModel
+
+@{
+    var sections = Model.FlagContent?.Sections;
+    var stateSlug = Model.State?.Slug ?? "";
+    var quoteRendered = false;
+    var timelineRendered = false;
+    var statRendered = false;
+    var comparisonCardsRendered = false;
+    var quoteAfterSectionId = Model.FlagContent?.ExpertQuoteAfterSectionId ?? string.Empty;
+    var timelineAfterSectionId = Model.FlagContent?.TimelineAfterSectionId ?? string.Empty;
+    var statAfterSectionId = Model.FlagContent?.BigStatAfterSectionId ?? string.Empty;
+    var comparisonCardsAfterSectionId = Model.FlagContent?.ComparisonCardsAfterSectionId ?? string.Empty;
+}
+
+@if (sections?.Any() == true)
+{
+    var visualAssets = Model.FlagContent?.VisualAssets?.ToList() ?? new List<VisualAsset>();
+    var orphanVisualAssets = visualAssets
+        .Where(asset => asset != null &&
+                        !string.IsNullOrWhiteSpace(asset.Src) &&
+                        !string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                        string.IsNullOrWhiteSpace(asset.Section))
+        .ToList();
+    var fullWidthVisualAsset = visualAssets
+        .FirstOrDefault(asset => asset != null &&
+                                 !string.IsNullOrWhiteSpace(asset.Src) &&
+                                 string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase));
+
+    foreach (var item in sections)
+    {
+        var isFeatureFlagHistory = string.Equals(item.Id, "previous-versions", StringComparison.OrdinalIgnoreCase);
+        var isFeatureFlagSymbol = string.Equals(item.Id, "symbols", StringComparison.OrdinalIgnoreCase);
+
+        <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            @if (isFeatureFlagHistory || isFeatureFlagSymbol)
+            {
+                <header class="mb-6 lg:mb-8">
+                    <div class="flex items-start gap-3">
+                        @if (!string.IsNullOrWhiteSpace(item.Icon))
+                        {
+                            <span class="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 text-white text-sm mt-1">
+                                <i class="@item.Icon leading-none" aria-hidden="true"></i>
+                            </span>
+                        }
+                        <h2 class="text-[2rem] leading-[1.04] font-bold tracking-tight text-slate-900 lg:text-[3.1rem]">
+                            @item.Title
+                        </h2>
+                    </div>
+                </header>
+            }
+            else
+            {
+                @await Html.PartialAsync("Components/Content/_SectionHeader", item)
+            }
+
+            @{
+                var sectionAssets = visualAssets
+                    .Where(asset => asset != null &&
+                                    !string.IsNullOrWhiteSpace(asset.Src) &&
+                                    string.Equals(asset.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            @foreach (var asset in sectionAssets)
+            {
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+            }
+
+            @if (item.Paragraphs?.Any() == true)
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                    @for (var i = 0; i < item.Paragraphs.Count; i++)
+                    {
+                        <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                            @item.Paragraphs[i].RenderAutoLinks()
+                        </p>
+                    }
+                </div>
+            }
+
+            @if (item.Subsections?.Any() == true)
+            {
+                <div class="mt-8 space-y-10">
+                    @foreach (var sub in item.Subsections)
+                    {
+                        <article class="pt-8 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+                            <h3 class="text-[1.15rem] lg:text-[1.35rem] font-semibold text-slate-900 mb-3">@sub.Subtitle</h3>
+
+                            @if (!string.IsNullOrWhiteSpace(sub.Text))
+                            {
+                                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-700">
+                                    <p>@sub.Text.RenderAutoLinks()</p>
+                                </div>
+                            }
+
+                            @if (sub.ListItems?.Any() == true)
+                            {
+                                <ul class="mt-4 space-y-2 text-sm text-slate-700 max-w-prose">
+                                    @foreach (var listItem in sub.ListItems)
+                                    {
+                                        <li class="pl-5 relative before:content-['-'] before:absolute before:left-0 before:text-slate-400">
+                                            @listItem.RenderListItem()
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </article>
+                    }
+                </div>
+            }
+
+            @if (item.Versions?.Any() == true)
+            {
+                @await Html.PartialAsync("Components/Story/_FlagHistoryTimeline", (Model, item))
+            }
+
+            @if (item.Symbols?.Any() == true)
+            {
+                var symbolItems = item.Symbols
+                    .Select(s => new SymbolDisplayItem
+                    {
+                        Id = s.Id,
+                        Name = s.Name,
+                        Image = s.Image,
+                        Paragraphs = (IReadOnlyList<string>)(s.Paragraphs ?? new List<string>()),
+                    })
+                    .ToList();
+                @await Html.PartialAsync(
+                    "Components/Widgets/_SymbolsShowcase",
+                    ((IReadOnlyList<SymbolDisplayItem>)symbolItems, $"/images/flags/{stateSlug}"))
+            }
+
+            @if (item.Colors?.Any() == true)
+            {
+                <div class="mt-8 divide-y divide-slate-200/70 border-t border-slate-200/70">
+                    @foreach (var color in item.Colors)
+                    {
+                        <button type="button"
+                                class="js-flag-color-copy group grid w-full gap-4 py-5 text-left md:grid-cols-[88px_minmax(0,1fr)_auto] md:items-center"
+                                data-copy-value="@color.Hex"
+                                data-copy-label="@color.Name">
+                            <div class="h-16 w-20 rounded-xl border border-slate-200/70 md:w-full" style="background-color:@color.Hex;"></div>
+
+                            <div class="min-w-0">
+                                <div class="text-lg font-semibold text-slate-900">@color.Name</div>
+                                <div class="mt-1 font-mono text-sm text-slate-500">@color.Hex</div>
+
+                                @if (!string.IsNullOrWhiteSpace(color.Pantone) || !string.IsNullOrWhiteSpace(color.Cable))
+                                {
+                                    <div class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-600">
+                                        @if (!string.IsNullOrWhiteSpace(color.Pantone))
+                                        {
+                                            <span><span class="font-semibold text-slate-500">Pantone:</span> @color.Pantone</span>
+                                        }
+
+                                        @if (!string.IsNullOrWhiteSpace(color.Cable))
+                                        {
+                                            <span><span class="font-semibold text-slate-500">Cable:</span> @color.Cable</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-500 transition group-hover:bg-slate-900 group-hover:text-white">
+                                <i class="fa-solid fa-copy text-sm"></i>
+                            </span>
+                        </button>
+                    }
+                </div>
+            }
+
+        @if (item.Facts?.Any() == true)
+        {
+            @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+        }
+
+        <div class="clear-both"></div>
+        </section>
+
+        @if (!quoteRendered &&
+            !string.IsNullOrWhiteSpace(quoteAfterSectionId) &&
+            string.Equals(item.Id, quoteAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FlagContent?.ExpertQuote != null)
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.FlagContent.ExpertQuote)
+            quoteRendered = true;
+        }
+
+        @if (!timelineRendered &&
+            !string.IsNullOrWhiteSpace(timelineAfterSectionId) &&
+            string.Equals(item.Id, timelineAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FlagContent?.Timeline?.Any() == true)
+        {
+            @await Html.PartialAsync("Components/Story/_Timeline", Model.FlagContent.Timeline)
+            timelineRendered = true;
+        }
+
+        @if (!statRendered &&
+            !string.IsNullOrWhiteSpace(statAfterSectionId) &&
+            string.Equals(item.Id, statAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FlagContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", Model.FlagContent.BigStat)
+            statRendered = true;
+        }
+
+        @if (!comparisonCardsRendered &&
+            !string.IsNullOrWhiteSpace(comparisonCardsAfterSectionId) &&
+            string.Equals(item.Id, comparisonCardsAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FlagContent?.ComparisonCards?.Cards?.Any() == true)
+        {
+            @await Html.PartialAsync("Components/Widgets/_ComparisonCards", Model.FlagContent.ComparisonCards)
+            comparisonCardsRendered = true;
+        }
+    }
+
+    if (!quoteRendered && Model.FlagContent?.ExpertQuote != null)
+    {
+        @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.FlagContent.ExpertQuote)
+    }
+
+    if (!timelineRendered && Model.FlagContent?.Timeline?.Any() == true)
+    {
+        @await Html.PartialAsync("Components/Story/_Timeline", Model.FlagContent.Timeline)
+    }
+
+    if (!statRendered && Model.FlagContent?.BigStat != null)
+    {
+        @await Html.PartialAsync("Components/Story/_BigStat", Model.FlagContent.BigStat)
+    }
+
+    if (!comparisonCardsRendered && Model.FlagContent?.ComparisonCards?.Cards?.Any() == true)
+    {
+        @await Html.PartialAsync("Components/Widgets/_ComparisonCards", Model.FlagContent.ComparisonCards)
+    }
+
+    if (orphanVisualAssets.Any())
+    {
+        foreach (var asset in orphanVisualAssets)
+        {
+            @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+        }
+    }
+
+    if (fullWidthVisualAsset != null)
+    {
+        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", fullWidthVisualAsset)
+    }
+}
+else
+{
+    <div class="text-sm text-slate-500">
+        No sections rendered yet for this flag.
+    </div>
+}

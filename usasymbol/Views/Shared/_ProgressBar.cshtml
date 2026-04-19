@@ -1,0 +1,12 @@
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+
+@{
+    var colors = Model.Colors;
+}
+
+<div id="progressBar"
+     class="fixed top-0 left-0 h-1 bg-gradient-to-br @colors.ProgressBar
+            rounded-xl md:rounded-2xl overflow-hidden shadow-2xl border border-gray-700
+            z-50 transition-all duration-150"
+     style="width: 0%">
+</div>

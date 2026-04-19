@@ -1,0 +1,893 @@
+@model USASymbol.Models.ViewModels.SurnamesViewModel
+@using System.Globalization
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using USASymbol.Models.ViewModels
+
+@inject IImageUrlService Images
+
+@{
+    var state   = Model.State;
+    var content = Model.Content;
+    var top1    = Model.Top1;
+    var top2    = Model.Top2;
+    var top3    = Model.Top3;
+    var allNames = content.Surnames.OrderBy(s => s.Rank).ToList();
+    var maxCount = (double)(top1?.Count ?? 1);
+
+    ViewData["Title"]       = content.SeoTitle;
+    ViewData["Description"] = content.SeoDescription;
+    ViewData["OgType"]      = "article";
+    ViewData["Canonical"]   = $"/states/{state.Slug}/surnames";
+
+    var originColors = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["english"]      = "#3b82f6",
+        ["german"]       = "#22c55e",
+        ["spanish"]      = "#f59e0b",
+        ["irish"]        = "#f97316",
+        ["other"]        = "#64748b",
+        ["scottish"]     = "#6366f1",
+        ["french"]       = "#a855f7",
+        ["polish"]       = "#ef4444",
+        ["italian"]      = "#f43f5e",
+        ["scandinavian"] = "#14b8a6",
+    };
+
+    string OriginColor(string o) => originColors.TryGetValue(o, out var c) ? c : "#94a3b8";
+
+    var topOrigin = content.Surnames
+        .GroupBy(s => s.Origin, StringComparer.OrdinalIgnoreCase)
+        .OrderByDescending(g => g.Count())
+        .FirstOrDefault()?.Key ?? "—";
+
+    var quickFacts = new List<QuickFactItem>
+    {
+        new() { Label = "#1 Surname",         Value = top1?.Name ?? "—" },
+        new() { Label = "People named #1",    Value = top1?.Count.ToString("N0", CultureInfo.InvariantCulture) ?? "—" },
+        new() { Label = "1 in every",         Value = top1 != null ? $"{top1.Ratio:N0} residents" : "—" },
+        new() { Label = "Top origin",         Value = char.ToUpper(topOrigin[0]) + topOrigin[1..] },
+        new() { Label = "State population",   Value = content.Population.ToString("N0", CultureInfo.InvariantCulture) },
+        new() { Label = "Census year",        Value = content.DataYear.ToString() },
+    };
+
+    var heroModel = new PageHeroViewModel
+    {
+        PageModel = null!,
+        Title = content.H1 ?? $"Most Common Last Names in {state.Name}",
+        Description = content.Intro,
+        HeroLabel = "Genealogy & Demographics",
+        EyebrowItems = new List<string> { state.Name, $"{content.DataYear} Census", "Top 20 Surnames" },
+        FallbackIconClass = "fa-solid fa-users",
+        ImageUrl = state.FlagImageUrl,
+        ImageAlt = $"{state.Name} state flag",
+        FigureTitle = state.Name,
+        FigureSubtitle = $"Top 20 Most Common Surnames · {content.DataYear} Census",
+    };
+
+    if (string.IsNullOrWhiteSpace(topOrigin) || topOrigin.Contains("â"))
+    {
+        topOrigin = "-";
+    }
+
+    foreach (var fact in quickFacts)
+    {
+        if (!string.IsNullOrWhiteSpace(fact.Value) && (fact.Value.Contains("â") || fact.Value.Contains("Â")))
+        {
+            fact.Value = "-";
+        }
+    }
+
+    heroModel.FigureSubtitle = $"Top 20 Most Common Surnames - {content.DataYear} Census";
+
+    var pageUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    var pageImage = Images.Full(state.FlagImageUrl);
+    var dateModified = (ViewData["AuthorBox"] as AuthorBox)?.DateModified ?? DateTime.UtcNow;
+    var jsonOptions = new JsonSerializerOptions
+    {
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+
+    var articleLd = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "Article",
+        ["@id"] = $"{pageUrl}#article",
+        ["headline"] = content.H1 ?? $"Most Common Last Names in {state.Name}",
+        ["description"] = System.Net.WebUtility.HtmlDecode(ViewData["Description"]?.ToString() ?? ""),
+        ["datePublished"] = dateModified.AddDays(-10).ToString("yyyy-MM-ddTHH:mm:sszzz"),
+        ["dateModified"] = dateModified.ToString("yyyy-MM-ddTHH:mm:sszzz"),
+        ["image"] = pageImage,
+        ["author"] = new Dictionary<string, object>
+        {
+            ["@type"] = "Organization",
+            ["name"] = "USA Symbol Team",
+            ["url"] = $"{Context.Request.Scheme}://{Context.Request.Host}/about"
+        },
+        ["publisher"] = new Dictionary<string, object>
+        {
+            ["@type"] = "Organization",
+            ["name"] = "USA Symbol",
+            ["url"] = $"{Context.Request.Scheme}://{Context.Request.Host}"
+        },
+        ["mainEntityOfPage"] = new Dictionary<string, object>
+        {
+            ["@type"] = "WebPage",
+            ["@id"] = pageUrl
+        }
+    };
+
+    var breadcrumbLd = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "BreadcrumbList",
+        ["itemListElement"] = new List<Dictionary<string, object>>
+        {
+            new() { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{Context.Request.Scheme}://{Context.Request.Host}/" },
+            new() { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "Last Names by State", ["item"] = $"{Context.Request.Scheme}://{Context.Request.Host}/guides/surnames" },
+            new() { ["@type"] = "ListItem", ["position"] = 3, ["name"] = state.Name, ["item"] = pageUrl }
+        }
+    };
+
+    Dictionary<string, object>? faqLd = null;
+    if (content.Faq.Any())
+    {
+        faqLd = new Dictionary<string, object>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "FAQPage",
+            ["mainEntity"] = content.Faq.Select(f => new Dictionary<string, object>
+            {
+                ["@type"] = "Question",
+                ["name"] = f.Question,
+                ["acceptedAnswer"] = new Dictionary<string, object>
+                {
+                    ["@type"] = "Answer",
+                    ["text"] = f.Answer
+                }
+            }).ToList()
+        };
+    }
+}
+
+<style>
+    /* ── Origin color system ─────────────────────────── */
+    .origin-english      { border-left-color: #3b82f6; }
+    .origin-german       { border-left-color: #22c55e; }
+    .origin-spanish      { border-left-color: #f59e0b; }
+    .origin-irish        { border-left-color: #f97316; }
+    .origin-other        { border-left-color: #64748b; }
+    .origin-scottish     { border-left-color: #6366f1; }
+    .origin-french       { border-left-color: #a855f7; }
+    .origin-polish       { border-left-color: #ef4444; }
+    .origin-italian      { border-left-color: #f43f5e; }
+    .origin-scandinavian { border-left-color: #14b8a6; }
+
+    .dot-english      { background: #3b82f6; }
+    .dot-german       { background: #22c55e; }
+    .dot-spanish      { background: #f59e0b; }
+    .dot-irish        { background: #f97316; }
+    .dot-other        { background: #64748b; }
+    .dot-scottish     { background: #6366f1; }
+    .dot-french       { background: #a855f7; }
+    .dot-polish       { background: #ef4444; }
+    .dot-italian      { background: #f43f5e; }
+    .dot-scandinavian { background: #14b8a6; }
+
+    /* badge — used only on white/light bg (podium cards, heritage block) */
+    .badge-english      { background: #dbeafe; color: #1e40af; }
+    .badge-german       { background: #dcfce7; color: #166534; }
+    .badge-spanish      { background: #fde68a; color: #92400e; }
+    .badge-irish        { background: #fed7aa; color: #9a3412; }
+    .badge-other        { background: #e2e8f0; color: #334155; }
+    .badge-scottish     { background: #e0e7ff; color: #3730a3; }
+    .badge-french       { background: #e9d5ff; color: #6b21a8; }
+    .badge-polish       { background: #fecaca; color: #991b1b; }
+    .badge-italian      { background: #fda4af; color: #9f1239; }
+    .badge-scandinavian { background: #99f6e4; color: #134e4a; }
+
+    /* table-tag — always readable, solid background, white text */
+    .tag-english      { background: #2563eb; color: #fff; }
+    .tag-german       { background: #16a34a; color: #fff; }
+    .tag-spanish      { background: #d97706; color: #fff; }
+    .tag-irish        { background: #ea580c; color: #fff; }
+    .tag-other        { background: #475569; color: #fff; }
+    .tag-scottish     { background: #4f46e5; color: #fff; }
+    .tag-french       { background: #9333ea; color: #fff; }
+    .tag-polish       { background: #dc2626; color: #fff; }
+    .tag-italian      { background: #e11d48; color: #fff; }
+    .tag-scandinavian { background: #0d9488; color: #fff; }
+
+    /* ── Tooltip (desktop hover) ─────────────────────── */
+    .sn-tip { position: relative; }
+    .sn-tip::after {
+        content: attr(data-tip);
+        position: absolute; bottom: calc(100% + 8px); left: 50%;
+        transform: translateX(-50%);
+        background: #1e293b; color: #f1f5f9;
+        padding: 6px 11px; border-radius: 7px;
+        font-size: 12px; font-weight: 500; white-space: nowrap;
+        opacity: 0; pointer-events: none; transition: opacity .16s;
+        z-index: 20; box-shadow: 0 4px 14px rgba(0,0,0,.2);
+    }
+    .sn-tip::before {
+        content: '';
+        position: absolute; bottom: calc(100% + 2px); left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent; border-top-color: #1e293b;
+        opacity: 0; transition: opacity .16s; z-index: 21;
+    }
+    .sn-tip:hover::after, .sn-tip:hover::before { opacity: 1; }
+
+    /* ── Details chevron ─────────────────────────────── */
+    details .chev { transition: transform .2s; }
+    details[open] .chev { transform: rotate(180deg); }
+
+    .podium-grid {
+        display: grid;
+        gap: 12px;
+    }
+    .podium-card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+    }
+    .podium-card--first {
+        border-width: 2px;
+        border-color: #0f172a;
+        background:
+            radial-gradient(circle at top, rgba(250, 204, 21, 0.16), transparent 42%),
+            linear-gradient(180deg, #0f172a 0%, #111827 100%);
+    }
+    .podium-step {
+        display: none;
+        background: #e2e8f0;
+        border: 1px solid #cbd5e1;
+        border-top: 0;
+    }
+    .origin-filter {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        padding: 6px 10px;
+        font-size: 13px;
+        color: #475569;
+    }
+    .origin-filter.is-active {
+        border-color: #0f172a;
+        background: #0f172a;
+        color: #fff;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
+    }
+    .origin-filter.is-muted {
+        opacity: .55;
+    }
+    .origin-header p,
+    .origin-header + p {
+        display: none;
+    }
+    .example-chip {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        padding: 6px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+    }
+    @@media (min-width: 640px) {
+        .podium-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            align-items: end;
+            gap: 16px;
+        }
+        .podium-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .podium-stack--rank-1 {
+            transform: translateY(-22px);
+        }
+        .podium-step {
+            display: block;
+            border-radius: 0 0 20px 20px;
+        }
+        .podium-step--rank-1 { min-height: 72px; }
+        .podium-step--rank-2 { min-height: 44px; }
+        .podium-step--rank-3 { min-height: 32px; }
+    }
+</style>
+
+<!-- Scroll progress -->
+<div id="progressBar" class="fixed top-0 left-0 h-0.5 bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800 z-50 transition-all duration-150" style="width:0%"></div>
+
+<!-- Breadcrumb -->
+<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+            <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
+            <li class="text-slate-300">/</li>
+            <li><a href="/guides/surnames" class="hover:text-slate-900 transition">Last Names by State</a></li>
+            <li class="text-slate-300">/</li>
+            <li class="text-slate-900 font-semibold">@state.Name</li>
+        </ol>
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+
+    <!-- Hero — full width before the two-column grid -->
+    @await Html.PartialAsync("_PageHero", heroModel)
+
+    <article class="w-full">
+    <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)_304px] 2xl:gap-12 relative pb-12">
+
+        <aside class="hidden lg:block relative h-full">
+            <div class="sticky top-24 pb-10">
+                @await Html.PartialAsync("_TocSidebar", (object)Model)
+            </div>
+        </aside>
+
+        <!-- ══════════════════════════════════════════════════
+             MAIN CONTENT
+        ══════════════════════════════════════════════════ -->
+        <div class="min-w-0">
+
+            <!-- TOP 3 PODIUM ─────────────────────────────── -->
+            @if (top1 != null)
+            {
+                <section id="top-3" class="scroll-mt-24 mb-8">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-4">Top 3 — @state.Name</p>
+                    <div class="p-0">
+                        <div class="podium-grid">
+                        @{
+                            var podium = new[] { top1, top2, top3 }.OfType<USASymbol.Models.Content.SurnameEntry>().ToList();
+                            var order  = new[] { 1, 0, 2 }; // #2 left, #1 center, #3 right
+                        }
+                        @foreach (var idx in order)
+                        {
+                            if (idx >= podium.Count) continue;
+                            var s = podium[idx];
+                            var isFirst = s.Rank == 1;
+                            var smOrder = isFirst ? "order-1 sm:order-2" : (s.Rank == 2 ? "order-2 sm:order-1" : "order-3 sm:order-3");
+                            var stepClass = s.Rank == 1 ? "podium-step--rank-1" : (s.Rank == 2 ? "podium-step--rank-2" : "podium-step--rank-3");
+                            var tip = $"1 in every {s.Ratio:N0} {state.Name} residents carries this surname";
+
+                            <div class="podium-stack @smOrder @(isFirst ? "podium-stack--rank-1" : "")">
+                                <div class="sn-tip podium-card flex flex-col @(isFirst ? "podium-card--first" : "")"
+                                     data-tip="@tip">
+                                @if (isFirst)
+                                {
+                                    <div class="h-[4px] bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500"></div>
+                                }
+                                        <div class="p-5 flex flex-col gap-3 flex-1">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <span class="inline-flex h-8 w-8 items-center justify-center text-xs font-black tabular-nums
+                                                     @(isFirst ? "bg-white/10 text-white/75" : "bg-slate-100 text-slate-500")">
+                                            #@s.Rank
+                                        </span>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1
+                                                     @(isFirst ? "bg-white/10 text-white/70" : $"badge-{s.Origin}")">
+                                            @s.Origin
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="@(isFirst ? "text-[2.8rem] text-white sm:text-[3.15rem]" : "text-[2.15rem] text-slate-900 sm:text-[2.35rem]") font-black tracking-tight leading-none">
+                                            @s.Name
+                                        </div>
+                                        @if (!string.IsNullOrWhiteSpace(s.Type))
+                                        {
+                                            <div class="text-[11px] font-semibold uppercase tracking-wider mt-2 @(isFirst ? "text-white/45" : "text-slate-400")">@s.Type</div>
+                                        }
+                                    </div>
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-[1.55rem] font-bold tabular-nums @(isFirst ? "text-white" : "text-slate-800")">
+                                            @s.Count.ToString("N0", CultureInfo.InvariantCulture)
+                                        </span>
+                                        <span class="text-sm @(isFirst ? "text-white/45" : "text-slate-400")">people</span>
+                                    </div>
+                                    <!-- Viral stat — always visible -->
+                                    <div class="sm:hidden flex items-center gap-2 rounded-2xl @(isFirst ? "border border-white/10 bg-white/5 px-3 py-3" : "border border-slate-200 bg-slate-50 px-3 py-3")">
+                                        <i class="fa-solid fa-person text-[10px] @(isFirst ? "text-amber-300" : "text-slate-300")"></i>
+                                        <span class="text-[12px] font-semibold @(isFirst ? "text-amber-100" : "text-slate-600")">
+                                            1 in every @s.Ratio.ToString("N0") @state.Name residents
+                                        </span>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(s.Meaning))
+                                    {
+                                        <p class="text-[12px] leading-relaxed @(isFirst ? "text-white/60" : "text-slate-500")">@s.Meaning</p>
+                                    }
+                                </div>
+                                </div>
+                                <div class="podium-step @stepClass"></div>
+                            </div>
+                        }
+                        </div>
+                    </div>
+                </section>
+            }
+
+            <!-- ORIGIN BREAKDOWN (horizontal strip) ──────── -->
+            @{
+                var originGroups = content.Surnames
+                    .GroupBy(s => s.Origin, StringComparer.OrdinalIgnoreCase)
+                    .OrderByDescending(g => g.Count())
+                    .ToList();
+                var totalNames = (double)content.Surnames.Count;
+            }
+            @if (originGroups.Any())
+            {
+                <section class="mb-10 border-t border-b border-slate-200/80 py-5">
+                    <div class="origin-header mb-4 flex flex-wrap items-center justify-between gap-3">
+                        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Name origins â€” top @content.Surnames.Count surnames</p>
+                        <button type="button"
+                                id="originFilterReset"
+                                class="hidden text-[12px] font-semibold text-slate-500 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-500">
+                            Show all origins
+                        </button>
+                        <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Name origins - top @content.Surnames.Count surnames</span>
+                    </div>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-4">Name origins — top @content.Surnames.Count surnames</p>
+                    <!-- Stacked bar -->
+                    <div class="flex h-3 w-full overflow-hidden rounded-full mb-4 bg-slate-100">
+                        @foreach (var g in originGroups)
+                        {
+                            var w = (g.Count() / totalNames * 100).ToString("F1", CultureInfo.InvariantCulture);
+                            <button type="button"
+                                    class="origin-filter-toggle h-full cursor-pointer"
+                                    data-origin="@g.Key"
+                                    style="width:@w%; background:@OriginColor(g.Key)"
+                                    title="Filter surnames by @g.Key origin"></button>
+                        }
+                    </div>
+                    <!-- Legend -->
+                    <div class="flex flex-wrap gap-x-5 gap-y-2">
+                        @foreach (var g in originGroups)
+                        {
+                            <button type="button"
+                                    class="origin-filter origin-filter-toggle"
+                                    data-origin="@g.Key"
+                                    title="Filter surnames by @g.Key origin">
+                                <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:@OriginColor(g.Key)"></span>
+                                <span class="font-semibold">@(char.ToUpper(g.Key[0]) + g.Key[1..])</span>
+                                <span class="text-slate-400">@g.Count()</span>
+                            </button>
+                        }
+                    </div>
+                </section>
+            }
+
+            <!-- HERITAGE INSIGHT ─────────────────────────── -->
+            @if (!string.IsNullOrWhiteSpace(content.HeritageBody))
+            {
+                <section id="heritage" class="scroll-mt-24 mb-10">
+                    <div class="border-l-2 border-slate-800 pl-5">
+                        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Heritage</p>
+                        <h2 class="text-[1.15rem] font-bold text-slate-900 mb-2">@(content.HeritageTitle ?? "About These Names")</h2>
+                        <p class="text-[15px] text-slate-600 leading-relaxed">@content.HeritageBody</p>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(content.FunFact))
+                    {
+                        <div class="mt-4 flex items-start gap-3 bg-amber-50 border border-amber-100 px-4 py-3">
+                            <i class="fa-solid fa-star text-amber-400 text-[11px] mt-0.5 shrink-0"></i>
+                            <p class="text-[13px] text-slate-700 leading-relaxed">
+                                <span class="font-semibold">Did you know?</span> @content.FunFact
+                            </p>
+                        </div>
+                    }
+                </section>
+            }
+
+            <!-- FULL TABLE 1–20 ──────────────────────────── -->
+            <section id="all-surnames" class="scroll-mt-24 mb-12">
+                <div class="flex items-baseline justify-between gap-4 mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Top @content.Surnames.Count Most Common Last Names in @state.Name</h2>
+                        <p id="originFilterStatus" class="mt-1 text-[13px] text-slate-500">Showing all @content.Surnames.Count surnames</p>
+                    </div>
+                    <span class="text-[12px] text-slate-400 hidden sm:block">Tap a name to expand meaning</span>
+                </div>
+
+                <div id="surnameTable" class="border border-slate-200 divide-y divide-slate-200 bg-white">
+                    @foreach (var s in allNames)
+                    {
+                        var pct    = (s.Count / maxCount * 100).ToString("F1", CultureInfo.InvariantCulture);
+                        var tip    = $"Every {s.Ratio:N0}th resident of {state.Name} carries this name";
+                        var isTop3 = s.Rank <= 3;
+                        var rowBg  = isTop3 ? "bg-slate-50" : "bg-white";
+
+                        if (!string.IsNullOrWhiteSpace(s.Meaning))
+                        {
+                        <details class="group border-l-4 origin-@s.Origin @rowBg" data-origin-row="@s.Origin">
+                            <summary class="flex items-center gap-3 sm:gap-4 px-4 py-3.5 hover:bg-slate-50 transition cursor-pointer list-none select-none">
+                                <span class="w-7 shrink-0 text-center text-[13px] font-bold tabular-nums @(isTop3 ? "text-slate-900" : "text-slate-400")">#@s.Rank</span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-[16px] font-black text-slate-900">@s.Name</span>
+                                        <span class="tag-@s.Origin inline-block text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 leading-5">
+                                            @s.Origin
+                                        </span>
+                                    </div>
+                                    <div class="mt-1.5 h-[3px] w-full max-w-[240px] bg-slate-100">
+                                        <div class="h-full dot-@s.Origin" style="width:@pct%"></div>
+                                    </div>
+                                </div>
+                                <div class="shrink-0 text-right mr-1">
+                                    <div class="text-[14px] font-bold tabular-nums text-slate-700">@s.Count.ToString("N0", CultureInfo.InvariantCulture)</div>
+                                    <div class="text-[11px] text-slate-400">1 in @s.Ratio.ToString("N0")</div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down chev text-slate-300 text-[10px] shrink-0"></i>
+                            </summary>
+                            <div class="px-4 pb-4 pt-2 ml-10 text-[13px] text-slate-500 leading-relaxed border-t border-slate-100">
+                                @s.Meaning
+                            </div>
+                        </details>
+                        }
+                        else
+                        {
+                        <div class="flex items-center gap-3 sm:gap-4 px-4 py-3.5 border-l-4 origin-@s.Origin @rowBg" data-origin-row="@s.Origin">
+                            <span class="w-7 shrink-0 text-center text-[13px] font-bold tabular-nums @(isTop3 ? "text-slate-900" : "text-slate-400")">#@s.Rank</span>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-[16px] font-black text-slate-900">@s.Name</span>
+                                    <span class="tag-@s.Origin inline-block text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 leading-5">
+                                        @s.Origin
+                                    </span>
+                                </div>
+                                <div class="mt-1.5 h-[3px] w-full max-w-[240px] bg-slate-100">
+                                    <div class="h-full dot-@s.Origin" style="width:@pct%"></div>
+                                </div>
+                            </div>
+                            <div class="shrink-0 text-right">
+                                <div class="text-[14px] font-bold tabular-nums text-slate-700">@s.Count.ToString("N0", CultureInfo.InvariantCulture)</div>
+                                <div class="text-[11px] text-slate-400">1 in @s.Ratio.ToString("N0")</div>
+                            </div>
+                        </div>
+                        }
+                    }
+            </section>
+
+            <!-- UNIQUELY THIS STATE ──────────────────────── -->
+            @if (content.UniqueSurnames.Any())
+            {
+                <section id="unique" class="scroll-mt-24 mb-12">
+                    <div class="mb-5">
+                        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Local Insight</p>
+                        <h2 class="text-xl font-bold text-slate-900">Uniquely @state.Name</h2>
+                        <p class="text-[14px] text-slate-500 mt-1 max-w-xl">
+                            These family names rank far higher in @state.Name than nationally — a direct fingerprint of the state's specific immigration waves.
+                        </p>
+                    </div>
+
+                    <div class="border border-slate-200 divide-y divide-slate-200 bg-white">
+                        @foreach (var u in content.UniqueSurnames)
+                        {
+                            var rankLift = Math.Max(0, u.NationalRank - u.StateRank);
+                            <div class="px-5 py-5 border-l-4 origin-@u.Origin">
+                                <div class="flex items-center gap-3 flex-wrap mb-2">
+                                    <span class="text-[1.3rem] font-black text-slate-900">@u.Name</span>
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 badge-@u.Origin">
+                                        <span class="w-1.5 h-1.5 rounded-full dot-@u.Origin inline-block"></span>
+                                        @u.Origin
+                                    </span>
+                                </div>
+                                <p class="text-[13px] text-slate-700 leading-relaxed">
+                                    Ranked <span class="font-semibold text-slate-900">#@u.StateRank in @state.Name</span> versus
+                                    <span class="font-semibold text-slate-900">#@u.NationalRank nationally</span>.
+                                    @if (rankLift > 0)
+                                    {
+                                        <span> That is @rankLift spot@(rankLift == 1 ? "" : "s") higher here.</span>
+                                    }
+                                </p>
+                                @if (!string.IsNullOrWhiteSpace(u.Why))
+                                {
+                                    <p class="mt-2 text-[13px] text-slate-600 leading-relaxed">@u.Why</p>
+                                }
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+
+            <!-- ETYMOLOGY BREAKDOWN ─────────────────────── -->
+            @if (content.EtymologyGroups.Any())
+            {
+                <section id="etymology" class="scroll-mt-24 mb-12">
+                    <div class="mb-5">
+                        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Etymology</p>
+                        <h2 class="text-xl font-bold text-slate-900">@state.Name Last Name Meanings: Occupational, Patronymic & Habitational</h2>
+                    </div>
+                    <div class="border border-slate-200 divide-y divide-slate-200 bg-white">
+                        @foreach (var eg in content.EtymologyGroups)
+                        {
+                            <div class="px-5 py-5">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="inline-flex h-8 w-8 shrink-0 items-center justify-center bg-slate-100 text-slate-600">
+                                        <i class="@eg.Icon text-sm"></i>
+                                    </div>
+                                    <h3 class="text-[15px] font-bold text-slate-900">@eg.Type</h3>
+                                </div>
+                                <p class="text-[13px] text-slate-600 leading-relaxed mb-3">@eg.Description</p>
+                                @if (eg.Examples.Any())
+                                {
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach (var ex in eg.Examples)
+                                        {
+                                            <span class="example-chip">
+                                                @ex
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+
+            <!-- FAQ — matches site _Faq.cshtml style ────── -->
+            @if (content.Faq.Any())
+            {
+                <section id="faq" class="scroll-mt-24 mb-12">
+                    <div class="border border-slate-200 bg-white">
+                        <div class="px-5 py-4 sm:px-6">
+                            <h2 class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Quick Answers</h2>
+                        </div>
+                        <div class="divide-y divide-slate-200/80">
+                            @foreach (var faq in content.Faq)
+                            {
+                                <details class="group">
+                                    <summary class="list-none cursor-pointer px-5 py-4 sm:px-6 flex items-start justify-between gap-4 hover:bg-white/50 transition">
+                                        <span class="text-[15px] font-semibold text-slate-900 leading-7">@faq.Question</span>
+                                        <span class="shrink-0 mt-0.5 flex h-8 w-8 items-center justify-center bg-slate-100 text-slate-600 group-hover:text-slate-800 transition">
+                                            <i class="fas fa-chevron-down text-xs chev"></i>
+                                        </span>
+                                    </summary>
+                                    <div class="px-5 pb-5 sm:px-6 -mt-1">
+                                        <div class="text-[14px] leading-6 text-slate-600">@faq.Answer</div>
+                                    </div>
+                                </details>
+                            }
+                        </div>
+                    </div>
+                </section>
+            }
+
+            <!-- SOURCES — matches site _Sources.cshtml style -->
+            @if (content.Sources.Any())
+            {
+                <section id="sources" class="scroll-mt-24">
+                    <div class="border-b border-slate-200/80 pb-4 mb-5">
+                        <h2 class="text-[1.8rem] font-semibold leading-none text-slate-900">Sources</h2>
+                    </div>
+                    <ul class="space-y-2.5">
+                        @foreach (var src in content.Sources)
+                        {
+                            <li>
+                                @if (!string.IsNullOrWhiteSpace(src.Url))
+                                {
+                                    <a href="@src.Url" target="_blank" rel="nofollow noopener noreferrer"
+                                       class="inline-flex items-center gap-2 text-[1rem] leading-7 text-slate-600 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-900 hover:decoration-slate-500">
+                                        @src.Name
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-[11px] opacity-70"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-[1rem] leading-7 text-slate-600">@src.Name</span>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(src.Description))
+                                {
+                                    <span class="text-[14px] text-slate-400"> — @src.Description</span>
+                                }
+                            </li>
+                        }
+                    </ul>
+                    <div class="mt-6 border-t border-slate-200/70 pt-4">
+                        <div class="text-[12px] text-slate-400">Information is cross-referenced with official state archives.</div>
+                    </div>
+                </section>
+            }
+
+            <div class="mt-10 space-y-8 xl:hidden">
+                @await Html.PartialAsync("_QuickFacts", (IReadOnlyList<QuickFactItem>)quickFacts)
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+            </div>
+
+        </div><!-- /main col -->
+
+        <!-- ══════════════════════════════════════════════════
+             SIDEBAR
+        ═══════════════════════════════════════════════════ -->
+        <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+            <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                <div class="sticky top-32 pr-2">
+
+                <!-- Quick facts via existing partial -->
+                @await Html.PartialAsync("_QuickFacts", (IReadOnlyList<QuickFactItem>)quickFacts)
+
+                </div>
+            </section>
+
+            <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                <div class="sticky top-32 pr-2 border-t border-slate-200/80 pt-5">
+                    <a href="/states/@state.Slug"
+                       class="group flex items-center gap-3 text-slate-900 hover:text-slate-700 transition">
+                        @if (!string.IsNullOrWhiteSpace(state.FlagImageUrl))
+                        {
+                            <img src="@state.FlagImageUrl" alt="@state.Name flag"
+                                 class="w-10 h-7 object-contain shrink-0" loading="lazy" />
+                        }
+                        <div>
+                            <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Back to</div>
+                            <div class="text-[15px] font-semibold text-slate-900 group-hover:text-slate-700">@state.Name</div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-[11px] text-slate-300 ml-auto"></i>
+                    </a>
+                </div>
+            </section>
+
+            <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                <div class="sticky top-32 pr-2 border-t border-slate-200/80 pt-5">
+                    <a href="/states/@state.Slug/borders"
+                       class="group flex items-center gap-3 text-slate-900 hover:text-slate-700 transition">
+                        <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center bg-slate-100 text-slate-600">
+                            <i class="fa-solid fa-map text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Also explore</div>
+                            <div class="text-[15px] font-semibold text-slate-900 group-hover:text-slate-700">@state.Name Borders</div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-[11px] text-slate-300 ml-auto"></i>
+                    </a>
+                </div>
+
+                <!-- Guides & Rankings — existing standalone partial -->
+            </section>
+
+            <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
+                <div class="sticky top-32 pr-2">
+                    @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                </div>
+            </section>
+        </aside>
+
+    </div><!-- /grid -->
+    </article>
+</main>
+
+@await Html.PartialAsync("_TocMobileFab", (object)Model)
+
+@if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+{
+    <div class="mt-14 max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8">
+        @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+    </div>
+}
+
+@if (ViewData["AuthorBox"] is AuthorBox authorBox)
+{
+    <div class="mt-10 max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8">
+        @await Html.PartialAsync("_AuthorBox", authorBox)
+    </div>
+}
+
+<script type="application/ld+json">
+    @Html.Raw(JsonSerializer.Serialize(articleLd, jsonOptions))
+</script>
+
+<script type="application/ld+json">
+    @Html.Raw(JsonSerializer.Serialize(breadcrumbLd, jsonOptions))
+</script>
+
+@if (faqLd != null)
+{
+    <script type="application/ld+json">
+        @Html.Raw(JsonSerializer.Serialize(faqLd, jsonOptions))
+    </script>
+}
+
+<script>
+    // Scroll progress bar
+    window.addEventListener('scroll', () => {
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        const bar = document.getElementById('progressBar');
+        if (bar) bar.style.width = (h > 0 ? Math.min(window.scrollY / h * 100, 100) : 0) + '%';
+    });
+
+    // Touch toast — shows tooltip text on tap (mobile has no hover)
+    (function () {
+        if (!window.matchMedia('(hover: none)').matches) return;
+        const toast = document.createElement('div');
+        Object.assign(toast.style, {
+            position: 'fixed', bottom: '24px', left: '50%',
+            transform: 'translateX(-50%) translateY(12px)',
+            background: '#1e293b', color: '#f1f5f9',
+            padding: '9px 15px', borderRadius: '8px',
+            fontSize: '13px', fontWeight: '500',
+            maxWidth: '88vw', textAlign: 'center',
+            opacity: '0', transition: 'opacity .2s, transform .2s',
+            pointerEvents: 'none', zIndex: '999',
+            boxShadow: '0 4px 20px rgba(0,0,0,.25)'
+        });
+        document.body.appendChild(toast);
+        let timer;
+        document.querySelectorAll('[data-tip]').forEach(el => {
+            el.addEventListener('click', () => {
+                if (el.tagName === 'DETAILS' || el.tagName === 'SUMMARY') return;
+                toast.textContent = el.dataset.tip;
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(-50%) translateY(0)';
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) translateY(12px)';
+                }, 2800);
+            });
+        });
+    })();
+
+    (function () {
+        const toggles = Array.from(document.querySelectorAll('.origin-filter-toggle'));
+        const rows = Array.from(document.querySelectorAll('[data-origin-row]'));
+        const status = document.getElementById('originFilterStatus');
+        const reset = document.getElementById('originFilterReset');
+        if (!toggles.length || !rows.length || !status || !reset) return;
+
+        const total = rows.length;
+        let activeOrigin = '';
+
+        function formatOrigin(origin) {
+            return origin ? origin.charAt(0).toUpperCase() + origin.slice(1) : '';
+        }
+
+        function render() {
+            let visible = 0;
+
+            rows.forEach(row => {
+                const match = !activeOrigin || row.dataset.originRow === activeOrigin;
+                row.style.display = match ? '' : 'none';
+                if (match) visible += 1;
+            });
+
+            toggles.forEach(toggle => {
+                const isActive = toggle.dataset.origin === activeOrigin;
+                toggle.classList.toggle('is-active', isActive);
+                toggle.classList.toggle('is-muted', Boolean(activeOrigin) && !isActive);
+                toggle.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+            });
+
+            if (activeOrigin) {
+                status.textContent = `Showing ${visible} of ${total} surnames with ${formatOrigin(activeOrigin)} origin`;
+                reset.classList.remove('hidden');
+            } else {
+                status.textContent = `Showing all ${total} surnames`;
+                reset.classList.add('hidden');
+            }
+        }
+
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const nextOrigin = toggle.dataset.origin || '';
+                activeOrigin = activeOrigin === nextOrigin ? '' : nextOrigin;
+                render();
+            });
+        });
+
+        reset.addEventListener('click', () => {
+            activeOrigin = '';
+            render();
+        });
+
+        render();
+    })();
+</script>

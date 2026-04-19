@@ -1,0 +1,66 @@
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+@inject IImageUrlService Images
+
+@{
+    var allStates = ViewData["AllStates"] as IEnumerable<dynamic>;
+    var currentSlug = Model.State.Slug;
+    var region = Model.State.Region;
+
+    var seed = (currentSlug ?? "").GetHashCode();
+    var rng = new Random(seed);
+
+    var sameRegion = allStates?
+        .Where(s => string.Equals((string?)s.Region, region, StringComparison.OrdinalIgnoreCase) && (string)s.Slug != currentSlug)
+        .OrderBy(_ => rng.Next())
+        .Take(5)
+        .ToList();
+
+    var pick = (sameRegion?.Any() == true
+            ? sameRegion
+            : allStates?
+                .Where(s => (string)s.Slug != currentSlug)
+                .OrderBy(_ => rng.Next())
+                .Take(5)
+                .ToList());
+}
+
+@if (pick?.Any() == true)
+{
+    <section class="related-states-minimal">
+        <h2 class="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#13231D]">
+            Related States
+        </h2>
+
+        <div class="mt-3 h-px bg-slate-300/80"></div>
+
+        <div class="mt-6 space-y-4">
+            @foreach (var st in pick)
+            {
+                var abbr = ((string)st.Abbreviation).ToLowerInvariant();
+                var flagUrl = $"/images/states/flags/small/{abbr}.webp";
+
+                <a href="/states/@st.Slug"
+                   class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
+                    <img src="@Images.Thumb(flagUrl)"
+                         alt="@st.Name state flag"
+                         class="h-[4.4rem] w-[4.4rem] shrink-0 rounded-2xl object-cover"
+                         loading="lazy" />
+
+                    <div class="min-w-0 pt-0.5">
+                        <div class="text-[0.98rem] font-semibold leading-6 text-slate-900">
+                            @st.Name
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+
+        <div class="mt-6">
+            <a href="/states"
+               class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
+                <span>View all states</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+    </section>
+}

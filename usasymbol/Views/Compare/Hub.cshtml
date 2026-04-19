@@ -1,0 +1,416 @@
+@model USASymbol.Models.ViewModels.CompareHubViewModel
+@using System.Text.Json
+@inject IImageUrlService Images
+
+@{
+    ViewData["Title"] = ViewData["Title"] ?? "Compare U.S. States";
+    var pickerStates = Model.States
+        .Select(s => new
+        {
+            s.Slug,
+            s.Name,
+            s.Abbreviation,
+            s.Region,
+            s.FlagImageUrl
+        })
+        .ToList();
+}
+
+<nav class="bg-gray-50 py-3 border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ol class="flex items-center space-x-2 text-sm text-gray-600">
+            <li><a href="/" class="text-blue-700 hover:underline">Home</a></li>
+            <li class="text-gray-400">/</li>
+            <li class="font-semibold">Compare States</li>
+        </ol>
+    </div>
+</nav>
+
+<section class="bg-[linear-gradient(135deg,#0f172a_0%,#1d4ed8_55%,#60a5fa_100%)] text-white py-14 md:py-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span class="inline-flex items-center px-4 py-1.5 mb-5 text-xs font-semibold uppercase tracking-[0.24em] rounded-full bg-white/10 border border-white/20">
+            <i class="fa-solid fa-scale-balanced text-amber-300 mr-2"></i>
+            State Comparison Tool
+        </span>
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">Compare U.S. States</h1>
+        <p class="text-lg md:text-2xl text-blue-100 max-w-3xl mx-auto">
+            See which state wins on affordability, housing, taxes, laws, politics, geography, and other quick-read metrics.
+        </p>
+    </div>
+</section>
+
+<section class="bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] py-12 md:py-16">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="rounded-[2rem] border border-slate-200 bg-white shadow-[0_30px_80px_-40px_rgba(15,23,42,0.35)] overflow-hidden">
+            <div class="px-6 md:px-10 pt-8 md:pt-10 pb-6 border-b border-slate-100">
+                <div class="max-w-3xl">
+                    <p class="text-sm font-semibold uppercase tracking-[0.22em] text-blue-700 mb-3">Build A Comparison</p>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">Select two states to compare</h2>
+                    <p class="text-base md:text-lg text-slate-600">
+                        Pick any two states and we will stack the headline metrics, show who leads, and link you into each detailed comparison page.
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-10">
+                <form id="compare-form" class="grid gap-6 lg:grid-cols-3 lg:gap-5 items-end" onsubmit="event.preventDefault(); goCompare();">
+
+                    @* STATE A PICKER *@
+                    <div class="w-full relative" id="picker-wrap-a">
+                        <label class="block text-base font-semibold text-slate-800 mb-3">First state</label>
+                        <input type="hidden" id="state-a" value="" />
+
+                        <button type="button" id="trigger-a"
+                                class="w-full flex items-center gap-3 rounded-2xl border border-slate-300 bg-white px-5 py-4 md:py-5 text-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all">
+                            <img id="trigger-a-flag" class="w-9 h-6 rounded object-cover shrink-0 hidden" alt="" />
+                            <span id="trigger-a-label" class="flex-1 text-left font-medium text-slate-400">Choose a state...</span>
+                            <svg class="w-5 h-5 text-slate-400 shrink-0 transition-transform" id="trigger-a-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+
+                        <div id="dropdown-a" class="picker-dropdown hidden absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_-20px_rgba(15,23,42,0.22)]">
+                            <div class="p-3 border-b border-slate-100">
+                                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 cursor-text">
+                                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    <input id="search-a" type="text" autocomplete="off" placeholder="Search states..."
+                                           class="flex-1 bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none" />
+                                </label>
+                            </div>
+                            <ul id="list-a" class="max-h-60 overflow-y-auto py-1">
+                                @foreach (var s in Model.States)
+                                {
+                                    <li data-slug="@s.Slug" data-name="@s.Name" data-abbr="@s.Abbreviation"
+                                        data-flag="@Images.Card(s.FlagImageUrl)" data-region="@(s.Region ?? "United States")"
+                                        class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors select-none">
+                                        @if (s.FlagImageUrl != null)
+                                        {
+                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="" class="w-9 h-6 object-cover rounded shrink-0" loading="lazy" onerror="this.style.display='none'" />
+                                        }
+                                        else
+                                        {
+                                            <span class="w-9 h-6 rounded bg-slate-200 shrink-0"></span>
+                                        }
+                                        <span class="text-sm font-bold text-slate-500 w-7 shrink-0">@s.Abbreviation</span>
+                                        <span class="text-sm font-medium text-slate-800">@s.Name</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div id="preview-a" class="mt-4 hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <div class="flex items-center gap-4">
+                                <img id="preview-a-flag" class="w-16 h-11 rounded-lg object-cover shadow-sm hidden" alt="" />
+                                <div>
+                                    <div id="preview-a-name" class="text-lg font-bold text-slate-900"></div>
+                                    <div id="preview-a-meta" class="text-sm text-slate-600"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center">
+                        <div class="w-16 h-16 rounded-full bg-slate-950 text-white flex items-center justify-center shadow-lg">
+                            <span class="text-sm md:text-base font-extrabold tracking-[0.18em]">VS</span>
+                        </div>
+                    </div>
+
+                    @* STATE B PICKER *@
+                    <div class="w-full relative" id="picker-wrap-b">
+                        <label class="block text-base font-semibold text-slate-800 mb-3">Second state</label>
+                        <input type="hidden" id="state-b" value="" />
+
+                        <button type="button" id="trigger-b"
+                                class="w-full flex items-center gap-3 rounded-2xl border border-slate-300 bg-white px-5 py-4 md:py-5 text-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all">
+                            <img id="trigger-b-flag" class="w-9 h-6 rounded object-cover shrink-0 hidden" alt="" />
+                            <span id="trigger-b-label" class="flex-1 text-left font-medium text-slate-400">Choose a state...</span>
+                            <svg class="w-5 h-5 text-slate-400 shrink-0 transition-transform" id="trigger-b-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+
+                        <div id="dropdown-b" class="picker-dropdown hidden absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_-20px_rgba(15,23,42,0.22)]">
+                            <div class="p-3 border-b border-slate-100">
+                                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 cursor-text">
+                                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    <input id="search-b" type="text" autocomplete="off" placeholder="Search states..."
+                                           class="flex-1 bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none" />
+                                </label>
+                            </div>
+                            <ul id="list-b" class="max-h-60 overflow-y-auto py-1">
+                                @foreach (var s in Model.States)
+                                {
+                                    <li data-slug="@s.Slug" data-name="@s.Name" data-abbr="@s.Abbreviation"
+                                        data-flag="@Images.Card(s.FlagImageUrl)" data-region="@(s.Region ?? "United States")"
+                                        class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors select-none">
+                                        @if (s.FlagImageUrl != null)
+                                        {
+                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="" class="w-9 h-6 object-cover rounded shrink-0" loading="lazy" onerror="this.style.display='none'" />
+                                        }
+                                        else
+                                        {
+                                            <span class="w-9 h-6 rounded bg-slate-200 shrink-0"></span>
+                                        }
+                                        <span class="text-sm font-bold text-slate-500 w-7 shrink-0">@s.Abbreviation</span>
+                                        <span class="text-sm font-medium text-slate-800">@s.Name</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div id="preview-b" class="mt-4 hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <div class="flex items-center gap-4">
+                                <img id="preview-b-flag" class="w-16 h-11 rounded-lg object-cover shadow-sm hidden" alt="" />
+                                <div>
+                                    <div id="preview-b-name" class="text-lg font-bold text-slate-900"></div>
+                                    <div id="preview-b-meta" class="text-sm text-slate-600"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-8">
+                    <button id="compare-btn" onclick="goCompare()"
+                            class="w-full inline-flex items-center justify-center gap-3 bg-slate-950 hover:bg-slate-900 text-white text-lg font-bold px-8 py-4 rounded-2xl shadow-[0_18px_40px_-24px_rgba(15,23,42,0.55)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                        Compare States
+                    </button>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4 mt-8">
+                    <div class="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4">
+                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700 mb-2">Fast Read</div>
+                        <p class="text-sm text-slate-700">See the headline winner first, then scan the biggest differences.</p>
+                    </div>
+                    <div class="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4">
+                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700 mb-2">Bigger Type</div>
+                        <p class="text-sm text-slate-700">Cleaner, larger form controls make state picking easier on desktop and mobile.</p>
+                    </div>
+                    <div class="rounded-2xl border border-amber-100 bg-amber-50 px-5 py-4">
+                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700 mb-2">Visual Cues</div>
+                        <p class="text-sm text-slate-700">Selected states get a flag preview so the page feels more recognizable before compare.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-gray-50 py-12 border-t">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Popular Comparisons</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @foreach (var pair in Model.FeaturedPairs)
+            {
+                <a href="/compare/@(pair.Slug1)-vs-@(pair.Slug2)"
+                   class="flex items-center gap-3 bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-md hover:border-blue-300 transition group">
+                    @{
+                        var stateObjA = Model.States.FirstOrDefault(s => s.Slug == pair.Slug1);
+                        var stateObjB = Model.States.FirstOrDefault(s => s.Slug == pair.Slug2);
+                    }
+                    @if (stateObjA?.FlagImageUrl != null)
+                    {
+                        <img src="@Images.Card(stateObjA.FlagImageUrl)" onerror="this.style.display='none'"
+                             class="w-11 h-8 object-cover rounded-md shadow-sm" alt="@pair.Name1 flag" />
+                    }
+                    <span class="font-semibold text-gray-700 group-hover:text-blue-700 flex-1">@pair.Name1 vs @pair.Name2</span>
+                    @if (stateObjB?.FlagImageUrl != null)
+                    {
+                        <img src="@Images.Card(stateObjB.FlagImageUrl)" onerror="this.style.display='none'"
+                             class="w-11 h-8 object-cover rounded-md shadow-sm" alt="@pair.Name2 flag" />
+                    }
+                    <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-blue-500 text-sm"></i>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="bg-white py-12 border-t">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">What You Can Compare</h2>
+            <p class="mt-2 text-sm text-slate-500">Everything is grouped by category so the page stays easy to scan.</p>
+        </div>
+        @{
+            var metrics = USASymbol.Services.ComparisonMetricsConfig.All
+                .OrderBy(m => m.GroupOrder)
+                .ThenBy(m => m.SortOrder)
+                .ToList();
+            var metricGroups = metrics
+                .GroupBy(m => new { m.GroupSlug, m.GroupName, m.GroupOrder })
+                .OrderBy(g => g.Key.GroupOrder)
+                .ToList();
+            string GroupIcon(string? groupSlug) => (groupSlug ?? "").ToLowerInvariant() switch
+            {
+                "demographics" => "fa-solid fa-users",
+                "income" => "fa-solid fa-sack-dollar",
+                "jobs" => "fa-solid fa-briefcase",
+                "quality-of-life" => "fa-solid fa-heart-pulse",
+                "housing" => "fa-solid fa-house",
+                "taxes" => "fa-solid fa-file-invoice-dollar",
+                "politics" => "fa-solid fa-landmark-dome",
+                "laws" => "fa-solid fa-scale-balanced",
+                "geography" => "fa-solid fa-mountain-sun",
+                _ => "fa-solid fa-layer-group"
+            };
+        }
+        <div class="grid gap-3 md:grid-cols-2">
+            @for (var groupIndex = 0; groupIndex < metricGroups.Count; groupIndex++)
+            {
+                var group = metricGroups[groupIndex];
+                <details class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50" @(groupIndex == 0 ? "open" : null)>
+                    <summary class="flex cursor-pointer list-none items-center gap-3 px-5 py-4">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-700 border border-blue-100 shrink-0">
+                            <i class="@GroupIcon(group.Key.GroupSlug) text-sm"></i>
+                        </span>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-sm font-semibold text-slate-900">@group.Key.GroupName</div>
+                            <div class="text-xs text-slate-500">@group.Count() metric@(group.Count() == 1 ? "" : "s")</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <div class="border-t border-slate-200 bg-white px-4 py-4">
+                        <div class="space-y-2">
+                            @foreach (var metric in group)
+                            {
+                                <div class="flex gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-3">
+                                    <div class="w-9 h-9 rounded-lg bg-white border border-blue-100 flex items-center justify-center shrink-0">
+                                        <i class="@metric.Icon text-blue-700 text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="font-semibold text-slate-900 text-sm">@metric.Name</div>
+                                        <div class="text-xs text-slate-500">@metric.Description</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </details>
+            }
+        </div>
+    </div>
+</section>
+
+<script>
+    const compareStates = @Html.Raw(JsonSerializer.Serialize(pickerStates));
+
+    function findState(slug) {
+        return compareStates.find(s => s.slug === slug);
+    }
+
+    function updatePreview(slot, slug) {
+        const card = document.getElementById(`preview-${slot}`);
+        const flag = document.getElementById(`preview-${slot}-flag`);
+        const name = document.getElementById(`preview-${slot}-name`);
+        const meta = document.getElementById(`preview-${slot}-meta`);
+        const state = findState(slug);
+
+        if (!state) {
+            card.classList.add('hidden');
+            return;
+        }
+
+        name.textContent = state.name;
+        meta.textContent = `${state.abbreviation} • ${state.region || 'United States'}`;
+        card.classList.remove('hidden');
+
+        if (state.flagImageUrl) {
+            flag.src = state.flagImageUrl;
+            flag.alt = `${state.name} flag`;
+            flag.classList.remove('hidden');
+        } else {
+            flag.classList.add('hidden');
+        }
+    }
+
+    function goCompare() {
+        const a = document.getElementById('state-a').value;
+        const b = document.getElementById('state-b').value;
+        if (!a || !b) { alert('Please select two states.'); return; }
+        if (a === b) { alert('Please select two different states.'); return; }
+        const pair = [a, b].sort().join('-vs-');
+        window.location.href = '/compare/' + pair;
+    }
+
+    function setupPicker(slot) {
+        const trigger   = document.getElementById(`trigger-${slot}`);
+        const tFlag     = document.getElementById(`trigger-${slot}-flag`);
+        const tLabel    = document.getElementById(`trigger-${slot}-label`);
+        const tChevron  = document.getElementById(`trigger-${slot}-chevron`);
+        const dropdown  = document.getElementById(`dropdown-${slot}`);
+        const search    = document.getElementById(`search-${slot}`);
+        const list      = document.getElementById(`list-${slot}`);
+        const hidden    = document.getElementById(`state-${slot}`);
+
+        function openDropdown() {
+            dropdown.classList.remove('hidden');
+            tChevron.style.transform = 'rotate(180deg)';
+            trigger.classList.add('border-blue-500', 'ring-4', 'ring-blue-100');
+            search.value = '';
+            filterList('');
+            setTimeout(() => search.focus(), 30);
+        }
+
+        function closeDropdown() {
+            dropdown.classList.add('hidden');
+            tChevron.style.transform = '';
+            trigger.classList.remove('border-blue-500', 'ring-4', 'ring-blue-100');
+        }
+
+        function filterList(query) {
+            const q = query.toLowerCase().trim();
+            list.querySelectorAll('.picker-item').forEach(item => {
+                const match = !q
+                    || item.dataset.name.toLowerCase().includes(q)
+                    || item.dataset.abbr.toLowerCase().startsWith(q);
+                item.style.display = match ? '' : 'none';
+            });
+        }
+
+        function selectItem(item) {
+            const { slug, name, abbr, flag } = item.dataset;
+            hidden.value = slug;
+            tLabel.textContent = `${abbr} · ${name}`;
+            tLabel.classList.remove('text-slate-400');
+            tLabel.classList.add('text-slate-900', 'font-semibold');
+            if (flag && flag !== 'null') {
+                tFlag.src = flag;
+                tFlag.alt = `${name} flag`;
+                tFlag.classList.remove('hidden');
+            } else {
+                tFlag.classList.add('hidden');
+            }
+            closeDropdown();
+            updatePreview(slot, slug);
+        }
+
+        trigger.addEventListener('click', () => {
+            dropdown.classList.contains('hidden') ? openDropdown() : closeDropdown();
+        });
+
+        search.addEventListener('input', () => filterList(search.value));
+
+        list.addEventListener('click', e => {
+            const item = e.target.closest('.picker-item');
+            if (item) selectItem(item);
+        });
+
+        search.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeDropdown(); trigger.focus(); return; }
+            if (e.key === 'Enter') {
+                const visible = list.querySelector('.picker-item:not([style*="none"])');
+                if (visible) selectItem(visible);
+            }
+        });
+
+        document.addEventListener('click', e => {
+            const wrap = document.getElementById(`picker-wrap-${slot}`);
+            if (!wrap.contains(e.target)) closeDropdown();
+        });
+    }
+
+    setupPicker('a');
+    setupPicker('b');
+</script>

@@ -1,0 +1,4 @@
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+
+@* Wrapper so PartialAsync("_PrintableWidget") resolves: delegates to Pages/_PrintableWidget *@
+@await Html.PartialAsync("Pages/_PrintableWidget", Model)

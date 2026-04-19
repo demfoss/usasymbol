@@ -1,771 +1,630 @@
 @model USASymbol.Models.ViewModels.BirdDetailViewModel
+@using System.Collections.Generic
+@using System.Globalization
+@using System.Linq
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@inject IImageUrlService Images
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+
+@functions {
+    private static string NormalizeBirdAudioKey(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var builder = new System.Text.StringBuilder(value.Length);
+        var previousWasSeparator = false;
+
+        foreach (var ch in value.Trim().ToLowerInvariant())
+        {
+            if (char.IsLetterOrDigit(ch))
+            {
+                builder.Append(ch);
+                previousWasSeparator = false;
+            }
+            else if (!previousWasSeparator)
+            {
+                builder.Append('-');
+                previousWasSeparator = true;
+            }
+        }
+
+        return builder.ToString().Trim('-');
+    }
+
+    private static Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary BuildSectionsViewData(
+        Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary baseViewData,
+        IEnumerable<IContentSection> sections,
+        bool suppressFullWidthImage)
+    {
+        return new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(baseViewData)
+        {
+            ["SectionsOverride"] = sections.ToList(),
+            ["SuppressStoryBlocks"] = true,
+            ["SuppressFactsBlocks"] = true,
+            ["SuppressFullWidthImage"] = suppressFullWidthImage
+        };
+    }
+
+    private static bool ContainsSectionId(IEnumerable<IContentSection> sections, string? sectionId)
+    {
+        return !string.IsNullOrWhiteSpace(sectionId) &&
+               sections.Any(section => string.Equals(section?.Id, sectionId, StringComparison.OrdinalIgnoreCase));
+    }
+
+}
 
 @{
+    ViewData["BodyClass"] = "bird-detail-page";
+
     var birdName = Model.BirdContent?.Title ?? Model.Symbol.Name;
     var scientificName = Model.BirdContent?.ScientificName ?? Model.Symbol.ScientificName ?? "";
     var stateName = Model.State.Name;
     var adoptedYear = Model.BirdContent?.AdoptedYear ?? Model.Symbol.AdoptedYear ?? 0;
-    
-    ViewData["Title"] = $"{birdName} - {stateName} State Bird | USA Symbol";
-    ViewData["Description"] = $"Discover the {birdName} ({scientificName}), the official state bird of {stateName} since {adoptedYear}. Learn about its habitat, behavior, physical characteristics, and cultural significance.";
-    ViewData["Keywords"] = $"{stateName} state bird, {birdName}, {scientificName}, state symbols, USA state birds, {stateName} symbols, state bird facts";
-    ViewData["OgImage"] = Model.Symbol.ImageUrl ?? "/images/default-bird.jpg";
-    ViewData["OgType"] = "article";
-    ViewData["Canonical"] = $"/states/{Model.State.Slug}/bird";
+    var colors = Model.Colors;
 
+    var designationRaw = (Model.Symbol.Designation ?? "").Trim();
+    var designation = string.IsNullOrWhiteSpace(designationRaw)
+        ? "State Bird"
+        : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+
+    var h1 = $"{stateName} {designation}: {birdName}";
+
+    ViewData["Title"] = Model.BirdContent?.SeoTitle ?? h1;
+
+    var descRaw = Model.BirdContent?.SeoDescription ?? "";
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {stateName}'s {designation.ToLowerInvariant()} {birdName}, including adoption, history, and meaning."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+
+    ViewData["OgImage"] = Images.Full(Model.Symbol.ImageUrl ?? Model.State.FlagImageUrl);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol.ToSymbolUrl(Model.State.Slug);
+
+    var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+
+    string? birdAudioSrc = null;
+    var birdSoundsRoot = string.IsNullOrWhiteSpace(WebHostEnvironment.WebRootPath)
+        ? string.Empty
+        : System.IO.Path.Combine(WebHostEnvironment.WebRootPath, "sounds", "birds");
+
+    if (!string.IsNullOrWhiteSpace(birdSoundsRoot) && System.IO.Directory.Exists(birdSoundsRoot))
+    {
+        var slugKey = NormalizeBirdAudioKey(Model.Symbol.Slug);
+        var nameKey = NormalizeBirdAudioKey(birdName);
+
+        var audioMatch = System.IO.Directory
+            .EnumerateFiles(birdSoundsRoot, "*.mp3")
+            .Select(path => new
+            {
+                FileName = System.IO.Path.GetFileName(path),
+                Key = NormalizeBirdAudioKey(System.IO.Path.GetFileNameWithoutExtension(path))
+            })
+            .FirstOrDefault(file =>
+                file.Key == slugKey ||
+                file.Key == nameKey ||
+                string.Equals(file.FileName, $"{Model.Symbol.Slug}.mp3", StringComparison.OrdinalIgnoreCase));
+
+        if (audioMatch != null)
+        {
+            birdAudioSrc = $"/sounds/birds/{audioMatch.FileName}";
+        }
+    }
+
+    var sections = (Model.Sections ?? new List<IContentSection>())
+        .Where(section => section?.Facts?.Any() != true)
+        .ToList();
+    var firstSection = sections.Take(1).ToList();
+    var secondSection = sections.Skip(1).Take(1).ToList();
+    var thirdSection = sections.Skip(2).Take(1).ToList();
+    var remainingSections = sections.Skip(3).ToList();
+
+    var firstSectionsViewData = BuildSectionsViewData(ViewData, firstSection, true);
+    var secondSectionsViewData = BuildSectionsViewData(ViewData, secondSection, true);
+    var thirdSectionsViewData = BuildSectionsViewData(ViewData, thirdSection, true);
+    var finalSectionsViewData = BuildSectionsViewData(ViewData, remainingSections, false);
+    var quoteAfterSectionId = Model.BirdContent?.ExpertQuoteAfterSectionId ?? string.Empty;
+    var timelineAfterSectionId = Model.BirdContent?.TimelineAfterSectionId ?? string.Empty;
+    var statAfterSectionId = Model.BirdContent?.BigStatAfterSectionId ?? string.Empty;
+    var quoteAfterFirstSection = ContainsSectionId(firstSection, quoteAfterSectionId);
+    var quoteAfterSecondSection = ContainsSectionId(secondSection, quoteAfterSectionId);
+    var quoteAfterThirdSection = ContainsSectionId(thirdSection, quoteAfterSectionId);
+    var quoteAfterRemainingSections = ContainsSectionId(remainingSections, quoteAfterSectionId);
+    var timelineAfterFirstSection = ContainsSectionId(firstSection, timelineAfterSectionId);
+    var timelineAfterSecondSection = ContainsSectionId(secondSection, timelineAfterSectionId);
+    var timelineAfterThirdSection = ContainsSectionId(thirdSection, timelineAfterSectionId);
+    var timelineAfterRemainingSections = ContainsSectionId(remainingSections, timelineAfterSectionId);
+    var statAfterFirstSection = ContainsSectionId(firstSection, statAfterSectionId);
+    var statAfterSecondSection = ContainsSectionId(secondSection, statAfterSectionId);
+    var statAfterThirdSection = ContainsSectionId(thirdSection, statAfterSectionId);
+    var statAfterRemainingSections = ContainsSectionId(remainingSections, statAfterSectionId);
+    var hasPlacementStoryBlocks =
+        !string.IsNullOrWhiteSpace(quoteAfterSectionId) ||
+        !string.IsNullOrWhiteSpace(timelineAfterSectionId) ||
+        !string.IsNullOrWhiteSpace(statAfterSectionId);
+
+    var hasQuote = Model.BirdContent?.ExpertQuote != null && !string.IsNullOrWhiteSpace(Model.BirdContent.ExpertQuote.Text);
+    var hasTimeline = Model.BirdContent?.Timeline?.Any() == true;
+    var hasBigStat = Model.BirdContent?.BigStat != null && !string.IsNullOrWhiteSpace(Model.BirdContent.BigStat.Number);
+    var hasQuiz = Model.QuizQuestions?.Any() == true;
+    var hasAudio = !string.IsNullOrWhiteSpace(birdAudioSrc);
+    var hasMeaning = !string.IsNullOrWhiteSpace(Model.Meaning);
+    var introText = Model.BirdContent?.IntroText ?? string.Empty;
+    var overviewText = !string.IsNullOrWhiteSpace(introText)
+        ? introText
+        : adoptedYear > 0 && !string.IsNullOrWhiteSpace(scientificName)
+            ? $"In <strong>{adoptedYear}</strong>, {stateName} designated the {birdName} (<span class=\"italic\">{scientificName}</span>) as its official state bird."
+            : $"The {birdName} is recognized as the official {designation.ToLowerInvariant()} of {stateName}.";
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    heroDescriptionSource = System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1");
+    var heroDescription = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, "<.*?>", " ")).Trim();
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#1b2230_0%,#1f2735_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-amber-200/0",
+        PrimaryGlowClass = "bg-amber-300/10",
+        SecondaryGlowClass = "bg-sky-200/10",
+        AccentDotClass = "bg-amber-300",
+        MediaBackgroundClass = "bg-slate-100/10",
+        FallbackIconClass = "fa-solid fa-dove",
+        Title = h1,
+        Subtitle = scientificName,
+        Description = heroDescription,
+        LegalReference = Model.Legislation,
+        ImageUrl = Model.Symbol.ImageUrl,
+        ImageAlt = $"{birdName} - {stateName} {designation}",
+        FigureTitle = birdName,
+        FigureSubtitle = $"Official {designation} of {stateName}",
+        ImageLinkUrl = Model.Symbol.ImageUrl,
+        EyebrowItems = new List<string> { stateName, designation, adoptedYear > 0 ? $"Adopted {adoptedYear}" : string.Empty }
+    };
 }
 
-<!-- BREADCRUMBS -->
-<nav class="max-w-6xl mx-auto px-4 py-4 text-sm text-gray-600">
-    <a href="/" class="hover:text-blue-900 transition">Home</a> /
-    <a href="/symbols" class="hover:text-blue-900 transition">Symbols</a> /
-    <a href="/symbols/birds" class="hover:text-blue-900 transition">State Birds</a> /
-    <span class="text-gray-900 font-semibold">@Model.State.Name</span>
+<style>
+    .bird-editorial {
+        color: #161B26;
+    }
+
+    .bird-editorial .content-flow h2 {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        color: #161B26;
+        font-size: 41px;
+        font-weight: 700;
+        line-height: 50px;
+        letter-spacing: -0.02em;
+    }
+
+    .bird-editorial .content-flow h3 {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        color: #161B26;
+        font-size: 23px;
+        font-weight: 700;
+        line-height: 50px;
+        letter-spacing: 0;
+    }
+
+    .bird-editorial .site-content,
+    .bird-editorial .site-content p,
+    .bird-editorial .site-content li,
+    .bird-editorial .site-content dd,
+    .bird-editorial .site-content blockquote,
+    .bird-editorial .site-content .prose,
+    .bird-editorial .content-flow > section > div,
+    .bird-editorial .content-flow > div {
+        font-size: 19px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 34px;
+        letter-spacing: 0.19px;
+    }
+
+    .bird-editorial #overview h2,
+    .bird-editorial #symbolic-meaning h2,
+    .bird-editorial #shared-states h2,
+    .bird-editorial #bird-quiz h2,
+    .bird-editorial #bird-songs h2,
+    .bird-editorial #faq h2,
+    .bird-editorial #sources h2 {
+        font-size: 41px;
+        line-height: 50px;
+        letter-spacing: -0.02em;
+        text-transform: none;
+    }
+
+    .bird-editorial #overview .site-content,
+    .bird-editorial #symbolic-meaning .site-content,
+    .bird-editorial #overview .site-content p,
+    .bird-editorial #symbolic-meaning .site-content p {
+        font-size: 19px;
+        line-height: 34px;
+        letter-spacing: 0.19px;
+    }
+
+    @@media (max-width: 767px) {
+        .bird-editorial .content-flow h2,
+        .bird-editorial #overview h2,
+        .bird-editorial #symbolic-meaning h2,
+        .bird-editorial #shared-states h2,
+        .bird-editorial #bird-quiz h2,
+        .bird-editorial #bird-songs h2,
+        .bird-editorial #faq h2,
+        .bird-editorial #sources h2 {
+            font-size: 26px;
+            line-height: 37px;
+            letter-spacing: -0.405px;
+        }
+
+        .bird-editorial .content-flow h3 {
+            font-size: 19px;
+            line-height: 24px;
+            letter-spacing: 0.38px;
+        }
+
+        .bird-editorial .site-content,
+        .bird-editorial .site-content p,
+        .bird-editorial .site-content li,
+        .bird-editorial .site-content dd,
+        .bird-editorial .site-content blockquote,
+        .bird-editorial .site-content .prose,
+        .bird-editorial .content-flow > section > div,
+        .bird-editorial .content-flow > div,
+        .bird-editorial #overview .site-content,
+        .bird-editorial #symbolic-meaning .site-content,
+        .bird-editorial #overview .site-content p,
+        .bird-editorial #symbolic-meaning .site-content p {
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: 0.18px;
+        }
+    }
+</style>
+
+<nav class="sticky top-16 z-30 bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
 </nav>
 
-<!-- MAIN CONTENT -->
-<main class="max-w-6xl mx-auto px-4 pb-12">
+<div id="top"></div>
 
-    <!-- PAGE TITLE -->
-    <div class="mb-8 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
-            @Model.State.Name State Bird: @(Model.BirdContent?.Title ?? Model.Symbol.Name)
-        </h1>
-        @if (Model.Symbol.AdoptedYear.HasValue || Model.BirdContent?.AdoptedYear.HasValue == true)
+<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="bird-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[228px_minmax(0,760px)_320px] xl:gap-12 2xl:grid-cols-[240px_minmax(0,780px)_340px] 2xl:gap-14 relative">
+
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <aside class="hidden xl:block relative self-start xl:sticky xl:top-32">
+                <div class="max-h-[calc(100vh-9rem)] overflow-y-auto pr-2 pb-10 [scrollbar-width:thin]">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                </div>
+            </aside>
+
+            <div class="min-w-0">
+                <div class="content-flow site-content">
+                    <section id="overview" class="mt-10">
+                        <div class="relative overflow-hidden bg-[linear-gradient(90deg,rgba(255,255,255,0.24),rgba(255,249,240,0.04))] px-5 py-6 sm:px-6 lg:px-8 lg:py-7">
+                            <div class="absolute left-0 top-7 bottom-7 w-[3px] bg-[linear-gradient(180deg,#d8b36a_0%,#c46243_100%)]"></div>
+                            <div class="flex items-start gap-4 lg:gap-5">
+                                <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/75 text-slate-600">
+                                    <i class="fa-solid fa-feather-pointed text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
+                                    <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                        @overviewText.RenderAutoLinks()
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    @if (quickFacts.Any())
+                    {
+                        <div class="xl:hidden">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    }
+
+                    @if (hasMeaning)
+                    {
+                        <section id="symbolic-meaning" class="content-divider">
+                            <div class="rounded-[1.6rem] border border-slate-200/80 bg-white/40 p-6 sm:p-7">
+                                <div class="flex items-start gap-4 lg:gap-5">
+                                    <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/70 text-slate-600">
+                                        <i class="fa-solid fa-book-open text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Symbolic Meaning</div>
+                                        <div class="mt-3 max-w-3xl text-slate-700">
+                                            @Model.Meaning.RenderAutoLinks()
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    @if (firstSection.Any())
+                    {
+                        @await Html.PartialAsync("_Sections", Model, firstSectionsViewData)
+                    }
+
+                    @if (hasQuote && ((hasPlacementStoryBlocks && quoteAfterFirstSection) || (!hasPlacementStoryBlocks)))
+                    {
+                        @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.BirdContent!.ExpertQuote!)
+                    }
+
+                    @if (hasTimeline && hasPlacementStoryBlocks && timelineAfterFirstSection)
+                    {
+                        @await Html.PartialAsync("Components/Story/_Timeline", Model.BirdContent!.Timeline)
+                    }
+
+                    @if (hasBigStat && hasPlacementStoryBlocks && statAfterFirstSection)
+                    {
+                        @await Html.PartialAsync("Components/Story/_BigStat", Model.BirdContent!.BigStat!)
+                    }
+
+                    @if (!secondSection.Any())
+                    {
+                        if (hasAudio)
+                        {
+                            <section id="bird-songs" class="content-divider">
+                                <div class="overflow-hidden border border-slate-200/80 bg-white/65">
+                                    <div class="border-b border-slate-200/80 px-5 py-4 sm:px-6">
+                                        <div class="flex items-center gap-4">
+                                            <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-slate-100 text-slate-700">
+                                                <i class="fa-solid fa-headphones text-xs"></i>
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <h2 class="!text-[1.65rem] !leading-[1.15] text-slate-900">@birdName Songs and Calls</h2>
+                                                <div class="mt-1 text-sm leading-6 text-slate-500">A quick field-listening break while the article is still fresh.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-5 sm:p-6">
+                                        <div class="plyr__audio-container">
+                                            <audio id="birdPlayer" class="plyr w-full" controls preload="none">
+                                                <source src="@birdAudioSrc" type="audio/mp3" />
+                                            </audio>
+                                        </div>
+
+                                        <p class="mt-3 text-[13px] leading-6 text-slate-500">
+                                            Audio licensed under
+                                            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               class="underline hover:text-slate-700">
+                                                CC BY-NC-SA 4.0
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+                        else if (quickFacts.Any())
+                        {
+                        }
+                    }
+
+                    @if (secondSection.Any())
+                    {
+                        @await Html.PartialAsync("_Sections", Model, secondSectionsViewData)
+
+                        @if (hasQuote && hasPlacementStoryBlocks && quoteAfterSecondSection)
+                        {
+                            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.BirdContent!.ExpertQuote!)
+                        }
+
+                        @if (hasTimeline && hasPlacementStoryBlocks && timelineAfterSecondSection)
+                        {
+                            @await Html.PartialAsync("Components/Story/_Timeline", Model.BirdContent!.Timeline)
+                        }
+
+                        @if (hasBigStat && hasPlacementStoryBlocks && statAfterSecondSection)
+                        {
+                            @await Html.PartialAsync("Components/Story/_BigStat", Model.BirdContent!.BigStat!)
+                        }
+
+                        if (hasAudio)
+                        {
+                            <section id="bird-songs" class="content-divider">
+                                <div class="overflow-hidden border border-slate-200/80 bg-white/65">
+                                    <div class="border-b border-slate-200/80 px-5 py-4 sm:px-6">
+                                        <div class="flex items-center gap-4">
+                                            <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-slate-100 text-slate-700">
+                                                <i class="fa-solid fa-headphones text-xs"></i>
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <h2 class="!text-[1.65rem] !leading-[1.15] text-slate-900">@birdName Songs and Calls</h2>
+                                                <div class="mt-1 text-sm leading-6 text-slate-500">A quick field-listening break before the next section.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-5 sm:p-6">
+                                        <div class="plyr__audio-container">
+                                            <audio id="birdPlayer" class="plyr w-full" controls preload="none">
+                                                <source src="@birdAudioSrc" type="audio/mp3" />
+                                            </audio>
+                                        </div>
+
+                                        <p class="mt-3 text-[13px] leading-6 text-slate-500">
+                                            Audio licensed under
+                                            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               class="underline hover:text-slate-700">
+                                                CC BY-NC-SA 4.0
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+                        else if (quickFacts.Any())
+                        {
+                        }
+                    }
+
+                    @if (thirdSection.Any())
+                    {
+                        @await Html.PartialAsync("_Sections", Model, thirdSectionsViewData)
+
+                        @if (hasQuote && hasPlacementStoryBlocks && quoteAfterThirdSection)
+                        {
+                            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.BirdContent!.ExpertQuote!)
+                        }
+
+                        @if (hasTimeline && hasPlacementStoryBlocks && timelineAfterThirdSection)
+                        {
+                            @await Html.PartialAsync("Components/Story/_Timeline", Model.BirdContent!.Timeline)
+                        }
+
+                        @if (hasBigStat && hasPlacementStoryBlocks && statAfterThirdSection)
+                        {
+                            @await Html.PartialAsync("Components/Story/_BigStat", Model.BirdContent!.BigStat!)
+                        }
+                    }
+
+                    @if (hasQuiz)
+                    {
+                        <section id="bird-quiz" class="content-divider">
+                            <div class="overflow-hidden border border-slate-200/80 bg-white/70 text-slate-900">
+                                <div class="border-b border-slate-200/80 px-5 py-4 sm:px-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-slate-100 text-slate-700">
+                                            <i class="fas fa-graduation-cap text-xs"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <h2 class="!text-[1.65rem] !leading-[1.15] text-slate-900">Test your knowledge</h2>
+                                            <div class="mt-1 text-sm leading-6 text-slate-500">A short quiz while the key details are still top of mind.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-5 sm:p-6 text-slate-900">
+                                    @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
+                                </div>
+
+                                <div class="border-t border-slate-200/80 px-5 py-4 sm:px-6">
+                                    <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                                        <span>Explore more quizzes</span>
+                                        <i class="fas fa-arrow-right shrink-0 text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    @await Html.PartialAsync("_Sections", Model, finalSectionsViewData)
+
+                    @if (hasQuote && hasPlacementStoryBlocks && quoteAfterRemainingSections)
+                    {
+                        @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.BirdContent!.ExpertQuote!)
+                    }
+
+                    @if (hasTimeline && ((hasPlacementStoryBlocks && timelineAfterRemainingSections) || !hasPlacementStoryBlocks))
+                    {
+                        @await Html.PartialAsync("Components/Story/_Timeline", Model.BirdContent!.Timeline)
+                    }
+
+                    @if (hasBigStat && ((hasPlacementStoryBlocks && statAfterRemainingSections) || !hasPlacementStoryBlocks))
+                    {
+                        @await Html.PartialAsync("Components/Story/_BigStat", Model.BirdContent!.BigStat!)
+                    }
+
+                    @if (Model.HasSharedStates)
+                    {
+                        <section id="shared-states" class="content-divider">
+                            <div class="overflow-hidden border border-slate-200/80 bg-white/60">
+                                <div class="px-5 py-4 bg-transparent">
+                                    <h2 class="!text-[1.65rem] !leading-[1.15] text-slate-900">Also the state bird of</h2>
+                                    <p class="text-sm text-slate-600">Other states that share this official bird.</p>
+                                </div>
+
+                                <div class="p-5">
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach (var state in Model.BirdContent!.SharedStates)
+                                        {
+                                            <a href="/states/@state.ToLower().Replace(" ", "-")/bird/@Model.Symbol.Slug"
+                                               class="inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-3 py-1.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 transition">
+                                                @state
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    <section id="faq" class="content-divider">
+                        @await Html.PartialAsync("_Faq", Model)
+                    </section>
+
+                    <section id="sources" class="content-divider">
+                        @await Html.PartialAsync("_Sources", Model)
+                    </section>
+
+                    <div class="mt-10 space-y-8 xl:hidden">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+                </div>
+            </div>
+
+            <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+                @if (quickFacts.Any())
+                {
+                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                        <div class="sticky top-32 pr-2">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    </section>
+                }
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
         {
-            <p class="text-xl text-gray-600">A Symbol of Vitality and Resilience Since @(Model.BirdContent?.AdoptedYear ?? Model.Symbol.AdoptedYear)</p>
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+            </div>
         }
-    </div>
-
-    <!-- AUTHOR BOX -->
-@if (Model.BirdContent != null)
-{
-        <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-600 mb-8 shadow-sm">
-            <div class="flex items-center justify-between flex-wrap gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-lg border-2 border-blue-200 bg-gradient-to-br from-blue-900 to-blue-600 flex items-center justify-center text-white font-bold text-xl">
-                        US
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-sm font-semibold text-gray-800">
-                                Researched by @(Model.BirdContent.Author ?? "USA Symbol Team")
-                            </span>
-                            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <p class="text-xs text-gray-500">
-                            Fact-checked • Updated @(Model.BirdContent.DateModified?.ToString("MMMM d, yyyy") ?? DateTime.Now.ToString("MMMM d, yyyy"))
-                        </p>
-                    </div>
-                </div>
-                <div>
-                    <a href="/about" class="text-blue-700 hover:text-blue-900 font-semibold text-sm transition">About Editor</a>
-                </div>
-            </div>
-        </div>
-}
-
-    <!-- HERO SECTION WITH COLOR CARDS -->
-    <section class="mb-12">
-        <div class="bg-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-xl">
-            <div class="grid md:grid-cols-2 gap-0">
-                <!-- Left: Bird Image -->
-                <div class="h-96 bg-gradient-to-br from-pink-100 to-red-50 flex items-center justify-center p-8">
-                    @if (!string.IsNullOrEmpty(Model.Symbol.ImageUrl))
-                    {
-                        <img src="@Model.Symbol.ImageUrl" alt="@Model.Symbol.Name" class="max-h-full object-contain">
-                    }
-                    else
-                    {
-                        <div class="text-center">
-                            <div class="text-9xl mb-4">🦅</div>
-                            <p class="text-sm text-gray-500 font-medium">@Model.Symbol.Name</p>
-                        </div>
-                    }
-                </div>
-
-                <!-- Right: Info + Color Cards -->
-                <div class="p-8">
-                    <div class="inline-block bg-blue-100 text-blue-800 px-3 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-wide">
-                        Official State Bird
-                    </div>
-
-                    <h2 class="text-4xl font-bold text-gray-900 mb-3">@(Model.BirdContent?.Title ?? Model.Symbol.Name)</h2>
-
-                    @if (!string.IsNullOrEmpty(Model.BirdContent?.ScientificName))
-                    {
-                        <p class="text-lg text-gray-600 italic mb-6">Scientific name: @Model.BirdContent.ScientificName</p>
-                    }
-
-                    @if (Model.BirdContent?.AdoptedYear.HasValue == true)
-                    {
-                        <p class="text-gray-700 mb-6"><span class="font-semibold">Adopted:</span> @Model.BirdContent.AdoptedYear</p>
-                    }
-
-                    <!-- Color Cards Grid -->
-                    <div class="grid grid-cols-2 gap-3 mt-6">
-                        @if (Model.HasSharedStates)
-                        {
-                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <div class="text-xs text-blue-700 font-bold uppercase mb-1">Also State Bird Of</div>
-                                <div class="font-bold text-gray-900">@Model.BirdContent!.SharedStatesText</div>
-                                <div class="text-xs text-gray-600 mt-1">@string.Join(", ", Model.BirdContent.SharedStates.Take(3))</div>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(Model.BirdContent?.Habitat))
-                        {
-                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                                <div class="text-xs text-green-700 font-bold uppercase mb-1">Habitat</div>
-                                <div class="font-bold text-gray-900">@Model.BirdContent.Habitat</div>
-                                <div class="text-xs text-gray-600 mt-1">Year-round resident</div>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(Model.BirdContent?.DistinctiveSong))
-                        {
-                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                                <div class="text-xs text-purple-700 font-bold uppercase mb-1">Distinctive Song</div>
-                                <div class="font-bold text-gray-900">@Model.BirdContent.DistinctiveSong</div>
-                                <div class="text-xs text-gray-600 mt-1">Sings year-round</div>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(Model.BirdContent?.Coloration))
-                        {
-                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                                <div class="text-xs text-red-700 font-bold uppercase mb-1">Coloration</div>
-                                <div class="font-bold text-gray-900">@Model.BirdContent.Coloration</div>
-                                <div class="text-xs text-gray-600 mt-1">@Model.BirdContent.ColorationDetails</div>
-                            </div>
-                        }
-                    </div>
-
-                    <p class="text-gray-700 leading-relaxed mt-6">
-                        The Northern Cardinal is one of North America's most recognizable and beloved songbirds. With its brilliant red plumage, distinctive crest, and cheerful song, this bird has captured the hearts of Illinois residents for nearly a century.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- MAIN CONTENT WITH SIDEBAR -->
-    <div class="grid lg:grid-cols-3 gap-8">
-        <!-- LEFT: Main Content (2/3) -->
-        <div class="lg:col-span-2">
-            <!-- CONTENT SECTIONS -->
-            @if (Model.BirdContent?.Sections != null)
-{
-    foreach (var contentSection in Model.BirdContent.Sections)
-    {
-        var bgClass = contentSection.Style == "gradient"
-        ? "bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200"
-        : "bg-white border-gray-200";
-
-            <section class="mb-8">
-                <div class="@bgClass p-8 rounded-2xl shadow-lg border-2">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                        <i class="@contentSection.Icon text-blue-700 text-2xl"></i>
-                        @contentSection.Title
-                    </h2>
-
-                    @* Simple Paragraphs *@
-                    @if (contentSection.Paragraphs != null)
-                    {
-                        foreach (var paragraph in contentSection.Paragraphs)
-                        {
-                            <p class="text-gray-700 leading-relaxed mb-4 text-lg">@paragraph</p>
-                        }
-                    }
-
-                    @* Subsections *@
-                    @if (contentSection.Subsections != null)
-                    {
-                        @if (contentSection.Id == "history")
-                        {
-                            <!-- TIMELINE DESIGN for History -->
-                            <div class="relative mt-8">
-                                <div class="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-blue-300"></div>
-
-                                @for (int i = 0; i < contentSection.Subsections.Count; i++)
-                                {
-                                    var subsection = contentSection.Subsections[i];
-                                    var isEven = i % 2 == 0;
-
-                                    <div class="relative mb-12 @(isEven ? "md:pr-8 md:text-right" : "md:pl-8 md:ml-auto md:w-1/2")">
-                                        <!-- Timeline dot -->
-                                        <div class="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 w-6 h-6 bg-blue-600 rounded-full border-4 border-white shadow-lg"></div>
-
-                                        <div class="ml-12 md:ml-0 bg-white rounded-xl p-6 shadow-lg border-2 border-blue-200">
-                                            <h3 class="text-xl font-bold text-blue-900 mb-3">@subsection.Subtitle</h3>
-                                            <p class="text-gray-700 leading-relaxed">@subsection.Text</p>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        }
-                        else if (contentSection.Id == "why-chosen")
-                        {
-                            <!-- SPECIAL CARDS for Why Was Chosen -->
-                            <div class="grid md:grid-cols-2 gap-6 mt-6">
-                                @foreach (var subsection in contentSection.Subsections)
-                                {
-                                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6 border-2 border-blue-300 shadow-lg">
-                                        <h3 class="text-xl font-bold text-blue-900 mb-3 flex items-center gap-2">
-                                            <i class="fas fa-star text-yellow-500"></i>
-                                            @subsection.Subtitle
-                                        </h3>
-                                        <p class="text-gray-700 leading-relaxed">@subsection.Text</p>
-                                    </div>
-                                }
-                            </div>
-                        }
-                        else if (contentSection.Id == "symbolism")
-                        {
-                            <!-- HEART CARDS for Symbolism -->
-                            <div class="space-y-4 mt-6">
-                                @foreach (var subsection in contentSection.Subsections)
-                                {
-                                    <div class="bg-gradient-to-r from-red-50 to-pink-50 rounded-xl p-6 border-l-4 border-red-500 shadow-md">
-                                        <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                            <i class="fas fa-heart text-red-500"></i>
-                                            @subsection.Subtitle
-                                        </h3>
-                                        <p class="text-gray-700 leading-relaxed text-lg">@subsection.Text</p>
-                                    </div>
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <!-- DEFAULT DESIGN for other sections -->
-                            <div class="space-y-6 mt-6">
-                                @foreach (var subsection in contentSection.Subsections)
-                                {
-                                    <div>
-                                        <h3 class="text-xl font-bold text-gray-900 mb-3">@subsection.Subtitle</h3>
-                                        @if (!string.IsNullOrEmpty(subsection.Text))
-                                        {
-                                            <p class="text-gray-700 leading-relaxed text-lg">@subsection.Text</p>
-                                        }
-                                        @if (subsection.ListItems != null)
-                                        {
-                                            <ul class="mt-3 space-y-2">
-                                                @foreach (var item in subsection.ListItems)
-                                                {
-                                                    <li class="flex items-start gap-3">
-                                                        <i class="fas fa-check-circle text-green-600 mt-1 flex-shrink-0"></i>
-                                                        <span class="text-gray-700 leading-relaxed">@item</span>
-                                                    </li>
-                                                }
-                                            </ul>
-                                        }
-                                    </div>
-                                }
-                            </div>
-                        }
-                    }
-
-                            @* Facts List - Interactive Quest *@
-                            @if (contentSection.Facts != null && contentSection.Facts.Any())
-                            {
-                                <div class="mt-8">
-                                    @if (contentSection.Style == "gradient" && contentSection.Id == "interesting-facts")
-                                    {
-                                        <!-- INTERACTIVE FACTS QUEST -->
-                                        <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-2xl overflow-hidden" id="factsQuest">
-                                            <!-- Header -->
-                                            <div class="bg-gradient-to-r from-yellow-400 to-orange-400 px-8 py-4">
-                                                <div class="flex items-center justify-between">
-                                                    <div class="flex items-center gap-3">
-                                                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                                                            <i class="fas fa-star text-yellow-500 text-2xl"></i>
-                                                        </div>
-                                                        <div>
-                                                            <h3 class="text-white font-bold text-lg">Fact Discovery Quest</h3>
-                                                            <p class="text-white/80 text-sm">Discover amazing facts!</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-white font-bold text-xl" id="factCounter">1 / @contentSection.Facts.Count</div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Fact Card -->
-                                            <div class="p-8 min-h-[200px] flex items-center justify-center">
-                                                <div class="text-center">
-                                                    <div class="text-6xl mb-4" id="factEmoji">🎯</div>
-                                                    <p class="text-white text-xl leading-relaxed font-medium" id="factText">
-                                                        @contentSection.Facts.First()
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <!-- Progress Bar -->
-                                            <div class="px-8 pb-6">
-                                                <div class="bg-white/20 rounded-full h-3 overflow-hidden">
-                                                    <div class="bg-gradient-to-r from-green-400 to-blue-500 h-full transition-all duration-500"
-                                                         id="progressBar"
-                                                         style="width: @(100.0 / contentSection.Facts.Count)%"></div>
-                                                </div>
-                                                <div class="text-center mt-3">
-                                                    <span class="text-white/80 text-sm font-medium">
-                                                        <span id="discoveredCount">1</span> of @contentSection.Facts.Count facts discovered
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <!-- Navigation -->
-                                            <div class="bg-black/20 px-8 py-5 flex justify-between items-center">
-                                                <button onclick="previousFact()"
-                                                        id="prevBtn"
-                                                        class="flex items-center gap-2 px-6 py-3 bg-white/20 text-white font-bold rounded-lg hover:bg-white/30 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <i class="fas fa-arrow-left"></i>
-                                                    Previous
-                                                </button>
-
-                                                <button onclick="nextFact()"
-                                                        id="nextBtn"
-                                                        class="flex items-center gap-2 px-6 py-3 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-lg">
-                                                    Next
-                                                    <i class="fas fa-arrow-right"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <!-- JavaScript for Facts Quest -->
-                                        <script>
-                                            const facts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(contentSection.Facts));
-                                            const emojis = ['🎯', '🔥', '✨', '🌟', '💡', '🎪', '🎨', '🎭', '🎪', '🎯', '⚡', '🌈', '🦅', '🎵', '🏆'];
-                                            let currentIndex = 0;
-
-                                            function updateFact() {
-                                                const factText = document.getElementById('factText');
-                                                const factEmoji = document.getElementById('factEmoji');
-                                                const factCounter = document.getElementById('factCounter');
-                                                const progressBar = document.getElementById('progressBar');
-                                                const discoveredCount = document.getElementById('discoveredCount');
-                                                const prevBtn = document.getElementById('prevBtn');
-                                                const nextBtn = document.getElementById('nextBtn');
-                                                const quest = document.getElementById('factsQuest');
-
-                                                // Fade out
-                                                quest.style.opacity = '0.7';
-
-                                                setTimeout(() => {
-                                                    // Update content
-                                                    factText.textContent = facts[currentIndex];
-                                                    factEmoji.textContent = emojis[currentIndex % emojis.length];
-                                                    factCounter.textContent = `${currentIndex + 1} / ${facts.length}`;
-                                                    discoveredCount.textContent = currentIndex + 1;
-
-                                                    // Update progress
-                                                    const progress = ((currentIndex + 1) / facts.length) * 100;
-                                                    progressBar.style.width = progress + '%';
-
-                                                    // Update buttons
-                                                    prevBtn.disabled = currentIndex === 0;
-
-                                                    if (currentIndex === facts.length - 1) {
-                                                        nextBtn.innerHTML = '<i class="fas fa-check"></i> Complete!';
-                                                    } else {
-                                                        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
-                                                    }
-
-                                                    // Fade in
-                                                    quest.style.opacity = '1';
-                                                }, 200);
-                                            }
-
-                                            function nextFact() {
-                                                if (currentIndex < facts.length - 1) {
-                                                    currentIndex++;
-                                                    updateFact();
-                                                }
-                                            }
-
-                                            function previousFact() {
-                                                if (currentIndex > 0) {
-                                                    currentIndex--;
-                                                    updateFact();
-                                                }
-                                            }
-
-                                            // Add transition
-                                            document.getElementById('factsQuest').style.transition = 'opacity 0.2s ease';
-
-                                            // Initialize
-                                            document.getElementById('prevBtn').disabled = true;
-                                        </script>
-                                    }
-                                    else
-                                    {
-                                        <!-- Regular list for non-gradient sections -->
-                                        <ul class="space-y-3">
-                                            @foreach (var fact in contentSection.Facts)
-                                            {
-                                                <li class="flex items-start gap-3">
-                                                    <i class="fas fa-circle text-red-600 text-xs mt-2 flex-shrink-0"></i>
-                                                    <span class="text-gray-700 leading-relaxed text-lg">@fact</span>
-                                                </li>
-                                            }
-                                        </ul>
-                                    }
-                                </div>
-                            }
-            </section>
-                }
-            }
-        </div>
-
-        <!-- RIGHT: Sidebar (1/3) -->
-        <aside class="lg:col-span-1">
-            <div class="sticky top-20 space-y-6">
-
-                <!-- Quick Facts Card -->
-                @if (Model.BirdContent != null)
-                {
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6 border-2 border-blue-300 shadow-lg">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <i class="fas fa-info-circle text-blue-700"></i>
-                            Quick Facts
-                        </h3>
-
-                        <div class="space-y-4">
-                            @if (!string.IsNullOrEmpty(Model.BirdContent.Size))
-                            {
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-ruler text-blue-600 mt-1"></i>
-                                    <div>
-                                        <div class="text-sm font-semibold text-gray-700">Size</div>
-                                        <div class="text-gray-900">@Model.BirdContent.Size</div>
-                                    </div>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(Model.BirdContent.Wingspan))
-                            {
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-dove text-blue-600 mt-1"></i>
-                                    <div>
-                                        <div class="text-sm font-semibold text-gray-700">Wingspan</div>
-                                        <div class="text-gray-900">@Model.BirdContent.Wingspan</div>
-                                    </div>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(Model.BirdContent.Weight))
-                            {
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-weight text-blue-600 mt-1"></i>
-                                    <div>
-                                        <div class="text-sm font-semibold text-gray-700">Weight</div>
-                                        <div class="text-gray-900">@Model.BirdContent.Weight</div>
-                                    </div>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(Model.BirdContent.Habitat))
-                            {
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-tree text-blue-600 mt-1"></i>
-                                    <div>
-                                        <div class="text-sm font-semibold text-gray-700">Habitat</div>
-                                        <div class="text-gray-900">@Model.BirdContent.Habitat</div>
-                                    </div>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(Model.BirdContent.ConservationStatus))
-                            {
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-shield-alt text-green-600 mt-1"></i>
-                                    <div>
-                                        <div class="text-sm font-semibold text-gray-700">Status</div>
-                                        <div class="text-gray-900">@Model.BirdContent.ConservationStatus</div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                }
-
-                <!-- Did You Know Card -->
-                <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-6 border-2 border-yellow-300 shadow-lg">
-                    <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                        <i class="fas fa-lightbulb text-yellow-600"></i>
-                        Did You Know?
-                    </h3>
-                    <p class="text-gray-700 leading-relaxed">
-                        The Northern Cardinal is the most popular state bird in America, representing seven different states.
-                        This widespread appeal reflects the bird's beauty, year-round presence, and cheerful song.
-                    </p>
-                </div>
-            </div>
-        </aside>
-    </div>
-
-    <!-- FULL WIDTH SECTIONS BELOW -->
-    @if (Model.HasSharedStates)
-    {
-        <section class="mb-10">
-            <div class="bg-yellow-50 rounded-2xl p-8 border-2 border-yellow-300 shadow-lg">
-                <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center gap-2">
-                    <i class="fas fa-flag text-yellow-600"></i>
-                    Also the State Bird of:
-                </h3>
-                <div class="flex flex-wrap gap-3">
-                    @foreach (var state in Model.BirdContent!.SharedStates)
-                    {
-                        <a href="/states/@state.ToLower().Replace(" ", "-")/bird"
-                           class="px-4 py-2 bg-white rounded-lg border-2 border-yellow-400 text-sm font-semibold hover:bg-yellow-100 transition shadow-sm">
-                            @state
-                        </a>
-                    }
-                </div>
-            </div>
-        </section>
-    }
-
-    <!-- SOURCES & REFERENCES -->
-    @if (Model.HasSources)
-    {
-        <section class="mb-12">
-            <div class="bg-gray-50 rounded-2xl p-8 border-2 border-gray-200 shadow-lg">
-                <h3 class="text-xl font-bold mb-2 text-gray-900 flex items-center gap-2">
-                    <i class="fas fa-book text-blue-700"></i>
-                    Sources & References
-                </h3>
-                <p class="text-gray-600 mb-6 text-sm">
-                    This article has been researched using authoritative sources to ensure accuracy and reliability.
-                    All information has been fact-checked and verified against official government records and scientific databases.
-                </p>
-                <div class="space-y-4">
-                    @{
-                        int sourceIndex = 1;
-                    }
-                    @foreach (var source in Model.BirdContent!.Sources)
-                    {
-                        <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                                @sourceIndex
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-bold text-gray-900 mb-1">@source.Name</div>
-                                <a href="@source.Url" target="_blank" rel="noopener noreferrer"
-                                   class="text-blue-700 hover:underline text-sm break-all">@source.Url</a>
-                                @if (!string.IsNullOrEmpty(source.Description))
-                                {
-                                    <p class="text-sm text-gray-600 mt-1">@source.Description • Accessed: @DateTime.Now.ToString("MMMM d, yyyy")</p>
-                                }
-                            </div>
-                        </div>
-                        sourceIndex++;
-                    }
-                </div>
-
-                <div class="mt-6 pt-6 border-t border-gray-300">
-                    <p class="text-sm text-gray-600">
-                        <span class="font-semibold">Accuracy Commitment:</span> We strive to maintain accurate and up-to-date information.
-                        If you notice any errors or outdated information, please <a href="/contact" class="text-blue-700 hover:underline font-medium">contact us</a>.
-                    </p>
-                </div>
-            </div>
-        </section>
-    }
-
-    <!-- OTHER STATE SYMBOLS -->
-    @if (Model.RelatedSymbols.Any())
-    {
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Other @Model.State.Name Symbols</h2>
-            <div class="grid md:grid-cols-4 gap-4">
-                @foreach (var symbol in Model.RelatedSymbols.Take(4))
-                {
-                    <a href="/states/@Model.State.Slug/@symbol.Type"
-                       class="bg-white rounded-xl p-5 shadow-md hover:shadow-xl transition border border-gray-200 hover:border-blue-500 text-center">
-                        <div class="text-4xl mb-3">@GetSymbolIcon(symbol.Type)</div>
-                        <div class="text-xs text-blue-700 font-bold uppercase mb-2">@GetSymbolTypeName(symbol.Type)</div>
-                        <h3 class="text-base font-bold text-gray-800">@symbol.Name</h3>
-                    </a>
-                }
-            </div>
-            <div class="text-center mt-6">
-                <a href="/states/@Model.State.Slug" class="text-blue-700 font-semibold hover:underline">
-                    View All @Model.State.Name Symbols →
-                </a>
-            </div>
-        </section>
-    }
-
-    <!-- PEOPLE ALSO ASK (FAQ) -->
-    @if (Model.BirdContent?.Faq != null && Model.BirdContent.Faq.Any())
-    {
-        <section class="mb-12">
-            <div class="bg-white rounded-2xl p-8 border-2 border-gray-200 shadow-lg">
-                <h3 class="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-3">
-                    <i class="fas fa-question-circle text-blue-700"></i>
-                    People Also Ask
-                </h3>
-                <div class="space-y-4">
-                    @foreach (var faq in Model.BirdContent.Faq)
-                    {
-                        <details class="group bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-500 transition">
-                            <summary class="flex justify-between items-center cursor-pointer p-5 font-semibold text-gray-900 text-lg">
-                                <span>@faq.Question</span>
-                                <i class="fas fa-chevron-down text-blue-700 group-open:rotate-180 transition-transform"></i>
-                            </summary>
-                            <div class="px-5 pb-5 pt-2 text-gray-700 leading-relaxed border-t border-gray-200">
-                                @faq.Answer
-                            </div>
-                        </details>
-                    }
-                </div>
-            </div>
-        </section>
-    }
-
-    <!-- NAVIGATION BUTTONS -->
-    <div class="flex flex-wrap gap-4 justify-center">
-        <a href="/symbols/birds"
-           class="px-8 py-3 rounded-lg bg-white border-2 border-blue-600 text-blue-600 font-bold hover:bg-blue-50 transition shadow-md">
-            ← Back to All State Birds
-        </a>
-        <a href="/states/@Model.State.Slug"
-           class="px-8 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition shadow-md">
-            See All @Model.State.Name Symbols →
-        </a>
-    </div>
-
+    </article>
 </main>
 
-
-<!-- Schema.org JSON-LD Structured Data -->
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org",
-  "@@graph": [
-    {
-      "@@type": "Article",
-      "@@id": "@Context.Request.Scheme://@Context.Request.Host@Context.Request.Path#article",
-      "headline": "@Model.State.Name State Bird: @(Model.BirdContent?.Title ?? Model.Symbol.Name)",
-      "description": "@ViewData["Description"]",
-      "image": "@(Model.Symbol.ImageUrl ?? "/images/default-bird.jpg")",
-      "datePublished": "@(Model.BirdContent?.DatePublished?.ToString("yyyy-MM-dd") ?? "2024-01-15")",
-      "dateModified": "@(Model.BirdContent?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))",
-      "author": {
-        "@@type": "Organization",
-        "name": "USA Symbol",
-        "url": "@Context.Request.Scheme://@Context.Request.Host"
-      },
-      "publisher": {
-        "@@type": "Organization",
-        "name": "USA Symbol",
-        "url": "@Context.Request.Scheme://@Context.Request.Host",
-        "logo": {
-          "@@type": "ImageObject",
-          "url": "@Context.Request.Scheme://@Context.Request.Host/images/logo.png"
-        }
-      },
-      "mainEntityOfPage": {
-        "@@type": "WebPage",
-        "@@id": "@Context.Request.Scheme://@Context.Request.Host@Context.Request.Path"
-      },
-      "about": {
-        "@@type": "Thing",
-        "name": "@(Model.BirdContent?.Title ?? Model.Symbol.Name)",
-        "description": "Official state bird of @Model.State.Name"
-      },
-      "keywords": "@Model.State.Name state bird, @(Model.BirdContent?.Title ?? Model.Symbol.Name), @(Model.BirdContent?.ScientificName ?? ""), state symbols, USA symbols"
-    },
-    {
-      "@@type": "BreadcrumbList",
-      "@@id": "@Context.Request.Scheme://@Context.Request.Host@Context.Request.Path#breadcrumb",
-      "itemListElement": [
-        {
-          "@@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "@Context.Request.Scheme://@Context.Request.Host/"
-        },
-        {
-          "@@type": "ListItem",
-          "position": 2,
-          "name": "State Symbols",
-          "item": "@Context.Request.Scheme://@Context.Request.Host/symbols"
-        },
-        {
-          "@@type": "ListItem",
-          "position": 3,
-          "name": "State Birds",
-          "item": "@Context.Request.Scheme://@Context.Request.Host/symbols/birds"
-        },
-        {
-          "@@type": "ListItem",
-          "position": 4,
-          "name": "@Model.State.Name State Bird",
-          "item": "@Context.Request.Scheme://@Context.Request.Host@Context.Request.Path"
-        }
-      ]
-    }
-    @if (Model.BirdContent?.Faq != null && Model.BirdContent.Faq.Any())
-    {
-        <text>,
-    {
-      "@@type": "FAQPage",
-      "@@id": "@Context.Request.Scheme://@Context.Request.Host@Context.Request.Path#faq",
-      "mainEntity": [
-        @for (int i = 0; i < Model.BirdContent.Faq.Count; i++)
-        {
-            var faq = Model.BirdContent.Faq[i];
-            <text>{
-          "@@type": "Question",
-          "name": "@faq.Question",
-          "acceptedAnswer": {
-            "@@type": "Answer",
-            "text": "@faq.Answer"
-          }
-        }</text>
-            if (i < Model.BirdContent.Faq.Count - 1)
-            {
-                <text>,
-        </text>
-            }
-        }
-      ]
-    }</text>
-    }
-  ]
-}
-</script>
-
-@functions {
-    string GetSymbolTypeName(string type)
-    {
-        return type switch
-        {
-            "bird" => "State Bird",
-            "flower" => "State Flower",
-            "tree" => "State Tree",
-            "motto" => "State Motto",
-            "animal" => "State Animal",
-            "flag" => "State Flag",
-            _ => $"State {char.ToUpper(type[0]) + type.Substring(1)}"
-        };
-    }
-
-    string GetSymbolIcon(string type)
-    {
-        return type switch
-        {
-            "bird" => "🦅",
-            "flower" => "🌸",
-            "tree" => "🌳",
-            "motto" => "📜",
-            "animal" => "🦌",
-            "flag" => "🏴",
-            _ => "⭐"
-        };
-    }
-}
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")
+<script src="~/js/quizEngine.js" defer></script>

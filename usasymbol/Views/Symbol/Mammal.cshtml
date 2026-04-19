@@ -1,0 +1,231 @@
+@model USASymbol.Models.ViewModels.MammalDetailViewModel
+@using System.Globalization
+@using USASymbol.Extensions
+@using USASymbol.Models.ViewModels
+@inject IImageUrlService Images
+
+@{
+    var mammalName = Model.MammalContent?.Title ?? Model.Symbol.Name;
+    var scientificName = Model.MammalContent?.ScientificName ?? Model.Symbol.ScientificName ?? "";
+    var stateName = Model.State.Name;
+    var adoptedYear = Model.MammalContent?.AdoptedYear ?? Model.Symbol.AdoptedYear ?? 0;
+    var colors = Model.Colors;
+
+    var designationRaw = (Model.Symbol.Designation ?? "").Trim();
+    var designation = string.IsNullOrWhiteSpace(designationRaw)
+        ? "State Symbol"
+        : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+
+    var h1 = $"{stateName} {designation}: {mammalName}";
+    var descRaw = Model.MammalContent?.SeoDescription ?? "";
+    var introText = Model.MammalContent?.IntroText ?? string.Empty;
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    heroDescriptionSource = System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1");
+    var heroDescription = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, "<.*?>", " ")).Trim();
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#1b2230_0%,#1f2735_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-amber-200/0",
+        PrimaryGlowClass = "bg-amber-300/10",
+        SecondaryGlowClass = "bg-sky-200/10",
+        AccentDotClass = "bg-amber-300",
+        MediaBackgroundClass = "bg-slate-100/10",
+        FallbackIconClass = "fa-solid fa-paw",
+        Title = h1,
+        Subtitle = scientificName,
+        Description = heroDescription,
+        LegalReference = Model.Legislation,
+        ImageUrl = Model.Symbol.ImageUrl,
+        ImageAlt = $"{mammalName} - {stateName} {(Model.Symbol.Designation ?? "State Mammal")}",
+        FigureTitle = mammalName,
+        FigureSubtitle = $"Official {designation} of {stateName}",
+        ImageLinkUrl = Model.Symbol.ImageUrl,
+        EyebrowItems = new List<string>
+        {
+            stateName,
+            !string.IsNullOrWhiteSpace(Model.Symbol.Designation) ? designation : string.Empty,
+            adoptedYear > 0 ? $"Adopted {adoptedYear}" : string.Empty
+        }
+    };
+
+    ViewData["Title"] = Model.MammalContent?.SeoTitle ?? h1;
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {stateName}'s {designation.ToLowerInvariant()} {mammalName}, including adoption, history, and meaning."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+    ViewData["OgImage"] = Images.Full(Model.Symbol.ImageUrl ?? Model.State.FlagImageUrl);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol.ToSymbolUrl(Model.State.Slug);
+
+    var quickFacts = (Model.MammalContent?.QuickFacts ?? new List<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+}
+
+<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+    <div class="max-w-screen-xl mx-auto px-4 py-3">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-6 lg:py-10">
+
+    <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)_304px] 2xl:gap-12">
+
+        @await Html.PartialAsync("_SymbolHero", heroModel)
+
+        <aside class="hidden lg:block">
+            <div class="sticky top-24 space-y-6">
+                @await Html.PartialAsync("_TocSidebar", Model)
+            </div>
+        </aside>
+
+        <main class="min-w-0">
+            <div class="content-flow site-content">
+                <section id="overview" class="mt-10">
+                    <div class="relative overflow-hidden bg-[linear-gradient(90deg,rgba(255,255,255,0.24),rgba(255,249,240,0.04))] px-5 py-6 sm:px-6 lg:px-8 lg:py-7">
+                        <div class="absolute left-0 top-7 bottom-7 w-[3px] bg-[linear-gradient(180deg,#d8b36a_0%,#c46243_100%)]"></div>
+                        <div class="flex items-start gap-4 lg:gap-5">
+                            <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/75 text-slate-600">
+                                <i class="fa-solid fa-paw text-sm"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
+                                <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                    @if (!string.IsNullOrEmpty(introText))
+                                    {
+                                        @introText.RenderAutoLinks()
+                                    }
+                                    else
+                                    {
+                                        <p>The @mammalName is recognized as the official @designation.ToLowerInvariant() of @stateName.</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                @if (quickFacts.Any())
+                {
+                    <div class="xl:hidden">
+                        @await Html.PartialAsync("_QuickFacts", quickFacts)
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Meaning))
+                {
+                    <section id="symbolic-meaning" class="content-divider">
+                        <div class="rounded-[1.6rem] border border-slate-200/80 bg-white/40 p-6 sm:p-7">
+                            <div class="flex items-start gap-4 lg:gap-5">
+                                <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/70 text-slate-600">
+                                    <i class="fa-solid fa-book-open text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Symbolic Meaning</div>
+                                    <div class="mt-3 max-w-3xl text-slate-700">
+                                        @Model.Meaning.RenderAutoLinks()
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                }
+
+                @await Html.PartialAsync("_Sections", Model)
+            </div>
+
+            @if (Model.QuizQuestions != null && Model.QuizQuestions.Any())
+            {
+                <section class="mt-16 mb-12">
+                    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                        <div class="px-5 py-4 border-b border-slate-200 bg-slate-50">
+                            <div class="flex items-center gap-3">
+                                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white">
+                                    <i class="fas fa-graduation-cap text-sm"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-semibold text-slate-900">Test your knowledge</h2>
+                                    <p class="text-sm text-slate-600">A quick quiz based on this page.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-5">
+                            @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
+                        </div>
+
+                        <div class="px-5 pb-5">
+                            <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                                <span>Explore more quizzes</span>
+                                <i class="fas fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            }
+
+            <section id="faq" class="content-divider">
+                @await Html.PartialAsync("_Faq", Model)
+            </section>
+
+            <section id="sources" class="content-divider">
+                @await Html.PartialAsync("_Sources", Model)
+            </section>
+
+            <div class="mt-10 space-y-8 xl:hidden">
+                @await Html.PartialAsync("_RelatedSymbols", Model)
+                @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+            </div>
+
+            <div class="content-divider">
+                @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+            </div>
+        </main>
+
+        <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+            @if (quickFacts.Any())
+            {
+                <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_QuickFacts", quickFacts)
+                    </div>
+                </section>
+            }
+
+            <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                <div class="sticky top-32 pr-2">
+                    @await Html.PartialAsync("_RelatedSymbols", Model)
+                </div>
+            </section>
+
+            <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                <div class="sticky top-32 pr-2">
+                    @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                </div>
+            </section>
+
+            <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
+                <div class="sticky top-32 pr-2">
+                    @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                </div>
+            </section>
+        </aside>
+    </div>
+
+    @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+    {
+        <div class="mt-14">
+            @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+        </div>
+    }
+</div>
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")
+<script src="~/js/quizEngine.js"></script>
+

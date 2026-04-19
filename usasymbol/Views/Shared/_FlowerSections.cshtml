@@ -1,0 +1,249 @@
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@model FlowerDetailViewModel
+@inject IImageUrlService Images
+
+@{
+    var sections = Model.FlowerContent?.Sections;
+    var relatedBird = Model.RelatedSymbols?.FirstOrDefault(s => string.Equals(s.Type, "bird", StringComparison.OrdinalIgnoreCase));
+    var flowerSymbolName = Model.Symbol?.Name ?? Model.FlowerContent?.Name ?? "State flower";
+    var stateSlug = Model.State?.Slug ?? "";
+    var stateName = Model.State?.Name ?? "";
+    var quoteDone = false;
+    var timelineDone = false;
+    var statDone = false;
+    var quoteAfterSectionId = Model.FlowerContent?.ExpertQuoteAfterSectionId ?? string.Empty;
+    var timelineAfterSectionId = Model.FlowerContent?.TimelineAfterSectionId ?? string.Empty;
+    var statAfterSectionId = Model.FlowerContent?.BigStatAfterSectionId ?? string.Empty;
+
+    bool MatchesAnyId(string? id, params string[] candidates)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return false;
+        }
+
+        return candidates.Any(candidate => string.Equals(id, candidate, StringComparison.OrdinalIgnoreCase));
+    }
+}
+
+@if (sections?.Any() == true)
+{
+    foreach (var item in sections)
+    {
+        var sectionIndex = sections.IndexOf(item);
+
+        <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            @await Html.PartialAsync("Components/Content/_SectionHeader", item)
+
+            @{
+                var sectionAssets = Model.VisualAssets?
+                    .Where(v => v != null &&
+                                !string.IsNullOrWhiteSpace(v.Src) &&
+                                string.Equals(v.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+                    .ToList()
+                    ?? new List<VisualAsset>();
+            }
+
+            @foreach (var asset in sectionAssets)
+            {
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+            }
+
+            @if (item.Paragraphs?.Any() == true)
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                    @for (var i = 0; i < item.Paragraphs.Count; i++)
+                    {
+                        <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                            @item.Paragraphs[i].RenderAutoLinks()
+                        </p>
+                    }
+                </div>
+            }
+            else if (!string.IsNullOrWhiteSpace(item.Content))
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                    @Html.Raw(item.Content)
+                </div>
+            }
+
+            @if (item.Subsections?.Any() == true)
+            {
+                <div class="mt-8 space-y-8">
+                    @foreach (var sub in item.Subsections)
+                    {
+                        <article class="pt-8 border-t border-slate-100 first:border-t-0 first:pt-0">
+                            <h3 class="text-lg lg:text-xl font-semibold text-slate-900 mb-3">@sub.Subtitle</h3>
+
+                            @if (!string.IsNullOrWhiteSpace(sub.Text))
+                            {
+                                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-700">
+                                    <p>@sub.Text.RenderAutoLinks()</p>
+                                </div>
+                            }
+
+                            @if (sub.ListItems?.Any() == true)
+                            {
+                                <ul class="mt-4 space-y-2 text-sm text-slate-700 max-w-prose">
+                                    @foreach (var listItem in sub.ListItems)
+                                    {
+                                        <li class="pl-5 relative before:content-['-'] before:absolute before:left-0 before:text-slate-400">
+                                            @listItem.RenderListItem()
+                                        </li>
+                                    }
+                                </ul>
+                            }
+
+                            @if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
+                            {
+                                <div class="mt-4">
+                                    <a href="@sub.Link.Url" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                                        <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
+                                        <i class="fas fa-arrow-right text-xs"></i>
+                                    </a>
+                                </div>
+                            }
+                        </article>
+                    }
+                </div>
+            }
+
+            @if (string.Equals(item.Id, "flower-and-bird", StringComparison.OrdinalIgnoreCase) && relatedBird != null)
+            {
+                <div class="mt-8 grid gap-4 lg:grid-cols-2">
+                    <article class="overflow-hidden rounded-[1.9rem] bg-[linear-gradient(180deg,rgba(253,242,248,0.82),rgba(255,255,255,0.98))] p-5 shadow-[0_24px_48px_-34px_rgba(15,23,42,0.24)] sm:p-6">
+                        <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">State flower</div>
+                        <div class="mt-4 overflow-hidden rounded-[1.4rem] bg-white shadow-[0_18px_32px_-24px_rgba(15,23,42,0.2)]">
+                            <div class="relative aspect-[16/11] bg-slate-50">
+                                @if (!string.IsNullOrWhiteSpace(Model.Symbol?.ImageUrl))
+                                {
+                                    <img src="@Images.Card(Model.Symbol!.ImageUrl)"
+                                         alt="@Model.Symbol.Name"
+                                         class="absolute inset-0 h-full w-full object-contain"
+                                         loading="lazy" />
+                                }
+                                else
+                                {
+                                    <div class="absolute inset-0 flex items-center justify-center text-6xl text-slate-300">
+                                        <i class="fa-solid fa-seedling"></i>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="text-xl font-semibold text-slate-900">@flowerSymbolName</h3>
+                            @if (!string.IsNullOrWhiteSpace(Model.FlowerContent?.ScientificName))
+                            {
+                                <p class="mt-1 text-sm italic text-slate-500">@Model.FlowerContent.ScientificName</p>
+                            }
+                        </div>
+                    </article>
+
+                    <a href="/states/@stateSlug/bird/@relatedBird.Slug"
+                       class="group overflow-hidden rounded-[1.9rem] bg-[linear-gradient(180deg,rgba(239,246,255,0.8),rgba(255,255,255,0.98))] p-5 shadow-[0_24px_48px_-34px_rgba(15,23,42,0.24)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_54px_-32px_rgba(15,23,42,0.28)] sm:p-6">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">State bird</div>
+                            <span class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 group-hover:text-slate-700">
+                                Open
+                                <i class="fas fa-arrow-right text-xs transition group-hover:translate-x-0.5"></i>
+                            </span>
+                        </div>
+                        <div class="mt-4 overflow-hidden rounded-[1.4rem] bg-white shadow-[0_18px_32px_-24px_rgba(15,23,42,0.2)]">
+                            <div class="relative aspect-[16/11] bg-slate-50">
+                                @if (!string.IsNullOrWhiteSpace(relatedBird.ImageUrl))
+                                {
+                                    <img src="@Images.Card(relatedBird.ImageUrl)"
+                                         alt="@relatedBird.Name"
+                                         class="absolute inset-0 h-full w-full object-contain"
+                                         loading="lazy" />
+                                }
+                                else
+                                {
+                                    <div class="absolute inset-0 flex items-center justify-center text-6xl text-slate-300">
+                                        <i class="fa-solid fa-dove"></i>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="text-xl font-semibold text-slate-900">@relatedBird.Name</h3>
+                            <p class="mt-1 text-sm text-slate-600">Official bird of @stateName</p>
+                        </div>
+                    </a>
+                </div>
+            }
+
+            @if (item.Facts?.Any() == true)
+            {
+                @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+            }
+
+            <div class="clear-both"></div>
+        </section>
+
+        @if (!statDone &&
+            !string.IsNullOrWhiteSpace(statAfterSectionId) &&
+            string.Equals(item.Id, statAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FlowerContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", Model.FlowerContent.BigStat)
+            statDone = true;
+        }
+        else if (!statDone && MatchesAnyId(item.Id, "what-is", "what-is-flower") && Model.FlowerContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", Model.FlowerContent.BigStat)
+            statDone = true;
+        }
+
+        @if (!timelineDone &&
+            !string.IsNullOrWhiteSpace(timelineAfterSectionId) &&
+            string.Equals(item.Id, timelineAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FlowerContent?.Timeline?.Any() == true)
+        {
+            @await Html.PartialAsync("Components/Story/_Timeline", Model.FlowerContent.Timeline)
+            timelineDone = true;
+        }
+        else if (!timelineDone && Model.FlowerContent?.Timeline?.Any() == true && (MatchesAnyId(item.Id, "history", "goldenrod-replacement", "adoption-history", "legal-history") || sectionIndex == 1))
+        {
+            @await Html.PartialAsync("Components/Story/_Timeline", Model.FlowerContent.Timeline)
+            timelineDone = true;
+        }
+
+        @if (!quoteDone &&
+            !string.IsNullOrWhiteSpace(quoteAfterSectionId) &&
+            string.Equals(item.Id, quoteAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.FlowerContent?.ExpertQuote != null)
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.FlowerContent.ExpertQuote)
+            quoteDone = true;
+        }
+        else if (!quoteDone && MatchesAnyId(item.Id, "symbolism", "meaning", "native-question", "legal-nuance") && Model.FlowerContent?.ExpertQuote != null)
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.FlowerContent.ExpertQuote)
+            quoteDone = true;
+        }
+    }
+
+    if (!statDone && Model.FlowerContent?.BigStat != null)
+    {
+        @await Html.PartialAsync("Components/Story/_BigStat", Model.FlowerContent.BigStat)
+    }
+
+    if (!timelineDone && Model.FlowerContent?.Timeline?.Any() == true)
+    {
+        @await Html.PartialAsync("Components/Story/_Timeline", Model.FlowerContent.Timeline)
+    }
+
+    if (!quoteDone && Model.FlowerContent?.ExpertQuote != null)
+    {
+        @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.FlowerContent.ExpertQuote)
+    }
+}
+else
+{
+    <div class="text-sm text-slate-500">
+        No sections rendered yet for this flower.
+    </div>
+}

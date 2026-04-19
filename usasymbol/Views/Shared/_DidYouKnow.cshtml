@@ -1,0 +1,20 @@
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+
+@{
+    // Find interesting facts section and get random fact
+    var interestingFacts = Model.Sections?.FirstOrDefault(s => s.Id == "interesting-facts");
+    string? randomFact = interestingFacts?.Facts?.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+}
+
+@if (!string.IsNullOrEmpty(randomFact))
+{
+    <div class="hidden md:block bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-300 shadow-md">
+        <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <i class="fas fa-lightbulb text-yellow-600"></i>
+            Did You Know?
+        </h3>
+        <p class="text-gray-700 leading-relaxed text-base md:text-lg">
+            @randomFact
+        </p>
+    </div>
+}

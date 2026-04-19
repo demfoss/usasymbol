@@ -1,0 +1,1494 @@
+@using USASymbol.Services
+@model USASymbol.Models.ViewModels.MetricComparisonViewModel
+@inject IImageUrlService Images
+
+@{
+    var titleA = Model.StateA.Name;
+    var titleB = Model.StateB.Name;
+    var isCostPage   = Model.Metric.Slug == "cost-of-living";
+    var isLifePage   = Model.Metric.Slug == "life-expectancy";
+    var isSafetyPage = Model.Metric.Slug == "violent-crime";
+    var isIntentPage = isCostPage || isLifePage || isSafetyPage;
+    var groupedOtherMetrics = Model.OtherMetrics
+        .GroupBy(m => new { m.GroupSlug, m.GroupName, m.GroupOrder })
+        .OrderBy(g => g.Key.GroupOrder)
+        .ToList();
+    var intentCards = new List<(string Icon, string Eyebrow, string Title, string Body, string Tone, string? Link)>();
+
+    string DashIfNull(string? value) => string.IsNullOrWhiteSpace(value) ? "-" : value;
+    string Money(int? value) => value.HasValue ? $"${value.Value:N0}" : "-";
+    string MoneyPerMonth(int? value) => value.HasValue ? $"${value.Value:N0}/mo" : "-";
+    string Percent(double? value, int decimals = 1) => value.HasValue ? $"{value.Value.ToString($"F{decimals}")}%" : "-";
+    string Number(double? value, int decimals = 1) => value.HasValue ? value.Value.ToString($"F{decimals}") : "-";
+    var directAnswer = Model.Result.SummaryText;
+    if (isCostPage)
+    {
+        var parts = new List<string>();
+
+        if (Model.StatsA?.CostOfLivingIndex != null && Model.StatsB?.CostOfLivingIndex != null)
+        {
+            var cheaper = Model.StatsA.CostOfLivingIndex < Model.StatsB.CostOfLivingIndex ? Model.StateA : Model.StateB;
+            var pricier = cheaper == Model.StateA ? Model.StateB : Model.StateA;
+            var diff = Math.Abs(Model.StatsA.CostOfLivingIndex.Value - Model.StatsB.CostOfLivingIndex.Value);
+            parts.Add($"{cheaper.Name} is cheaper overall by {diff:F1} cost-of-living points");
+        }
+
+        if (Model.StatsA?.IncomeTaxRatePct == 0 && Model.StatsB?.IncomeTaxRatePct != 0)
+        {
+            parts.Add($"{Model.StateA.Name} has no state income tax");
+        }
+        else if (Model.StatsB?.IncomeTaxRatePct == 0 && Model.StatsA?.IncomeTaxRatePct != 0)
+        {
+            parts.Add($"{Model.StateB.Name} has no state income tax");
+        }
+
+        if (Model.StatsA?.MedianHomeValue != null && Model.StatsB?.MedianHomeValue != null)
+        {
+            var lower = Model.StatsA.MedianHomeValue < Model.StatsB.MedianHomeValue ? Model.StateA : Model.StateB;
+            parts.Add($"{lower.Name} has lower median home values");
+        }
+
+        if (parts.Any())
+        {
+            directAnswer = string.Join(", but ", new[] { parts.First() }.Concat(parts.Skip(1).Take(2)));
+            directAnswer += ".";
+        }
+
+        if (Model.StatsA?.CostOfLivingIndex != null && Model.StatsB?.CostOfLivingIndex != null)
+        {
+            var lower = Model.StatsA.CostOfLivingIndex < Model.StatsB.CostOfLivingIndex ? Model.StateA : Model.StateB;
+            var higher = lower == Model.StateA ? Model.StateB : Model.StateA;
+            var diff = Math.Abs(Model.StatsA.CostOfLivingIndex.Value - Model.StatsB.CostOfLivingIndex.Value);
+            intentCards.Add((
+                "fa-solid fa-cart-shopping",
+                "Overall",
+                $"{lower.Name} feels cheaper overall",
+                $"{lower.Name} has the lower cost-of-living index, beating {higher.Name} by {diff:F1} points on the overall affordability baseline.",
+                "from-amber-100 via-orange-50 to-white",
+                "/compare/" + Model.PairSlug + "/cost-of-living"));
+        }
+
+        if (Model.StatsA?.MedianHomeValue != null && Model.StatsB?.MedianHomeValue != null)
+        {
+            var lower = Model.StatsA.MedianHomeValue < Model.StatsB.MedianHomeValue ? Model.StateA : Model.StateB;
+            var higher = lower == Model.StateA ? Model.StateB : Model.StateA;
+            var ratio = Math.Round((double)Math.Max(Model.StatsA.MedianHomeValue.Value, Model.StatsB.MedianHomeValue.Value) / Math.Min(Model.StatsA.MedianHomeValue.Value, Model.StatsB.MedianHomeValue.Value), 1);
+            intentCards.Add((
+                "fa-solid fa-house",
+                "Housing",
+                $"pay about {ratio:F1}x more for a home",
+                $"{lower.Name} has the lower median home value, while buying in {higher.Name} costs materially more at the median.",
+                "from-sky-100 via-cyan-50 to-white",
+                "/compare/" + Model.PairSlug + "/home-value"));
+        }
+
+        if (Model.StatsA?.RentToIncomeRatioPct().HasValue == true && Model.StatsB?.RentToIncomeRatioPct().HasValue == true)
+        {
+            var lower = Model.StatsA.RentToIncomeRatioPct() < Model.StatsB.RentToIncomeRatioPct() ? Model.StateA : Model.StateB;
+            var higher = lower == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-key",
+                "Rent Pressure",
+                $"{lower.Name} puts less pressure on a median paycheck",
+                $"Median rent takes a smaller share of household income in {lower.Name} than in {higher.Name}, which makes monthly budgeting easier.",
+                "from-emerald-100 via-lime-50 to-white",
+                "/compare/" + Model.PairSlug + "/rent-to-income"));
+        }
+
+        if (Model.StatsA?.IncomeTaxRatePct == 0 && Model.StatsB?.IncomeTaxRatePct != 0)
+        {
+            intentCards.Add((
+                "fa-solid fa-file-invoice-dollar",
+                "Taxes",
+                $"{Model.StateA.Name} has no state income tax",
+                $"{Model.StateA.Name} gives residents a cleaner paycheck-level tax advantage, while {Model.StateB.Name} still taxes income at the state level.",
+                "from-rose-100 via-pink-50 to-white",
+                "/compare/" + Model.PairSlug + "/income-tax"));
+        }
+        else if (Model.StatsB?.IncomeTaxRatePct == 0 && Model.StatsA?.IncomeTaxRatePct != 0)
+        {
+            intentCards.Add((
+                "fa-solid fa-file-invoice-dollar",
+                "Taxes",
+                $"{Model.StateB.Name} has no state income tax",
+                $"{Model.StateB.Name} gives residents a cleaner paycheck-level tax advantage, while {Model.StateA.Name} still taxes income at the state level.",
+                "from-rose-100 via-pink-50 to-white",
+                "/compare/" + Model.PairSlug + "/income-tax"));
+        }
+        else if (Model.StatsA?.IncomeTaxRatePct != null && Model.StatsB?.IncomeTaxRatePct != null)
+        {
+            var lower = Model.StatsA.IncomeTaxRatePct < Model.StatsB.IncomeTaxRatePct ? Model.StateA : Model.StateB;
+            intentCards.Add((
+                "fa-solid fa-file-invoice-dollar",
+                "Taxes",
+                $"{lower.Name} keeps more income after state tax",
+                $"{lower.Name} has the lower top state income tax rate, which softens the total cost picture even when prices are close.",
+                "from-rose-100 via-pink-50 to-white",
+                "/compare/" + Model.PairSlug + "/income-tax"));
+        }
+
+        if (Model.StatsA?.AverageTemperatureF != null && Model.StatsB?.AverageTemperatureF != null)
+        {
+            var warmer = Model.StatsA.AverageTemperatureF > Model.StatsB.AverageTemperatureF ? Model.StateA : Model.StateB;
+            var cooler = warmer == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-temperature-half",
+                "Climate",
+                $"{warmer.Name} stays warmer overall",
+                $"{warmer.Name} averages a warmer annual temperature than {cooler.Name}, which can materially change the day-to-day feel of living there.",
+                "from-orange-100 via-amber-50 to-white",
+                "/compare/" + Model.PairSlug + "/average-temperature"));
+        }
+
+        if (Model.StatsA?.SunnyDaysPerYear != null && Model.StatsB?.SunnyDaysPerYear != null)
+        {
+            var sunnier = Model.StatsA.SunnyDaysPerYear > Model.StatsB.SunnyDaysPerYear ? Model.StateA : Model.StateB;
+            var cloudier = sunnier == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-cloud-sun",
+                "Sunshine",
+                $"{sunnier.Name} gets more bright days",
+                $"{sunnier.Name} averages more sunny days per year than {cloudier.Name}, which often matters just as much as the raw cost numbers.",
+                "from-yellow-100 via-amber-50 to-white",
+                "/compare/" + Model.PairSlug + "/sunny-days"));
+        }
+    }
+
+    var standoutPoints = new List<string>();
+    if (isCostPage)
+    {
+        if (Model.StatsA?.MedianHomeValue != null && Model.StatsB?.MedianHomeValue != null)
+        {
+            var lower = Model.StatsA.MedianHomeValue < Model.StatsB.MedianHomeValue ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{lower.Name} has lower median home values.");
+        }
+
+        if (Model.StatsA?.IncomeTaxRatePct == 0 && Model.StatsB?.IncomeTaxRatePct != 0)
+        {
+            standoutPoints.Add($"{Model.StateA.Name} has no state income tax.");
+        }
+        else if (Model.StatsB?.IncomeTaxRatePct == 0 && Model.StatsA?.IncomeTaxRatePct != 0)
+        {
+            standoutPoints.Add($"{Model.StateB.Name} has no state income tax.");
+        }
+
+        if (Model.StatsA?.CostOfLivingIndex != null && Model.StatsB?.CostOfLivingIndex != null)
+        {
+            var lower = Model.StatsA.CostOfLivingIndex < Model.StatsB.CostOfLivingIndex ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{lower.Name} has the lower overall cost index.");
+        }
+
+        if (Model.StatsA?.MedianHouseholdIncome != null && Model.StatsB?.MedianHouseholdIncome != null)
+        {
+            var higher = Model.StatsA.MedianHouseholdIncome > Model.StatsB.MedianHouseholdIncome ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{higher.Name} has the higher median household income.");
+        }
+
+        if (Model.StatsA?.HomeValueToIncomeRatio().HasValue == true && Model.StatsB?.HomeValueToIncomeRatio().HasValue == true)
+        {
+            var lower = Model.StatsA.HomeValueToIncomeRatio() < Model.StatsB.HomeValueToIncomeRatio() ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{lower.Name} looks more attainable on home value to income ratio.");
+        }
+
+        if (Model.StatsA?.RentToIncomeRatioPct().HasValue == true && Model.StatsB?.RentToIncomeRatioPct().HasValue == true)
+        {
+            var lower = Model.StatsA.RentToIncomeRatioPct() < Model.StatsB.RentToIncomeRatioPct() ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{lower.Name} puts less rent pressure on a median household income.");
+        }
+    }
+
+    if (isLifePage)
+    {
+        if (Model.StatsA?.LifeExpectancyYears.HasValue == true && Model.StatsB?.LifeExpectancyYears.HasValue == true)
+        {
+            var longer = Model.StatsA.LifeExpectancyYears > Model.StatsB.LifeExpectancyYears ? Model.StateA : Model.StateB;
+            var shorter = longer == Model.StateA ? Model.StateB : Model.StateA;
+            var longerStats  = longer == Model.StateA ? Model.StatsA : Model.StatsB;
+            var shorterStats = longer == Model.StateA ? Model.StatsB : Model.StatsA;
+            var gap = Math.Abs(Model.StatsA.LifeExpectancyYears.Value - Model.StatsB.LifeExpectancyYears.Value);
+            intentCards.Add((
+                "fa-solid fa-heart-pulse",
+                "Life Expectancy",
+                $"{longer.Name} residents live {gap:F1} years longer on average",
+                $"{longer.Name} has a life expectancy of {longerStats!.LifeExpectancyYears:F1} yrs vs {shorterStats!.LifeExpectancyYears:F1} yrs in {shorter.Name}, a meaningful gap for relocation planning.",
+                "from-rose-100 via-pink-50 to-white",
+                null));
+        }
+
+        if (Model.StatsA?.PovertyRatePct.HasValue == true && Model.StatsB?.PovertyRatePct.HasValue == true)
+        {
+            var lower = Model.StatsA.PovertyRatePct < Model.StatsB.PovertyRatePct ? Model.StateA : Model.StateB;
+            var higher = lower == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-hand-holding-dollar",
+                "Poverty",
+                $"{lower.Name} has a lower poverty rate",
+                $"Poverty and health outcomes are closely linked. {lower.Name}'s lower poverty rate ({Math.Min(Model.StatsA.PovertyRatePct.Value, Model.StatsB.PovertyRatePct.Value):F1}%) versus {higher.Name} ({Math.Max(Model.StatsA.PovertyRatePct.Value, Model.StatsB.PovertyRatePct.Value):F1}%) is part of the longevity story.",
+                "from-amber-100 via-orange-50 to-white",
+                "/compare/" + Model.PairSlug + "/poverty-rate"));
+        }
+
+        if (Model.StatsA?.MedianHouseholdIncome.HasValue == true && Model.StatsB?.MedianHouseholdIncome.HasValue == true)
+        {
+            var higher = Model.StatsA.MedianHouseholdIncome > Model.StatsB.MedianHouseholdIncome ? Model.StateA : Model.StateB;
+            var lower = higher == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-sack-dollar",
+                "Income",
+                $"{higher.Name} has higher household income",
+                $"Higher median income correlates with better healthcare access. {higher.Name} leads at ${Math.Max(Model.StatsA.MedianHouseholdIncome.Value, Model.StatsB.MedianHouseholdIncome.Value):N0} vs ${Math.Min(Model.StatsA.MedianHouseholdIncome.Value, Model.StatsB.MedianHouseholdIncome.Value):N0} in {lower.Name}.",
+                "from-emerald-100 via-green-50 to-white",
+                "/compare/" + Model.PairSlug + "/median-income"));
+        }
+
+        if (Model.StatsA?.CostOfLivingIndex.HasValue == true && Model.StatsB?.CostOfLivingIndex.HasValue == true)
+        {
+            var cheaper = Model.StatsA.CostOfLivingIndex < Model.StatsB.CostOfLivingIndex ? Model.StateA : Model.StateB;
+            intentCards.Add((
+                "fa-solid fa-cart-shopping",
+                "Affordability",
+                $"{cheaper.Name} has a lower cost of living",
+                $"Lower living costs mean more disposable income for healthcare. {cheaper.Name}'s cost-of-living index is {Math.Min(Model.StatsA.CostOfLivingIndex.Value, Model.StatsB.CostOfLivingIndex.Value):F1} vs {Math.Max(Model.StatsA.CostOfLivingIndex.Value, Model.StatsB.CostOfLivingIndex.Value):F1} in the other state.",
+                "from-sky-100 via-cyan-50 to-white",
+                "/compare/" + Model.PairSlug + "/cost-of-living"));
+        }
+
+        if (Model.StatsA?.LifeExpectancyYears.HasValue == true && Model.StatsB?.LifeExpectancyYears.HasValue == true)
+        {
+            var longer = Model.StatsA.LifeExpectancyYears > Model.StatsB.LifeExpectancyYears ? Model.StateA : Model.StateB;
+            var shorter = longer == Model.StateA ? Model.StateB : Model.StateA;
+            standoutPoints.Add($"{longer.Name} has the higher life expectancy at {Math.Max(Model.StatsA.LifeExpectancyYears.Value, Model.StatsB.LifeExpectancyYears.Value):F1} years.");
+        }
+        if (Model.StatsA?.PovertyRatePct.HasValue == true && Model.StatsB?.PovertyRatePct.HasValue == true)
+        {
+            var lower = Model.StatsA.PovertyRatePct < Model.StatsB.PovertyRatePct ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{lower.Name} has the lower poverty rate.");
+        }
+        if (Model.StatsA?.MedianHouseholdIncome.HasValue == true && Model.StatsB?.MedianHouseholdIncome.HasValue == true)
+        {
+            var higher = Model.StatsA.MedianHouseholdIncome > Model.StatsB.MedianHouseholdIncome ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{higher.Name} has the higher median household income.");
+        }
+    }
+
+    if (isSafetyPage)
+    {
+        if (Model.StatsA?.ViolentCrimeRatePer100k.HasValue == true && Model.StatsB?.ViolentCrimeRatePer100k.HasValue == true)
+        {
+            var safer   = Model.StatsA.ViolentCrimeRatePer100k < Model.StatsB.ViolentCrimeRatePer100k ? Model.StateA : Model.StateB;
+            var riskier = safer == Model.StateA ? Model.StateB : Model.StateA;
+            var saferStats   = safer == Model.StateA ? Model.StatsA : Model.StatsB;
+            var riskierStats = safer == Model.StateA ? Model.StatsB : Model.StatsA;
+            var pctDiff = saferStats!.ViolentCrimeRatePer100k > 0
+                ? Math.Round(Math.Abs(saferStats.ViolentCrimeRatePer100k.Value - riskierStats!.ViolentCrimeRatePer100k!.Value) / saferStats.ViolentCrimeRatePer100k.Value * 100, 0)
+                : (double?)null;
+            intentCards.Add((
+                "fa-solid fa-shield-halved",
+                "Violent Crime",
+                pctDiff.HasValue ? $"{safer.Name} has {pctDiff:F0}% less violent crime" : $"{safer.Name} has a lower violent crime rate",
+                $"{safer.Name} records {saferStats.ViolentCrimeRatePer100k:F1} violent incidents per 100k residents versus {riskierStats!.ViolentCrimeRatePer100k:F1} in {riskier.Name} (FBI UCR 2022).",
+                "from-green-100 via-emerald-50 to-white",
+                null));
+        }
+
+        if (Model.StatsA?.PovertyRatePct.HasValue == true && Model.StatsB?.PovertyRatePct.HasValue == true)
+        {
+            var lower = Model.StatsA.PovertyRatePct < Model.StatsB.PovertyRatePct ? Model.StateA : Model.StateB;
+            var higher = lower == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-hand-holding-dollar",
+                "Poverty",
+                $"{lower.Name} has a lower poverty rate",
+                $"Economic stress and crime are closely tied. {lower.Name}'s poverty rate is {Math.Min(Model.StatsA.PovertyRatePct.Value, Model.StatsB.PovertyRatePct.Value):F1}%, compared with {Math.Max(Model.StatsA.PovertyRatePct.Value, Model.StatsB.PovertyRatePct.Value):F1}% in {higher.Name}.",
+                "from-amber-100 via-orange-50 to-white",
+                "/compare/" + Model.PairSlug + "/poverty-rate"));
+        }
+
+        if (Model.StatsA?.MedianHouseholdIncome.HasValue == true && Model.StatsB?.MedianHouseholdIncome.HasValue == true)
+        {
+            var higher = Model.StatsA.MedianHouseholdIncome > Model.StatsB.MedianHouseholdIncome ? Model.StateA : Model.StateB;
+            var lower = higher == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-sack-dollar",
+                "Income",
+                $"{higher.Name} has higher household income",
+                $"States with stronger median incomes tend to have lower crime rates. {higher.Name} leads at ${Math.Max(Model.StatsA.MedianHouseholdIncome.Value, Model.StatsB.MedianHouseholdIncome.Value):N0} vs ${Math.Min(Model.StatsA.MedianHouseholdIncome.Value, Model.StatsB.MedianHouseholdIncome.Value):N0} in {lower.Name}.",
+                "from-sky-100 via-cyan-50 to-white",
+                "/compare/" + Model.PairSlug + "/median-income"));
+        }
+
+        var densityA = Model.StatsA?.PopulationDensity(Model.StateA.Population);
+        var densityB = Model.StatsB?.PopulationDensity(Model.StateB.Population);
+        if (densityA.HasValue && densityB.HasValue)
+        {
+            var denser  = densityA > densityB ? Model.StateA : Model.StateB;
+            var sparser = denser == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-city",
+                "Population Density",
+                $"{denser.Name} is more densely populated",
+                $"Urban density often correlates with higher crime rates. {denser.Name} is more densely populated at {Math.Max(densityA.Value, densityB.Value):N1} per sq mi vs {Math.Min(densityA.Value, densityB.Value):N1} in {sparser.Name}.",
+                "from-violet-100 via-fuchsia-50 to-white",
+                "/compare/" + Model.PairSlug + "/density"));
+        }
+
+        if (Model.StatsA?.ViolentCrimeRatePer100k.HasValue == true && Model.StatsB?.ViolentCrimeRatePer100k.HasValue == true)
+        {
+            var safer = Model.StatsA.ViolentCrimeRatePer100k < Model.StatsB.ViolentCrimeRatePer100k ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{safer.Name} has the lower violent crime rate at {Math.Min(Model.StatsA.ViolentCrimeRatePer100k.Value, Model.StatsB.ViolentCrimeRatePer100k.Value):F1} per 100k.");
+        }
+        if (Model.StatsA?.PovertyRatePct.HasValue == true && Model.StatsB?.PovertyRatePct.HasValue == true)
+        {
+            var lower = Model.StatsA.PovertyRatePct < Model.StatsB.PovertyRatePct ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{lower.Name} has the lower poverty rate.");
+        }
+        if (Model.StatsA?.MedianHouseholdIncome.HasValue == true && Model.StatsB?.MedianHouseholdIncome.HasValue == true)
+        {
+            var higher = Model.StatsA.MedianHouseholdIncome > Model.StatsB.MedianHouseholdIncome ? Model.StateA : Model.StateB;
+            standoutPoints.Add($"{higher.Name} has the higher median household income.");
+        }
+    }
+
+    ViewData["Title"] = ViewData["Title"] ?? $"{titleA} vs {titleB}: {Model.Metric.Name}";
+}
+
+<nav class="bg-gray-50 py-3 border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ol class="flex items-center space-x-2 text-sm text-gray-600 flex-wrap gap-y-1">
+            <li><a href="/" class="text-blue-700 hover:underline">Home</a></li>
+            <li class="text-gray-400">/</li>
+            <li><a href="/compare-states" class="text-blue-700 hover:underline">Compare States</a></li>
+            <li class="text-gray-400">/</li>
+            <li><a href="/compare/@Model.PairSlug" class="text-blue-700 hover:underline">@titleA vs @titleB</a></li>
+            <li class="text-gray-400">/</li>
+            <li class="font-semibold">@Model.Metric.Name</li>
+        </ol>
+    </div>
+</nav>
+
+<section class="bg-blue-900 text-white py-10 md:py-14">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span class="inline-flex items-center px-3 py-1 mb-4 text-xs font-semibold uppercase tracking-wide rounded-full bg-blue-800/70 border border-blue-500/40">
+            <i class="@Model.Metric.Icon text-yellow-300 mr-2"></i>
+            @Model.Metric.Name Comparison
+        </span>
+        <div class="mb-4">
+            <span class="inline-flex items-center rounded-full border border-blue-300/40 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-100">
+                @Model.Metric.GroupName
+            </span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-4">@titleA vs @titleB: @Model.Metric.Name</h1>
+        @if (!string.IsNullOrWhiteSpace(directAnswer))
+        {
+            <p class="text-xl text-blue-100 max-w-3xl mx-auto font-medium">@directAnswer</p>
+        }
+    </div>
+</section>
+
+<section class="bg-white py-12 @(isCostPage ? "border-t" : "")">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="grid md:grid-cols-2 gap-4 lg:gap-6">
+            @{
+                var states = new[]
+                {
+                    (Model.StateA, Model.Result.DisplayValueA, Model.Result.WinnerSlug == Model.StateA.Slug),
+                    (Model.StateB, Model.Result.DisplayValueB, Model.Result.WinnerSlug == Model.StateB.Slug),
+                };
+            }
+            @foreach (var (state, displayVal, isWinner) in states)
+            {
+                <div class="rounded-[1.5rem] border @(isWinner ? "border-green-300 shadow-[0_20px_45px_-28px_rgba(34,197,94,0.5)]" : "border-gray-200") bg-white overflow-hidden">
+                    <div class="@(isWinner ? "bg-green-50" : "bg-gray-50") px-5 py-4 flex items-center gap-4 border-b @(isWinner ? "border-green-200" : "border-gray-200")">
+                        <img src="@Images.Card(state.FlagImageUrl)" alt="@state.Name flag"
+                             class="w-16 h-11 object-cover rounded shadow-sm"
+                             onerror="this.style.display='none'" />
+                        <div class="flex-1">
+                            <div class="text-xl font-bold text-gray-900">@state.Name</div>
+                            <div class="text-sm text-gray-500">@state.Abbreviation &bull; @(state.Region ?? "")</div>
+                        </div>
+                        @if (isWinner)
+                        {
+                            <span class="flex items-center gap-1 bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full border border-green-300 shrink-0">
+                                <i class="fa-solid fa-trophy text-yellow-500"></i> Winner
+                            </span>
+                        }
+                    </div>
+                    <div class="px-5 py-5 text-center">
+                        <div class="text-4xl lg:text-5xl font-extrabold @(isWinner ? "text-green-700" : "text-gray-800") mb-1">
+                            @(DashIfNull(displayVal))
+                        </div>
+                        <div class="text-sm text-gray-500">@Model.Metric.Description</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Model.Result.NumericA.HasValue && Model.Result.NumericB.HasValue && Model.Metric.Type != USASymbol.Models.MetricType.Text)
+        {
+            var maxVal = Math.Max(Model.Result.NumericA.Value, Model.Result.NumericB.Value);
+            var pctA = maxVal > 0 ? (int)Math.Round(Model.Result.NumericA.Value / maxVal * 100) : 0;
+            var pctB = maxVal > 0 ? (int)Math.Round(Model.Result.NumericB.Value / maxVal * 100) : 0;
+            var winA = Model.Result.WinnerSlug == Model.StateA.Slug;
+            var winB = Model.Result.WinnerSlug == Model.StateB.Slug;
+            <div class="mt-6 bg-gray-50 border border-gray-200 rounded-[1.5rem] p-5 lg:p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-5">Visual Comparison</h2>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm font-medium text-gray-700 mb-1.5">
+                            <span>@Model.StateA.Name</span>
+                            <span>@DashIfNull(Model.Result.DisplayValueA)</span>
+                        </div>
+                        <div class="h-7 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-700 @(winA ? "bg-green-500" : "bg-blue-500")" style="width: @pctA%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm font-medium text-gray-700 mb-1.5">
+                            <span>@Model.StateB.Name</span>
+                            <span>@DashIfNull(Model.Result.DisplayValueB)</span>
+                        </div>
+                        <div class="h-7 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-700 @(winB ? "bg-green-500" : "bg-blue-500")" style="width: @pctB%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.Result.DifferenceText != null)
+        {
+            var winner = Model.Result.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
+            <div class="mt-5 bg-blue-50 border border-blue-200 rounded-[1.25rem] px-5 py-4 text-center">
+                <p class="text-blue-800 font-medium">
+                    Difference: <strong>@Model.Result.DifferenceText</strong>
+                    &mdash; @winner.Name leads.
+                </p>
+            </div>
+        }
+    </div>
+</section>
+
+@if (isIntentPage)
+{
+    var intentHeading  = isCostPage   ? "Overview"
+                       : isLifePage   ? "Health Context"
+                                      : "Safety Context";
+    var intentSubline  = isCostPage   ? "A fast-reading view of the tradeoffs behind the raw cost numbers."
+                       : isLifePage   ? "Key factors that shape the life-expectancy gap between these two states."
+                                      : "Economic and demographic factors behind the violent crime rate difference.";
+    var intentEyebrow  = isCostPage   ? "Living Costs"
+                       : isLifePage   ? "Health"
+                                      : "Safety";
+    <section class="bg-white py-12 border-t">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            @if (intentCards.Any())
+            {
+                <div class="mb-8">
+                    <div class="flex items-end justify-between gap-4 mb-5 flex-wrap">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">@intentHeading</h2>
+                            <p class="text-sm text-gray-600 mt-2">@intentSubline</p>
+                        </div>
+                        <div class="text-xs uppercase tracking-[0.22em] text-gray-400">@intentEyebrow</div>
+                    </div>
+                    <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+                        @foreach (var card in intentCards.Take(4))
+                        {
+                            <article class="rounded-[1.5rem] border border-white/70 bg-gradient-to-br @card.Tone p-5 shadow-[0_18px_40px_-24px_rgba(15,23,42,0.35)] hover:-translate-y-1 hover:shadow-[0_22px_50px_-24px_rgba(15,23,42,0.4)] transition">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="w-10 h-10 rounded-2xl border border-white/70 bg-white/70 text-gray-800 flex items-center justify-center">
+                                        <i class="@card.Icon"></i>
+                                    </span>
+                                </div>
+                                <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-2">@card.Eyebrow</div>
+                                <h3 class="text-xl font-extrabold tracking-tight text-gray-900 leading-tight mb-3">@card.Title</h3>
+                                <p class="text-sm leading-6 text-gray-700 mb-4">@card.Body</p>
+                                @if (!string.IsNullOrWhiteSpace(card.Link))
+                                {
+                                    <a href="@card.Link" class="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-black">
+                                        View detailed comparison
+                                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                                    </a>
+                                }
+                            </article>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (isCostPage)
+            {
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Cost Stack</h2>
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="rounded-2xl border border-gray-200 overflow-hidden">
+                    <div class="bg-slate-900 px-5 py-4 text-white">
+                        <div class="text-lg font-bold">@Model.StateA.Name</div>
+                    </div>
+                    <div class="divide-y divide-gray-100">
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Overall Affordability</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">Cost of living index</div><div class="font-semibold text-gray-900">@Number(Model.StatsA?.CostOfLivingIndex)</div></div>
+                                <div><div class="text-gray-500">Regional price parity</div><div class="font-semibold text-gray-900">@Number(Model.StatsA?.RegionalPriceParity)</div></div>
+                                <div><div class="text-gray-500">Regular gas price</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("gas-price")?.GetDisplayValue(Model.StateA, Model.StatsA))</div></div>
+                                <div><div class="text-gray-500">Electricity price</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("electricity-rates")?.GetDisplayValue(Model.StateA, Model.StatsA))</div></div>
+                            </div>
+                        </div>
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Housing</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">Median gross rent</div><div class="font-semibold text-gray-900">@MoneyPerMonth(Model.StatsA?.MedianGrossRent)</div></div>
+                                <div><div class="text-gray-500">Median home value</div><div class="font-semibold text-gray-900">@Money(Model.StatsA?.MedianHomeValue)</div></div>
+                                <div><div class="text-gray-500">Owner costs with mortgage</div><div class="font-semibold text-gray-900">@MoneyPerMonth(Model.StatsA?.MedianOwnerCostsWithMortgage)</div></div>
+                                <div><div class="text-gray-500">Owner costs without mortgage</div><div class="font-semibold text-gray-900">@MoneyPerMonth(Model.StatsA?.MedianOwnerCostsWithoutMortgage)</div></div>
+                            </div>
+                        </div>
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Taxes</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">State income tax</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("income-tax")?.GetDisplayValue(Model.StateA, Model.StatsA))</div></div>
+                                <div><div class="text-gray-500">State sales tax</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("sales-tax")?.GetDisplayValue(Model.StateA, Model.StatsA))</div></div>
+                                <div><div class="text-gray-500">Property tax</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("property-tax")?.GetDisplayValue(Model.StateA, Model.StatsA))</div></div>
+                            </div>
+                        </div>
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Income</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">Median household income</div><div class="font-semibold text-gray-900">@Money(Model.StatsA?.MedianHouseholdIncome)</div></div>
+                                <div><div class="text-gray-500">Income after median rent</div><div class="font-semibold text-gray-900">@Money(Model.StatsA?.IncomeAfterMedianRentMonthly() is double aIncomeAfterRent ? (int?)Math.Round(aIncomeAfterRent) : null)</div></div>
+                                <div><div class="text-gray-500">Minimum wage</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("minimum-wage")?.GetDisplayValue(Model.StateA, Model.StatsA))</div></div>
+                            </div>
+                        </div>
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Laws</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">Gun laws</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("gun-laws-status")?.GetDisplayValue(Model.StateA, Model.StatsA))</div></div>
+                                <div><div class="text-gray-500">Alcohol system</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("alcohol-laws")?.GetDisplayValue(Model.StateA, Model.StatsA))</div></div>
+                                <div><div class="text-gray-500">Marijuana status</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("marijuana-legalization")?.GetDisplayValue(Model.StateA, Model.StatsA))</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl border border-gray-200 overflow-hidden">
+                    <div class="bg-slate-900 px-5 py-4 text-white">
+                        <div class="text-lg font-bold">@Model.StateB.Name</div>
+                    </div>
+                    <div class="divide-y divide-gray-100">
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Overall Affordability</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">Cost of living index</div><div class="font-semibold text-gray-900">@Number(Model.StatsB?.CostOfLivingIndex)</div></div>
+                                <div><div class="text-gray-500">Regional price parity</div><div class="font-semibold text-gray-900">@Number(Model.StatsB?.RegionalPriceParity)</div></div>
+                                <div><div class="text-gray-500">Regular gas price</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("gas-price")?.GetDisplayValue(Model.StateB, Model.StatsB))</div></div>
+                                <div><div class="text-gray-500">Electricity price</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("electricity-rates")?.GetDisplayValue(Model.StateB, Model.StatsB))</div></div>
+                            </div>
+                        </div>
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Housing</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">Median gross rent</div><div class="font-semibold text-gray-900">@MoneyPerMonth(Model.StatsB?.MedianGrossRent)</div></div>
+                                <div><div class="text-gray-500">Median home value</div><div class="font-semibold text-gray-900">@Money(Model.StatsB?.MedianHomeValue)</div></div>
+                                <div><div class="text-gray-500">Owner costs with mortgage</div><div class="font-semibold text-gray-900">@MoneyPerMonth(Model.StatsB?.MedianOwnerCostsWithMortgage)</div></div>
+                                <div><div class="text-gray-500">Owner costs without mortgage</div><div class="font-semibold text-gray-900">@MoneyPerMonth(Model.StatsB?.MedianOwnerCostsWithoutMortgage)</div></div>
+                            </div>
+                        </div>
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Taxes</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">State income tax</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("income-tax")?.GetDisplayValue(Model.StateB, Model.StatsB))</div></div>
+                                <div><div class="text-gray-500">State sales tax</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("sales-tax")?.GetDisplayValue(Model.StateB, Model.StatsB))</div></div>
+                                <div><div class="text-gray-500">Property tax</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("property-tax")?.GetDisplayValue(Model.StateB, Model.StatsB))</div></div>
+                            </div>
+                        </div>
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Income</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">Median household income</div><div class="font-semibold text-gray-900">@Money(Model.StatsB?.MedianHouseholdIncome)</div></div>
+                                <div><div class="text-gray-500">Income after median rent</div><div class="font-semibold text-gray-900">@Money(Model.StatsB?.IncomeAfterMedianRentMonthly() is double bIncomeAfterRent ? (int?)Math.Round(bIncomeAfterRent) : null)</div></div>
+                                <div><div class="text-gray-500">Minimum wage</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("minimum-wage")?.GetDisplayValue(Model.StateB, Model.StatsB))</div></div>
+                            </div>
+                        </div>
+                        <div class="px-5 py-4">
+                            <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Laws</div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><div class="text-gray-500">Gun laws</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("gun-laws-status")?.GetDisplayValue(Model.StateB, Model.StatsB))</div></div>
+                                <div><div class="text-gray-500">Alcohol system</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("alcohol-laws")?.GetDisplayValue(Model.StateB, Model.StatsB))</div></div>
+                                <div><div class="text-gray-500">Marijuana status</div><div class="font-semibold text-gray-900">@DashIfNull(ComparisonMetricsConfig.GetBySlug("marijuana-legalization")?.GetDisplayValue(Model.StateB, Model.StatsB))</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            } @* end isCostPage *@
+
+            @if (isLifePage)
+            {
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Health Snapshot</h2>
+                <div class="grid lg:grid-cols-2 gap-6">
+                    @foreach (var (state, stats) in new[] { (Model.StateA, Model.StatsA), (Model.StateB, Model.StatsB) })
+                    {
+                        <div class="rounded-2xl border border-gray-200 overflow-hidden">
+                            <div class="bg-slate-900 px-5 py-4 text-white flex items-center gap-3">
+                                <img src="@Images.Thumb(state.FlagImageUrl)" class="w-10 h-7 object-cover rounded shrink-0" alt="" onerror="this.style.display='none'" />
+                                <div class="text-lg font-bold">@state.Name</div>
+                            </div>
+                            <div class="divide-y divide-gray-100">
+                                <div class="px-5 py-4">
+                                    <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Health</div>
+                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                        <div><div class="text-gray-500">Life expectancy</div><div class="font-semibold text-gray-900">@Number(stats?.LifeExpectancyYears) yrs</div></div>
+                                    </div>
+                                </div>
+                                <div class="px-5 py-4">
+                                    <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Economy</div>
+                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                        <div><div class="text-gray-500">Median household income</div><div class="font-semibold text-gray-900">@Money(stats?.MedianHouseholdIncome)</div></div>
+                                        <div><div class="text-gray-500">Poverty rate</div><div class="font-semibold text-gray-900">@Percent(stats?.PovertyRatePct)</div></div>
+                                        <div><div class="text-gray-500">Cost of living index</div><div class="font-semibold text-gray-900">@Number(stats?.CostOfLivingIndex)</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (isSafetyPage)
+            {
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Safety Snapshot</h2>
+                <div class="grid lg:grid-cols-2 gap-6">
+                    @foreach (var (state, stats) in new[] { (Model.StateA, Model.StatsA), (Model.StateB, Model.StatsB) })
+                    {
+                        var densityVal = stats?.PopulationDensity(state.Population);
+                        <div class="rounded-2xl border border-gray-200 overflow-hidden">
+                            <div class="bg-slate-900 px-5 py-4 text-white flex items-center gap-3">
+                                <img src="@Images.Thumb(state.FlagImageUrl)" class="w-10 h-7 object-cover rounded shrink-0" alt="" onerror="this.style.display='none'" />
+                                <div class="text-lg font-bold">@state.Name</div>
+                            </div>
+                            <div class="divide-y divide-gray-100">
+                                <div class="px-5 py-4">
+                                    <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Safety</div>
+                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                        <div><div class="text-gray-500">Violent crime rate / 100k</div><div class="font-semibold text-gray-900">@Number(stats?.ViolentCrimeRatePer100k)</div></div>
+                                    </div>
+                                </div>
+                                <div class="px-5 py-4">
+                                    <div class="text-xs uppercase tracking-wide text-gray-500 mb-2">Contributing factors</div>
+                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                        <div><div class="text-gray-500">Poverty rate</div><div class="font-semibold text-gray-900">@Percent(stats?.PovertyRatePct)</div></div>
+                                        <div><div class="text-gray-500">Median household income</div><div class="font-semibold text-gray-900">@Money(stats?.MedianHouseholdIncome)</div></div>
+                                        <div><div class="text-gray-500">Population density</div><div class="font-semibold text-gray-900">@(densityVal.HasValue ? $"{densityVal.Value:N1} / sq mi" : "-")</div></div>
+                                        <div><div class="text-gray-500">Unemployment rate</div><div class="font-semibold text-gray-900">@Percent(stats?.UnemploymentRatePct)</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (standoutPoints.Any())
+            {
+                <div class="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">What Stands Out</h2>
+                    <ul class="space-y-2 text-sm text-gray-800 list-disc pl-5">
+                        @foreach (var point in standoutPoints.Take(4))
+                        {
+                            <li>@point</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            @if (isCostPage)
+            {
+            <div class="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Affordability Ratios</h2>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <a href="/compare/@Model.PairSlug/home-value-to-income" class="rounded-xl border border-gray-200 bg-white p-4 hover:border-blue-300 hover:shadow-sm transition">
+                        <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Home Value to Income</div>
+                        <div class="text-sm text-gray-700">@Model.StateA.Name: @Number(Model.StatsA?.HomeValueToIncomeRatio(), 2)x</div>
+                        <div class="text-sm text-gray-700">@Model.StateB.Name: @Number(Model.StatsB?.HomeValueToIncomeRatio(), 2)x</div>
+                    </a>
+                    <a href="/compare/@Model.PairSlug/rent-to-income" class="rounded-xl border border-gray-200 bg-white p-4 hover:border-blue-300 hover:shadow-sm transition">
+                        <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Rent to Income</div>
+                        <div class="text-sm text-gray-700">@Model.StateA.Name: @Percent(Model.StatsA?.RentToIncomeRatioPct())</div>
+                        <div class="text-sm text-gray-700">@Model.StateB.Name: @Percent(Model.StatsB?.RentToIncomeRatioPct())</div>
+                    </a>
+                    <a href="/compare/@Model.PairSlug/owner-costs-to-income" class="rounded-xl border border-gray-200 bg-white p-4 hover:border-blue-300 hover:shadow-sm transition">
+                        <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Owner Costs to Income</div>
+                        <div class="text-sm text-gray-700">@Model.StateA.Name: @Percent(Model.StatsA?.OwnerCostsToIncomePct)</div>
+                        <div class="text-sm text-gray-700">@Model.StateB.Name: @Percent(Model.StatsB?.OwnerCostsToIncomePct)</div>
+                    </a>
+                </div>
+            </div>
+            } @* end isCostPage ratios *@
+
+            @{
+                var relatedLinks = isCostPage ? new[] {
+                        ("/compare/" + Model.PairSlug + "/home-value",          "Housing"),
+                        ("/compare/" + Model.PairSlug + "/income-tax",          "Taxes"),
+                        ("/compare/" + Model.PairSlug + "/median-income",       "Income"),
+                        ("/compare/" + Model.PairSlug + "/owner-costs-to-income","Owner Costs")
+                    } : isLifePage ? new[] {
+                        ("/compare/" + Model.PairSlug + "/violent-crime",       "Violent Crime"),
+                        ("/compare/" + Model.PairSlug + "/poverty-rate",        "Poverty Rate"),
+                        ("/compare/" + Model.PairSlug + "/median-income",       "Income"),
+                        ("/compare/" + Model.PairSlug + "/cost-of-living",      "Cost of Living")
+                    } : new[] {
+                        ("/compare/" + Model.PairSlug + "/life-expectancy",     "Life Expectancy"),
+                        ("/compare/" + Model.PairSlug + "/poverty-rate",        "Poverty Rate"),
+                        ("/compare/" + Model.PairSlug + "/median-income",       "Income"),
+                        ("/compare/" + Model.PairSlug + "/density",             "Population Density")
+                    };
+            }
+            <div class="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Related Pages</h2>
+                <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    @foreach (var (href, label) in relatedLinks)
+                    {
+                        <a href="@href" class="rounded-xl border border-gray-200 p-4 hover:border-blue-300 hover:shadow-sm transition text-sm font-medium text-gray-800">@label</a>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </section>
+}
+
+@{
+    // ── Context Snapshot (non-intent pages) ──────────────────────────────────
+    var ctxRows = new List<(string Label, string ValA, string ValB, string? Href)>();
+    var ctxTitle = "";
+    var ctxNote = "";
+
+    if (!isIntentPage)
+    {
+        string CxD(string? v) => string.IsNullOrWhiteSpace(v) ? "—" : v;
+        string CxMon(int? v) => v.HasValue ? $"${v.Value:N0}" : "—";
+        string CxMoMo(int? v) => v.HasValue ? $"${v.Value:N0}/mo" : "—";
+        string CxPct(double? v, int d = 1) => v.HasValue ? $"{v.Value.ToString($"F{d}")}%" : "—";
+        string CxNum(double? v, int d = 1) => v.HasValue ? v.Value.ToString($"F{d}") : "—";
+        string CxTemp(double? v) => v.HasValue ? $"{v.Value:F1}°F" : "—";
+        string CxSqMi(double? v) => v.HasValue ? $"{v.Value:N0} sq mi" : "—";
+        string CxDens(double? v) => v.HasValue ? $"{v.Value:N1} / sq mi" : "—";
+        string CxYrs(double? v) => v.HasValue ? $"{v.Value:F1} yrs" : "—";
+        string CxIn(double? v) => v.HasValue ? $"{v.Value:F1} in" : "—";
+        string CxDays(int? v) => v.HasValue ? $"{v.Value} days" : "—";
+        string CxMin(double? v) => v.HasValue ? $"{v.Value:F1} min" : "—";
+        string CxOrder(int? v) => v.HasValue ? $"#{v.Value}" : "—";
+        string CxX(double? v, int d = 2) => v.HasValue ? $"{v.Value.ToString($"F{d}")}×" : "—";
+        string CxMetric(string slug, State st, StateStats? ss) =>
+            CxD(ComparisonMetricsConfig.GetBySlug(slug)?.GetDisplayValue(st, ss));
+
+        var cxDensA = Model.StatsA?.PopulationDensity(Model.StateA.Population);
+        var cxDensB = Model.StatsB?.PopulationDensity(Model.StateB.Population);
+        var cxIafA  = Model.StatsA?.IncomeAfterMedianRentMonthly();
+        var cxIafB  = Model.StatsB?.IncomeAfterMedianRentMonthly();
+
+        string pair = Model.PairSlug;
+
+        switch (Model.Metric.Slug)
+        {
+            case "capital":
+                ctxTitle = "States at a Glance";
+                ctxNote  = "Key facts about each state alongside the capital comparison.";
+                ctxRows.Add(("Population",          CxD(Model.StateA.Population?.ToString("N0")), CxD(Model.StateB.Population?.ToString("N0")), $"/compare/{pair}/population"));
+                ctxRows.Add(("State Color",          CxD(Model.StatsA?.PoliticalLean),             CxD(Model.StatsB?.PoliticalLean),             $"/compare/{pair}/state-color"));
+                ctxRows.Add(("Governor Party",       CxD(Model.StatsA?.GovernorParty),             CxD(Model.StatsB?.GovernorParty),             null));
+                ctxRows.Add(("Median Income",        CxMon(Model.StatsA?.MedianHouseholdIncome),   CxMon(Model.StatsB?.MedianHouseholdIncome),   $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Cost of Living Index", CxNum(Model.StatsA?.CostOfLivingIndex),       CxNum(Model.StatsB?.CostOfLivingIndex),       $"/compare/{pair}/cost-of-living"));
+                break;
+
+            case "state-color":
+                ctxTitle = "Full Political Picture";
+                ctxNote  = "Presidential color is just one layer — here's the complete breakdown.";
+                ctxRows.Add(("Governor Party",           CxD(Model.StatsA?.GovernorParty),                          CxD(Model.StatsB?.GovernorParty),                          null));
+                ctxRows.Add(("State House",              CxD(Model.StatsA?.StateHouseControl),                      CxD(Model.StatsB?.StateHouseControl),                      null));
+                ctxRows.Add(("State Senate",             CxD(Model.StatsA?.StateSenateControl),                     CxD(Model.StatsB?.StateSenateControl),                     null));
+                ctxRows.Add(("Trifecta",                 CxD(Model.StatsA?.Trifecta),                               CxD(Model.StatsB?.Trifecta),                               null));
+                ctxRows.Add(("2024 Presidential Margin", CxPct(Model.StatsA?.PresidentialVotingMarginPct),           CxPct(Model.StatsB?.PresidentialVotingMarginPct),           null));
+                break;
+
+            case "population":
+                ctxTitle = "Population in Context";
+                ctxNote  = "Raw headcount only tells part of the story — density and education round it out.";
+                ctxRows.Add(("Population Density", CxDens(cxDensA),                            CxDens(cxDensB),                            $"/compare/{pair}/density"));
+                ctxRows.Add(("Land Area",          CxSqMi(Model.StatsA?.LandAreaSqMi),         CxSqMi(Model.StatsB?.LandAreaSqMi),         $"/compare/{pair}/land-area"));
+                ctxRows.Add(("Bachelor's Degree",  CxPct(Model.StatsA?.CollegeEducatedPct),    CxPct(Model.StatsB?.CollegeEducatedPct),    $"/compare/{pair}/college-educated"));
+                ctxRows.Add(("Median Income",      CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome), $"/compare/{pair}/median-income"));
+                break;
+
+            case "density":
+                ctxTitle = "Density in Context";
+                ctxNote  = "Population density shapes commutes, housing costs, and the feel of daily life.";
+                ctxRows.Add(("Population",         CxD(Model.StateA.Population?.ToString("N0")), CxD(Model.StateB.Population?.ToString("N0")), $"/compare/{pair}/population"));
+                ctxRows.Add(("Land Area",          CxSqMi(Model.StatsA?.LandAreaSqMi),          CxSqMi(Model.StatsB?.LandAreaSqMi),          $"/compare/{pair}/land-area"));
+                ctxRows.Add(("Median Home Value",  CxMon(Model.StatsA?.MedianHomeValue),         CxMon(Model.StatsB?.MedianHomeValue),         $"/compare/{pair}/home-value"));
+                ctxRows.Add(("Violent Crime / 100k", CxNum(Model.StatsA?.ViolentCrimeRatePer100k), CxNum(Model.StatsB?.ViolentCrimeRatePer100k), $"/compare/{pair}/violent-crime"));
+                ctxRows.Add(("Cost of Living Index", CxNum(Model.StatsA?.CostOfLivingIndex),      CxNum(Model.StatsB?.CostOfLivingIndex),      $"/compare/{pair}/cost-of-living"));
+                break;
+
+            case "college-educated":
+                ctxTitle = "Education & Economic Outcomes";
+                ctxNote  = "College attainment correlates strongly with income, employment, and economic mobility.";
+                ctxRows.Add(("Advanced Degree",       CxPct(Model.StatsA?.AdvancedDegreePct),         CxPct(Model.StatsB?.AdvancedDegreePct),         $"/compare/{pair}/advanced-degree"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),   CxMon(Model.StatsB?.MedianHouseholdIncome),     $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Unemployment Rate",     CxPct(Model.StatsA?.UnemploymentRatePct),       CxPct(Model.StatsB?.UnemploymentRatePct),       $"/compare/{pair}/unemployment-rate"));
+                ctxRows.Add(("Poverty Rate",          CxPct(Model.StatsA?.PovertyRatePct),            CxPct(Model.StatsB?.PovertyRatePct),            $"/compare/{pair}/poverty-rate"));
+                break;
+
+            case "advanced-degree":
+                ctxTitle = "Advanced Education & Economic Outcomes";
+                ctxNote  = "Graduate and professional degree holders typically earn more and face lower unemployment.";
+                ctxRows.Add(("Bachelor's Degree",     CxPct(Model.StatsA?.CollegeEducatedPct),        CxPct(Model.StatsB?.CollegeEducatedPct),        $"/compare/{pair}/college-educated"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),   CxMon(Model.StatsB?.MedianHouseholdIncome),     $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Unemployment Rate",     CxPct(Model.StatsA?.UnemploymentRatePct),       CxPct(Model.StatsB?.UnemploymentRatePct),       $"/compare/{pair}/unemployment-rate"));
+                ctxRows.Add(("Poverty Rate",          CxPct(Model.StatsA?.PovertyRatePct),            CxPct(Model.StatsB?.PovertyRatePct),            $"/compare/{pair}/poverty-rate"));
+                break;
+
+            case "median-income":
+                ctxTitle = "Income in Context";
+                ctxNote  = "A paycheck only matters relative to what things cost — and how much stays after taxes.";
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),           CxNum(Model.StatsB?.CostOfLivingIndex),           $"/compare/{pair}/cost-of-living"));
+                ctxRows.Add(("State Income Tax",      CxMetric("income-tax", Model.StateA, Model.StatsA), CxMetric("income-tax", Model.StateB, Model.StatsB), $"/compare/{pair}/income-tax"));
+                ctxRows.Add(("Poverty Rate",          CxPct(Model.StatsA?.PovertyRatePct),              CxPct(Model.StatsB?.PovertyRatePct),              $"/compare/{pair}/poverty-rate"));
+                ctxRows.Add(("Unemployment Rate",     CxPct(Model.StatsA?.UnemploymentRatePct),         CxPct(Model.StatsB?.UnemploymentRatePct),         $"/compare/{pair}/unemployment-rate"));
+                ctxRows.Add(("Median Home Value",     CxMon(Model.StatsA?.MedianHomeValue),             CxMon(Model.StatsB?.MedianHomeValue),             $"/compare/{pair}/home-value"));
+                break;
+
+            case "regional-price-parity":
+                ctxTitle = "Price Parity in Context";
+                ctxNote  = "Regional price parity is the government's official measure of how expensive a state is relative to the US average.";
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),                         CxNum(Model.StatsB?.CostOfLivingIndex),                         $"/compare/{pair}/cost-of-living"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),                   CxMon(Model.StatsB?.MedianHouseholdIncome),                     $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Median Home Value",     CxMon(Model.StatsA?.MedianHomeValue),                           CxMon(Model.StatsB?.MedianHomeValue),                           $"/compare/{pair}/home-value"));
+                ctxRows.Add(("Gas Price",             CxMetric("gas-price", Model.StateA, Model.StatsA),              CxMetric("gas-price", Model.StateB, Model.StatsB),              $"/compare/{pair}/gas-price"));
+                ctxRows.Add(("Electricity Rate",      CxMetric("electricity-rates", Model.StateA, Model.StatsA),      CxMetric("electricity-rates", Model.StateB, Model.StatsB),      $"/compare/{pair}/electricity-rates"));
+                break;
+
+            case "poverty-rate":
+                ctxTitle = "Poverty in Context";
+                ctxNote  = "Poverty reflects wages, jobs, local costs, and access to public programs — rarely just one factor.";
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome), $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Unemployment Rate",     CxPct(Model.StatsA?.UnemploymentRatePct),     CxPct(Model.StatsB?.UnemploymentRatePct),     $"/compare/{pair}/unemployment-rate"));
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),       CxNum(Model.StatsB?.CostOfLivingIndex),       $"/compare/{pair}/cost-of-living"));
+                ctxRows.Add(("Uninsured Rate",        CxPct(Model.StatsA?.UninsuredRatePct),        CxPct(Model.StatsB?.UninsuredRatePct),        null));
+                ctxRows.Add(("Life Expectancy",       CxYrs(Model.StatsA?.LifeExpectancyYears),     CxYrs(Model.StatsB?.LifeExpectancyYears),     $"/compare/{pair}/life-expectancy"));
+                break;
+
+            case "employment-population-ratio":
+                ctxTitle = "Employment Picture";
+                ctxNote  = "The employment-to-population ratio captures more of the working-age story than the headline unemployment rate.";
+                ctxRows.Add(("Unemployment Rate",     CxPct(Model.StatsA?.UnemploymentRatePct),         CxPct(Model.StatsB?.UnemploymentRatePct),         $"/compare/{pair}/unemployment-rate"));
+                ctxRows.Add(("Job Growth",            CxPct(Model.StatsA?.JobGrowthPct),               CxPct(Model.StatsB?.JobGrowthPct),               $"/compare/{pair}/job-growth"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),    CxMon(Model.StatsB?.MedianHouseholdIncome),     $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Poverty Rate",          CxPct(Model.StatsA?.PovertyRatePct),             CxPct(Model.StatsB?.PovertyRatePct),             $"/compare/{pair}/poverty-rate"));
+                break;
+
+            case "unemployment-rate":
+                ctxTitle = "Jobs Picture";
+                ctxNote  = "Unemployment is one signal — the employment ratio and job growth round out the full picture.";
+                ctxRows.Add(("Employment / Pop. Ratio", CxPct(Model.StatsA?.EmploymentPopulationRatioPct), CxPct(Model.StatsB?.EmploymentPopulationRatioPct), $"/compare/{pair}/employment-population-ratio"));
+                ctxRows.Add(("Job Growth",            CxPct(Model.StatsA?.JobGrowthPct),                  CxPct(Model.StatsB?.JobGrowthPct),                  $"/compare/{pair}/job-growth"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),        CxMon(Model.StatsB?.MedianHouseholdIncome),         $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Poverty Rate",          CxPct(Model.StatsA?.PovertyRatePct),                CxPct(Model.StatsB?.PovertyRatePct),                $"/compare/{pair}/poverty-rate"));
+                break;
+
+            case "job-growth":
+                ctxTitle = "Job Growth in Context";
+                ctxNote  = "Growth is meaningless without knowing the baseline — here's the full jobs picture.";
+                ctxRows.Add(("Unemployment Rate",       CxPct(Model.StatsA?.UnemploymentRatePct),         CxPct(Model.StatsB?.UnemploymentRatePct),         $"/compare/{pair}/unemployment-rate"));
+                ctxRows.Add(("Employment / Pop. Ratio", CxPct(Model.StatsA?.EmploymentPopulationRatioPct), CxPct(Model.StatsB?.EmploymentPopulationRatioPct), $"/compare/{pair}/employment-population-ratio"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),        CxMon(Model.StatsB?.MedianHouseholdIncome),        $"/compare/{pair}/median-income"));
+                break;
+
+            case "minimum-wage":
+                ctxTitle = "Minimum Wage in Context";
+                ctxNote  = "A minimum wage only makes sense relative to what things cost and what the local market actually pays.";
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome), $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Cost of Living Index",    CxNum(Model.StatsA?.CostOfLivingIndex),     CxNum(Model.StatsB?.CostOfLivingIndex),     $"/compare/{pair}/cost-of-living"));
+                ctxRows.Add(("Poverty Rate",            CxPct(Model.StatsA?.PovertyRatePct),        CxPct(Model.StatsB?.PovertyRatePct),        $"/compare/{pair}/poverty-rate"));
+                ctxRows.Add(("Unemployment Rate",       CxPct(Model.StatsA?.UnemploymentRatePct),   CxPct(Model.StatsB?.UnemploymentRatePct),   $"/compare/{pair}/unemployment-rate"));
+                break;
+
+            case "home-value":
+                ctxTitle = "Housing in Context";
+                ctxNote  = "A home price only makes sense relative to income, taxes, and ongoing ownership costs.";
+                ctxRows.Add(("Median Gross Rent",     CxMoMo(Model.StatsA?.MedianGrossRent),        CxMoMo(Model.StatsB?.MedianGrossRent),        $"/compare/{pair}/median-rent"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome),   $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Property Tax Rate",     CxPct(Model.StatsA?.PropertyTaxRatePct, 2),   CxPct(Model.StatsB?.PropertyTaxRatePct, 2),   $"/compare/{pair}/property-tax"));
+                ctxRows.Add(("Homeownership Rate",    CxPct(Model.StatsA?.HomeownershipRatePct),    CxPct(Model.StatsB?.HomeownershipRatePct),    null));
+                ctxRows.Add(("Home Value / Income",   CxX(Model.StatsA?.HomeValueToIncomeRatio()),  CxX(Model.StatsB?.HomeValueToIncomeRatio()),  $"/compare/{pair}/home-value-to-income"));
+                break;
+
+            case "median-rent":
+                ctxTitle = "Rent in Context";
+                ctxNote  = "Gross rent only stings or doesn't relative to local incomes.";
+                ctxRows.Add(("Rent-to-Income Ratio",  CxPct(Model.StatsA?.RentToIncomeRatioPct()),   CxPct(Model.StatsB?.RentToIncomeRatioPct()),   $"/compare/{pair}/rent-to-income"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome),   $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Median Home Value",     CxMon(Model.StatsA?.MedianHomeValue),          CxMon(Model.StatsB?.MedianHomeValue),          $"/compare/{pair}/home-value"));
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),        CxNum(Model.StatsB?.CostOfLivingIndex),        $"/compare/{pair}/cost-of-living"));
+                break;
+
+            case "rent-to-income":
+                ctxTitle = "Rent Burden in Context";
+                ctxNote  = "This ratio shows how much of a median paycheck goes straight to the landlord — the higher, the less breathing room renters have.";
+                ctxRows.Add(("Median Gross Rent",     CxMoMo(Model.StatsA?.MedianGrossRent),         CxMoMo(Model.StatsB?.MedianGrossRent),         $"/compare/{pair}/median-rent"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),  CxMon(Model.StatsB?.MedianHouseholdIncome),    $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Income After Rent (mo.)", CxMoMo(cxIafA.HasValue ? (int?)Math.Round(cxIafA.Value) : null), CxMoMo(cxIafB.HasValue ? (int?)Math.Round(cxIafB.Value) : null), null));
+                ctxRows.Add(("Median Home Value",     CxMon(Model.StatsA?.MedianHomeValue),           CxMon(Model.StatsB?.MedianHomeValue),           $"/compare/{pair}/home-value"));
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),         CxNum(Model.StatsB?.CostOfLivingIndex),         $"/compare/{pair}/cost-of-living"));
+                break;
+
+            case "home-value-to-income":
+                ctxTitle = "Home Affordability Ratios";
+                ctxNote  = "A price-to-income ratio above 4× is stretched; above 6× is considered severely unaffordable.";
+                ctxRows.Add(("Median Home Value",     CxMon(Model.StatsA?.MedianHomeValue),          CxMon(Model.StatsB?.MedianHomeValue),          $"/compare/{pair}/home-value"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome),   $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Property Tax Rate",     CxPct(Model.StatsA?.PropertyTaxRatePct, 2),   CxPct(Model.StatsB?.PropertyTaxRatePct, 2),   $"/compare/{pair}/property-tax"));
+                ctxRows.Add(("Rent-to-Income Ratio",  CxPct(Model.StatsA?.RentToIncomeRatioPct()),  CxPct(Model.StatsB?.RentToIncomeRatioPct()),  $"/compare/{pair}/rent-to-income"));
+                break;
+
+            case "owner-costs-to-income":
+                ctxTitle = "Ownership Cost Burden";
+                ctxNote  = "Lenders typically flag anything above 28% as stretched — here's how ownership stacks up against income.";
+                ctxRows.Add(("Owner Costs w/ Mortgage",  CxMoMo(Model.StatsA?.MedianOwnerCostsWithMortgage),    CxMoMo(Model.StatsB?.MedianOwnerCostsWithMortgage),    null));
+                ctxRows.Add(("Owner Costs w/o Mortgage", CxMoMo(Model.StatsA?.MedianOwnerCostsWithoutMortgage), CxMoMo(Model.StatsB?.MedianOwnerCostsWithoutMortgage), null));
+                ctxRows.Add(("Median Household Income",  CxMon(Model.StatsA?.MedianHouseholdIncome),            CxMon(Model.StatsB?.MedianHouseholdIncome),            $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Median Home Value",        CxMon(Model.StatsA?.MedianHomeValue),                  CxMon(Model.StatsB?.MedianHomeValue),                  $"/compare/{pair}/home-value"));
+                ctxRows.Add(("Property Tax Rate",        CxPct(Model.StatsA?.PropertyTaxRatePct, 2),            CxPct(Model.StatsB?.PropertyTaxRatePct, 2),            $"/compare/{pair}/property-tax"));
+                break;
+
+            case "homeownership-rate":
+                ctxTitle = "Homeownership Factors";
+                ctxNote  = "High or low ownership isn't inherently better — it reflects prices, income, and local preferences.";
+                ctxRows.Add(("Median Home Value",     CxMon(Model.StatsA?.MedianHomeValue),          CxMon(Model.StatsB?.MedianHomeValue),          $"/compare/{pair}/home-value"));
+                ctxRows.Add(("Median Gross Rent",     CxMoMo(Model.StatsA?.MedianGrossRent),         CxMoMo(Model.StatsB?.MedianGrossRent),         $"/compare/{pair}/median-rent"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome),   $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Property Tax Rate",     CxPct(Model.StatsA?.PropertyTaxRatePct, 2),   CxPct(Model.StatsB?.PropertyTaxRatePct, 2),   $"/compare/{pair}/property-tax"));
+                break;
+
+            case "income-tax":
+                ctxTitle = "Tax Burden Picture";
+                ctxNote  = "Income tax is just one layer — sales and property taxes complete the picture.";
+                ctxRows.Add(("Sales Tax",             CxMetric("sales-tax", Model.StateA, Model.StatsA),  CxMetric("sales-tax", Model.StateB, Model.StatsB),  $"/compare/{pair}/sales-tax"));
+                ctxRows.Add(("Property Tax Rate",     CxPct(Model.StatsA?.PropertyTaxRatePct, 2),        CxPct(Model.StatsB?.PropertyTaxRatePct, 2),        $"/compare/{pair}/property-tax"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),      CxMon(Model.StatsB?.MedianHouseholdIncome),        $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),            CxNum(Model.StatsB?.CostOfLivingIndex),            $"/compare/{pair}/cost-of-living"));
+                break;
+
+            case "sales-tax":
+                ctxTitle = "Tax Burden Picture";
+                ctxNote  = "Sales tax is paid by nearly everyone — higher rates hit lower-income households proportionally harder.";
+                ctxRows.Add(("State Income Tax",      CxMetric("income-tax", Model.StateA, Model.StatsA),  CxMetric("income-tax", Model.StateB, Model.StatsB),  $"/compare/{pair}/income-tax"));
+                ctxRows.Add(("Property Tax Rate",     CxPct(Model.StatsA?.PropertyTaxRatePct, 2),          CxPct(Model.StatsB?.PropertyTaxRatePct, 2),          $"/compare/{pair}/property-tax"));
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),              CxNum(Model.StatsB?.CostOfLivingIndex),              $"/compare/{pair}/cost-of-living"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),        CxMon(Model.StatsB?.MedianHouseholdIncome),          $"/compare/{pair}/median-income"));
+                break;
+
+            case "property-tax":
+                ctxTitle = "Property Tax in Context";
+                ctxNote  = "The same rate hits very differently on a $700k home versus a $200k one.";
+                ctxRows.Add(("Median Home Value",     CxMon(Model.StatsA?.MedianHomeValue),               CxMon(Model.StatsB?.MedianHomeValue),               $"/compare/{pair}/home-value"));
+                ctxRows.Add(("State Income Tax",      CxMetric("income-tax", Model.StateA, Model.StatsA), CxMetric("income-tax", Model.StateB, Model.StatsB), $"/compare/{pair}/income-tax"));
+                ctxRows.Add(("Sales Tax",             CxMetric("sales-tax", Model.StateA, Model.StatsA),  CxMetric("sales-tax", Model.StateB, Model.StatsB),  $"/compare/{pair}/sales-tax"));
+                ctxRows.Add(("Homeownership Rate",    CxPct(Model.StatsA?.HomeownershipRatePct),          CxPct(Model.StatsB?.HomeownershipRatePct),          null));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),       CxMon(Model.StatsB?.MedianHouseholdIncome),         $"/compare/{pair}/median-income"));
+                break;
+
+            case "gas-price":
+                ctxTitle = "Daily Cost Signals";
+                ctxNote  = "Gas and electricity are two of the most visible recurring costs residents notice every week.";
+                ctxRows.Add(("Electricity Rate",      CxMetric("electricity-rates", Model.StateA, Model.StatsA), CxMetric("electricity-rates", Model.StateB, Model.StatsB), $"/compare/{pair}/electricity-rates"));
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),                    CxNum(Model.StatsB?.CostOfLivingIndex),                    $"/compare/{pair}/cost-of-living"));
+                ctxRows.Add(("Mean Commute Time",     CxMin(Model.StatsA?.MeanCommuteMinutes),                   CxMin(Model.StatsB?.MeanCommuteMinutes),                   $"/compare/{pair}/commute-time"));
+                ctxRows.Add(("State Income Tax",      CxMetric("income-tax", Model.StateA, Model.StatsA),        CxMetric("income-tax", Model.StateB, Model.StatsB),        $"/compare/{pair}/income-tax"));
+                break;
+
+            case "electricity-rates":
+                ctxTitle = "Energy & Living Costs";
+                ctxNote  = "Electricity compounds over a year — especially in climates where AC or heating runs heavily.";
+                ctxRows.Add(("Gas Price",             CxMetric("gas-price", Model.StateA, Model.StatsA),  CxMetric("gas-price", Model.StateB, Model.StatsB),  $"/compare/{pair}/gas-price"));
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),             CxNum(Model.StatsB?.CostOfLivingIndex),             $"/compare/{pair}/cost-of-living"));
+                ctxRows.Add(("Average Temperature",  CxTemp(Model.StatsA?.AverageTemperatureF),           CxTemp(Model.StatsB?.AverageTemperatureF),          $"/compare/{pair}/average-temperature"));
+                ctxRows.Add(("Summer Temperature",   CxTemp(Model.StatsA?.SummerTemperatureF),            CxTemp(Model.StatsB?.SummerTemperatureF),           null));
+                ctxRows.Add(("Winter Temperature",   CxTemp(Model.StatsA?.WinterTemperatureF),            CxTemp(Model.StatsB?.WinterTemperatureF),           null));
+                break;
+
+            case "livability-score":
+                ctxTitle = "What Drives the Score";
+                ctxNote  = "The livability score synthesizes several quality-of-life signals — here are the key inputs.";
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),           CxNum(Model.StatsB?.CostOfLivingIndex),          $"/compare/{pair}/cost-of-living"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),     CxMon(Model.StatsB?.MedianHouseholdIncome),      $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Life Expectancy",       CxYrs(Model.StatsA?.LifeExpectancyYears),         CxYrs(Model.StatsB?.LifeExpectancyYears),        $"/compare/{pair}/life-expectancy"));
+                ctxRows.Add(("Violent Crime / 100k",  CxNum(Model.StatsA?.ViolentCrimeRatePer100k),     CxNum(Model.StatsB?.ViolentCrimeRatePer100k),    $"/compare/{pair}/violent-crime"));
+                ctxRows.Add(("Unemployment Rate",     CxPct(Model.StatsA?.UnemploymentRatePct),         CxPct(Model.StatsB?.UnemploymentRatePct),        $"/compare/{pair}/unemployment-rate"));
+                ctxRows.Add(("Sunny Days / Year",     CxDays(Model.StatsA?.SunnyDaysPerYear),           CxDays(Model.StatsB?.SunnyDaysPerYear),          $"/compare/{pair}/sunny-days"));
+                break;
+
+            case "commute-time":
+                ctxTitle = "Commute in Context";
+                ctxNote  = "Commute time affects quality of life, gas costs, and real take-home pay.";
+                ctxRows.Add(("Gas Price",             CxMetric("gas-price", Model.StateA, Model.StatsA), CxMetric("gas-price", Model.StateB, Model.StatsB), $"/compare/{pair}/gas-price"));
+                ctxRows.Add(("Population Density",   CxDens(cxDensA),                                    CxDens(cxDensB),                                    $"/compare/{pair}/density"));
+                ctxRows.Add(("Employment / Pop. Ratio", CxPct(Model.StatsA?.EmploymentPopulationRatioPct), CxPct(Model.StatsB?.EmploymentPopulationRatioPct), $"/compare/{pair}/employment-population-ratio"));
+                ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),            CxNum(Model.StatsB?.CostOfLivingIndex),            $"/compare/{pair}/cost-of-living"));
+                break;
+
+            case "average-temperature":
+                ctxTitle = "Full Climate Picture";
+                ctxNote  = "The annual average masks a lot — summers and winters can tell a very different story.";
+                ctxRows.Add(("Summer Temperature",   CxTemp(Model.StatsA?.SummerTemperatureF),  CxTemp(Model.StatsB?.SummerTemperatureF),  null));
+                ctxRows.Add(("Winter Temperature",   CxTemp(Model.StatsA?.WinterTemperatureF),  CxTemp(Model.StatsB?.WinterTemperatureF),  null));
+                ctxRows.Add(("Sunny Days / Year",    CxDays(Model.StatsA?.SunnyDaysPerYear),    CxDays(Model.StatsB?.SunnyDaysPerYear),    $"/compare/{pair}/sunny-days"));
+                ctxRows.Add(("Annual Precipitation", CxIn(Model.StatsA?.AnnualPrecipitationIn), CxIn(Model.StatsB?.AnnualPrecipitationIn), null));
+                ctxRows.Add(("Electricity Rate",     CxMetric("electricity-rates", Model.StateA, Model.StatsA), CxMetric("electricity-rates", Model.StateB, Model.StatsB), $"/compare/{pair}/electricity-rates"));
+                break;
+
+            case "summer-temperature":
+                ctxTitle = "Climate Breakdown";
+                ctxNote  = "Summer heat affects electricity bills, outdoor lifestyle, and worker productivity.";
+                ctxRows.Add(("Winter Temperature",   CxTemp(Model.StatsA?.WinterTemperatureF),  CxTemp(Model.StatsB?.WinterTemperatureF),  null));
+                ctxRows.Add(("Average Temperature",  CxTemp(Model.StatsA?.AverageTemperatureF), CxTemp(Model.StatsB?.AverageTemperatureF), $"/compare/{pair}/average-temperature"));
+                ctxRows.Add(("Sunny Days / Year",    CxDays(Model.StatsA?.SunnyDaysPerYear),    CxDays(Model.StatsB?.SunnyDaysPerYear),    $"/compare/{pair}/sunny-days"));
+                ctxRows.Add(("Annual Precipitation", CxIn(Model.StatsA?.AnnualPrecipitationIn), CxIn(Model.StatsB?.AnnualPrecipitationIn), null));
+                ctxRows.Add(("Electricity Rate",     CxMetric("electricity-rates", Model.StateA, Model.StatsA), CxMetric("electricity-rates", Model.StateB, Model.StatsB), $"/compare/{pair}/electricity-rates"));
+                break;
+
+            case "winter-temperature":
+                ctxTitle = "Climate Breakdown";
+                ctxNote  = "Cold winters affect heating bills, outdoor activity, and overall livability.";
+                ctxRows.Add(("Summer Temperature",   CxTemp(Model.StatsA?.SummerTemperatureF),  CxTemp(Model.StatsB?.SummerTemperatureF),  null));
+                ctxRows.Add(("Average Temperature",  CxTemp(Model.StatsA?.AverageTemperatureF), CxTemp(Model.StatsB?.AverageTemperatureF), $"/compare/{pair}/average-temperature"));
+                ctxRows.Add(("Sunny Days / Year",    CxDays(Model.StatsA?.SunnyDaysPerYear),    CxDays(Model.StatsB?.SunnyDaysPerYear),    $"/compare/{pair}/sunny-days"));
+                ctxRows.Add(("Annual Precipitation", CxIn(Model.StatsA?.AnnualPrecipitationIn), CxIn(Model.StatsB?.AnnualPrecipitationIn), null));
+                break;
+
+            case "sunny-days":
+                ctxTitle = "Sunshine & Weather";
+                ctxNote  = "Sunny days rank among the most-cited lifestyle factors for relocation decisions.";
+                ctxRows.Add(("Average Temperature",  CxTemp(Model.StatsA?.AverageTemperatureF), CxTemp(Model.StatsB?.AverageTemperatureF), $"/compare/{pair}/average-temperature"));
+                ctxRows.Add(("Summer Temperature",   CxTemp(Model.StatsA?.SummerTemperatureF),  CxTemp(Model.StatsB?.SummerTemperatureF),  null));
+                ctxRows.Add(("Winter Temperature",   CxTemp(Model.StatsA?.WinterTemperatureF),  CxTemp(Model.StatsB?.WinterTemperatureF),  null));
+                ctxRows.Add(("Annual Precipitation", CxIn(Model.StatsA?.AnnualPrecipitationIn), CxIn(Model.StatsB?.AnnualPrecipitationIn), null));
+                break;
+
+            case "annual-precipitation":
+                ctxTitle = "Precipitation & Climate";
+                ctxNote  = "Rain and snow affect agriculture, flood risk, water supply, and outdoor lifestyle.";
+                ctxRows.Add(("Sunny Days / Year",    CxDays(Model.StatsA?.SunnyDaysPerYear),    CxDays(Model.StatsB?.SunnyDaysPerYear),    $"/compare/{pair}/sunny-days"));
+                ctxRows.Add(("Average Temperature",  CxTemp(Model.StatsA?.AverageTemperatureF), CxTemp(Model.StatsB?.AverageTemperatureF), $"/compare/{pair}/average-temperature"));
+                ctxRows.Add(("Summer Temperature",   CxTemp(Model.StatsA?.SummerTemperatureF),  CxTemp(Model.StatsB?.SummerTemperatureF),  null));
+                ctxRows.Add(("Winter Temperature",   CxTemp(Model.StatsA?.WinterTemperatureF),  CxTemp(Model.StatsB?.WinterTemperatureF),  null));
+                break;
+
+            case "land-area":
+                ctxTitle = "Size in Context";
+                ctxNote  = "Land area shapes population density, natural resources, climate variety, and travel distances.";
+                ctxRows.Add(("Population",          CxD(Model.StateA.Population?.ToString("N0")), CxD(Model.StateB.Population?.ToString("N0")), $"/compare/{pair}/population"));
+                ctxRows.Add(("Population Density",  CxDens(cxDensA),                              CxDens(cxDensB),                              $"/compare/{pair}/density"));
+                ctxRows.Add(("Statehood Order",     CxOrder(Model.StatsA?.StatehoodOrder),         CxOrder(Model.StatsB?.StatehoodOrder),         $"/compare/{pair}/statehood"));
+                ctxRows.Add(("Average Temperature", CxTemp(Model.StatsA?.AverageTemperatureF),     CxTemp(Model.StatsB?.AverageTemperatureF),     $"/compare/{pair}/average-temperature"));
+                break;
+
+            case "statehood":
+                ctxTitle = "Historical Context";
+                ctxNote  = "The statehood order mirrors westward expansion and regional settlement history.";
+                ctxRows.Add(("Capital",      CxD(Model.StateA.Capital),                        CxD(Model.StateB.Capital),                        $"/compare/{pair}/capital"));
+                ctxRows.Add(("Population",   CxD(Model.StateA.Population?.ToString("N0")),     CxD(Model.StateB.Population?.ToString("N0")),     $"/compare/{pair}/population"));
+                ctxRows.Add(("Land Area",    CxSqMi(Model.StatsA?.LandAreaSqMi),               CxSqMi(Model.StatsB?.LandAreaSqMi),               $"/compare/{pair}/land-area"));
+                ctxRows.Add(("State Color",  CxD(Model.StatsA?.PoliticalLean),                 CxD(Model.StatsB?.PoliticalLean),                 $"/compare/{pair}/state-color"));
+                break;
+
+            case "gun-laws-status":
+                ctxTitle = "Laws in Context";
+                ctxNote  = "Gun policy alongside the broader regulatory environment.";
+                ctxRows.Add(("Marijuana Status",     CxD(Model.StatsA?.MarijuanaLegalizationStatus), CxD(Model.StatsB?.MarijuanaLegalizationStatus), $"/compare/{pair}/marijuana-legalization"));
+                ctxRows.Add(("Alcohol System",       CxD(Model.StatsA?.AlcoholLawsStatus),           CxD(Model.StatsB?.AlcoholLawsStatus),           $"/compare/{pair}/alcohol-laws"));
+                ctxRows.Add(("State Color",          CxD(Model.StatsA?.PoliticalLean),               CxD(Model.StatsB?.PoliticalLean),               $"/compare/{pair}/state-color"));
+                ctxRows.Add(("Violent Crime / 100k", CxNum(Model.StatsA?.ViolentCrimeRatePer100k),   CxNum(Model.StatsB?.ViolentCrimeRatePer100k),   $"/compare/{pair}/violent-crime"));
+                break;
+
+            case "marijuana-legalization":
+                ctxTitle = "Laws in Context";
+                ctxNote  = "Cannabis policy alongside the state's broader regulatory stance.";
+                ctxRows.Add(("Gun Laws",     CxD(Model.StatsA?.GunLawsStatus),           CxD(Model.StatsB?.GunLawsStatus),           $"/compare/{pair}/gun-laws-status"));
+                ctxRows.Add(("Alcohol System", CxD(Model.StatsA?.AlcoholLawsStatus),     CxD(Model.StatsB?.AlcoholLawsStatus),       $"/compare/{pair}/alcohol-laws"));
+                ctxRows.Add(("State Color",  CxD(Model.StatsA?.PoliticalLean),           CxD(Model.StatsB?.PoliticalLean),           $"/compare/{pair}/state-color"));
+                break;
+
+            case "alcohol-laws":
+                ctxTitle = "Laws in Context";
+                ctxNote  = "Alcohol system classification alongside the state's broader regulatory stance.";
+                ctxRows.Add(("Gun Laws",       CxD(Model.StatsA?.GunLawsStatus),             CxD(Model.StatsB?.GunLawsStatus),             $"/compare/{pair}/gun-laws-status"));
+                ctxRows.Add(("Marijuana Status", CxD(Model.StatsA?.MarijuanaLegalizationStatus), CxD(Model.StatsB?.MarijuanaLegalizationStatus), $"/compare/{pair}/marijuana-legalization"));
+                ctxRows.Add(("State Color",    CxD(Model.StatsA?.PoliticalLean),               CxD(Model.StatsB?.PoliticalLean),               $"/compare/{pair}/state-color"));
+                break;
+
+            case "uninsured-rate":
+                ctxTitle = "Health Access Context";
+                ctxNote  = "Insurance coverage is the gateway to healthcare — closely tied to income, employment, and state policy.";
+                ctxRows.Add(("Poverty Rate",    CxPct(Model.StatsA?.PovertyRatePct),           CxPct(Model.StatsB?.PovertyRatePct),           $"/compare/{pair}/poverty-rate"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome), $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Life Expectancy", CxYrs(Model.StatsA?.LifeExpectancyYears),      CxYrs(Model.StatsB?.LifeExpectancyYears),      $"/compare/{pair}/life-expectancy"));
+                ctxRows.Add(("Unemployment Rate", CxPct(Model.StatsA?.UnemploymentRatePct),    CxPct(Model.StatsB?.UnemploymentRatePct),      $"/compare/{pair}/unemployment-rate"));
+                break;
+
+            case "obesity-rate":
+                ctxTitle = "Health Factors";
+                ctxNote  = "Obesity rates reflect income, food access, climate, activity levels, and healthcare availability.";
+                ctxRows.Add(("Life Expectancy",   CxYrs(Model.StatsA?.LifeExpectancyYears), CxYrs(Model.StatsB?.LifeExpectancyYears), $"/compare/{pair}/life-expectancy"));
+                ctxRows.Add(("Poverty Rate",      CxPct(Model.StatsA?.PovertyRatePct),      CxPct(Model.StatsB?.PovertyRatePct),      $"/compare/{pair}/poverty-rate"));
+                ctxRows.Add(("Uninsured Rate",    CxPct(Model.StatsA?.UninsuredRatePct),    CxPct(Model.StatsB?.UninsuredRatePct),    null));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome), $"/compare/{pair}/median-income"));
+                break;
+
+            case "property-crime-rate":
+                ctxTitle = "Crime Context";
+                ctxNote  = "Property and violent crime are distinct trends with shared root causes.";
+                ctxRows.Add(("Violent Crime / 100k",  CxNum(Model.StatsA?.ViolentCrimeRatePer100k), CxNum(Model.StatsB?.ViolentCrimeRatePer100k), $"/compare/{pair}/violent-crime"));
+                ctxRows.Add(("Poverty Rate",          CxPct(Model.StatsA?.PovertyRatePct),          CxPct(Model.StatsB?.PovertyRatePct),          $"/compare/{pair}/poverty-rate"));
+                ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome), CxMon(Model.StatsB?.MedianHouseholdIncome),   $"/compare/{pair}/median-income"));
+                ctxRows.Add(("Population Density",    CxDens(cxDensA),                              CxDens(cxDensB),                              $"/compare/{pair}/density"));
+                ctxRows.Add(("Unemployment Rate",     CxPct(Model.StatsA?.UnemploymentRatePct),     CxPct(Model.StatsB?.UnemploymentRatePct),     $"/compare/{pair}/unemployment-rate"));
+                break;
+        }
+    }
+}
+
+@if (ctxRows.Any())
+{
+    <section class="bg-gray-50 py-12 border-t">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700 mb-1">Related Context</p>
+            <h2 class="text-2xl font-bold text-gray-900 mb-1">@ctxTitle</h2>
+            @if (!string.IsNullOrWhiteSpace(ctxNote))
+            {
+                <p class="text-sm text-gray-500 mt-1 mb-6">@ctxNote</p>
+            }
+            <div class="rounded-2xl border border-gray-200 overflow-hidden bg-white shadow-sm">
+                <div class="grid grid-cols-3 bg-slate-800 text-white text-xs font-semibold uppercase tracking-[0.12em] px-5 py-3">
+                    <div>Metric</div>
+                    <div class="text-center">@titleA</div>
+                    <div class="text-center">@titleB</div>
+                </div>
+                <div class="divide-y divide-gray-100">
+                    @foreach (var (ctxLabel, ctxValA, ctxValB, ctxHref) in ctxRows)
+                    {
+                        @if (!string.IsNullOrWhiteSpace(ctxHref))
+                        {
+                            <a href="@ctxHref" class="grid grid-cols-3 px-5 py-3.5 hover:bg-blue-50 transition group">
+                                <div class="text-sm text-gray-700 group-hover:text-blue-700 flex items-center gap-1.5">
+                                    @ctxLabel
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition"></i>
+                                </div>
+                                <div class="text-sm font-semibold text-gray-900 text-center">@ctxValA</div>
+                                <div class="text-sm font-semibold text-gray-900 text-center">@ctxValB</div>
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="grid grid-cols-3 px-5 py-3.5">
+                                <div class="text-sm text-gray-600">@ctxLabel</div>
+                                <div class="text-sm font-semibold text-gray-900 text-center">@ctxValA</div>
+                                <div class="text-sm font-semibold text-gray-900 text-center">@ctxValB</div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+@{
+    // ── Context, Key Facts, FAQ ───────────────────────────────────────────────
+    var hasNumbers  = Model.Result.NumericA.HasValue && Model.Result.NumericB.HasValue;
+    var mName       = Model.Metric.Name;
+    var mLow        = mName.ToLower();
+
+    // Context paragraph
+    var contextParagraph = "";
+    if (hasNumbers && Model.Result.WinnerSlug != null)
+    {
+        bool aWins   = Model.Result.WinnerSlug == Model.StateA.Slug;
+        var  winner  = aWins ? Model.StateA : Model.StateB;
+        var  loser   = aWins ? Model.StateB : Model.StateA;
+        var  winVal  = (aWins ? Model.Result.DisplayValueA : Model.Result.DisplayValueB) ?? "—";
+        var  loseVal = (aWins ? Model.Result.DisplayValueB : Model.Result.DisplayValueA) ?? "—";
+        var  winNum  = aWins ? Model.Result.NumericA!.Value : Model.Result.NumericB!.Value;
+        var  loseNum = aWins ? Model.Result.NumericB!.Value : Model.Result.NumericA!.Value;
+
+        contextParagraph = $"{winner.Name} has a {mLow} of {winVal}, compared with {loseVal} in {loser.Name}";
+        if (loseNum > 0)
+        {
+            var ratio = winNum / loseNum;
+            if (ratio >= 2.0)
+                contextParagraph += $" — roughly {ratio:F1}× the {loser.Name} figure";
+            else if (ratio >= 1.1)
+                contextParagraph += $", a gap of {Math.Round((winNum - loseNum) / loseNum * 100, 1):F1}%";
+        }
+        contextParagraph += ". " + Model.Metric.Description;
+    }
+    else if (Model.Result.DisplayValueA != null && Model.Result.DisplayValueB != null
+             && Model.Metric.Type != USASymbol.Models.MetricType.Text)
+    {
+        contextParagraph = $"{Model.StateA.Name}: {Model.Result.DisplayValueA}. {Model.StateB.Name}: {Model.Result.DisplayValueB}.";
+    }
+
+    // Key facts chips
+    var keyFacts = new List<(string Label, string Value, bool IsWin)>();
+    if (Model.Result.DisplayValueA != null)
+        keyFacts.Add((Model.StateA.Name, Model.Result.DisplayValueA, Model.Result.WinnerSlug == Model.StateA.Slug));
+    if (Model.Result.DisplayValueB != null)
+        keyFacts.Add((Model.StateB.Name, Model.Result.DisplayValueB, Model.Result.WinnerSlug == Model.StateB.Slug));
+    if (!string.IsNullOrWhiteSpace(Model.Result.DifferenceText))
+        keyFacts.Add(("Difference", Model.Result.DifferenceText, false));
+
+    // FAQ items (3-4 questions)
+    var metFaq = new List<(string Q, string A)>();
+    if (Model.Result.DisplayValueA != null)
+        metFaq.Add(($"What is {titleA}'s {mLow}?",
+            $"{titleA}'s {mLow} is {Model.Result.DisplayValueA}."));
+    if (Model.Result.DisplayValueB != null)
+        metFaq.Add(($"What is {titleB}'s {mLow}?",
+            $"{titleB}'s {mLow} is {Model.Result.DisplayValueB}."));
+    if (Model.Result.WinnerSlug != null && !string.IsNullOrWhiteSpace(directAnswer))
+    {
+        var compareWord = Model.Metric.HigherIsBetter ? "higher" : "lower";
+        metFaq.Add(($"Which state has a {compareWord} {mLow} — {titleA} or {titleB}?", directAnswer));
+    }
+    if (!string.IsNullOrWhiteSpace(Model.Result.DifferenceText) && hasNumbers)
+    {
+        bool aW2    = Model.Result.WinnerSlug == Model.StateA.Slug;
+        var  w2num  = aW2 ? Model.Result.NumericA!.Value : Model.Result.NumericB!.Value;
+        var  l2num  = aW2 ? Model.Result.NumericB!.Value : Model.Result.NumericA!.Value;
+        if (l2num > 0 && w2num / l2num >= 1.15)
+        {
+            var moreOrLess = Model.Metric.HigherIsBetter ? "more" : "less";
+            var w2name     = aW2 ? titleA : titleB;
+            var l2name     = aW2 ? titleB : titleA;
+            metFaq.Add(($"How much {moreOrLess} {mLow} does {w2name} have compared to {l2name}?",
+                Model.Result.DifferenceText + "."));
+        }
+    }
+
+    // FAQ JSON-LD
+    string metFaqJson = "";
+    if (metFaq.Any())
+    {
+        var schObj = new Dictionary<string, object>
+        {
+            ["@context"]   = "https://schema.org",
+            ["@type"]      = "FAQPage",
+            ["mainEntity"] = metFaq.Select(f => new Dictionary<string, object>
+            {
+                ["@type"] = "Question",
+                ["name"]  = f.Q,
+                ["acceptedAnswer"] = new Dictionary<string, object>
+                {
+                    ["@type"] = "Answer",
+                    ["text"]  = f.A
+                }
+            }).ToArray()
+        };
+        metFaqJson = System.Text.Json.JsonSerializer.Serialize(schObj);
+    }
+}
+
+@if (!string.IsNullOrWhiteSpace(contextParagraph) || keyFacts.Any())
+{
+    <section class="bg-[linear-gradient(180deg,#f8fbff_0%,#fff_100%)] py-10 border-t">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            @if (!string.IsNullOrWhiteSpace(contextParagraph))
+            {
+                <div class="mb-7">
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700 mb-2">What This Means</p>
+                    <h2 class="text-xl font-bold text-slate-900 mb-3">@titleA vs @titleB: @mName in context</h2>
+                    <p class="text-base leading-7 text-slate-600">@contextParagraph</p>
+                </div>
+            }
+            @if (keyFacts.Any())
+            {
+                <div class="grid sm:grid-cols-3 gap-4">
+                    @foreach (var (label, value, isWin) in keyFacts)
+                    {
+                        <div class="rounded-2xl border @(isWin ? "border-emerald-200 bg-emerald-50" : "border-slate-200 bg-white") p-5 shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">@label</span>
+                                @if (isWin) { <i class="fa-solid fa-crown text-emerald-500 text-[10px]"></i> }
+                            </div>
+                            <div class="text-xl font-extrabold @(isWin ? "text-emerald-700" : "text-slate-800") leading-tight">@value</div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </section>
+}
+
+@if (metFaq.Any())
+{
+    if (!string.IsNullOrWhiteSpace(metFaqJson))
+    {
+        <script type="application/ld+json">@Html.Raw(metFaqJson)</script>
+    }
+
+    <section class="bg-white py-10 border-t" itemscope itemtype="https://schema.org/FAQPage">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700 mb-2">People Also Ask</p>
+            <h2 class="text-xl font-bold text-slate-900 mb-5">@titleA vs @titleB @mName — Common Questions</h2>
+            <div class="divide-y divide-slate-100 rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                @foreach (var (q, a) in metFaq)
+                {
+                    <div class="px-5 py-4" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3 class="text-sm font-semibold text-slate-900 mb-1.5 flex items-start gap-2.5" itemprop="name">
+                            <span class="mt-0.5 w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 text-[10px] font-bold">Q</span>
+                            @q
+                        </h3>
+                        <div class="ml-7" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                            <p class="text-sm leading-6 text-slate-600" itemprop="text">@a</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<section class="bg-gray-50 py-12 border-t">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-end justify-between gap-4 mb-6 flex-wrap">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-1">More Comparisons: @titleA vs @titleB</h2>
+                <p class="text-sm text-gray-500">Grouped tabs keep the deep-dive links tighter and easier to scan.</p>
+            </div>
+            <a href="/compare/@Model.PairSlug" class="hidden sm:inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-semibold text-blue-700 hover:border-blue-300 hover:bg-blue-50 transition">
+                <i class="fa-solid fa-table-columns text-xs"></i>
+                Full Comparison
+            </a>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mb-6">
+            @{
+                bool hasCurrentGroup = groupedOtherMetrics.Any(g => string.Equals(g.Key.GroupSlug, Model.Metric.GroupSlug, StringComparison.OrdinalIgnoreCase));
+            }
+            @foreach (var grp in groupedOtherMetrics)
+            {
+                var cmpTabId = $"cmp-tab-{grp.Key.GroupSlug}";
+                var cmpActive = hasCurrentGroup
+                    ? string.Equals(grp.Key.GroupSlug, Model.Metric.GroupSlug, StringComparison.OrdinalIgnoreCase)
+                    : grp == groupedOtherMetrics.First();
+                <button type="button"
+                        class="cmp-tab inline-flex items-center rounded-full border px-3.5 py-1.5 text-sm font-semibold transition @(cmpActive ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-700 border-slate-300 hover:border-blue-300 hover:text-blue-700")"
+                        data-target="@cmpTabId">
+                    @grp.Key.GroupName
+                </button>
+            }
+        </div>
+
+        <div>
+            @foreach (var grp in groupedOtherMetrics)
+            {
+                var cmpPanelId = $"cmp-tab-{grp.Key.GroupSlug}";
+                var cmpActive = hasCurrentGroup
+                    ? string.Equals(grp.Key.GroupSlug, Model.Metric.GroupSlug, StringComparison.OrdinalIgnoreCase)
+                    : grp == groupedOtherMetrics.First();
+                <div id="@cmpPanelId" class="cmp-panel @(cmpActive ? "" : "hidden")">
+                    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        @foreach (var metric in grp)
+                        {
+                            <a href="/compare/@Model.PairSlug/@metric.Slug" class="flex items-center gap-3 bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-md hover:border-blue-300 transition group">
+                                <span class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                                    <i class="@metric.Icon text-blue-600 text-sm"></i>
+                                </span>
+                                <span class="flex-1 font-medium text-gray-900 text-sm group-hover:text-blue-700">@metric.Name</span>
+                                <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-blue-500 text-xs shrink-0"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <a href="/compare/@Model.PairSlug" class="mt-4 flex items-center gap-3 bg-blue-700 text-white border border-blue-700 rounded-xl p-4 hover:bg-blue-800 transition group sm:hidden">
+            <span class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-table-columns text-white text-sm"></i>
+            </span>
+            <span class="font-medium text-sm">Full Comparison</span>
+            <i class="fa-solid fa-chevron-right text-blue-300 text-xs ml-auto"></i>
+        </a>
+    </div>
+</section>
+
+<section class="bg-white py-10 border-t">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Explore Each State</h2>
+        <div class="flex gap-4 flex-wrap">
+            <a href="/states/@Model.StateA.Slug" class="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-700 transition">
+                <img src="@Images.Thumb(Model.StateA.FlagImageUrl)" class="w-6 h-4 object-cover rounded" onerror="this.style.display='none'" alt="" />
+                @Model.StateA.Name Symbols
+            </a>
+            <a href="/states/@Model.StateB.Slug" class="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-700 transition">
+                <img src="@Images.Thumb(Model.StateB.FlagImageUrl)" class="w-6 h-4 object-cover rounded" onerror="this.style.display='none'" alt="" />
+                @Model.StateB.Name Symbols
+            </a>
+            <a href="/compare-states" class="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-700 transition">
+                <i class="fa-solid fa-scale-balanced text-blue-500"></i>
+                Compare Other States
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+(function () {
+    const tabs   = Array.from(document.querySelectorAll('.cmp-tab'));
+    const panels = Array.from(document.querySelectorAll('.cmp-panel'));
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.getAttribute('data-target');
+            tabs.forEach(b => {
+                b.classList.remove('bg-slate-900', 'text-white', 'border-slate-900');
+                b.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
+            });
+            tab.classList.add('bg-slate-900', 'text-white', 'border-slate-900');
+            tab.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
+            panels.forEach(p => p.id === target ? p.classList.remove('hidden') : p.classList.add('hidden'));
+        });
+    });
+})();
+</script>
+
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "WebPage",
+  "name": "@Html.Raw(System.Text.Json.JsonSerializer.Serialize($"{Model.StateA.Name} vs {Model.StateB.Name}: {Model.Metric.Name} Comparison"))",
+  "description": "@Html.Raw(System.Text.Json.JsonSerializer.Serialize(directAnswer ?? $"Compare {Model.Metric.Name.ToLower()} between {Model.StateA.Name} and {Model.StateB.Name}."))",
+  "url": "https://usasymbol.com/compare/@Model.PairSlug/@Model.Metric.Slug",
+  "about": [
+    { "@@type": "AdministrativeArea", "name": "@Model.StateA.Name", "identifier": "@Model.StateA.Abbreviation" },
+    { "@@type": "AdministrativeArea", "name": "@Model.StateB.Name", "identifier": "@Model.StateB.Abbreviation" }
+  ],
+  "breadcrumb": {
+    "@@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@@type": "ListItem", "position": 1, "name": "Home", "item": "https://usasymbol.com" },
+      { "@@type": "ListItem", "position": 2, "name": "Compare States", "item": "https://usasymbol.com/compare-states" },
+      { "@@type": "ListItem", "position": 3, "name": "@Model.StateA.Name vs @Model.StateB.Name", "item": "https://usasymbol.com/compare/@Model.PairSlug" },
+      { "@@type": "ListItem", "position": 4, "name": "@Model.Metric.Name", "item": "https://usasymbol.com/compare/@Model.PairSlug/@Model.Metric.Slug" }
+    ]
+  }
+}
+</script>
+
+<section class="bg-gray-50 py-8 border-t text-sm text-gray-500">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p><strong class="text-gray-700">Sources:</strong> Core demographic data comes from the 2020 U.S. Census, with land area from U.S. Census Bureau TIGER files. Income, housing, affordability, and tax fields are maintained in our comparison dataset, with minimum wage data from the U.S. Department of Labor, gas prices from AAA, and electricity rates from the U.S. Energy Information Administration. Political control and election fields use 2024 presidential results together with National Conference of State Legislatures data. Gun-law labels use the Giffords scorecard, alcohol system data comes from NABCA, and marijuana status uses NCSL's state cannabis laws tracker.</p>
+    </div>
+</section>

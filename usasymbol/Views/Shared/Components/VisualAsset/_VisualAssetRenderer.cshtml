@@ -1,0 +1,101 @@
+﻿@using USASymbol.Models.ViewModels
+@model VisualAsset
+@inject IImageUrlService Images
+
+@{
+    var layout = (Model.Layout ?? "").Trim().ToLowerInvariant();
+    if (string.IsNullOrWhiteSpace(layout))
+    {
+        layout = "right";
+    }
+
+    var isFull = layout.StartsWith("full-width");
+    var isLeft = layout.StartsWith("left");
+    var isRight = layout.StartsWith("right") || (!isFull && !isLeft);
+
+    string aspectClass;
+    if (isFull)
+    {
+        aspectClass = layout switch
+        {
+            "full-width-wide" => "aspect-[16/5]",
+            "full-width-tall" => "aspect-[16/9]",
+            "full-width-square" => "aspect-[4/3]",
+            _ => "aspect-[21/9]"
+        };
+    }
+    else
+    {
+        aspectClass = layout.EndsWith("-tall")
+            ? "aspect-[3/4]"
+            : "aspect-[4/3]";
+    }
+
+    var floatClass = isLeft ? "lg:float-left lg:mr-10"
+                  : isRight ? "lg:float-right lg:ml-10"
+                  : "";
+
+    var figureClass = isFull
+        ? "mb-8 w-full clear-both"
+        : $"{floatClass} lg:clear-both lg:mb-4 lg:max-w-[340px] mb-6 w-full group";
+
+    var wrapClass = isFull
+        ? $"relative {aspectClass} overflow-hidden rounded-[1.2rem] bg-slate-50"
+        : $"relative {aspectClass} overflow-hidden rounded-[1.1rem] bg-slate-100";
+
+    var imgClass = isFull
+        ? "w-full h-full object-cover"
+        : "absolute inset-0 w-full h-full object-cover object-top";
+
+    var alt = string.IsNullOrWhiteSpace(Model.Alt) ? "" : Model.Alt;
+    var caption = string.IsNullOrWhiteSpace(Model.Caption) ? alt : Model.Caption;
+    var imageUrl = isFull ? Images.Hero(Model.Src) : Images.Card(Model.Src);
+    var imageSrcSet = isFull
+        ? string.Join(", ", new[]
+        {
+            $"{Images.Hero(Model.Src, 480)} 480w",
+            $"{Images.Hero(Model.Src, 768)} 768w",
+            $"{Images.Hero(Model.Src, 1200)} 1200w"
+        })
+        : string.Join(", ", new[]
+        {
+            $"{Images.Card(Model.Src, 320)} 320w",
+            $"{Images.Card(Model.Src, 480)} 480w",
+            $"{Images.Card(Model.Src, 640)} 640w"
+        });
+    var imageSizes = isFull
+        ? "(max-width: 1023px) 100vw, 1200px"
+        : "(max-width: 1023px) 100vw, 340px";
+    var fullImageUrl = Images.Full(Model.Src);
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Src))
+{
+    <figure class="@figureClass">
+        <div class="@wrapClass">
+            <img src="@imageUrl"
+                 srcset="@imageSrcSet"
+                 sizes="@imageSizes"
+                 alt="@alt"
+                 class="@imgClass"
+                 loading="lazy" />
+
+            <button type="button"
+                    class="js-visual-lightbox absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-[0.8rem] bg-slate-900/88 text-white transition hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-white/70"
+                    data-lightbox-src="@fullImageUrl"
+                    data-lightbox-alt="@alt"
+                    data-lightbox-caption="@caption"
+                    onclick="window.__openVisualLightboxFromButton && window.__openVisualLightboxFromButton(this)"
+                    aria-label="Open image in popup">
+                <i class="fa-solid fa-expand text-sm"></i>
+            </button>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Caption))
+        {
+            <figcaption class="mt-2 px-1 text-[0.95rem] leading-6 text-slate-700">
+                @Model.Caption
+            </figcaption>
+        }
+    </figure>
+}

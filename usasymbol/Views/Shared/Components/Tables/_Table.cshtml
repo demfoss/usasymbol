@@ -1,0 +1,258 @@
+@model USASymbol.Models.ViewModels.TableSectionViewModel
+@inject IImageUrlService Images
+
+@if (Model.Tables.Any())
+{
+    <div id="tableView" class="hidden">
+
+        @foreach (var table in Model.Tables)
+        {
+            if (!table.Rows.Any() || !table.Columns.Any()) { continue; }
+
+            var columns   = table.Columns;
+            var toggleable = table.ToggleableColumns;
+            var defaultCol = table.DefaultColumn ?? toggleable.FirstOrDefault();
+
+            @* Title — only for multi-table layouts *@
+            @if (Model.Tables.Count > 1 && !string.IsNullOrWhiteSpace(table.Title))
+            {
+                <h3 class="text-xl md:text-2xl font-semibold tracking-tight text-slate-900 mt-8 mb-4 first:mt-0">
+                    @table.Title
+                </h3>
+            }
+
+            <div class="overflow-x-auto rounded-[1.25rem] border border-slate-200 bg-white/90 @(Model.Tables.Count > 1 ? "mb-6" : "")">
+                <table class="rankingTable min-w-full text-left text-sm">
+
+                    <!-- HEADER -->
+                    <thead class="sticky top-0 z-10 bg-white">
+                        <tr class="border-b border-slate-200">
+                            @foreach (var col in columns)
+                            {
+                                if (col.Key == "state_slug") { continue; }
+
+                                var isToggleable = toggleable.Contains(col.Key);
+                                var isHidden     = isToggleable && col.Key != defaultCol && toggleable.Count > 1;
+                                var hiddenClass  = isHidden ? "hidden" : "";
+                                var sortable     = col.Sortable && table.Sortable;
+
+                                <th class="px-4 py-3 text-[12px] font-extrabold uppercase tracking-[0.12em] text-slate-600
+                                           @(sortable ? "cursor-pointer hover:bg-slate-50" : "")
+                                           transition select-none @hiddenClass"
+                                    data-column="@col.Key"
+                                    @if (isToggleable) { <text>data-toggleable="true"</text> }
+                                    @if (sortable)     { <text>data-sort="@col.Key"</text> }>
+                                    <div class="flex items-center gap-2">
+                                        <span>@col.Label</span>
+                                        @if (sortable)
+                                        {
+                                            <i class="fas fa-sort text-slate-300 text-xs"></i>
+                                        }
+                                    </div>
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+
+                    <!-- BODY -->
+                    <tbody class="rankingTbody divide-y divide-slate-100">
+                        @for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            var row        = table.Rows[i];
+                            var rowBg      = i % 2 == 0 ? "bg-white" : "bg-slate-50/20";
+                            var stateSlug  = row.GetString("state_slug");
+                            var stateName  = row.GetString("state");
+                            var postalCode = row.GetString("postal_code") ?? row.GetString("state_code") ?? row.GetString("abbr") ?? row.GetString("abbreviation");
+                            var stateUrl   = $"/states/{stateSlug}";
+
+                            // ── URL priority: custom_url > auto-built ──────────────────
+                            var customRowUrl = row.GetString("custom_url");
+                            string symbolUrl;
+                            if (!string.IsNullOrEmpty(customRowUrl))
+                            {
+                                symbolUrl = customRowUrl;
+                            }
+                            else
+                            {
+                                var symbolSlug = row.GetString("symbol_slug");
+                                if (string.IsNullOrWhiteSpace(symbolSlug) && !string.IsNullOrEmpty(Model.DetailType))
+                                    symbolSlug = row.GetString($"{Model.DetailType}_slug");
+                                if (string.IsNullOrWhiteSpace(symbolSlug) && Model.DetailType == "flag")
+                                    symbolSlug = $"{stateSlug}-state-flag";
+                                symbolUrl = (!string.IsNullOrWhiteSpace(symbolSlug) && !string.IsNullOrWhiteSpace(Model.DetailType) && !string.IsNullOrWhiteSpace(stateSlug))
+                                    ? $"/states/{stateSlug}/{Model.DetailType}/{symbolSlug}"
+                                    : "";
+                            }
+
+                            // ── Search text: include all non-slug text columns ─────────
+                            var searchParts = new System.Collections.Generic.List<string?> { stateName };
+                            foreach (var c in columns.Where(c => c.Type != "image" && !c.Key.EndsWith("_slug") && c.Key != "state" && c.Key != "custom_url"))
+                            {
+                                if (row.Data.TryGetValue(c.Key, out var sv)) searchParts.Add(sv?.ToString());
+                            }
+                            var rowSearchText = string.Join(" ", searchParts.Where(s => !string.IsNullOrEmpty(s))).ToLowerInvariant();
+                            var rowRankRaw = row.GetString("rank");
+                            var rowRank = int.TryParse((rowRankRaw ?? string.Empty).Replace(",", ""), out var parsedRank) ? parsedRank : 0;
+                            var topRankRowClass = rowRank == 1
+                                ? "ring-1 ring-amber-200/70 bg-gradient-to-r from-amber-50 via-white to-white"
+                                : rowRank == 2
+                                    ? "ring-1 ring-slate-200/80 bg-gradient-to-r from-slate-100/70 via-white to-white"
+                                    : rowRank == 3
+                                        ? "ring-1 ring-orange-200/80 bg-gradient-to-r from-orange-50 via-white to-white"
+                                        : "";
+
+                            <tr class="tableRow @rowBg @topRankRowClass cursor-pointer hover:bg-slate-50 transition-colors"
+                                data-state="@(stateName?.ToLower())"
+                                data-search="@rowSearchText"
+                                data-state-slug="@stateSlug"
+                                data-state-code="@postalCode"
+                                data-rank="@rowRank"
+                                data-state-url="@stateUrl"
+                                data-symbol-url="@symbolUrl">
+
+                                @foreach (var col in columns)
+                                {
+                                    if (col.Key == "state_slug") { continue; }
+
+                                    var isToggleable = !string.IsNullOrWhiteSpace(col.Key) && toggleable.Contains(col.Key);
+                                    var isHidden     = isToggleable && col.Key != defaultCol && toggleable.Count > 1;
+                                    var hiddenClass  = isHidden ? "hidden" : "";
+                                    var cellValue    = !string.IsNullOrWhiteSpace(col.Key) && row.Data.TryGetValue(col.Key, out var val) ? val : null;
+
+                                    <td class="px-4 py-3 align-middle @hiddenClass"
+                                        data-column="@col.Key"
+                                        @if (isToggleable) { <text>data-toggleable="true"</text> }>
+
+                                        @switch (col.Type)
+                                        {
+                                            case "rank":
+                                            {
+                                                var rankStr = FormatValue(cellValue, col);
+                                                var rankNum = int.TryParse(rankStr.Replace(",", ""), out var rn) ? rn : 0;
+                                                var medalCls = rankNum == 1 ? "border-amber-300 bg-amber-50 text-amber-700"
+                                                             : rankNum == 2 ? "border-slate-300 bg-slate-100 text-slate-600"
+                                                             : rankNum == 3 ? "border-orange-300 bg-orange-50 text-orange-700"
+                                                             : "border-slate-200 bg-white text-slate-800";
+                                                <span class="inline-flex h-7 min-w-[2.25rem] items-center justify-center rounded-full
+                                                             border @medalCls text-xs font-extrabold tabular-nums">
+                                                    @rankStr
+                                                </span>
+                                                break;
+                                            }
+
+                                            case "state-link":
+                                            {
+                                                var flagPath = !string.IsNullOrEmpty(stateSlug) ? $"/images/flags/{stateSlug}/flag.webp" : "";
+                                                <span class="inline-flex items-center gap-2 font-semibold text-slate-900">
+                                                    @if (!string.IsNullOrEmpty(flagPath))
+                                                    {
+                                                        <img src="@Images.Thumb(flagPath)" alt=""
+                                                             class="h-5 w-auto object-contain rounded-sm flex-shrink-0"
+                                                             loading="lazy" decoding="async" />
+                                                    }
+                                                    @(cellValue?.ToString() ?? stateName ?? "—")
+                                                </span>
+                                                break;
+                                            }
+
+                                            case "image":
+                                                var imgSrc = cellValue?.ToString() ?? "";
+                                                if (!string.IsNullOrEmpty(imgSrc))
+                                                {
+                                                    <img src="@Images.Thumb(imgSrc)" alt="" class="h-14 md:h-16 w-auto object-contain" loading="lazy" decoding="async" />
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-slate-300">—</span>
+                                                }
+                                                break;
+
+                                            case "link":
+                                                var linkUrl = cellValue?.ToString() ?? "";
+                                                if (!string.IsNullOrEmpty(linkUrl))
+                                                {
+                                                    <a href="@linkUrl" target="_blank" rel="noopener"
+                                                       class="row-link inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 no-underline hover:no-underline">
+                                                        <span class="text-xs font-semibold">Open</span>
+                                                        <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-slate-300">—</span>
+                                                }
+                                                break;
+
+                                            case "number":
+                                                <span class="tabular-nums text-slate-900 font-semibold">
+                                                    @FormatValue(cellValue, col)
+                                                </span>
+                                                break;
+
+                                            case "date":
+                                                <span class="text-slate-700">@FormatValue(cellValue, col)</span>
+                                                break;
+
+                                            default:
+                                            {
+                                                var isDetailCol = string.Equals(col.Key, Model.DetailType, StringComparison.OrdinalIgnoreCase);
+                                                var text = cellValue?.ToString() ?? "—";
+                                                var key  = (col.Key ?? "").ToLowerInvariant();
+
+                                                if (key == "scientific_name" || key.Contains("scientific"))
+                                                {
+                                                    <span class="italic text-slate-600">@text</span>
+                                                }
+                                                else if (isDetailCol)
+                                                {
+                                                    <span class="font-semibold text-slate-900">@text</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-slate-700">@text</span>
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        <div id="tableEmptyState" class="hidden text-center py-12">
+            <div class="text-6xl mb-4">🔍</div>
+            <h3 class="text-xl font-black text-slate-900 mb-2">No results found</h3>
+            <p class="text-slate-600">Try adjusting your search.</p>
+        </div>
+    </div>
+}
+
+@functions {
+    string FormatValue(object? value, TableColumn col)
+    {
+        if (value == null) return "—";
+        var s = value.ToString() ?? "";
+        if (string.IsNullOrEmpty(s)) return "—";
+
+        switch (col.Type)
+        {
+            case "number":
+            case "rank":
+                if (long.TryParse(s.Replace(",", "").Replace(" ", ""), out var n))
+                    return n.ToString(col.Format ?? "N0");
+                return s;
+
+            case "date":
+                if (DateTime.TryParse(s, out var d))
+                    return d.ToString(col.Format ?? "MMM d, yyyy");
+                return s;
+
+            default:
+                return s;
+        }
+    }
+}

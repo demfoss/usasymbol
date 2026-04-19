@@ -1,0 +1,122 @@
+@model USASymbol.Models.ViewModels.SurnamesHubViewModel
+@inject IImageUrlService Images
+
+@{}
+
+<style>
+    .hub-card-available { transition: box-shadow .15s, transform .15s; }
+    .hub-card-available:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.1); }
+</style>
+
+<!-- Breadcrumb -->
+<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+            <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
+            <li class="text-slate-300">/</li>
+            <li><a href="/guides" class="hover:text-slate-900 transition">Guides</a></li>
+            <li class="text-slate-300">/</li>
+            <li class="text-slate-900 font-semibold">Last Names by State</li>
+        </ol>
+    </div>
+</nav>
+
+<main class="max-w-[1440px] mx-auto px-4 xl:px-8 py-10 lg:py-14">
+
+    <!-- Header -->
+    <div class="max-w-3xl mb-10">
+        <div class="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">
+            <i class="fa-solid fa-users text-[10px]"></i>
+            Genealogy &amp; Demographics
+        </div>
+        <h1 class="text-3xl md:text-[2.6rem] font-black tracking-tight text-slate-900 leading-tight mb-4">
+            Most Common Last Names by State
+        </h1>
+        <p class="text-[1.05rem] text-slate-600 leading-relaxed">
+            The top 20 most common surnames in every U.S. state — with etymology, immigrant origins, and Census data. Find out what the #1 last name is in your state and why it got there.
+        </p>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="flex flex-wrap items-center gap-6 border-t border-b border-slate-200 py-4 mb-10">
+        <div class="flex items-center gap-3">
+            <span class="text-[1.6rem] font-black text-slate-900 tabular-nums">@Model.AvailableCount</span>
+            <span class="text-[13px] text-slate-500 leading-tight">states<br>available now</span>
+        </div>
+        <div class="h-8 w-px bg-slate-200"></div>
+        <div class="flex items-center gap-3">
+            <span class="text-[1.6rem] font-black text-slate-400 tabular-nums">@(Model.Items.Count - Model.AvailableCount)</span>
+            <span class="text-[13px] text-slate-400 leading-tight">states<br>coming soon</span>
+        </div>
+        <div class="h-8 w-px bg-slate-200"></div>
+        <div class="flex items-center gap-3">
+            <span class="text-[1.6rem] font-black text-slate-900 tabular-nums">20</span>
+            <span class="text-[13px] text-slate-500 leading-tight">surnames<br>per state</span>
+        </div>
+        <div class="h-8 w-px bg-slate-200"></div>
+        <div class="flex items-center gap-2 text-[13px] text-slate-400">
+            <i class="fa-solid fa-database text-[11px]"></i>
+            U.S. Census Bureau · 2010
+        </div>
+    </div>
+
+    <!-- All 50 states grid -->
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        @foreach (var item in Model.Items)
+        {
+            if (item.HasData)
+            {
+                <a href="/states/@item.State.Slug/surnames"
+                   class="hub-card-available group block border border-slate-300 bg-white hover:border-slate-600 transition-colors">
+                    @if (!string.IsNullOrWhiteSpace(item.State.FlagImageUrl))
+                    {
+                        <div class="aspect-[16/9] overflow-hidden">
+                            <img src="@Images.Thumb(item.State.FlagImageUrl)"
+                                 alt="@item.State.Name flag"
+                                 class="w-full h-full object-cover"
+                                 loading="lazy" />
+                        </div>
+                    }
+                    <div class="px-3 py-3">
+                        <div class="text-[14px] font-bold text-slate-900 leading-tight">@item.State.Name</div>
+                        @if (!string.IsNullOrWhiteSpace(item.TopSurname))
+                        {
+                            <div class="text-[11px] text-slate-500 mt-0.5">#1: <span class="font-semibold">@item.TopSurname</span></div>
+                        }
+                    </div>
+                </a>
+            }
+            else
+            {
+                <div class="block border border-slate-100 bg-slate-50">
+                    @if (!string.IsNullOrWhiteSpace(item.State.FlagImageUrl))
+                    {
+                        <div class="aspect-[16/9] overflow-hidden opacity-30">
+                            <img src="@Images.Thumb(item.State.FlagImageUrl)"
+                                 alt="@item.State.Name flag"
+                                 class="w-full h-full object-cover"
+                                 loading="lazy" />
+                        </div>
+                    }
+                    <div class="px-3 py-3">
+                        <div class="text-[14px] font-semibold text-slate-400 leading-tight">@item.State.Name</div>
+                        <div class="text-[11px] text-slate-300 mt-0.5">Coming soon</div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+</main>
+
+@section Scripts {
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "CollectionPage",
+  "name": "Most Common Last Names by State",
+  "description": "Top 20 most common surnames in every U.S. state with etymology and Census data.",
+  "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}/guides/surnames")"
+}
+</script>
+}

@@ -1,0 +1,101 @@
+@using USASymbol.Models.Content
+@using USASymbol.Extensions
+@model ComparisonCardsBlock
+@inject IImageUrlService Images
+
+@{
+    if (Model == null)
+    {
+        return;
+    }
+
+    var block = Model;
+    var cards = block.Cards?.ToList() ?? new List<ComparisonCardItem>();
+    var hasAnyImages = cards.Any(card => !string.IsNullOrWhiteSpace(card.Image));
+    var hasAnyColorMeta = cards.Any(card =>
+        !string.IsNullOrWhiteSpace(card.CrossColor) ||
+        !string.IsNullOrWhiteSpace(card.FieldColor));
+}
+
+@if (cards.Any())
+{
+    <section class="mt-8 lg:mt-10 rounded-[2rem] border border-slate-200 bg-slate-50/60 p-6 lg:p-8">
+        @if (!string.IsNullOrWhiteSpace(block.Heading))
+        {
+            <h3 class="text-[1.55rem] font-semibold leading-tight text-slate-900 lg:text-[2rem]">
+                @block.Heading
+            </h3>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(block.Framing))
+        {
+            <div class="mt-3 max-w-3xl prose prose-slate prose-base max-w-none text-slate-700">
+                <p>@block.Framing.RenderAutoLinks()</p>
+            </div>
+        }
+
+        <div class="mt-6 space-y-4">
+            @foreach (var card in cards)
+            {
+                var hasImage = !string.IsNullOrWhiteSpace(card.Image);
+                var hasCross = !string.IsNullOrWhiteSpace(card.CrossColor);
+                var hasField = !string.IsNullOrWhiteSpace(card.FieldColor);
+
+                <article class="overflow-hidden rounded-[1.5rem] border border-slate-200/80 bg-white @(hasAnyImages ? "lg:grid lg:grid-cols-[minmax(260px,320px)_minmax(0,1fr)]" : "")">
+                    @if (hasImage)
+                    {
+                        <div class="relative aspect-[16/10] bg-slate-100 lg:aspect-auto lg:h-full lg:min-h-[240px]">
+                            <img src="@Images.Card(card.Image)"
+                                 alt="@(!string.IsNullOrWhiteSpace(card.Alt) ? card.Alt : card.Label)"
+                                 class="absolute inset-0 h-full w-full object-cover"
+                                 loading="lazy" />
+                        </div>
+                    }
+
+                    <div class="p-5 lg:p-6">
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <h4 class="max-w-2xl text-[1.35rem] font-semibold leading-tight text-slate-900 lg:text-[1.55rem]">
+                                @card.Label
+                            </h4>
+
+                            @if (!string.IsNullOrWhiteSpace(card.Adopted))
+                            {
+                                <span class="inline-flex shrink-0 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
+                                    @card.Adopted
+                                </span>
+                            }
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(card.Description))
+                        {
+                            <div class="mt-4 max-w-3xl prose prose-slate prose-base lg:prose-lg max-w-none text-slate-700">
+                                <p>@card.Description.RenderAutoLinks()</p>
+                            </div>
+                        }
+
+                        @if (hasAnyColorMeta && (hasCross || hasField))
+                        {
+                            <dl class="mt-5 flex flex-wrap gap-3 text-sm">
+                                @if (hasCross)
+                                {
+                                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                                        <dt class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Cross</dt>
+                                        <dd class="mt-1 font-semibold text-slate-900">@card.CrossColor</dd>
+                                    </div>
+                                }
+
+                                @if (hasField)
+                                {
+                                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
+                                        <dt class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Field</dt>
+                                        <dd class="mt-1 font-semibold text-slate-900">@card.FieldColor</dd>
+                                    </div>
+                                }
+                            </dl>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+}

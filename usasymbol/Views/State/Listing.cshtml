@@ -1,131 +1,270 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model USASymbol.Models.ViewModels.StatesListingViewModel
+@inject IImageUrlService Images
 
 @{
-    ViewData["Title"] = "All 50 U.S. States";
+    ViewData["Title"] = "All 50 U.S. States and Their Official Symbols";
+    ViewData["Description"] = "Discover all 50 U.S. states and their official symbols. Learn about state birds, flowers, trees, flags, mottos, and unique state facts in one complete directory.";
 }
 
-<!-- HERO SECTION -->
-<section class="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-16">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">All 50 U.S. States</h1>
-        <p class="text-xl text-blue-100 mb-6">
-            Explore each state's unique symbols, history, and heritage
+@section Styles {
+<style>
+    /* === STATES LISTING ======================================= */
+    .states-listing-page .site-main { background: var(--cream); }
+
+    /* Filter bar */
+    .states-filter-bar {
+        position: sticky;
+        top: 73px;
+        z-index: 40;
+        background: rgba(248,244,237,.95);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--cream-dark);
+        padding: .75rem 0;
+    }
+    .filter-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: .45rem 1rem;
+        border-radius: 9999px;
+        font-size: .8rem;
+        font-weight: 600;
+        white-space: nowrap;
+        text-decoration: none;
+        transition: background .2s, color .2s;
+        border: 1px solid transparent;
+    }
+    .filter-pill--active {
+        background: var(--navy);
+        color: var(--cream);
+    }
+    .filter-pill--inactive {
+        background: white;
+        color: var(--slate-ed);
+        border-color: var(--cream-dark);
+    }
+    .filter-pill--inactive:hover {
+        background: var(--cream-dark);
+        color: var(--navy);
+    }
+
+    /* State card */
+    .state-listing-card {
+        background: white;
+        border: 1px solid var(--cream-dark);
+        border-radius: 1rem;
+        overflow: hidden;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow .25s, transform .25s, border-color .25s;
+    }
+    .state-listing-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 36px rgba(27,42,74,.1);
+        border-color: var(--gold-border);
+    }
+    .slc-flag {
+        aspect-ratio: 16/9;
+        overflow: hidden;
+        background: linear-gradient(135deg, rgba(27,42,74,.06), rgba(27,42,74,.03));
+        position: relative;
+    }
+    .slc-flag img {
+        width: 100%; height: 100%; object-fit: cover;
+        transition: transform .4s ease;
+        display: block;
+    }
+    .state-listing-card:hover .slc-flag img { transform: scale(1.06); }
+    .slc-region-badge {
+        position: absolute;
+        top: .5rem; right: .5rem;
+        background: rgba(255,255,255,.9);
+        backdrop-filter: blur(8px);
+        padding: .2rem .6rem;
+        border-radius: 9999px;
+        font-size: .65rem;
+        font-weight: 700;
+        color: var(--navy);
+        border: 1px solid var(--cream-dark);
+    }
+    .slc-body {
+        padding: .875rem 1rem 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .slc-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .5rem;
+        margin-bottom: .35rem;
+    }
+    .slc-name {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        font-size: .95rem;
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1.25;
+    }
+    .state-listing-card:hover .slc-name { color: #2C5F9E; }
+    .slc-abbr {
+        font-size: .7rem;
+        font-weight: 700;
+        color: var(--slate-ed);
+        background: var(--cream);
+        border: 1px solid var(--cream-dark);
+        border-radius: .4rem;
+        padding: .15rem .45rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    .slc-meta {
+        font-size: .75rem;
+        color: var(--slate-ed);
+        display: flex;
+        flex-direction: column;
+        gap: .25rem;
+        flex: 1;
+        margin-bottom: .75rem;
+    }
+    .slc-meta-row {
+        display: flex;
+        align-items: center;
+        gap: .4rem;
+    }
+    .slc-meta-row i { width: .875rem; text-align: center; opacity: .6; }
+    .slc-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: .75rem;
+        border-top: 1px solid var(--cream-dark);
+        font-size: .8rem;
+        font-weight: 700;
+        color: #2C5F9E;
+    }
+</style>
+}
+
+<!-- ════════════════════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════════════════════ -->
+<section class="editorial-hero" style="padding:clamp(3.5rem,7vw,5.5rem) 0 clamp(2.5rem,5vw,4rem)">
+    <div class="max-w-5xl mx-auto px-4 text-center" style="position:relative;z-index:1">
+        <div class="hero-pill inline-flex mb-5">
+            <i class="fa-solid fa-flag-usa"></i>
+            U.S. States Directory
+        </div>
+        <h1 class="hero-title" style="font-size:clamp(2.4rem,5vw,3.75rem);max-width:28rem;margin:.75rem auto 1rem">
+            All 50 U.S. States
+        </h1>
+        <p class="hero-subtitle">
+            Explore each state's official symbols, history, and heritage.
         </p>
+        <div class="facts-bar" style="max-width:28rem;margin:2rem auto 0">
+            <div class="facts-bar__cell">
+                <div class="facts-bar__value">@Model.States.Count</div>
+                <div class="facts-bar__label">States</div>
+            </div>
+            <div class="facts-bar__cell">
+                <div class="facts-bar__value">@Model.Regions.Count()</div>
+                <div class="facts-bar__label">Regions</div>
+            </div>
+            <div class="facts-bar__cell">
+                <div class="facts-bar__value">50</div>
+                <div class="facts-bar__label">Full Coverage</div>
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- FILTER SECTION -->
-<section class="bg-white border-b sticky top-16 z-40 py-4">
+<!-- ════════════════════════════════════════════════════════
+     FILTER BAR
+     ════════════════════════════════════════════════════════ -->
+<div class="states-filter-bar">
     <div class="max-w-7xl mx-auto px-4">
-        <!-- Mobile Layout -->
-        <div class="md:hidden space-y-3">
-            <div class="flex items-center justify-between">
-                <span class="text-gray-600 font-medium text-sm">Filter by Region:</span>
-                <div class="text-gray-600 text-sm">
-                    <span class="font-semibold">@Model.States.Count</span> states
-                </div>
-            </div>
-            <div class="flex gap-2 overflow-x-auto pb-2">
-                <a href="/states" class="px-4 py-2 rounded-lg font-medium transition whitespace-nowrap text-sm @(string.IsNullOrEmpty(Model.SelectedRegion) ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700")">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex gap-2 flex-wrap">
+                <a href="/states"
+                   class="filter-pill @(string.IsNullOrEmpty(Model.SelectedRegion) ? "filter-pill--active" : "filter-pill--inactive")">
                     All States
                 </a>
                 @foreach (var region in Model.Regions)
                 {
-                    <a href="/states?region=@region" class="px-4 py-2 rounded-lg font-medium transition whitespace-nowrap text-sm @(Model.SelectedRegion == region ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700")">
+                    <a href="/states?region=@region"
+                       class="filter-pill @(Model.SelectedRegion == region ? "filter-pill--active" : "filter-pill--inactive")">
                         @region
                     </a>
                 }
             </div>
-        </div>
-
-        <!-- Desktop Layout -->
-        <div class="hidden md:flex items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <span class="text-gray-600 font-medium">Filter by Region:</span>
-                <div class="flex gap-2">
-                    <a href="/states" class="px-4 py-2 rounded-lg font-medium transition @(string.IsNullOrEmpty(Model.SelectedRegion) ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")">
-                        All States
-                    </a>
-                    @foreach (var region in Model.Regions)
-                    {
-                        <a href="/states?region=@region" class="px-4 py-2 rounded-lg font-medium transition @(Model.SelectedRegion == region ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")">
-                            @region
-                        </a>
-                    }
-                </div>
-            </div>
-            <div class="text-gray-600">
-                <span class="font-semibold">@Model.States.Count</span> states
-            </div>
+            <span style="font-size:.8rem;color:var(--slate-ed);white-space:nowrap">
+                <strong style="color:var(--navy)">@Model.States.Count</strong> state@(Model.States.Count == 1 ? "" : "s")
+                @if (!string.IsNullOrEmpty(Model.SelectedRegion))
+                {
+                    <text> in <strong style="color:var(--navy)">@Model.SelectedRegion</strong></text>
+                }
+            </span>
         </div>
     </div>
-</section>
+</div>
 
-<!-- STATES GRID -->
-<section class="py-12 bg-gray-50">
+<!-- ════════════════════════════════════════════════════════
+     STATES GRID
+     ════════════════════════════════════════════════════════ -->
+<section style="padding:2.5rem 0 4rem;background:var(--cream)">
     <div class="max-w-7xl mx-auto px-4">
         @if (Model.States.Any())
         {
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
                 @foreach (var state in Model.States)
                 {
-                    <a href="/states/@state.Slug" class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                        <!-- Flag/Image -->
-                        <div class="aspect-video bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center relative overflow-hidden">
-                            @{
-                                // Используем slug или abbreviation в зависимости от твоих файлов
-                                var flagPath = $"/images/states/flags/small/{state.Abbreviation.ToLower()}.webp";
-                            }
-                            <img src="@flagPath"
+                    var flagPath = $"/images/states/flags/medium/{state.Abbreviation.ToLower()}.webp";
+                    var flagSrc = Images.Card(flagPath);
+                    var flagSrcSet = string.Join(", ", new[]
+                    {
+                        $"{Images.Card(flagPath, 320)} 320w",
+                        $"{Images.Card(flagPath, 480)} 480w",
+                        $"{Images.Card(flagPath, 640)} 640w"
+                    });
+                    var flagSizes = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 20vw";
+                    <a href="/states/@state.Slug" class="state-listing-card">
+                        <div class="slc-flag">
+                            <img src="@flagSrc"
+                                 srcset="@flagSrcSet"
+                                 sizes="@flagSizes"
                                  alt="@state.Name flag"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                 onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                                 loading="lazy">
-
-                            <!-- Fallback если картинка не найдена -->
-                            <div class="w-full h-full flex items-center justify-center" style="display:none;">
-                                <span class="text-4xl font-bold text-white">@state.Abbreviation</span>
+                                 loading="lazy"
+                                 onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                            <div class="w-full h-full items-center justify-center" style="display:none;background:linear-gradient(135deg,#1B2A4A,#2C5F9E)">
+                                <span style="font-size:1.75rem;font-weight:800;color:white">@state.Abbreviation</span>
                             </div>
-
-                            <!-- Region Badge -->
-                            <div class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-semibold text-gray-700">
-                                @state.Region
-                            </div>
+                            @if (!string.IsNullOrEmpty(state.Region))
+                            {
+                                <div class="slc-region-badge">@state.Region</div>
+                            }
                         </div>
-
-                        <!-- Content -->
-                        <div class="p-4">
-                            <h3 class="font-bold text-lg mb-1 text-gray-900 group-hover:text-blue-600 transition">
-                                @state.Name
-                            </h3>
-                            <div class="text-sm text-gray-600 space-y-1">
-                                <div class="flex items-center">
-                                    <svg class="w-4 h-4 mr-1 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                                    </svg>
+                        <div class="slc-body">
+                            <div class="slc-header">
+                                <div class="slc-name">@state.Name</div>
+                                <span class="slc-abbr">@state.Abbreviation</span>
+                            </div>
+                            <div class="slc-meta">
+                                <div class="slc-meta-row">
+                                    <i class="fa-solid fa-location-dot" style="color:var(--gold)"></i>
                                     <span>@state.Capital</span>
                                 </div>
                                 @if (state.Population.HasValue)
                                 {
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
-                                        </svg>
+                                    <div class="slc-meta-row">
+                                        <i class="fa-solid fa-users"></i>
                                         <span>@state.Population.Value.ToString("N0")</span>
                                     </div>
                                 }
                             </div>
-
-                            <!-- View Symbols Link -->
-                            <div class="mt-3 pt-3 border-t border-gray-100">
-                                <span class="text-blue-600 text-sm font-semibold group-hover:underline">
-                                    View Symbols →
-                                </span>
+                            <div class="slc-footer">
+                                <span>View Symbols</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
                             </div>
                         </div>
                     </a>
@@ -134,23 +273,32 @@
         }
         else
         {
-            <div class="text-center py-12">
-                <p class="text-gray-500 text-lg">No states found for this region.</p>
+            <div class="text-center py-16">
+                <i class="fa-solid fa-map text-5xl mb-4" style="color:var(--cream-dark)"></i>
+                <p style="color:var(--slate-ed);font-size:1.1rem">No states found for this region.</p>
             </div>
         }
     </div>
 </section>
 
-<!-- INFO SECTION -->
-<section class="py-16 bg-white">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-4">Explore State Symbols</h2>
-        <p class="text-gray-600 mb-8">
+<!-- ════════════════════════════════════════════════════════
+     INFO STRIP
+     ════════════════════════════════════════════════════════ -->
+<section style="padding:4rem 0 5rem;background:white">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:3rem;height:3rem;border-radius:.875rem;background:var(--cream);margin-bottom:1rem">
+            <i class="fa-solid fa-book-open" style="color:var(--navy);font-size:1.1rem"></i>
+        </div>
+        <h2 class="content-h2 mb-4">Explore State Symbols</h2>
+        <p style="color:var(--slate-ed);line-height:1.8;font-size:.975rem;max-width:42rem;margin:0 auto 2rem">
             Each U.S. state has chosen unique symbols that represent its culture, history, and natural heritage.
-            Click on any state above to discover its official bird, flower, tree, flag, and many more symbols.
+            Click any state above to discover its official bird, flower, tree, flag, and many more symbols.
         </p>
-        <a href="/symbols" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
-            Browse All Symbol Types →
+        <a href="/symbols"
+           style="display:inline-flex;align-items:center;gap:.5rem;padding:.875rem 1.75rem;background:var(--navy);color:var(--cream);border-radius:9999px;font-weight:700;font-size:.9rem;text-decoration:none;transition:background .2s"
+           onmouseover="this.style.background='#2C3E6B'" onmouseout="this.style.background='#1B2A4A'">
+            <i class="fa-solid fa-layer-group"></i>
+            Browse All Symbol Types
         </a>
     </div>
 </section>

@@ -1,0 +1,48 @@
+@using USASymbol.Models.Content
+@model IReadOnlyList<TimelineEvent>
+
+<section class="py-12">
+    <header class="mb-12 text-center">
+        <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400 mb-2 block">Key Dates</span>
+        <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Timeline</h2>
+    </header>
+
+    <div class="relative before:absolute before:left-[17px] lg:before:left-1/2 before:top-0 before:bottom-0 before:w-px before:bg-slate-200/80">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            var evt = Model[i];
+            var isLeft = (i % 2 == 0);
+
+            <div class="relative pl-12 lg:pl-0 pb-12 last:pb-0">
+                <div class="absolute left-0 top-0 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white shadow-[0_18px_28px_-18px_rgba(15,23,42,0.4)] lg:left-1/2 lg:-translate-x-1/2">
+                    @evt.Year.Substring(Math.Max(0, evt.Year.Length - 2))
+                </div>
+
+                <div class="lg:grid lg:grid-cols-2 lg:gap-16">
+                    <div class="hidden lg:block pt-1">
+                        @if (isLeft)
+                        {
+                            <div class="text-right">
+                                <div class="font-black text-slate-900 text-lg">@evt.Year</div>
+                                <p class="mt-1 text-sm lg:text-base text-slate-600 leading-relaxed">@evt.Description</p>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="pt-1">
+                        <span class="font-black text-slate-900 lg:hidden block mb-1 text-lg">@evt.Year</span>
+
+                        @if (!isLeft)
+                        {
+                            <div class="hidden lg:block">
+                                <div class="font-black text-slate-900 text-lg">@evt.Year</div>
+                            </div>
+                        }
+
+                        <p class="text-sm lg:text-base text-slate-600 leading-relaxed @(isLeft ? "lg:hidden" : "lg:mt-1")">@evt.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

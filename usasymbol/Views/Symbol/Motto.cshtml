@@ -1,0 +1,308 @@
+﻿@model USASymbol.Models.ViewModels.MottoDetailViewModel
+@using System.Globalization
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+
+@inject IImageUrlService Images
+
+@{
+    var mottoText = Model.MottoContent?.Title ?? Model.Symbol?.Name ?? "";
+    var language = Model.MottoContent?.Language ?? "Latin";
+    var translation = Model.MottoContent?.EnglishTranslation ?? "";
+    var stateName = Model.State?.Name ?? "";
+    var adoptedYear = Model.MottoContent?.AdoptedYear ?? Model.Symbol?.AdoptedYear ?? 0;
+    var audioPath = $"/sounds/mottos/{Model.State?.Slug}.mp3";
+
+    var designationRaw = (Model.Symbol?.Designation ?? "State Motto").Trim();
+    var designation = string.IsNullOrWhiteSpace(designationRaw)
+        ? "State Motto"
+        : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+
+    var pageHeading = $"{stateName} {designation}: {mottoText}";
+    var heroHeading = $"{stateName} {designation}";
+    var descRaw = Model.MottoContent?.SeoDescription ?? "";
+    var hasIntroText = !string.IsNullOrWhiteSpace(Model.MottoContent?.IntroText);
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw)
+        ? descRaw
+        : (!string.IsNullOrWhiteSpace(translation)
+            ? $"Usually translated as \"{translation}\", the phrase appears on the official seal of {stateName}."
+            : $"The official motto of {stateName} appears on the state seal and coat of arms.");
+    heroDescriptionSource = System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1");
+    var heroSummary = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, "<.*?>", " ")).Trim();
+
+    ViewData["Title"] = string.IsNullOrWhiteSpace(Model.MottoContent?.SeoTitle)
+        ? pageHeading
+        : Model.MottoContent!.SeoTitle;
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {stateName}'s official {designation.ToLowerInvariant()} \"{mottoText}\", including translation, history, and symbolism."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+    ViewData["OgImage"] = Images.Full(Model.Symbol?.ImageUrl ?? $"/images/seals/{Model.State?.Slug}-seal.webp");
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+
+    var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+
+    var hasQuiz = Model.QuizQuestions?.Any() == true;
+    var meaningText = Model.Meaning ?? "";
+    var hasMeaning = !string.IsNullOrWhiteSpace(meaningText) || !string.IsNullOrWhiteSpace(translation);
+    var hasStandaloneMeaning = !string.IsNullOrWhiteSpace(meaningText)
+        && !string.Equals(meaningText.Trim(), translation.Trim(), StringComparison.OrdinalIgnoreCase);
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#1f2937_0%,#111827_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-amber-300/0 via-amber-200/70 to-amber-300/0",
+        PrimaryGlowClass = "bg-amber-300/12",
+        SecondaryGlowClass = "bg-white/8",
+        AccentDotClass = "bg-amber-300",
+        MediaBackgroundClass = "bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(30,41,59,0.96))]",
+        FallbackIconClass = "fa-solid fa-landmark",
+        Title = heroHeading,
+        Description = heroSummary,
+        LegalReference = Model.Legislation,
+        ImageUrl = $"/images/seals/{Model.State?.Slug}-seal.webp",
+        ImageAlt = $"{stateName} state seal",
+        FigureTitle = mottoText,
+        FigureSubtitle = $"The motto appears on the state seal of {stateName}",
+        HeroLabel = "Official state motto",
+        EyebrowItems = new List<string> { stateName, language, adoptedYear > 0 ? $"Adopted {adoptedYear}" : string.Empty },
+        Subtitle = mottoText,
+        FeaturedNoteLabel = !string.IsNullOrWhiteSpace(translation) ? "Translation" : null,
+        FeaturedNoteText = translation,
+        FeaturedBadges = new List<string> { language },
+        ActionButtonId = "playHeroAudioBtn",
+        ActionButtonLabel = "Listen",
+        ActionButtonIconClass = "fas fa-play text-xs",
+        ActionAudioSrc = audioPath
+    };
+}
+
+<nav class="sticky top-16 z-30 bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)_304px] 2xl:gap-12 relative">
+
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <aside class="hidden lg:block relative h-full">
+                <div class="sticky top-24 pb-10">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                </div>
+            </aside>
+
+            <div class="min-w-0">
+                <div class="content-flow site-content">
+                    <section id="intro" class="scroll-mt-28 content-divider">
+                        <div class="relative overflow-hidden bg-[linear-gradient(90deg,rgba(255,255,255,0.24),rgba(255,249,240,0.04))] px-5 py-6 sm:px-6 lg:px-8 lg:py-7">
+                            <div class="absolute left-0 top-7 bottom-7 w-[3px] bg-[linear-gradient(180deg,#d8b36a_0%,#c46243_100%)]"></div>
+                            <div class="flex items-start gap-4 lg:gap-5">
+                                <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/75 text-slate-600">
+                                    <i class="fa-solid fa-book-open text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
+
+                                    @if (hasIntroText)
+                                    {
+                                        <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                            @Model.MottoContent!.IntroText.RenderAutoLinks()
+                                        </div>
+                                    }
+                                    else if (!string.IsNullOrWhiteSpace(translation))
+                                    {
+                                        <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                            <p>The official motto of @stateName is <strong>@mottoText</strong>, usually translated as <em>@translation</em>.</p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                            <p><strong>@mottoText</strong> is the official motto of @stateName and appears in the state's formal symbolism.</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    @if (quickFacts.Any())
+                    {
+                        <div class="xl:hidden">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    }
+
+                    @if (hasMeaning)
+                    {
+                        <section id="translation-and-meaning" class="content-divider">
+                            <div class="rounded-[1.8rem] bg-[linear-gradient(180deg,rgba(255,251,235,0.9),rgba(255,255,255,0.98))] p-6 shadow-[0_24px_46px_-34px_rgba(15,23,42,0.24)] sm:p-7">
+                                <div class="flex items-start gap-4">
+                                    <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white text-slate-600 shadow-[0_14px_28px_-22px_rgba(15,23,42,0.26)]">
+                                        <i class="fa-solid fa-language text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h2 class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Translation And Meaning</h2>
+
+                                        @if (!string.IsNullOrWhiteSpace(translation))
+                                        {
+                                            <div class="mt-3 inline-flex max-w-full items-center rounded-full bg-white px-4 py-2 text-sm font-semibold italic text-slate-700 shadow-[0_14px_28px_-22px_rgba(15,23,42,0.22)]">
+                                                <span class="truncate">@translation</span>
+                                            </div>
+                                        }
+
+                                        @if (hasStandaloneMeaning)
+                                        {
+                                            <div class="mt-4 max-w-3xl text-sm leading-7 text-slate-700 sm:text-base">
+                                                @Model.Meaning.RenderAutoLinks()
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    @await Html.PartialAsync("_MottoSections", Model)
+
+                    @if (hasQuiz)
+                    {
+                        <section id="motto-quiz" class="content-divider">
+                            <div class="overflow-hidden rounded-[1.9rem] bg-slate-950 text-white shadow-[0_28px_60px_-36px_rgba(15,23,42,0.45)]">
+                                <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950 px-5 py-5 sm:px-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/12">
+                                            <i class="fas fa-graduation-cap text-sm"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <h2 class="text-lg font-semibold leading-tight text-white">Test your knowledge</h2>
+                                            <div class="mt-1 text-sm leading-6 text-slate-200">A short quiz while the motto is still fresh.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white p-5 sm:p-6 text-slate-900">
+                                    @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
+                                </div>
+
+                                <div class="bg-slate-950 px-5 pb-5 sm:px-6 sm:pb-6">
+                                    <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-slate-300 transition">
+                                        <span>Explore more quizzes</span>
+                                        <i class="fas fa-arrow-right shrink-0 text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    <section id="faq" class="content-divider">
+                        @await Html.PartialAsync("_Faq", Model)
+                    </section>
+
+                    <section id="sources" class="content-divider">
+                        @await Html.PartialAsync("_Sources", Model)
+                    </section>
+
+                    <div class="mt-10 space-y-8 xl:hidden">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+                </div>
+            </div>
+
+            <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+                @if (quickFacts.Any())
+                {
+                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                        <div class="sticky top-32 pr-2">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    </section>
+                }
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+        {
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+            </div>
+        }
+    </article>
+</main>
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")
+<script src="~/js/quizEngine.js" defer></script>
+<script>
+    (function () {
+        const audioEl = document.getElementById('heroAudio');
+        const buttons = ['playHeroAudioBtn', 'playHeroAudioBtnMobile']
+            .map(id => document.getElementById(id))
+            .filter(Boolean);
+        if (!audioEl || !buttons.length) return;
+
+        const setIcons = (isPlaying) => {
+            buttons.forEach(button => {
+                const icon = button.querySelector('i');
+                if (!icon) return;
+                icon.className = isPlaying ? 'fas fa-pause text-xs' : 'fas fa-play text-xs';
+            });
+        };
+
+        const hide = () => {
+            buttons.forEach(button => button.style.display = 'none');
+        };
+
+        audioEl.addEventListener('error', hide);
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (audioEl.paused) {
+                    audioEl.play().then(() => {
+                        setIcons(true);
+                    }).catch(hide);
+                } else {
+                    audioEl.pause();
+                    setIcons(false);
+                }
+            });
+        });
+
+        audioEl.addEventListener('ended', () => {
+            setIcons(false);
+        });
+    })();
+</script>

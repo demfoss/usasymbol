@@ -1,0 +1,375 @@
+﻿@model USASymbol.Models.ViewModels.NicknameDetailViewModel
+@using System.Globalization
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@inject IImageUrlService Images
+
+@{
+    ViewData["BodyClass"] = "nickname-editorial";
+
+    string ExtractNicknameLabel()
+    {
+        var fromSymbol = (Model.Symbol?.Name ?? "").Trim();
+        if (!string.IsNullOrWhiteSpace(fromSymbol))
+        {
+            return fromSymbol;
+        }
+
+        var rawTitle = (Model.NicknameContent?.Title ?? "").Trim();
+        if (string.IsNullOrWhiteSpace(rawTitle))
+        {
+            return "";
+        }
+
+        var colonIndex = rawTitle.LastIndexOf(':');
+        return colonIndex >= 0 && colonIndex < rawTitle.Length - 1
+            ? rawTitle[(colonIndex + 1)..].Trim()
+            : rawTitle;
+    }
+
+    var nicknameText = ExtractNicknameLabel();
+    var stateName = Model.State?.Name ?? "";
+    var adoptedYear = Model.NicknameContent?.AdoptedYear ?? Model.Symbol?.AdoptedYear ?? 0;
+
+    var contentStatus = Model.NicknameContent?.IsOfficial == true ? "Official" : "Widely used";
+    var statusRaw = (Model.Symbol?.Status ?? "").Trim();
+    var status = Model.NicknameContent != null
+        ? contentStatus
+        : !string.IsNullOrWhiteSpace(statusRaw) ? statusRaw : "State nickname";
+
+    var designationRaw = (Model.Symbol?.Designation ?? "State Nickname").Trim();
+    var designation = string.IsNullOrWhiteSpace(designationRaw)
+        ? "State Nickname"
+        : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+
+    var pageHeading = $"{stateName} {designation}: {nicknameText}";
+    var descRaw = Model.NicknameContent?.SeoDescription ?? "";
+
+    ViewData["Title"] = string.IsNullOrWhiteSpace(Model.NicknameContent?.SeoTitle)
+        ? pageHeading
+        : Model.NicknameContent!.SeoTitle;
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {stateName}'s {designation.ToLowerInvariant()} {nicknameText}, including meaning, history, and related nicknames."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+    ViewData["OgImage"] = Images.Full(Model.Symbol?.ImageUrl ?? Model.State?.FlagImageUrl);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+
+    var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+
+    var otherNicknames = (Model.NicknameContent?.OtherNicknames ?? new List<string>())
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .Take(6)
+        .ToList();
+
+    var hasMeaning = !string.IsNullOrWhiteSpace(Model.Meaning);
+    var hasQuiz = Model.QuizQuestions?.Any() == true;
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw)
+        ? descRaw
+        : $"{stateName} uses {nicknameText} as its {designation.ToLowerInvariant()}, a label tied to the state's history, identity, and public image.";
+    heroDescriptionSource = System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1");
+    var heroDescription = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, "<.*?>", " ")).Trim();
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#1f2937_0%,#111827_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-amber-300/0 via-amber-200/70 to-amber-300/0",
+        PrimaryGlowClass = "bg-amber-300/12",
+        SecondaryGlowClass = "bg-white/8",
+        AccentDotClass = "bg-amber-300",
+        MediaBackgroundClass = "bg-[linear-gradient(135deg,rgba(15,23,42,0.92),rgba(120,53,15,0.86),rgba(15,23,42,0.94))]",
+        FallbackIconClass = "fa-solid fa-signature",
+        Title = pageHeading,
+        Description = heroDescription,
+        LegalReference = Model.Legislation,
+        ImageUrl = Model.Symbol?.ImageUrl,
+        ImageAlt = pageHeading,
+        FigureTitle = nicknameText,
+        FigureSubtitle = $"{(Model.NicknameContent?.IsOfficial == true ? "Official " : "")}{designation.ToLowerInvariant()} of {stateName}",
+        ImageLinkUrl = Model.Symbol?.ImageUrl,
+        HeroLabel = Model.NicknameContent?.IsOfficial == true ? "Official state nickname" : "State nickname",
+        EyebrowItems = new List<string>
+        {
+            stateName,
+            designation,
+            status,
+            adoptedYear > 0 ? $"Since {adoptedYear}" : string.Empty
+        }
+    };
+}
+
+<style>
+    .nickname-editorial {
+        color: #161B26;
+    }
+
+    .nickname-editorial .content-flow h2 {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        color: #161B26;
+        font-size: 41px;
+        font-weight: 700;
+        line-height: 50px;
+        letter-spacing: -0.02em;
+    }
+
+    .nickname-editorial .content-flow h3 {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        color: #161B26;
+        font-size: 23px;
+        font-weight: 700;
+        line-height: 50px;
+        letter-spacing: 0;
+    }
+
+    .nickname-editorial .site-content,
+    .nickname-editorial .site-content p,
+    .nickname-editorial .site-content li,
+    .nickname-editorial .site-content dd,
+    .nickname-editorial .site-content blockquote,
+    .nickname-editorial .site-content .prose,
+    .nickname-editorial .content-flow > section > div,
+    .nickname-editorial .content-flow > div {
+        font-size: 19px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 34px;
+        letter-spacing: 0.19px;
+    }
+
+    .nickname-editorial #overview h2,
+    .nickname-editorial #symbolic-meaning h2,
+    .nickname-editorial #nickname-quiz h2,
+    .nickname-editorial #faq h2,
+    .nickname-editorial #sources h2 {
+        font-size: 41px;
+        line-height: 50px;
+        letter-spacing: -0.02em;
+        text-transform: none;
+    }
+
+    .nickname-editorial #overview .site-content,
+    .nickname-editorial #symbolic-meaning .site-content,
+    .nickname-editorial #overview .site-content p,
+    .nickname-editorial #symbolic-meaning .site-content p {
+        font-size: 19px;
+        line-height: 34px;
+        letter-spacing: 0.19px;
+    }
+
+    @@media (max-width: 767px) {
+        .nickname-editorial .content-flow h2,
+        .nickname-editorial #overview h2,
+        .nickname-editorial #symbolic-meaning h2,
+        .nickname-editorial #nickname-quiz h2,
+        .nickname-editorial #faq h2,
+        .nickname-editorial #sources h2 {
+            font-size: 26px;
+            line-height: 37px;
+            letter-spacing: -0.405px;
+        }
+
+        .nickname-editorial .content-flow h3 {
+            font-size: 19px;
+            line-height: 24px;
+            letter-spacing: 0.38px;
+        }
+
+        .nickname-editorial .site-content,
+        .nickname-editorial .site-content p,
+        .nickname-editorial .site-content li,
+        .nickname-editorial .site-content dd,
+        .nickname-editorial .site-content blockquote,
+        .nickname-editorial .site-content .prose,
+        .nickname-editorial .content-flow > section > div,
+        .nickname-editorial .content-flow > div,
+        .nickname-editorial #overview .site-content,
+        .nickname-editorial #symbolic-meaning .site-content,
+        .nickname-editorial #overview .site-content p,
+        .nickname-editorial #symbolic-meaning .site-content p {
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: 0.18px;
+        }
+    }
+</style>
+
+<nav class="sticky top-16 z-30 bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="nickname-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[228px_minmax(0,760px)_320px] xl:gap-12 2xl:grid-cols-[240px_minmax(0,780px)_340px] 2xl:gap-14 relative">
+
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <aside class="hidden xl:block relative self-start xl:sticky xl:top-32">
+                <div class="max-h-[calc(100vh-9rem)] overflow-y-auto pr-2 pb-10 [scrollbar-width:thin]">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                </div>
+            </aside>
+
+            <div class="min-w-0">
+                <div class="content-flow site-content">
+                    <section id="overview" class="mt-10">
+                        <div class="relative overflow-hidden bg-[linear-gradient(90deg,rgba(255,255,255,0.24),rgba(255,249,240,0.04))] px-5 py-6 sm:px-6 lg:px-8 lg:py-7">
+                            <div class="absolute left-0 top-7 bottom-7 w-[3px] bg-[linear-gradient(180deg,#d8b36a_0%,#c46243_100%)]"></div>
+                            <div class="flex items-start gap-4 lg:gap-5">
+                                <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/75 text-slate-600">
+                                    <i class="fa-solid fa-book-open text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
+
+                                    @if (!string.IsNullOrWhiteSpace(Model.NicknameContent?.IntroText))
+                                    {
+                                        <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                            @Model.NicknameContent!.IntroText.RenderAutoLinks()
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                            <p>@stateName uses <strong>@nicknameText</strong> as its @designation.ToLowerInvariant(), a label tied to the state's history, identity, and public image.</p>
+                                        </div>
+                                    }
+
+                                    @if (otherNicknames.Any())
+                                    {
+                                        <div class="mt-5 text-sm leading-7 text-slate-600">
+                                            <span class="font-semibold text-slate-700">Also associated with @stateName:</span>
+                                            @string.Join(", ", otherNicknames)
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    @if (quickFacts.Any())
+                    {
+                        <div class="xl:hidden">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    }
+
+                    @if (hasMeaning)
+                    {
+                        <section id="symbolic-meaning" class="content-divider">
+                            <div class="rounded-[1.6rem] border border-slate-200/80 bg-white/40 p-6 sm:p-7">
+                                <div class="flex items-start gap-4 lg:gap-5">
+                                    <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/70 text-slate-600">
+                                        <i class="fa-solid fa-book-open text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Origin And Meaning</div>
+                                        <div class="mt-3 max-w-3xl text-slate-700">
+                                            @Model.Meaning.RenderAutoLinks()
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    @await Html.PartialAsync("_NicknameSections", Model)
+
+                    @if (hasQuiz)
+                    {
+                        <section id="nickname-quiz" class="content-divider">
+                            <div class="overflow-hidden rounded-[1.9rem] bg-slate-950 text-white shadow-[0_28px_60px_-36px_rgba(15,23,42,0.45)]">
+                                <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950 px-5 py-5 sm:px-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/12">
+                                            <i class="fas fa-graduation-cap text-sm"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <h2 class="text-lg font-semibold leading-tight text-white">Test your knowledge</h2>
+                                            <div class="mt-1 text-sm leading-6 text-slate-200">A short quiz on state nicknames and what they mean.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white p-5 sm:p-6 text-slate-900">
+                                    @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
+                                </div>
+
+                                <div class="bg-slate-950 px-5 pb-5 sm:px-6 sm:pb-6">
+                                    <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-slate-300 transition">
+                                        <span>Explore more quizzes</span>
+                                        <i class="fas fa-arrow-right shrink-0 text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    <section id="faq" class="content-divider">
+                        @await Html.PartialAsync("_Faq", Model)
+                    </section>
+
+                    <section id="sources" class="content-divider">
+                        @await Html.PartialAsync("_Sources", Model)
+                    </section>
+
+                    <div class="mt-10 space-y-8 xl:hidden">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+                </div>
+            </div>
+
+            <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+                @if (quickFacts.Any())
+                {
+                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                        <div class="sticky top-32 pr-2">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    </section>
+                }
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+        {
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+            </div>
+        }
+    </article>
+</main>
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")
+<script src="~/js/quizEngine.js" defer></script>

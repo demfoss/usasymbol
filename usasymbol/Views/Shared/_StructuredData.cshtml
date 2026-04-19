@@ -1,0 +1,156 @@
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+@inject IImageUrlService Images
+
+@{
+    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var currentUrl = $"{baseUrl}{Context.Request.Path}";
+    var imageUrl = Images.Full(!string.IsNullOrEmpty(Model.Symbol?.ImageUrl) ? Model.Symbol.ImageUrl : "/images/default-symbol.jpg");
+    if (!imageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+    {
+        imageUrl = $"{baseUrl}{imageUrl}";
+    }
+    string? meaning = null;
+    string? legislation = null;
+
+    if (Model is USASymbol.Models.ViewModels.SymbolDetailViewModel baseModel)
+    {
+        meaning = baseModel.Meaning;
+        legislation = baseModel.Legislation;
+    }
+
+    var dateModifiedStr = (Model.DateModified ?? DateTime.UtcNow).ToString("yyyy-MM-ddTHH:mm:sszzz");
+    var pubDate = Model.DateModified?.AddDays(-10) ?? new DateTime(Math.Max(2025, Model.AdoptedYear ?? 2025), 1, 1);
+    var datePublishedStr = pubDate.ToString("yyyy-MM-ddTHH:mm:sszzz");
+
+    // 1. �������� ������ (Citations)
+    var citations = new List<string>();
+    if (!string.IsNullOrEmpty(legislation)) citations.Add($"Official Legislation: {legislation}");
+    if (Model.HasSources && Model.Sources != null)
+    {
+        citations.AddRange(Model.Sources.Where(s => !string.IsNullOrEmpty(s.Url)).Select(s => s.Url!));
+    }
+
+    // 2. ���� About
+    var aboutObj = new Dictionary<string, object>
+    {
+        ["@type"] = "Thing",
+        ["name"] = Model.Symbol?.Name ?? ""
+    };
+    if (!string.IsNullOrEmpty(meaning)) aboutObj["description"] = meaning;
+
+    // 3. ������� ������ Article
+    var articleLd = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "Article",
+        ["@id"] = $"{currentUrl}#article",
+        ["headline"] = $"{Model.State.Name} {Model.SymbolTypeName}: {Model.ContentTitle ?? Model.Symbol?.Name}",
+        ["description"] = System.Net.WebUtility.HtmlDecode(ViewData["Description"]?.ToString() ?? ""),
+        ["image"] = new Dictionary<string, object>
+        {
+            ["@type"] = "ImageObject",
+            ["url"] = imageUrl,
+            ["width"] = 1200,
+            ["height"] = 630
+        },
+        ["datePublished"] = datePublishedStr,
+        ["dateModified"] = dateModifiedStr,
+        ["author"] = new Dictionary<string, object>
+        {
+            ["@type"] = "Person",
+            ["name"] = Model.Author ?? "USA Symbol Team",
+            ["url"] = $"{baseUrl}/about"
+        },
+        ["publisher"] = new Dictionary<string, object>
+        {
+            ["@type"] = "Organization",
+            ["name"] = "USA Symbol",
+            ["url"] = baseUrl,
+            ["logo"] = new Dictionary<string, object>
+            {
+                ["@type"] = "ImageObject",
+                ["url"] = $"{baseUrl}/images/logo.png"
+            }
+        },
+        ["mainEntityOfPage"] = new Dictionary<string, object>
+        {
+            ["@type"] = "WebPage",
+            ["@id"] = currentUrl
+        },
+        ["about"] = aboutObj
+    };
+
+    if (citations.Any())
+    {
+        articleLd["citation"] = citations;
+    }
+
+    // 4. Breadcrumbs
+    var pluralName = string.IsNullOrEmpty(Model.SymbolTypePlural) ? "" : char.ToUpper(Model.SymbolTypePlural[0]) + Model.SymbolTypePlural.Substring(1).Replace("-", " ");
+    var breadcrumbLd = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "BreadcrumbList",
+        ["@id"] = $"{currentUrl}#breadcrumb",
+        ["itemListElement"] = new List<Dictionary<string, object>>
+        {
+            new Dictionary<string, object> { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{baseUrl}/" },
+            new Dictionary<string, object> { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "State Symbols", ["item"] = $"{baseUrl}/symbols" },
+            new Dictionary<string, object> { ["@type"] = "ListItem", ["position"] = 3, ["name"] = pluralName, ["item"] = $"{baseUrl}/symbols/{Model.SymbolTypePlural}" },
+            new Dictionary<string, object> { ["@type"] = "ListItem", ["position"] = 4, ["name"] = $"{Model.State.Name} {Model.SymbolTypeName}", ["item"] = currentUrl }
+        }
+    };
+
+    // 5. FAQ
+    Dictionary<string, object>? faqLd = null;
+    if (Model.HasFaq && Model.Faq != null && Model.Faq.Any())
+    {
+        var questions = new List<Dictionary<string, object>>();
+        foreach (var f in Model.Faq)
+        {
+            questions.Add(new Dictionary<string, object>
+            {
+                ["@type"] = "Question",
+                ["name"] = f.Question,
+                ["acceptedAnswer"] = new Dictionary<string, object>
+                {
+                    ["@type"] = "Answer",
+                    ["text"] = f.Answer
+                }
+            });
+        }
+
+        faqLd = new Dictionary<string, object>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "FAQPage",
+            ["@id"] = $"{currentUrl}#faq",
+            ["name"] = $"FAQ about {Model.Symbol?.Name} in {Model.State.Name}",
+            ["mainEntity"] = questions
+        };
+    }
+
+    // ��������� �������������
+    var jsonOptions = new JsonSerializerOptions
+    {
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+}
+
+<script type="application/ld+json">
+    @Html.Raw(JsonSerializer.Serialize(articleLd, jsonOptions))
+</script>
+
+<script type="application/ld+json">
+    @Html.Raw(JsonSerializer.Serialize(breadcrumbLd, jsonOptions))
+</script>
+
+@if (faqLd != null)
+{
+    <script type="application/ld+json">
+        @Html.Raw(JsonSerializer.Serialize(faqLd, jsonOptions))
+    </script>
+}

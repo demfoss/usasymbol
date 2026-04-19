@@ -1,0 +1,40 @@
+﻿@model IEnumerable<usasymbol.Models.QuizQuestion>
+
+<div id="quizApp" class="w-full">
+
+    <!-- meta -->
+    <div class="mb-4 flex items-center justify-between text-sm text-slate-500">
+        <div>
+            Score: <span id="score" class="font-bold text-slate-900">0</span>/<span id="total">@Model.Count()</span>
+        </div>
+        <div>
+            Question <span id="questionNum">1</span>
+        </div>
+    </div>
+
+    <!-- image -->
+    <div id="questionImage" class="flex justify-center mb-3" style="display:none;"></div>
+
+    <!-- question -->
+    <h3 id="questionText" class="mb-4 text-[1.2rem] font-semibold leading-8 text-slate-900 md:text-[1.35rem]"></h3>
+
+    <!-- answers -->
+    <div id="answers" class="mb-4 grid grid-cols-1 gap-3 md:grid-cols-2"></div>
+
+    <!-- feedback -->
+    <div id="feedback" class="mb-3 min-h-[28px]">
+        <p id="feedbackText" class="text-sm font-medium text-slate-600"></p>
+    </div>
+
+    <!-- next -->
+    <button id="nextBtn"
+            class="w-full border border-slate-200/80 bg-slate-900 px-4 py-3 text-white font-semibold transition hover:bg-slate-800 disabled:opacity-40"
+            disabled>
+        Next →
+    </button>
+
+</div>
+
+<script>
+    window.quizData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+</script>

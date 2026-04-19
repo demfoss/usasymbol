@@ -1,0 +1,38 @@
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+
+@if (Model.HasRelated)
+{
+    var heading = Model.IsRanking ? "Related Rankings" : "Related Symbols";
+    var linkText = Model.IsRanking ? "View ranking →" : "View symbols →";
+
+    <section class="mb-12">
+        <div class="text-center mb-6">
+            <h2 class="content-h2 mb-2">@heading</h2>
+            <p class="text-slate-600">Explore more state comparisons</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            @foreach (var related in Model.Content.Related)
+            {
+                <a href="@related.Url"
+                   class="group bg-white rounded-xl p-5 border border-slate-200 hover:border-blue-500
+                          hover:shadow-lg transition-all duration-200">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex-1">
+                            <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-700 transition mb-1">
+                                @related.Title
+                            </h3>
+                            <p class="text-sm text-slate-600">@linkText</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 group-hover:bg-blue-600
+                                        flex items-center justify-center transition-colors">
+                                <i class="fas fa-arrow-right text-blue-600 group-hover:text-white transition-colors"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </section>
+}

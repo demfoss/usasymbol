@@ -1,0 +1,61 @@
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@model (FirearmDetailViewModel Page, IContentSection Section)
+@inject IImageUrlService Images
+
+@functions {
+    private string? GetConnectionThumb(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return null;
+        var parts = url.Trim().Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length < 4) return null;
+
+        var folder = parts[2].ToLowerInvariant() switch
+        {
+            "bird" => "birds",
+            "mammal" => "mammals",
+            "flower" => "flowers",
+            "tree" => "trees",
+            "motto" => "mottos",
+            "nickname" => "nicknames",
+            "flag" => "flags",
+            "dinosaur" => "dinosaurs",
+            "seal" => "seals",
+            _ => null
+        };
+
+        return folder != null ? $"/images/{folder}/{parts[3].ToLowerInvariant()}.webp" : null;
+    }
+}
+
+@{
+    var section = Model.Section as FirearmSection;
+    if (section?.Subsections?.Any() != true) { return; }
+}
+
+<div class="grid grid-cols-1 gap-3 clear-both">
+    @foreach (var sub in section!.Subsections!)
+    {
+        var thumb = GetConnectionThumb(sub.Link?.Url);
+
+        if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
+        {
+            <a href="@sub.Link.Url" class="group flex items-center gap-4 p-4 rounded-2xl border border-slate-100 bg-white hover:border-slate-300 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+                <div class="w-14 h-14 rounded-xl overflow-hidden bg-slate-50 shrink-0 border border-slate-100 flex items-center justify-center relative">
+                    <i class="fas fa-link text-slate-200 absolute z-0"></i>
+                    @if (!string.IsNullOrEmpty(thumb))
+                    {
+                        <img src="@Images.Thumb(thumb)" class="absolute inset-0 w-full h-full object-cover z-10" />
+                    }
+                </div>
+
+                <div class="min-w-0 flex-1">
+                    <h4 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">@sub.Subtitle</h4>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mt-0.5">Related Symbol</p>
+                </div>
+
+                <i class="fas fa-chevron-right text-slate-200 group-hover:text-slate-900 transition-all mr-2 text-xs"></i>
+            </a>
+        }
+    }
+</div>

@@ -1,0 +1,65 @@
+@using USASymbol.Models.ViewModels
+@model object
+
+@functions {
+    private static bool LooksLikeUrlOrPath(string? s)
+    {
+        if (string.IsNullOrWhiteSpace(s)) return false;
+        s = s.Trim();
+        return s.StartsWith("/", StringComparison.Ordinal)
+               || s.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+               || s.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
+    }
+}
+
+@{
+    var key = (ViewData["key"]?.ToString() ?? "").Trim();
+    if (string.IsNullOrWhiteSpace(key))
+    {
+        return;
+    }
+
+    var altFallback = (ViewData["alt"]?.ToString() ?? "").Trim();
+    var captionFallback = (ViewData["caption"]?.ToString() ?? "").Trim();
+    var layoutFallback = (ViewData["layout"]?.ToString() ?? "full-width").Trim();
+
+    IReadOnlyList<VisualAsset>? assets = null;
+
+    // 1) Preferred: interface
+    if (Model is IHasVisualAssets vm1)
+    {
+        assets = vm1.VisualAssets;
+    }
+    // 2) Firearm page fallback: FirearmContent.VisualAssets
+    else if (Model is FirearmDetailViewModel fvm && fvm.FirearmContent?.VisualAssets != null)
+    {
+        assets = fvm.FirearmContent.VisualAssets;
+    }
+
+    VisualAsset? asset = null;
+
+    if (assets != null)
+    {
+        asset = assets.FirstOrDefault(v =>
+            v != null &&
+            !string.IsNullOrWhiteSpace(v.Id) &&
+            v.Id.Equals(key, StringComparison.OrdinalIgnoreCase));
+    }
+
+    if (asset == null && LooksLikeUrlOrPath(key))
+    {
+        asset = new VisualAsset
+        {
+            Id = "",
+            Src = key,
+            Alt = altFallback,
+            Caption = captionFallback,
+            Layout = layoutFallback
+        };
+    }
+}
+
+@if (asset != null && !string.IsNullOrWhiteSpace(asset.Src))
+{
+    @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+}

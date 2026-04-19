@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Кастомные стили */
+/* =====================================================
+   SIMPLE, CLEAN SITE STYLES
+   ===================================================== */
+
 .smooth-transition {
     transition: all 0.3s ease;
 }
@@ -18,7 +21,7 @@
 
     .answer-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
 .correct {
@@ -47,4 +50,54 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.gradient-bg {
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 45%, #b91c1c 100%);
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 45%, #b91c1c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.delay-1 {
+    animation-delay: 0.2s;
+}
+
+.delay-2 {
+    animation-delay: 0.4s;
+}
+
+.delay-3 {
+    animation-delay: 0.6s;
+}
+/* TOC active state (works without Tailwind safelist) */
+.toc-link.toc-active {
+    background: #FFFBEB; /* amber-50 */
+}
+
+    .toc-link.toc-active span,
+    .toc-link.toc-active i {
+        color: #111827; /* gray-900 */
+    }
+
+/* =====================================================
+   Content Rhythm Utilities
+   Keep section spacing consistent and not oversized.
+   ===================================================== */
+.firearm-content-flow > * + * {
+    margin-top: clamp(1.75rem, 2.2vw, 2.5rem);
+}
+
+.content-flow > * + * {
+    margin-top: clamp(2rem, 2.6vw, 2.75rem);
+}
+
+.content-divider {
+    margin-top: clamp(2.25rem, 3vw, 3rem);
+    padding-top: clamp(1.5rem, 2.2vw, 2rem);
+    border-top: 1px solid rgb(226 232 240);
 }

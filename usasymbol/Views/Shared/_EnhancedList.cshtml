@@ -1,0 +1,21 @@
+@* Views/Shared/Partials/Symbol/_EnhancedList.cshtml *@
+@using USASymbol.Extensions
+@model List<string>
+
+<div class="space-y-3">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var item = Model[i];
+        var colors = new[] { "from-blue-500 to-blue-600", "from-green-500 to-green-600", "from-purple-500 to-purple-600", "from-orange-500 to-orange-600" };
+        var gradientClass = colors[i % colors.Length];
+
+        <div class="group flex items-start gap-4 bg-white rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br @gradientClass flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">
+                @(i + 1)
+            </span>
+            <span class="flex-1 text-gray-700 leading-relaxed pt-0.5">
+                @item.RenderListItem()
+            </span>
+        </div>
+    }
+</div>

@@ -1,0 +1,72 @@
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+
+@if (Model.HasRows)
+{
+    var slug = Model.Content?.Slug ?? "list";
+    var pageTitle = Model.Content?.Page?.H1 ?? Model.Content?.Slug ?? "List";
+    var isRanking = Model.IsRanking;
+    var isCollection = Model.IsCollection;
+    var category = (Model.Content?.Category ?? "").Trim().ToLowerInvariant();
+    var encodedSlug = Uri.EscapeDataString(slug);
+    var encodedCategory = Uri.EscapeDataString(category);
+
+    var downloadUrl = isRanking
+        ? $"/print/download?source=rankings&category={encodedCategory}&slug={encodedSlug}"
+        : isCollection
+            ? $"/print/download?source=collections&category={encodedCategory}&slug={encodedSlug}"
+            : $"/print/download?slug={encodedSlug}";
+
+    var downloadWithImagesUrl = isRanking
+        ? $"/print/download?source=rankings&category={encodedCategory}&slug={encodedSlug}&includeImages=true"
+        : isCollection
+            ? $"/print/download?source=collections&category={encodedCategory}&slug={encodedSlug}&includeImages=true"
+            : $"/print/download?slug={encodedSlug}&includeImages=true";
+
+    var noun = isRanking ? "ranking" : isCollection ? "collection" : "list";
+    var audience = isRanking ? "researchers, teachers, and students" : "teachers, students, and collectors";
+
+    <section class="mt-8 mb-6">
+        <div class="w-full max-w-4xl overflow-hidden rounded-[1.55rem] border border-slate-200/80 bg-white/50">
+            <div class="border-b border-slate-200/80 px-5 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-50 text-slate-700">
+                        <i class="fa-regular fa-file-pdf text-sm" aria-hidden="true"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Printable Version</p>
+                        <h2 class="mt-0.5 text-base font-semibold tracking-tight text-slate-900">
+                            Free Printable @pageTitle — PDF Download
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5">
+                <p class="text-sm leading-6 text-slate-600">
+                    Download a printable PDF for @pageTitle. Optimized for quick reference and printing, useful for @audience.
+                </p>
+
+                <div class="mt-4 flex flex-wrap items-center gap-2.5">
+                    <a href="@downloadUrl"
+                       class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition"
+                       aria-label="Download PDF for @pageTitle @noun"
+                       title="Download PDF for @pageTitle @noun">
+                        <i class="fa-solid fa-download text-xs" aria-hidden="true"></i>
+                        <span>Download PDF</span>
+                    </a>
+                    <a href="@downloadWithImagesUrl"
+                       class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
+                       aria-label="Download PDF with images for @pageTitle @noun"
+                       title="Download PDF with images for @pageTitle @noun">
+                        <i class="fa-regular fa-image text-xs" aria-hidden="true"></i>
+                        <span>PDF with Images</span>
+                    </a>
+                </div>
+
+                <p class="mt-4 border-t border-slate-200/80 pt-3.5 text-xs leading-5 text-slate-400">
+                    Generated on demand — may take a few seconds. The "with images" version embeds available images from the site.
+                </p>
+            </div>
+        </div>
+    </section>
+}

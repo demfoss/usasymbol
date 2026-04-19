@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <DefaultItemExcludes>$(DefaultItemExcludes);obj-verify\**;bin-verify\**</DefaultItemExcludes>
+    <EnableBunnyImageSyncOnPublish>true</EnableBunnyImageSyncOnPublish>
 
     <!-- <EnableDefaultContentItems>true</EnableDefaultContentItems> -->
     <UserSecretsId>a86db447-8619-4573-b754-b05ecb9673a5</UserSecretsId>
@@ -73,5 +74,13 @@
     <Folder Include="wwwroot\images\flags\virginia\versions\" />
     <Folder Include="wwwroot\images\flags\wyoming\versions\" />
   </ItemGroup>
+
+  <Target Name="RunBunnyImageSyncBeforePublish"
+          BeforeTargets="Publish"
+          DependsOnTargets="Build"
+          Condition="'$(EnableBunnyImageSyncOnPublish)' == 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Message Importance="high" Text="Running Bunny image sync before publish..." />
+    <Exec Command="dotnet &quot;$(TargetPath)&quot; --sync-bunny-images" />
+  </Target>
 
 </Project>

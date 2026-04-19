@@ -1,0 +1,327 @@
+@model USASymbol.Models.ViewModels.TreeDetailViewModel
+@using System.Globalization
+@using USASymbol.Extensions
+@using USASymbol.Models.ViewModels
+@inject IImageUrlService Images
+
+@{
+    ViewData["BodyClass"] = "tree-detail-page";
+
+    var treeName = Model.TreeContent?.Name ?? Model.Symbol?.Name ?? "";
+    var scientificName = Model.TreeContent?.ScientificName ?? Model.Symbol?.ScientificName ?? "";
+    var stateName = Model.State?.Name ?? "";
+    var adoptedYear = Model.TreeContent?.AdoptedYear ?? Model.Symbol?.AdoptedYear ?? 0;
+
+    var designationRaw = (Model.Symbol?.Designation ?? "State Tree").Trim();
+    var designation = string.IsNullOrWhiteSpace(designationRaw)
+        ? "State Tree"
+        : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+
+    var pageHeading = $"{stateName} {designation}: {treeName}";
+
+    var descRaw = Model.TreeContent?.SeoDescription ?? "";
+    ViewData["Title"] = Model.TreeContent?.SeoTitle ?? pageHeading;
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {stateName}'s {designation.ToLowerInvariant()} {treeName}, including adoption, symbolism, and key facts."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+    ViewData["OgImage"] = Images.Full(Model.Symbol?.ImageUrl ?? Model.State?.FlagImageUrl);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+
+    var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+
+    var hasMeaning = !string.IsNullOrWhiteSpace(Model.Meaning);
+    var hasQuiz = Model.QuizQuestions?.Any() == true;
+    var introText = Model.TreeContent?.IntroText ?? string.Empty;
+    var overviewText = !string.IsNullOrWhiteSpace(introText)
+        ? introText
+        : adoptedYear > 0 && !string.IsNullOrWhiteSpace(scientificName)
+            ? $"In <strong>{adoptedYear}</strong>, {stateName} designated the {treeName} (<span class=\"italic\">{scientificName}</span>) as its official state tree."
+            : $"The {treeName} is recognized as the official {designation.ToLowerInvariant()} of {stateName}.";
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    var heroDescription = System.Net.WebUtility.HtmlDecode(
+        System.Text.RegularExpressions.Regex.Replace(
+            System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1"),
+            "<.*?>",
+            " "))
+        .Trim();
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#18231d_0%,#223228_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-emerald-200/0 via-emerald-200/70 to-amber-200/0",
+        PrimaryGlowClass = "bg-lime-200/10",
+        SecondaryGlowClass = "bg-emerald-100/10",
+        AccentDotClass = "bg-lime-300",
+        MediaBackgroundClass = "bg-slate-100/10",
+        FallbackIconClass = "fa-solid fa-tree",
+        Title = pageHeading,
+        Subtitle = scientificName,
+        Description = heroDescription,
+        LegalReference = Model.Legislation,
+        ImageUrl = Model.Symbol?.ImageUrl,
+        ImageAlt = pageHeading,
+        FigureTitle = treeName,
+        FigureSubtitle = $"Official {designation} of {stateName}",
+        ImageLinkUrl = Model.Symbol?.ImageUrl,
+        EyebrowItems = new List<string> { stateName, designation, adoptedYear > 0 ? $"Adopted {adoptedYear}" : string.Empty }
+    };
+}
+
+<style>
+    .tree-editorial {
+        color: #161B26;
+    }
+
+    .tree-editorial .content-flow h2 {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        color: #161B26;
+        font-size: 41px;
+        font-weight: 700;
+        line-height: 50px;
+        letter-spacing: -0.02em;
+    }
+
+    .tree-editorial .content-flow h3 {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        color: #161B26;
+        font-size: 23px;
+        font-weight: 700;
+        line-height: 50px;
+        letter-spacing: 0;
+    }
+
+    .tree-editorial .site-content,
+    .tree-editorial .site-content p,
+    .tree-editorial .site-content li,
+    .tree-editorial .site-content dd,
+    .tree-editorial .site-content blockquote,
+    .tree-editorial .site-content .prose,
+    .tree-editorial .content-flow > section > div,
+    .tree-editorial .content-flow > div {
+        font-size: 19px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 34px;
+        letter-spacing: 0.19px;
+    }
+
+    .tree-editorial #overview h2,
+    .tree-editorial #symbolic-meaning h2,
+    .tree-editorial #tree-quiz h2,
+    .tree-editorial #faq h2,
+    .tree-editorial #sources h2 {
+        font-size: 41px;
+        line-height: 50px;
+        letter-spacing: -0.02em;
+        text-transform: none;
+    }
+
+    .tree-editorial #overview .site-content,
+    .tree-editorial #symbolic-meaning .site-content,
+    .tree-editorial #overview .site-content p,
+    .tree-editorial #symbolic-meaning .site-content p {
+        font-size: 19px;
+        line-height: 34px;
+        letter-spacing: 0.19px;
+    }
+
+    @@media (max-width: 767px) {
+        .tree-editorial .content-flow h2,
+        .tree-editorial #overview h2,
+        .tree-editorial #symbolic-meaning h2,
+        .tree-editorial #tree-quiz h2,
+        .tree-editorial #faq h2,
+        .tree-editorial #sources h2 {
+            font-size: 26px;
+            line-height: 37px;
+            letter-spacing: -0.405px;
+        }
+
+        .tree-editorial .content-flow h3 {
+            font-size: 19px;
+            line-height: 24px;
+            letter-spacing: 0.38px;
+        }
+
+        .tree-editorial .site-content,
+        .tree-editorial .site-content p,
+        .tree-editorial .site-content li,
+        .tree-editorial .site-content dd,
+        .tree-editorial .site-content blockquote,
+        .tree-editorial .site-content .prose,
+        .tree-editorial .content-flow > section > div,
+        .tree-editorial .content-flow > div,
+        .tree-editorial #overview .site-content,
+        .tree-editorial #symbolic-meaning .site-content,
+        .tree-editorial #overview .site-content p,
+        .tree-editorial #symbolic-meaning .site-content p {
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: 0.18px;
+        }
+    }
+</style>
+
+<nav class="sticky top-16 z-30 bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="tree-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[228px_minmax(0,760px)_320px] xl:gap-12 2xl:grid-cols-[240px_minmax(0,780px)_340px] 2xl:gap-14 relative">
+
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <aside class="hidden xl:block relative self-start xl:sticky xl:top-32">
+                <div class="max-h-[calc(100vh-9rem)] overflow-y-auto pr-2 pb-10 [scrollbar-width:thin]">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                </div>
+            </aside>
+
+            <div class="min-w-0">
+                <div class="content-flow site-content">
+                    <section id="overview" class="mt-10">
+                        <div class="relative overflow-hidden bg-[linear-gradient(90deg,rgba(255,255,255,0.24),rgba(248,255,250,0.04))] px-5 py-6 sm:px-6 lg:px-8 lg:py-7">
+                            <div class="absolute left-0 top-7 bottom-7 w-[3px] bg-[linear-gradient(180deg,#8ba46a_0%,#506f47_100%)]"></div>
+                            <div class="flex items-start gap-4 lg:gap-5">
+                                <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/75 text-slate-600">
+                                    <i class="fa-solid fa-tree text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
+                                    <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                        @overviewText.RenderAutoLinks()
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    @if (quickFacts.Any())
+                    {
+                        <div class="xl:hidden">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    }
+
+                    @if (hasMeaning)
+                    {
+                        <section id="symbolic-meaning" class="content-divider">
+                            <div class="rounded-[1.6rem] border border-slate-200/80 bg-white/40 p-6 sm:p-7">
+                                <div class="flex items-start gap-4 lg:gap-5">
+                                    <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/70 text-slate-600">
+                                        <i class="fa-solid fa-book-open text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Symbolic Meaning</div>
+                                        <div class="mt-3 max-w-3xl text-slate-700">
+                                            @Model.Meaning.RenderAutoLinks()
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    @await Html.PartialAsync("_TreeSections", Model)
+
+                    @if (hasQuiz)
+                    {
+                        <section id="tree-quiz" class="content-divider">
+                            <div class="overflow-hidden border border-slate-200/80 bg-white/70 text-slate-900">
+                                <div class="border-b border-slate-200/80 px-5 py-4 sm:px-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-slate-100 text-slate-700">
+                                            <i class="fas fa-graduation-cap text-xs"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <h2 class="!text-[1.65rem] !leading-[1.15] text-slate-900">Test your knowledge</h2>
+                                            <div class="mt-1 text-sm leading-6 text-slate-500">A short quiz while the key details are still top of mind.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-5 sm:p-6 text-slate-900">
+                                    @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
+                                </div>
+
+                                <div class="border-t border-slate-200/80 px-5 py-4 sm:px-6">
+                                    <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                                        <span>Explore more quizzes</span>
+                                        <i class="fas fa-arrow-right shrink-0 text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    <section id="faq" class="content-divider">
+                        @await Html.PartialAsync("_Faq", Model)
+                    </section>
+
+                    <section id="sources" class="content-divider">
+                        @await Html.PartialAsync("_Sources", Model)
+                    </section>
+
+                    <div class="mt-10 space-y-8 xl:hidden">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+                </div>
+            </div>
+
+            <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+                @if (quickFacts.Any())
+                {
+                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                        <div class="sticky top-32 pr-2">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    </section>
+                }
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+        {
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+            </div>
+        }
+    </article>
+</main>
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")
+<script src="~/js/quizEngine.js" defer></script>

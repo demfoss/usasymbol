@@ -133,7 +133,7 @@ const isElement = object => {
 const getElement = object => {
   // it's a jQuery object or a node element
   if (isElement(object)) {
-    return object.jquery ? object[0] : object;
+    return object.jquery  object[0] : object;
   }
   if (typeof object === 'string' && object.length > 0) {
     return document.querySelector(parseSelector(object));
@@ -181,7 +181,7 @@ const findShadowRoot = element => {
   // Can find the shadow root otherwise it'll return the document
   if (typeof element.getRootNode === 'function') {
     const root = element.getRootNode();
-    return root instanceof ShadowRoot ? root : null;
+    return root instanceof ShadowRoot  root : null;
   }
   if (element instanceof ShadowRoot) {
     return element;
@@ -246,7 +246,7 @@ const defineJQueryPlugin = plugin => {
   });
 };
 const execute = (possibleCallback, args = [], defaultValue = possibleCallback) => {
-  return typeof possibleCallback === 'function' ? possibleCallback(...args) : defaultValue;
+  return typeof possibleCallback === 'function'  possibleCallback(...args) : defaultValue;
 };
 const executeAfterTransition = (callback, transitionElement, waitForTransition = true) => {
   if (!waitForTransition) {
@@ -290,9 +290,9 @@ const getNextActiveElement = (list, activeElement, shouldGetNext, isCycleAllowed
   // if the element does not exist in the list return an element
   // depending on the direction and if cycle is allowed
   if (index === -1) {
-    return !shouldGetNext && isCycleAllowed ? list[listLength - 1] : list[0];
+    return !shouldGetNext && isCycleAllowed  list[listLength - 1] : list[0];
   }
-  index += shouldGetNext ? 1 : -1;
+  index += shouldGetNext  1 : -1;
   if (isCycleAllowed) {
     index = (index + listLength) % listLength;
   }
@@ -311,7 +311,7 @@ const getNextActiveElement = (list, activeElement, shouldGetNext, isCycleAllowed
  * Constants
  */
 
-const namespaceRegex = /[^.]*(?=\..*)\.|.*/;
+const namespaceRegex = /[^.]*(=\..*)\.|.*/;
 const stripNameRegex = /\..*/;
 const stripUidRegex = /::\d+$/;
 const eventRegistry = {}; // Events storage
@@ -373,7 +373,7 @@ function findHandler(events, callable, delegationSelector = null) {
 function normalizeParameters(originalTypeEvent, handler, delegationFunction) {
   const isDelegated = typeof handler === 'string';
   // TODO: tooltip passes `false` instead of selector, so we need to check
-  const callable = isDelegated ? delegationFunction : handler || delegationFunction;
+  const callable = isDelegated  delegationFunction : handler || delegationFunction;
   let typeEvent = getTypeEvent(originalTypeEvent);
   if (!nativeEvents.has(typeEvent)) {
     typeEvent = originalTypeEvent;
@@ -400,14 +400,14 @@ function addHandler(element, originalTypeEvent, handler, delegationFunction, one
   }
   const events = getElementEvents(element);
   const handlers = events[typeEvent] || (events[typeEvent] = {});
-  const previousFunction = findHandler(handlers, callable, isDelegated ? handler : null);
+  const previousFunction = findHandler(handlers, callable, isDelegated  handler : null);
   if (previousFunction) {
     previousFunction.oneOff = previousFunction.oneOff && oneOff;
     return;
   }
   const uid = makeEventUid(callable, originalTypeEvent.replace(namespaceRegex, ''));
-  const fn = isDelegated ? bootstrapDelegationHandler(element, handler, callable) : bootstrapHandler(element, callable);
-  fn.delegationSelector = isDelegated ? handler : null;
+  const fn = isDelegated  bootstrapDelegationHandler(element, handler, callable) : bootstrapHandler(element, callable);
+  fn.delegationSelector = isDelegated  handler : null;
   fn.callable = callable;
   fn.oneOff = oneOff;
   fn.uidEvent = uid;
@@ -456,7 +456,7 @@ const EventHandler = {
       if (!Object.keys(storeElementEvent).length) {
         return;
       }
-      removeHandler(element, events, typeEvent, callable, isDelegated ? handler : null);
+      removeHandler(element, events, typeEvent, callable, isDelegated  handler : null);
       return;
     }
     if (isNamespace) {
@@ -611,19 +611,19 @@ class Config {
     return config;
   }
   _mergeConfigObj(config, element) {
-    const jsonConfig = isElement(element) ? Manipulator.getDataAttribute(element, 'config') : {}; // try to parse
+    const jsonConfig = isElement(element)  Manipulator.getDataAttribute(element, 'config') : {}; // try to parse
 
     return {
       ...this.constructor.Default,
-      ...(typeof jsonConfig === 'object' ? jsonConfig : {}),
-      ...(isElement(element) ? Manipulator.getDataAttributes(element) : {}),
-      ...(typeof config === 'object' ? config : {})
+      ...(typeof jsonConfig === 'object'  jsonConfig : {}),
+      ...(isElement(element)  Manipulator.getDataAttributes(element) : {}),
+      ...(typeof config === 'object'  config : {})
     };
   }
   _typeCheckConfig(config, configTypes = this.constructor.DefaultType) {
     for (const [property, expectedTypes] of Object.entries(configTypes)) {
       const value = config[property];
-      const valueType = isElement(value) ? 'element' : toType(value);
+      const valueType = isElement(value)  'element' : toType(value);
       if (!new RegExp(expectedTypes).test(valueType)) {
         throw new TypeError(`${this.constructor.NAME.toUpperCase()}: Option "${property}" provided type "${valueType}" but expected type "${expectedTypes}".`);
       }
@@ -684,7 +684,7 @@ class BaseComponent extends Config {
     return Data.get(getElement(element), this.DATA_KEY);
   }
   static getOrCreateInstance(element, config = {}) {
-    return this.getInstance(element) || new this(element, typeof config === 'object' ? config : null);
+    return this.getInstance(element) || new this(element, typeof config === 'object'  config : null);
   }
   static get VERSION() {
     return VERSION;
@@ -724,9 +724,9 @@ const getSelector = element => {
     if (hrefAttribute.includes('#') && !hrefAttribute.startsWith('#')) {
       hrefAttribute = `#${hrefAttribute.split('#')[1]}`;
     }
-    selector = hrefAttribute && hrefAttribute !== '#' ? hrefAttribute.trim() : null;
+    selector = hrefAttribute && hrefAttribute !== '#'  hrefAttribute.trim() : null;
   }
-  return selector ? selector.split(',').map(sel => parseSelector(sel)).join(',') : null;
+  return selector  selector.split(',').map(sel => parseSelector(sel)).join(',') : null;
 };
 const SelectorEngine = {
   find(selector, element = document.documentElement) {
@@ -775,17 +775,17 @@ const SelectorEngine = {
   getSelectorFromElement(element) {
     const selector = getSelector(element);
     if (selector) {
-      return SelectorEngine.findOne(selector) ? selector : null;
+      return SelectorEngine.findOne(selector)  selector : null;
     }
     return null;
   },
   getElementFromSelector(element) {
     const selector = getSelector(element);
-    return selector ? SelectorEngine.findOne(selector) : null;
+    return selector  SelectorEngine.findOne(selector) : null;
   },
   getMultipleElementsFromSelector(element) {
     const selector = getSelector(element);
-    return selector ? SelectorEngine.find(selector) : [];
+    return selector  SelectorEngine.find(selector) : [];
   }
 };
 
@@ -1038,7 +1038,7 @@ class Swipe extends Config {
     execute(this._config.endCallback);
   }
   _move(event) {
-    this._deltaX = event.touches && event.touches.length > 1 ? 0 : event.touches[0].clientX - this._deltaX;
+    this._deltaX = event.touches && event.touches.length > 1  0 : event.touches[0].clientX - this._deltaX;
   }
   _handleSwipe() {
     const absDeltaX = Math.abs(this._deltaX);
@@ -1050,7 +1050,7 @@ class Swipe extends Config {
     if (!direction) {
       return;
     }
-    execute(direction > 0 ? this._config.rightCallback : this._config.leftCallback);
+    execute(direction > 0  this._config.rightCallback : this._config.leftCallback);
   }
   _initEvents() {
     if (this._supportPointerEvents) {
@@ -1220,7 +1220,7 @@ class Carousel extends BaseComponent {
     if (activeIndex === index) {
       return;
     }
-    const order = index > activeIndex ? ORDER_NEXT : ORDER_PREV;
+    const order = index > activeIndex  ORDER_NEXT : ORDER_PREV;
     this._slide(order, items[index]);
   }
   dispose() {
@@ -1344,8 +1344,8 @@ class Carousel extends BaseComponent {
     this._isSliding = true;
     this._setActiveIndicatorElement(nextElementIndex);
     this._activeElement = nextElement;
-    const directionalClassName = isNext ? CLASS_NAME_START : CLASS_NAME_END;
-    const orderClassName = isNext ? CLASS_NAME_NEXT : CLASS_NAME_PREV;
+    const directionalClassName = isNext  CLASS_NAME_START : CLASS_NAME_END;
+    const orderClassName = isNext  CLASS_NAME_NEXT : CLASS_NAME_PREV;
     nextElement.classList.add(orderClassName);
     reflow(nextElement);
     activeElement.classList.add(directionalClassName);
@@ -1379,15 +1379,15 @@ class Carousel extends BaseComponent {
   }
   _directionToOrder(direction) {
     if (isRTL()) {
-      return direction === DIRECTION_LEFT ? ORDER_PREV : ORDER_NEXT;
+      return direction === DIRECTION_LEFT  ORDER_PREV : ORDER_NEXT;
     }
-    return direction === DIRECTION_LEFT ? ORDER_NEXT : ORDER_PREV;
+    return direction === DIRECTION_LEFT  ORDER_NEXT : ORDER_PREV;
   }
   _orderToDirection(order) {
     if (isRTL()) {
-      return order === ORDER_PREV ? DIRECTION_LEFT : DIRECTION_RIGHT;
+      return order === ORDER_PREV  DIRECTION_LEFT : DIRECTION_RIGHT;
     }
-    return order === ORDER_PREV ? DIRECTION_RIGHT : DIRECTION_LEFT;
+    return order === ORDER_PREV  DIRECTION_RIGHT : DIRECTION_LEFT;
   }
 
   // Static
@@ -1611,7 +1611,7 @@ class Collapse extends BaseComponent {
     return config;
   }
   _getDimension() {
-    return this._element.classList.contains(CLASS_NAME_HORIZONTAL) ? WIDTH : HEIGHT;
+    return this._element.classList.contains(CLASS_NAME_HORIZONTAL)  WIDTH : HEIGHT;
   }
   _initializeChildren() {
     if (!this._config.parent) {
@@ -1721,12 +1721,12 @@ const SELECTOR_MENU = '.dropdown-menu';
 const SELECTOR_NAVBAR = '.navbar';
 const SELECTOR_NAVBAR_NAV = '.navbar-nav';
 const SELECTOR_VISIBLE_ITEMS = '.dropdown-menu .dropdown-item:not(.disabled):not(:disabled)';
-const PLACEMENT_TOP = isRTL() ? 'top-end' : 'top-start';
-const PLACEMENT_TOPEND = isRTL() ? 'top-start' : 'top-end';
-const PLACEMENT_BOTTOM = isRTL() ? 'bottom-end' : 'bottom-start';
-const PLACEMENT_BOTTOMEND = isRTL() ? 'bottom-start' : 'bottom-end';
-const PLACEMENT_RIGHT = isRTL() ? 'left-start' : 'right-start';
-const PLACEMENT_LEFT = isRTL() ? 'right-start' : 'left-start';
+const PLACEMENT_TOP = isRTL()  'top-end' : 'top-start';
+const PLACEMENT_TOPEND = isRTL()  'top-start' : 'top-end';
+const PLACEMENT_BOTTOM = isRTL()  'bottom-end' : 'bottom-start';
+const PLACEMENT_BOTTOMEND = isRTL()  'bottom-start' : 'bottom-end';
+const PLACEMENT_RIGHT = isRTL()  'left-start' : 'right-start';
+const PLACEMENT_LEFT = isRTL()  'right-start' : 'left-start';
 const PLACEMENT_TOPCENTER = 'top';
 const PLACEMENT_BOTTOMCENTER = 'bottom';
 const Default$9 = {
@@ -1773,7 +1773,7 @@ class Dropdown extends BaseComponent {
 
   // Public
   toggle() {
-    return this._isShown() ? this.hide() : this.show();
+    return this._isShown()  this.hide() : this.show();
   }
   show() {
     if (isDisabled(this._element) || this._isShown()) {
@@ -1892,9 +1892,9 @@ class Dropdown extends BaseComponent {
     // We need to trim the value because custom properties can also include spaces
     const isEnd = getComputedStyle(this._menu).getPropertyValue('--bs-position').trim() === 'end';
     if (parentDropdown.classList.contains(CLASS_NAME_DROPUP)) {
-      return isEnd ? PLACEMENT_TOPEND : PLACEMENT_TOP;
+      return isEnd  PLACEMENT_TOPEND : PLACEMENT_TOP;
     }
-    return isEnd ? PLACEMENT_BOTTOMEND : PLACEMENT_BOTTOM;
+    return isEnd  PLACEMENT_BOTTOMEND : PLACEMENT_BOTTOM;
   }
   _detectNavbar() {
     return this._element.closest(SELECTOR_NAVBAR) !== null;
@@ -2012,7 +2012,7 @@ class Dropdown extends BaseComponent {
     event.preventDefault();
 
     // TODO: v6 revert #37011 & change markup https://getbootstrap.com/docs/5.3/forms/input-group/
-    const getToggleButton = this.matches(SELECTOR_DATA_TOGGLE$3) ? this : SelectorEngine.prev(this, SELECTOR_DATA_TOGGLE$3)[0] || SelectorEngine.next(this, SELECTOR_DATA_TOGGLE$3)[0] || SelectorEngine.findOne(SELECTOR_DATA_TOGGLE$3, event.delegateTarget.parentNode);
+    const getToggleButton = this.matches(SELECTOR_DATA_TOGGLE$3)  this : SelectorEngine.prev(this, SELECTOR_DATA_TOGGLE$3)[0] || SelectorEngine.next(this, SELECTOR_DATA_TOGGLE$3)[0] || SelectorEngine.findOne(SELECTOR_DATA_TOGGLE$3, event.delegateTarget.parentNode);
     const instance = Dropdown.getOrCreateInstance(getToggleButton);
     if (isUpOrDownEvent) {
       event.stopPropagation();
@@ -2266,7 +2266,7 @@ class FocusTrap extends Config {
     if (event.key !== TAB_KEY) {
       return;
     }
-    this._lastTabNavDirection = event.shiftKey ? TAB_NAV_BACKWARD : TAB_NAV_FORWARD;
+    this._lastTabNavDirection = event.shiftKey  TAB_NAV_BACKWARD : TAB_NAV_FORWARD;
   }
 }
 
@@ -2443,7 +2443,7 @@ class Modal extends BaseComponent {
 
   // Public
   toggle(relatedTarget) {
-    return this._isShown ? this.hide() : this.show(relatedTarget);
+    return this._isShown  this.hide() : this.show(relatedTarget);
   }
   show(relatedTarget) {
     if (this._isShown || this._isTransitioning) {
@@ -2608,11 +2608,11 @@ class Modal extends BaseComponent {
     const scrollbarWidth = this._scrollBar.getWidth();
     const isBodyOverflowing = scrollbarWidth > 0;
     if (isBodyOverflowing && !isModalOverflowing) {
-      const property = isRTL() ? 'paddingLeft' : 'paddingRight';
+      const property = isRTL()  'paddingLeft' : 'paddingRight';
       this._element.style[property] = `${scrollbarWidth}px`;
     }
     if (!isBodyOverflowing && isModalOverflowing) {
-      const property = isRTL() ? 'paddingRight' : 'paddingLeft';
+      const property = isRTL()  'paddingRight' : 'paddingLeft';
       this._element.style[property] = `${scrollbarWidth}px`;
     }
   }
@@ -2742,7 +2742,7 @@ class Offcanvas extends BaseComponent {
 
   // Public
   toggle(relatedTarget) {
-    return this._isShown ? this.hide() : this.show(relatedTarget);
+    return this._isShown  this.hide() : this.show(relatedTarget);
   }
   show(relatedTarget) {
     if (this._isShown) {
@@ -2821,7 +2821,7 @@ class Offcanvas extends BaseComponent {
       isVisible,
       isAnimated: true,
       rootElement: this._element.parentNode,
-      clickCallback: isVisible ? clickCallback : null
+      clickCallback: isVisible  clickCallback : null
     });
   }
   _initializeFocusTrap() {
@@ -2960,7 +2960,7 @@ const uriAttributes = new Set(['background', 'cite', 'href', 'itemtype', 'longde
  * Shout-out to Angular https://github.com/angular/angular/blob/15.2.8/packages/core/src/sanitization/url_sanitizer.ts#L38
  */
 // eslint-disable-next-line unicorn/better-regex
-const SAFE_URL_PATTERN = /^(?!javascript:)(?:[a-z0-9+.-]+:|[^&:/?#]*(?:[/?#]|$))/i;
+const SAFE_URL_PATTERN = /^(!javascript:)(:[a-z0-9+.-]+:|[^&:/#]*(:[/#]|$))/i;
 const allowedAttribute = (attribute, allowedAttributeList) => {
   const attributeName = attribute.nodeName.toLowerCase();
   if (allowedAttributeList.includes(attributeName)) {
@@ -3121,7 +3121,7 @@ class TemplateFactory extends Config {
     templateElement.textContent = content;
   }
   _maybeSanitize(arg) {
-    return this._config.sanitize ? sanitizeHtml(arg, this._config.allowList, this._config.sanitizeFn) : arg;
+    return this._config.sanitize  sanitizeHtml(arg, this._config.allowList, this._config.sanitizeFn) : arg;
   }
   _resolvePossibleFunction(arg) {
     return execute(arg, [this]);
@@ -3173,9 +3173,9 @@ const EVENT_MOUSELEAVE = 'mouseleave';
 const AttachmentMap = {
   AUTO: 'auto',
   TOP: 'top',
-  RIGHT: isRTL() ? 'left' : 'right',
+  RIGHT: isRTL()  'left' : 'right',
   BOTTOM: 'bottom',
-  LEFT: isRTL() ? 'right' : 'left'
+  LEFT: isRTL()  'right' : 'left'
 };
 const Default$3 = {
   allowList: DefaultAllowlist,
@@ -3507,16 +3507,16 @@ class Tooltip extends BaseComponent {
           context.toggle();
         });
       } else if (trigger !== TRIGGER_MANUAL) {
-        const eventIn = trigger === TRIGGER_HOVER ? this.constructor.eventName(EVENT_MOUSEENTER) : this.constructor.eventName(EVENT_FOCUSIN$1);
-        const eventOut = trigger === TRIGGER_HOVER ? this.constructor.eventName(EVENT_MOUSELEAVE) : this.constructor.eventName(EVENT_FOCUSOUT$1);
+        const eventIn = trigger === TRIGGER_HOVER  this.constructor.eventName(EVENT_MOUSEENTER) : this.constructor.eventName(EVENT_FOCUSIN$1);
+        const eventOut = trigger === TRIGGER_HOVER  this.constructor.eventName(EVENT_MOUSELEAVE) : this.constructor.eventName(EVENT_FOCUSOUT$1);
         EventHandler.on(this._element, eventIn, this._config.selector, event => {
           const context = this._initializeOnDelegatedTarget(event);
-          context._activeTrigger[event.type === 'focusin' ? TRIGGER_FOCUS : TRIGGER_HOVER] = true;
+          context._activeTrigger[event.type === 'focusin'  TRIGGER_FOCUS : TRIGGER_HOVER] = true;
           context._enter();
         });
         EventHandler.on(this._element, eventOut, this._config.selector, event => {
           const context = this._initializeOnDelegatedTarget(event);
-          context._activeTrigger[event.type === 'focusout' ? TRIGGER_FOCUS : TRIGGER_HOVER] = context._element.contains(event.relatedTarget);
+          context._activeTrigger[event.type === 'focusout'  TRIGGER_FOCUS : TRIGGER_HOVER] = context._element.contains(event.relatedTarget);
           context._leave();
         });
       }
@@ -3578,7 +3578,7 @@ class Tooltip extends BaseComponent {
     }
     config = {
       ...dataAttributes,
-      ...(typeof config === 'object' && config ? config : {})
+      ...(typeof config === 'object' && config  config : {})
     };
     config = this._mergeConfigObj(config);
     config = this._configAfterMerge(config);
@@ -3586,7 +3586,7 @@ class Tooltip extends BaseComponent {
     return config;
   }
   _configAfterMerge(config) {
-    config.container = config.container === false ? document.body : getElement(config.container);
+    config.container = config.container === false  document.body : getElement(config.container);
     if (typeof config.delay === 'number') {
       config.delay = {
         show: config.delay,
@@ -3787,7 +3787,7 @@ class ScrollSpy extends BaseComponent {
     // this._element is the observablesContainer and config.target the menu links wrapper
     this._targetLinks = new Map();
     this._observableSections = new Map();
-    this._rootElement = getComputedStyle(this._element).overflowY === 'visible' ? null : this._element;
+    this._rootElement = getComputedStyle(this._element).overflowY === 'visible'  null : this._element;
     this._activeTarget = null;
     this._observer = null;
     this._previousScrollData = {
@@ -3832,7 +3832,7 @@ class ScrollSpy extends BaseComponent {
     config.target = getElement(config.target) || document.body;
 
     // TODO: v6 Only for backwards compatibility reasons. Use rootMargin only
-    config.rootMargin = config.offset ? `${config.offset}px 0px -30%` : config.rootMargin;
+    config.rootMargin = config.offset  `${config.offset}px 0px -30%` : config.rootMargin;
     if (typeof config.threshold === 'string') {
       config.threshold = config.threshold.split(',').map(value => Number.parseFloat(value));
     }
@@ -4065,7 +4065,7 @@ class Tab extends BaseComponent {
 
     // Search for active tab on same parent to deactivate it
     const active = this._getActiveElem();
-    const hideEvent = active ? EventHandler.trigger(active, EVENT_HIDE$1, {
+    const hideEvent = active  EventHandler.trigger(active, EVENT_HIDE$1, {
       relatedTarget: innerElem
     }) : null;
     const showEvent = EventHandler.trigger(innerElem, EVENT_SHOW$1, {
@@ -4131,7 +4131,7 @@ class Tab extends BaseComponent {
     const children = this._getChildren().filter(element => !isDisabled(element));
     let nextActiveElement;
     if ([HOME_KEY, END_KEY].includes(event.key)) {
-      nextActiveElement = children[event.key === HOME_KEY ? 0 : children.length - 1];
+      nextActiveElement = children[event.key === HOME_KEY  0 : children.length - 1];
     } else {
       const isNext = [ARROW_RIGHT_KEY, ARROW_DOWN_KEY].includes(event.key);
       nextActiveElement = getNextActiveElement(children, event.target, isNext, true);
@@ -4208,7 +4208,7 @@ class Tab extends BaseComponent {
 
   // Try to get the inner element (usually the .nav-link)
   _getInnerElement(elem) {
-    return elem.matches(SELECTOR_INNER_ELEM) ? elem : SelectorEngine.findOne(SELECTOR_INNER_ELEM, elem);
+    return elem.matches(SELECTOR_INNER_ELEM)  elem : SelectorEngine.findOne(SELECTOR_INNER_ELEM, elem);
   }
 
   // Try to get the outer element (usually the .nav-item)

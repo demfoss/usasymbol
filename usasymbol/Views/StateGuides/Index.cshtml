@@ -1,0 +1,161 @@
+@{
+    ViewData["Title"] = "State Guides — Geography, Demographics & More";
+    ViewData["Description"] = "Comprehensive guides about U.S. states — state borders, most common last names, and more. All 50 states.";
+}
+
+<!-- Header -->
+<div class="border-b border-slate-200">
+    <div class="max-w-[1440px] mx-auto px-4 xl:px-8 py-10 lg:py-14">
+        <div class="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">
+            <i class="fa-solid fa-map text-[10px]"></i>
+            USA Symbol · Guides
+        </div>
+        <h1 class="text-3xl md:text-[2.6rem] font-black tracking-tight text-slate-900 leading-tight mb-3 max-w-2xl">
+            U.S. State Guides
+        </h1>
+        <p class="text-[1.05rem] text-slate-600 leading-relaxed max-w-2xl">
+            Deep-dive guides on geography, demographics, and history for all 50 U.S. states. Each guide includes data, maps, etymology, and context you won't find elsewhere.
+        </p>
+    </div>
+</div>
+
+<main class="max-w-[1440px] mx-auto px-4 xl:px-8 py-12">
+
+    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-6">Available Guides</p>
+
+    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+        <!-- State Borders -->
+        <a href="/guides/state-borders"
+           class="group block border border-slate-200 bg-white hover:border-slate-400 transition-colors">
+            <div class="h-44 bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center relative overflow-hidden">
+                <i class="fa-solid fa-map text-slate-500 text-7xl"></i>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                <div class="absolute top-4 right-4">
+                    <span class="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-white text-slate-900">All 50 States</span>
+                </div>
+            </div>
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-slate-700 transition">State Borders</h2>
+                <p class="text-[14px] text-slate-500 leading-relaxed mb-4">
+                    Which states, countries, and bodies of water border each U.S. state? Maps, border counts, landlocked status, and coastline facts.
+                </p>
+                <div class="flex flex-wrap gap-x-5 gap-y-1.5 text-[12px] text-slate-400">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-slate-500 text-[10px]"></i> Bordering states &amp; countries</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-slate-500 text-[10px]"></i> Ocean &amp; water boundaries</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-slate-500 text-[10px]"></i> Border counts &amp; facts</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- Last Names -->
+        <a href="/guides/surnames"
+           class="group block border border-slate-200 bg-white hover:border-slate-400 transition-colors">
+            <div class="h-44 bg-gradient-to-br from-slate-800 to-slate-950 flex items-center justify-center relative overflow-hidden">
+                <i class="fa-solid fa-users text-slate-600 text-7xl"></i>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                <div class="absolute top-4 right-4">
+                    <span class="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-white text-slate-900">1 State Live</span>
+                </div>
+                <!-- Origin dots -->
+                <div class="absolute bottom-4 left-5 flex gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-400 opacity-70"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 opacity-70"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-400 opacity-70"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-400 opacity-70"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-teal-400 opacity-70"></span>
+                </div>
+            </div>
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-slate-700 transition">Most Common Last Names</h2>
+                <p class="text-[14px] text-slate-500 leading-relaxed mb-4">
+                    The top 20 most common surnames in each state — with etymology, immigrant origins, and "1 in every X residents" stats.
+                </p>
+                <div class="flex flex-wrap gap-x-5 gap-y-1.5 text-[12px] text-slate-400">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-slate-500 text-[10px]"></i> Top 20 surnames per state</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-slate-500 text-[10px]"></i> Etymology &amp; origin stories</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-slate-500 text-[10px]"></i> Color-coded by heritage</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- Climate — Coming Soon -->
+        <div class="block border border-dashed border-slate-200 bg-slate-50">
+            <div class="h-44 bg-slate-100 flex items-center justify-center relative overflow-hidden">
+                <i class="fa-solid fa-cloud-sun text-slate-300 text-7xl"></i>
+                <div class="absolute top-4 right-4">
+                    <span class="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-slate-200 text-slate-500">Coming Soon</span>
+                </div>
+            </div>
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-slate-400 mb-2">Climate &amp; Weather</h2>
+                <p class="text-[14px] text-slate-400 leading-relaxed">
+                    Temperature ranges, precipitation patterns, seasons, and weather extremes for each state.
+                </p>
+            </div>
+        </div>
+
+        <!-- Demographics — Coming Soon -->
+        <div class="block border border-dashed border-slate-200 bg-slate-50">
+            <div class="h-44 bg-slate-100 flex items-center justify-center relative">
+                <i class="fa-solid fa-chart-pie text-slate-300 text-7xl"></i>
+                <div class="absolute top-4 right-4">
+                    <span class="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-slate-200 text-slate-500">Coming Soon</span>
+                </div>
+            </div>
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-slate-400 mb-2">Demographics</h2>
+                <p class="text-[14px] text-slate-400 leading-relaxed">
+                    Population statistics, largest cities, demographic trends, and key facts.
+                </p>
+            </div>
+        </div>
+
+        <!-- Economy — Coming Soon -->
+        <div class="block border border-dashed border-slate-200 bg-slate-50">
+            <div class="h-44 bg-slate-100 flex items-center justify-center relative">
+                <i class="fa-solid fa-chart-line text-slate-300 text-7xl"></i>
+                <div class="absolute top-4 right-4">
+                    <span class="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-slate-200 text-slate-500">Coming Soon</span>
+                </div>
+            </div>
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-slate-400 mb-2">Economy</h2>
+                <p class="text-[14px] text-slate-400 leading-relaxed">
+                    GDP, major industries, employment statistics, and economic indicators.
+                </p>
+            </div>
+        </div>
+
+        <!-- Geography — Coming Soon -->
+        <div class="block border border-dashed border-slate-200 bg-slate-50">
+            <div class="h-44 bg-slate-100 flex items-center justify-center relative">
+                <i class="fa-solid fa-mountain text-slate-300 text-7xl"></i>
+                <div class="absolute top-4 right-4">
+                    <span class="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-slate-200 text-slate-500">Coming Soon</span>
+                </div>
+            </div>
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-slate-400 mb-2">Geography</h2>
+                <p class="text-[14px] text-slate-400 leading-relaxed">
+                    Terrain, elevation, land area, natural features, and geographic regions.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-14 border-t border-slate-200 pt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+            <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Browse all states</div>
+            <p class="text-[15px] text-slate-600">Start by choosing a state to explore its borders, symbols, and guides.</p>
+        </div>
+        <a href="/states"
+           class="shrink-0 inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 text-[14px] font-semibold hover:bg-slate-700 transition">
+            All 50 States
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+        </a>
+    </div>
+
+</main>

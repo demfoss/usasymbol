@@ -1,0 +1,553 @@
+@model USASymbol.Models.ViewModels.ColorDetailViewModel
+@using System.Globalization
+@using USASymbol.Extensions
+@using USASymbol.Models.ViewModels
+@inject IImageUrlService Images
+
+@{
+    var stateName = Model.State.Name;
+    var stateSlug = Model.State.Slug;
+    var colorTitle = Model.ColorContent?.Title ?? $"{stateName} State Colors";
+    var adoptedYear = Model.ColorContent?.AdoptedYear ?? 0;
+    var colors = Model.Colors;
+    var descRaw = Model.ColorContent?.SeoDescription ?? "";
+
+    ViewData["Title"] = Model.ColorContent?.SeoTitle ?? $"{colorTitle} - {stateName} State Color";
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {colorTitle}, the official state color of {stateName}."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+    ViewData["OgImage"] = Images.Full(Model.Symbol.ImageUrl ?? Model.State.FlagImageUrl);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol.ToSymbolUrl(Model.State.Slug);
+
+    // Dynamic gradient for hero background
+    var colorHexCodes = Model.ColorContent?.ColorData?.Select(c => c.Hex).ToList() ?? new List<string>();
+    var gradientStyle = "";
+
+    if (colorHexCodes.Count == 2)
+    {
+        gradientStyle = $"background: linear-gradient(135deg, {colorHexCodes[0]} 50%, {colorHexCodes[1]} 50%);";
+    }
+    else if (colorHexCodes.Count > 2)
+    {
+        var stops = string.Join(", ", colorHexCodes.Select((hex, i) =>
+            $"{hex} {i * 100.0 / colorHexCodes.Count}%, {hex} {(i + 1) * 100.0 / colorHexCodes.Count}%"));
+        gradientStyle = $"background: linear-gradient(135deg, {stops});";
+    }
+    else if (colorHexCodes.Count == 1)
+    {
+        gradientStyle = $"background: {colorHexCodes[0]};";
+    }
+
+    var quickFacts = (Model.ColorContent?.QuickFacts ?? new List<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+    var introText = Model.ColorContent?.IntroText ?? string.Empty;
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    heroDescriptionSource = System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1");
+    var heroDescription = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, "<.*?>", " ")).Trim();
+    var hasPlacementStoryBlocks =
+        !string.IsNullOrWhiteSpace(Model.ColorContent?.ExpertQuoteAfterSectionId) ||
+        !string.IsNullOrWhiteSpace(Model.ColorContent?.TimelineAfterSectionId) ||
+        !string.IsNullOrWhiteSpace(Model.ColorContent?.BigStatAfterSectionId);
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#1b2230_0%,#1f2735_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-slate-300/0 via-slate-200/80 to-slate-300/0",
+        PrimaryGlowClass = "bg-white/10",
+        SecondaryGlowClass = "bg-slate-200/10",
+        AccentDotClass = "bg-white",
+        MediaBackgroundClass = "bg-slate-100/10",
+        FallbackIconClass = "fa-solid fa-palette",
+        Title = colorTitle,
+        Description = heroDescription,
+        LegalReference = Model.Legislation,
+        ImageUrl = Model.Symbol.ImageUrl,
+        ImageAlt = colorTitle,
+        FigureTitle = $"Official color palette of {stateName}",
+        FigureSubtitle = "State color reference",
+        ImageLinkUrl = Model.Symbol.ImageUrl,
+        PaletteHexes = colorHexCodes,
+        EyebrowItems = new List<string>
+        {
+            stateName,
+            "State Colors",
+            adoptedYear > 0 ? $"Adopted {adoptedYear}" : Model.ColorContent?.OfficialSince ?? string.Empty
+        }
+    };
+}
+
+<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="w-full">
+
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)_304px] 2xl:gap-12 relative">
+
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <!-- LEFT SIDEBAR -->
+            <aside class="hidden lg:block relative h-full">
+                <div class="sticky top-24 pb-10">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <div class="min-w-0">
+                @if (!string.IsNullOrWhiteSpace(introText))
+                {
+                    <section id="overview" class="mb-10">
+                        <div class="relative overflow-hidden bg-[linear-gradient(90deg,rgba(255,255,255,0.24),rgba(255,249,240,0.04))] px-5 py-6 sm:px-6 lg:px-8 lg:py-7">
+                            <div class="absolute left-0 top-7 bottom-7 w-[3px] bg-[linear-gradient(180deg,#d8b36a_0%,#c46243_100%)]"></div>
+                            <div class="flex items-start gap-4 lg:gap-5">
+                                <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/75 text-slate-600">
+                                    <i class="fa-solid fa-book-open text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
+                                    <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                        @introText.RenderAutoLinks()
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                }
+
+                @if (quickFacts.Any())
+                {
+                    <div class="xl:hidden">
+                        @await Html.PartialAsync("_QuickFacts", quickFacts)
+                    </div>
+                }
+
+                <!-- COLOR SPECIFICATION CARDS -->
+                @if (Model.ColorContent?.ColorData != null && Model.ColorContent.ColorData.Any())
+                {
+                    <section id="color-specifications" class="mb-10">
+                        <h2 class="text-2xl font-bold text-slate-900 mb-2">
+                            <i class="fa-solid fa-droplet @colors.Text mr-2"></i>
+                            Color Specifications
+                        </h2>
+                        <p class="text-slate-500 text-sm mb-6">Click any value to copy to clipboard</p>
+
+                        <div class="space-y-6">
+                            @foreach (var color in Model.ColorContent.ColorData)
+                            {
+                                <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition-all duration-200">
+                                    <div class="h-28 relative" style="background-color: @color.Hex;">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                                        <div class="absolute bottom-3 left-4">
+                                            <h3 class="text-2xl font-bold text-white drop-shadow-lg">@color.Name</h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-5">
+                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                                            <button class="copy-color-value text-left group" data-value="@color.Hex">
+                                                <div class="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide">HEX</div>
+                                                        <i class="fa-solid fa-copy text-slate-400 group-hover:text-slate-600 transition-colors text-xs"></i>
+                                                    </div>
+                                                    <div class="text-base font-mono font-bold text-slate-900">@color.Hex</div>
+                                                </div>
+                                            </button>
+
+                                            <button class="copy-color-value text-left group" data-value="@color.Rgb">
+                                                <div class="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide">RGB</div>
+                                                        <i class="fa-solid fa-copy text-slate-400 group-hover:text-slate-600 transition-colors text-xs"></i>
+                                                    </div>
+                                                    <div class="text-xs font-mono font-semibold text-slate-900">@color.Rgb</div>
+                                                </div>
+                                            </button>
+
+                                            <button class="copy-color-value text-left group" data-value="@color.Cmyk">
+                                                <div class="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide">CMYK</div>
+                                                        <i class="fa-solid fa-copy text-slate-400 group-hover:text-slate-600 transition-colors text-xs"></i>
+                                                    </div>
+                                                    <div class="text-xs font-mono font-semibold text-slate-900">@color.Cmyk</div>
+                                                </div>
+                                            </button>
+
+                                            <button class="copy-color-value text-left group" data-value="@color.Pantone">
+                                                <div class="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Pantone</div>
+                                                        <i class="fa-solid fa-copy text-slate-400 group-hover:text-slate-600 transition-colors text-xs"></i>
+                                                    </div>
+                                                    <div class="text-xs font-mono font-semibold text-slate-900">@color.Pantone</div>
+                                                </div>
+                                            </button>
+                                        </div>
+
+                                        @if (!string.IsNullOrEmpty(color.Symbolism))
+                                        {
+                                            <div class="pt-3 border-t border-slate-200">
+                                                <p class="text-sm text-slate-700 leading-relaxed">
+                                                    <i class="fa-solid fa-info-circle text-slate-400 mr-1"></i>
+                                                    @color.Symbolism.RenderAutoLinks()
+                                                </p>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                }
+
+                <!-- WCAG CONTRAST CHECKER -->
+                @if (Model.ColorContent?.ColorData != null && Model.ColorContent.ColorData.Count >= 2)
+                {
+                    var color1 = Model.ColorContent.ColorData[0];
+                    var color2 = Model.ColorContent.ColorData[1];
+
+                    <section id="accessibility-checker" class="mb-10">
+                        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                            <div class="px-5 py-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                                <div class="flex items-center gap-3">
+                                    <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm">
+                                        <i class="fa-solid fa-universal-access text-indigo-600 text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-lg font-bold text-slate-900">WCAG Contrast Checker</h2>
+                                        <p class="text-sm text-slate-600">Accessibility compliance for @color1.Name and @color2.Name</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-6">
+                                <div class="grid sm:grid-cols-2 gap-4 mb-6">
+                                    <div class="rounded-xl border border-slate-200 overflow-hidden">
+                                        <div class="p-6 text-center" style="background-color: @color1.Hex; color: @color2.Hex;">
+                                            <p class="text-3xl font-bold mb-2">@color2.Name</p>
+                                            <p class="text-base">on @color1.Name background</p>
+                                        </div>
+                                        <div class="px-4 py-3 bg-slate-50 border-t border-slate-200">
+                                            <div id="contrast-ratio-1" class="text-center">
+                                                <span class="text-sm font-semibold text-slate-700">Contrast: </span>
+                                                <span class="contrast-value text-lg font-bold">-</span>
+                                                <span class="wcag-badge ml-2"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="rounded-xl border border-slate-200 overflow-hidden">
+                                        <div class="p-6 text-center" style="background-color: @color2.Hex; color: @color1.Hex;">
+                                            <p class="text-3xl font-bold mb-2">@color1.Name</p>
+                                            <p class="text-base">on @color2.Name background</p>
+                                        </div>
+                                        <div class="px-4 py-3 bg-slate-50 border-t border-slate-200">
+                                            <div id="contrast-ratio-2" class="text-center">
+                                                <span class="text-sm font-semibold text-slate-700">Contrast: </span>
+                                                <span class="contrast-value text-lg font-bold">-</span>
+                                                <span class="wcag-badge ml-2"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="rounded-lg bg-slate-50 p-4 text-sm text-slate-700">
+                                    <p class="font-semibold mb-2">WCAG 2.1 Standards:</p>
+                                    <ul class="space-y-1 ml-4">
+                                        <li><strong>AA Normal Text:</strong> 4.5:1 minimum</li>
+                                        <li><strong>AA Large Text:</strong> 3:1 minimum</li>
+                                        <li><strong>AAA Normal Text:</strong> 7:1 minimum</li>
+                                        <li><strong>AAA Large Text:</strong> 4.5:1 minimum</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                }
+
+                <!-- DEVELOPER EXPORT -->
+                @if (Model.ColorContent?.ColorData != null && Model.ColorContent.ColorData.Any())
+                {
+                    <section id="developer-export" class="mb-10">
+                        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                            <div class="px-5 py-4 border-b border-slate-200 bg-gradient-to-r from-green-50 to-emerald-50">
+                                <div class="flex items-center gap-3">
+                                    <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm">
+                                        <i class="fa-solid fa-code text-emerald-600 text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-lg font-bold text-slate-900">Developer Export</h2>
+                                        <p class="text-sm text-slate-600">Copy-paste ready code snippets</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-6 space-y-4">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wide">CSS Variables</h3>
+                                        <button class="copy-code-btn text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1" data-target="css-code">
+                                            <i class="fa-solid fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <pre class="rounded-lg bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto"><code id="css-code">/* CSS Variables for @stateName */
+:root {
+@foreach (var color in Model.ColorContent.ColorData)
+{
+        var varName = color.Name.ToLower().Replace(" ", "-").Replace("(", "").Replace(")", "");
+        @:  --@(stateSlug)-@(varName): @color.Hex;
+}
+}</code></pre>
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wide">Tailwind CSS Config</h3>
+                                        <button class="copy-code-btn text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1" data-target="tailwind-code">
+                                            <i class="fa-solid fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <pre class="rounded-lg bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto"><code id="tailwind-code">// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        '@stateSlug': {
+@foreach (var color in Model.ColorContent.ColorData)
+{
+        var varName = color.Name.ToLower().Replace(" ", "-").Replace("(", "").Replace(")", "");
+        @:          '@varName': '@color.Hex',
+}
+        }
+      }
+    }
+  }
+}</code></pre>
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wide">SCSS Variables</h3>
+                                        <button class="copy-code-btn text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1" data-target="scss-code">
+                                            <i class="fa-solid fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                    <pre class="rounded-lg bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto"><code id="scss-code">// SCSS Variables for @stateName
+@foreach (var color in Model.ColorContent.ColorData)
+{
+        var varName = color.Name.ToLower().Replace(" ", "-").Replace("(", "").Replace(")", "");
+        @:$@(stateSlug)-@(varName): @color.Hex;
+}
+</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                }
+
+                <!-- BIG STAT -->
+                @if (!hasPlacementStoryBlocks && Model.ColorContent?.BigStat != null && !string.IsNullOrWhiteSpace(Model.ColorContent.BigStat.Number))
+                {
+                    @await Html.PartialAsync("Components/Story/_BigStat", Model.ColorContent.BigStat)
+                }
+
+                <!-- CONTENT SECTIONS -->
+                <div class="relative site-content">
+                    @await Html.PartialAsync("_Sections", Model)
+                </div>
+
+                <!-- EXPERT QUOTE -->
+                @if (!hasPlacementStoryBlocks && Model.ColorContent?.Timeline?.Any() == true)
+                {
+                    @await Html.PartialAsync("Components/Story/_Timeline", Model.ColorContent.Timeline)
+                }
+
+                @if (!hasPlacementStoryBlocks && Model.ColorContent?.ExpertQuote != null && !string.IsNullOrWhiteSpace(Model.ColorContent.ExpertQuote.Text))
+                {
+                    @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.ColorContent.ExpertQuote)
+                }
+
+                @if (Model.QuizQuestions != null && Model.QuizQuestions.Any())
+                {
+                    <section class="content-divider">
+                        <div class="bg-slate-900 rounded-2xl p-6 sm:p-8 text-white">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-white/10">
+                                    <i class="fas fa-graduation-cap text-xl"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-2xl font-bold m-0 text-white">Test your knowledge</h2>
+                                    <p class="text-slate-300 mt-1">A quick quiz based on this page.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl text-slate-900 p-5">
+                                @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
+                            </div>
+                            <div class="mt-6">
+                                <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-slate-300 transition">
+                                    <span>Explore more quizzes</span>
+                                    <i class="fas fa-arrow-right text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                }
+
+                <section id="faq" class="content-divider">
+                    @await Html.PartialAsync("_Faq", Model)
+                </section>
+
+                <section id="sources" class="content-divider">
+                    @await Html.PartialAsync("_Sources", Model)
+                </section>
+
+                <div class="mt-10 space-y-8 xl:hidden">
+                    @await Html.PartialAsync("_RelatedSymbols", Model)
+                    @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                    @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                </div>
+
+                <div class="content-divider">
+                    @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR -->
+            <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+                @if (quickFacts.Any())
+                {
+                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                        <div class="sticky top-32 pr-2">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    </section>
+                }
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+                </section>
+            </aside>
+
+        </div>
+
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+        {
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+            </div>
+        }
+    </article>
+</main>
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")
+<script src="~/js/quizEngine.js" defer></script>
+
+<script>
+    // ===== COPY TO CLIPBOARD =====
+    document.querySelectorAll('.copy-color-value').forEach(button => {
+        button.addEventListener('click', async function () {
+            const value = this.dataset.value;
+            try {
+                await navigator.clipboard.writeText(value);
+                showToast('Copied!', value);
+                const icon = this.querySelector('i');
+                icon.classList.replace('fa-copy', 'fa-check');
+                icon.classList.add('text-green-600');
+                setTimeout(() => {
+                    icon.classList.replace('fa-check', 'fa-copy');
+                    icon.classList.remove('text-green-600');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+        });
+    });
+
+    document.querySelectorAll('.copy-code-btn').forEach(button => {
+        button.addEventListener('click', async function () {
+            const code = document.getElementById(this.dataset.target).textContent;
+            try {
+                await navigator.clipboard.writeText(code);
+                showToast('Code copied!', 'Ready to paste into your project');
+                this.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(() => { this.innerHTML = '<i class="fa-solid fa-copy"></i> Copy'; }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+        });
+    });
+
+    function showToast(title, message) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-4 right-4 bg-slate-900 text-white px-6 py-4 rounded-lg shadow-lg z-50 animate-slide-up';
+        toast.innerHTML = `<div class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-400 text-xl"></i><div><p class="font-bold">${title}</p><p class="text-sm text-slate-300">${message}</p></div></div>`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ===== WCAG CONTRAST CHECKER =====
+    @if (Model.ColorContent?.ColorData != null && Model.ColorContent.ColorData.Count >= 2)
+    {
+        var color1Hex = Model.ColorContent.ColorData[0].Hex;
+        var color2Hex = Model.ColorContent.ColorData[1].Hex;
+
+        @:function hexToRgb(hex) {
+            @:const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            @:return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
+        @:}
+
+        @:function getLuminance(r, g, b) {
+            @:const [rs, gs, bs] = [r, g, b].map(c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); });
+            @:return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+        @:}
+
+        @:function getContrastRatio(hex1, hex2) {
+            @:const rgb1 = hexToRgb(hex1), rgb2 = hexToRgb(hex2);
+            @:const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b), lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
+            @:return (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
+        @:}
+
+        @:function getWCAGBadge(ratio) {
+            @:if (ratio >= 7) return '<span class="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold">AAA ✓</span>';
+            @:if (ratio >= 4.5) return '<span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold">AA ✓</span>';
+            @:return '<span class="inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-red-800 text-xs font-bold">Fail ✗</span>';
+        @:}
+
+        @:const ratio = getContrastRatio('@color1Hex', '@color2Hex');
+        @:document.querySelectorAll('.contrast-value').forEach(el => { el.textContent = ratio.toFixed(2) + ':1'; });
+        @:document.querySelectorAll('.wcag-badge').forEach(el => { el.innerHTML = getWCAGBadge(ratio); });
+    }
+</script>
+
+<style>
+    @@keyframes slide-up {
+        from { transform: translateY(100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up { animation: slide-up 0.3s ease-out; }
+</style>

@@ -1,0 +1,134 @@
+@using System.Linq
+@using USASymbol.Extensions
+@model USASymbol.Models.Content.PageSectionTable
+
+@{
+    if (Model?.Rows?.Any() != true)
+    {
+        return;
+    }
+
+    var maxColumns = Model.Rows.Max(r => r.Cells?.Count ?? 0);
+    var headers = Model.Headers?.Any() == true
+        ? Model.Headers.ToList()
+        : Enumerable.Range(1, maxColumns).Select(i => $"Column {i}").ToList();
+
+    if (headers.Count < maxColumns)
+    {
+        headers.AddRange(Enumerable.Range(headers.Count + 1, maxColumns - headers.Count)
+            .Select(i => $"Column {i}"));
+    }
+}
+
+@functions {
+    private static string GetCell(USASymbol.Models.Content.PageSectionTableRow row, int index)
+    {
+        if (row.Cells == null || index < 0 || index >= row.Cells.Count)
+        {
+            return string.Empty;
+        }
+
+        return row.Cells[index] ?? string.Empty;
+    }
+}
+
+<div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+    {
+        <div class="border-b border-slate-200 bg-slate-50/80 px-4 py-3 sm:px-5">
+            <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Comparison Table</p>
+            <p class="mt-1 text-sm leading-6 text-slate-700">@Model.Caption.RenderMarkdown()</p>
+        </div>
+    }
+
+    <div class="hidden md:block overflow-x-auto">
+        <table class="min-w-full border-collapse text-left">
+            <thead class="bg-slate-50/80">
+                <tr class="border-b border-slate-200">
+                    @for (var i = 0; i < headers.Count; i++)
+                    {
+                        var isFirst = i == 0;
+                        <th scope="col"
+                            class="px-5 py-3.5 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-600 @(isFirst ? "w-[26%]" : "")">
+                            @headers[i]
+                        </th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-slate-200">
+                @for (var rowIndex = 0; rowIndex < Model.Rows.Count; rowIndex++)
+                {
+                    var row = Model.Rows[rowIndex];
+                    var rowClass = rowIndex % 2 == 0 ? "bg-white" : "bg-slate-50/35";
+
+                    <tr class="@rowClass">
+                        @for (var cellIndex = 0; cellIndex < headers.Count; cellIndex++)
+                        {
+                            var cell = GetCell(row, cellIndex);
+                            var isFirst = cellIndex == 0;
+
+                            if (isFirst && Model.FirstColumnIsHeader)
+                            {
+                                <th scope="row"
+                                    class="px-5 py-4 align-top text-sm font-semibold leading-6 text-slate-900 bg-slate-50/60">
+                                    @cell.RenderMarkdown()
+                                </th>
+                            }
+                            else
+                            {
+                                <td class="px-5 py-4 align-top text-sm leading-6 text-slate-700">
+                                    @cell.RenderMarkdown()
+                                </td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="space-y-3 p-3 md:hidden">
+        @foreach (var row in Model.Rows)
+        {
+            var rowTitle = Model.FirstColumnIsHeader ? GetCell(row, 0) : string.Empty;
+            var startIndex = Model.FirstColumnIsHeader ? 1 : 0;
+
+            <article class="rounded-2xl border border-slate-200 bg-slate-50/50 p-4">
+                @if (!string.IsNullOrWhiteSpace(rowTitle))
+                {
+                    <div class="mb-3 border-b border-slate-200 pb-3">
+                        <div class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                            @(headers.Count > 0 ? headers[0] : "Row")
+                        </div>
+                        <div class="mt-1 text-sm font-semibold leading-6 text-slate-900">
+                            @rowTitle.RenderMarkdown()
+                        </div>
+                    </div>
+                }
+
+                <div class="space-y-3">
+                    @for (var cellIndex = startIndex; cellIndex < headers.Count; cellIndex++)
+                    {
+                        var cell = GetCell(row, cellIndex);
+                        <div>
+                            <div class="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                                @headers[cellIndex]
+                            </div>
+                            <div class="mt-1 text-sm leading-6 text-slate-700">
+                                @cell.RenderMarkdown()
+                            </div>
+                        </div>
+                    }
+                </div>
+            </article>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Note))
+    {
+        <div class="border-t border-slate-200 bg-white px-4 py-3 sm:px-5">
+            <p class="text-sm leading-6 text-slate-600">@Model.Note.RenderMarkdown()</p>
+        </div>
+    }
+</div>

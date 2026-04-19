@@ -1,0 +1,418 @@
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+@using System.Text.RegularExpressions
+@using USASymbol.Models.ViewModels
+@using USASymbol.Models.Content
+@using USASymbol.Extensions
+@inject IImageUrlService Images
+
+@functions {
+    private sealed class SectionMetaItem
+    {
+        public string Label { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+    }
+
+    private static List<SectionMetaItem> ExtractLeadingMeta(string? markdown, out string remaining)
+    {
+        var items = new List<SectionMetaItem>();
+        if (string.IsNullOrWhiteSpace(markdown))
+        {
+            remaining = string.Empty;
+            return items;
+        }
+
+        var text = markdown.Replace("\r\n", "\n").Trim();
+        var lines = text.Split('\n').ToList();
+        var index = 0;
+
+        while (index < lines.Count)
+        {
+            var line = lines[index].Trim();
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                index++;
+                continue;
+            }
+
+            var match = Regex.Match(
+                line,
+                @"^\*\*(?<label>[^*\n]+?)\*\*(?:\s*(?<value>.+))?$",
+                RegexOptions.CultureInvariant);
+
+            if (!match.Success)
+            {
+                break;
+            }
+
+            var labelRaw = (match.Groups["label"].Value ?? string.Empty).Trim();
+            var valueRaw = (match.Groups["value"].Value ?? string.Empty).Trim();
+
+            if (labelRaw.EndsWith(":", StringComparison.Ordinal))
+            {
+                labelRaw = labelRaw[..^1].Trim();
+            }
+            else if (string.IsNullOrWhiteSpace(valueRaw))
+            {
+                var colonIndex = labelRaw.IndexOf(':');
+                if (colonIndex > 0 && colonIndex < labelRaw.Length - 1)
+                {
+                    valueRaw = labelRaw[(colonIndex + 1)..].Trim();
+                    labelRaw = labelRaw[..colonIndex].Trim();
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(labelRaw) || string.IsNullOrWhiteSpace(valueRaw))
+            {
+                break;
+            }
+
+            items.Add(new SectionMetaItem
+            {
+                Label = labelRaw,
+                Value = valueRaw
+            });
+
+            index++;
+        }
+
+        remaining = string.Join("\n", lines.Skip(index)).Trim();
+        return items;
+    }
+
+    private static List<string> SplitParagraphs(string? markdown)
+    {
+        if (string.IsNullOrWhiteSpace(markdown))
+        {
+            return new List<string>();
+        }
+
+        return Regex
+            .Split(markdown.Replace("\r\n", "\n").Trim(), @"\n\s*\n")
+            .Select(block => block.Trim())
+            .Where(block => !string.IsNullOrWhiteSpace(block))
+            .ToList();
+    }
+}
+
+@{
+    var visuals = Model as IHasVisualAssets;
+
+    var visualLookup = visuals?.VisualAssets?
+        .Where(v => !string.IsNullOrEmpty(v.Id))
+        .ToDictionary(v => v.Id, v => v, StringComparer.OrdinalIgnoreCase)
+        ?? new Dictionary<string, VisualAsset>(StringComparer.OrdinalIgnoreCase);
+
+    var fullWidthImg = visuals?.VisualAssets?.FirstOrDefault(v =>
+        (v.Layout == "full-width" || v.Layout == "full-width-tall") &&
+        string.IsNullOrWhiteSpace(v.Section));
+
+    var pageContent = Model.Content;
+    var quoteDone = false;
+    var timelineDone = false;
+    var statDone = false;
+}
+
+@if (Model.Content?.Sections != null && Model.Content.Sections.Any())
+{
+    var sections = Model.Content.Sections
+        .Where(s => s.Id != "table-intro")
+        .ToList();
+
+    for (int i = 0; i < sections.Count; i++)
+    {
+        var sect = sections[i];
+        var isFirst = i == 0;
+        var style = sect.Style ?? string.Empty;
+
+        VisualAsset? sectionImg = null;
+        VisualAsset? sectionImgRight = null;
+        if (!string.IsNullOrEmpty(sect.Img))
+        {
+            visualLookup.TryGetValue(sect.Img, out sectionImg);
+        }
+
+        if (!string.IsNullOrEmpty(sect.ImgRight))
+        {
+            visualLookup.TryGetValue(sect.ImgRight, out sectionImgRight);
+        }
+
+        var sectionAssets = visuals?.VisualAssets?
+            .Where(v => !string.IsNullOrWhiteSpace(v.Section) &&
+                        string.Equals(v.Section, sect.Id, StringComparison.OrdinalIgnoreCase))
+            .ToList() ?? new List<VisualAsset>();
+
+        <section id="@sect.Id"
+                 class="scroll-mt-24 @(isFirst ? "pt-2 pb-8 md:pb-10" : "py-8 md:py-10")"
+                 aria-label="@sect.Title">
+
+            <header class="mb-5 lg:mb-6 max-w-prose">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-[11px] font-semibold tracking-widest uppercase text-gray-500">
+                        Section
+                    </span>
+                    <span class="h-px flex-1 bg-gray-200/70"></span>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(sect.Icon))
+                {
+                    <div class="flex items-center gap-4">
+                        <span class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+                            <i class="@sect.Icon text-sm" aria-hidden="true"></i>
+                        </span>
+                        <h2 class="content-h2">
+                            @sect.Title
+                        </h2>
+                    </div>
+                }
+                else
+                {
+                    <h2 class="content-h2">
+                        @sect.Title
+                    </h2>
+                }
+            </header>
+
+            @if (sectionImg != null && !string.IsNullOrEmpty(sectionImg.Src) && style != "compare-cards")
+            {
+                var imgLayout = string.IsNullOrWhiteSpace(sectionImg.Layout) ? "right" : sectionImg.Layout;
+                var assetToRender = imgLayout == sectionImg.Layout
+                    ? sectionImg
+                    : new VisualAsset { Id = sectionImg.Id, Src = sectionImg.Src, Alt = sectionImg.Alt, Caption = sectionImg.Caption, Layout = imgLayout, Section = sectionImg.Section };
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", assetToRender)
+            }
+
+            @if (sectionAssets.Any())
+            {
+                foreach (var asset in sectionAssets)
+                {
+                    @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+                }
+            }
+
+            @if (sect.Paragraphs?.Any() == true)
+            {
+                <div class="mt-6">
+                    <div class="prose prose-lg max-w-prose prose-headings:scroll-mt-24 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-p:leading-relaxed text-gray-800">
+                        @for (int p = 0; p < sect.Paragraphs.Count; p++)
+                        {
+                            var isLead = p == 0;
+                            <p class="content-p @(isLead ? "text-gray-900" : "text-gray-800")">
+                                @sect.Paragraphs[p].RenderAutoLinks()
+                            </p>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (sect.Table?.Rows?.Any() == true)
+            {
+                <div class="mt-6">
+                    @await Html.PartialAsync("Components/Widgets/_SectionTable", sect.Table)
+                </div>
+            }
+
+            @if (sect.Subsections?.Any() == true)
+            {
+                if (style == "compare-cards")
+                {
+                    @if (sectionImg != null && sectionImgRight != null)
+                    {
+                        <div class="mt-6 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                            <div class="grid grid-cols-[1fr_auto_1fr]">
+                                <figure class="relative aspect-[4/3] overflow-hidden bg-slate-50">
+                                    <img src="@Images.Card(sectionImg.Src)"
+                                         alt="@sectionImg.Alt"
+                                         class="absolute inset-0 h-full w-full object-contain p-4"
+                                         loading="lazy" />
+                                    <button type="button"
+                                            class="js-visual-lightbox absolute right-2 top-2 inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-900/80 text-white transition hover:bg-slate-900 focus:outline-none"
+                                            data-lightbox-src="@Images.Full(sectionImg.Src)"
+                                            data-lightbox-alt="@sectionImg.Alt"
+                                            data-lightbox-caption="@(string.IsNullOrWhiteSpace(sectionImg.Caption) ? sectionImg.Alt : sectionImg.Caption)"
+                                            aria-label="Open image in popup">
+                                        <i class="fa-solid fa-expand text-xs"></i>
+                                    </button>
+                                    @if (!string.IsNullOrWhiteSpace(sectionImg.Caption))
+                                    {
+                                        <figcaption class="absolute inset-x-0 bottom-0 bg-white/90 px-3 py-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                                            @sectionImg.Caption
+                                        </figcaption>
+                                    }
+                                </figure>
+
+                                <div class="flex w-12 items-center justify-center border-x border-slate-200 bg-white lg:w-16">
+                                    <span class="select-none text-[11px] font-black tracking-widest text-slate-400 [writing-mode:vertical-rl]">VS</span>
+                                </div>
+
+                                <figure class="relative aspect-[4/3] overflow-hidden bg-slate-50">
+                                    <img src="@Images.Card(sectionImgRight.Src)"
+                                         alt="@sectionImgRight.Alt"
+                                         class="absolute inset-0 h-full w-full object-contain p-4"
+                                         loading="lazy" />
+                                    <button type="button"
+                                            class="js-visual-lightbox absolute right-2 top-2 inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-900/80 text-white transition hover:bg-slate-900 focus:outline-none"
+                                            data-lightbox-src="@Images.Full(sectionImgRight.Src)"
+                                            data-lightbox-alt="@sectionImgRight.Alt"
+                                            data-lightbox-caption="@(string.IsNullOrWhiteSpace(sectionImgRight.Caption) ? sectionImgRight.Alt : sectionImgRight.Caption)"
+                                            aria-label="Open image in popup">
+                                        <i class="fa-solid fa-expand text-xs"></i>
+                                    </button>
+                                    @if (!string.IsNullOrWhiteSpace(sectionImgRight.Caption))
+                                    {
+                                        <figcaption class="absolute inset-x-0 bottom-0 bg-white/90 px-3 py-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                                            @sectionImgRight.Caption
+                                        </figcaption>
+                                    }
+                                </figure>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="mt-6 space-y-4">
+                        @foreach (var sub in sect.Subsections)
+                        {
+                            <article class="rounded-[1.5rem] border border-slate-200 bg-white p-5 lg:p-6 shadow-sm transition-all hover:border-slate-300 hover:shadow-md">
+                                <div class="mb-3 flex items-center gap-3">
+                                    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white text-[10px]">
+                                        <i class="fa-solid fa-scale-balanced text-[9px]"></i>
+                                    </span>
+                                    <h3 class="text-base lg:text-lg font-semibold tracking-tight text-slate-900">@sub.Subtitle</h3>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(sub.Text))
+                                {
+                                    <div class="prose prose-slate prose-sm max-w-none pl-11 text-slate-600 leading-relaxed">
+                                        <p>@sub.Text.RenderAutoLinks()</p>
+                                    </div>
+                                }
+                            </article>
+                        }
+                    </div>
+                }
+                else if (style == "gradient")
+                {
+                }
+                else
+                {
+                    <div class="mt-6 space-y-6">
+                        @foreach (var sub in sect.Subsections)
+                        {
+                            var metaItems = ExtractLeadingMeta(sub.Text, out var subsectionBody);
+                            var bodyParagraphs = SplitParagraphs(subsectionBody);
+
+                            <article class="border-l-2 border-slate-200 pl-4 md:pl-5">
+                                <h3 class="content-h3 text-slate-900">@sub.Subtitle</h3>
+
+                                <div class="mt-4">
+                                    @if (metaItems.Any())
+                                    {
+                                        <dl class="mb-4 flex flex-wrap gap-2.5">
+                                            @foreach (var item in metaItems)
+                                            {
+                                                <div class="rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2">
+                                                    <dt class="inline text-[11px] font-bold tracking-widest text-slate-500 uppercase">@item.Label:</dt>
+                                                    <dd class="ml-1 inline text-[14px] leading-6 text-slate-900">@item.Value</dd>
+                                                </div>
+                                            }
+                                        </dl>
+                                    }
+
+                                    @if (bodyParagraphs.Any())
+                                    {
+                                        <div class="prose prose-lg max-w-prose text-gray-800">
+                                            @for (int p = 0; p < bodyParagraphs.Count; p++)
+                                            {
+                                                <p class="content-p @(p == 0 && !metaItems.Any() ? "text-gray-900" : "text-gray-800")">
+                                                    @bodyParagraphs[p].RenderAutoLinks()
+                                                </p>
+                                            }
+                                        </div>
+                                    }
+
+                                    @if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
+                                    {
+                                        <div class="mt-4">
+                                            <a href="@sub.Link.Url"
+                                               class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
+                                                <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
+                                                <i class="fas fa-arrow-right text-xs"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </article>
+                        }
+                    </div>
+                }
+            }
+
+            @if (sect.Facts?.Any() == true)
+            {
+                if (style == "gradient")
+                {
+                    <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                        @{
+                            var factIndex = 1;
+                        }
+                        @foreach (var fact in sect.Facts)
+                        {
+                            <div class="rounded-[1.5rem] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-4 shadow-sm">
+                                <div class="flex items-start gap-3">
+                                    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white">@factIndex</span>
+                                    <span class="text-[14px] leading-6 text-slate-700">@fact.RenderMarkdown()</span>
+                                </div>
+                            </div>
+                            factIndex++;
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-4 grid gap-3">
+                        @foreach (var fact in sect.Facts)
+                        {
+                            <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                                <div class="flex items-start gap-2.5 text-[15px] md:text-[16px] leading-7 text-slate-700">
+                                    <i class="fa-solid fa-circle-check text-slate-400 text-xs mt-[5px] shrink-0"></i>
+                                    <span>@fact.RenderMarkdown()</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+
+            <div class="clear-both"></div>
+        </section>
+
+        @if (i == 0 && !quoteDone && pageContent?.ExpertQuote != null)
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", pageContent.ExpertQuote)
+            quoteDone = true;
+        }
+
+        @if (i == 1 && !timelineDone && pageContent?.Timeline?.Any() == true)
+        {
+            @await Html.PartialAsync("Components/Story/_Timeline", (IReadOnlyList<TimelineEvent>)pageContent.Timeline)
+            timelineDone = true;
+        }
+
+        @if (i == 2 && !statDone && pageContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", pageContent.BigStat)
+            statDone = true;
+        }
+
+        if (i != sections.Count - 1)
+        {
+            <div class="my-6 md:my-7 h-px bg-slate-200"></div>
+        }
+    }
+}
+
+@if (fullWidthImg != null && !string.IsNullOrEmpty(fullWidthImg.Src))
+{
+    <div class="mt-10">
+        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", fullWidthImg)
+    </div>
+}

@@ -1,0 +1,144 @@
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+
+@{
+    var colors = Model.Colors;
+
+    var isBird = Model.SymbolTypeSlug == "bird";
+    var hasSharedStates = false;
+
+    if (isBird && Model is USASymbol.Models.ViewModels.BirdDetailViewModel birdModel)
+    {
+        hasSharedStates = birdModel.HasSharedStates;
+    }
+}
+
+@if (Model.HasSections)
+{
+    <!-- Desktop TOC -->
+    <section class="mb-8 md:mb-12">
+        <div class="bg-gradient-to-br @colors.GradientFrom @colors.GradientTo rounded-xl shadow-md border @colors.Border overflow-hidden">
+            <button id="tocToggle" class="w-full px-5 py-4 flex items-center justify-between hover:bg-white/30 transition min-h-[60px]">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-list @colors.Text text-lg"></i>
+                    <span class="font-bold text-gray-900 text-base md:text-lg">Table of Contents</span>
+                </div>
+                <i id="tocToggleIcon" class="fas fa-chevron-down @colors.Text transition-transform"></i>
+            </button>
+            <div id="tocContent" class="hidden px-5 pb-5">
+                <nav class="space-y-2 pt-2">
+                    @foreach (var sec in Model.Sections!)
+                    {
+                        var secId = $"section-{sec.Id}";
+                        <a href="#@secId" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                            <i class="@sec.Icon @colors.Icon text-sm group-hover:scale-110 transition-transform"></i>
+                            <span class="text-gray-800 font-medium text-sm md:text-base group-hover:@colors.Text">@sec.Title</span>
+                        </a>
+                    }
+
+                    @if (isBird)
+                    {
+                        <a href="#bird-songs" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                            <i class="fa-solid fa-headphones @colors.Icon text-sm group-hover:scale-110 transition-transform"></i>
+                            <span class="text-gray-800 font-medium text-sm md:text-base group-hover:@colors.Text">Bird Songs & Calls</span>
+                        </a>
+                    }
+
+                    @if (hasSharedStates)
+                    {
+                        <a href="#shared-states" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                            <i class="fas fa-flag @colors.Icon text-sm group-hover:scale-110 transition-transform"></i>
+                            <span class="text-gray-800 font-medium text-sm md:text-base group-hover:@colors.Text">Also the State Bird of</span>
+                        </a>
+                    }
+
+                    @if (Model.HasSources)
+                    {
+                        <a href="#sources" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                            <i class="fas fa-book @colors.Icon text-sm group-hover:scale-110 transition-transform"></i>
+                            <span class="text-gray-800 font-medium text-sm md:text-base group-hover:@colors.Text">Sources & References</span>
+                        </a>
+                    }
+                    @if (Model.HasFaq)
+                    {
+                        <a href="#faq" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                            <i class="fas fa-question-circle @colors.Icon text-sm group-hover:scale-110 transition-transform"></i>
+                            <span class="text-gray-800 font-medium text-sm md:text-base group-hover:@colors.Text">People Also Ask</span>
+                        </a>
+                    }
+                </nav>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating TOC Button (Mobile) -->
+    <button id="floatingTocBtn"
+            class="fixed bottom-6 right-6 w-14 h-14 @colors.BgAccent hover:opacity-90 text-white rounded-full shadow-2xl flex items-center justify-center z-40 lg:hidden transition-all duration-300 hover:scale-110 active:scale-95">
+        <i class="fas fa-list text-lg"></i>
+    </button>
+
+    <!-- TOC Overlay (Mobile) -->
+    <div id="tocOverlay" class="fixed inset-0 bg-black/50 z-50 hidden lg:hidden transition-opacity">
+        <div id="tocDrawer" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transform translate-y-full transition-transform duration-300 max-h-[80vh] overflow-y-auto">
+            <div class="sticky top-0 bg-gradient-to-r @colors.GradientFrom @colors.GradientTo px-6 py-4 flex items-center justify-between rounded-t-3xl z-10 border-b @colors.Border">
+                <h3 class="@colors.TextDark font-bold text-lg flex items-center gap-2">
+                    <i class="fas fa-list"></i>
+                    <span>Jump to Section</span>
+                </h3>
+                <button id="closeTocDrawer" class="@colors.Text hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center transition min-h-[44px]">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <nav class="p-5 space-y-2 pb-8">
+                @foreach (var sec in Model.Sections!)
+                {
+                    var secId = $"section-{sec.Id}";
+                    <a href="#@secId" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:@colors.Bg active:@colors.Bg transition border border-gray-100 min-h-[64px]">
+                        <div class="w-10 h-10 @colors.Bg rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="@sec.Icon @colors.Icon"></i>
+                        </div>
+                        <span class="text-gray-800 font-semibold text-base">@sec.Title</span>
+                    </a>
+                }
+
+                @if (isBird)
+                {
+                    <a href="#bird-songs" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:@colors.Bg active:@colors.Bg transition border border-gray-100 min-h-[64px]">
+                        <div class="w-10 h-10 @colors.Bg rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-headphones @colors.Icon"></i>
+                        </div>
+                        <span class="text-gray-800 font-semibold text-base">Bird Songs & Calls</span>
+                    </a>
+                }
+
+                @if (hasSharedStates)
+                {
+                    <a href="#shared-states" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:@colors.Bg active:@colors.Bg transition border border-gray-100 min-h-[64px]">
+                        <div class="w-10 h-10 @colors.Bg rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-flag @colors.Icon"></i>
+                        </div>
+                        <span class="text-gray-800 font-semibold text-base">Also the State Bird of</span>
+                    </a>
+                }
+
+                @if (Model.HasSources)
+                {
+                    <a href="#sources" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:@colors.Bg active:@colors.Bg transition border border-gray-100 min-h-[64px]">
+                        <div class="w-10 h-10 @colors.Bg rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-book @colors.Icon"></i>
+                        </div>
+                        <span class="text-gray-800 font-semibold text-base">Sources & References</span>
+                    </a>
+                }
+                @if (Model.HasFaq)
+                {
+                    <a href="#faq" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:@colors.Bg active:@colors.Bg transition border border-gray-100 min-h-[64px]">
+                        <div class="w-10 h-10 @colors.Bg rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-question-circle @colors.Icon"></i>
+                        </div>
+                        <span class="text-gray-800 font-semibold text-base">People Also Ask</span>
+                    </a>
+                }
+            </nav>
+        </div>
+    </div>
+}

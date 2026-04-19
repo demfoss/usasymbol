@@ -1,0 +1,331 @@
+@using USASymbol.Models.ViewModels
+@model object
+@inject IImageUrlService Images
+
+@{
+    var items = new List<(string Id, string Title, string IconClass)>();
+    var title = "Contents";
+    var subtitle = "";
+    var imageUrl = "";
+
+    void Add(string id, string text, string iconClass)
+    {
+        if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(text)) return;
+        if (items.Any(x => x.Id == id)) return;
+        items.Add((id, text, iconClass));
+    }
+
+    string LabelFromSectionId(string? id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return string.Empty;
+        }
+
+        var parts = id
+            .Split(new[] { '-', '_', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+            .Where(part => !string.IsNullOrWhiteSpace(part))
+            .Select(part => char.ToUpperInvariant(part[0]) + part[1..].ToLowerInvariant());
+
+        return string.Join(" ", parts);
+    }
+
+    string GetSectionIcon(IContentSection sec)
+    {
+        if (!string.IsNullOrWhiteSpace(sec?.Icon))
+        {
+            return sec.Icon!;
+        }
+
+        return "fa-solid fa-plus";
+    }
+
+    if (Model is ISymbolDetailViewModel symbolModel)
+    {
+        var rawTitle = symbolModel.ContentTitle ?? symbolModel.Symbol?.Name ?? "Symbol";
+        var compactTitle = !string.IsNullOrWhiteSpace(symbolModel.State?.Name) && !string.IsNullOrWhiteSpace(symbolModel.SymbolTypeName)
+            ? $"{symbolModel.State!.Name} {symbolModel.SymbolTypeName}"
+            : rawTitle;
+        var shouldUseCompactTitle = rawTitle.Length > 34 && !string.Equals(rawTitle, compactTitle, StringComparison.Ordinal);
+
+        title = shouldUseCompactTitle ? compactTitle : rawTitle;
+        subtitle = shouldUseCompactTitle ? rawTitle : symbolModel.Symbol?.ScientificName ?? "";
+        imageUrl = symbolModel.Symbol?.ImageUrl ?? "";
+
+        if (!string.IsNullOrWhiteSpace(symbolModel.ContentIntroText))
+        {
+            Add("overview", "Overview", "fa-solid fa-eye");
+        }
+
+        var sections = (symbolModel.Sections ?? new List<IContentSection>())
+            .Where(s => !string.IsNullOrWhiteSpace(s?.Id) && !string.IsNullOrWhiteSpace(s?.Title))
+            .Take(4)
+            .ToList();
+
+        foreach (var sec in sections)
+        {
+            Add($"section-{sec.Id}", LabelFromSectionId(sec.Id), GetSectionIcon(sec));
+        }
+
+        if (symbolModel.HasFaq)
+        {
+            Add("faq", "Quick Answers", "fa-regular fa-circle-question");
+        }
+
+        if (symbolModel.HasSources)
+        {
+            Add("sources", "Sources", "fa-solid fa-book");
+        }
+    }
+    else if (Model is PageDetailViewModel pageModel)
+    {
+        title = pageModel.Content?.Page?.H1 ?? "Page";
+        subtitle = pageModel.CategoryTitle;
+        imageUrl = pageModel.Content?.HeroImage
+            ?? pageModel.Content?.VisualAssets?.FirstOrDefault(v =>
+                !string.IsNullOrWhiteSpace(v?.Src) &&
+                !string.Equals(v.Layout, "full-width", StringComparison.OrdinalIgnoreCase))?.Src
+            ?? pageModel.Content?.Map?.Image
+            ?? "";
+
+        if (pageModel.HasQuickAnswer)
+        {
+            Add("quick-answer", "Quick Answer", "fa-solid fa-bolt");
+        }
+
+        if (pageModel.HasRows)
+        {
+            Add(pageModel.IsCollection ? "collection-table" : pageModel.IsRanking ? "ranking-table" : "listing-table", "Browse The List", "fa-regular fa-rectangle-list");
+        }
+
+        if (pageModel.HasInsights)
+        {
+            Add("insights", "Key Insights", "fa-regular fa-lightbulb");
+        }
+
+        if (pageModel.HasSections)
+        {
+            Add("sections", "Details", "fa-regular fa-file-lines");
+        }
+
+        if (pageModel.HasFaq)
+        {
+            Add("faq", "Quick Answers", "fa-regular fa-circle-question");
+        }
+
+        Add("sources", "Sources", "fa-solid fa-book");
+    }
+    else if (Model is SurnamesViewModel surnamesModel)
+    {
+        title = surnamesModel.Content?.H1 ?? $"Most Common Last Names in {surnamesModel.State?.Name}";
+        subtitle = surnamesModel.State?.Name ?? "";
+        imageUrl = surnamesModel.State?.FlagImageUrl ?? "";
+
+        if (surnamesModel.Top1 != null)
+        {
+            Add("top-3", "Top 3", "fa-solid fa-trophy");
+        }
+
+        if (surnamesModel.Content?.Surnames?.Any() == true)
+        {
+            Add("all-surnames", "Top Surnames", "fa-regular fa-rectangle-list");
+        }
+
+        if (!string.IsNullOrWhiteSpace(surnamesModel.Content?.HeritageBody))
+        {
+            Add("heritage", "Heritage", "fa-regular fa-map");
+        }
+
+        if (surnamesModel.Content?.UniqueSurnames?.Any() == true)
+        {
+            Add("unique", "Local Insight", "fa-regular fa-star");
+        }
+
+        if (surnamesModel.Content?.EtymologyGroups?.Any() == true)
+        {
+            Add("etymology", "Etymology", "fa-solid fa-book-open");
+        }
+
+        if (surnamesModel.Content?.Faq?.Any() == true)
+        {
+            Add("faq", "Quick Answers", "fa-regular fa-circle-question");
+        }
+
+        if (surnamesModel.Content?.Sources?.Any() == true)
+        {
+            Add("sources", "Sources", "fa-solid fa-book");
+        }
+    }
+
+    if (items.Count > 6)
+    {
+        items = items.Take(6).ToList();
+    }
+
+    var hasToc = items.Any();
+}
+
+@if (hasToc)
+{
+    <nav aria-label="On this page" class="toc-minimal sticky top-24 w-full max-w-none">
+        <div class="mx-auto max-w-[280px]">
+            <div class="text-center">
+                @if (!string.IsNullOrWhiteSpace(imageUrl))
+                {
+                    <img src="@Images.Card(imageUrl)"
+                         alt="@title"
+                         class="mx-auto h-28 w-28 rounded-full object-cover"
+                         loading="lazy" />
+                }
+                else
+                {
+                    <div class="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-white/80">
+                        <i class="fa-solid fa-bookmark text-2xl text-slate-400"></i>
+                    </div>
+                }
+
+                <h2 class="mt-5 text-[1.05rem] font-semibold tracking-tight text-slate-900 leading-snug">
+                    @title
+                </h2>
+
+                @if (!string.IsNullOrWhiteSpace(subtitle))
+                {
+                    <p class="mt-1.5 text-[0.95rem] leading-6 text-slate-500">
+                        @subtitle
+                    </p>
+                }
+            </div>
+
+            <div id="tocList" class="mt-8 space-y-2">
+                @foreach (var it in items)
+                {
+                    <a href="#@it.Id"
+                       data-toc-id="@it.Id"
+                       class="toc-link bird-toc-link group flex items-center gap-3 rounded-[1rem] px-4 py-2.5 text-[0.875rem] font-semibold uppercase tracking-[0.09em] text-slate-900 transition-all duration-200 hover:bg-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+                       aria-current="false">
+                        <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center text-slate-900">
+                            <i class="@it.IconClass text-sm"></i>
+                        </span>
+                        <span class="min-w-0 leading-6">@it.Title</span>
+                    </a>
+                }
+            </div>
+
+            <div class="mt-2">
+                <button type="button"
+                        id="tocBackToTop"
+                        class="toc-link bird-toc-link group flex w-full items-center gap-3 rounded-[1rem] px-4 py-2.5 text-[0.875rem] font-semibold uppercase tracking-[0.09em] text-slate-900 transition-all duration-200 hover:bg-white/70"
+                        aria-current="false">
+                    <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center text-slate-900">
+                        <i class="fa-solid fa-chevron-up text-sm"></i>
+                    </span>
+                    <span>Back to Top</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+}
+
+<style>
+    .toc-minimal .bird-toc-link.toc-active,
+    .toc-minimal .bird-toc-link[aria-current="true"] {
+        background: rgba(243, 211, 154, 0.58) !important;
+        box-shadow: inset 3px 0 0 #d8b36a;
+        color: #161b26 !important;
+        border-left-color: transparent !important;
+        padding-left: 1rem !important;
+    }
+
+    .toc-minimal .bird-toc-link.toc-active i,
+    .toc-minimal .bird-toc-link.toc-active span,
+    .toc-minimal .bird-toc-link[aria-current="true"] i,
+    .toc-minimal .bird-toc-link[aria-current="true"] span {
+        color: #161b26 !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const links = Array.from(document.querySelectorAll('.toc-minimal .toc-link'));
+        if (!links.length) return;
+
+        const backBtn = document.getElementById('tocBackToTop');
+
+        const pairs = links
+            .map(l => {
+                const href = l.getAttribute('href');
+                if (!href || !href.startsWith('#')) return null;
+                const id = href.slice(1);
+                const el = document.getElementById(id);
+                if (!el) return null;
+                return { id, el, linkEl: l };
+            })
+            .filter(Boolean);
+
+        if (!pairs.length) return;
+
+        let activeId = null;
+        const headerOffset = 100;
+
+        function updateActiveState(id) {
+            activeId = id || null;
+
+            pairs.forEach(pair => {
+                pair.linkEl.setAttribute('aria-current', pair.id === activeId ? 'true' : 'false');
+                pair.linkEl.classList.toggle('toc-active', pair.id === activeId);
+            });
+
+            if (backBtn) {
+                backBtn.setAttribute('aria-current', activeId ? 'false' : 'true');
+                backBtn.classList.toggle('toc-active', !activeId);
+            }
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            const visible = entries
+                .filter(e => e.isIntersecting)
+                .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+
+            if (visible?.target?.id) {
+                updateActiveState(visible.target.id);
+            }
+        }, {
+            root: null,
+            rootMargin: `-${headerOffset}px 0px -72% 0px`,
+            threshold: 0
+        });
+
+        pairs.forEach(p => observer.observe(p.el));
+
+        links.forEach(link => {
+            link.addEventListener('click', function (e) {
+                const href = link.getAttribute('href');
+                if (!href || !href.startsWith('#')) return;
+
+                const id = href.slice(1);
+                const el = document.getElementById(id);
+                if (!el) return;
+
+                e.preventDefault();
+                const y = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+                updateActiveState(id);
+            });
+        });
+
+        backBtn?.addEventListener('click', function () {
+            updateActiveState(null);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        if (pairs[0]) {
+            updateActiveState(pairs[0].id);
+        }
+
+        window.addEventListener('scroll', function () {
+            if (window.scrollY < 120) {
+                updateActiveState(null);
+            }
+        }, { passive: true });
+    });
+</script>

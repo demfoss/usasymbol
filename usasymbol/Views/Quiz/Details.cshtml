@@ -1,0 +1,1406 @@
+﻿@using System.Text.Json
+@using System.Text.Encodings.Web
+@model usasymbol.Models.Quiz
+
+@{
+    var pageTitle = Model.Seo?.Title ?? Model.Title;
+    var pageDesc = Model.Seo?.Description ?? Model.Description;
+
+    ViewData["Title"] = pageTitle;
+    ViewData["Description"] = pageDesc;
+
+    var origin = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var url = $"{origin}{Context.Request.Path}";
+
+    var questionsCount = Model.Questions?.Count ?? 0;
+    var estimated = string.IsNullOrWhiteSpace(Model.EstimatedTime) ? "5–10 minutes" : Model.EstimatedTime;
+    var mode = (Context.Request.Query["mode"].ToString() ?? "classic").ToLowerInvariant();
+    if (string.IsNullOrWhiteSpace(mode)) mode = "classic";
+
+    var faq = Model.Faq ?? new List<usasymbol.Models.QuizFaq>();
+
+    var graph = new List<object>();
+
+    graph.Add(new Dictionary<string, object?>
+    {
+        ["@type"] = "Quiz",
+        ["@id"] = $"{url}#quiz",
+        ["name"] = pageTitle,
+        ["description"] = pageDesc,
+        ["numberOfQuestions"] = questionsCount,
+        ["url"] = url,
+        ["educationalUse"] = "Assessment",
+        ["learningResourceType"] = "Interactive Quiz",
+        ["audience"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "EducationalAudience",
+            ["educationalRole"] = "student"
+        },
+        ["author"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "Organization",
+            ["name"] = string.IsNullOrWhiteSpace(Model.Author) ? "USA Symbol Team" : Model.Author
+        },
+        ["publisher"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "Organization",
+            ["name"] = "USA Symbol",
+            ["url"] = origin,
+            ["logo"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "ImageObject",
+                ["url"] = $"{origin}/images/logo.png"
+            }
+        },
+        ["datePublished"] = Model.DatePublished.ToString("yyyy-MM-dd"),
+        ["dateModified"] = Model.DateModified.ToString("yyyy-MM-dd"),
+        ["keywords"] = string.Join(", ", (Model.Tags ?? new List<string>()))
+    });
+
+    graph.Add(new Dictionary<string, object?>
+    {
+        ["@type"] = "BreadcrumbList",
+        ["@id"] = $"{url}#breadcrumb",
+        ["itemListElement"] = new object[]
+        {
+            new Dictionary<string, object?>{ ["@type"]="ListItem", ["position"]=1, ["name"]="Home", ["item"]= $"{origin}/" },
+            new Dictionary<string, object?>{ ["@type"]="ListItem", ["position"]=2, ["name"]="Quizzes", ["item"]= $"{origin}/quizzes" },
+            new Dictionary<string, object?>{ ["@type"]="ListItem", ["position"]=3, ["name"]= Model.Title, ["item"]= url }
+        }
+    });
+
+    if (faq.Any())
+    {
+        var faqEntities = faq.Select(f => (object)new Dictionary<string, object?>
+        {
+            ["@type"] = "Question",
+            ["name"] = f.Question,
+            ["acceptedAnswer"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "Answer",
+                ["text"] = f.Answer
+            }
+        }).ToList();
+
+        graph.Add(new Dictionary<string, object?>
+        {
+            ["@type"] = "FAQPage",
+            ["@id"] = $"{url}#faq",
+            ["mainEntity"] = faqEntities
+        });
+    }
+
+    var jsonLd = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@graph"] = graph
+    };
+
+    var jsonLdString = JsonSerializer.Serialize(jsonLd, new JsonSerializerOptions
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        WriteIndented = false
+    });
+
+    var lead = !string.IsNullOrWhiteSpace(pageDesc)
+        ? pageDesc
+        : "Test how fast you can recognize every U.S. state flag with instant feedback and randomized questions.";
+
+    string Active(string key) =>
+        mode == key
+            ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+            : "bg-white text-slate-800 border-slate-200 hover:border-slate-300 hover:bg-slate-50";
+
+    var modeLabel = mode switch
+    {
+        "timed" => "Timed",
+        "practice" => "Practice",
+        _ => "Classic"
+    };
+
+    var modeBlurb = mode switch
+    {
+        "timed" => "60 seconds, answer as many as you can.",
+        "practice" => "10 questions, no timer, steady points.",
+        _ => "10 questions, 20 seconds per question, speed-based points."
+    };
+}
+
+<script type="application/ld+json">@Html.Raw(jsonLdString)</script>
+
+<style>
+    @@keyframes usas-float-up {
+        from
+
+    {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateY(-22px);
+        opacity: 0;
+    }
+
+    }
+
+    .usas-float-up {
+        animation: usas-float-up 800ms ease-out forwards;
+    }
+
+    @@keyframes quiz-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+
+    @@keyframes quiz-rise-in {
+        from {
+            opacity: 0;
+            transform: translateY(16px) scale(0.985);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .quiz-start-panel {
+        background:
+            radial-gradient(circle at 15% 18%, rgba(244, 114, 182, 0.14), transparent 18%),
+            radial-gradient(circle at top, rgba(250, 204, 21, 0.14), transparent 34%),
+            radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.12), transparent 30%),
+            linear-gradient(180deg, rgba(248,250,252,0.98), rgba(255,255,255,0.98));
+    }
+
+    .quiz-mode-pill {
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+    }
+
+    .quiz-start-cta {
+        animation: quiz-pulse 2.3s ease-in-out infinite;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+    }
+
+    .quiz-answer-btn {
+        transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+    }
+
+    .quiz-answer-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .quiz-result-shell {
+        background:
+            radial-gradient(circle at 12% 16%, rgba(34, 197, 94, 0.12), transparent 20%),
+            radial-gradient(circle at top, rgba(250, 204, 21, 0.12), transparent 26%),
+            radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.1), transparent 24%),
+            linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.98));
+    }
+
+    .quiz-glow-card {
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    }
+
+    .quiz-badge-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .quiz-badge-card::before {
+        content: "";
+        position: absolute;
+        inset: auto -20% 55% auto;
+        width: 7rem;
+        height: 7rem;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.35);
+        pointer-events: none;
+    }
+
+    .quiz-badge-icon {
+        width: 2.4rem;
+        height: 2.4rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.8);
+        border: 1px solid rgba(255,255,255,0.9);
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+        font-size: 1.05rem;
+        flex: 0 0 auto;
+    }
+
+    .quiz-result-animate {
+        animation: quiz-rise-in 520ms ease-out both;
+    }
+
+    .quiz-delay-1 { animation-delay: 60ms; }
+    .quiz-delay-2 { animation-delay: 120ms; }
+    .quiz-delay-3 { animation-delay: 180ms; }
+    .quiz-delay-4 { animation-delay: 240ms; }
+
+    .quiz-ornament {
+        position: absolute;
+        border-radius: 999px;
+        pointer-events: none;
+        filter: blur(2px);
+        opacity: 0.9;
+    }
+
+    .quiz-ornament-gold {
+        background: radial-gradient(circle, rgba(250, 204, 21, 0.7), rgba(250, 204, 21, 0));
+    }
+
+    .quiz-ornament-blue {
+        background: radial-gradient(circle, rgba(96, 165, 250, 0.6), rgba(96, 165, 250, 0));
+    }
+
+    .quiz-seo-article {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .quiz-seo-section {
+        padding: 2rem;
+        border: 1px solid rgb(226 232 240 / 0.95);
+        border-radius: 1.75rem;
+        background:
+            radial-gradient(circle at top right, rgba(191, 219, 254, 0.16), transparent 32%),
+            linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.05);
+    }
+
+    .quiz-seo-section h2 {
+        margin: 0;
+        font-size: clamp(1.7rem, 2.8vw, 2.35rem);
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+        font-weight: 800;
+        color: rgb(15 23 42);
+        text-wrap: balance;
+    }
+
+    .quiz-seo-section p {
+        margin: 1rem 0 0;
+        max-width: 42rem;
+        font-size: 1.02rem;
+        line-height: 1.85;
+        color: rgb(51 65 85);
+    }
+
+    .quiz-seo-list {
+        list-style: none;
+        margin: 1.25rem 0 0;
+        padding: 0;
+        display: grid;
+        gap: 0.8rem;
+    }
+
+    .quiz-seo-list li {
+        position: relative;
+        padding: 0.95rem 1.1rem 0.95rem 3.85rem;
+        border-radius: 1.1rem;
+        border: 1px solid rgb(226 232 240);
+        background: rgba(255, 255, 255, 0.9);
+        line-height: 1.65;
+        color: rgb(30 41 59);
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.035);
+    }
+
+    .quiz-seo-list li::before {
+        content: "";
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 999px;
+        transform: translateY(-50%);
+        background: linear-gradient(135deg, rgb(37 99 235), rgb(30 64 175));
+        box-shadow: 0 10px 18px rgba(37, 99, 235, 0.24);
+    }
+
+    .quiz-seo-list li::after {
+        content: "";
+        position: absolute;
+        left: 1.78rem;
+        top: 50%;
+        width: 0.42rem;
+        height: 0.8rem;
+        border-right: 2px solid white;
+        border-bottom: 2px solid white;
+        transform: translateY(-63%) rotate(45deg);
+    }
+
+    .quiz-facts-card {
+        border-radius: 1.75rem;
+        border: 1px solid rgb(226 232 240 / 0.95);
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+        box-shadow: 0 22px 50px rgba(15, 23, 42, 0.07);
+        overflow: hidden;
+    }
+
+    .quiz-facts-head {
+        padding: 1.5rem 1.5rem 1rem;
+        border-bottom: 1px solid rgb(241 245 249);
+        background: linear-gradient(180deg, rgba(239,246,255,0.95), rgba(255,255,255,0));
+    }
+
+    .quiz-facts-grid {
+        padding: 1.25rem 1.5rem 0;
+    }
+
+    .quiz-facts-grid > div {
+        align-items: center;
+        padding: 0.85rem 0;
+    }
+
+    .quiz-facts-grid > div + div {
+        border-top: 1px solid rgb(241 245 249);
+    }
+
+    .quiz-facts-cta {
+        padding: 1.5rem;
+    }
+
+    @@media (max-width: 767px) {
+        .quiz-seo-section {
+            padding: 1.35rem;
+            border-radius: 1.25rem;
+        }
+
+        .quiz-seo-section h2 {
+            font-size: 1.75rem;
+        }
+
+        .quiz-seo-list li {
+            padding-left: 3.4rem;
+        }
+    }
+</style>
+
+<nav class="max-w-6xl mx-auto px-4 pt-6 text-sm text-slate-500">
+    <div class="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-200 bg-white/85 px-3 py-2 shadow-sm backdrop-blur-sm">
+        <a href="/" class="font-medium text-slate-500 transition hover:text-slate-900">Home</a>
+        <span class="text-slate-300">›</span>
+        <a href="/quizzes" class="font-medium text-slate-500 transition hover:text-slate-900">Quizzes</a>
+        <span class="text-slate-300">›</span>
+        <span class="max-w-[14rem] truncate font-semibold text-slate-900 md:max-w-none">@Model.Title</span>
+    </div>
+</nav>
+
+<header class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-50 via-white to-white"></div>
+    <div class="absolute -top-24 right-0 h-72 w-72 rounded-full bg-blue-100 blur-3xl opacity-70"></div>
+    <div class="absolute -bottom-24 left-0 h-72 w-72 rounded-full bg-indigo-100 blur-3xl opacity-70"></div>
+
+    <section class="relative max-w-4xl mx-auto px-4 py-10 md:py-14">
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-900">
+            @pageTitle
+        </h1>
+
+        <p class="mt-4 text-base md:text-lg text-slate-600 leading-relaxed max-w-3xl">
+            @lead
+        </p>
+    </section>
+</header>
+
+<!-- QUIZ APP -->
+<section class="pt-4 md:pt-6 pb-10">
+    <div class="max-w-3xl mx-auto px-4">
+        <div class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden" id="quizApp">
+            <div id="quizStartScreen" class="quiz-start-panel relative overflow-hidden px-4 md:px-8 py-6 md:py-8 border-b border-slate-100">
+                <span class="quiz-ornament quiz-ornament-gold h-24 w-24 -top-6 -left-6"></span>
+                <span class="quiz-ornament quiz-ornament-blue h-28 w-28 top-10 right-2"></span>
+                <span class="quiz-ornament quiz-ornament-gold h-20 w-20 bottom-6 right-16"></span>
+
+                <div class="relative max-w-xl mx-auto">
+                    <div class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">
+                        Challenge mode
+                    </div>
+                    <h2 class="mt-2 text-2xl md:text-4xl font-extrabold tracking-tight text-slate-900">State Nicknames Quiz</h2>
+                    <p class="mt-3 text-sm md:text-base text-slate-600 leading-relaxed">Match every state to its best-known nickname. Fast rounds, instant reveals, and replayable runs once you get in the groove.</p>
+
+                    <div class="mt-4 flex flex-nowrap gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                        <a href="?mode=classic"
+                           class="quiz-mode-pill inline-flex items-center justify-center whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition @Active("classic")">
+                            Classic
+                        </a>
+                        <a href="?mode=practice"
+                           class="quiz-mode-pill inline-flex items-center justify-center whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition @Active("practice")">
+                            Practice
+                        </a>
+                        <a href="?mode=timed"
+                           class="quiz-mode-pill inline-flex items-center justify-center whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition @Active("timed")">
+                            Timed
+                        </a>
+                    </div>
+
+                    <div class="mt-3 rounded-2xl border border-slate-200 bg-white/85 px-4 py-3 text-sm text-slate-600 shadow-sm">
+                        <span class="font-semibold text-slate-900">@modeLabel:</span> @modeBlurb
+                    </div>
+
+                    <div class="mt-5 grid gap-3 text-left">
+                        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
+                            <div class="text-xs text-slate-500 uppercase tracking-wide">This round</div>
+                            <div class="mt-1 text-sm md:text-base font-bold text-slate-900">@modeLabel: @modeBlurb</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 md:gap-3 text-center">
+                            <div class="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm">
+                                <div class="text-xs text-slate-500">Questions</div>
+                                <div class="mt-1 text-sm md:text-base font-bold text-slate-900">@questionsCount</div>
+                            </div>
+                            <div class="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm">
+                                <div class="text-xs text-slate-500">Difficulty</div>
+                                <div class="mt-1 text-sm md:text-base font-bold text-slate-900">@Model.Difficulty</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-600">
+                        <span class="rounded-full bg-white/85 border border-slate-200 px-3 py-1">Randomized rounds</span>
+                        <span class="rounded-full bg-white/85 border border-slate-200 px-3 py-1">Instant answer reveal</span>
+                        <span class="rounded-full bg-white/85 border border-slate-200 px-3 py-1">Replay for a cleaner streak</span>
+                    </div>
+
+                    <button id="startQuizBtn"
+                            class="quiz-start-cta mt-5 w-full rounded-2xl bg-slate-900 text-white px-5 py-3.5 text-base font-semibold hover:bg-slate-800 transition">
+                        Start challenge
+                    </button>
+                </div>
+            </div>
+
+            <div id="quizStage" class="hidden">
+            <div class="px-4 md:px-8 py-4 md:py-5 border-b border-slate-100 bg-slate-50/60">
+                <div class="mb-3">
+                    <div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Quiz</div>
+                    <h2 class="mt-1.5 text-xl md:text-3xl font-extrabold tracking-tight text-slate-900">State Nicknames Quiz</h2>
+                </div>
+
+                <div class="grid grid-cols-2 md:flex md:flex-wrap items-center gap-2 md:gap-3">
+                    <div class="text-sm md:text-base font-semibold text-slate-900">
+                        Correct: <span id="score">0</span>/<span id="total">@questionsCount</span>
+                    </div>
+
+                    <div class="text-sm md:text-base font-semibold text-slate-900">
+                        Points: <span id="points">0</span>
+                    </div>
+
+                    <div class="text-xs md:text-sm text-slate-600 rounded-full bg-white border border-slate-200 px-3 py-1 justify-self-start">
+                        Question <span id="questionNum">1</span>/<span id="totalTop">10</span>
+                    </div>
+
+                    <div id="timerPill" class="hidden text-xs md:text-sm text-slate-600 rounded-full bg-white border border-slate-200 px-3 py-1 justify-self-start">
+                        Time: <span id="timerUi" class="font-semibold text-slate-900">60s</span>
+                    </div>
+
+                    <div id="classicTimerPill" class="hidden text-xs md:text-sm text-slate-600 rounded-full bg-white border border-slate-200 px-3 py-1 justify-self-start">
+                        Left: <span id="classicTimerUi" class="font-semibold text-slate-900">20s</span>
+                    </div>
+                </div>
+
+                <div id="classicBarWrap" class="hidden mt-2.5">
+                    <div class="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
+                        <div id="classicBar" class="h-full bg-slate-900" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-4 md:px-8 py-5 md:py-7">
+                <div id="questionImage" class="mb-5 md:mb-6 flex justify-center"></div>
+
+                <h2 id="questionText" class="text-xl md:text-2xl font-extrabold text-slate-900 mb-4"></h2>
+
+                <div id="answers" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+
+                <div class="mt-5 md:mt-6 min-h-[56px] rounded-2xl border border-slate-100 bg-slate-50 p-4 flex items-center justify-center">
+                    <div id="feedbackText" class="text-sm md:text-base font-semibold text-slate-800 text-center"></div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="max-w-6xl mx-auto px-4 pb-8">
+    <div class="text-xs text-slate-500">
+        Created by <span class="font-medium text-slate-700">@(string.IsNullOrWhiteSpace(Model.Author) ? "USA Symbol Team" : Model.Author)</span>
+        · Updated <span class="font-medium text-slate-700">@Model.DateModified.ToString("MMMM d, yyyy")</span>
+        · <span class="inline-flex items-center gap-2 ml-2 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5">
+            Verified
+        </span>
+    </div>
+</section>
+
+<!-- SEO CONTENT BLOCKS -->
+<section class="max-w-6xl mx-auto px-4 pb-12">
+    <div class="grid lg:grid-cols-12 gap-10">
+        <article class="lg:col-span-8 quiz-seo-article">
+            @if (Model.Content?.Sections?.Any() == true)
+            {
+                foreach (var sec in Model.Content.Sections)
+                {
+                    <section class="quiz-seo-section">
+                        @if (!string.IsNullOrWhiteSpace(sec.Title))
+                        {
+                            <h2 id="@sec.Id">@sec.Title</h2>
+                        }
+
+                        @if (sec.Paragraphs?.Any() == true)
+                        {
+                            foreach (var p in sec.Paragraphs)
+                            {
+                                <p>@p</p>
+                            }
+                        }
+
+                        @if (sec.List?.Any() == true)
+                        {
+                            <ul class="quiz-seo-list">
+                                @foreach (var li in sec.List)
+                                {
+                                    <li>@li</li>
+                                }
+                            </ul>
+                        }
+                    </section>
+                }
+            }
+        </article>
+
+        <aside class="lg:col-span-4">
+            <div class="quiz-facts-card sticky top-6">
+                <div class="quiz-facts-head">
+                    <div class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">Quick facts</div>
+                    <div class="mt-2 text-lg font-bold text-slate-900">Before you start</div>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">A fast overview of the quiz format so the page feels easier to scan before jumping in.</p>
+                </div>
+
+                <dl class="quiz-facts-grid text-sm">
+                    <div class="flex justify-between gap-4">
+                        <dt class="text-slate-500">Total questions</dt>
+                        <dd class="font-semibold text-slate-900">@questionsCount</dd>
+                    </div>
+                    <div class="flex justify-between gap-4">
+                        <dt class="text-slate-500">Typical time</dt>
+                        <dd class="font-semibold text-slate-900">@estimated</dd>
+                    </div>
+                    <div class="flex justify-between gap-4">
+                        <dt class="text-slate-500">Difficulty</dt>
+                        <dd class="font-semibold text-slate-900">@Model.Difficulty</dd>
+                    </div>
+                </dl>
+
+                <div class="quiz-facts-cta">
+                    <button class="w-full rounded-xl bg-blue-600 text-white px-5 py-3 font-semibold hover:bg-blue-700 transition"
+                            onclick="document.getElementById('quizApp').scrollIntoView({behavior:'smooth'});">
+                        Jump to quiz
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+@if (faq.Any())
+{
+    <section class="max-w-6xl mx-auto px-4 pb-14" id="faq">
+        <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">Frequently Asked Questions</h2>
+
+            <div class="mt-6 space-y-3">
+                @foreach (var f in faq)
+                {
+                    <details class="group rounded-2xl border border-slate-200 bg-slate-50/60 px-5 py-4">
+                        <summary class="cursor-pointer font-semibold text-slate-900 flex items-center justify-between">
+                            <span>@f.Question</span>
+                            <span class="text-slate-500 group-open:rotate-180 transition">⌄</span>
+                        </summary>
+                        <div class="pt-3 text-slate-700">
+                            @f.Answer
+                        </div>
+                    </details>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // ===== tiny CSS for floating +points =====
+      const style = document.createElement("style");
+      style.innerHTML = `
+        .usas-float-up {
+          animation: usas-float-up 900ms ease-out forwards;
+          opacity: 0.0;
+          text-shadow: 0 6px 18px rgba(15,23,42,0.15);
+        }
+        @@keyframes usas-float-up {
+          0%   { transform: translateX(-50%) translateY(8px) scale(0.98); opacity: 0; }
+          15%  { opacity: 1; }
+          100% { transform: translateX(-50%) translateY(-26px) scale(1.05); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // ===== MODE =====
+      const params = new URLSearchParams(window.location.search);
+      const mode = (params.get("mode") || "classic").toLowerCase();
+
+      const MODES = {
+        classic:  { uiName: "Classic",  questionLimit: 10,        perQuestionSeconds: 20, sessionSeconds: 0,  speedWindowSeconds: 20 },
+        practice: { uiName: "Practice", questionLimit: 10,        perQuestionSeconds: 0,  sessionSeconds: 0,  speedWindowSeconds: 0  },
+        timed:    { uiName: "Timed",    questionLimit: Infinity,  perQuestionSeconds: 0,  sessionSeconds: 60, speedWindowSeconds: 15 }
+      };
+
+      const cfg = MODES[mode] || MODES.classic;
+
+      // ===== DATA =====
+      let allQuestions = @Html.Raw(JsonSerializer.Serialize(Model.Questions));
+      allQuestions = Array.isArray(allQuestions) ? allQuestions : [];
+      if (!allQuestions.length) return;
+
+      // helpers
+      const norm = (v) => (v ?? "").toString().trim();
+
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      // pool random per run
+      let pool = shuffle(allQuestions);
+
+      // ===== ELEMENTS =====
+      const scoreEl = document.getElementById("score");     // correct count
+      const pointsEl = document.getElementById("points");   // total points (optional)
+      const questionNumEl = document.getElementById("questionNum");
+      const questionText = document.getElementById("questionText");
+      const questionImage = document.getElementById("questionImage");
+      const answersBox = document.getElementById("answers");
+      const feedbackText = document.getElementById("feedbackText");
+      const quizApp = document.getElementById("quizApp");
+      const startScreen = document.getElementById("quizStartScreen");
+      const quizStage = document.getElementById("quizStage");
+      const startBtn = document.getElementById("startQuizBtn");
+
+      const totalEl = document.getElementById("total");
+      const totalTopEl = document.getElementById("totalTop");
+
+      // session timer pill (you already have)
+      const timerPill = document.getElementById("timerPill");
+      const timerUi = document.getElementById("timerUi");
+
+      // classic per-question UI (add in markup if you want)
+      const classicTimerPill = document.getElementById("classicTimerPill");
+      const classicTimerUi = document.getElementById("classicTimerUi");
+      const classicBarWrap = document.getElementById("classicBarWrap");
+      const classicBar = document.getElementById("classicBar");
+
+      if (!quizApp || !answersBox || !startScreen || !quizStage || !startBtn) return;
+
+      // ===== UI totals =====
+      const totalShown = cfg.questionLimit === Infinity ? "∞" : Math.min(cfg.questionLimit, pool.length);
+      if (totalEl) totalEl.innerText = totalShown;
+      if (totalTopEl) totalTopEl.innerText = totalShown;
+
+      // ===== STATE =====
+      let index = 0;
+      let correct = 0;
+      let points = 0;
+      let streak = 0;
+      let maxStreak = 0;
+      let answered = 0; // total answered (incl wrong/timeouts)
+      let misses = [];
+
+      let hasStarted = false;
+      let startedAt = 0;
+
+      // session timer (timed)
+      let sessionTimerId = null;
+      let sessionSecondsLeft = cfg.sessionSeconds;
+
+      // classic per-question timer
+      let classicTimerId = null;
+      let classicBarId = null;
+      let classicSecondsLeft = cfg.perQuestionSeconds;
+
+      // speed bonus window start
+      let questionStartedAt = 0;
+
+      function updateScoreUi() {
+        if (scoreEl) scoreEl.innerText = correct;
+        if (pointsEl) pointsEl.innerText = points;
+      }
+
+      function disableButtons() {
+        [...answersBox.children].forEach(btn => { btn.disabled = true; });
+      }
+
+      function queueNextQuestion(delay = 1500) {
+        window.setTimeout(() => {
+          if (!hasStarted) return;
+          if (cfg.sessionSeconds && sessionSecondsLeft <= 0) return;
+          index++;
+          loadQuestion();
+        }, delay);
+      }
+
+      function spawnPointsPop(targetEl, add) {
+        if (!targetEl || !add) return;
+
+        const r = targetEl.getBoundingClientRect();
+        const pop = document.createElement("div");
+        pop.className = "fixed z-50 pointer-events-none usas-float-up font-extrabold text-slate-900";
+        pop.style.left = `${Math.round(r.left + r.width / 2)}px`;
+        pop.style.top = `${Math.round(r.top - 8)}px`;
+        pop.style.transform = "translateX(-50%)";
+        pop.innerHTML = `+${add}`;
+
+        document.body.appendChild(pop);
+        setTimeout(() => pop.remove(), 900);
+      }
+
+      function startSessionTimerIfNeeded() {
+        if (!cfg.sessionSeconds) return;
+
+        if (timerPill) timerPill.classList.remove("hidden");
+        sessionSecondsLeft = cfg.sessionSeconds;
+        if (timerUi) timerUi.textContent = `${sessionSecondsLeft}s`;
+
+        sessionTimerId = setInterval(() => {
+          sessionSecondsLeft--;
+          if (timerUi) timerUi.textContent = `${Math.max(0, sessionSecondsLeft)}s`;
+
+          if (sessionSecondsLeft <= 0) {
+            clearInterval(sessionTimerId);
+            sessionTimerId = null;
+            showResult();
+          }
+        }, 1000);
+      }
+
+      function stopClassicTimer() {
+        if (classicTimerId) { clearInterval(classicTimerId); classicTimerId = null; }
+        if (classicBarId) { clearInterval(classicBarId); classicBarId = null; }
+      }
+
+      function startClassicTimerIfNeeded() {
+        stopClassicTimer();
+
+        if (cfg.perQuestionSeconds <= 0) {
+          if (classicTimerPill) classicTimerPill.classList.add("hidden");
+          if (classicBarWrap) classicBarWrap.classList.add("hidden");
+          return;
+        }
+
+        if (classicTimerPill) classicTimerPill.classList.remove("hidden");
+        if (classicBarWrap) classicBarWrap.classList.remove("hidden");
+
+        classicSecondsLeft = cfg.perQuestionSeconds;
+        if (classicTimerUi) classicTimerUi.textContent = `${classicSecondsLeft}s`;
+        if (classicBar) classicBar.style.width = "100%";
+
+        // countdown tick
+        classicTimerId = setInterval(() => {
+          classicSecondsLeft--;
+          if (classicTimerUi) classicTimerUi.textContent = `${Math.max(0, classicSecondsLeft)}s`;
+
+          if (classicSecondsLeft <= 0) {
+            stopClassicTimer();
+            onClassicTimeUp();
+          }
+        }, 1000);
+
+        // smooth bar
+        const totalMs = cfg.perQuestionSeconds * 1000;
+        classicBarId = setInterval(() => {
+          const elapsed = Date.now() - questionStartedAt;
+          const left = Math.max(0, totalMs - elapsed);
+          const pct = (left / totalMs) * 100;
+          if (classicBar) classicBar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+        }, 80);
+      }
+
+      function getCurrentQuestion() {
+        return pool[index];
+      }
+
+      // Points model:
+      // base 100 for correct.
+      // if mode has speedWindowSeconds -> bonus 0..50 depending on remaining time in that window.
+      function calcPointsForCorrect() {
+        const base = 100;
+        const win = cfg.speedWindowSeconds || 0;
+        if (!win) return base;
+
+        const elapsedSec = Math.max(0, (Date.now() - questionStartedAt) / 1000);
+        const left = Math.max(0, win - elapsedSec);
+        const bonus = Math.ceil((left / win) * 50); // 0..50
+        return base + Math.max(0, Math.min(50, bonus));
+      }
+
+      const STATE_REGION = {
+        Alabama: "South", Alaska: "West", Arizona: "West", Arkansas: "South", California: "West",
+        Colorado: "West", Connecticut: "Northeast", Delaware: "South", Florida: "South", Georgia: "South",
+        Hawaii: "West", Idaho: "West", Illinois: "Midwest", Indiana: "Midwest", Iowa: "Midwest",
+        Kansas: "Midwest", Kentucky: "South", Louisiana: "South", Maine: "Northeast", Maryland: "South",
+        Massachusetts: "Northeast", Michigan: "Midwest", Minnesota: "Midwest", Mississippi: "South", Missouri: "Midwest",
+        Montana: "West", Nebraska: "Midwest", Nevada: "West", "New Hampshire": "Northeast", "New Jersey": "Northeast",
+        "New Mexico": "West", "New York": "Northeast", "North Carolina": "South", "North Dakota": "Midwest", Ohio: "Midwest",
+        Oklahoma: "South", Oregon: "West", Pennsylvania: "Northeast", "Rhode Island": "Northeast", "South Carolina": "South",
+        "South Dakota": "Midwest", Tennessee: "South", Texas: "South", Utah: "West", Vermont: "Northeast",
+        Virginia: "South", Washington: "West", "West Virginia": "South", Wisconsin: "Midwest", Wyoming: "West"
+      };
+
+      const HARD_NICKNAME_STATES = new Set([
+        "Arkansas", "Idaho", "Missouri", "Montana", "Nebraska", "Nevada", "Oklahoma", "Oregon", "Vermont", "Wyoming"
+      ]);
+
+      function addMiss(question, correctAnswer, explanation, reason) {
+        if (!question || !correctAnswer) return;
+
+        misses.push({
+          question: question.question || "State nickname question",
+          correctAnswer,
+          explanation: explanation || "",
+          reason,
+          step: answered + 1
+        });
+      }
+
+      function onClassicTimeUp() {
+        const q = getCurrentQuestion();
+        if (!q) return showResult();
+
+        answered++;
+        streak = 0;
+
+        const correctAnswer = (q.correct_answer || q.correctAnswer);
+        disableButtons();
+        addMiss(q, correctAnswer, q.explanation, "Time");
+
+        if (feedbackText) {
+          feedbackText.innerHTML = `<div class="text-red-700">⏳ Time’s up
+            <div class="mt-1 text-slate-700 font-medium">Correct answer: ${correctAnswer}</div>
+            ${q.explanation ? `<div class="mt-1 text-slate-700 font-medium">${q.explanation}</div>` : ""}
+          </div>`;
+        }
+
+        [...answersBox.children].forEach(btn => {
+          if (norm(btn.innerText) === norm(correctAnswer)) {
+            btn.className = "quiz-answer-btn rounded-2xl border border-emerald-200 bg-emerald-600 px-4 py-3 text-left font-semibold text-white";
+          }
+        });
+
+        queueNextQuestion();
+      }
+
+      function loadQuestion() {
+        if (!hasStarted) return;
+
+        // timed ended
+        if (cfg.sessionSeconds && sessionSecondsLeft <= 0) return;
+
+        // classic/practice end
+        if (cfg.questionLimit !== Infinity && index >= cfg.questionLimit) return showResult();
+
+        // timed: if we run out of pool, reshuffle and continue
+        if (!pool[index]) {
+          pool = shuffle(allQuestions);
+          index = 0;
+        }
+
+        const q = getCurrentQuestion();
+        if (!q) return showResult();
+
+        questionStartedAt = Date.now();
+
+        if (questionNumEl) questionNumEl.innerText = (cfg.sessionSeconds ? answered + 1 : index + 1);
+
+        if (feedbackText) feedbackText.innerText = "";
+
+        if (questionText) questionText.innerText = q.question || "Which state is this?";
+
+        const imgUrl = q.image_url || q.imageUrl;
+        if (questionImage) {
+          if (imgUrl) {
+            questionImage.innerHTML = `
+              <img src="${imgUrl}" alt="U.S. state flag"
+                   class="h-36 md:h-56 w-auto object-contain rounded-2xl border border-slate-200 bg-white shadow-sm p-3">`;
+          } else {
+            questionImage.innerHTML = "";
+          }
+        }
+
+        const choices = (q.choices || [])
+          .slice()
+          .filter(x => x && x.toString().trim() !== "")
+          .sort(() => Math.random() - 0.5);
+
+        answersBox.innerHTML = "";
+
+        choices.forEach(choice => {
+          const btn = document.createElement("button");
+          btn.className = "quiz-answer-btn rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left font-semibold text-slate-900 hover:bg-slate-50";
+          btn.innerText = choice;
+          btn.onclick = () => handleAnswer(btn, (q.correct_answer || q.correctAnswer), q.explanation);
+          answersBox.appendChild(btn);
+        });
+
+        // classic timer only
+        startClassicTimerIfNeeded();
+      }
+
+      function handleAnswer(button, correctAnswer, explanation) {
+        stopClassicTimer();
+        disableButtons();
+        answered++;
+
+        const isCorrect = norm(button.innerText) === norm(correctAnswer);
+
+        if (isCorrect) {
+          const add = calcPointsForCorrect();
+          points += add;
+          correct++;
+
+          streak++;
+          maxStreak = Math.max(maxStreak, streak);
+
+          button.className = "quiz-answer-btn rounded-2xl border border-emerald-200 bg-emerald-600 px-4 py-3 text-left font-semibold text-white";
+
+          if (feedbackText) {
+            const bonusPart = add > 100 ? ` <span class="text-slate-700 font-semibold">(bonus +${add - 100})</span>` : "";
+            feedbackText.innerHTML = `<div class="text-emerald-700">✓ Nice hit!
+              <div class="mt-1 text-slate-700 font-extrabold">+${add} points${bonusPart}</div>
+              ${explanation ? `<div class="mt-2 text-slate-700 font-medium">${explanation}</div>` : ""}
+            </div>`;
+          }
+
+          spawnPointsPop(button, add);
+          updateScoreUi();
+        } else {
+          streak = 0;
+          const q = getCurrentQuestion();
+          addMiss(q, correctAnswer, explanation, "Miss");
+
+          button.className = "quiz-answer-btn rounded-2xl border border-red-200 bg-red-600 px-4 py-3 text-left font-semibold text-white";
+
+          if (feedbackText) {
+            feedbackText.innerHTML = `<div class="text-red-700">✗ Not this one
+              <div class="mt-1 text-slate-700 font-medium">Correct answer: ${correctAnswer}</div>
+              ${explanation ? `<div class="mt-2 text-slate-700 font-medium">${explanation}</div>` : ""}
+            </div>`;
+          }
+
+          [...answersBox.children].forEach(btn => {
+            if (norm(btn.innerText) === norm(correctAnswer)) {
+              btn.className = "quiz-answer-btn rounded-2xl border border-emerald-200 bg-emerald-600 px-4 py-3 text-left font-semibold text-white";
+            }
+          });
+        }
+
+        // next behavior
+        if (cfg.sessionSeconds) {
+          queueNextQuestion(1200);
+        } else {
+          queueNextQuestion();
+        }
+      }
+          function renderCommunityStatsSimple(data) {
+      const statsEl = document.getElementById("communityStats");
+      if (!statsEl) return;
+
+      const p = Number.isFinite(data?.percentile) ? Math.max(0, Math.min(100, Math.round(data.percentile))) : null;
+
+      if (p === null || p <= 0) {
+        statsEl.innerHTML = `
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm">
+            <div class="flex items-start justify-between gap-4">
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Run summary</div>
+                  <span class="inline-flex items-center rounded-full bg-amber-50 text-amber-800 border border-amber-100 px-3 py-1 text-xs font-semibold">
+                    Fresh round
+                  </span>
+                </div>
+
+                <div class="mt-2 text-sm text-slate-700">
+                  ${correct >= Math.max(1, Math.ceil(answeredShown * 0.8))
+                    ? `<span class="font-semibold text-slate-900">Strong run.</span> You were locked in on most of the board.`
+                    : correct >= Math.max(1, Math.ceil(answeredShown * 0.5))
+                      ? `<span class="font-semibold text-slate-900">Nice momentum.</span> A couple more runs and the patterns should start feeling automatic.`
+                      : `<span class="font-semibold text-slate-900">Good warm-up.</span> Replay it and chase a cleaner streak on the next round.`}
+                </div>
+
+                <div class="mt-3 grid grid-cols-3 gap-2 text-center">
+                  <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                    <div class="text-[11px] uppercase tracking-wide text-slate-500">Correct</div>
+                    <div class="mt-1 text-lg font-extrabold text-slate-900">${correct}</div>
+                  </div>
+                  <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                    <div class="text-[11px] uppercase tracking-wide text-slate-500">Streak</div>
+                    <div class="mt-1 text-lg font-extrabold text-slate-900">${maxStreak}</div>
+                  </div>
+                  <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                    <div class="text-[11px] uppercase tracking-wide text-slate-500">Avg</div>
+                    <div class="mt-1 text-lg font-extrabold text-slate-900">${avg}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // percentile = "you beat X% of players"
+      const beatStep = Math.max(10, Math.floor(p / 10) * 10);        // 10..100 step 10
+      const topStep = Math.max(10, Math.ceil((100 - p) / 10) * 10);  // 10..100 step 10
+
+      const topLabel = topStep <= 10 ? "Top 10%" : `Top ${topStep}%`;
+      const beatLabel = beatStep >= 90 ? "Better than 90%" : `Better than ${beatStep}%`;
+
+      const badge =
+        topStep <= 10 ? "🏅 Elite" :
+        topStep <= 20 ? "🔥 Strong" :
+        topStep <= 30 ? "✨ Above average" :
+        topStep <= 50 ? "👍 Solid" :
+        "🌱 Getting started";
+
+      statsEl.innerHTML = `
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Community</div>
+                <span class="inline-flex items-center rounded-full bg-emerald-50 text-emerald-800 border border-emerald-100 px-3 py-1 text-xs font-semibold">
+                  ${badge}
+                </span>
+              </div>
+
+              <div class="mt-2 text-sm text-slate-700">
+                <span class="font-semibold text-slate-900">${topLabel}</span> · ${beatLabel}
+              </div>
+
+              <div class="mt-3 h-2 rounded-full bg-slate-200 overflow-hidden">
+                <div class="h-full bg-slate-900" style="width:${Math.max(10, Math.min(100, beatStep))}%;"></div>
+              </div>
+
+              <div class="mt-2 text-xs text-slate-500">
+                We show ranks in 10% steps (no “fake precision”).
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+      function showResult() {
+        stopClassicTimer();
+        if (sessionTimerId) { clearInterval(sessionTimerId); sessionTimerId = null; }
+
+        const timeSpentSeconds = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+        const answeredShown = answered;
+        const avg = answeredShown > 0 ? Math.round(points / answeredShown) : 0;
+
+        const isTimed = !!cfg.sessionSeconds;
+
+        // percentScore for API backward compatibility:
+        // classic/practice: out of questionLimit
+        // timed: out of answered (avoid division by 0)
+        const denom = isTimed ? Math.max(1, answeredShown) : Math.max(1, Math.min(cfg.questionLimit, allQuestions.length));
+        const percentScore = Math.round((correct / denom) * 100);
+        const reviewMisses = [...misses]
+          .sort((a, b) => {
+            const scoreA = (a.reason === "Time" ? 3 : 2) + (a.explanation ? 1 : 0) + (HARD_NICKNAME_STATES.has(a.correctAnswer) ? 1 : 0);
+            const scoreB = (b.reason === "Time" ? 3 : 2) + (b.explanation ? 1 : 0) + (HARD_NICKNAME_STATES.has(b.correctAnswer) ? 1 : 0);
+            return scoreB - scoreA || a.step - b.step;
+          })
+          .slice(0, 3);
+
+        const regionCounts = misses.reduce((acc, item) => {
+          const region = STATE_REGION[item.correctAnswer];
+          if (region) acc[region] = (acc[region] || 0) + 1;
+          return acc;
+        }, {});
+
+        const topRegion = Object.entries(regionCounts).sort((a, b) => b[1] - a[1])[0];
+        const hardNicknameCount = misses.filter(item => HARD_NICKNAME_STATES.has(item.correctAnswer)).length;
+
+        let focusTitle = "Victory lap";
+        let focusText = "You covered the board cleanly. Try another run and push for an even faster finish.";
+        if (misses.length) {
+          if (topRegion && topRegion[1] >= 2) {
+            focusTitle = `${topRegion[0]} focus`;
+            focusText = `Most of the slips came from ${topRegion[0].toLowerCase()} states. A quick run through that region should tighten things up fast.`;
+          } else if (hardNicknameCount >= 2 || misses.length >= 4) {
+            focusTitle = "Tricky set";
+            focusText = "The tougher prompts were the main speed bump. One replay should make the sneaky ones feel more familiar.";
+          } else {
+            focusTitle = "Mixed set";
+            focusText = "Your misses were spread out, so a fast replay is probably better than drilling one single area.";
+          }
+        }
+
+        const earnedBadges = [];
+        if (correct > 0 && maxStreak === correct && correct === answeredShown) {
+          earnedBadges.push({ name: "Perfect streak", tone: "emerald", text: "Never broke rhythm.", icon: "🏆" });
+        }
+        if ((isTimed && avg >= 120) || (!isTimed && avg >= 130)) {
+          earnedBadges.push({ name: "Speedster", tone: "amber", text: "You scored fast.", icon: "⚡" });
+        }
+        if (answeredShown >= 5 && percentScore >= 70) {
+          earnedBadges.push({ name: "Closer", tone: "blue", text: "Strong finish to the run.", icon: "🎯" });
+        }
+        if (misses.length > 0 && misses.length <= 2) {
+          earnedBadges.push({ name: "Locked in", tone: "violet", text: "Only a couple slipped.", icon: "🔒" });
+        }
+        if (!earnedBadges.length) {
+          earnedBadges.push({ name: "First marker", tone: "slate", text: "A solid base for the next run.", icon: "🧭" });
+        }
+
+        const timedCard = `
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div class="text-xs text-slate-500">Questions answered</div>
+              <div class="mt-1 text-3xl font-extrabold text-slate-900">${answeredShown}</div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div class="text-xs text-slate-500">Correct</div>
+              <div class="mt-1 text-3xl font-extrabold text-slate-900">${correct}</div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div class="text-xs text-slate-500">Points</div>
+              <div class="mt-1 text-3xl font-extrabold text-slate-900">${points}</div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div class="text-xs text-slate-500">Avg points / question</div>
+              <div class="mt-1 text-3xl font-extrabold text-slate-900">${avg}</div>
+            </div>
+          </div>
+        `;
+
+        const classicCard = `
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div class="text-xs text-slate-500">Points</div>
+              <div class="mt-1 text-3xl font-extrabold text-slate-900">${points}</div>
+              <div class="mt-2 text-xs text-slate-500">Avg: <span class="font-semibold text-slate-700">${avg}</span> / question</div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div class="text-xs text-slate-500">Correct</div>
+              <div class="mt-1 text-3xl font-extrabold text-slate-900">${correct}</div>
+              <div class="mt-2 text-xs text-slate-500">Best streak: <span class="font-semibold text-slate-700">${maxStreak}</span></div>
+            </div>
+          </div>
+        `;
+
+        const quickReview = misses.length
+          ? `
+            <div class="quiz-glow-card mt-6 rounded-3xl border border-slate-200 bg-white p-5 text-left shadow-sm">
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Quick review</div>
+                <span class="inline-flex items-center rounded-full bg-blue-50 text-blue-800 border border-blue-100 px-3 py-1 text-xs font-semibold">
+                  ${misses.length} to revisit
+                </span>
+              </div>
+
+              <div class="mt-2 text-sm text-slate-600">
+                The most important slips from this round. Skim these and your next run should feel cleaner.
+              </div>
+
+              <div class="mt-4 grid gap-3">
+                ${reviewMisses.map((item, i) => `
+                  <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <span class="inline-flex items-center rounded-full ${item.reason === "Time" ? "bg-amber-50 text-amber-800 border border-amber-100" : "bg-rose-50 text-rose-800 border border-rose-100"} px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide">
+                        ${item.reason}
+                      </span>
+                      <span class="text-xs text-slate-500">Review ${i + 1}</span>
+                    </div>
+                    <div class="mt-2 font-semibold text-slate-900">${item.question}</div>
+                    <div class="mt-2 text-sm text-slate-700">
+                      Correct answer: <span class="font-semibold text-slate-900">${item.correctAnswer}</span>
+                    </div>
+                    ${item.explanation ? `<div class="mt-2 text-sm leading-6 text-slate-600">${item.explanation}</div>` : ""}
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          `
+          : `
+            <div class="quiz-glow-card mt-6 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-5 text-left shadow-sm">
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="text-xs font-semibold text-emerald-700 uppercase tracking-wide">Clean sweep</div>
+                <span class="inline-flex items-center rounded-full bg-white text-emerald-800 border border-emerald-200 px-3 py-1 text-xs font-semibold">
+                  No misses to review
+                </span>
+              </div>
+              <div class="mt-2 text-sm text-emerald-900">
+                Nothing tripped you up this round. Try another run and see if you can keep the streak going.
+              </div>
+            </div>
+          `;
+
+        const focusNext = `
+          <div class="quiz-glow-card mt-6 rounded-3xl border border-slate-200 bg-white p-5 text-left shadow-sm">
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Focus next</div>
+              <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-semibold">
+                ${focusTitle}
+              </span>
+            </div>
+            <div class="mt-2 text-sm text-slate-700">${focusText}</div>
+          </div>
+        `;
+
+        const badgesCard = `
+          <div class="quiz-glow-card mt-6 rounded-3xl border border-slate-200 bg-white p-5 text-left shadow-sm">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Badges earned</div>
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              ${earnedBadges.map(badge => `
+                <div class="quiz-badge-card rounded-2xl border px-4 py-4 ${
+                  badge.tone === "emerald" ? "border-emerald-200 bg-emerald-50/70" :
+                  badge.tone === "amber" ? "border-amber-200 bg-amber-50/70" :
+                  badge.tone === "blue" ? "border-blue-200 bg-blue-50/70" :
+                  badge.tone === "violet" ? "border-violet-200 bg-violet-50/70" :
+                  "border-slate-200 bg-slate-50"
+                }">
+                  <div class="flex items-start gap-3">
+                    <span class="quiz-badge-icon">${badge.icon}</span>
+                    <div class="min-w-0">
+                      <div class="font-semibold text-slate-900">${badge.name}</div>
+                      <div class="mt-1 text-sm text-slate-600">${badge.text}</div>
+                    </div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+
+        quizApp.innerHTML = `
+          <div class="quiz-result-shell relative overflow-hidden px-6 md:px-8 py-10 text-center">
+            <span class="quiz-ornament quiz-ornament-gold h-24 w-24 top-6 left-4"></span>
+            <span class="quiz-ornament quiz-ornament-blue h-32 w-32 top-10 right-0"></span>
+            <span class="quiz-ornament quiz-ornament-gold h-20 w-20 bottom-20 left-10"></span>
+            <div class="text-sm text-slate-500">Result · <span class="font-semibold text-slate-900">${cfg.uiName}${isTimed ? " (60s)" : ""}</span></div>
+
+            <div class="quiz-result-animate quiz-glow-card mt-4 rounded-3xl border border-slate-200 bg-white/90 p-6 md:p-7">
+              <div class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">
+                Run complete
+              </div>
+              <div class="mt-3 text-5xl font-extrabold tracking-tight text-slate-900">${points}</div>
+              <div class="mt-1 text-sm text-slate-600">Total points</div>
+            </div>
+
+            ${isTimed ? timedCard : classicCard}
+
+            <div id="communityStats" class="quiz-result-animate quiz-delay-1 mt-6"></div>
+
+            <div class="quiz-result-animate quiz-delay-2">${badgesCard}</div>
+
+            <div class="quiz-result-animate quiz-delay-3">${focusNext}</div>
+
+            <div class="quiz-result-animate quiz-delay-4">${quickReview}</div>
+
+            <div class="mt-6 text-xs text-slate-500">
+              Time: <span class="font-semibold text-slate-700">${timeSpentSeconds}s</span>
+              ${isTimed ? "" : ` · Questions: <span class="font-semibold text-slate-700">${Math.min(cfg.questionLimit, allQuestions.length)}</span>`}
+            </div>
+
+            <div class="mt-8 grid gap-3 max-w-sm mx-auto">
+              <button id="retryBtn" class="rounded-xl bg-slate-900 text-white px-5 py-3 font-semibold hover:bg-slate-800 transition">
+                Try again
+              </button>
+
+              <button id="shareBtn" class="rounded-xl bg-white border border-slate-200 px-5 py-3 font-semibold hover:bg-slate-50 transition">
+                Share result
+              </button>
+
+              <a href="/quizzes" class="rounded-xl bg-slate-50 border border-slate-200 px-5 py-3 font-semibold text-slate-800 hover:bg-white transition">
+                More quizzes
+              </a>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("retryBtn")?.addEventListener("click", () => location.reload());
+
+    document.getElementById("shareBtn")?.addEventListener("click", () => {
+      const modeName = cfg.uiName + (isTimed ? " (60s)" : "");
+      const quizUrl = window.location.href;
+
+      const resultLine = isTimed
+        ? `⏱️ ${modeName}: ${points} points — ${correct} correct / ${answeredShown} answered`
+        : `🏁 ${modeName}: ${points} points — ${correct}/${Math.min(cfg.questionLimit, allQuestions.length)} correct`;
+
+      const shareText = `${resultLine}\nPlay here: ${quizUrl}`;
+
+      // IMPORTANT: share as TEXT (includes link) so result is visible in most targets
+      if (navigator.share) {
+        navigator.share({
+          title: "USA Symbol Quiz Result",
+          text: shareText
+        }).catch(() => {});
+        return;
+      }
+
+      // fallback: copy full payload
+      navigator.clipboard.writeText(shareText)
+        .then(() => alert("Copied!"))
+        .catch(() => {});
+    });
+
+        // Save result (backward-compatible + extra fields)
+    fetch(`/quizzes/@Model.Slug/result`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mode: mode,
+        score: percentScore,
+        points: points,
+        correct: correct,
+        answered: answeredShown,
+        avgPointsPerQuestion: avg,
+        questionCount: answeredShown,
+        timeSpentSeconds: timeSpentSeconds
+      })
+    })
+    .then(r => r.ok ? r.json() : Promise.reject(r))
+    .then(data => renderCommunityStatsSimple(data))
+    .catch(() => {});
+    }
+
+      function startQuiz() {
+        if (hasStarted) return;
+
+        hasStarted = true;
+        startedAt = Date.now();
+        startScreen.classList.add("hidden");
+        quizStage.classList.remove("hidden");
+
+        updateScoreUi();
+
+        if (timerPill) timerPill.classList.toggle("hidden", !cfg.sessionSeconds);
+        if (classicTimerPill) classicTimerPill.classList.toggle("hidden", cfg.perQuestionSeconds <= 0);
+        if (classicBarWrap) classicBarWrap.classList.toggle("hidden", cfg.perQuestionSeconds <= 0);
+
+        startSessionTimerIfNeeded();
+        loadQuestion();
+      }
+
+      startBtn.addEventListener("click", startQuiz);
+    });
+</script>

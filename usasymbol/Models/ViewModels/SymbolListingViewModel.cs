@@ -2,8 +2,8 @@
 {
     public class SymbolListingViewModel
     {
-        public string SymbolType { get; set; } = string.Empty; // birds, flowers, trees
-        public string SymbolTypeName { get; set; } = string.Empty; // State Birds
+        public string SymbolType { get; set; } = string.Empty;
+        public string SymbolTypeName { get; set; } = string.Empty;
         public List<SymbolWithState> Symbols { get; set; } = new();
         public List<string> AvailableStates { get; set; } = new();
         public string? SelectedState { get; set; }

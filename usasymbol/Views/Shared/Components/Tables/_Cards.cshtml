@@ -1,0 +1,261 @@
+@model USASymbol.Models.ViewModels.TableSectionViewModel
+@inject IImageUrlService Images
+
+@{
+    // System columns: never rendered as data chips / description rows
+    var systemKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        { "state", "state_slug", "rank", "order", "symbol_slug", "custom_url" };
+    if (!string.IsNullOrEmpty(Model.DetailType))
+        systemKeys.Add($"{Model.DetailType}_slug");
+}
+
+@if (Model.Tables.Any())
+{
+    <div id="cardsView" class="hidden">
+        <div class="grid gap-3 md:gap-4">
+
+            @foreach (var table in Model.Tables)
+            {
+                if (!table.Rows.Any() || !table.Columns.Any()) { continue; }
+
+                var columns = table.Columns;
+
+                // Displayable columns: not image, not system
+                var displayColumns = columns
+                    .Where(c => c.Type != "image" && !systemKeys.Contains(c.Key))
+                    .ToList();
+
+                @* Title — only for multi-table layouts *@
+                @if (Model.Tables.Count > 1 && !string.IsNullOrWhiteSpace(table.Title))
+                {
+                    <h3 class="col-span-full text-xl md:text-2xl font-semibold tracking-tight text-slate-900 mt-8 mb-1 first:mt-0">
+                        @table.Title
+                    </h3>
+                }
+
+                foreach (var row in table.Rows)
+                {
+                    var stateSlug = row.GetString("state_slug");
+                    var stateName = row.GetString("state") ?? "";
+                    var stateUrl  = $"/states/{stateSlug}";
+
+                    // Rank badge
+                    var rankValue =
+                        row.Data.TryGetValue("rank", out var rv) ? rv :
+                        (row.Data.TryGetValue("order", out var ov) ? ov : null);
+
+                    // ── URL priority: custom_url > auto-built ──────────────────────
+                    var customRowUrl = row.GetString("custom_url");
+                    string symbolUrl;
+                    if (!string.IsNullOrEmpty(customRowUrl))
+                    {
+                        symbolUrl = customRowUrl;
+                    }
+                    else
+                    {
+                        var symbolSlug = row.GetString("symbol_slug");
+                        if (string.IsNullOrWhiteSpace(symbolSlug) && !string.IsNullOrEmpty(Model.DetailType))
+                            symbolSlug = row.GetString($"{Model.DetailType}_slug");
+                        if (string.IsNullOrWhiteSpace(symbolSlug) && Model.DetailType == "flag")
+                            symbolSlug = $"{stateSlug}-state-flag";
+                        symbolUrl = (!string.IsNullOrWhiteSpace(symbolSlug) && !string.IsNullOrWhiteSpace(Model.DetailType) && !string.IsNullOrWhiteSpace(stateSlug))
+                            ? $"/states/{stateSlug}/{Model.DetailType}/{symbolSlug}"
+                            : "";
+                    }
+
+                    var primaryUrl = !string.IsNullOrWhiteSpace(symbolUrl) ? symbolUrl : stateUrl;
+
+                    // ── Image ───────────────────────────────────────────────────────
+                    string imgSrc = "";
+                    var imageCol = columns.FirstOrDefault(c => c.Type == "image");
+                    if (imageCol != null && row.Data.TryGetValue(imageCol.Key, out var imgVal) && imgVal != null)
+                        imgSrc = imgVal.ToString() ?? "";
+
+                    // ── Main detail value (column matching DetailType) ─────────────
+                    var mainCol   = displayColumns.FirstOrDefault(c => c.Key.Equals(Model.DetailType, StringComparison.OrdinalIgnoreCase));
+                    var mainValue = (mainCol != null && row.Data.TryGetValue(mainCol.Key, out var mv)) ? mv?.ToString() : null;
+
+                    // ── Year ────────────────────────────────────────────────────────
+                    var yearVal = row.Data.TryGetValue("year_adopted", out var yv) ? yv?.ToString()
+                        : row.Data.TryGetValue("year", out var y2) ? y2?.ToString()
+                        : null;
+
+                    // ── Scientific name ─────────────────────────────────────────────
+                    var sciVal = row.Data.TryGetValue("scientific_name", out var sv2) ? sv2?.ToString() : null;
+
+                    // ── Already consumed in header area ─────────────────────────────
+                    var consumedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                        { mainCol?.Key ?? "", "year_adopted", "year", "scientific_name" };
+
+                    // ── Chip columns: short values (≤ 50 chars), not consumed ────────
+                    var chipCols = displayColumns
+                        .Where(c => !consumedKeys.Contains(c.Key))
+                        .Where(c =>
+                        {
+                            var v = row.Data.TryGetValue(c.Key, out var cv) ? cv?.ToString() : null;
+                            return !string.IsNullOrEmpty(v) && v.Length <= 50;
+                        })
+                        .Take(4)
+                        .ToList();
+
+                    var chipColKeys = new HashSet<string>(chipCols.Select(c => c.Key), StringComparer.OrdinalIgnoreCase);
+
+                    // ── Long-text columns: non-chip, non-consumed ────────────────────
+                    var longCols = displayColumns
+                        .Where(c => !consumedKeys.Contains(c.Key) && !chipColKeys.Contains(c.Key))
+                        .Where(c =>
+                        {
+                            var v = row.Data.TryGetValue(c.Key, out var cv) ? cv?.ToString() : null;
+                            return !string.IsNullOrEmpty(v);
+                        })
+                        .ToList();
+
+                    // ── Search text: all non-slug text fields ────────────────────────
+                    var searchParts = new System.Collections.Generic.List<string?> { stateName, mainValue, sciVal };
+                    foreach (var col in displayColumns)
+                    {
+                        if (row.Data.TryGetValue(col.Key, out var sv3)) searchParts.Add(sv3?.ToString());
+                    }
+                    var cardSearchText = string.Join(" ", searchParts.Where(s => !string.IsNullOrEmpty(s))).ToLowerInvariant();
+
+    <a href="@primaryUrl"
+       class="rankingCard group block border border-slate-200/80 bg-white
+              hover:border-slate-300 transition-all duration-200 overflow-hidden"
+       data-state="@stateName.ToLowerInvariant()"
+       data-search="@cardSearchText">
+
+        <!-- ── Top section ──────────────────────────────────── -->
+        <div class="p-4 md:p-5">
+            <div class="flex items-start gap-4">
+
+                <!-- Thumbnail -->
+                <div class="flex-shrink-0 flex flex-col items-center gap-1.5">
+                    @if (!string.IsNullOrEmpty(imgSrc))
+                    {
+                        <div class="w-[72px] md:w-[88px] h-[72px] md:h-[88px] rounded-xl overflow-hidden
+                                    border border-slate-100 bg-slate-50 flex items-center justify-center">
+                            <img src="@Images.Thumb(imgSrc)" alt="@(mainValue ?? stateName)"
+                                 class="w-full h-full object-contain"
+                                 loading="lazy" decoding="async" />
+                        </div>
+                    }
+                    else if (!string.IsNullOrEmpty(stateSlug))
+                    {
+                        var flagSrc = $"/images/flags/{stateSlug}/flag.webp";
+                        <div class="w-[72px] md:w-[88px] h-[72px] md:h-[88px] rounded-xl overflow-hidden
+                                    border border-slate-100 bg-slate-50 flex items-center justify-center">
+                            <img src="@Images.Thumb(flagSrc)" alt="@stateName flag"
+                                 class="w-full h-full object-contain p-1"
+                                 loading="lazy" decoding="async" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="w-[72px] h-[72px] rounded-xl border border-slate-200 bg-slate-50
+                                    flex items-center justify-center text-slate-300 text-xl">
+                            —
+                        </div>
+                    }
+
+                    @if (rankValue != null)
+                    {
+                        <span class="inline-flex h-5 min-w-[1.75rem] items-center justify-center rounded-full
+                                     border border-slate-200 bg-white text-[11px] font-extrabold text-slate-800 tabular-nums">
+                            @rankValue
+                        </span>
+                    }
+                </div>
+
+                <!-- Main content -->
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="text-[17px] md:text-[18px] font-black text-slate-900 leading-tight">
+                                @stateName
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(mainValue))
+                            {
+                                <div class="mt-0.5 text-sm md:text-[15px] font-semibold text-slate-700 leading-snug">
+                                    @mainValue
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(sciVal))
+                            {
+                                <div class="mt-0.5 text-[13px] italic text-slate-500 leading-snug">@sciVal</div>
+                            }
+                        </div>
+
+                        <div class="mt-0.5 text-slate-300 group-hover:text-slate-500 transition shrink-0">
+                            <i class="fa-solid fa-chevron-right text-sm"></i>
+                        </div>
+                    </div>
+
+                    <!-- Chips: year + short text columns -->
+                    @{
+                        var hasChips = !string.IsNullOrEmpty(yearVal) || chipCols.Any(c =>
+                        {
+                            var v = row.Data.TryGetValue(c.Key, out var cv) ? cv?.ToString() : null;
+                            return !string.IsNullOrEmpty(v);
+                        });
+                    }
+                    @if (hasChips)
+                    {
+                        <div class="mt-2.5 flex flex-wrap gap-1.5">
+                            @if (!string.IsNullOrEmpty(yearVal))
+                            {
+                                <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5
+                                             text-[12px] font-semibold text-slate-700 leading-4">
+                                    @yearVal
+                                </span>
+                            }
+                            @foreach (var chipCol in chipCols)
+                            {
+                                var chipVal = row.Data.TryGetValue(chipCol.Key, out var cv) ? cv?.ToString() : null;
+                                if (!string.IsNullOrEmpty(chipVal))
+                                {
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5
+                                                 text-[12px] leading-4">
+                                        <span class="font-normal text-slate-400">@chipCol.Label:</span>
+                                        <span class="font-semibold text-slate-600">@chipVal</span>
+                                    </span>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── Bottom section: long-text fields ────────────────────────── -->
+        @if (longCols.Any())
+        {
+            <div class="border-t border-slate-100 px-4 md:px-5 py-3 space-y-2">
+                @foreach (var lc in longCols)
+                {
+                    var lv = row.Data.TryGetValue(lc.Key, out var lcv) ? lcv?.ToString() : null;
+                    if (!string.IsNullOrEmpty(lv))
+                    {
+                        <div class="text-[13px] leading-5">
+                            <span class="font-semibold text-slate-700">@lc.Label:</span>
+                            <span class="text-slate-500 ml-1">@lv</span>
+                        </div>
+                    }
+                }
+            </div>
+        }
+
+    </a>
+                }
+            }
+        </div>
+
+        <div id="cardsEmptyState" class="hidden text-center py-12">
+            <div class="text-6xl mb-4">🔍</div>
+            <h3 class="text-xl font-black text-slate-900 mb-2">No results found</h3>
+            <p class="text-slate-600">Try adjusting your search.</p>
+        </div>
+    </div>
+}

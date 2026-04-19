@@ -1,0 +1,69 @@
+@model IReadOnlyList<USASymbol.Models.ViewModels.QuickFactItem>
+
+@functions {
+    private static string GetFactIcon(string? label)
+    {
+        var key = (label ?? string.Empty).Trim().ToLowerInvariant();
+
+        return key switch
+        {
+            "year adopted" or "adopted" or "official since" => "fa-regular fa-calendar",
+            "code section" or "legal reference" or "legal citation" or "legislation" or "legislative vehicle" or "flag code" or "statute" => "fa-solid fa-scale-balanced",
+            "category" => "fa-regular fa-layer-group",
+            "status" or "iucn status" or "federal status" => "fa-solid fa-shield-heart",
+            "habitat" or "primary habitat in alabama" or "alabama waters" => "fa-solid fa-house",
+            "region" => "fa-regular fa-map",
+            "behavior" => "fa-solid fa-wrench",
+            "population" => "fa-solid fa-birds",
+            "modern bird name" or "bird name" or "name in statute" or "official name" or "official designation" or "name" => "fa-regular fa-bookmark",
+            "scientific name" => "fa-solid fa-feather-pointed",
+            "language" => "fa-solid fa-language",
+            "translation" or "official english" => "fa-regular fa-message",
+            "motto" or "motto (latin)" => "fa-regular fa-scroll",
+            "symbol" or "state bird link" => "fa-regular fa-star",
+            "official nickname?" or "other common nicknames" or "best-known nickname" => "fa-solid fa-tag",
+            "official category" => "fa-solid fa-list",
+            "associated person" or "championed by" or "sponsored by" or "1997 sponsor" => "fa-regular fa-user",
+            "registry" or "listed by" or "state herbarium" => "fa-regular fa-building-columns",
+            "year designated" or "officially adopted" or "first designated" or "flag adopted" or "coat of arms created" => "fa-regular fa-calendar-check",
+            "heart of dixie on plates" => "fa-solid fa-car",
+            "official state colors" or "flag colors" or "color values in law" => "fa-solid fa-palette",
+            _ => "fa-regular fa-circle"
+        };
+    }
+}
+
+@if (Model?.Count > 0)
+{
+    <section class="bg-transparent px-0 py-0">
+        <dl class="grid grid-cols-1 gap-x-7 gap-y-0 md:grid-cols-2 xl:grid-cols-1">
+            @foreach (var fact in Model.Where(f => !string.IsNullOrWhiteSpace(f?.Value)))
+            {
+                var isStatus = (fact.Label ?? "").Trim().Equals("Status", StringComparison.OrdinalIgnoreCase)
+                    || (fact.Label ?? "").Trim().Equals("IUCN Status", StringComparison.OrdinalIgnoreCase);
+                var iconClass = GetFactIcon(fact?.Label);
+
+                <div class="min-w-0 border-t border-slate-200/80 py-3.5 first:border-t-0 first:pt-0">
+                    <dt class="flex items-start gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">
+                        <i class="@iconClass mt-[2px] shrink-0 text-[12px] text-[#A36A3C]"></i>
+                        <span class="min-w-0 leading-5 break-words">@fact!.Label</span>
+                    </dt>
+
+                    <dd class="mt-2 text-[15px] leading-7 text-slate-700 break-words @(fact.Italic ? "italic" : "")">
+                        @if (isStatus)
+                        {
+                            <span class="inline-flex items-center gap-2">
+                                <span class="inline-flex h-2 w-2 shrink-0 rounded-full bg-emerald-500"></span>
+                                <span class="min-w-0 break-words">@fact.Value</span>
+                            </span>
+                        }
+                        else
+                        {
+                            @fact.Value
+                        }
+                    </dd>
+                </div>
+            }
+        </dl>
+    </section>
+}

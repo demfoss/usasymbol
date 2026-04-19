@@ -1,0 +1,1431 @@
+@model USASymbol.Models.ViewModels.AiPipelineViewModel
+
+@{
+    ViewData["Title"] = "AI Pipeline";
+    ViewData["Description"] = "Run a brief, drafting, and editing pipeline using ChatGPT and Claude.";
+
+    var hasBrief = !string.IsNullOrWhiteSpace(Model.Brief);
+    var hasDraft = !string.IsNullOrWhiteSpace(Model.Draft);
+    var hasFinal = !string.IsNullOrWhiteSpace(Model.FinalText);
+    var currentStep = hasFinal ? "save" : hasDraft ? "edit" : hasBrief ? "draft" : "brief";
+    var lastAction = (Model.LastAction ?? string.Empty).Trim().ToLowerInvariant();
+    var saveDestination = !string.IsNullOrWhiteSpace(Model.TargetFilePath)
+        ? Model.TargetFilePath
+        : $"Content/generated/{(string.IsNullOrWhiteSpace(Model.OutputSubfolder) ? "" : Model.OutputSubfolder + "/")}{(string.IsNullOrWhiteSpace(Model.FileName) ? "generated-file" : Model.FileName)}";
+}
+
+@section Styles {
+    <style>
+        .pipeline-page .site-main {
+            padding: 1.5rem 0 4rem;
+        }
+
+        .pipeline-shell {
+            max-width: 110rem;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+        }
+
+        .pipeline-hero {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 2rem;
+            border: 1px solid rgba(17, 32, 61, 0.08);
+            border-radius: 2rem;
+            background:
+                radial-gradient(circle at top right, rgba(255, 255, 255, 0.14), transparent 28%),
+                linear-gradient(135deg, rgba(18, 43, 82, 0.98), rgba(34, 92, 156, 0.94));
+            color: #fffaf2;
+            box-shadow: var(--site-shadow);
+        }
+
+        @@media (min-width: 1100px) {
+            .pipeline-hero {
+                grid-template-columns: minmax(0, 1.5fr) minmax(22rem, 0.9fr);
+                align-items: end;
+            }
+        }
+
+        .pipeline-hero h1 {
+            margin: 0 0 0.8rem;
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: clamp(2.35rem, 4vw, 4rem);
+            line-height: 1.02;
+            letter-spacing: -0.05em;
+        }
+
+        .pipeline-hero p {
+            margin: 0;
+            max-width: 52rem;
+            color: rgba(255, 250, 242, 0.84);
+            line-height: 1.7;
+            font-size: 1.02rem;
+        }
+
+        .pipeline-hero-summary {
+            padding: 1.2rem 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .pipeline-hero-summary strong {
+            display: block;
+            margin-bottom: 0.35rem;
+            font-size: 0.86rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255, 250, 242, 0.74);
+        }
+
+        .pipeline-hero-summary span {
+            display: block;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .pipeline-workspace {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        @@media (min-width: 1250px) {
+            .pipeline-workspace {
+                grid-template-columns: minmax(22rem, 0.72fr) minmax(0, 1.28fr);
+                align-items: start;
+            }
+        }
+
+        .pipeline-panel {
+            border: 1px solid rgba(17, 32, 61, 0.08);
+            border-radius: 1.6rem;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: var(--site-shadow-soft);
+        }
+
+        .pipeline-panel-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.35rem 1.35rem 0;
+        }
+
+        .pipeline-panel-head h2 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--site-brand-strong);
+        }
+
+        .pipeline-panel-head p {
+            margin: 0.35rem 0 0;
+            color: var(--site-ink-soft);
+            line-height: 1.6;
+        }
+
+        .pipeline-panel-body {
+            padding: 1.35rem;
+        }
+
+        .pipeline-note,
+        .pipeline-error,
+        .pipeline-success {
+            padding: 1rem 1.05rem;
+            border-radius: 1rem;
+            line-height: 1.65;
+        }
+
+        .pipeline-note {
+            background: rgba(196, 98, 67, 0.09);
+            color: #824127;
+        }
+
+        .pipeline-error {
+            background: rgba(179, 40, 40, 0.1);
+            color: #7d1d1d;
+        }
+
+        .pipeline-success {
+            background: rgba(28, 112, 74, 0.1);
+            color: #175c3c;
+        }
+
+        .pipeline-status-grid {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .pipeline-step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.9rem;
+            padding: 1rem;
+            border: 1px solid rgba(17, 32, 61, 0.08);
+            border-radius: 1.15rem;
+            background: #fffdfa;
+        }
+
+        .pipeline-step.is-active {
+            border-color: rgba(31, 75, 153, 0.28);
+            background: linear-gradient(180deg, rgba(31, 75, 153, 0.09), rgba(31, 75, 153, 0.03));
+            box-shadow: inset 0 0 0 1px rgba(31, 75, 153, 0.08);
+        }
+
+        .pipeline-step.is-done {
+            border-color: rgba(28, 112, 74, 0.24);
+            background: linear-gradient(180deg, rgba(28, 112, 74, 0.09), rgba(28, 112, 74, 0.03));
+        }
+
+        .pipeline-step-badge {
+            width: 2.2rem;
+            height: 2.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #fff;
+            background: linear-gradient(135deg, #17356a, #2a63b1);
+        }
+
+        .pipeline-step.is-done .pipeline-step-badge {
+            background: linear-gradient(135deg, #1d6b49, #299768);
+        }
+
+        .pipeline-step-copy strong {
+            display: block;
+            margin-bottom: 0.2rem;
+            color: var(--site-brand-strong);
+            font-size: 0.98rem;
+        }
+
+        .pipeline-step-copy span {
+            color: var(--site-ink-soft);
+            line-height: 1.55;
+            font-size: 0.95rem;
+        }
+
+        .pipeline-mini-meta {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .pipeline-mini-meta div {
+            padding: 0.85rem 0.95rem;
+            border-radius: 1rem;
+            background: rgba(17, 32, 61, 0.04);
+        }
+
+        .pipeline-mini-meta strong {
+            display: block;
+            margin-bottom: 0.22rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--site-ink-soft);
+        }
+
+        .pipeline-mini-meta span {
+            display: block;
+            color: var(--site-brand-strong);
+            font-weight: 700;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .pipeline-form {
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .pipeline-group {
+            display: grid;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid rgba(17, 32, 61, 0.08);
+            border-radius: 1.2rem;
+            background: rgba(255, 253, 249, 0.84);
+        }
+
+        .pipeline-group-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .pipeline-group-head h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--site-brand-strong);
+        }
+
+        .pipeline-group-head span {
+            color: var(--site-ink-soft);
+            font-size: 0.92rem;
+        }
+
+        .pipeline-field label {
+            display: block;
+            margin-bottom: 0.45rem;
+            font-weight: 700;
+            color: var(--site-brand-strong);
+        }
+
+        .pipeline-field small {
+            display: block;
+            margin-top: 0.45rem;
+            color: var(--site-ink-soft);
+            line-height: 1.5;
+        }
+
+        .pipeline-form input[type="text"],
+        .pipeline-form textarea {
+            width: 100%;
+            border: 1px solid rgba(17, 32, 61, 0.14);
+            border-radius: 1rem;
+            padding: 0.95rem 1rem;
+            background: #fffdf9;
+            color: var(--site-ink);
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .pipeline-form input[type="text"]:focus,
+        .pipeline-form textarea:focus {
+            outline: none;
+            border-color: rgba(31, 75, 153, 0.5);
+            box-shadow: 0 0 0 4px rgba(31, 75, 153, 0.11);
+        }
+
+        .pipeline-form textarea {
+            min-height: 11rem;
+            resize: vertical;
+            line-height: 1.62;
+        }
+
+        .pipeline-row {
+            display: grid;
+            gap: 1rem;
+        }
+
+        @@media (min-width: 820px) {
+            .pipeline-row {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        .pipeline-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 1rem;
+            border: 1px solid rgba(17, 32, 61, 0.08);
+            border-radius: 1rem;
+            background: rgba(31, 75, 153, 0.04);
+        }
+
+        .pipeline-check.is-disabled {
+            opacity: 0.6;
+            background: rgba(17, 32, 61, 0.03);
+        }
+
+        .pipeline-check input {
+            width: 1rem;
+            height: 1rem;
+            margin-top: 0.2rem;
+        }
+
+        .pipeline-check strong {
+            display: block;
+            margin-bottom: 0.22rem;
+            color: var(--site-brand-strong);
+        }
+
+        .pipeline-check span {
+            color: var(--site-ink-soft);
+            line-height: 1.55;
+        }
+
+        .pipeline-actions-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        @@media (min-width: 980px) {
+            .pipeline-actions-grid {
+                grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.1fr);
+            }
+        }
+
+        .pipeline-mode-card,
+        .pipeline-manual-card {
+            padding: 1rem;
+            border: 1px solid rgba(17, 32, 61, 0.08);
+            border-radius: 1.2rem;
+            background: #fff;
+        }
+
+        .pipeline-mode-card h4,
+        .pipeline-manual-card h4 {
+            margin: 0 0 0.3rem;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--site-brand-strong);
+        }
+
+        .pipeline-mode-card p,
+        .pipeline-manual-card p {
+            margin: 0 0 0.9rem;
+            color: var(--site-ink-soft);
+            line-height: 1.58;
+        }
+
+        .pipeline-primary-button,
+        .pipeline-step-buttons button {
+            border: 0;
+            border-radius: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+
+        .pipeline-primary-button:hover,
+        .pipeline-step-buttons button:hover {
+            transform: translateY(-1px);
+        }
+
+        .pipeline-primary-button {
+            width: 100%;
+            min-height: 3.4rem;
+            padding: 0.95rem 1.2rem;
+            color: #fffaf2;
+            background: linear-gradient(135deg, #17356a 0%, #1f4b99 100%);
+            box-shadow: 0 18px 30px rgba(23, 53, 106, 0.18);
+        }
+
+        .pipeline-primary-button.is-selected,
+        .pipeline-step-buttons button.is-selected {
+            transform: translateY(-1px);
+            box-shadow: 0 0 0 4px rgba(31, 75, 153, 0.12), 0 18px 30px rgba(23, 53, 106, 0.16);
+        }
+
+        .pipeline-step-buttons {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        @@media (min-width: 720px) {
+            .pipeline-step-buttons {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        .pipeline-step-buttons button {
+            min-height: 3.25rem;
+            padding: 0.9rem 1rem;
+            color: var(--site-brand-strong);
+            background: linear-gradient(180deg, rgba(31, 75, 153, 0.08), rgba(31, 75, 153, 0.03));
+            border: 1px solid rgba(31, 75, 153, 0.14);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .pipeline-step-buttons button.is-selected {
+            color: #fffaf2;
+            background: linear-gradient(135deg, #17356a 0%, #1f4b99 100%);
+            border-color: transparent;
+        }
+
+        .pipeline-form.is-submitting .pipeline-primary-button,
+        .pipeline-form.is-submitting .pipeline-step-buttons button {
+            opacity: 0.75;
+            pointer-events: none;
+        }
+
+        .pipeline-running {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.95rem 1rem;
+            border-radius: 1rem;
+            background: rgba(31, 75, 153, 0.08);
+            color: var(--site-brand-strong);
+            font-weight: 700;
+        }
+
+        .pipeline-running.is-visible {
+            display: block;
+        }
+
+        .pipeline-live-status {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem 1.05rem;
+            border: 1px solid rgba(31, 75, 153, 0.18);
+            border-radius: 1rem;
+            background: linear-gradient(180deg, rgba(31, 75, 153, 0.1), rgba(31, 75, 153, 0.04));
+            color: var(--site-brand-strong);
+        }
+
+        .pipeline-live-status.is-visible {
+            display: block;
+        }
+
+        .pipeline-live-status strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.98rem;
+        }
+
+        .pipeline-live-status span {
+            display: block;
+            line-height: 1.6;
+            color: var(--site-ink-soft);
+        }
+
+        .pipeline-live-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.8rem;
+        }
+
+        .pipeline-live-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(17, 32, 61, 0.06);
+            color: var(--site-brand-strong);
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .pipeline-live-log {
+            margin-top: 0.9rem;
+            padding-left: 1rem;
+            color: var(--site-ink-soft);
+            line-height: 1.65;
+            font-size: 0.95rem;
+        }
+
+        .pipeline-live-log li + li {
+            margin-top: 0.3rem;
+        }
+
+        .pipeline-output-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .pipeline-output-card {
+            border: 1px solid rgba(17, 32, 61, 0.08);
+            border-radius: 1.2rem;
+            background: #fffdfa;
+            overflow: hidden;
+        }
+
+        .pipeline-output-card.is-focus-source {
+            border-color: rgba(31, 75, 153, 0.28);
+            box-shadow: 0 0 0 4px rgba(31, 75, 153, 0.09);
+            background: linear-gradient(180deg, rgba(31, 75, 153, 0.05), rgba(255, 253, 250, 0.98));
+        }
+
+        .pipeline-output-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.95rem 1rem;
+            border-bottom: 1px solid rgba(17, 32, 61, 0.07);
+            background: rgba(17, 32, 61, 0.03);
+        }
+
+        .pipeline-output-card-head h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--site-brand-strong);
+        }
+
+        .pipeline-output-card-head span {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--site-ink-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .pipeline-output-card-head span.is-accent {
+            color: var(--site-brand-strong);
+        }
+
+        .pipeline-output-card textarea,
+        .pipeline-output-card pre {
+            width: 100%;
+            min-height: 16rem;
+            margin: 0;
+            padding: 1rem;
+            border: 0;
+            background: #fffdfa;
+            color: var(--site-ink);
+            line-height: 1.65;
+        }
+
+        .pipeline-output-card textarea {
+            resize: vertical;
+            font: inherit;
+        }
+
+        .pipeline-output-card pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.9rem;
+        }
+
+        .pipeline-summary {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .pipeline-summary-item {
+            padding: 0.9rem 1rem;
+            border-radius: 1rem;
+            background: rgba(17, 32, 61, 0.04);
+        }
+
+        .pipeline-summary-item strong {
+            display: block;
+            margin-bottom: 0.22rem;
+            font-size: 0.8rem;
+            color: var(--site-ink-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .pipeline-summary-item code {
+            word-break: break-all;
+        }
+    </style>
+}
+
+<div class="pipeline-shell">
+    <section class="pipeline-hero">
+        <div>
+            <h1>Content Pipeline Workspace</h1>
+            <p>Слева ты задаешь тему, заметки и путь файла. Справа работаешь по шагам: сначала brief, потом draft, потом final edit. Можно идти вручную или запустить все одной большой кнопкой.</p>
+        </div>
+
+        <div class="pipeline-hero-summary">
+            <strong>Current Focus</strong>
+            <span id="pipeline-current-focus">
+                @(currentStep switch
+                {
+                    "brief" => "Step 1: Generate the brief",
+                    "draft" => "Step 2: Turn the brief into a draft",
+                    "edit" => "Step 3: Polish the draft into final text",
+                    _ => "Step 4: Save the final text into the target file"
+                })
+            </span>
+        </div>
+    </section>
+
+    <div class="pipeline-workspace">
+        <aside class="pipeline-panel">
+            <div class="pipeline-panel-head">
+                <div>
+                    <h2>Pipeline Status</h2>
+                    <p>Здесь видно, что уже готово и какой следующий логичный шаг.</p>
+                </div>
+            </div>
+
+            <div class="pipeline-panel-body">
+                <div class="pipeline-status-grid">
+                    <div class="pipeline-step @(hasBrief ? "is-done" : currentStep == "brief" ? "is-active" : "")" data-step="brief">
+                        <div class="pipeline-step-badge">1</div>
+                        <div class="pipeline-step-copy">
+                            <strong>Brief</strong>
+                            <span>ChatGPT собирает короткий редакторский бриф из темы, фактов, ссылок и твоих заметок.</span>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step @(hasDraft ? "is-done" : currentStep == "draft" ? "is-active" : "")" data-step="draft">
+                        <div class="pipeline-step-badge">2</div>
+                        <div class="pipeline-step-copy">
+                            <strong>Draft</strong>
+                            <span>Claude пишет первый вариант текста по brief. Здесь можно руками поправить сырой черновик.</span>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step @(hasFinal ? "is-done" : currentStep == "edit" ? "is-active" : "")" data-step="edit">
+                        <div class="pipeline-step-badge">3</div>
+                        <div class="pipeline-step-copy">
+                            <strong>Final Edit</strong>
+                            <span>Последняя редактура доводит текст до publish-ready версии. Ее можно делать через ChatGPT или Claude.</span>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-step @(Model.Result is not null ? "is-done" : currentStep == "save" ? "is-active" : "")" data-step="save">
+                        <div class="pipeline-step-badge">4</div>
+                        <div class="pipeline-step-copy">
+                            <strong>Save</strong>
+                            <span>Готовый текст записывается прямо в нужный файл проекта или в `Content/generated`, если точный путь не указан.</span>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="pipeline-mini-meta">
+                        <div>
+                            <strong>Current Editor</strong>
+                        <span>@(Model.UseClaudeOnlyMode ? "Claude does brief, draft, and final edit" : Model.UseOpenAiForEditing ? "ChatGPT edits the final version" : "Claude does both draft and final edit")</span>
+                    </div>
+                    <div>
+                        <strong>Save Destination</strong>
+                        <span>@saveDestination</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="pipeline-panel">
+            <div class="pipeline-panel-head">
+                <div>
+                    <h2>Run And Edit</h2>
+                    <p>Большая кнопка делает все автоматически. Ручные кнопки нужны, если хочешь править каждый этап сам.</p>
+                </div>
+            </div>
+
+            <div class="pipeline-panel-body">
+                <div class="pipeline-note">
+                    Промпты лежат в <code>Content/ai-prompts/brief.txt</code>, <code>Content/ai-prompts/draft.txt</code> и <code>Content/ai-prompts/edit.txt</code>. Используй плейсхолдеры <code>{{topic}}</code>, <code>{{notes}}</code>, <code>{{brief}}</code>, <code>{{draft}}</code>.
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                {
+                    <div class="pipeline-error" style="margin-top:1rem;">@Model.ErrorMessage</div>
+                }
+                else if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+                {
+                    <div class="pipeline-success" style="margin-top:1rem;">@Model.StatusMessage</div>
+                }
+
+                <div class="pipeline-live-status" id="pipeline-live-status">
+                    <strong id="pipeline-live-title">Request sent</strong>
+                    <span id="pipeline-live-copy">The page is waiting for the server. Long AI steps can take 20-60 seconds, especially in full auto mode.</span>
+                    <div class="pipeline-live-meta">
+                        <div class="pipeline-live-pill">Action: <span id="pipeline-live-action">waiting</span></div>
+                        <div class="pipeline-live-pill">Elapsed: <span id="pipeline-live-elapsed">0s</span></div>
+                    </div>
+                    <ul class="pipeline-live-log" id="pipeline-live-log">
+                        <li>Preparing request payload.</li>
+                    </ul>
+                </div>
+
+                <form method="post" action="/pipeline" class="pipeline-form" id="pipeline-form" style="margin-top:1rem;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="actionType" id="pipeline-action-type" value="@Model.LastAction" />
+
+                    <div class="pipeline-group">
+                        <div class="pipeline-group-head">
+                            <h3>1. Setup</h3>
+                            <span>Что генерируем и куда сохраняем</span>
+                        </div>
+
+                        <div class="pipeline-field">
+                            <label asp-for="Topic"></label>
+                            <input asp-for="Topic" type="text" placeholder="Example: Why the Alabama state flag is so simple but politically loaded" />
+                            <span asp-validation-for="Topic" class="text-danger"></span>
+                        </div>
+
+                        <div class="pipeline-field">
+                            <label asp-for="Notes"></label>
+                            <textarea asp-for="Notes" placeholder="Paste facts, links, jokes, source snippets, file structure hints, or anything else that should shape the page."></textarea>
+                            <small>Это главный пакет входных данных. Чем лучше он собран, тем лучше brief и финальный YAML.</small>
+                        </div>
+
+                        <div class="pipeline-row">
+                            <div class="pipeline-field">
+                                <label asp-for="FileName"></label>
+                                <input asp-for="FileName" type="text" placeholder="Optional fallback file name, for example black-bear" />
+                            </div>
+
+                            <div class="pipeline-field">
+                                <label asp-for="OutputSubfolder"></label>
+                                <input asp-for="OutputSubfolder" type="text" placeholder="Optional fallback folder, for example states/alabama/mammal" />
+                            </div>
+                        </div>
+
+                        <div class="pipeline-field">
+                            <label asp-for="TargetFilePath"></label>
+                            <input asp-for="TargetFilePath" type="text" placeholder="Best option: exact yaml path, for example Content\states\alabama\mammal\black-bear.yaml" />
+                            <small>Если это поле заполнено, итог пишется прямо туда. Это самый удобный режим для живого контента.</small>
+                        </div>
+
+                        <div class="pipeline-row">
+                            <div class="pipeline-field">
+                                <label asp-for="ExampleFilePath1"></label>
+                                <input asp-for="ExampleFilePath1" type="text" placeholder="Optional. Example: Content\states\alabama\flag.yaml" />
+                            </div>
+
+                            <div class="pipeline-field">
+                                <label asp-for="ExampleFilePath2"></label>
+                                <input asp-for="ExampleFilePath2" type="text" placeholder="Optional. Example: Content\states\alabama\beverage\clyde-mays-whiskey.yaml" />
+                            </div>
+                        </div>
+
+                        <div class="pipeline-note">
+                            Example files are injected as project context with a short rule: understand the system, but do not copy one pattern mechanically.
+                        </div>
+
+                        <label class="pipeline-check @(Model.UseClaudeOnlyMode ? "is-disabled" : "")">
+                            <input asp-for="UseOpenAiForEditing" disabled="@Model.UseClaudeOnlyMode" />
+                            <span>
+                                <strong>Final editor selection</strong>
+                                <span>
+                                    @(Model.UseClaudeOnlyMode
+                                        ? "Сейчас эта опция отключена, потому что включен Claude only mode."
+                                        : "Включено: ChatGPT делает последнюю редактуру. Выключено: Claude пишет draft и сам же делает final edit.")
+                                </span>
+                            </span>
+                        </label>
+
+                        @if (Model.UseClaudeOnlyMode)
+                        {
+                            <input type="hidden" name="UseOpenAiForEditing" value="false" />
+                        }
+
+                        <label class="pipeline-check">
+                            <input asp-for="UseClaudeOnlyMode" />
+                            <span>
+                                <strong>Claude only mode</strong>
+                                <span>Включено: даже brief генерит Claude, а не ChatGPT. Это режим "все через Claude".</span>
+                            </span>
+                        </label>
+
+                        <label class="pipeline-check">
+                            <input asp-for="UseExistingBriefForAuto" />
+                            <span>
+                                <strong>Start auto mode from my brief</strong>
+                                <span>Если brief уже вставлен вручную, full auto пропустит его генерацию и сразу пойдет в draft и final edit.</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="pipeline-group">
+                        <div class="pipeline-group-head">
+                            <h3>2. Choose How To Work</h3>
+                            <span>Автоматически или по шагам</span>
+                        </div>
+
+                        <div class="pipeline-actions-grid">
+                            <div class="pipeline-mode-card">
+                                <h4>Automatic Mode</h4>
+                                <p>Одна кнопка делает весь цикл: brief, draft, edit, save. Лучший вариант, когда пакет данных уже хороший.</p>
+                                <button type="submit" data-action-type="auto" class="pipeline-primary-button @(lastAction == "auto" ? "is-selected" : "")">Run Full Auto Pipeline</button>
+                            </div>
+
+                            <div class="pipeline-manual-card">
+                                <h4>Manual Mode</h4>
+                                <p>Иди по шагам, если хочешь проверять и править каждую стадию отдельно перед следующим запуском.</p>
+                                <div class="pipeline-step-buttons">
+                                    <button type="submit" data-action-type="brief" class="@(lastAction == "brief" ? "is-selected" : "")">1. Generate Brief</button>
+                                    <button type="submit" data-action-type="draft" class="@(lastAction == "draft" ? "is-selected" : "")">2. Generate Draft</button>
+                                    <button type="submit" data-action-type="edit" class="@(lastAction == "edit" ? "is-selected" : "")">3. Generate Final</button>
+                                    <button type="submit" data-action-type="save" class="@(lastAction == "save" ? "is-selected" : "")">4. Save To File</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-running" id="pipeline-running">
+                            Pipeline request is running. If the models take a bit, this page will refresh when the step finishes.
+                        </div>
+                    </div>
+
+                    <div class="pipeline-group">
+                        <div class="pipeline-group-head">
+                            <h3>3. Batch Mode</h3>
+                            <span>5-10 briefs one after another</span>
+                        </div>
+
+                        <div class="pipeline-field">
+                            <label asp-for="BatchFilePath"></label>
+                            <input asp-for="BatchFilePath" type="text" placeholder="Optional. Example: Content\generated\batch-jobs.json" />
+                            <small>Укажи JSON-файл внутри проекта, если хочешь просто загрузить список задач и уйти.</small>
+                        </div>
+
+                        <div class="pipeline-field">
+                            <label asp-for="BatchJson"></label>
+                            <textarea asp-for="BatchJson" placeholder='Optional. Paste a JSON array of jobs here. Example: [{"topic":"Alabama State Tree","brief":"...","targetFilePath":"Content\\states\\alabama\\tree.yaml","useClaudeOnlyMode":true,"useExistingBriefForAuto":true}]'></textarea>
+                            <small>Если вставлен JSON, он используется вместо файла. Каждая задача прогоняется по очереди; ошибки одной задачи не останавливают остальные.</small>
+                        </div>
+
+                        <div class="pipeline-mode-card">
+                            <h4>Run Batch</h4>
+                            <p>Запускает список задач по одной. Лучше всего, когда у каждой записи уже есть свой brief и target file path.</p>
+                            <button type="submit" data-action-type="batch" class="pipeline-primary-button @(lastAction == "batch" ? "is-selected" : "")">Run Batch Jobs</button>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-output-grid">
+                        <div class="pipeline-output-card @(Model.UseExistingBriefForAuto ? "is-focus-source" : "")">
+                            <div class="pipeline-output-card-head">
+                                <h3>Brief Workspace</h3>
+                                <span class="@(Model.UseExistingBriefForAuto ? "is-accent" : "")">@(Model.UseExistingBriefForAuto ? "auto starts here" : hasBrief ? "ready" : "empty")</span>
+                            </div>
+                            <textarea asp-for="Brief" placeholder="After step 1, the brief appears here. You can edit it before generating the draft."></textarea>
+                        </div>
+
+                        <div class="pipeline-output-card">
+                            <div class="pipeline-output-card-head">
+                                <h3>Draft Workspace</h3>
+                                <span>@(hasDraft ? "ready" : "empty")</span>
+                            </div>
+                            <textarea asp-for="Draft" placeholder="After step 2, the draft appears here. You can rewrite parts manually before the final edit."></textarea>
+                        </div>
+
+                        <div class="pipeline-output-card">
+                            <div class="pipeline-output-card-head">
+                                <h3>Final Workspace</h3>
+                                <span>@(hasFinal ? "ready" : "empty")</span>
+                            </div>
+                            <textarea asp-for="FinalText" placeholder="After step 3, the final text appears here. Review it, tweak it, then save it into the target file."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <section class="pipeline-panel" style="margin-top:1.5rem;">
+        <div class="pipeline-panel-head">
+            <div>
+                <h2>Saved Output</h2>
+                <p>После сохранения тут видно, куда попал финальный текст и где лежат вспомогательные файлы pipeline.</p>
+            </div>
+        </div>
+
+        <div class="pipeline-panel-body">
+            <div id="pipeline-saved-output">
+                @if (Model.Result is null)
+                {
+                    <div class="pipeline-note">Пока еще ничего не сохранено. После `Run Full Auto Pipeline` или `Save To File` здесь появятся итоговые пути.</div>
+                }
+                else
+                {
+                    <div class="pipeline-summary">
+                        <div class="pipeline-summary-item">
+                            <strong>Final Editor</strong>
+                            <code>@Model.Result.FinalEditor</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Article File</strong>
+                            <code>@Model.Result.SavedArticlePath</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Brief Snapshot</strong>
+                            <code>@Model.Result.SavedBriefPath</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Draft Snapshot</strong>
+                            <code>@Model.Result.SavedDraftPath</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Audit File</strong>
+                            <code>@Model.Result.SavedFinalPath</code>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="pipeline-panel" style="margin-top:1.5rem;">
+        <div class="pipeline-panel-head">
+            <div>
+                <h2>Batch Report</h2>
+                <p>После batch-запуска здесь будет видно, сколько задач прошло, сколько упало, и где лежит отчет.</p>
+            </div>
+        </div>
+
+        <div class="pipeline-panel-body">
+            <div id="pipeline-batch-output">
+                @if (Model.BatchResult is null)
+                {
+                    <div class="pipeline-note">Пока batch не запускался.</div>
+                }
+                else
+                {
+                    <div class="pipeline-summary">
+                        <div class="pipeline-summary-item">
+                            <strong>Total Jobs</strong>
+                            <code>@Model.BatchResult.TotalJobs</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Completed</strong>
+                            <code>@Model.BatchResult.CompletedJobs</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Failed</strong>
+                            <code>@Model.BatchResult.FailedJobs</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Report File</strong>
+                            <code>@Model.BatchResult.ReportPath</code>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const form = document.getElementById('pipeline-form');
+            const actionInput = document.getElementById('pipeline-action-type');
+            const runningBox = document.getElementById('pipeline-running');
+            const liveBox = document.getElementById('pipeline-live-status');
+            const liveTitle = document.getElementById('pipeline-live-title');
+            const liveCopy = document.getElementById('pipeline-live-copy');
+            const liveAction = document.getElementById('pipeline-live-action');
+            const liveElapsed = document.getElementById('pipeline-live-elapsed');
+            const liveLog = document.getElementById('pipeline-live-log');
+            const currentFocus = document.getElementById('pipeline-current-focus');
+            const stepCards = Array.from(document.querySelectorAll('[data-step]'));
+            const savedOutput = document.getElementById('pipeline-saved-output');
+            const batchOutput = document.getElementById('pipeline-batch-output');
+            const briefField = document.getElementById('Brief');
+            const draftField = document.getElementById('Draft');
+            const finalField = document.getElementById('FinalText');
+
+            const actionDescriptions = {
+                auto: {
+                    title: 'Running full pipeline',
+                    copy: 'Using the current mode and inputs to go through all steps in order. This can take a while if Claude is writing both the draft and the final edit.',
+                    log: [
+                        'Validating your current inputs and target path.',
+                        'Preparing prompt context, notes, and example files.',
+                        'If "start from my brief" is enabled, the server skips brief generation.',
+                        'Generating draft with the selected model.',
+                        'Generating final edit in the required target format.',
+                        'Validating output and saving files.'
+                    ]
+                },
+                brief: {
+                    title: 'Generating brief',
+                    copy: 'The server is turning your topic and notes into a brief. When it finishes, the page will refresh with the result in Brief Workspace.',
+                    log: [
+                        'Reading topic, notes, and optional example files.',
+                        'Building the brief prompt.',
+                        'Sending the brief request to the selected model.',
+                        'Waiting for the model response.'
+                    ]
+                },
+                draft: {
+                    title: 'Generating draft',
+                    copy: 'The server is using the current brief to write a draft. Wait for the page refresh before clicking anything else.',
+                    log: [
+                        'Using the brief currently visible on the page.',
+                        'Injecting project examples and format hints.',
+                        'Sending the draft request to Claude.',
+                        'Waiting for the draft response.'
+                    ]
+                },
+                edit: {
+                    title: 'Generating final edit',
+                    copy: 'The server is polishing the current draft into final text. This step can be slower if the draft is long.',
+                    log: [
+                        'Using the current brief and draft from the page.',
+                        'Applying anti-template editing rules.',
+                        'For YAML targets, enforcing YAML-only output.',
+                        'Waiting for the final response.'
+                    ]
+                },
+                save: {
+                    title: 'Saving file',
+                    copy: 'The server is writing the current final text into your target file and creating audit files.',
+                    log: [
+                        'Checking the target path.',
+                        'Validating YAML format if the file extension is .yaml or .yml.',
+                        'Writing the article file and audit snapshots.'
+                    ]
+                },
+                batch: {
+                    title: 'Running batch jobs',
+                    copy: 'The server is processing jobs one by one. Batch mode can take several minutes depending on how many entries are in the list.',
+                    log: [
+                        'Reading jobs from the pasted JSON or the batch file.',
+                        'Running each job one by one.',
+                        'Continuing even if one job fails.',
+                        'Writing the final batch report.'
+                    ]
+                }
+            };
+
+            if (!form || !actionInput) {
+                return;
+            }
+
+            let pollTimer = null;
+            let elapsedTimer = null;
+            let startedAt = null;
+
+            form.querySelectorAll('button[type="submit"][data-action-type]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    actionInput.value = button.getAttribute('data-action-type') || '';
+                });
+            });
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                form.classList.add('is-submitting');
+                const actionType = actionInput.value || 'auto';
+                const details = actionDescriptions[actionType] || actionDescriptions.auto;
+                const formData = new FormData(form);
+
+                if (runningBox) {
+                    runningBox.classList.add('is-visible');
+                }
+
+                if (liveBox) {
+                    liveBox.classList.add('is-visible');
+                    liveTitle.textContent = details.title;
+                    liveCopy.textContent = details.copy;
+                    if (liveAction) {
+                        liveAction.textContent = actionType;
+                    }
+                    if (liveElapsed) {
+                        liveElapsed.textContent = '0s';
+                    }
+                    if (liveLog) {
+                        liveLog.innerHTML = '';
+                        (details.log || []).forEach(function (item) {
+                            const li = document.createElement('li');
+                            li.textContent = item;
+                            liveLog.appendChild(li);
+                        });
+                    }
+                    liveBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                fetch('/pipeline/start', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                })
+                    .then(async function (response) {
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(data.error || 'Pipeline start failed.');
+                        }
+
+                        startedAt = Date.now();
+                        startElapsedTimer();
+                        pollJob(data.jobId);
+                    })
+                    .catch(function (error) {
+                        finishWithError(error.message || 'Could not start the pipeline job.');
+                    });
+            });
+
+            function pollJob(jobId) {
+                stopPollTimer();
+
+                pollTimer = window.setInterval(async function () {
+                    try {
+                        const response = await fetch('/pipeline/status/' + encodeURIComponent(jobId), {
+                            method: 'GET',
+                            credentials: 'same-origin'
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(data.error || 'Could not read pipeline status.');
+                        }
+
+                        applyJobState(data);
+
+                        if (data.status === 'completed') {
+                            stopPollTimer();
+                            stopElapsedTimer();
+                            form.classList.remove('is-submitting');
+                        }
+
+                        if (data.status === 'failed') {
+                            stopPollTimer();
+                            stopElapsedTimer();
+                            form.classList.remove('is-submitting');
+                        }
+                    } catch (error) {
+                        stopPollTimer();
+                        stopElapsedTimer();
+                        form.classList.remove('is-submitting');
+                        finishWithError(error.message || 'Polling failed.');
+                    }
+                }, 1200);
+            }
+
+            function applyJobState(state) {
+                if (liveBox) {
+                    liveBox.classList.add('is-visible');
+                }
+
+                if (runningBox) {
+                    runningBox.classList.toggle('is-visible', state.status === 'running' || state.status === 'queued');
+                }
+
+                if (liveTitle) {
+                    liveTitle.textContent = mapStatusTitle(state);
+                }
+
+                if (liveCopy) {
+                    liveCopy.textContent = state.errorMessage
+                        ? state.errorMessage
+                        : (state.statusMessage || 'Working...');
+                }
+
+                if (liveAction) {
+                    liveAction.textContent = state.actionType || 'auto';
+                }
+
+                if (briefField && typeof state.brief === 'string') {
+                    briefField.value = state.brief;
+                }
+
+                if (draftField && typeof state.draft === 'string') {
+                    draftField.value = state.draft;
+                }
+
+                if (finalField && typeof state.finalText === 'string') {
+                    finalField.value = state.finalText;
+                }
+
+                if (currentFocus) {
+                    currentFocus.textContent = mapCurrentFocus(state);
+                }
+
+                updateStepCards(state);
+                updateSavedOutput(state);
+                updateBatchOutput(state);
+            }
+
+            function updateStepCards(state) {
+                const hasBrief = !!(state.brief || '').trim();
+                const hasDraft = !!(state.draft || '').trim();
+                const hasFinal = !!(state.finalText || '').trim();
+                const hasSaved = !!state.result;
+
+                stepCards.forEach(function (card) {
+                    card.classList.remove('is-done', 'is-active');
+                    const step = card.getAttribute('data-step');
+
+                    if (step === 'brief' && hasBrief) {
+                        card.classList.add('is-done');
+                    }
+
+                    if (step === 'draft' && hasDraft) {
+                        card.classList.add('is-done');
+                    }
+
+                    if (step === 'edit' && hasFinal) {
+                        card.classList.add('is-done');
+                    }
+
+                    if (step === 'save' && hasSaved) {
+                        card.classList.add('is-done');
+                    }
+                });
+
+                const activeStep = state.status === 'running' || state.status === 'queued'
+                    ? normalizeStep(state.currentStep)
+                    : nextStepFromState(hasBrief, hasDraft, hasFinal, hasSaved);
+
+                if (activeStep) {
+                    const activeCard = document.querySelector('[data-step="' + activeStep + '"]');
+                    if (activeCard && !activeCard.classList.contains('is-done')) {
+                        activeCard.classList.add('is-active');
+                    }
+                }
+            }
+
+            function updateSavedOutput(state) {
+                if (!savedOutput || !state.result) {
+                    return;
+                }
+
+                savedOutput.innerHTML = `
+                    <div class="pipeline-summary">
+                        <div class="pipeline-summary-item">
+                            <strong>Final Editor</strong>
+                            <code>${escapeHtml(state.result.finalEditor || '')}</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Article File</strong>
+                            <code>${escapeHtml(state.result.savedArticlePath || '')}</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Brief Snapshot</strong>
+                            <code>${escapeHtml(state.result.savedBriefPath || '')}</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Draft Snapshot</strong>
+                            <code>${escapeHtml(state.result.savedDraftPath || '')}</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Audit File</strong>
+                            <code>${escapeHtml(state.result.savedFinalPath || '')}</code>
+                        </div>
+                    </div>`;
+            }
+
+            function updateBatchOutput(state) {
+                if (!batchOutput || !state.batchResult) {
+                    return;
+                }
+
+                batchOutput.innerHTML = `
+                    <div class="pipeline-summary">
+                        <div class="pipeline-summary-item">
+                            <strong>Total Jobs</strong>
+                            <code>${escapeHtml(String(state.batchResult.totalJobs || 0))}</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Completed</strong>
+                            <code>${escapeHtml(String(state.batchResult.completedJobs || 0))}</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Failed</strong>
+                            <code>${escapeHtml(String(state.batchResult.failedJobs || 0))}</code>
+                        </div>
+                        <div class="pipeline-summary-item">
+                            <strong>Report File</strong>
+                            <code>${escapeHtml(state.batchResult.reportPath || '')}</code>
+                        </div>
+                    </div>`;
+            }
+
+            function startElapsedTimer() {
+                stopElapsedTimer();
+                elapsedTimer = window.setInterval(function () {
+                    if (!liveElapsed || !startedAt) {
+                        return;
+                    }
+
+                    const seconds = Math.floor((Date.now() - startedAt) / 1000);
+                    liveElapsed.textContent = seconds + 's';
+                }, 1000);
+            }
+
+            function stopElapsedTimer() {
+                if (elapsedTimer) {
+                    window.clearInterval(elapsedTimer);
+                    elapsedTimer = null;
+                }
+            }
+
+            function stopPollTimer() {
+                if (pollTimer) {
+                    window.clearInterval(pollTimer);
+                    pollTimer = null;
+                }
+            }
+
+            function finishWithError(message) {
+                if (liveBox) {
+                    liveBox.classList.add('is-visible');
+                }
+
+                if (runningBox) {
+                    runningBox.classList.remove('is-visible');
+                }
+
+                if (liveTitle) {
+                    liveTitle.textContent = 'Pipeline error';
+                }
+
+                if (liveCopy) {
+                    liveCopy.textContent = message;
+                }
+            }
+
+            function mapStatusTitle(state) {
+                if (state.status === 'failed') {
+                    return 'Pipeline failed';
+                }
+
+                if (state.status === 'completed') {
+                    return 'Pipeline step completed';
+                }
+
+                switch (normalizeStep(state.currentStep)) {
+                    case 'brief': return 'Running brief step';
+                    case 'draft': return 'Running draft step';
+                    case 'edit': return 'Running final edit step';
+                    case 'save': return 'Saving output';
+                    case 'batch': return 'Running batch jobs';
+                    default: return 'Pipeline job is running';
+                }
+            }
+
+            function mapCurrentFocus(state) {
+                if (state.status === 'running' || state.status === 'queued') {
+                    switch (normalizeStep(state.currentStep)) {
+                        case 'brief': return 'Running Step 1: Generate the brief';
+                        case 'draft': return 'Running Step 2: Turn the brief into a draft';
+                        case 'edit': return 'Running Step 3: Turn the draft into final output';
+                        case 'save': return 'Running Step 4: Validate and save the file';
+                        case 'batch': return 'Running batch pipeline jobs';
+                    }
+                }
+
+                const hasBrief = !!(state.brief || '').trim();
+                const hasDraft = !!(state.draft || '').trim();
+                const hasFinal = !!(state.finalText || '').trim();
+                const hasSaved = !!state.result;
+                const next = nextStepFromState(hasBrief, hasDraft, hasFinal, hasSaved);
+
+                switch (next) {
+                    case 'brief': return 'Step 1: Generate the brief';
+                    case 'draft': return 'Step 2: Turn the brief into a draft';
+                    case 'edit': return 'Step 3: Turn the draft into final output';
+                    case 'save': return 'Step 4: Save the final text';
+                    default: return state.status === 'completed' ? 'Pipeline finished successfully' : 'Pipeline workspace ready';
+                }
+            }
+
+            function nextStepFromState(hasBrief, hasDraft, hasFinal, hasSaved) {
+                if (!hasBrief) return 'brief';
+                if (!hasDraft) return 'draft';
+                if (!hasFinal) return 'edit';
+                if (!hasSaved) return 'save';
+                return '';
+            }
+
+            function normalizeStep(step) {
+                const value = (step || '').toLowerCase();
+                if (value === 'queued') return 'brief';
+                return value;
+            }
+
+            function escapeHtml(value) {
+                return String(value)
+                    .replaceAll('&', '&amp;')
+                    .replaceAll('<', '&lt;')
+                    .replaceAll('>', '&gt;')
+                    .replaceAll('"', '&quot;')
+                    .replaceAll("'", '&#39;');
+            }
+        })();
+    </script>
+}

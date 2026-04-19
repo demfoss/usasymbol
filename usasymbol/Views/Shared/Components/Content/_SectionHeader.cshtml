@@ -1,0 +1,16 @@
+@using USASymbol.Models.ViewModels
+@model USASymbol.Models.ViewModels.IContentSection
+
+<header class="mb-4">
+    <div class="flex items-center gap-2.5">
+        @if (!string.IsNullOrWhiteSpace(Model.Icon))
+        {
+            <span class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-900 text-white text-xs">
+                <i class="@Model.Icon leading-none" aria-hidden="true"></i>
+            </span>
+        }
+        <h2 class="text-xl lg:text-2xl font-bold text-slate-900 leading-tight">
+            @Model.Title
+        </h2>
+    </div>
+</header>

@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \":*)",
+      "Bash(dd if=\"Content/states/alabama/mammal/racking-horse.yaml\" bs=1 skip=87815 count=15)",
+      "Bash(xxd)",
+      "Bash(dd if=\"Content/states/alabama/mammal/racking-horse.yaml\" bs=1 skip=7110 count=15)",
+      "Bash(while read f)",
+      "Bash(do iconv -f utf-8 -t utf-8 \"$f\")",
+      "Bash(echo \"$f\" done)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"D:\\\\сайты\\\\usasymbol\\\\usasymbol\\\\update_colors.ps1\")",
+      "Bash(del \"D:\\\\сайты\\\\usasymbol\\\\usasymbol\\\\update_colors.ps1\")",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(ls d:сайтыusasymbolusasymbol/*.json)",
+      "Bash(node Data/generate-color-images.js)",
+      "WebFetch(domain:law.justia.com)",
+      "WebFetch(domain:statesymbolsusa.org)",
+      "WebFetch(domain:www.archives.state.al.us)",
+      "Bash(node -e ':*)",
+      "Bash(xargs head:*)",
+      "Bash(grep -l \"StateService\\\\|SymbolService\" /d/сайты/usasymbol/usasymbol/Services/*.cs)",
+      "Bash(dotnet build:*)",
+      "Bash(xargs grep:*)",
+      "Bash(cat)",
+      "Bash(chmod +x /tmp/find_dupes.sh)",
+      "Bash(bash /tmp/find_dupes.sh)",
+      "Bash(bash /tmp/check_dupes.sh)",
+      "WebFetch(domain:worldpopulationreview.com)",
+      "WebFetch(domain:upload.wikimedia.org)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/1/1a/Blank_US_Map_%28states_only%29.svg\" -o /d/сайты/usasymbol/usasymbol/wwwroot/maps/us-states.svg)",
+      "Bash(powershell.exe -Command \"Invoke-WebRequest -Uri 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Blank_US_Map_%28states_only%29.svg' -OutFile 'D:/сайты/usasymbol/usasymbol/wwwroot/maps/us-states.svg' -UseBasicParsing; Get-Item 'D:/сайты/usasymbol/usasymbol/wwwroot/maps/us-states.svg' | Select-Object Length\")",
+      "WebSearch",
+      "WebFetch(domain:www.voronoiapp.com)",
+      "WebFetch(domain:www.bls.gov)",
+      "WebFetch(domain:unmudl.com)",
+      "WebFetch(domain:www.visualcapitalist.com)",
+      "WebFetch(domain:www.horsesmouth.com)"
+    ]
+  }
+}

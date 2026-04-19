@@ -1,70 +1,70 @@
 ﻿// Quiz questions database
 const quizQuestions = [
     {
-        question: "What is the state bird of California?",
+        question: "What is the state bird of California",
         hint: "🐦 This bird is known for its distinctive call and colorful plumage",
         answers: ["California Quail", "Bald Eagle", "Blue Jay", "Cardinal"],
         correct: 0,
         explanation: "The California Quail has been California's state bird since 1931!"
     },
     {
-        question: "What is the capital of Texas?",
+        question: "What is the capital of Texas",
         hint: "🏛️ This city is also known for its live music scene",
         answers: ["Houston", "Dallas", "Austin", "San Antonio"],
         correct: 2,
         explanation: "Austin has been the capital of Texas since 1839."
     },
     {
-        question: "What is the state flower of New York?",
+        question: "What is the state flower of New York",
         hint: "🌹 This flower shares its name with a precious gem",
         answers: ["Rose", "Daisy", "Tulip", "Violet"],
         correct: 0,
         explanation: "The Rose became New York's state flower in 1955."
     },
     {
-        question: "What is the state tree of Florida?",
+        question: "What is the state tree of Florida",
         hint: "🌴 This tree is perfect for the tropical climate",
         answers: ["Oak", "Sabal Palm", "Pine", "Magnolia"],
         correct: 1,
         explanation: "The Sabal Palm (Cabbage Palm) is Florida's state tree since 1953."
     },
     {
-        question: "What is the nickname of Illinois?",
+        question: "What is the nickname of Illinois",
         hint: "🌾 This nickname relates to President Lincoln",
         answers: ["The Sunshine State", "The Prairie State", "The Garden State", "The Bay State"],
         correct: 1,
         explanation: "Illinois is known as 'The Prairie State' and 'Land of Lincoln'."
     },
     {
-        question: "What is the state bird of Texas?",
+        question: "What is the state bird of Texas",
         hint: "🦜 This colorful bird can mimic many sounds",
         answers: ["Mockingbird", "Cardinal", "Blue Jay", "Robin"],
         correct: 0,
         explanation: "The Northern Mockingbird became Texas's state bird in 1927."
     },
     {
-        question: "What is the capital of California?",
+        question: "What is the capital of California",
         hint: "🏛️ This city is located in the Central Valley",
         answers: ["Los Angeles", "San Francisco", "Sacramento", "San Diego"],
         correct: 2,
         explanation: "Sacramento has been California's capital since 1854."
     },
     {
-        question: "What is the state animal of California?",
+        question: "What is the state animal of California",
         hint: "🐻 This large mammal is featured on the state flag",
         answers: ["California Grizzly Bear", "Mountain Lion", "Gray Wolf", "Black Bear"],
         correct: 0,
         explanation: "The California Grizzly Bear is the state animal, though sadly extinct in California since 1922."
     },
     {
-        question: "What is Florida's state flower?",
+        question: "What is Florida's state flower",
         hint: "🍊 This flower comes from a citrus tree",
         answers: ["Hibiscus", "Orange Blossom", "Jasmine", "Magnolia"],
         correct: 1,
         explanation: "Orange Blossom became Florida's state flower in 1909."
     },
     {
-        question: "What is the state motto of New York?",
+        question: "What is the state motto of New York",
         hint: "📜 Latin phrase meaning 'Ever Upward'",
         answers: ["E Pluribus Unum", "Excelsior", "Liberty and Prosperity", "In God We Trust"],
         correct: 1,

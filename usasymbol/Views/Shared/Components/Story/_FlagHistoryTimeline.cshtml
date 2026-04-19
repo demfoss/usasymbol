@@ -1,0 +1,20 @@
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@model (FlagDetailViewModel Vm, FlagSection Section)
+
+@{
+    var stateSlug = Model.Vm.State?.Slug ?? "";
+    var versions = (Model.Section?.Versions ?? new List<FlagVersion>())
+        .Select(v => new VersionDisplayItem
+        {
+            Name = v.Name,
+            Years = v.Years,
+            Image = v.Image,
+            Description = v.Description,
+        })
+        .ToList();
+}
+
+@await Html.PartialAsync(
+    "Components/Widgets/_VersionsTimeline",
+    ((IReadOnlyList<VersionDisplayItem>)versions, $"/images/flags/{stateSlug}"))

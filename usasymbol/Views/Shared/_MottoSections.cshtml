@@ -1,0 +1,191 @@
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@model MottoDetailViewModel
+
+@{
+    var sections = Model.MottoContent?.Sections;
+    var quoteDone = false;
+    var timelineDone = false;
+    var statDone = false;
+    var quoteAfterSectionId = Model.MottoContent?.ExpertQuoteAfterSectionId ?? string.Empty;
+    var timelineAfterSectionId = Model.MottoContent?.TimelineAfterSectionId ?? string.Empty;
+    var statAfterSectionId = Model.MottoContent?.BigStatAfterSectionId ?? string.Empty;
+    var orphanVisualAssets = Model.VisualAssets?
+        .Where(v => v != null &&
+                    !string.IsNullOrWhiteSpace(v.Src) &&
+                    !string.Equals(v.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                    string.IsNullOrWhiteSpace(v.Section))
+        .ToList()
+        ?? new List<VisualAsset>();
+    var fullWidthVisualAsset = Model.VisualAssets?
+        .FirstOrDefault(v => v != null &&
+                             !string.IsNullOrWhiteSpace(v.Src) &&
+                             string.Equals(v.Layout, "full-width", StringComparison.OrdinalIgnoreCase));
+
+    bool MatchesAnyId(string? id, params string[] candidates)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return false;
+        }
+
+        return candidates.Any(candidate => string.Equals(id, candidate, StringComparison.OrdinalIgnoreCase));
+    }
+}
+
+@if (sections?.Any() == true)
+{
+    foreach (var item in sections)
+    {
+        <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            @await Html.PartialAsync("Components/Content/_SectionHeader", item)
+
+            @{
+                var sectionAssets = Model.VisualAssets?
+                    .Where(v => v != null &&
+                                !string.IsNullOrWhiteSpace(v.Src) &&
+                                string.Equals(v.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+                    .ToList()
+                    ?? new List<VisualAsset>();
+            }
+
+            @foreach (var asset in sectionAssets)
+            {
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+            }
+
+            @if (item.Paragraphs?.Any() == true)
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                    @for (var i = 0; i < item.Paragraphs.Count; i++)
+                    {
+                        <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                            @item.Paragraphs[i].RenderAutoLinks()
+                        </p>
+                    }
+                </div>
+            }
+
+            @if (item.Subsections?.Any() == true)
+            {
+                <div class="mt-8 space-y-8">
+                    @foreach (var sub in item.Subsections)
+                    {
+                        <article class="pt-8 border-t border-slate-100 first:border-t-0 first:pt-0">
+                            <h3 class="text-lg lg:text-xl font-semibold text-slate-900 mb-3">@sub.Subtitle</h3>
+
+                            @if (!string.IsNullOrWhiteSpace(sub.Text))
+                            {
+                                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-700">
+                                    <p>@sub.Text.RenderAutoLinks()</p>
+                                </div>
+                            }
+
+                            @if (sub.ListItems?.Any() == true)
+                            {
+                                <ul class="mt-4 space-y-2 text-sm text-slate-700 max-w-prose">
+                                    @foreach (var listItem in sub.ListItems)
+                                    {
+                                        <li class="pl-5 relative before:content-['-'] before:absolute before:left-0 before:text-slate-400">
+                                            @listItem.RenderListItem()
+                                        </li>
+                                    }
+                                </ul>
+                            }
+
+                            @if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
+                            {
+                                <div class="mt-4">
+                                    <a href="@sub.Link.Url"
+                                       class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                                        <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
+                                        <i class="fas fa-arrow-right text-xs"></i>
+                                    </a>
+                                </div>
+                            }
+                        </article>
+                    }
+                </div>
+            }
+
+            @if (item.Facts?.Any() == true)
+            {
+                @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+            }
+
+            <div class="clear-both"></div>
+        </section>
+
+        @if (!statDone &&
+            !string.IsNullOrWhiteSpace(statAfterSectionId) &&
+            string.Equals(item.Id, statAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.MottoContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", Model.MottoContent.BigStat)
+            statDone = true;
+        }
+        else if (!statDone && MatchesAnyId(item.Id, "when-official", "meaning-translation") && Model.MottoContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", Model.MottoContent.BigStat)
+            statDone = true;
+        }
+
+        @if (!timelineDone &&
+            !string.IsNullOrWhiteSpace(timelineAfterSectionId) &&
+            string.Equals(item.Id, timelineAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.MottoContent?.Timeline?.Any() == true)
+        {
+            @await Html.PartialAsync("Components/Story/_Timeline", Model.MottoContent.Timeline)
+            timelineDone = true;
+        }
+        else if (!timelineDone && Model.MottoContent?.Timeline?.Any() == true && MatchesAnyId(item.Id, "when-official", "earlier-motto"))
+        {
+            @await Html.PartialAsync("Components/Story/_Timeline", Model.MottoContent.Timeline)
+            timelineDone = true;
+        }
+
+        @if (!quoteDone &&
+            !string.IsNullOrWhiteSpace(quoteAfterSectionId) &&
+            string.Equals(item.Id, quoteAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.MottoContent?.ExpertQuote != null)
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.MottoContent.ExpertQuote)
+            quoteDone = true;
+        }
+    }
+
+    if (!statDone && Model.MottoContent?.BigStat != null)
+    {
+        @await Html.PartialAsync("Components/Story/_BigStat", Model.MottoContent.BigStat)
+    }
+
+    if (!timelineDone && Model.MottoContent?.Timeline?.Any() == true)
+    {
+        @await Html.PartialAsync("Components/Story/_Timeline", Model.MottoContent.Timeline)
+    }
+
+    if (!quoteDone && Model.MottoContent?.ExpertQuote != null)
+    {
+        @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.MottoContent.ExpertQuote)
+    }
+
+    if (orphanVisualAssets.Any())
+    {
+        foreach (var asset in orphanVisualAssets)
+        {
+            @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+        }
+    }
+
+    if (fullWidthVisualAsset != null)
+    {
+        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", fullWidthVisualAsset)
+    }
+}
+else
+{
+    <div class="text-sm text-slate-500">
+        No sections rendered yet for this motto.
+    </div>
+}

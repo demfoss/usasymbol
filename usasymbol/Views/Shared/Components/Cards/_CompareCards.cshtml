@@ -1,0 +1,121 @@
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@model (FirearmDetailViewModel Vm, IContentSection Section)
+@inject IImageUrlService Images
+
+@using System.IO
+@using System.Linq
+
+@functions {
+    private string? GetFirearmThumb(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return null;
+
+        var slug = url.TrimEnd('/').Split('/').LastOrDefault();
+        if (string.IsNullOrWhiteSpace(slug)) return null;
+
+        var fileName = slug.ToLowerInvariant() + ".webp";
+        var webPath = $"/images/firearms/{fileName}";
+
+        try
+        {
+            var services = Context.RequestServices;
+            var env = services.GetService(typeof(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)) as Microsoft.AspNetCore.Hosting.IWebHostEnvironment;
+            if (env == null) return webPath;
+
+            var full = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "firearms", fileName);
+            if (System.IO.File.Exists(full)) return webPath;
+
+            // fallback: try any file in the folder that starts with slug (e.g. slug-pistol.webp)
+            var dir = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "firearms");
+            if (!System.IO.Directory.Exists(dir)) return webPath;
+
+            var match = System.IO.Directory.EnumerateFiles(dir)
+                .Select(System.IO.Path.GetFileName)
+                .Where(static f => !string.IsNullOrWhiteSpace(f))
+                .FirstOrDefault(f => f != null &&
+                                     (f.StartsWith(slug, StringComparison.OrdinalIgnoreCase)
+                                      || f.IndexOf(slug, StringComparison.OrdinalIgnoreCase) >= 0));
+
+            if (!string.IsNullOrEmpty(match))
+                return "/images/firearms/" + match;
+
+            return webPath;
+        }
+        catch
+        {
+            return webPath;
+        }
+    }
+}
+
+@{
+    var vm = Model.Vm;
+    var section = Model.Section as FirearmSection;
+    if (section?.Subsections?.Any() != true) { return; }
+}
+
+<div class="space-y-6 clear-both">
+    @foreach (var sub in section!.Subsections!)
+    {
+        var otherThumb = GetFirearmThumb(sub.Link?.Url);
+        var href = sub.Link?.Url;
+
+        <article class="relative group rounded-[2rem] border border-slate-200 bg-white p-6 lg:p-8 transition-all hover:border-slate-400 hover:shadow-xl overflow-hidden">
+            @if (!string.IsNullOrWhiteSpace(href))
+            {
+                <a href="@href" class="absolute inset-0 z-10" aria-label="@sub.Subtitle"></a>
+            }
+
+            <div class="relative z-20 pointer-events-none">
+                <div class="mb-6 flex items-center justify-between">
+                    <h3 class="text-xl lg:text-2xl font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">@sub.Subtitle</h3>
+                    <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest">Compare</span>
+                </div>
+
+                <div class="relative grid grid-cols-2 gap-6 lg:gap-8 items-center">
+                    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-400 flex items-center justify-center text-[10px] font-black shadow-sm pointer-events-none">
+                        VS
+                    </div>
+
+                    <div class="space-y-2 text-center">
+                        <div class="aspect-[16/10] rounded-xl overflow-hidden bg-slate-50 ring-1 ring-slate-100 relative flex items-center justify-center">
+                            <i class="fas fa-gun text-3xl text-slate-200 absolute z-0"></i>
+                            @if (!string.IsNullOrEmpty(vm.Symbol.ImageUrl))
+                            {
+                                <img src="@Images.Card(vm.Symbol.ImageUrl)" class="absolute inset-0 w-full h-full object-cover z-10" />
+                            }
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">@vm.Symbol.Name</p>
+                    </div>
+
+                    <div class="space-y-2 text-center">
+                        <div class="aspect-[16/10] rounded-xl overflow-hidden bg-slate-100 ring-1 ring-slate-100 relative flex items-center justify-center">
+                            <i class="fas fa-gun text-3xl text-slate-200 absolute z-0"></i>
+                            @if (!string.IsNullOrEmpty(otherThumb))
+                            {
+                                var jpgThumb = otherThumb.Replace(".webp", ".jpg");
+                                <picture class="absolute inset-0 w-full h-full block">
+                                    <source type="image/webp" srcset="@Images.Card(otherThumb)" />
+                                    <source type="image/jpeg" srcset="@Images.Card(jpgThumb)" />
+                                    <img src="@Images.Card(jpgThumb)"
+                                         alt="@(sub.Link?.Label ?? sub.Subtitle ?? "Compare target")"
+                                         class="absolute inset-0 w-full h-full object-cover z-10 grayscale group-hover:grayscale-0 transition-all duration-500" />
+                                </picture>
+                            }
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">@(sub.Link?.Label ?? "Compare Target")</p>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(sub.Text))
+                {
+                    <div class="mt-6 p-5 rounded-2xl bg-slate-50 border border-slate-100/50 prose-sm text-slate-600 italic leading-relaxed relative pointer-events-auto">
+                        @sub.Text.RenderAutoLinks()
+                    </div>
+                }
+            </div>
+        </article>
+    }
+</div>

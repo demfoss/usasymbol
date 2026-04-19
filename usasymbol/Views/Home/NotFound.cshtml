@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Page Not Found - USA Symbol";
+    ViewData["Description"] = "The page you're looking for doesn't exist.";
+}
+
+<!-- 404 ERROR PAGE -->
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-16">
+    <div class="max-w-2xl w-full text-center">
+
+        <!-- Animated Eagle Icon -->
+        <div class="mb-8 animate-bounce">
+            <div class="text-9xl">🦅</div>
+        </div>
+
+        <!-- 404 Message -->
+        <h1 class="text-6xl md:text-8xl font-bold text-blue-900 mb-4">404</h1>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+            This Symbol Doesn't Exist
+        </h2>
+        <p class="text-lg text-gray-600 mb-8 max-w-md mx-auto">
+            Looks like you've wandered into uncharted territory. This page is as elusive as a state symbol that hasn't been adopted yet!
+        </p>
+
+        <!-- Search Suggestion Box -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 max-w-md mx-auto">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                🔍 What were you looking for?
+            </h3>
+            <div class="space-y-3">
+                <a href="/states"
+                   class="block w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    Browse All States
+                </a>
+                <a href="/symbols"
+                   class="block w-full bg-white border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
+                    Explore Symbol Types
+                </a>
+                <a href="/"
+                   class="block w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
+                    Return to Homepage
+                </a>
+            </div>
+        </div>
+
+        <!-- Popular States Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                Popular State Pages
+            </h3>
+            <div class="grid grid-cols-2 gap-3">
+                <a href="/states/california"
+                   class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition group">
+                    <span class="text-2xl">🌴</span>
+                    <span class="font-medium text-gray-700 group-hover:text-blue-700">California</span>
+                </a>
+                <a href="/states/texas"
+                   class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition group">
+                    <span class="text-2xl">⭐</span>
+                    <span class="font-medium text-gray-700 group-hover:text-blue-700">Texas</span>
+                </a>
+                <a href="/states/new-york"
+                   class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition group">
+                    <span class="text-2xl">🗽</span>
+                    <span class="font-medium text-gray-700 group-hover:text-blue-700">New York</span>
+                </a>
+                <a href="/states/florida"
+                   class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition group">
+                    <span class="text-2xl">🍊</span>
+                    <span class="font-medium text-gray-700 group-hover:text-blue-700">Florida</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Fun Fact -->
+        <div class="mt-8 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg max-w-md mx-auto">
+            <p class="text-sm text-gray-700">
+                <strong>Did you know?</strong> The Northern Cardinal is the most popular state bird,
+                chosen by 7 different states!
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    @@keyframes bounce {
+        0%, 100% {
+            transform: translateY(-5%);
+            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+        }
+
+        50% {
+            transform: translateY(0);
+            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        }
+    }
+
+    .animate-bounce {
+        animation: bounce 2s infinite;
+    }
+</style>

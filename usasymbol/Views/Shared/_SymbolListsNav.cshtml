@@ -1,0 +1,114 @@
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+
+@{
+    var colors = Model.Colors;
+
+    var items = new (string PluralSlug, string Title, string Subtitle)[]
+    {
+    ("birds", "State Birds", "Complete list for all 50 states"),
+    ("flags", "State Flags", "Official flags of every state"),
+    ("flowers", "State Flowers", "Complete list for all 50 states"),
+    ("beverages", "State Beverages", "Official drinks, spirits, and cocktails"),
+    ("nicknames", "State Nicknames", "Official and popular nicknames"),
+    ("trees", "State Trees", "Complete list for all 50 states"),
+    ("mottos", "State Mottos", "Official mottos and meanings"),
+    ("mammals", "State Mammals", "Official mammals by state"),
+    ("dinosaurs", "State Dinosaurs", "Official dinosaurs by state"),
+    ("dogs", "State Dogs", "Official dog breeds by state"),
+    ("horses", "State Horses", "Official horse breeds by state"),
+    ("marine-mammals", "State Marine Mammals", "Official marine mammals by state"),
+    ("colors", "State Colors", "Official colors of every state"),
+    };
+
+    var activePlural = (Model.SymbolTypePlural ?? "").Trim().ToLowerInvariant();
+    bool IsActive(string pluralSlug) => string.Equals(activePlural, pluralSlug, StringComparison.OrdinalIgnoreCase);
+}
+
+<aside class="hidden lg:block">
+    <div class="overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_top_right,rgba(186,230,253,0.26),transparent_38%),linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,250,252,0.9))] shadow-[0_28px_60px_-40px_rgba(15,23,42,0.26)]">
+        <div class="px-5 pt-5">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xs font-semibold tracking-[0.22em] text-slate-700 uppercase">
+                    Lists
+                </h2>
+            </div>
+            <div class="mt-3 h-px bg-slate-200"></div>
+        </div>
+
+        <div class="px-4 py-3">
+            <div class="space-y-1.5">
+                @foreach (var item in items)
+                {
+                    var href = $"/symbols/{item.PluralSlug}";
+                    var active = IsActive(item.PluralSlug);
+
+                    var boxClass = active
+                    ? "bg-white/90 shadow-[0_18px_34px_-28px_rgba(15,23,42,0.34)]"
+                    : "hover:bg-slate-50";
+
+                    <a href="@href"
+                       class="group flex items-start justify-between gap-3 rounded-xl px-3 py-2 transition @boxClass">
+                        <div class="min-w-0">
+                            <div class="text-sm font-semibold text-slate-900 truncate group-hover:@colors.Text transition">
+                                @item.Title
+                            </div>
+                            <div class="mt-0.5 text-[11px] font-semibold tracking-widest uppercase text-slate-500">
+                                @item.Subtitle
+                            </div>
+                        </div>
+
+                        <i class="fas fa-arrow-right text-xs text-slate-400 mt-1 group-hover:text-slate-700 transition"></i>
+                    </a>
+                }
+            </div>
+
+            <div class="mt-4 pt-4">
+                <a href="/states/@Model.State.Slug"
+                   class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                    <span>@Model.State.Name symbols</span>
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<section class="lg:hidden mt-12">
+    <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs font-semibold tracking-[0.22em] text-slate-700 uppercase">
+            Lists
+        </h2>
+    </div>
+
+    <div class="h-px bg-slate-200 mb-5"></div>
+
+    <div class="grid grid-cols-2 gap-3">
+        @foreach (var item in items)
+        {
+            var href = $"/symbols/{item.PluralSlug}";
+            var active = IsActive(item.PluralSlug);
+
+            var boxClass = active
+                ? "bg-white shadow-[0_20px_34px_-28px_rgba(15,23,42,0.34)]"
+                : "bg-white hover:bg-slate-50";
+
+            <a href="@href"
+               class="rounded-[1.6rem] px-3 py-3 shadow-[0_20px_34px_-28px_rgba(15,23,42,0.28)] transition @boxClass">
+                <div class="text-sm font-semibold text-slate-900 leading-snug">
+                    @item.Title
+                </div>
+                <div class="mt-1 text-[11px] font-semibold tracking-widest uppercase text-slate-500">
+                    View list
+                </div>
+            </a>
+        }
+    </div>
+
+    <div class="mt-6">
+        <a href="/states/@Model.State.Slug"
+           class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+            <span>@Model.State.Name symbols</span>
+            <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+    </div>
+</section>

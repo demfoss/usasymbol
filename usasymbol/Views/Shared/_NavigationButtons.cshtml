@@ -1,0 +1,43 @@
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+
+@{
+    var typeSlug = Model.SymbolTypePlural ?? "symbols"; // e.g. mammals
+    var typeLabel = typeSlug.Replace("-", " ");
+    var typeLabelTitle = char.ToUpperInvariant(typeLabel[0]) + typeLabel.Substring(1);
+
+    var backUrl = $"/symbols/{typeSlug}";
+    var stateUrl = $"/states/{Model.State.Slug}";
+}
+
+<div class="overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_top_right,rgba(186,230,253,0.28),transparent_36%),linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,250,252,0.9))] shadow-[0_28px_60px_-40px_rgba(15,23,42,0.28)]">
+    <div class="relative px-5 py-4">
+        <div class="absolute -top-8 right-0 h-16 w-16 rounded-full bg-sky-100/60 blur-2xl"></div>
+
+        <div class="relative">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Explore</p>
+            <h3 class="mt-1 text-base font-semibold text-slate-900">
+                Navigation
+            </h3>
+        </div>
+    </div>
+
+    <div class="p-5">
+        <div class="space-y-4">
+            <a href="@backUrl"
+               class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-slate-900">
+                <i class="fa-solid fa-arrow-left shrink-0 text-xs"></i>
+                <span>Back to All @typeLabelTitle</span>
+            </a>
+
+            <a href="@stateUrl"
+               class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-3.5 text-sm font-semibold text-white shadow-[0_24px_45px_-28px_rgba(15,23,42,0.55)] transition hover:bg-slate-800 active:scale-[0.99]">
+                <span>See All @Model.State.Name Symbols</span>
+                <i class="fa-solid fa-arrow-right shrink-0 text-xs"></i>
+            </a>
+        </div>
+
+        <p class="mt-4 text-sm leading-6 text-slate-500">
+            Explore more entries in this category or browse all symbols for @Model.State.Name.
+        </p>
+    </div>
+</div>

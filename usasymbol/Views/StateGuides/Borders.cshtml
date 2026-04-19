@@ -1,0 +1,1026 @@
+﻿@using USASymbol.Models.ViewModels
+@using System.Text.Json
+@model BorderDetailViewModel
+
+@inject IImageUrlService Images
+
+@{
+    var canonicalUrl = $"{Context.Request.Scheme}://{Context.Request.Host}/states/{Model.State.Slug}/borders";
+    var borderContent = Model.BorderContent!;
+    var ogImage = Images.Full(Model.BorderContent?.Map?.Image ?? Model.State.FlagImageUrl);
+
+    ViewData["Title"] = Model.BorderContent?.SeoTitle ?? $"{Model.State.Name} Borders";
+    ViewData["Description"] = Model.BorderContent?.SeoDescription ?? $"What borders {Model.State.Name}?";
+    ViewData["OgImage"] = ogImage;
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = canonicalUrl;
+}
+
+<style>
+    h2[id], h3[id], section[id], div[id] {
+        scroll-margin-top: 100px;
+    }
+
+    .subsection-anchor {
+        scroll-margin-top: 100px;
+    }
+
+    .map-caption {
+        font-style: italic;
+        color: #6b7280;
+        margin-top: 0.75rem;
+        text-align: center;
+    }
+
+    .border-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+        .border-card-link:hover .border-card {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+</style>
+
+<!-- Progress Bar -->
+<div id="progressBar"
+     class="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-600
+            z-50 transition-all duration-150"
+     style="width: 0%">
+</div>
+
+<!-- BREADCRUMBS -->
+<nav class="max-w-6xl mx-auto px-4 py-4 text-sm text-gray-600" aria-label="Breadcrumb">
+    <ol class="flex flex-wrap items-center gap-1">
+        <li><a href="/" class="hover:text-blue-900 transition">Home</a></li>
+        <li class="text-gray-400">/</li>
+        <li><a href="/states" class="hover:text-blue-900 transition">States</a></li>
+        <li class="text-gray-400">/</li>
+        <li><a href="/states/@Model.State.Slug" class="hover:text-blue-900 transition">@Model.State.Name</a></li>
+        <li class="text-gray-400">/</li>
+        <li class="text-gray-900 font-semibold">Borders</li>
+    </ol>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="max-w-6xl mx-auto px-4 pb-12">
+
+    <!-- H1: PAGE TITLE - Above the fold -->
+    <header class="mb-6">
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            @Model.State.Name Borders: States, Map & Complete Guide
+        </h1>
+    </header>
+
+    <!-- AUTHOR BOX -->
+    @if (Model.BorderContent != null)
+    {
+        <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-600 mb-8 shadow-sm">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-lg border border-blue-200 bg-gradient-to-br from-blue-900 to-blue-600 flex items-center justify-center text-white font-bold text-xl">
+                        US
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-semibold text-gray-800">
+                                Researched by @(Model.BorderContent.Author ?? "USA Symbol Team")
+                            </span>
+                            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-gray-500">
+                            Fact-checked • Updated @(Model.BorderContent.DateModified?.ToString("MMMM d, yyyy") ?? DateTime.UtcNow.ToString("MMMM d, yyyy"))
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a href="/about" class="text-blue-700 hover:text-blue-900 font-semibold text-sm transition">About Editor</a>
+                </div>
+            </div>
+        </div>
+    }
+<!-- SECTION 1: GEOGRAPHIC OVERVIEW (Hero) -->
+<section id="geographic-overview" class="mb-12 scroll-mt-20">
+    <div class="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
+        <div class="p-6 md:p-10 lg:p-12">
+            <div class="max-w-4xl mx-auto text-white">
+
+                @if (Model.BorderContent?.BorderSummary != null)
+                {
+                    var summary = Model.BorderContent.BorderSummary;
+                    
+                    <!-- Header Badge -->
+                    <div class="text-amber-400/80 text-sm font-semibold mb-3 uppercase tracking-widest">
+                        Geographic Overview
+                    </div>
+
+                    <!-- Intro Text -->
+                    @if (Model.HasIntro)
+                    {
+                        <p class="text-blue-100 text-base md:text-lg lg:text-xl leading-relaxed mb-8">
+                            @Model.BorderContent.IntroText.RenderAutoLinks()
+                        </p>
+                    }
+
+                    <!-- Quick Stats Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                            <div class="text-3xl md:text-4xl font-bold text-white mb-1">@summary.BorderingStatesCount</div>
+                            <div class="text-xs text-blue-200 uppercase tracking-wide">Bordering States</div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(summary.CountryBorders) && summary.CountryBorders != "None")
+                        {
+                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                                <div class="text-2xl md:text-3xl font-bold text-white mb-1">@summary.CountryBorders</div>
+                                <div class="text-xs text-blue-200 uppercase tracking-wide">International</div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(summary.OceanBorders) && summary.OceanBorders != "None")
+                        {
+                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 col-span-2 md:col-span-1">
+                                <div class="text-xl md:text-2xl font-bold text-white mb-1">@summary.OceanBorders</div>
+                                <div class="text-xs text-blue-200 uppercase tracking-wide">Ocean Border</div>
+                            </div>
+                        }
+
+                        @if (summary.Landlocked)
+                        {
+                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                                <div class="text-xl md:text-2xl font-bold text-white mb-1">Landlocked</div>
+                                <div class="text-xs text-blue-200 uppercase tracking-wide">No Ocean Access</div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Share Buttons -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <button id="shareButton" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-lg border border-white/20 transition text-white font-semibold text-sm min-h-[44px]">
+                        <i class="fas fa-share-nodes" aria-hidden="true"></i>
+                        Share
+                    </button>
+                    <button id="copyLinkBtn" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-lg border border-white/20 transition text-white font-semibold text-sm min-h-[44px]">
+                        <i class="fas fa-copy" aria-hidden="true"></i>
+                        Copy Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- SECTION 2: CALIFORNIA BORDER MAP -->
+    @if (Model.HasMap)
+    {
+        var map = borderContent.Map!;
+
+        <section id="border-map" class="mb-12 scroll-mt-20">
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-gray-200 shadow-md">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                    <i class="fas fa-map text-blue-700" aria-hidden="true"></i>
+                    @map.Title
+                </h2>
+
+                <div class="flex flex-col items-center">
+                    <!-- Map Image -->
+                    <div class="w-full max-w-3xl bg-gray-50 rounded-xl p-4 border border-gray-200">
+                        <img src="@Images.Hero(map.Image)"
+                             srcset="@(Images.Hero(map.Image, 480)) 480w,
+                                     @(Images.Hero(map.Image, 768)) 768w,
+                                     @(Images.Hero(map.Image, 1200)) 1200w"
+                             sizes="(max-width: 1023px) 100vw, 768px"
+                             alt="@map.ImageAlt"
+                             class="w-full h-auto rounded-lg shadow-lg"
+                             loading="lazy"
+                             onerror="this.onerror=null; this.src='/images/maps/placeholder-map.svg'; this.alt='Map temporarily unavailable';">
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(map.Caption))
+                    {
+                        <figcaption class="map-caption text-sm md:text-base mt-3 max-w-2xl">
+                            @map.Caption
+                        </figcaption>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- TABLE OF CONTENTS -->
+    @if (Model.HasSections)
+    {
+        <section class="mb-8 md:mb-12">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-md border border-blue-200 overflow-hidden">
+                <button id="tocToggle" class="w-full px-5 py-4 flex items-center justify-between hover:bg-blue-100/50 transition min-h-[60px]" aria-expanded="false" aria-controls="tocContent">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-list text-blue-700 text-lg" aria-hidden="true"></i>
+                        <span class="font-bold text-gray-900 text-base md:text-lg">Table of Contents</span>
+                    </div>
+                    <i id="tocToggleIcon" class="fas fa-chevron-down text-blue-700 transition-transform" aria-hidden="true"></i>
+                </button>
+                <div id="tocContent" class="hidden px-5 pb-5">
+                    <nav class="space-y-2 pt-2" aria-label="Table of contents">
+                        @if (Model.HasCards)
+                        {
+                            <a href="#border-cards" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                                <i class="fas fa-map-marked-alt text-blue-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">Border Overview</span>
+                            </a>
+                        }
+                        @if (Model.HasMap)
+                        {
+                            <a href="#border-map" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                                <i class="fas fa-map text-blue-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">Border Map</span>
+                            </a>
+                        }
+                        @{
+                            var contentSections = borderContent.Sections!;
+                        }
+                        @foreach (var contentSection in contentSections)
+                        {
+                            var sectionId = $"section-{contentSection.Id}";
+                            <a href="#@sectionId" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                                <i class="@($"{contentSection.Icon} text-blue-600 text-sm group-hover:scale-110 transition-transform")" aria-hidden="true"></i>
+                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">@contentSection.Title</span>
+                            </a>
+                        }
+                        @if (Model.HasFaq)
+                        {
+                            <a href="#faq" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                                <i class="fas fa-question-circle text-blue-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">Frequently Asked Questions</span>
+                            </a>
+                        }
+                        @if (Model.HasSources)
+                        {
+                            <a href="#sources" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
+                                <i class="fas fa-book text-blue-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">Sources & References</span>
+                            </a>
+                        }
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <!-- Floating TOC Button (Mobile Only) -->
+        <button id="floatingTocBtn" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-2xl flex items-center justify-center z-40 lg:hidden transition-all duration-300 hover:scale-110 active:scale-95" aria-label="Open table of contents">
+            <i class="fas fa-list text-lg" aria-hidden="true"></i>
+        </button>
+
+        <!-- TOC Overlay (Mobile) -->
+        <div id="tocOverlay" class="fixed inset-0 bg-black/50 z-50 hidden lg:hidden transition-opacity" aria-hidden="true">
+            <div id="tocDrawer" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transform translate-y-full transition-transform duration-300 max-h-[80vh] overflow-y-auto" role="dialog" aria-label="Table of contents">
+                <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex items-center justify-between rounded-t-3xl z-10">
+                    <h3 class="text-white font-bold text-lg flex items-center gap-2">
+                        <i class="fas fa-list" aria-hidden="true"></i>
+                        <span>Jump to Section</span>
+                    </h3>
+                    <button id="closeTocDrawer" class="text-white hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center transition min-h-[44px]" aria-label="Close menu">
+                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <nav class="p-5 space-y-2 pb-8" aria-label="Table of contents mobile">
+                    @if (Model.HasCards)
+                    {
+                        <a href="#border-cards" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:bg-blue-50 active:bg-blue-100 transition border border-gray-100 min-h-[64px]">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-map-marked-alt text-blue-600" aria-hidden="true"></i>
+                            </div>
+                            <span class="text-gray-800 font-semibold text-base">Border Overview</span>
+                        </a>
+                    }
+                    @foreach (var contentSection in contentSections)
+                    {
+                        var sectionId = $"section-{contentSection.Id}";
+                        <a href="#@sectionId" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:bg-blue-50 active:bg-blue-100 transition border border-gray-100 min-h-[64px]">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="@($"{contentSection.Icon} text-blue-600")" aria-hidden="true"></i>
+                            </div>
+                            <span class="text-gray-800 font-semibold text-base">@contentSection.Title</span>
+                        </a>
+                    }
+                    @if (Model.HasFaq)
+                    {
+                        <a href="#faq" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:bg-blue-50 active:bg-blue-100 transition border border-gray-100 min-h-[64px]">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-question-circle text-blue-600" aria-hidden="true"></i>
+                            </div>
+                            <span class="text-gray-800 font-semibold text-base">Frequently Asked Questions</span>
+                        </a>
+                    }
+                </nav>
+            </div>
+        </div>
+    }
+
+    <!-- SECTION 3: BORDER CARDS (Overview) -->
+    @if (Model.HasCards)
+    {
+        <section id="border-cards" class="mb-12 scroll-mt-20">
+            <div class="mb-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                    <i class="fas fa-map-marked-alt text-blue-700" aria-hidden="true"></i>
+                    Border Details
+                </h2>
+                <p class="text-gray-600">Explore each of @Model.State.Name's borders in detail. Click any card to learn more.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                @{
+                    var borderCards = borderContent.Cards!;
+                }
+                @foreach (var card in borderCards)
+                {
+                    var badgeClass = card.NeighborKind.ToLower() switch
+                    {
+                        "country" => "bg-gradient-to-r from-red-500 to-red-600",
+                        "water" => "bg-gradient-to-r from-blue-500 to-blue-600",
+                        "great lake" => "bg-gradient-to-r from-cyan-500 to-cyan-600",
+                        _ => "bg-gradient-to-r from-green-500 to-green-600"
+                    };
+                    var borderColorClass = card.NeighborKind.ToLower() switch
+                    {
+                        "country" => "border-red-400 bg-red-50",
+                        "water" => "border-blue-400 bg-blue-50",
+                        "great lake" => "border-cyan-400 bg-cyan-50",
+                        _ => "border-green-400 bg-green-50"
+                    };
+                    var iconClass = card.NeighborKind.ToLower() switch
+                    {
+                        "country" => "fas fa-flag",
+                        "water" => "fas fa-water",
+                        "great lake" => "fas fa-water",
+                        _ => "fas fa-map-pin"
+                    };
+
+                    var cardAnchor = !string.IsNullOrEmpty(card.Anchor) ? $"#{card.Anchor}" : "#";
+
+                    <a href="@cardAnchor" class="border-card-link">
+                        <div class="border-card bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 @borderColorClass overflow-hidden">
+                            <!-- Card Header -->
+                            <div class="@badgeClass p-4 text-white">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <i class="@iconClass text-xl" aria-hidden="true"></i>
+                                        <h3 class="text-lg md:text-xl font-bold">@card.Name</h3>
+                                    </div>
+                                    <span class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold uppercase">
+                                        @card.Badge
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="p-4 md:p-5">
+                                <div class="space-y-2 mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-tag text-gray-400 text-sm" aria-hidden="true"></i>
+                                        <span class="text-sm text-gray-500">Type:</span>
+                                        <span class="font-semibold text-gray-900">@card.NeighborKind</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-border-style text-gray-400 text-sm" aria-hidden="true"></i>
+                                        <span class="text-sm text-gray-500">Border:</span>
+                                        <span class="font-semibold text-gray-900">@card.BorderType</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-700 leading-relaxed text-sm">@card.Features</p>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.HasSections)
+    {
+        var contentSections = borderContent.Sections!;
+
+        <div class="space-y-10">
+            @foreach (var contentSection in contentSections)
+            {
+                var sectionId = $"section-{contentSection.Id}";
+
+                <section id="@sectionId" class="scroll-mt-20">
+                    <div class="bg-white rounded-2xl p-6 md:p-8 border border-gray-200 shadow-md">
+                        <!-- H2 Section Title -->
+                        <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                            @if (!string.IsNullOrEmpty(contentSection.Icon))
+                            {
+                                <i class="@contentSection.Icon text-blue-700" aria-hidden="true"></i>
+                            }
+                            @contentSection.Title
+                        </h2>
+
+                        @if (contentSection.Paragraphs?.Any() == true)
+                        {
+                            <div class="prose prose-lg max-w-none space-y-4 mb-6">
+                                @foreach (var para in contentSection.Paragraphs)
+                                {
+                                    <p class="text-gray-700 leading-relaxed text-base md:text-lg">@para.RenderAutoLinks()</p>
+                                }
+                            </div>
+                        }
+
+                        @if (contentSection.Bullets?.Any() == true)
+                        {
+                            <ul class="space-y-3 mb-6">
+                                @foreach (var bullet in contentSection.Bullets)
+                                {
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-compass text-blue-600 mt-1.5 flex-shrink-0" aria-hidden="true"></i>
+                                        <span class="text-gray-700 text-base md:text-lg">@bullet</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+
+                        @if (contentSection.Subsections != null && contentSection.Subsections.Any())
+                        {
+                            <div class="mt-8 space-y-8">
+                                @foreach (var subsection in contentSection.Subsections)
+                                {
+                                    var subsectionId = !string.IsNullOrEmpty(subsection.Id) ? subsection.Id : subsection.Subtitle?.ToLower().Replace(" ", "-").Replace(":", "");
+
+                                    <div id="@subsectionId" class="subsection-anchor border-t border-gray-200 pt-6">
+                                        <!-- H3 Subsection Title -->
+                                        <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4">
+                                            @subsection.Subtitle
+                                        </h3>
+
+                                        @if (!string.IsNullOrEmpty(subsection.Text))
+                                        {
+                                            <p class="text-gray-700 leading-relaxed text-base md:text-lg mb-4">
+                                                @subsection.Text.RenderAutoLinks()
+                                            </p>
+                                        }
+
+                                        @if (subsection.Paragraphs != null && subsection.Paragraphs.Any())
+                                        {
+                                            <div class="space-y-4">
+                                                @foreach (var para in subsection.Paragraphs)
+                                                {
+                                                    <p class="text-gray-700 leading-relaxed text-base md:text-lg">
+                                                        @para.RenderAutoLinks()
+                                                    </p>
+                                                }
+                                            </div>
+                                        }
+
+                                        @if (subsection.Bullets != null && subsection.Bullets.Any())
+                                        {
+                                            <ul class="mt-4 space-y-2">
+                                                @foreach (var bullet in subsection.Bullets)
+                                                {
+                                                    <li class="flex items-start gap-3">
+                                                        <i class="fas fa-check-circle text-green-600 mt-1 flex-shrink-0" aria-hidden="true"></i>
+                                                        <span class="text-gray-700 text-base md:text-lg">@bullet</span>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        @if (contentSection.Table != null && contentSection.Table.Rows?.Any() == true)
+                        {
+                            <!-- MOBILE: Cards (visible on small screens) -->
+                            <div class="mt-6 md:hidden space-y-4">
+                                @foreach (var row in contentSection.Table.Rows)
+                                {
+                                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border-2 border-blue-200 shadow-md">
+                                        @foreach (var column in contentSection.Table.Columns)
+                                        {
+                                            var key = column.ToLower().Replace(" ", "_");
+                                            var value = row.Data.ContainsKey(key) ? row.Data[key] : "";
+
+                                            @if (!string.IsNullOrEmpty(value))
+                                            {
+                                                <div class="mb-3 last:mb-0">
+                                                    <div class="text-xs font-bold text-blue-700 uppercase tracking-wide mb-1">@column</div>
+                                                    <div class="text-sm text-gray-900 font-medium">@value</div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- DESKTOP: Table (hidden on small screens) -->
+                            <div class="mt-6 hidden md:block overflow-x-auto rounded-xl border border-blue-200 shadow-md">
+                                <table class="min-w-full bg-white">
+                                    <thead class="bg-gradient-to-r from-blue-600 to-indigo-600">
+                                        <tr>
+                                            @foreach (var column in contentSection.Table.Columns)
+                                            {
+                                                <th scope="col" class="px-4 lg:px-6 py-4 text-left text-sm font-bold text-white uppercase tracking-wider">
+                                                    @column
+                                                </th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-blue-100">
+                                        @for (int i = 0; i < contentSection.Table.Rows.Count; i++)
+                                        {
+                                            var row = contentSection.Table.Rows[i];
+                                            var rowBgClass = i % 2 == 0 ? "bg-blue-50/30" : "bg-white";
+
+                                            <tr class="@rowBgClass hover:bg-blue-100 transition-colors">
+                                                @foreach (var column in contentSection.Table.Columns)
+                                                {
+                                                    var key = column.ToLower().Replace(" ", "_");
+                                                    var value = row.Data.ContainsKey(key) ? row.Data[key] : "";
+                                                    <td class="px-4 lg:px-6 py-4 text-sm text-gray-800 font-medium">@value</td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                        @if (contentSection.Facts != null && contentSection.Facts.Any())
+                        {
+                            <div class="mt-8">
+                                <div class="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-xl shadow-md overflow-hidden">
+                                    <!-- Header -->
+                                    <div class="bg-gradient-to-r from-yellow-500 to-orange-500 px-5 py-3 flex items-center justify-between">
+                                        <div class="flex items-center gap-2 text-white">
+                                            <i class="fas fa-lightbulb text-xl" aria-hidden="true"></i>
+                                            <span class="font-bold text-sm uppercase tracking-wide">@Model.State.Name Border Facts</span>
+                                        </div>
+                                        <span id="factCounter-@contentSection.Id" class="text-white/90 text-sm font-medium">
+                                            1 of @contentSection.Facts.Count
+                                        </span>
+                                    </div>
+
+                                    <!-- Fact Content -->
+                                    <div class="px-5 py-6 min-h-[100px] flex items-center">
+                                        <p id="factText-@contentSection.Id" class="text-gray-800 text-base md:text-lg leading-relaxed font-medium transition-opacity duration-150">
+                                            @contentSection.Facts.First()
+                                        </p>
+                                    </div>
+
+                                    <!-- Button -->
+                                    <div class="px-5 py-4 bg-white/50 border-t border-yellow-200 flex justify-end">
+                                        <button id="nextFactBtn-@contentSection.Id"
+                                                type="button"
+                                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold hover:from-blue-700 hover:to-indigo-700 active:scale-95 transition-all shadow-md text-sm min-h-[44px]"
+                                                aria-label="Show next fact">
+                                            <span>Next Fact</span>
+                                            <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- JavaScript for Facts -->
+                                <script>
+                                    (function () {
+                                        const facts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(contentSection.Facts));
+                                        let currentIndex = 0;
+
+                                        const factText = document.getElementById('factText-@contentSection.Id');
+                                        const factCounter = document.getElementById('factCounter-@contentSection.Id');
+                                        const nextBtn = document.getElementById('nextFactBtn-@contentSection.Id');
+
+                                        if (factText && factCounter && nextBtn) {
+                                            nextBtn.addEventListener('click', function () {
+                                                currentIndex = (currentIndex + 1) % facts.length;
+
+                                                factText.style.opacity = '0';
+                                                setTimeout(() => {
+                                                    factText.textContent = facts[currentIndex];
+                                                    factCounter.textContent = `${currentIndex + 1} of ${facts.length}`;
+                                                    factText.style.opacity = '1';
+                                                }, 150);
+                                            });
+                                        }
+                                    })();
+                                </script>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+        </div>
+    }
+
+    <!-- SECTION: FAQ -->
+    @if (Model.HasFaq)
+    {
+        <section id="faq" class="mt-12 mb-12 scroll-mt-20">
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-gray-200 shadow-md">
+                <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mb-6 text-gray-900 flex items-center gap-3">
+                    <i class="fas fa-question-circle text-blue-700" aria-hidden="true"></i>
+                    Frequently Asked Questions
+                </h2>
+                <div class="space-y-3 md:space-y-4">
+                    @{
+                        var faqItems = borderContent.Faq!;
+                    }
+                    @foreach (var faq in faqItems)
+                    {
+                        <details class="group bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-all">
+                            <summary class="flex justify-between items-center cursor-pointer p-4 md:p-5 font-semibold text-gray-900 text-base md:text-lg list-none">
+                                <span class="flex items-start gap-3 pr-4">
+                                    <i class="fas fa-chevron-circle-right text-blue-600 mt-0.5 group-open:rotate-90 transition-transform flex-shrink-0" aria-hidden="true"></i>
+                                    <span>@faq.Question</span>
+                                </span>
+                            </summary>
+                            <div class="px-4 md:px-5 pb-4 md:pb-5 pt-2 text-gray-700 leading-relaxed border-t border-blue-200 text-base md:text-lg ml-8">
+                                @faq.Answer.RenderMarkdown()
+                            </div>
+                        </details>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- SECTION: SOURCES & REFERENCES -->
+    @if (Model.HasSources)
+    {
+        <section id="sources" class="mb-12 scroll-mt-20">
+            <div class="bg-gray-50 rounded-2xl p-6 md:p-8 border border-gray-200 shadow-md">
+                <h2 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 flex items-center gap-2">
+                    <i class="fas fa-book text-blue-700" aria-hidden="true"></i>
+                    Sources & References
+                </h2>
+                <p class="text-gray-600 mb-6 text-sm md:text-base">
+                    This article has been researched using authoritative sources to ensure accuracy and reliability.
+                </p>
+                <div class="space-y-4">
+                    @{
+                        var sources = borderContent.Sources!;
+                        int sourceIndex = 1;
+                    }
+                    @foreach (var source in sources)
+                    {
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                                @sourceIndex
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-bold text-gray-900 mb-1">@source.Name</div>
+                                @if (!string.IsNullOrEmpty(source.Url))
+                                {
+                                    <a href="@source.Url" target="_blank" rel="noopener noreferrer"
+                                       class="text-blue-700 hover:underline text-sm break-all">@source.Url</a>
+                                }
+                                @if (!string.IsNullOrEmpty(source.Description))
+                                {
+                                    <p class="text-sm text-gray-600 mt-1">@source.Description</p>
+                                }
+                            </div>
+                        </div>
+                        sourceIndex++;
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- RELATED SYMBOLS -->
+    @if (Model.RelatedSymbols?.Any() == true)
+    {
+        <section class="mb-12">
+            <h2 class="text-xl md:text-2xl font-bold mb-6 text-gray-900">Other @Model.State.Name Symbols</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach (var symbol in Model.RelatedSymbols.Take(4))
+                {
+                    var symbolUrl = symbol.ToSymbolUrl(Model.State.Slug);
+                    <a href="@symbolUrl" class="bg-white rounded-xl p-4 md:p-5 shadow-md hover:shadow-lg transition border border-gray-200 hover:border-blue-500 text-center">
+                        <div class="text-xs text-blue-700 font-bold uppercase mb-2">@GetSymbolTypeName(symbol.Type)</div>
+                        <h3 class="text-sm md:text-base font-bold text-gray-800">@symbol.Name</h3>
+                    </a>
+                }
+            </div>
+            <div class="text-center mt-6">
+                <a href="/states/@Model.State.Slug" class="text-blue-700 font-semibold hover:underline">
+                    View All @Model.State.Name Symbols →
+                </a>
+            </div>
+        </section>
+    }
+
+    <!-- NAVIGATION BUTTONS -->
+    <div class="flex flex-wrap gap-4 justify-center">
+        <a href="/states"
+           class="px-6 md:px-8 py-3 rounded-lg bg-white border-2 border-blue-600 text-blue-600 font-bold hover:bg-blue-50 transition shadow-md text-sm md:text-base min-h-[48px] flex items-center">
+            ← Back to All States
+        </a>
+        <a href="/states/@Model.State.Slug"
+           class="px-6 md:px-8 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition shadow-md text-sm md:text-base min-h-[48px] flex items-center">
+            See All @Model.State.Name Symbols →
+        </a>
+    </div>
+
+</main>
+<!-- SCHEMA.ORG - ARTICLE -->
+<script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "Article",
+      "headline": "@Model.State.Name Borders: States, Map & Complete Guide",
+      "description": "@Html.Raw(ViewData["Description"]?.ToString())",
+      "image": "@Images.Full(Model.BorderContent?.Map?.Image ?? Model.State.FlagImageUrl)",
+      "datePublished": "@(Model.BorderContent?.DatePublished?.ToString("yyyy-MM-dd") ?? "2024-01-15")",
+      "dateModified": "@(Model.BorderContent?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"))",
+      "author": {
+        "@@type": "Person",
+        "name": "@(Model.BorderContent?.Author ?? "USA Symbol Team")",
+        "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}/about")"
+      },
+      "publisher": {
+        "@@type": "Organization",
+        "name": "USA Symbol",
+        "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}")",
+        "logo": {
+          "@@type": "ImageObject",
+          "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")"
+        }
+      },
+      "mainEntityOfPage": {
+        "@@type": "WebPage",
+        "@@id": "@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}")"
+      }
+    }
+</script>
+
+<!-- SCHEMA.ORG - BREADCRUMBS -->
+<script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "@($"{Context.Request.Scheme}://{Context.Request.Host}/")"
+        },
+        {
+          "@@type": "ListItem",
+          "position": 2,
+          "name": "States",
+          "item": "@($"{Context.Request.Scheme}://{Context.Request.Host}/states")"
+        },
+        {
+          "@@type": "ListItem",
+          "position": 3,
+          "name": "@Model.State.Name",
+          "item": "@($"{Context.Request.Scheme}://{Context.Request.Host}/states/{Model.State.Slug}")"
+        },
+        {
+          "@@type": "ListItem",
+          "position": 4,
+          "name": "Borders",
+          "item": "@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}")"
+        }
+      ]
+    }
+</script>
+
+<!-- SCHEMA.ORG - FAQ -->
+@if (Model.HasFaq)
+{
+    var faqItems = borderContent.Faq!;
+
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "FAQPage",
+          "mainEntity": [
+            @for (int i = 0; i < faqItems.Count; i++)
+            {
+                        var faq = faqItems[i];
+                        var question = JsonSerializer.Serialize(faq.Question);
+                        var answer = JsonSerializer.Serialize(faq.Answer);
+                        @:        {
+                        @:          "@@type": "Question",
+                        @:          "name": @Html.Raw(question),
+                        @:          "acceptedAnswer": {
+                        @:            "@@type": "Answer",
+                        @:            "text": @Html.Raw(answer)
+                        @:          }
+                        @:        }@(i < faqItems.Count - 1 ? "," : "")
+            }
+          ]
+        }
+    </script>
+}
+
+<script>
+    // ====================================
+    // SHARE & COPY BUTTONS
+    // ====================================
+    const shareButton = document.getElementById("shareButton");
+    const copyBtn = document.getElementById("copyLinkBtn");
+
+    if (shareButton) {
+        shareButton.addEventListener("click", async () => {
+            const shareData = {
+                title: document.title,
+                text: "Check out the borders of @Model.State.Name!",
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                    return;
+                } catch (err) {
+                    console.log("Share failed, fallback to copy");
+                }
+            }
+
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                shareButton.innerHTML = `<i class="fas fa-check"></i> Copied!`;
+                shareButton.classList.add("bg-green-600");
+                setTimeout(() => {
+                    shareButton.innerHTML = `<i class="fas fa-share-nodes"></i> Share`;
+                    shareButton.classList.remove("bg-green-600");
+                }, 1500);
+            } catch (err) {
+                alert("Your browser does not support copying.");
+            }
+        });
+    }
+
+    if (copyBtn) {
+        copyBtn.addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                copyBtn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
+                copyBtn.classList.add("bg-green-600");
+                setTimeout(() => {
+                    copyBtn.innerHTML = `<i class="fas fa-copy"></i> Copy Link`;
+                    copyBtn.classList.remove("bg-green-600");
+                }, 1500);
+            } catch (err) {
+                alert("Copy failed.");
+            }
+        });
+    }
+
+    // ====================================
+    // TABLE OF CONTENTS
+    // ====================================
+    const tocToggle = document.getElementById('tocToggle');
+    const tocContent = document.getElementById('tocContent');
+    const tocToggleIcon = document.getElementById('tocToggleIcon');
+
+    if (tocToggle && tocContent) {
+        tocToggle.addEventListener('click', () => {
+            const isHidden = tocContent.classList.contains('hidden');
+            if (isHidden) {
+                tocContent.classList.remove('hidden');
+                tocToggleIcon.classList.add('rotate-180');
+                tocToggle.setAttribute('aria-expanded', 'true');
+            } else {
+                tocContent.classList.add('hidden');
+                tocToggleIcon.classList.remove('rotate-180');
+                tocToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        const tocLinks = tocContent.querySelectorAll('.toc-link');
+        tocLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                tocContent.classList.add('hidden');
+                tocToggleIcon.classList.remove('rotate-180');
+                tocToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    }
+
+    // Mobile Floating Button & Drawer
+    const floatingBtn = document.getElementById('floatingTocBtn');
+    const tocOverlay = document.getElementById('tocOverlay');
+    const tocDrawer = document.getElementById('tocDrawer');
+    const closeDrawerBtn = document.getElementById('closeTocDrawer');
+
+    function openTocDrawer() {
+        if (tocOverlay && tocDrawer) {
+            tocOverlay.classList.remove('hidden');
+            tocOverlay.setAttribute('aria-hidden', 'false');
+            setTimeout(() => {
+                tocDrawer.classList.remove('translate-y-full');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeTocDrawer() {
+        if (tocOverlay && tocDrawer) {
+            tocDrawer.classList.add('translate-y-full');
+            setTimeout(() => {
+                tocOverlay.classList.add('hidden');
+                tocOverlay.setAttribute('aria-hidden', 'true');
+            }, 300);
+            document.body.style.overflow = '';
+        }
+    }
+
+    if (floatingBtn) {
+        floatingBtn.addEventListener('click', openTocDrawer);
+    }
+
+    if (closeDrawerBtn) {
+        closeDrawerBtn.addEventListener('click', closeTocDrawer);
+    }
+
+    if (tocOverlay) {
+        tocOverlay.addEventListener('click', (e) => {
+            if (e.target === tocOverlay) {
+                closeTocDrawer();
+            }
+        });
+    }
+
+    const mobileTocLinks = document.querySelectorAll('.toc-mobile-link');
+    mobileTocLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            closeTocDrawer();
+        });
+    });
+
+    // Smooth scroll for all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const targetId = link.getAttribute('href');
+            if (targetId && targetId !== '#') {
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    e.preventDefault();
+                    const offset = 100; // Matches scroll-margin-top
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    });
+
+    // Hide floating button at bottom
+    if (floatingBtn) {
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+
+            if (scrollTop + windowHeight >= documentHeight - 150) {
+                floatingBtn.style.opacity = '0';
+                floatingBtn.style.pointerEvents = 'none';
+            } else {
+                floatingBtn.style.opacity = '1';
+                floatingBtn.style.pointerEvents = 'auto';
+            }
+        });
+    }
+
+    // ====================================
+    // READING PROGRESS BAR
+    // ====================================
+    window.addEventListener('scroll', () => {
+        const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrolled = (window.scrollY / windowHeight) * 100;
+        const progressBar = document.getElementById('progressBar');
+        if (progressBar) {
+            progressBar.style.width = Math.min(scrolled, 100) + '%';
+        }
+    });
+</script>
+
+@functions {
+    string GetSymbolTypeName(string type)
+    {
+        return type switch
+        {
+            "bird" => "State Bird",
+            "flower" => "State Flower",
+            "tree" => "State Tree",
+            "motto" => "State Motto",
+            "mammal" => "State Mammal",
+            "flag" => "State Flag",
+            _ => $"State {char.ToUpper(type[0]) + type.Substring(1)}"
+        };
+    }
+}

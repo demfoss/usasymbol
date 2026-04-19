@@ -1,386 +1,328 @@
-@* @model USASymbol.Models.ViewModels.FlowerDetailViewModel
+@model USASymbol.Models.ViewModels.FlowerDetailViewModel
+@using System.Globalization
+@using USASymbol.Extensions
+@using USASymbol.Models.ViewModels
+@inject IImageUrlService Images
 
 @{
-    ViewData["Title"] = $"{Model.Symbol.Name} - {Model.State.Name} State Flower";
+    ViewData["BodyClass"] = "flower-detail-page";
+
+    var flowerName = Model.FlowerContent?.Name ?? Model.Symbol?.Name ?? "";
+    var scientificName = Model.FlowerContent?.ScientificName ?? Model.Symbol?.ScientificName ?? "";
+    var stateName = Model.State?.Name ?? "";
+    var adoptedYear = Model.FlowerContent?.AdoptedYear ?? Model.Symbol?.AdoptedYear ?? 0;
+
+    var designationRaw = (Model.Symbol?.Designation ?? "State Flower").Trim();
+    var designation = string.IsNullOrWhiteSpace(designationRaw)
+        ? "State Flower"
+        : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+
+    var pageHeading = $"{stateName} {designation}: {flowerName}";
+
+    var descRaw = Model.FlowerContent?.SeoDescription ?? "";
+    ViewData["Title"] = Model.FlowerContent?.SeoTitle ?? pageHeading;
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {stateName}'s {designation.ToLowerInvariant()} {flowerName}, including adoption, symbolism, and key facts."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+    ViewData["OgImage"] = Images.Full(Model.Symbol?.ImageUrl ?? Model.State?.FlagImageUrl);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+
+    var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+
+    var hasMeaning = !string.IsNullOrWhiteSpace(Model.Meaning);
+    var hasQuiz = Model.QuizQuestions?.Any() == true;
+    var introText = Model.FlowerContent?.IntroText ?? string.Empty;
+    var overviewText = !string.IsNullOrWhiteSpace(introText)
+        ? introText
+        : adoptedYear > 0 && !string.IsNullOrWhiteSpace(scientificName)
+            ? $"In <strong>{adoptedYear}</strong>, {stateName} designated the {flowerName} (<span class=\"italic\">{scientificName}</span>) as its official state flower."
+            : $"The {flowerName} is recognized as the official {designation.ToLowerInvariant()} of {stateName}.";
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    var heroDescription = System.Net.WebUtility.HtmlDecode(
+        System.Text.RegularExpressions.Regex.Replace(
+            System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1"),
+            "<.*?>",
+            " "))
+        .Trim();
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#1d2320_0%,#243129_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-emerald-200/0 via-emerald-200/70 to-amber-200/0",
+        PrimaryGlowClass = "bg-rose-200/10",
+        SecondaryGlowClass = "bg-emerald-100/10",
+        AccentDotClass = "bg-rose-300",
+        MediaBackgroundClass = "bg-slate-100/10",
+        FallbackIconClass = "fa-solid fa-seedling",
+        Title = pageHeading,
+        Subtitle = scientificName,
+        Description = heroDescription,
+        LegalReference = Model.Legislation,
+        ImageUrl = Model.Symbol?.ImageUrl,
+        ImageAlt = pageHeading,
+        FigureTitle = flowerName,
+        FigureSubtitle = $"Official {designation} of {stateName}",
+        ImageLinkUrl = Model.Symbol?.ImageUrl,
+        EyebrowItems = new List<string> { stateName, designation, adoptedYear > 0 ? $"Adopted {adoptedYear}" : string.Empty }
+    };
+
 }
 
-<!-- Schema.org Structured Data -->
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org",
-  "@@type": "Article",
-  "headline": "@Model.State.Name State Flower - @Model.Symbol.Name",
-  "description": "Complete guide to @Model.State.Name's official state flower, the @Model.Symbol.Name",
-  "image": "@(Model.Symbol.ImageUrl ?? "/images/default-flower.jpg")",
-  "datePublished": "@(Model.FlowerContent?.DatePublished?.ToString("yyyy-MM-dd") ?? (Model.Symbol.AdoptedYear.HasValue ? new DateTime(Model.Symbol.AdoptedYear.Value, 1, 1).ToString("yyyy-MM-dd") : "2020-01-01"))",
-  "dateModified": "@(Model.FlowerContent?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))",
-  "author": {
-    "@@type": "Organization",
-    "name": "@(Model.FlowerContent?.Author ?? "USA Symbol")"
-  }
-}
-</script>
+<style>
+    .flower-editorial {
+        color: #161B26;
+    }
 
-<!-- BREADCRUMBS -->
-<nav class="max-w-6xl mx-auto px-4 py-4 text-sm text-gray-600">
-    <a href="/" class="hover:text-blue-900 transition">Home</a> /
-    <a href="/symbols" class="hover:text-blue-900 transition">Symbols</a> /
-    <a href="/symbols/flowers" class="hover:text-blue-900 transition">State Flowers</a> /
-    <span class="text-gray-900 font-semibold">@Model.State.Name</span>
+    .flower-editorial .content-flow h2 {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        color: #161B26;
+        font-size: 41px;
+        font-weight: 700;
+        line-height: 50px;
+        letter-spacing: -0.02em;
+    }
+
+    .flower-editorial .content-flow h3 {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        color: #161B26;
+        font-size: 23px;
+        font-weight: 700;
+        line-height: 50px;
+        letter-spacing: 0;
+    }
+
+    .flower-editorial .site-content,
+    .flower-editorial .site-content p,
+    .flower-editorial .site-content li,
+    .flower-editorial .site-content dd,
+    .flower-editorial .site-content blockquote,
+    .flower-editorial .site-content .prose,
+    .flower-editorial .content-flow > section > div,
+    .flower-editorial .content-flow > div {
+        font-size: 19px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 34px;
+        letter-spacing: 0.19px;
+    }
+
+    .flower-editorial #overview h2,
+    .flower-editorial #symbolic-meaning h2,
+    .flower-editorial #flower-quiz h2,
+    .flower-editorial #faq h2,
+    .flower-editorial #sources h2 {
+        font-size: 41px;
+        line-height: 50px;
+        letter-spacing: -0.02em;
+        text-transform: none;
+    }
+
+    .flower-editorial #overview .site-content,
+    .flower-editorial #symbolic-meaning .site-content,
+    .flower-editorial #overview .site-content p,
+    .flower-editorial #symbolic-meaning .site-content p {
+        font-size: 19px;
+        line-height: 34px;
+        letter-spacing: 0.19px;
+    }
+
+    @@media (max-width: 767px) {
+        .flower-editorial .content-flow h2,
+        .flower-editorial #overview h2,
+        .flower-editorial #symbolic-meaning h2,
+        .flower-editorial #flower-quiz h2,
+        .flower-editorial #faq h2,
+        .flower-editorial #sources h2 {
+            font-size: 26px;
+            line-height: 37px;
+            letter-spacing: -0.405px;
+        }
+
+        .flower-editorial .content-flow h3 {
+            font-size: 19px;
+            line-height: 24px;
+            letter-spacing: 0.38px;
+        }
+
+        .flower-editorial .site-content,
+        .flower-editorial .site-content p,
+        .flower-editorial .site-content li,
+        .flower-editorial .site-content dd,
+        .flower-editorial .site-content blockquote,
+        .flower-editorial .site-content .prose,
+        .flower-editorial .content-flow > section > div,
+        .flower-editorial .content-flow > div,
+        .flower-editorial #overview .site-content,
+        .flower-editorial #symbolic-meaning .site-content,
+        .flower-editorial #overview .site-content p,
+        .flower-editorial #symbolic-meaning .site-content p {
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: 0.18px;
+        }
+    }
+</style>
+
+<nav class="sticky top-16 z-30 bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
 </nav>
 
-<!-- MAIN CONTENT -->
-<main class="max-w-6xl mx-auto px-4 pb-12">
+<div id="top"></div>
 
-    <!-- PAGE TITLE -->
-    <div class="mb-6">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-            @Model.State.Name State Flower: @(Model.FlowerContent?.Title ?? Model.Symbol.Name)
-        </h1>
-        @if (Model.Symbol.AdoptedYear.HasValue || Model.FlowerContent?.AdoptedYear.HasValue)
-        {
-            <p class="text-xl text-gray-600">A Symbol of Natural Beauty Since @(Model.FlowerContent?.AdoptedYear ?? Model.Symbol.AdoptedYear)</p>
-        }
-        else
-        {
-            <p class="text-xl text-gray-600">Official State Flower of @Model.State.Name</p>
-        }
-    </div>
+<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="flower-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[228px_minmax(0,760px)_320px] xl:gap-12 2xl:grid-cols-[240px_minmax(0,780px)_340px] 2xl:gap-14 relative">
 
-    <!-- AUTHOR BOX -->
-    <div class="bg-pink-50 rounded-lg p-4 border-l-4 border-pink-600 mb-8 shadow-sm">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-lg border-2 border-pink-200 bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white font-bold text-xl">
-                    US
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <aside class="hidden xl:block relative self-start xl:sticky xl:top-32">
+                <div class="max-h-[calc(100vh-9rem)] overflow-y-auto pr-2 pb-10 [scrollbar-width:thin]">
+                    @await Html.PartialAsync("_TocSidebar", Model)
                 </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm font-semibold text-gray-800">
-                            Researched by @(Model.FlowerContent?.Author ?? "USA Symbol Team")
-                        </span>
-                        <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                        </svg>
+            </aside>
+
+            <div class="min-w-0">
+                <div class="content-flow site-content">
+                    <section id="overview" class="mt-10">
+                        <div class="relative overflow-hidden bg-[linear-gradient(90deg,rgba(255,255,255,0.24),rgba(248,255,250,0.04))] px-5 py-6 sm:px-6 lg:px-8 lg:py-7">
+                            <div class="absolute left-0 top-7 bottom-7 w-[3px] bg-[linear-gradient(180deg,#d88b9d_0%,#7a9f69_100%)]"></div>
+                            <div class="flex items-start gap-4 lg:gap-5">
+                                <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/75 text-slate-600">
+                                    <i class="fa-solid fa-seedling text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
+                                    <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                        @overviewText.RenderAutoLinks()
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    @if (quickFacts.Any())
+                    {
+                        <div class="xl:hidden">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    }
+
+                    @if (hasMeaning)
+                    {
+                        <section id="symbolic-meaning" class="content-divider">
+                            <div class="rounded-[1.6rem] border border-slate-200/80 bg-white/40 p-6 sm:p-7">
+                                <div class="flex items-start gap-4 lg:gap-5">
+                                    <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/70 text-slate-600">
+                                        <i class="fa-solid fa-book-open text-sm"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Symbolic Meaning</div>
+                                        <div class="mt-3 max-w-3xl text-slate-700">
+                                            @Model.Meaning.RenderAutoLinks()
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    @await Html.PartialAsync("_FlowerSections", Model)
+
+                    @if (hasQuiz)
+                    {
+                        <section id="flower-quiz" class="content-divider">
+                            <div class="overflow-hidden border border-slate-200/80 bg-white/70 text-slate-900">
+                                <div class="border-b border-slate-200/80 px-5 py-4 sm:px-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-slate-100 text-slate-700">
+                                            <i class="fas fa-graduation-cap text-xs"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <h2 class="!text-[1.65rem] !leading-[1.15] text-slate-900">Test your knowledge</h2>
+                                            <div class="mt-1 text-sm leading-6 text-slate-500">A short quiz while the key details are still top of mind.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-5 sm:p-6 text-slate-900">
+                                    @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
+                                </div>
+
+                                <div class="border-t border-slate-200/80 px-5 py-4 sm:px-6">
+                                    <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                                        <span>Explore more quizzes</span>
+                                        <i class="fas fa-arrow-right shrink-0 text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+                    }
+
+                    <section id="faq" class="content-divider">
+                        @await Html.PartialAsync("_Faq", Model)
+                    </section>
+
+                    <section id="sources" class="content-divider">
+                        @await Html.PartialAsync("_Sources", Model)
+                    </section>
+
+                    <div class="mt-10 space-y-8 xl:hidden">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
                     </div>
-                    <p class="text-xs text-gray-500">
-                        Fact-checked • Updated @(Model.FlowerContent?.DateModified?.ToString("MMMM d, yyyy") ?? DateTime.Now.ToString("MMMM d, yyyy"))
-                    </p>
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center gap-3 text-xs">
-                <a asp-controller="Home" asp-action="About" class="text-pink-700 hover:text-pink-900 font-semibold transition">About Editor</a>
-            </div>
+
+            <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+                @if (quickFacts.Any())
+                {
+                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                        <div class="sticky top-32 pr-2">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    </section>
+                }
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+                </section>
+            </aside>
         </div>
-    </div>
 
-    <!-- HERO SECTION -->
-    <section class="mb-10">
-        <div class="bg-white border rounded-2xl overflow-hidden shadow-lg">
-            <div class="md:flex">
-                <!-- Flower Image -->
-                <div class="w-full md:w-1/2 h-64 md:h-96 bg-gradient-to-br from-pink-100 to-purple-200 flex items-center justify-center">
-                    @if (!string.IsNullOrEmpty(Model.Symbol.ImageUrl))
-                    {
-                        <img src="@Model.Symbol.ImageUrl" alt="@Model.Symbol.Name" class="w-full h-full object-cover">
-                    }
-                    else
-                    {
-                        <div class="text-center p-8">
-                            <div class="text-8xl mb-4">🌸</div>
-                            <p class="text-sm text-gray-500">@Model.Symbol.Name</p>
-                        </div>
-                    }
-                </div>
-
-                <!-- Flower Info -->
-                <div class="p-6 md:p-8 flex-1">
-                    <div class="inline-block bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-xs font-semibold mb-4">
-                        @Model.State.Name State Flower
-                    </div>
-
-                    <h2 class="text-3xl font-bold text-gray-900 mb-4">@(Model.FlowerContent?.Title ?? Model.Symbol.Name)</h2>
-
-                    @if (!string.IsNullOrEmpty(Model.FlowerContent?.ScientificName) || !string.IsNullOrEmpty(Model.Symbol.ScientificName))
-                    {
-                        <p class="text-lg text-gray-600 italic mb-6">@(Model.FlowerContent?.ScientificName ?? Model.Symbol.ScientificName)</p>
-                    }
-
-                    <div class="space-y-3">
-                        <div class="flex items-start gap-2">
-                            <svg class="w-5 h-5 text-pink-700 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
-                            <div>
-                                <span class="font-semibold text-gray-900">State:</span>
-                                <a href="/states/@Model.State.Slug" class="text-pink-700 hover:underline ml-1">@Model.State.Name</a>
-                            </div>
-                        </div>
-
-                        @if (Model.FlowerContent?.AdoptedYear.HasValue == true || Model.Symbol.AdoptedYear.HasValue)
-                        {
-                            <div class="flex items-start gap-2">
-                                <svg class="w-5 h-5 text-pink-700 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <div>
-                                    <span class="font-semibold text-gray-900">Adopted:</span>
-                                    <span class="ml-1">@(Model.FlowerContent?.AdoptedYear ?? Model.Symbol.AdoptedYear)</span>
-                                </div>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(Model.FlowerContent?.BloomingSeason))
-                        {
-                            <div class="flex items-start gap-2">
-                                <svg class="w-5 h-5 text-pink-700 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <div>
-                                    <span class="font-semibold text-gray-900">Blooming Season:</span>
-                                    <span class="ml-1">@Model.FlowerContent.BloomingSeason</span>
-                                </div>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(Model.FlowerContent?.Colors))
-                        {
-                            <div class="flex items-start gap-2">
-                                <svg class="w-5 h-5 text-pink-700 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <div>
-                                    <span class="font-semibold text-gray-900">Colors:</span>
-                                    <span class="ml-1">@Model.FlowerContent.Colors</span>
-                                </div>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(Model.FlowerContent?.NativeHabitat))
-                        {
-                            <div class="flex items-start gap-2">
-                                <svg class="w-5 h-5 text-pink-700 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <div>
-                                    <span class="font-semibold text-gray-900">Native Habitat:</span>
-                                    <span class="ml-1">@Model.FlowerContent.NativeHabitat</span>
-                                </div>
-                            </div>
-                        }
-                    </div>
-
-                    <div class="mt-6 pt-6 border-t">
-                        <a href="/symbols/flowers" class="inline-flex items-center text-pink-700 font-semibold hover:text-pink-900 transition">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                            </svg>
-                            View All State Flowers
-                        </a>
-                    </div>
-                </div>
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+        {
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
             </div>
-        </div>
-    </section>
-
-    <!-- GROWING CONDITIONS (если есть данные) -->
-    @if (Model.HasGrowingInfo)
-    {
-        <section class="mb-10">
-            <div class="bg-white rounded-xl p-6 shadow-sm border">
-                <h2 class="text-xl font-bold mb-4 text-gray-900">Growing Conditions</h2>
-                <div class="grid md:grid-cols-4 gap-6">
-                    @if (!string.IsNullOrEmpty(Model.FlowerContent?.SoilType))
-                    {
-                        <div class="text-center">
-                            <div class="text-3xl mb-2">🌱</div>
-                            <div class="font-semibold text-gray-900">Soil Type</div>
-                            <div class="text-gray-600 text-sm">@Model.FlowerContent.SoilType</div>
-                        </div>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.FlowerContent?.SunRequirements))
-                    {
-                        <div class="text-center">
-                            <div class="text-3xl mb-2">☀️</div>
-                            <div class="font-semibold text-gray-900">Sunlight</div>
-                            <div class="text-gray-600 text-sm">@Model.FlowerContent.SunRequirements</div>
-                        </div>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.FlowerContent?.WaterNeeds))
-                    {
-                        <div class="text-center">
-                            <div class="text-3xl mb-2">💧</div>
-                            <div class="font-semibold text-gray-900">Water</div>
-                            <div class="text-gray-600 text-sm">@Model.FlowerContent.WaterNeeds</div>
-                        </div>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.FlowerContent?.Hardiness))
-                    {
-                        <div class="text-center">
-                            <div class="text-3xl mb-2">🌡️</div>
-                            <div class="font-semibold text-gray-900">Hardiness</div>
-                            <div class="text-gray-600 text-sm">@Model.FlowerContent.Hardiness</div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </section>
-    }
-
-    <!-- MARKDOWN CONTENT -->
-    @if (Model.HasContent)
-    {
-        <section class="prose prose-lg max-w-none mb-10">
-            <div class="bg-white rounded-xl p-8 shadow-sm">
-                @Html.Raw(Model.FlowerContent!.HtmlContent)
-            </div>
-        </section>
-    }
-
-    <!-- MEDICINAL USES & CULTURAL SIGNIFICANCE -->
-    @if (Model.HasMedicinalUses || Model.HasCulturalSignificance)
-    {
-        <section class="mb-10">
-            <div class="grid md:grid-cols-2 gap-6">
-                @if (Model.HasMedicinalUses)
-                {
-                    <div class="bg-green-50 rounded-xl p-6">
-                        <h3 class="text-lg font-bold mb-4 text-gray-900 flex items-center">
-                            <span class="text-2xl mr-2">🌿</span>
-                            Medicinal Uses
-                        </h3>
-                        <ul class="space-y-2">
-                            @foreach (var use in Model.FlowerContent!.MedicinalUses)
-                            {
-                                <li class="flex items-start gap-2">
-                                    <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="text-gray-700">@use</span>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                }
-                
-                @if (Model.HasCulturalSignificance)
-                {
-                    <div class="bg-purple-50 rounded-xl p-6">
-                        <h3 class="text-lg font-bold mb-4 text-gray-900 flex items-center">
-                            <span class="text-2xl mr-2">🎭</span>
-                            Cultural Significance
-                        </h3>
-                        <ul class="space-y-2">
-                            @foreach (var significance in Model.FlowerContent!.CulturalSignificance)
-                            {
-                                <li class="flex items-start gap-2">
-                                    <svg class="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="text-gray-700">@significance</span>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                }
-            </div>
-        </section>
-    }
-
-    <!-- SOURCES -->
-    @if (Model.HasSources)
-    {
-        <section class="mb-10">
-            <div class="bg-gray-50 rounded-xl p-6">
-                <h3 class="text-lg font-bold mb-4 text-gray-900">Sources & References</h3>
-                <ul class="space-y-3">
-                    @foreach (var source in Model.FlowerContent!.Sources)
-                    {
-                        <li class="flex items-start gap-2">
-                            <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
-                            </svg>
-                            <div>
-                                <a href="@source.Url" target="_blank" rel="noopener noreferrer" 
-                                   class="text-pink-700 hover:underline font-medium">@source.Name</a>
-                                @if (!string.IsNullOrEmpty(source.Description))
-                                {
-                                    <p class="text-sm text-gray-600">@source.Description</p>
-                                }
-                            </div>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </section>
-    }
-
-    <!-- OTHER STATE SYMBOLS -->
-    @if (Model.RelatedSymbols.Any())
-    {
-        <section class="mb-10">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Other @Model.State.Name State Symbols</h2>
-            <div class="grid md:grid-cols-3 gap-6">
-                @foreach (var symbol in Model.RelatedSymbols)
-                {
-                    <a href="/states/@Model.State.Slug/@symbol.Type"
-                       class="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition border-2 border-transparent hover:border-pink-500">
-                        <div class="text-5xl mb-4 text-center">@GetSymbolIcon(symbol.Type)</div>
-                        <div class="text-center">
-                            <div class="text-sm text-pink-700 font-semibold uppercase mb-2">@GetSymbolTypeName(symbol.Type)</div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-1">@symbol.Name</h3>
-                            @if (!string.IsNullOrEmpty(symbol.ScientificName))
-                            {
-                                <p class="text-sm text-gray-500 italic">@symbol.ScientificName</p>
-                            }
-                        </div>
-                    </a>
-                }
-            </div>
-        </section>
-    }
-
-    <!-- NAVIGATION LINKS -->
-    <div class="mt-10 flex flex-wrap gap-4 justify-center">
-        <a href="/symbols/flowers"
-           class="px-6 py-3 rounded-lg bg-white border-2 border-pink-600 text-pink-600 font-semibold hover:bg-pink-50 transition shadow-sm">
-            ← Back to All State Flowers
-        </a>
-        <a href="/states/@Model.State.Slug"
-           class="px-6 py-3 rounded-lg bg-pink-600 text-white font-semibold hover:bg-pink-700 transition shadow-sm">
-            See All @Model.State.Name Symbols →
-        </a>
-    </div>
-
+        }
+    </article>
 </main>
 
-@functions {
-    string GetSymbolTypeName(string type)
-    {
-        return type switch
-        {
-            "bird" => "State Bird",
-            "flower" => "State Flower",
-            "tree" => "State Tree",
-            "motto" => "State Motto",
-            "animal" => "State Animal",
-            "flag" => "State Flag",
-            _ => $"State {char.ToUpper(type[0]) + type.Substring(1)}"
-        };
-    }
-
-    string GetSymbolIcon(string type)
-    {
-        return type switch
-        {
-            "bird" => "🦅",
-            "flower" => "🌸",
-            "tree" => "🌳",
-            "motto" => "📜",
-            "animal" => "🦌",
-            "flag" => "🏴",
-            _ => "⭐"
-        };
-    }
-}
- *@
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")
+<script src="~/js/quizEngine.js" defer></script>

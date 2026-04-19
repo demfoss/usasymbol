@@ -1,0 +1,598 @@
+type: ranking
+slug: largest-airport-by-state
+category: infrastructure
+url: /rankings/infrastructure/largest-airport-by-state
+hero_image: "/images/rankings/infrastructure/largest-airport-by-state/largest-airport-by-state.png"
+hero_image_alt: "Map showing the largest airport in each U.S. state by passengers and by land area"
+
+author: "USA Symbol Team"
+date_published: "2026-04-19"
+date_modified: "2026-04-19"
+
+seo:
+  title: "Busiest & Largest Airport in Each State | All 50 States Ranked"
+  description: "The busiest and largest airport in every U.S. state by passengers and land area. Atlanta leads the world in traffic. Denver covers 53 square miles — bigger than San Francisco."
+
+page:
+  h1: "Busiest and Largest Airport in Each U.S. State"
+
+  quick_answer:
+    - "Hartsfield-Jackson Atlanta International (ATL) in Georgia is the busiest airport in any U.S. state — and the world — with over 104 million passengers a year. It has held the global top position without interruption for more than 25 years."
+    - "Denver International (DEN) is the largest U.S. airport by land at 53 square miles (34,000 acres) — bigger than the city of San Francisco. No other American airport is close: Dallas/Fort Worth is second at 27 square miles."
+    - "Delaware, Wyoming, West Virginia, and Vermont have the smallest primary airports in the country, each handling fewer than 1 million passengers annually."
+
+  methodology: "Passenger figures are annual enplanements (boarded passengers only) as reported to the FAA, 2023 data. Physical area covers total airport property including runways, taxiways, terminals, and buffer land within the airport boundary. Each state is represented by its single busiest commercial airport by passenger count. Airports are credited to the state where the airport facility is physically located — Cincinnati/Northern Kentucky (CVG) sits in Hebron, Kentucky; Newark Liberty (EWR) is in New Jersey. Washington D.C. is excluded as a non-state jurisdiction."
+
+  sources:
+    - name: "FAA Air Traffic Activity System (ATAS)"
+      url: "https://aspm.faa.gov/"
+      description: "Official FAA airport passenger and operations statistics"
+    - name: "Airports Council International – North America"
+      url: "https://www.airports.org/"
+      description: "Annual traffic rankings for North American airports"
+    - name: "FAA Airport Master Records"
+      url: "https://www.faa.gov/airports"
+      description: "Airport facility information including land area and boundary data"
+
+map:
+  title: "Busiest Airport by State (Annual Passengers)"
+  image: "/images/rankings/geography/largest-airport-by-state-map.webp"
+  image_alt: "U.S. map showing the busiest airport in each state by annual passenger traffic"
+  caption: "The gap between Atlanta (#1) and Dallas/Fort Worth (#2) is 23 million passengers — more than Hawaii or Oregon sees in a full year. Most of the Mountain West and Great Plains rely on a single regional hub."
+  metric_key: passengers_millions
+  metric_label: "M passengers"
+  name_key: airport
+  color_scheme: blue
+  color_scale: log
+  tooltip_fields:
+    - key: airport
+      label: "Airport"
+    - key: iata
+      label: "Code"
+    - key: city
+      label: "City"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    airport: "Airport"
+    iata: "Code"
+    city: "City"
+    passengers_millions: "Passengers (M)"
+    area_acres: "Area (acres)"
+
+  metric_default: passengers_millions
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Georgia"
+      state_slug: "georgia"
+      airport: "Hartsfield-Jackson Atlanta International"
+      iata: "ATL"
+      city: "Atlanta"
+      passengers_millions: 104.7
+      area_acres: 4700
+
+    - rank: 2
+      state: "Texas"
+      state_slug: "texas"
+      airport: "Dallas/Fort Worth International"
+      iata: "DFW"
+      city: "Dallas–Fort Worth"
+      passengers_millions: 81.4
+      area_acres: 17207
+
+    - rank: 3
+      state: "Colorado"
+      state_slug: "colorado"
+      airport: "Denver International"
+      iata: "DEN"
+      city: "Denver"
+      passengers_millions: 77.8
+      area_acres: 34000
+
+    - rank: 4
+      state: "Illinois"
+      state_slug: "illinois"
+      airport: "O'Hare International"
+      iata: "ORD"
+      city: "Chicago"
+      passengers_millions: 77.0
+      area_acres: 7627
+
+    - rank: 5
+      state: "California"
+      state_slug: "california"
+      airport: "Los Angeles International"
+      iata: "LAX"
+      city: "Los Angeles"
+      passengers_millions: 75.0
+      area_acres: 3500
+
+    - rank: 6
+      state: "New York"
+      state_slug: "new-york"
+      airport: "John F. Kennedy International"
+      iata: "JFK"
+      city: "New York City"
+      passengers_millions: 62.5
+      area_acres: 5200
+
+    - rank: 7
+      state: "Nevada"
+      state_slug: "nevada"
+      airport: "Harry Reid International"
+      iata: "LAS"
+      city: "Las Vegas"
+      passengers_millions: 57.7
+      area_acres: 2800
+
+    - rank: 8
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      airport: "Charlotte Douglas International"
+      iata: "CLT"
+      city: "Charlotte"
+      passengers_millions: 54.5
+      area_acres: 4750
+
+    - rank: 9
+      state: "Florida"
+      state_slug: "florida"
+      airport: "Miami International"
+      iata: "MIA"
+      city: "Miami"
+      passengers_millions: 52.3
+      area_acres: 3230
+
+    - rank: 10
+      state: "Washington"
+      state_slug: "washington"
+      airport: "Seattle-Tacoma International"
+      iata: "SEA"
+      city: "SeaTac"
+      passengers_millions: 51.7
+      area_acres: 2500
+
+    - rank: 11
+      state: "Arizona"
+      state_slug: "arizona"
+      airport: "Phoenix Sky Harbor International"
+      iata: "PHX"
+      city: "Phoenix"
+      passengers_millions: 49.2
+      area_acres: 3300
+
+    - rank: 12
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      airport: "Newark Liberty International"
+      iata: "EWR"
+      city: "Newark"
+      passengers_millions: 46.4
+      area_acres: 2027
+
+    - rank: 13
+      state: "Minnesota"
+      state_slug: "minnesota"
+      airport: "Minneapolis–Saint Paul International"
+      iata: "MSP"
+      city: "Minneapolis"
+      passengers_millions: 41.7
+      area_acres: 3500
+
+    - rank: 14
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      airport: "Logan International"
+      iata: "BOS"
+      city: "Boston"
+      passengers_millions: 40.5
+      area_acres: 2384
+
+    - rank: 15
+      state: "Michigan"
+      state_slug: "michigan"
+      airport: "Detroit Metropolitan Wayne County"
+      iata: "DTW"
+      city: "Detroit"
+      passengers_millions: 36.0
+      area_acres: 4850
+
+    - rank: 16
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      airport: "Philadelphia International"
+      iata: "PHL"
+      city: "Philadelphia"
+      passengers_millions: 32.0
+      area_acres: 2600
+
+    - rank: 17
+      state: "Utah"
+      state_slug: "utah"
+      airport: "Salt Lake City International"
+      iata: "SLC"
+      city: "Salt Lake City"
+      passengers_millions: 26.8
+      area_acres: 7700
+
+    - rank: 18
+      state: "Maryland"
+      state_slug: "maryland"
+      airport: "Baltimore/Washington International Thurgood Marshall"
+      iata: "BWI"
+      city: "Baltimore"
+      passengers_millions: 26.7
+      area_acres: 3630
+
+    - rank: 19
+      state: "Virginia"
+      state_slug: "virginia"
+      airport: "Ronald Reagan Washington National"
+      iata: "DCA"
+      city: "Arlington"
+      passengers_millions: 25.1
+      area_acres: 861
+
+    - rank: 20
+      state: "Tennessee"
+      state_slug: "tennessee"
+      airport: "Nashville International"
+      iata: "BNA"
+      city: "Nashville"
+      passengers_millions: 24.0
+      area_acres: 4200
+
+    - rank: 21
+      state: "Hawaii"
+      state_slug: "hawaii"
+      airport: "Daniel K. Inouye International"
+      iata: "HNL"
+      city: "Honolulu"
+      passengers_millions: 21.2
+      area_acres: 4524
+
+    - rank: 22
+      state: "Oregon"
+      state_slug: "oregon"
+      airport: "Portland International"
+      iata: "PDX"
+      city: "Portland"
+      passengers_millions: 20.3
+      area_acres: 3000
+
+    - rank: 23
+      state: "Missouri"
+      state_slug: "missouri"
+      airport: "St. Louis Lambert International"
+      iata: "STL"
+      city: "St. Louis"
+      passengers_millions: 16.0
+      area_acres: 2970
+
+    - rank: 24
+      state: "Louisiana"
+      state_slug: "louisiana"
+      airport: "Louis Armstrong New Orleans International"
+      iata: "MSY"
+      city: "New Orleans"
+      passengers_millions: 13.0
+      area_acres: 3500
+
+    - rank: 25
+      state: "Indiana"
+      state_slug: "indiana"
+      airport: "Indianapolis International"
+      iata: "IND"
+      city: "Indianapolis"
+      passengers_millions: 10.5
+      area_acres: 7700
+
+    - rank: 26
+      state: "Ohio"
+      state_slug: "ohio"
+      airport: "John Glenn Columbus International"
+      iata: "CMH"
+      city: "Columbus"
+      passengers_millions: 9.5
+      area_acres: 3400
+
+    - rank: 27
+      state: "Kentucky"
+      state_slug: "kentucky"
+      airport: "Cincinnati/Northern Kentucky International"
+      iata: "CVG"
+      city: "Hebron"
+      passengers_millions: 9.3
+      area_acres: 7000
+
+    - rank: 28
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      airport: "Milwaukee Mitchell International"
+      iata: "MKE"
+      city: "Milwaukee"
+      passengers_millions: 8.2
+      area_acres: 1300
+
+    - rank: 29
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      airport: "Albuquerque International Sunport"
+      iata: "ABQ"
+      city: "Albuquerque"
+      passengers_millions: 5.6
+      area_acres: 4400
+
+    - rank: 30
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      airport: "Charleston International"
+      iata: "CHS"
+      city: "Charleston"
+      passengers_millions: 5.5
+      area_acres: 2300
+
+    - rank: 31
+      state: "Alaska"
+      state_slug: "alaska"
+      airport: "Ted Stevens Anchorage International"
+      iata: "ANC"
+      city: "Anchorage"
+      passengers_millions: 5.3
+      area_acres: 7100
+
+    - rank: 32
+      state: "Idaho"
+      state_slug: "idaho"
+      airport: "Boise Airport"
+      iata: "BOI"
+      city: "Boise"
+      passengers_millions: 5.0
+      area_acres: 3700
+
+    - rank: 33
+      state: "Nebraska"
+      state_slug: "nebraska"
+      airport: "Eppley Airfield"
+      iata: "OMA"
+      city: "Omaha"
+      passengers_millions: 4.7
+      area_acres: 2800
+
+    - rank: 34
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      airport: "Will Rogers World Airport"
+      iata: "OKC"
+      city: "Oklahoma City"
+      passengers_millions: 4.5
+      area_acres: 8000
+
+    - rank: 35
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      airport: "T.F. Green International"
+      iata: "PVD"
+      city: "Warwick"
+      passengers_millions: 3.5
+      area_acres: 1200
+
+    - rank: 36
+      state: "Connecticut"
+      state_slug: "connecticut"
+      airport: "Bradley International"
+      iata: "BDL"
+      city: "Windsor Locks"
+      passengers_millions: 3.5
+      area_acres: 1600
+
+    - rank: 37
+      state: "Alabama"
+      state_slug: "alabama"
+      airport: "Birmingham-Shuttlesworth International"
+      iata: "BHM"
+      city: "Birmingham"
+      passengers_millions: 3.5
+      area_acres: 3700
+
+    - rank: 38
+      state: "Iowa"
+      state_slug: "iowa"
+      airport: "Des Moines International"
+      iata: "DSM"
+      city: "Des Moines"
+      passengers_millions: 2.8
+      area_acres: 2500
+
+    - rank: 39
+      state: "Montana"
+      state_slug: "montana"
+      airport: "Bozeman Yellowstone International"
+      iata: "BZN"
+      city: "Bozeman"
+      passengers_millions: 2.5
+      area_acres: 1900
+
+    - rank: 40
+      state: "Arkansas"
+      state_slug: "arkansas"
+      airport: "Bill and Hillary Clinton National Airport"
+      iata: "LIT"
+      city: "Little Rock"
+      passengers_millions: 2.2
+      area_acres: 2700
+
+    - rank: 41
+      state: "Mississippi"
+      state_slug: "mississippi"
+      airport: "Jackson-Medgar Wiley Evers International"
+      iata: "JAN"
+      city: "Jackson"
+      passengers_millions: 1.8
+      area_acres: 3600
+
+    - rank: 42
+      state: "Kansas"
+      state_slug: "kansas"
+      airport: "Wichita Dwight D. Eisenhower National"
+      iata: "ICT"
+      city: "Wichita"
+      passengers_millions: 1.8
+      area_acres: 3500
+
+    - rank: 43
+      state: "Maine"
+      state_slug: "maine"
+      airport: "Portland International Jetport"
+      iata: "PWM"
+      city: "Portland"
+      passengers_millions: 1.4
+      area_acres: 850
+
+    - rank: 44
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      airport: "Hector International"
+      iata: "FAR"
+      city: "Fargo"
+      passengers_millions: 1.3
+      area_acres: 2000
+
+    - rank: 45
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      airport: "Manchester-Boston Regional"
+      iata: "MHT"
+      city: "Manchester"
+      passengers_millions: 0.9
+      area_acres: 1800
+
+    - rank: 46
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      airport: "Joe Foss Field"
+      iata: "FSD"
+      city: "Sioux Falls"
+      passengers_millions: 0.9
+      area_acres: 2100
+
+    - rank: 47
+      state: "Wyoming"
+      state_slug: "wyoming"
+      airport: "Jackson Hole Airport"
+      iata: "JAC"
+      city: "Jackson"
+      passengers_millions: 0.7
+      area_acres: 540
+
+    - rank: 48
+      state: "Vermont"
+      state_slug: "vermont"
+      airport: "Burlington International"
+      iata: "BTV"
+      city: "Burlington"
+      passengers_millions: 0.6
+      area_acres: 900
+
+    - rank: 49
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      airport: "Yeager Airport"
+      iata: "CRW"
+      city: "Charleston"
+      passengers_millions: 0.5
+      area_acres: 1000
+
+    - rank: 50
+      state: "Delaware"
+      state_slug: "delaware"
+      airport: "Wilmington Airport"
+      iata: "ILG"
+      city: "Wilmington"
+      passengers_millions: 0.3
+      area_acres: 1000
+
+sections:
+  - id: "size-vs-traffic"
+    icon: "fa-solid fa-plane-departure"
+    title: "Largest U.S. Airport by Area vs. Busiest by Passengers"
+    paragraphs:
+      - "Denver International covers 53 square miles — more land than the city of San Francisco. When it opened in 1995 after years of delays and cost overruns that turned it into a national punchline, the sheer acreage felt absurd. Prairie in every direction, a tent roof visible from miles away, a baggage system that didn't work. Today, with 78 million passengers a year and room for runways nobody else can build, all that space looks prescient."
+      - "Hartsfield-Jackson Atlanta, at 4,700 acres, handles 104 million passengers — the most of any airport on earth, every year, for more than 25 years. It runs lean: parallel runway arrays, a fully automated underground people mover that connects five concourses without human drivers, and a connection-optimized layout that makes Delta's hub function like a machine. Atlanta handles 22 million more passengers than its nearest U.S. competitor on a footprint one-seventh the size of Denver."
+      - "Dallas/Fort Worth sits between them in the way that matters — 17,207 acres (second-largest by land in America) and 81 million passengers (second-busiest by traffic). DFW was built on blank prairie between two rival cities that spent years fighting over which one would host it. It opened in 1974 and still has room to add runways. Texas planned big; the demand caught up."
+
+  - id: "when-the-airport-doesnt-match-the-city"
+    icon: "fa-solid fa-map-pin"
+    title: "Why Cincinnati's Airport Is in Kentucky — And Other State-Line Cases"
+    paragraphs:
+      - "Cincinnati/Northern Kentucky International (CVG) is Kentucky's busiest airport — physically located in Hebron, Boone County, KY — but nearly every passenger using it is traveling to or from Ohio. The airport was built on the Kentucky side of the Ohio River because that's where the flat, open land was. That geographic accident became economically decisive when Amazon Air chose CVG as its primary U.S. hub, making its cargo ramps among the most active in the country even as the passenger side stays modest."
+      - "Virginia has its own version of the split. Ronald Reagan Washington National (DCA) in Arlington is the state's busiest passenger airport at 25 million passengers annually. But Washington Dulles (IAD), also in Virginia, is nearly 14 times larger by land — 11,780 acres versus DCA's 861. DCA is hemmed in by the Potomac River, federal flight restrictions, and a hard cap on daily operations. Dulles, opened in 1962 on Eero Saarinen's soaring design, was given room to breathe. The two airports serve different traveler profiles: DCA for short-hauls and government commuters, IAD for international long-haul."
+      - "Florida divides the same way between two metrics. Miami International edges out Orlando for passenger traffic (52 million vs. 50 million), but Orlando International covers 11,000 acres — more than three times Miami's footprint. MCO was built large because 1970s planners expected Central Florida's Disney-era growth to demand it. They were right. The airport that seemed oversized for decades is now within reach of matching Miami, and its land reserves make expansion straightforward in ways that Miami's don't."
+
+  - id: "outliers-worth-knowing"
+    icon: "fa-solid fa-star"
+    title: "Jackson Hole, Bozeman, and Anchorage: Three Airports That Don't Fit the Pattern"
+    paragraphs:
+      - "Jackson Hole Airport (JAC) in Wyoming is the only commercial service airport inside a U.S. national park — Grand Teton. It handles under 700,000 passengers annually, but the average ticket cost per segment ranks among the highest in the country; the airport serves a resort market with few alternatives. Congress must reauthorize its operating permit on a rolling basis because the National Park Service retains land jurisdiction. The runway sits at 6,451 feet elevation, which imposes real limits on aircraft weight loads."
+      - "Montana's largest airport is no longer Billings or Missoula — it's Bozeman Yellowstone International (BZN), which surpassed both as ski tourism and remote-work migration compounded. A decade ago, BZN handled under 500,000 passengers. By 2023 it crossed 2.5 million. The city scrambled to add gates, parking, and rental car capacity well behind the demand curve — a problem Billings never had."
+      - "Ted Stevens Anchorage International (ANC) ranks among the world's busiest cargo airports despite handling only 5 million passengers a year. Its location on great-circle polar routes between North America and Asia makes it a natural refueling and transfer stop for transpacific freighters. FedEx, UPS, and major Asian carriers use ANC as a mid-route hub. The cargo ramps operate around the clock; the passenger terminal is almost incidental to the airport's actual economic function."
+
+visual_assets:
+  - id: denver-international-jeppesen-terminal
+    src: /images/rankings/infrastructure/largest-airport-by-state/denver-international-jeppesen-terminal.jpg
+    alt: Aerial view of Jeppesen Terminal and its white peaked roof at Denver International Airport
+    caption: Jeppesen Terminal's white fabric peaks were designed to echo both the Rocky Mountains and Plains teepees, giving Denver one of the most recognizable airport roofs in the United States.
+    section: size-vs-traffic
+    layout: right
+  - id: cvg-airport-aerial
+    src: /images/rankings/infrastructure/largest-airport-by-state/cvg-airport-aerial.jpg
+    alt: Aerial view of Cincinnati Northern Kentucky International Airport with runways and terminal complex in Hebron
+    caption: Cincinnati/Northern Kentucky International spreads across Hebron farmland in Boone County, and its code CVG comes from nearby Covington rather than Cincinnati itself.
+    section: when-the-airport-doesnt-match-the-city
+    layout: left
+  - id: jackson-hole-airport-aerial
+    src: /images/rankings/infrastructure/largest-airport-by-state/jackson-hole-airport-aerial.jpg
+    alt: Jackson Hole Airport on the valley floor with the Teton Range rising behind the runway
+    caption: Jackson Hole Airport opened in 1941, and few U.S. airfields have a mountain backdrop as immediate as the Teton wall at the edge of the valley.
+    section: outliers-worth-knowing
+    layout: right
+
+faq:
+  - question: "What is the busiest airport in the United States"
+    answer: "Hartsfield-Jackson Atlanta International (ATL) in Georgia is the busiest airport in the United States with over 104 million annual passengers. It is also the busiest airport in the world and has held that position continuously since 1998."
+
+  - question: "What is the largest airport in the US by land area"
+    answer: "Denver International Airport (DEN) is the largest airport in the United States by land area, covering approximately 53 square miles (about 34,000 acres). Dallas/Fort Worth International is a distant second at 27 square miles (17,207 acres)."
+
+  - question: "What is the largest airport in Texas"
+    answer: "Dallas/Fort Worth International Airport (DFW) is the largest airport in Texas by both passenger traffic (81 million annually) and land area (17,207 acres). It is the second-busiest airport in the United States."
+
+  - question: "What is the largest airport in California"
+    answer: "Los Angeles International (LAX) is California's largest airport by passenger traffic with approximately 75 million annual passengers. San Francisco International (SFO) is California's second-busiest airport. By land area, LAX covers about 3,500 acres."
+
+  - question: "What is the largest airport in Florida"
+    answer: "By passenger traffic, Miami International (MIA) is Florida's busiest with approximately 52 million annual passengers. By land area, Orlando International (MCO) is the larger facility at roughly 11,000 acres — more than three times Miami's footprint."
+
+  - question: "Why is Cincinnati's airport in Kentucky"
+    answer: "Cincinnati/Northern Kentucky International (CVG) is physically located in Hebron, Boone County, Kentucky, across the Ohio River from Cincinnati. The airport was developed on Kentucky land for geographic and regulatory reasons. It is credited as Kentucky's primary commercial airport but primarily serves the Greater Cincinnati metropolitan area in Ohio."
+
+  - question: "What is the only commercial airport inside a national park"
+    answer: "Jackson Hole Airport (JAC) in Wyoming is the only commercial service airport located within a U.S. national park — Grand Teton National Park. Its operating permit requires periodic Congressional reauthorization since the National Park Service retains land authority over the site."
+
+  - question: "What states have the smallest airports"
+    answer: "Delaware, West Virginia, Vermont, and Wyoming have the least-trafficked primary commercial airports in the country. Wilmington Airport (ILG) in Delaware handles under 400,000 passengers annually — most Delaware residents fly out of Philadelphia or Baltimore instead. Wyoming's Jackson Hole (JAC) and Vermont's Burlington (BTV) each handle under 700,000 per year."
+
+  - question: "Why is Anchorage such a major cargo airport"
+    answer: "Ted Stevens Anchorage International (ANC) sits on great-circle polar routes between North America and Asia, making it a natural refueling and transfer point for transpacific cargo flights. FedEx, UPS, and major Asian freight carriers use ANC as a mid-route hub. It consistently ranks among the world's top five cargo airports despite handling only about 5 million passengers annually."
+
+related:
+  - title: "U.S. States by Land Area"
+    url: "/rankings/geography/states-by-land-area"
+  - title: "Tallest Building in Each State"
+    url: "/rankings/geography/tallest-building-by-state"
+  - title: "Highest Point in Each State"
+    url: "/rankings/geography/highest-point-by-state"
