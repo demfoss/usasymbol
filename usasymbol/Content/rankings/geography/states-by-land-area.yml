@@ -1,27 +1,27 @@
-﻿type: ranking
+type: ranking
 slug: states-by-land-area
 category: geography
 url: /rankings/geography/states-by-land-area
 hero_image: "/images/rankings/geography/us-states-by-land-area-map.webp"
-hero_image_alt: "Infographic ranking the largest U.S. states by land area"
+hero_image_alt: "Choropleth map of all 50 U.S. states shaded by land area from largest to smallest"
 
 author: "USA Symbol Team"
 date_published: "2026-01-15"
-date_modified: "2026-01-15"
+date_modified: "2026-04-26"
 
 seo:
-  title: "U.S. States by Land Area: All 50 Ranked Largest to Smallest"
-  description: "See all 50 U.S. states ranked by land area, with square miles plus total and water area for each state."
+  title: "U.S. States by Size: Largest to Smallest by Area"
+  description: "Alaska is the largest U.S. state by size, while Rhode Island is the smallest. This ranking lists all 50 states by land area, from largest to smallest, with square miles, square kilometers, and a map."
 
 page:
-  h1: "U.S. States by Land Area"
-  
-  quick_answer:
-  - "Alaska is the largest U.S. state by land area with 570,641 square miles - more than twice the size of Texas (261,914 sq mi), the second largest state."
-  - "Rhode Island is the smallest state at 1,034 square miles. The five smallest states combined (Rhode Island, Delaware, Connecticut, New Jersey, New Hampshire) total just 24,132 square miles."
+  h1: "U.S. States by Size"
 
-  methodology: "Land area is measured in square miles using U.S. Census Bureau data. Rankings use land area only by default; total area (land + water) and water area are available as alternate metrics."
-  
+  quick_answer:
+    - "Alaska is the largest U.S. state by land area with 570,641 square miles — more than twice the size of Texas (261,914 sq mi), the largest state in the contiguous United States. Rhode Island is the smallest state at just 1,034 square miles."
+    - "All 10 of the largest states are west of the Mississippi River. All 10 of the smallest states are in the East, concentrated in New England and the Mid-Atlantic."
+
+  methodology: "Land area is measured in square miles and square kilometers using U.S. Census Bureau data. Land area counts only solid ground within a state's boundaries and excludes rivers, lakes, reservoirs, and coastal waters. Total area (land + water) and water area are available as alternate sort metrics in the main table."
+
   sources:
     - name: "U.S. Census Bureau (Gazetteer Files)"
       url: "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
@@ -32,443 +32,668 @@ page:
 
 table:
   columns:
-    rank: "#"
+    rank: "Rank"
     state: "State"
-    land: "Land area (sq mi)"
-    total: "Total area (sq mi)"
-    water: "Water area (sq mi)"
-  
-  metric_default: land
-  metrics_available: [land, total, water]
-  
+    land_sq_mi: "Land area (sq mi)"
+    land_km2: "Land area (km²)"
+    total_sq_mi: "Total area (sq mi)"
+    water_sq_mi: "Water area (sq mi)"
+    region: "Region"
+
+  metric_default: land_sq_mi
+  sort_default: asc
+  metrics_available: [land_sq_mi, total_sq_mi, water_sq_mi]
+
   rows:
     - rank: 1
       state: "Alaska"
       state_slug: "alaska"
-      land: 570641
-      total: 663268
-      water: 92627
+      land_sq_mi: 570641
+      land_km2: 1477953
+      total_sq_mi: 663268
+      water_sq_mi: 92627
+      region: "West"
 
     - rank: 2
       state: "Texas"
       state_slug: "texas"
-      land: 261914
-      total: 268597
-      water: 6683
+      land_sq_mi: 261914
+      land_km2: 678052
+      total_sq_mi: 268597
+      water_sq_mi: 6683
+      region: "South"
 
     - rank: 3
       state: "California"
       state_slug: "california"
-      land: 155959
-      total: 163696
-      water: 7737
+      land_sq_mi: 155959
+      land_km2: 403933
+      total_sq_mi: 163696
+      water_sq_mi: 7737
+      region: "West"
 
     - rank: 4
       state: "Montana"
       state_slug: "montana"
-      land: 145552
-      total: 147042
-      water: 1490
+      land_sq_mi: 145552
+      land_km2: 376977
+      total_sq_mi: 147042
+      water_sq_mi: 1490
+      region: "West"
 
     - rank: 5
       state: "New Mexico"
       state_slug: "new-mexico"
-      land: 121298
-      total: 121590
-      water: 292
+      land_sq_mi: 121298
+      land_km2: 314161
+      total_sq_mi: 121590
+      water_sq_mi: 292
+      region: "West"
 
     - rank: 6
       state: "Arizona"
       state_slug: "arizona"
-      land: 113594
-      total: 113990
-      water: 396
+      land_sq_mi: 113594
+      land_km2: 294207
+      total_sq_mi: 113990
+      water_sq_mi: 396
+      region: "West"
 
     - rank: 7
       state: "Nevada"
       state_slug: "nevada"
-      land: 109781
-      total: 110572
-      water: 791
+      land_sq_mi: 109781
+      land_km2: 284333
+      total_sq_mi: 110572
+      water_sq_mi: 791
+      region: "West"
 
     - rank: 8
       state: "Colorado"
       state_slug: "colorado"
-      land: 103642
-      total: 104094
-      water: 452
+      land_sq_mi: 103642
+      land_km2: 268430
+      total_sq_mi: 104094
+      water_sq_mi: 452
+      region: "West"
 
     - rank: 9
-      state: "Oregon"
-      state_slug: "oregon"
-      land: 95988
-      total: 98379
-      water: 2391
-
-    - rank: 10
       state: "Wyoming"
       state_slug: "wyoming"
-      land: 97093
-      total: 97813
-      water: 720
+      land_sq_mi: 97093
+      land_km2: 251470
+      total_sq_mi: 97813
+      water_sq_mi: 720
+      region: "West"
+
+    - rank: 10
+      state: "Oregon"
+      state_slug: "oregon"
+      land_sq_mi: 95988
+      land_km2: 248608
+      total_sq_mi: 98379
+      water_sq_mi: 2391
+      region: "West"
 
     - rank: 11
-      state: "Michigan"
-      state_slug: "michigan"
-      land: 56539
-      total: 96714
-      water: 40175
-
-    - rank: 12
-      state: "Minnesota"
-      state_slug: "minnesota"
-      land: 79627
-      total: 86936
-      water: 7309
-
-    - rank: 13
-      state: "Utah"
-      state_slug: "utah"
-      land: 82170
-      total: 84897
-      water: 2727
-
-    - rank: 14
       state: "Idaho"
       state_slug: "idaho"
-      land: 82643
-      total: 83569
-      water: 926
+      land_sq_mi: 82643
+      land_km2: 214045
+      total_sq_mi: 83569
+      water_sq_mi: 926
+      region: "West"
 
-    - rank: 15
+    - rank: 12
+      state: "Utah"
+      state_slug: "utah"
+      land_sq_mi: 82170
+      land_km2: 212819
+      total_sq_mi: 84897
+      water_sq_mi: 2727
+      region: "West"
+
+    - rank: 13
       state: "Kansas"
       state_slug: "kansas"
-      land: 81759
-      total: 82278
-      water: 519
+      land_sq_mi: 81759
+      land_km2: 211754
+      total_sq_mi: 82278
+      water_sq_mi: 519
+      region: "Midwest"
 
-    - rank: 16
+    - rank: 14
+      state: "Minnesota"
+      state_slug: "minnesota"
+      land_sq_mi: 79627
+      land_km2: 206232
+      total_sq_mi: 86936
+      water_sq_mi: 7309
+      region: "Midwest"
+
+    - rank: 15
       state: "Nebraska"
       state_slug: "nebraska"
-      land: 76824
-      total: 77348
-      water: 524
+      land_sq_mi: 76824
+      land_km2: 198974
+      total_sq_mi: 77348
+      water_sq_mi: 524
+      region: "Midwest"
 
-    - rank: 17
+    - rank: 16
       state: "South Dakota"
       state_slug: "south-dakota"
-      land: 75811
-      total: 77116
-      water: 1305
+      land_sq_mi: 75811
+      land_km2: 196351
+      total_sq_mi: 77116
+      water_sq_mi: 1305
+      region: "Midwest"
 
-    - rank: 18
-      state: "Washington"
-      state_slug: "washington"
-      land: 66456
-      total: 71298
-      water: 4842
-
-    - rank: 19
+    - rank: 17
       state: "North Dakota"
       state_slug: "north-dakota"
-      land: 69001
-      total: 70698
-      water: 1697
+      land_sq_mi: 69001
+      land_km2: 178712
+      total_sq_mi: 70698
+      water_sq_mi: 1697
+      region: "Midwest"
 
-    - rank: 20
-      state: "Oklahoma"
-      state_slug: "oklahoma"
-      land: 68595
-      total: 69899
-      water: 1304
-
-    - rank: 21
+    - rank: 18
       state: "Missouri"
       state_slug: "missouri"
-      land: 68742
-      total: 69707
-      water: 965
+      land_sq_mi: 68742
+      land_km2: 178042
+      total_sq_mi: 69707
+      water_sq_mi: 965
+      region: "Midwest"
 
-    - rank: 22
-      state: "Florida"
-      state_slug: "florida"
-      land: 53625
-      total: 65758
-      water: 12133
+    - rank: 19
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      land_sq_mi: 68595
+      land_km2: 177661
+      total_sq_mi: 69899
+      water_sq_mi: 1304
+      region: "South"
 
-    - rank: 23
-      state: "Wisconsin"
-      state_slug: "wisconsin"
-      land: 54158
-      total: 65496
-      water: 11339
+    - rank: 20
+      state: "Washington"
+      state_slug: "washington"
+      land_sq_mi: 66456
+      land_km2: 172119
+      total_sq_mi: 71298
+      water_sq_mi: 4842
+      region: "West"
 
-    - rank: 24
+    - rank: 21
       state: "Georgia"
       state_slug: "georgia"
-      land: 57513
-      total: 59425
-      water: 1912
+      land_sq_mi: 57513
+      land_km2: 148958
+      total_sq_mi: 59425
+      water_sq_mi: 1912
+      region: "South"
 
-    - rank: 25
-      state: "Illinois"
-      state_slug: "illinois"
-      land: 55519
-      total: 57914
-      water: 2395
+    - rank: 22
+      state: "Michigan"
+      state_slug: "michigan"
+      land_sq_mi: 56539
+      land_km2: 146435
+      total_sq_mi: 96714
+      water_sq_mi: 40175
+      region: "Midwest"
 
-    - rank: 26
+    - rank: 23
       state: "Iowa"
       state_slug: "iowa"
-      land: 55857
-      total: 56273
-      water: 416
+      land_sq_mi: 55857
+      land_km2: 144668
+      total_sq_mi: 56273
+      water_sq_mi: 416
+      region: "Midwest"
+
+    - rank: 24
+      state: "Illinois"
+      state_slug: "illinois"
+      land_sq_mi: 55519
+      land_km2: 143793
+      total_sq_mi: 57914
+      water_sq_mi: 2395
+      region: "Midwest"
+
+    - rank: 25
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      land_sq_mi: 54158
+      land_km2: 140269
+      total_sq_mi: 65496
+      water_sq_mi: 11339
+      region: "Midwest"
+
+    - rank: 26
+      state: "Florida"
+      state_slug: "florida"
+      land_sq_mi: 53625
+      land_km2: 138887
+      total_sq_mi: 65758
+      water_sq_mi: 12133
+      region: "South"
 
     - rank: 27
-      state: "New York"
-      state_slug: "new-york"
-      land: 47126
-      total: 54555
-      water: 7429
-
-    - rank: 28
-      state: "North Carolina"
-      state_slug: "north-carolina"
-      land: 48618
-      total: 53819
-      water: 5201
-
-    - rank: 29
       state: "Arkansas"
       state_slug: "arkansas"
-      land: 52035
-      total: 53179
-      water: 1143
+      land_sq_mi: 52035
+      land_km2: 134771
+      total_sq_mi: 53179
+      water_sq_mi: 1143
+      region: "South"
 
-    - rank: 30
+    - rank: 28
       state: "Alabama"
       state_slug: "alabama"
-      land: 50645
-      total: 52420
-      water: 1775
+      land_sq_mi: 50645
+      land_km2: 131170
+      total_sq_mi: 52420
+      water_sq_mi: 1775
+      region: "South"
+
+    - rank: 29
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      land_sq_mi: 48618
+      land_km2: 125920
+      total_sq_mi: 53819
+      water_sq_mi: 5201
+      region: "South"
+
+    - rank: 30
+      state: "New York"
+      state_slug: "new-york"
+      land_sq_mi: 47126
+      land_km2: 122056
+      total_sq_mi: 54555
+      water_sq_mi: 7429
+      region: "Northeast"
 
     - rank: 31
-      state: "Louisiana"
-      state_slug: "louisiana"
-      land: 43204
-      total: 52378
-      water: 9174
-
-    - rank: 32
       state: "Mississippi"
       state_slug: "mississippi"
-      land: 46923
-      total: 48432
-      water: 1509
+      land_sq_mi: 46923
+      land_km2: 121531
+      total_sq_mi: 48432
+      water_sq_mi: 1509
+      region: "South"
 
-    - rank: 33
+    - rank: 32
       state: "Pennsylvania"
       state_slug: "pennsylvania"
-      land: 44743
-      total: 46054
-      water: 1312
+      land_sq_mi: 44743
+      land_km2: 115883
+      total_sq_mi: 46054
+      water_sq_mi: 1312
+      region: "Northeast"
+
+    - rank: 33
+      state: "Louisiana"
+      state_slug: "louisiana"
+      land_sq_mi: 43204
+      land_km2: 111897
+      total_sq_mi: 52378
+      water_sq_mi: 9174
+      region: "South"
 
     - rank: 34
-      state: "Ohio"
-      state_slug: "ohio"
-      land: 40861
-      total: 44826
-      water: 3965
-
-    - rank: 35
-      state: "Virginia"
-      state_slug: "virginia"
-      land: 39490
-      total: 42775
-      water: 3285
-
-    - rank: 36
       state: "Tennessee"
       state_slug: "tennessee"
-      land: 41235
-      total: 42144
-      water: 909
+      land_sq_mi: 41235
+      land_km2: 106798
+      total_sq_mi: 42144
+      water_sq_mi: 909
+      region: "South"
+
+    - rank: 35
+      state: "Ohio"
+      state_slug: "ohio"
+      land_sq_mi: 40861
+      land_km2: 105830
+      total_sq_mi: 44826
+      water_sq_mi: 3965
+      region: "Midwest"
+
+    - rank: 36
+      state: "Virginia"
+      state_slug: "virginia"
+      land_sq_mi: 39490
+      land_km2: 102279
+      total_sq_mi: 42775
+      water_sq_mi: 3285
+      region: "South"
 
     - rank: 37
       state: "Kentucky"
       state_slug: "kentucky"
-      land: 39486
-      total: 40408
-      water: 921
+      land_sq_mi: 39486
+      land_km2: 102269
+      total_sq_mi: 40408
+      water_sq_mi: 921
+      region: "South"
 
     - rank: 38
       state: "Indiana"
       state_slug: "indiana"
-      land: 35826
-      total: 36420
-      water: 593
+      land_sq_mi: 35826
+      land_km2: 92789
+      total_sq_mi: 36420
+      water_sq_mi: 593
+      region: "Midwest"
 
     - rank: 39
       state: "Maine"
       state_slug: "maine"
-      land: 30843
-      total: 35380
-      water: 4537
+      land_sq_mi: 30843
+      land_km2: 79883
+      total_sq_mi: 35380
+      water_sq_mi: 4537
+      region: "Northeast"
 
     - rank: 40
       state: "South Carolina"
       state_slug: "south-carolina"
-      land: 30061
-      total: 32020
-      water: 1960
+      land_sq_mi: 30061
+      land_km2: 77858
+      total_sq_mi: 32020
+      water_sq_mi: 1960
+      region: "South"
 
     - rank: 41
       state: "West Virginia"
       state_slug: "west-virginia"
-      land: 24038
-      total: 24230
-      water: 192
+      land_sq_mi: 24038
+      land_km2: 62258
+      total_sq_mi: 24230
+      water_sq_mi: 192
+      region: "South"
 
     - rank: 42
       state: "Maryland"
       state_slug: "maryland"
-      land: 9707
-      total: 12406
-      water: 2699
+      land_sq_mi: 9707
+      land_km2: 25141
+      total_sq_mi: 12406
+      water_sq_mi: 2699
+      region: "South"
 
     - rank: 43
-      state: "Hawaii"
-      state_slug: "hawaii"
-      land: 6423
-      total: 10932
-      water: 4509
-
-    - rank: 44
-      state: "Massachusetts"
-      state_slug: "massachusetts"
-      land: 7800
-      total: 10554
-      water: 2754
-
-    - rank: 45
       state: "Vermont"
       state_slug: "vermont"
-      land: 9217
-      total: 9616
-      water: 400
+      land_sq_mi: 9217
+      land_km2: 23872
+      total_sq_mi: 9616
+      water_sq_mi: 400
+      region: "Northeast"
 
-    - rank: 46
+    - rank: 44
       state: "New Hampshire"
       state_slug: "new-hampshire"
-      land: 8953
-      total: 9349
-      water: 397
+      land_sq_mi: 8953
+      land_km2: 23188
+      total_sq_mi: 9349
+      water_sq_mi: 397
+      region: "Northeast"
 
-    - rank: 47
+    - rank: 45
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      land_sq_mi: 7800
+      land_km2: 20202
+      total_sq_mi: 10554
+      water_sq_mi: 2754
+      region: "Northeast"
+
+    - rank: 46
       state: "New Jersey"
       state_slug: "new-jersey"
-      land: 7354
-      total: 8723
-      water: 1368
+      land_sq_mi: 7354
+      land_km2: 19047
+      total_sq_mi: 8723
+      water_sq_mi: 1368
+      region: "Northeast"
+
+    - rank: 47
+      state: "Hawaii"
+      state_slug: "hawaii"
+      land_sq_mi: 6423
+      land_km2: 16635
+      total_sq_mi: 10932
+      water_sq_mi: 4509
+      region: "West"
 
     - rank: 48
       state: "Connecticut"
       state_slug: "connecticut"
-      land: 4842
-      total: 5543
-      water: 701
+      land_sq_mi: 4842
+      land_km2: 12542
+      total_sq_mi: 5543
+      water_sq_mi: 701
+      region: "Northeast"
 
     - rank: 49
       state: "Delaware"
       state_slug: "delaware"
-      land: 1949
-      total: 2489
-      water: 540
+      land_sq_mi: 1949
+      land_km2: 5048
+      total_sq_mi: 2489
+      water_sq_mi: 540
+      region: "South"
 
     - rank: 50
       state: "Rhode Island"
       state_slug: "rhode-island"
-      land: 1034
-      total: 1545
-      water: 511
-
-sections:
-  - id: "alaska-size-comparison"
-    icon: "fa-solid fa-globe"
-    title: "How Big Is Alaska Really?"
-    paragraphs:
-      - "Alaska's 570,641 square miles of land area is difficult to visualize without comparison. If Alaska were a country, it would rank 17th in the world by land area - larger than France, Spain, and Germany combined. You could fit 425 Rhode Islands inside Alaska. The state is so massive that it spans four time zones, though only two are currently used (Alaska Time and Hawaii-Aleutian Time for the Aleutian Islands)."
-      - "Alaska is more than twice the size of Texas, which sits at 261,914 square miles. In fact, Alaska is larger than the next three largest states combined - Texas, California, and Montana total 563,425 square miles together, still less than Alaska alone. If you could drive straight across Alaska at highway speeds without stopping, it would take approximately 20 hours to cross the state from east to west."
-      - "Alaska's population density — 1.3 people per square mile, the lowest of any U.S. state — tells you what the size actually means on the ground. At 733,000 residents across 570,641 square miles, entire regions exist with no roads, no towns, no year-round human presence. The state contains 17 of the 20 highest peaks in the United States (including the [hardest state high points](/rankings/geography/highest-point-by-state) to climb), more than 100,000 glaciers, and over 3 million lakes."
-
-  - id: "smallest-states"
-    icon: "fa-solid fa-compress"
-    title: "The Tiny Five: America's Smallest States"
-    paragraphs:
-      - "The five smallest U.S. states by land area - Rhode Island, Delaware, Connecticut, New Jersey, and New Hampshire - combined total only 24,132 square miles. This is less land than West Virginia (24,230 sq mi) occupies alone. Maryland, at rank 42 with just 9,707 square miles of land, has more land area than Rhode Island and Delaware combined."
-      - "Rhode Island earned its nickname 'Little Rhody' honestly - at 1,034 square miles, you can drive from one end to the other in about an hour. Yet Rhode Island has a population of over 1 million people, giving it a population density higher than all but two other states. Delaware, the second smallest at 1,949 square miles, was the first state to ratify the U.S. Constitution in 1787 — earning 'The First State' as an official nickname that punches well above its land area."
-      - "New Jersey has the highest population density of any state at over 1,200 people per square mile — in 7,354 square miles, it fits 9.3 million residents. Connecticut and New Hampshire are two of the wealthiest states per capita in the country. Four of the five smallest states rank in the top 15 for GDP per capita, which suggests that in the American economy, density compensates for acreage."
-
-  - id: "water-vs-land"
-    icon: "fa-solid fa-water"
-    title: "Land Area vs Total Area: When Water Changes the Rankings"
-    paragraphs:
-      - "Michigan presents one of the most dramatic differences between land and total area of any U.S. state. With just 56,539 square miles of land, Michigan ranks 11th. But when you include water area, Michigan's total jumps to 96,714 square miles, moving it up to 11th place overall. The Great Lakes give Michigan over 40,175 square miles of water - more water area than the entire land area of Ohio, Indiana, or Kentucky."
-      - "Florida tells a similar story. Its 53,625 square miles of land ranks 22nd, but Florida contains 12,133 square miles of water from the Atlantic Ocean, Gulf of Mexico, and countless lakes, rivers, and wetlands. Alaska has even more dramatic water numbers - 92,627 square miles of water area from its extensive coastline, but this barely impacts its ranking since its land area is so massive. Hawaii has the highest percentage of water relative to total area, with 4,509 square miles of water compared to just 6,423 square miles of land."
-      - "The re-rankings are most dramatic in the Great Lakes region. Michigan's 40,175 square miles of Great Lakes water nearly doubles its total area, vaulting it past states with significantly more dry land. Louisiana's coastal wetlands and Florida's estuaries add thousands of square miles that never appear in a land-area ranking. These aren't statistical footnotes — they map directly onto how each state earns its living. A Michigan or Minnesota organizes its entire economy around water access in ways that landlocked Colorado or Kansas never will."
-
-  - id: "eastern-vs-western"
-    icon: "fa-solid fa-map-marked-alt"
-    title: "Why Western States Are So Much Larger Than Eastern States"
-    paragraphs:
-      - "The size gap between eastern and western states is one of the most striking patterns in American geography. All 10 of the largest states are west of the Mississippi River — including Alaska, which sits entirely outside the contiguous 48. All 10 of the smallest states are in the East, concentrated in New England and the Mid-Atlantic."
-      - "This size difference reflects America's historical development. The original 13 colonies were carved out when land seemed scarce and populations were concentrated along the Atlantic coast. States like Rhode Island and Connecticut were drawn with precise boundaries negotiated between colonial powers. As America expanded westward, vast territories were available. Western states were organized with less concern for compact size — surveyors often drew straight lines along latitude and longitude rather than following natural features. The East-West divide extends beyond square mileage to elevation: see [state high points ranked by difficulty](/rankings/geography/highest-point-by-state) to understand just how much higher the West rises above the East."
-      - "The Louisiana Purchase of 1803 and Mexican Cession of 1848 added enormous territories that became today's large western states. With fewer people and abundant land, there was no pressure to create small states. Colorado, Wyoming, Utah, and New Mexico have nearly rectangular shapes because surveyors simply used lines of latitude and longitude. This contrast between eastern and western state sizes affects everything from political representation to resource management. Wyoming, with just 577,000 people spread across 97,000 square miles, faces very different challenges than New Jersey, with 9.3 million people in only 7,354 square miles."
+      land_sq_mi: 1034
+      land_km2: 2678
+      total_sq_mi: 1545
+      water_sq_mi: 511
+      region: "Northeast"
 
 map:
-  title: "Largest U.S. States by Land Area"
+  title: "U.S. States by Area Map"
   image: "/images/rankings/us-states-by-land-area-map.webp"
-  image_alt: "Infographic ranking the largest U.S. states by land area, with Alaska #1, Texas #2, and California #3."
-  caption: "Alaska is by far the largest U.S. state by land area, followed by Texas and California."
-  metric_key: land
+  image_alt: "Choropleth map of the United States shaded by land area, from darkest (Alaska) to lightest (Rhode Island)"
+  caption: "Alaska is the largest U.S. state by land area, followed by Texas and California. All 10 of the largest states are west of the Mississippi River."
+  metric_key: land_sq_mi
   metric_label: "sq mi"
   color_scheme: green
   color_scale: log
+  tooltip_fields:
+    - "State"
+    - "Rank"
+    - "Land area (sq mi)"
+    - "Land area (km²)"
+  legend_labels:
+    - "Largest"
+    - "Large"
+    - "Medium"
+    - "Small"
+    - "Smallest"
 
+sections:
+  - id: "largest-states"
+    icon: "fa-solid fa-mountain"
+    title: "Largest States in the U.S."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        land_sq_mi: "Land area (sq mi)"
+      rows:
+        - rank: 1
+          state: "Alaska"
+          state_slug: "alaska"
+          land_sq_mi: 570641
+        - rank: 2
+          state: "Texas"
+          state_slug: "texas"
+          land_sq_mi: 261914
+        - rank: 3
+          state: "California"
+          state_slug: "california"
+          land_sq_mi: 155959
+        - rank: 4
+          state: "Montana"
+          state_slug: "montana"
+          land_sq_mi: 145552
+        - rank: 5
+          state: "New Mexico"
+          state_slug: "new-mexico"
+          land_sq_mi: 121298
+        - rank: 6
+          state: "Arizona"
+          state_slug: "arizona"
+          land_sq_mi: 113594
+        - rank: 7
+          state: "Nevada"
+          state_slug: "nevada"
+          land_sq_mi: 109781
+        - rank: 8
+          state: "Colorado"
+          state_slug: "colorado"
+          land_sq_mi: 103642
+        - rank: 9
+          state: "Wyoming"
+          state_slug: "wyoming"
+          land_sq_mi: 97093
+        - rank: 10
+          state: "Oregon"
+          state_slug: "oregon"
+          land_sq_mi: 95988
+    paragraphs:
+      - "The five largest U.S. states — Alaska, Texas, California, Montana, and New Mexico — account for more than half of all U.S. land area combined. Alaska alone covers 570,641 square miles, more than twice the size of Texas (261,914 sq mi). Texas is the largest state in the contiguous United States; it would take more than 425 Rhode Islands to fill Alaska. Size does not always mean more borders, though — Texas has only four neighboring states, as shown in the [states with the most neighboring states](/rankings/geography/states-neighboring-states) ranking."
+      - "Alaska is so large that if it were a country, it would rank 17th in the world by land area — bigger than France, Spain, and Germany combined. Wyoming and Oregon, which close out the top 10, are each larger than any state east of the Mississippi River."
+
+  - id: "smallest-states"
+    icon: "fa-solid fa-compress"
+    title: "Smallest States in the U.S."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        land_sq_mi: "Land area (sq mi)"
+      rows:
+        - rank: 41
+          state: "West Virginia"
+          state_slug: "west-virginia"
+          land_sq_mi: 24038
+        - rank: 42
+          state: "Maryland"
+          state_slug: "maryland"
+          land_sq_mi: 9707
+        - rank: 43
+          state: "Vermont"
+          state_slug: "vermont"
+          land_sq_mi: 9217
+        - rank: 44
+          state: "New Hampshire"
+          state_slug: "new-hampshire"
+          land_sq_mi: 8953
+        - rank: 45
+          state: "Massachusetts"
+          state_slug: "massachusetts"
+          land_sq_mi: 7800
+        - rank: 46
+          state: "New Jersey"
+          state_slug: "new-jersey"
+          land_sq_mi: 7354
+        - rank: 47
+          state: "Hawaii"
+          state_slug: "hawaii"
+          land_sq_mi: 6423
+        - rank: 48
+          state: "Connecticut"
+          state_slug: "connecticut"
+          land_sq_mi: 4842
+        - rank: 49
+          state: "Delaware"
+          state_slug: "delaware"
+          land_sq_mi: 1949
+        - rank: 50
+          state: "Rhode Island"
+          state_slug: "rhode-island"
+          land_sq_mi: 1034
+    paragraphs:
+      - "The five smallest U.S. states — Rhode Island, Delaware, Connecticut, New Jersey, and New Hampshire — combined total only 24,132 square miles, less land than West Virginia (24,038 sq mi) occupies alone. Rhode Island, at 1,034 square miles, can be driven end-to-end in about an hour, yet it has a population density higher than all but two other states."
+      - "New Jersey is the most densely populated state in the country, fitting 9.3 million residents into 7,354 square miles. Delaware was the first state to ratify the U.S. Constitution in 1787 — a landmark that punches well above its 1,949 square miles. Four of the five smallest states rank among the top 15 for GDP per capita."
+
+  - id: "square-miles"
+    icon: "fa-solid fa-ruler-combined"
+    title: "U.S. States by Size in Square Miles"
+    paragraphs:
+      - "This page ranks all 50 states by land area in square miles, the standard unit used by the U.S. Census Bureau for state size comparisons. Land area means the dry ground within a state's boundaries — it excludes rivers, lakes, reservoirs, and coastal waters. Square kilometers are also shown in the full table above for easy international comparison. To sort by total area or water area, use the column headers in the main table."
+
+  - id: "land-vs-total-area"
+    icon: "fa-solid fa-water"
+    title: "Land Area vs. Total Area"
+    table:
+      columns:
+        state: "State"
+        land_rank: "Land area rank"
+        total_rank: "Total area rank"
+        note: "Why it changes"
+      rows:
+        - state: "Alaska"
+          state_slug: "alaska"
+          land_rank: 1
+          total_rank: 1
+          note: "92,627 sq mi of water — rank unchanged because land area is dominant"
+        - state: "Michigan"
+          state_slug: "michigan"
+          land_rank: 22
+          total_rank: 11
+          note: "40,175 sq mi of Great Lakes nearly doubles its total area"
+        - state: "Florida"
+          state_slug: "florida"
+          land_rank: 26
+          total_rank: 22
+          note: "12,133 sq mi of coastal waters and wetlands"
+        - state: "Hawaii"
+          state_slug: "hawaii"
+          land_rank: 47
+          total_rank: 43
+          note: "4,509 sq mi of ocean water lifts total area above Connecticut"
+        - state: "Rhode Island"
+          state_slug: "rhode-island"
+          land_rank: 50
+          total_rank: 50
+          note: "Still the smallest state by both measures"
+    paragraphs:
+      - "Land area counts only the solid ground within a state's boundaries. Total area adds all water bodies — lakes, rivers, reservoirs, and coastal waters within state lines. For most states the difference is small, but a few look very different depending on which number you use. Michigan ranks 22nd by land area (56,539 sq mi) but 11th by total area (96,714 sq mi) because the Great Lakes add more than 40,000 square miles of water. Florida, Louisiana, and Hawaii all shift several places when water is included. This page uses land area as the primary ranking metric, which is the Census Bureau standard for comparing state sizes."
 
 faq:
-  - question: "What is the largest state by land area?"
-    answer: "Alaska is the largest U.S. state by land area with 570,641 square miles. It's more than twice the size of Texas, the second-largest state, and larger than Texas, California, and Montana combined."
-  
-  - question: "What is the smallest state by land area?"
-    answer: "Rhode Island is the smallest U.S. state by land area with only 1,034 square miles. Despite its small size, Rhode Island has a high population density as part of the densely populated Northeast corridor."
-  
-  - question: "How does land area differ from total area?"
-    answer: "Land area measures only the dry ground of a state, while total area includes both land and water (lakes, rivers, coastal waters). For example, Michigan has 56,539 square miles of land but 96,714 square miles of total area due to the Great Lakes."
-  
-  - question: "What are the top 5 largest states by land area?"
-    answer: "The five largest U.S. states by land area are: 1) Alaska (570,641 sq mi), 2) Texas (261,914 sq mi), 3) California (155,959 sq mi), 4) Montana (145,552 sq mi), and 5) New Mexico (121,298 sq mi)."
-  
-  - question: "What are the 5 smallest states by land area?"
-    answer: "The five smallest U.S. states by land area are: 1) Rhode Island (1,034 sq mi), 2) Delaware (1,949 sq mi), 3) Connecticut (4,842 sq mi), 4) New Jersey (7,354 sq mi), and 5) New Hampshire (8,953 sq mi). Combined, these states total only 24,132 square miles."
-  
-  - question: "Which state has the most water area?"
-    answer: "Michigan has the most water area of any U.S. state with 40,175 square miles, primarily due to its extensive Great Lakes coastline. Alaska ranks second with 92,627 square miles of water, but has far more land area overall."
-  
-  - question: "How much larger is Alaska than Texas?"
-    answer: "Alaska's land area (570,641 sq mi) is more than twice the size of Texas (261,914 sq mi). You could fit Texas into Alaska 2.18 times. Alaska is also larger than the next three largest states (Texas, California, and Montana) combined."
-  
-  - question: "What is the difference between land area and total area for US states?"
-    answer: "Land area measures only the solid ground within a state's boundaries, excluding all water bodies. Total area includes both land and water such as lakes, rivers, reservoirs, and coastal waters. States with extensive coastlines or major lakes like Michigan, Alaska, and Florida show significant differences between their land and total area measurements."
+  - question: "What is the largest state in the U.S.?"
+    answer: "Alaska is the largest U.S. state by land area, with 570,641 square miles (1,477,953 km²). It is more than twice the size of Texas, the second-largest state."
+
+  - question: "What are the biggest states in the U.S.?"
+    answer: "The five largest U.S. states by land area are Alaska (570,641 sq mi), Texas (261,914 sq mi), California (155,959 sq mi), Montana (145,552 sq mi), and New Mexico (121,298 sq mi). Texas is the largest state in the contiguous United States."
+
+  - question: "What is the smallest state in the U.S.?"
+    answer: "Rhode Island is the smallest U.S. state by land area, with 1,034 square miles (2,678 km²)."
+
+  - question: "What are the smallest states in the U.S.?"
+    answer: "The five smallest U.S. states by land area are Rhode Island (1,034 sq mi), Delaware (1,949 sq mi), Connecticut (4,842 sq mi), New Jersey (7,354 sq mi), and New Hampshire (8,953 sq mi)."
+
+  - question: "What are the U.S. states by size in square miles?"
+    answer: "The main table on this page ranks all 50 states by land area in square miles, from Alaska (570,641 sq mi) at #1 to Rhode Island (1,034 sq mi) at #50. Land area excludes water bodies."
+
+  - question: "Is state size measured by land area or total area?"
+    answer: "This page ranks states by land area, which counts only solid ground and excludes lakes, rivers, and coastal waters. Total area includes both land and water. The two measures produce different rankings for water-heavy states like Michigan and Florida."
 
 related:
   - title: "U.S. States by Population"
     url: "/rankings/demographics/states-by-population"
   - title: "U.S. States by Population Density"
     url: "/rankings/demographics/states-by-population-density"
-  - title: "Highest Point in Each U.S. State"
-    url: "/rankings/geography/highest-point-by-state"
-  - title: "Tallest Building in Each U.S. State"
-    url: "/rankings/geography/tallest-building-by-state"
-  - title: "List of When States Became States — Order of Statehood"
-    url: "/rankings/government/states-order-of-succession"
+  - title: "State Capitals"
+    url: "/rankings/geography/states-capital-cities"
+  - title: "States with the Most Neighboring States"
+    url: "/rankings/geography/states-neighboring-states"
+  - title: "Compare States"
+    url: "/compare-states"

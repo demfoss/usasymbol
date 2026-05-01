@@ -498,7 +498,7 @@
                         {
                             var gWinState = g.WinsA > g.WinsB ? Model.StateA : Model.StateB;
                             <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700">
-                                <img src="@Images.Thumb(gWinState.FlagImageUrl)" alt="" class="w-5 h-3.5 object-cover rounded shrink-0" onerror="this.style.display='none'" />
+                                <img src="@Images.Thumb(gWinState.FlagImageUrl)" alt="@gWinState.Name flag" class="w-5 h-3.5 object-cover rounded shrink-0" onerror="this.style.display='none'" />
                                 <span class="font-semibold">@gWinState.Abbreviation</span> wins @g.Group
                             </span>
                         }
@@ -775,7 +775,7 @@
                         @tab.Label
                         @if (leader != null)
                         {
-                            <img src="@Images.Thumb(leader.FlagImageUrl)" alt="" class="w-5 h-3.5 object-cover rounded shrink-0 @(isFirst ? "" : "opacity-70")" onerror="this.style.display='none'" />
+                            <img src="@Images.Thumb(leader.FlagImageUrl)" alt="@leader.Name flag" class="w-5 h-3.5 object-cover rounded shrink-0 @(isFirst ? "" : "opacity-70")" onerror="this.style.display='none'" />
                         }
                     </button>
                 }
@@ -803,13 +803,13 @@
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 w-2/5">Metric</th>
                                 <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-500">
                                     <span class="inline-flex items-center gap-1.5">
-                                        <img src="@Images.Thumb(Model.StateA.FlagImageUrl)" alt="" class="w-6 h-4 object-cover rounded shrink-0" onerror="this.style.display='none'" />
+                                        <img src="@Images.Thumb(Model.StateA.FlagImageUrl)" alt="@Model.StateA.Name flag" class="w-6 h-4 object-cover rounded shrink-0" onerror="this.style.display='none'" />
                                         @Model.StateA.Abbreviation
                                     </span>
                                 </th>
                                 <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-500">
                                     <span class="inline-flex items-center gap-1.5">
-                                        <img src="@Images.Thumb(Model.StateB.FlagImageUrl)" alt="" class="w-6 h-4 object-cover rounded shrink-0" onerror="this.style.display='none'" />
+                                        <img src="@Images.Thumb(Model.StateB.FlagImageUrl)" alt="@Model.StateB.Name flag" class="w-6 h-4 object-cover rounded shrink-0" onerror="this.style.display='none'" />
                                         @Model.StateB.Abbreviation
                                     </span>
                                 </th>

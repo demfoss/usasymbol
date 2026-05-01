@@ -21,15 +21,26 @@ public class IndexNowBackgroundService : BackgroundService
     {
         try
         {
-            var sitemapUrl = "https://usasymbol.com/sitemap.xml";
+            var sitemapUrls = new[]
+            {
+                "https://usasymbol.com/sitemap-main.xml",
+                "https://usasymbol.com/sitemap-compare.xml"
+            };
 
-            var xml = await _http.GetStringAsync(sitemapUrl);
+            var urls = new List<string>();
 
-            var doc = XDocument.Parse(xml);
+            foreach (var sitemapUrl in sitemapUrls)
+            {
+                var xml = await _http.GetStringAsync(sitemapUrl);
+                var doc = XDocument.Parse(xml);
 
-            var urls = doc.Descendants()
-                .Where(x => x.Name.LocalName == "loc")
-                .Select(x => x.Value)
+                urls.AddRange(doc.Descendants()
+                    .Where(x => x.Name.LocalName == "loc")
+                    .Select(x => x.Value));
+            }
+
+            var urlList = urls
+                .Distinct()
                 .Take(10000)
                 .ToArray();
 
@@ -38,7 +49,7 @@ public class IndexNowBackgroundService : BackgroundService
                 host = "usasymbol.com",
                 key = "fe730da503bb4a9382cbc9ea9e56716e",
                 keyLocation = "https://usasymbol.com/fe730da503bb4a9382cbc9ea9e56716e.txt",
-                urlList = urls
+                urlList
             };
 
             var json = JsonSerializer.Serialize(payload);

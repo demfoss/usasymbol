@@ -34,7 +34,7 @@ namespace USASymbol.Controllers
             catch (System.Exception ex)
             {
                 _logger.LogError(ex, "Error loading collections hub");
-                return View("Error");
+                throw;
             }
         }
 
@@ -57,7 +57,7 @@ namespace USASymbol.Controllers
             catch (System.Exception ex)
             {
                 _logger.LogError(ex, "Error loading collection group: {Group}", group);
-                return View("Error");
+                throw;
             }
         }
 
@@ -85,7 +85,7 @@ namespace USASymbol.Controllers
             catch (System.Exception ex)
             {
                 _logger.LogError(ex, "Error loading collection: {Group}/{Slug}", group, slug);
-                return View("Error");
+                throw;
             }
         }
     }

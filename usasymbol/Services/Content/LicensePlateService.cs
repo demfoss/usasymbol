@@ -53,6 +53,9 @@ namespace USASymbol.Services
                         LastModified = File.GetLastWriteTime(path),
                         SeoTitle = GetString(data, "seo_title"),
                         SeoDescription = GetString(data, "seo_description"),
+                        HeroImage = GetString(data, "hero_image"),
+                        HeroImageAlt = GetString(data, "hero_image_alt"),
+                        HeroImageCaption = GetString(data, "hero_image_caption"),
                         IntroText = GetString(data, "intro_text"),
                         BigStatAfterSectionId = GetString(data, "big_stat_after_section"),
                         TimelineAfterSectionId = GetString(data, "timeline_after_section"),
@@ -241,6 +244,8 @@ namespace USASymbol.Services
                 LastModified = DateTime.UtcNow,
                 SeoTitle = $"{state.Name} License Plate Slogan: \"{title}\"",
                 SeoDescription = $"Learn about \"{title}\", the license plate slogan of {state.Name}, including its history, meaning, and how it represents the state.",
+                HeroImage = symbol.ImageUrl ?? "",
+                HeroImageAlt = $"{state.Name} license plate with {title} slogan",
                 IntroText = intro
             };
 

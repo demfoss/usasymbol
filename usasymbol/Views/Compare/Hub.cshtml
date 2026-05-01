@@ -62,7 +62,7 @@
 
                         <button type="button" id="trigger-a"
                                 class="w-full flex items-center gap-3 rounded-2xl border border-slate-300 bg-white px-5 py-4 md:py-5 text-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all">
-                            <img id="trigger-a-flag" class="w-9 h-6 rounded object-cover shrink-0 hidden" alt="" />
+                            <img id="trigger-a-flag" class="w-9 h-6 rounded object-cover shrink-0 hidden" alt="Selected first state flag" />
                             <span id="trigger-a-label" class="flex-1 text-left font-medium text-slate-400">Choose a state...</span>
                             <svg class="w-5 h-5 text-slate-400 shrink-0 transition-transform" id="trigger-a-chevron" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
@@ -85,7 +85,7 @@
                                         class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors select-none">
                                         @if (s.FlagImageUrl != null)
                                         {
-                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="" class="w-9 h-6 object-cover rounded shrink-0" loading="lazy" onerror="this.style.display='none'" />
+                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="@s.Name flag" class="w-9 h-6 object-cover rounded shrink-0" loading="lazy" onerror="this.style.display='none'" />
                                         }
                                         else
                                         {
@@ -100,7 +100,7 @@
 
                         <div id="preview-a" class="mt-4 hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
                             <div class="flex items-center gap-4">
-                                <img id="preview-a-flag" class="w-16 h-11 rounded-lg object-cover shadow-sm hidden" alt="" />
+                                <img id="preview-a-flag" class="w-16 h-11 rounded-lg object-cover shadow-sm hidden" alt="First selected state flag" />
                                 <div>
                                     <div id="preview-a-name" class="text-lg font-bold text-slate-900"></div>
                                     <div id="preview-a-meta" class="text-sm text-slate-600"></div>
@@ -122,7 +122,7 @@
 
                         <button type="button" id="trigger-b"
                                 class="w-full flex items-center gap-3 rounded-2xl border border-slate-300 bg-white px-5 py-4 md:py-5 text-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all">
-                            <img id="trigger-b-flag" class="w-9 h-6 rounded object-cover shrink-0 hidden" alt="" />
+                            <img id="trigger-b-flag" class="w-9 h-6 rounded object-cover shrink-0 hidden" alt="Selected second state flag" />
                             <span id="trigger-b-label" class="flex-1 text-left font-medium text-slate-400">Choose a state...</span>
                             <svg class="w-5 h-5 text-slate-400 shrink-0 transition-transform" id="trigger-b-chevron" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
@@ -145,7 +145,7 @@
                                         class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors select-none">
                                         @if (s.FlagImageUrl != null)
                                         {
-                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="" class="w-9 h-6 object-cover rounded shrink-0" loading="lazy" onerror="this.style.display='none'" />
+                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="@s.Name flag" class="w-9 h-6 object-cover rounded shrink-0" loading="lazy" onerror="this.style.display='none'" />
                                         }
                                         else
                                         {
@@ -160,7 +160,7 @@
 
                         <div id="preview-b" class="mt-4 hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
                             <div class="flex items-center gap-4">
-                                <img id="preview-b-flag" class="w-16 h-11 rounded-lg object-cover shadow-sm hidden" alt="" />
+                                <img id="preview-b-flag" class="w-16 h-11 rounded-lg object-cover shadow-sm hidden" alt="Second selected state flag" />
                                 <div>
                                     <div id="preview-b-name" class="text-lg font-bold text-slate-900"></div>
                                     <div id="preview-b-meta" class="text-sm text-slate-600"></div>

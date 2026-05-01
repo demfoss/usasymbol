@@ -19,7 +19,22 @@
         };
         var dict = Model.Entries.ToDictionary(
             e => e.PostalCode,
-            e => (object)new { n = e.StateName, s = e.StateSlug, v = e.DisplayValue, r = e.Rank, f = e.FillColor, sub = e.SubLabel }
+            e => (object)new
+            {
+                n = e.StateName,
+                s = e.StateSlug,
+                v = e.DisplayValue,
+                r = e.Rank,
+                f = e.FillColor,
+                details = e.Details.Select(d => new { l = d.Label, v = d.Value }),
+                img = string.IsNullOrWhiteSpace(e.ImageUrl) ? null : Images.Crop(e.ImageUrl, 320, 180),
+                items = e.Items?.Select(item => new
+                {
+                    v = item.DisplayValue,
+                    details = item.Details.Select(d => new { l = d.Label, v = d.Value }),
+                    img = string.IsNullOrWhiteSpace(item.ImageUrl) ? null : Images.Crop(item.ImageUrl, 320, 180)
+                })
+            }
         );
         choroplethJson = JsonSerializer.Serialize(dict, opts);
     }
@@ -42,7 +57,8 @@
         <div class="relative" id="usmap-wrapper">
 
             <div id="usmap-container"
-                 class="relative overflow-hidden rounded border border-slate-200 bg-white select-none"
+                 class="relative overflow-hidden rounded border border-slate-200 bg-white select-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full"
+                 style="aspect-ratio:959/593;min-height:260px"
                  role="img"
                  aria-label="@alt">
                 @Html.Raw(Model!.SvgContent)
@@ -50,16 +66,21 @@
 
             <div id="map-tooltip"
                  class="pointer-events-none absolute z-20 hidden overflow-hidden rounded-[1rem] border shadow-2xl"
-                 style="min-width:212px;max-width:272px;border-color:rgba(15,23,42,.58);background:rgba(15,23,42,.96);font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
+                 style="min-width:212px;max-width:320px;border-color:rgba(15,23,42,.58);background:rgba(15,23,42,.96);font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
                  role="tooltip"
                  aria-live="polite">
                 <div class="px-[16px] py-[14px]">
+                    <img id="tt-image"
+                         class="mb-[10px] hidden h-[92px] w-full rounded border border-white/10 bg-white/95 object-contain p-2"
+                         alt=""
+                         loading="lazy"
+                         decoding="async" />
                     <p class="text-[12px] font-semibold leading-tight tracking-[0.01em] text-white"
                        style="margin:0;font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;line-height:1.25;font-weight:800;letter-spacing:.01em;color:#fff"
                        id="tt-state"></p>
-                    <p id="tt-sub"
-                       class="hidden text-[10px] font-medium leading-tight text-slate-300"
-                       style="margin:3px 0 0 0;font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:10px;line-height:1.3;font-weight:500;color:#cbd5e1"></p>
+                    <div id="tt-details"
+                         class="hidden mt-[6px] grid gap-[3px]"
+                         style="font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"></div>
                     <div class="mt-[8px] grid gap-[6px]">
                         <div id="tt-rank-row" class="hidden">
                             <p class="text-[10px] font-extrabold uppercase tracking-[0.12em] text-slate-400"
@@ -164,7 +185,7 @@
         <figure class="space-y-3" itemscope itemtype="https://schema.org/ImageObject">
             <a href="@Images.Full(Model!.Image)"
                target="_blank"
-               rel="noopener"
+               rel="nofollow noopener noreferrer"
                class="block overflow-hidden border border-slate-300 bg-white focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                itemprop="contentUrl"
                aria-label="Open full size map: @title">

@@ -62,108 +62,6 @@
         }
     }
 
-    // =========================
-    // JSON-LD (no Razor inside)
-    // =========================
-    var articleSchema = new Dictionary<string, object?>
-    {
-        ["@context"] = "https://schema.org",
-        ["@type"] = "Article",
-        ["headline"] = content?.Page?.H1,
-        ["description"] = content?.Seo?.Description,
-        ["datePublished"] = (content?.DatePublished?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd")),
-        ["dateModified"] = (content?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd")),
-        ["author"] = new Dictionary<string, object?>
-        {
-            ["@type"] = "Person",
-            ["name"] = (content?.Author ?? "USA Symbol Team"),
-            ["url"] = $"{baseUrl}/about"
-        },
-        ["publisher"] = new Dictionary<string, object?>
-        {
-            ["@type"] = "Organization",
-            ["name"] = "USA Symbol",
-            ["url"] = baseUrl,
-            ["logo"] = new Dictionary<string, object?>
-            {
-                ["@type"] = "ImageObject",
-                ["url"] = $"{baseUrl}/images/logo.png"
-            }
-        },
-        ["mainEntityOfPage"] = new Dictionary<string, object?>
-        {
-            ["@type"] = "WebPage",
-            ["@id"] = currentUrl
-        }
-    };
-
-    var breadcrumbSchema = new Dictionary<string, object?>
-    {
-        ["@context"] = "https://schema.org",
-        ["@type"] = "BreadcrumbList",
-        ["itemListElement"] = new object[]
-        {
-            new Dictionary<string, object?>
-            {
-                ["@type"] = "ListItem",
-                ["position"] = 1,
-                ["name"] = "Home",
-                ["item"] = $"{baseUrl}/"
-            },
-            new Dictionary<string, object?>
-            {
-                ["@type"] = "ListItem",
-                ["position"] = 2,
-                ["name"] = "Symbols",
-                ["item"] = $"{baseUrl}/symbols"
-            },
-            new Dictionary<string, object?>
-            {
-                ["@type"] = "ListItem",
-                ["position"] = 3,
-                ["name"] = categoryTitle,
-                ["item"] = $"{baseUrl}{categoryUrl}"
-            },
-            new Dictionary<string, object?>
-            {
-                ["@type"] = "ListItem",
-                ["position"] = 4,
-                ["name"] = content?.Page?.H1,
-                ["item"] = currentUrl
-            }
-        }
-    };
-
-    Dictionary<string, object?>? faqSchema = null;
-    if (content?.Faq?.Any() == true)
-    {
-        faqSchema = new Dictionary<string, object?>
-        {
-            ["@context"] = "https://schema.org",
-            ["@type"] = "FAQPage",
-            ["mainEntity"] = content.Faq.Select(f => new Dictionary<string, object?>
-            {
-                ["@type"] = "Question",
-                ["name"] = f.Question,
-                ["acceptedAnswer"] = new Dictionary<string, object?>
-                {
-                    ["@type"] = "Answer",
-                    ["text"] = f.Answer
-                }
-            }).ToArray()
-        };
-    }
-
-    var jsonOptions = new JsonSerializerOptions
-    {
-        PropertyNamingPolicy = null,
-        WriteIndented = false
-    };
-
-    var articleSchemaJson = JsonSerializer.Serialize(articleSchema, jsonOptions);
-    var breadcrumbSchemaJson = JsonSerializer.Serialize(breadcrumbSchema, jsonOptions);
-    var faqSchemaJson = faqSchema != null ? JsonSerializer.Serialize(faqSchema, jsonOptions) : null;
-
     var hasFaq = Model.HasFaq;
     var hasMethodology = !string.IsNullOrWhiteSpace(Model.Content?.Page?.Methodology) || Model.HasSources;
 }
@@ -282,6 +180,10 @@
                 <div class="my-8 md:my-10 h-px bg-slate-200"></div>
             }
 
+            <section class="content-divider">
+                @await Html.RenderMapBlockAsync(content?.Map, content?.Table)
+            </section>
+
             <section id="listing-table" class="scroll-mt-24">
                 <div class="flex items-baseline justify-between gap-4">
                     @{
@@ -309,13 +211,6 @@
                     @await Html.PartialAsync("_PrintableWidget", Model)
                 }
             </section>
-
-            @if (content?.Map != null)
-            {
-                <div class="mt-10">
-                    @await Html.RenderMapBlockAsync(content.Map)
-                </div>
-            }
 
             <div class="mt-10 xl:grid xl:grid-cols-[minmax(0,1fr)_288px] xl:gap-10">
                 <div class="min-w-0">
@@ -381,21 +276,7 @@
     </div>
 </div>
 
-<!-- SCHEMA.ORG -->
-<script type="application/ld+json">
-    @Html.Raw(articleSchemaJson)
-</script>
-
-<script type="application/ld+json">
-    @Html.Raw(breadcrumbSchemaJson)
-</script>
-
-@if (!string.IsNullOrEmpty(faqSchemaJson))
-{
-    <script type="application/ld+json">
-        @Html.Raw(faqSchemaJson)
-    </script>
-}
+@await Html.PartialAsync("_StructuredData", Model)
 
 @await Html.PartialAsync("_TocMobileFab", Model)
 

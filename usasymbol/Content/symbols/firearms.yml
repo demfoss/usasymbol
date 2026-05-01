@@ -6,11 +6,11 @@ detail_type: firearm
 
 author: "USA Symbol Team"
 date_published: "2026-02-26"
-date_modified: "2026-03-02"
+date_modified: "2026-04-20"
 
 seo:
   title: "Official U.S. State Firearms: List by State and Year"
-  description: "See all official U.S. state firearms by state, with designation year, legislation, and the history behind each choice."
+  description: "Only a small number of states have adopted an official firearm. This list shows each state firearm designation, the year it was adopted, and the legislation or history behind it."
 
 hero_image: "/images/firearms/firearms.webp"
 hero_image_alt: "Official U.S. state firearms by state"
@@ -51,9 +51,15 @@ page:
 
 map:
   title: "Official U.S. State Firearms"
-  image: "/images/rankings/state-firearms-map.webp"
-  image_alt: "Map of the United States showing the 10 states that have officially designated a state firearm."
   caption: "Only 10 of 50 U.S. states have an official state firearm. The designations cluster in the South, Appalachia, and the West — regions with deep hunting and frontier traditions."
+  metric_key: firearm
+  metric_label: "Official Firearm"
+  image_key: symbol_image
+  detail_keys:
+    - action_type
+    - year_adopted
+  color_scheme: blue
+  color_scale: categorical
 
 table:
   title: "Official State Firearms — All 10 States"
@@ -65,7 +71,6 @@ table:
     firearm: "Official Firearm"
     action_type: "Action Type"
     year_adopted: "Year Adopted"
-    legislation: "Legislation"
     significance: "Why It Was Chosen"
   rows:
     - symbol_image: "/images/firearms/pre-1964-winchester-model-70.webp"
@@ -75,8 +80,7 @@ table:
       firearm_slug: "pre-1964-winchester-model-70"
       action_type: "Bolt-Action Rifle"
       year_adopted: 2014
-      legislation: "Senate Bill 175"
-      significance: "Only designation specifying a production era — the pre-1964 spec is required for Alaska-grade dangerous game"
+      significance: "Only state firearm tied to a specific production era"
     - symbol_image: "/images/firearms/colt-single-action-army-revolver.webp"
       state: "Arizona"
       state_slug: "arizona"
@@ -84,8 +88,7 @@ table:
       firearm_slug: "colt-single-action-army-revolver"
       action_type: "Single-Action Revolver"
       year_adopted: 2011
-      legislation: "Senate Bill 1610"
-      significance: "The definitive 'Peacemaker' of the American West — manufactured since 1873 and still in production today"
+      significance: "Iconic 'Peacemaker' of the American West"
     - symbol_image: "/images/firearms/grouseland-rifle.webp"
       state: "Indiana"
       state_slug: "indiana"
@@ -93,8 +96,7 @@ table:
       firearm_slug: "grouseland-rifle"
       action_type: "Flintlock Rifle"
       year_adopted: 2012
-      legislation: "Senate Enrolled Act 209"
-      significance: "The only state firearm that is a specific surviving artifact — not a model or type, but one individual gun"
+      significance: "Honors a specific surviving firearm, not a model"
     - symbol_image: "/images/firearms/kentucky-long-rifle.webp"
       state: "Kentucky"
       state_slug: "kentucky"
@@ -102,8 +104,7 @@ table:
       firearm_slug: "kentucky-long-rifle"
       action_type: "Flintlock Rifle"
       year_adopted: 2013
-      legislation: "House Bill 239"
-      significance: "The frontier long rifle that armed the Revolution and won the War of 1812 — named for Kentucky but made in Pennsylvania"
+      significance: "Legendary frontier rifle linked to Kentucky history"
     - symbol_image: "/images/firearms/hawken-rifle.webp"
       state: "Missouri"
       state_slug: "missouri"
@@ -111,8 +112,7 @@ table:
       firearm_slug: "hawken-rifle"
       action_type: "Percussion Cap Muzzleloader"
       year_adopted: 2023
-      legislation: "Senate Bill 139"
-      significance: "The mountain man's rifle — built in St. Louis, where the Oregon and Santa Fe Trails began"
+      significance: "Famed mountain-man rifle built in St. Louis"
     - symbol_image: "/images/firearms/pennsylvania-long-rifle.webp"
       state: "Pennsylvania"
       state_slug: "pennsylvania"
@@ -120,8 +120,7 @@ table:
       firearm_slug: "pennsylvania-long-rifle"
       action_type: "Flintlock Rifle"
       year_adopted: 2014
-      legislation: "House Bill 1989"
-      significance: "The original American long rifle — invented by German immigrant craftsmen in Lancaster County, c. 1740"
+      significance: "Original American long rifle from Lancaster County"
     - symbol_image: "/images/firearms/barrett-m82-m107.webp"
       state: "Tennessee"
       state_slug: "tennessee"
@@ -129,8 +128,7 @@ table:
       firearm_slug: "barrett-m82---m107"
       action_type: "Semi-Automatic Rifle (.50 BMG)"
       year_adopted: 2016
-      legislation: "HJR 0231"
-      significance: "The only current-production military weapon on the list — designed in Tennessee and in active service in 60+ countries"
+      significance: "Only modern military rifle on the list"
     - symbol_image: "/images/firearms/1847-colt-walker-pistol.webp"
       state: "Texas"
       state_slug: "texas"
@@ -138,8 +136,7 @@ table:
       firearm_slug: "1847-colt-walker-pistol"
       action_type: "Single-Action Revolver"
       year_adopted: 2021
-      legislation: "SCR 8"
-      significance: "Co-designed by a Texas Ranger; the most powerful production revolver in the world for 88 years"
+      significance: "Texas Ranger-designed revolver with legendary power"
     - symbol_image: "/images/firearms/browning-m1911-pistol.webp"
       state: "Utah"
       state_slug: "utah"
@@ -147,8 +144,7 @@ table:
       firearm_slug: "browning-m1911-pistol"
       action_type: "Semi-Automatic Pistol"
       year_adopted: 2011
-      legislation: "HB 219"
-      significance: "Designed by Utah-born John Moses Browning; U.S. military sidearm for 74 uninterrupted years"
+      significance: "Designed by Utah-born John Browning"
     - symbol_image: "/images/firearms/hall-model-1819-flintlock-rifle.webp"
       state: "West Virginia"
       state_slug: "west-virginia"
@@ -156,16 +152,15 @@ table:
       firearm_slug: "hall-model-1819-flintlock-rifle"
       action_type: "Breech-Loading Flintlock"
       year_adopted: 2013
-      legislation: "SCR 7"
-      significance: "First U.S. military breech-loader and the birthplace of interchangeable parts — the origin of American mass production"
+      significance: "Early U.S. breech-loader tied to interchangeable parts"
 
 sections:
   - id: "why-states-adopt-firearms"
     icon: "fa-solid fa-landmark"
     title: "Why States Adopt Official Firearms"
     paragraphs:
-      - "A state firearm designation is a legislative act — it requires a bill to pass both chambers of the state legislature and the governor's signature. Unlike state birds or flowers (often chosen by schoolchildren in the early 1900s), state firearm designations are deliberate political statements made by elected officials."
-      - "Supporters argue that these designations celebrate engineering ingenuity, frontier history, and the constitutional right to bear arms. Critics sometimes see them as political gestures. But the historical record shows that nearly every designation is tied to a genuine, documentable connection between the firearm and the state's history — a designer born there, a weapon made there, or battles won with it on that soil."
+      - "A state firearm designation is a legislative act — it requires a bill to pass both chambers of the state legislature and the governor's signature. Unlike [state birds](/symbols/birds) or flowers (often chosen by schoolchildren in the early 1900s), state firearm designations are deliberate political statements made by elected officials."
+      - "Supporters argue that these designations celebrate engineering ingenuity, frontier history, and the constitutional right to bear arms. Critics sometimes see them as political gestures. But the historical record shows that nearly every designation is tied to a genuine, documentable connection between the firearm and the state's history — a designer born there, a weapon made there, or battles won with it on that soil. That history-first pattern is closer to [state mottos](/symbols/mottos) and civic symbols than to wildlife symbols."
       - "Utah's 2011 designation of the [Browning M1911 pistol](/states/utah/firearm/browning-m1911-pistol) set the template. The bill cited the pistol's 100th anniversary and John Moses Browning's birth in Ogden, Utah. The combination of local pride, historical significance, and constitutional symbolism proved persuasive — and replicable. Six other states followed before the decade ended."
 
   - id: "first-state-firearm"

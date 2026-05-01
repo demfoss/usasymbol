@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ManualInput",
+  "type": "object",
+  "required": [
+    "category",
+    "primary_keyword",
+    "topic_or_state",
+    "yaml_skeleton",
+    "source_notes",
+    "images_enabled"
+  ],
+  "properties": {
+    "category": {
+      "type": "string"
+    },
+    "primary_keyword": {
+      "type": "string"
+    },
+    "topic_or_state": {
+      "type": "string"
+    },
+    "yaml_skeleton": {
+      "type": "string"
+    },
+    "source_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "optional_extra_instruction": {
+      "type": "string"
+    },
+    "images_enabled": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

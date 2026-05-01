@@ -221,8 +221,9 @@
                             <div class="mt-4 flex gap-2">
                                 @foreach (var img in previewImages)
                                 {
+                                    var previewAlt = GetPreviewImageAlt(img, quiz.Title ?? "Quiz preview");
                                     <div class="w-14 h-10 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 shrink-0">
-                                        <img src="@Images.Thumb(img)" alt="" loading="lazy" class="w-full h-full object-cover" />
+                                        <img src="@Images.Thumb(img)" alt="@previewAlt" loading="lazy" class="w-full h-full object-cover" />
                                     </div>
                                 }
                             </div>
@@ -313,3 +314,33 @@
         apply();
     })();
 </script>
+
+@functions {
+    string GetPreviewImageAlt(string imagePath, string quizTitle)
+    {
+        var fileName = System.IO.Path.GetFileNameWithoutExtension(imagePath ?? string.Empty)
+            .Replace('-', ' ')
+            .Replace('_', ' ')
+            .Trim();
+
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            return quizTitle;
+        }
+
+        var textInfo = System.Globalization.CultureInfo.CurrentCulture.TextInfo;
+        var name = textInfo.ToTitleCase(fileName.ToLowerInvariant());
+
+        if ((imagePath ?? string.Empty).Contains("/quiz/shape/", StringComparison.OrdinalIgnoreCase))
+        {
+            return $"{name} state outline";
+        }
+
+        if ((imagePath ?? string.Empty).Contains("/quiz/flags/", StringComparison.OrdinalIgnoreCase))
+        {
+            return $"{name} state flag";
+        }
+
+        return $"{quizTitle}: {name}";
+    }
+}

@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <DefaultItemExcludes>$(DefaultItemExcludes);obj-verify\**;bin-verify\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj-verify\**;bin-verify\**;tmp\**;artifacts\**</DefaultItemExcludes>
     <EnableBunnyImageSyncOnPublish>true</EnableBunnyImageSyncOnPublish>
 
     <!-- <EnableDefaultContentItems>true</EnableDefaultContentItems> -->
@@ -12,10 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="obj-verify\**\*.cs;bin-verify\**\*.cs" />
-    <Content Remove="obj-verify\**;bin-verify\**" />
-    <None Remove="obj-verify\**;bin-verify\**" />
-    <EmbeddedResource Remove="obj-verify\**;bin-verify\**" />
+    <Compile Remove="obj-verify\**\*.cs;bin-verify\**\*.cs;tmp\**\*.cs;artifacts\**\*.cs" />
+    <Content Remove="obj-verify\**;bin-verify\**;tmp\**;artifacts\**" />
+    <None Remove="obj-verify\**;bin-verify\**;tmp\**;artifacts\**" />
+    <EmbeddedResource Remove="obj-verify\**;bin-verify\**;tmp\**;artifacts\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,7 +43,12 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
 
-    <Content Update="Content\ai-prompts\**\*.txt">
+    <Content Update="Content\content-pipeline\**\*.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+
+    <Content Update="Content\content-pipeline\**\*.txt;Content\content-pipeline\**\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -74,13 +79,5 @@
     <Folder Include="wwwroot\images\flags\virginia\versions\" />
     <Folder Include="wwwroot\images\flags\wyoming\versions\" />
   </ItemGroup>
-
-  <Target Name="RunBunnyImageSyncBeforePublish"
-          BeforeTargets="Publish"
-          DependsOnTargets="Build"
-          Condition="'$(EnableBunnyImageSyncOnPublish)' == 'true' and '$(DesignTimeBuild)' != 'true'">
-    <Message Importance="high" Text="Running Bunny image sync before publish..." />
-    <Exec Command="dotnet &quot;$(TargetPath)&quot; --sync-bunny-images" />
-  </Target>
 
 </Project>

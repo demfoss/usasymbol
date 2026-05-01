@@ -193,6 +193,9 @@ namespace USASymbol.Models.Content
         public string? MetricKey { get; set; }
         public string? MetricLabel { get; set; }
         public string? NameKey { get; set; }
+        public string? ImageKey { get; set; }
+        public List<string> DetailKeys { get; set; } = new();
+        public string? FillColor { get; set; }
         public string ColorScheme { get; set; } = "blue";
         public string ColorScale { get; set; } = "linear";
         public bool ShowLabels { get; set; } = false;

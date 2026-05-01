@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using USASymbol.Data;
 using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
 using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using YamlDotNet.RepresentationModel;
 
 namespace USASymbol.Controllers
@@ -27,7 +27,19 @@ namespace USASymbol.Controllers
         }
 
         [HttpGet("/print/download")]
+        public IActionResult DownloadRedirect(string slug, bool includeImages = false, string? source = null, string? category = null)
+        {
+            return ResolvePrintRequest(slug, includeImages, source, category, generatePdf: false);
+        }
+
+        [HttpPost("/print/download")]
+        [ValidateAntiForgeryToken]
         public IActionResult Download(string slug, bool includeImages = false, string? source = null, string? category = null)
+        {
+            return ResolvePrintRequest(slug, includeImages, source, category, generatePdf: true);
+        }
+
+        private IActionResult ResolvePrintRequest(string slug, bool includeImages, string? source, string? category, bool generatePdf)
         {
             if (string.IsNullOrWhiteSpace(slug)) return BadRequest();
 
@@ -40,14 +52,6 @@ namespace USASymbol.Controllers
             var resolvedSource = normalizedSource;
             var resolvedCategory = normalizedCategory;
             InferSourceAndCategory(filePath, ref resolvedSource, ref resolvedCategory);
-
-            var cacheKey = $"print:pdf:{resolvedSource}:{resolvedCategory}:{slug}:imgs:{includeImages}";
-            if (_cache.TryGetValue(cacheKey, out byte[]? cached) && cached != null)
-            {
-                var cachedName = BuildFileName(slug, resolvedSource, includeImages);
-                return File(cached, "application/pdf", cachedName);
-            }
-
 
             var yaml = System.IO.File.ReadAllText(filePath);
             var input = new StringReader(yaml);
@@ -116,40 +120,34 @@ namespace USASymbol.Controllers
             var sourcePath = !string.IsNullOrWhiteSpace(relativePageUrl) ? relativePageUrl! : defaultPath;
             var sourceUrl = $"{Request.Scheme}://{Request.Host}{sourcePath}";
 
+            Response.Headers["X-Robots-Tag"] = "noindex, nofollow, noarchive";
 
-            string webRoot = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-            string[] logoCandidates = { "images/profile/logo.png", "images/profile/logo.svg", "images/profile/logo1.png", "images/og-default.webp" };
-            byte[]? logoBytes = null;
-            foreach (var cand in logoCandidates)
+            if (!generatePdf)
+                return RedirectPermanent(sourcePath);
+
+            var cacheKey = $"print:pdf:{resolvedSource}:{resolvedCategory}:{slug}:imgs:{includeImages}";
+            if (_cache.TryGetValue(cacheKey, out byte[]? cached) && cached != null)
             {
-                var p = Path.Combine(webRoot, cand.Replace('/', Path.DirectorySeparatorChar));
-                if (System.IO.File.Exists(p))
-                {
-                    logoBytes = System.IO.File.ReadAllBytes(p);
-                    break;
-                }
+                var cachedName = BuildFileName(slug, resolvedSource, includeImages);
+                return File(cached, "application/pdf", cachedName);
             }
 
-
-            var doc = new SymbolListDocument(webRoot, _db)
+            var webRoot = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var document = new SymbolListDocument(webRoot, _db)
             {
                 Title = title,
                 Headers = headers,
                 Rows = rows,
                 ColumnKeys = columnKeys,
-                IncludeImages = includeImages,
-                LogoBytes = logoBytes,
-                SourceFile = filePath,
-                SourceUrl = sourceUrl,
-                Slug = slug
+                IncludeImages = false,
+                SourceUrl = sourceUrl
             };
 
-            using var ms = new MemoryStream();
-            doc.GeneratePdf(ms);
-            ms.Position = 0;
-            var fileName = BuildFileName(slug, resolvedSource, includeImages);
-
-            var bytes = ms.ToArray();
+            using var stream = new MemoryStream();
+            QuestPDF.Settings.License = LicenseType.Community;
+            document.GeneratePdf(stream);
+            var bytes = stream.ToArray();
+            var fileName = BuildFileName(slug, resolvedSource, includeImages: false);
 
             _cache.Set(cacheKey, bytes, TimeSpan.FromMinutes(30));
 
@@ -164,6 +162,7 @@ namespace USASymbol.Controllers
                 "collections" => "-collection",
                 _ => "-list"
             };
+
             return (slug + suffix + (includeImages ? "-images.pdf" : ".pdf"))
                 .Replace("/", "-")
                 .Replace("..", "");
@@ -251,26 +250,24 @@ namespace USASymbol.Controllers
             return (node as YamlScalarNode)?.Value;
         }
 
-
-        private class SymbolListDocument : IDocument
+        private sealed class SymbolListDocument : IDocument
         {
+            private readonly string _webRoot;
+            private readonly AppDbContext _db;
+
+            public SymbolListDocument(string webRoot, AppDbContext db)
+            {
+                _webRoot = webRoot;
+                _db = db;
+            }
+
             public string Title { get; set; } = "List";
             public List<string> Headers { get; set; } = new();
             public List<List<string>> Rows { get; set; } = new();
             public List<string> ColumnKeys { get; set; } = new();
-            public bool IncludeImages { get; set; } = false;
+            public bool IncludeImages { get; set; }
             public byte[]? LogoBytes { get; set; }
-            public string? SourceFile { get; set; }
             public string? SourceUrl { get; set; }
-            public string? Slug { get; set; }
-            private readonly string _webRoot;
-            private readonly AppDbContext? _dbLocal;
-
-            public SymbolListDocument(string webRoot, AppDbContext? db)
-            {
-                _webRoot = webRoot ?? string.Empty;
-                _dbLocal = db;
-            }
 
             public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
 
@@ -281,165 +278,178 @@ namespace USASymbol.Controllers
                     page.Size(PageSizes.A4);
                     page.Margin(40);
                     page.PageColor(Colors.White);
-                    page.DefaultTextStyle(x => x.FontSize(11));
+                    page.DefaultTextStyle(text => text.FontSize(11));
 
-                            page.Header().Element(h =>
-                            {
-                                h.Row(r =>
-                                {
-                                    if (LogoBytes != null)
-                                    {
-                                        r.ConstantItem(64).AlignLeft().Element(e => e.Image(LogoBytes).FitArea());
-                                    }
-                                    r.RelativeItem().AlignCenter().Column(col =>
-                                    {
-                                        col.Item().Text(Title).FontSize(36).SemiBold();
-                                        col.Item().Text("usasymbol.com").FontSize(10).FontColor(Colors.Grey.Darken1);
-                                    });
-                                });
-                            });
+                    page.Header().Element(BuildHeader);
+                    page.Content().PaddingTop(14).Element(BuildTable);
+                    page.Footer().Element(BuildFooter);
+                });
+            }
 
-                    page.Content().Element(c => BuildTable(c));
-
-                    page.Footer().Column(f =>
+            private void BuildHeader(IContainer container)
+            {
+                container.Row(row =>
+                {
+                    if (LogoBytes != null)
                     {
-                        f.Item().AlignCenter().Text("Generated by usasymbol.com").FontSize(10).FontColor(Colors.Grey.Darken1);
-                        if (!string.IsNullOrEmpty(SourceUrl))
-                        {
-                            f.Item().AlignCenter().Text($"Source: {SourceUrl}").FontSize(9).FontColor(Colors.Grey.Lighten1);
-                        }
+                        row.ConstantItem(64).AlignLeft().Element(item => item.Image(LogoBytes).FitArea());
+                    }
+
+                    row.RelativeItem().AlignCenter().Column(column =>
+                    {
+                        column.Item().Text(Title).FontSize(30).SemiBold();
+                        column.Item().Text("usasymbol.com").FontSize(10).FontColor(Colors.Grey.Darken1);
                     });
                 });
             }
 
-            void BuildTable(IContainer container)
+            private void BuildTable(IContainer container)
             {
-                container.PaddingTop(10).Column(col =>
+                var visibleIndices = GetVisibleColumnIndices();
+
+                container.Table(table =>
                 {
-
-                    col.Item().PaddingVertical(8).Element(x =>
+                    table.ColumnsDefinition(columns =>
                     {
-                        x.Table(table =>
+                        for (var index = 0; index < Math.Max(1, visibleIndices.Count); index++)
                         {
+                            columns.RelativeColumn();
+                        }
+                    });
 
-                            var imageColumnIndices = new List<int>();
-                            for (int i = 0; i < Headers.Count; i++)
+                    table.Header(header =>
+                    {
+                        foreach (var index in visibleIndices)
+                        {
+                            header.Cell()
+                                .Background(Colors.Teal.Darken1)
+                                .Padding(7)
+                                .Text(Headers[index])
+                                .FontColor(Colors.White)
+                                .FontSize(11)
+                                .SemiBold();
+                        }
+                    });
+
+                    foreach (var row in Rows)
+                    {
+                        foreach (var index in visibleIndices)
+                        {
+                            var value = index < row.Count ? row[index] : string.Empty;
+                            var cell = table.Cell()
+                                .BorderBottom(1)
+                                .BorderColor(Colors.Grey.Lighten3)
+                                .Padding(6);
+
+                            if (IncludeImages && IsImageColumn(index) && TryReadImage(value, out var imageBytes))
                             {
-                                var h = Headers[i] ?? string.Empty;
-                                var k = ColumnKeys.ElementAtOrDefault(i) ?? string.Empty;
-                                if (h.Trim().ToLowerInvariant().Contains("image") || k.Trim().ToLowerInvariant().Contains("image"))
-                                    imageColumnIndices.Add(i);
-                            }
-
-
-                            List<int> visibleIndices;
-                            if (IncludeImages && imageColumnIndices.Any())
-                            {
-                                visibleIndices = Enumerable.Range(0, Headers.Count).ToList();
+                                cell.AlignCenter().Height(64).Element(image => image.Image(imageBytes).FitArea());
                             }
                             else
                             {
-
-                                visibleIndices = Enumerable.Range(0, Headers.Count).Where(i => !imageColumnIndices.Contains(i)).ToList();
+                                cell.Text(value);
                             }
-
-
-                            table.ColumnsDefinition(columns =>
-                            {
-                                for (int c = 0; c < Math.Max(1, visibleIndices.Count); c++)
-                                    columns.RelativeColumn();
-                            });
-
-
-                            table.Header(header =>
-                            {
-                                foreach (var idx in visibleIndices)
-                                {
-                                    var h = Headers[idx];
-                                    header.Cell().Background(Colors.Teal.Darken1).Padding(8).Text(h).FontColor(Colors.White).FontSize(12).SemiBold();
-                                }
-                            });
-
-
-                            foreach (var row in Rows)
-                            {
-                                foreach (var idx in visibleIndices)
-                                {
-                                    var cell = idx < row.Count ? row[idx] : "";
-
-                                    if (IncludeImages && imageColumnIndices.Contains(idx) && IsImagePath(cell))
-                                    {
-                                        var local = ResolveLocalPath(cell);
-                                        if (!string.IsNullOrEmpty(local) && System.IO.File.Exists(local))
-                                        {
-                                            var bytes = System.IO.File.ReadAllBytes(local);
-                                            table.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).Padding(6).Element(el =>
-                                            {
-                                                el.AlignCenter().Height(64).Element(img => img.Image(bytes).FitArea());
-                                            });
-                                        }
-                                        else
-                                        {
-                                            table.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).Padding(6).Text("");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        table.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).Padding(6).Text(cell);
-                                    }
-                                }
-                            }
-                        });
-                    });
-
-
+                        }
+                    }
                 });
             }
 
-            bool IsImagePath(string s)
+            private void BuildFooter(IContainer container)
             {
-                var lower = s.Trim().ToLowerInvariant();
-                return lower.EndsWith(".png") || lower.EndsWith(".jpg") || lower.EndsWith(".jpeg") || lower.EndsWith(".webp") || lower.StartsWith("/images/");
+                container.Column(column =>
+                {
+                    column.Item().AlignCenter().Text("Generated by usasymbol.com").FontSize(10).FontColor(Colors.Grey.Darken1);
+
+                    if (!string.IsNullOrWhiteSpace(SourceUrl))
+                    {
+                        column.Item().AlignCenter().Text($"Source: {SourceUrl}").FontSize(9).FontColor(Colors.Grey.Lighten1);
+                    }
+                });
             }
 
-            string? ResolveLocalPath(string s)
+            private List<int> GetVisibleColumnIndices()
             {
-                var p = s.Trim();
-                if (p.StartsWith("/")) p = p.TrimStart('/');
-                var candidate = Path.Combine(_webRoot ?? string.Empty, p.Replace('/', Path.DirectorySeparatorChar));
-                if (System.IO.File.Exists(candidate)) return candidate;
+                var all = Enumerable.Range(0, Headers.Count).ToList();
 
-                var name = Path.GetFileName(p);
-                if (!string.IsNullOrEmpty(name))
+                if (IncludeImages)
                 {
-                    var dir = Path.Combine(_webRoot ?? string.Empty, "images");
-                    if (Directory.Exists(dir))
+                    return all;
+                }
+
+                return all.Where(index => !IsImageColumn(index)).ToList();
+            }
+
+            private bool IsImageColumn(int index)
+            {
+                var header = Headers.ElementAtOrDefault(index) ?? string.Empty;
+                var key = ColumnKeys.ElementAtOrDefault(index) ?? string.Empty;
+
+                return header.Contains("image", StringComparison.OrdinalIgnoreCase)
+                    || key.Contains("image", StringComparison.OrdinalIgnoreCase);
+            }
+
+            private bool TryReadImage(string value, out byte[] bytes)
+            {
+                bytes = Array.Empty<byte>();
+
+                var localPath = ResolveLocalImagePath(value);
+                if (string.IsNullOrEmpty(localPath) || !System.IO.File.Exists(localPath))
+                {
+                    return false;
+                }
+
+                bytes = System.IO.File.ReadAllBytes(localPath);
+                return true;
+            }
+
+            private string? ResolveLocalImagePath(string value)
+            {
+                var path = value.Trim();
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    return null;
+                }
+
+                if (path.StartsWith("/"))
+                {
+                    path = path.TrimStart('/');
+                }
+
+                var direct = Path.Combine(_webRoot, path.Replace('/', Path.DirectorySeparatorChar));
+                if (System.IO.File.Exists(direct))
+                {
+                    return direct;
+                }
+
+                var fileName = Path.GetFileName(path);
+                if (string.IsNullOrWhiteSpace(fileName))
+                {
+                    return null;
+                }
+
+                var imageRoot = Path.Combine(_webRoot, "images");
+                if (Directory.Exists(imageRoot))
+                {
+                    var found = Directory.GetFiles(imageRoot, fileName, SearchOption.AllDirectories).FirstOrDefault();
+                    if (!string.IsNullOrWhiteSpace(found))
                     {
-                        var found = Directory.GetFiles(dir, "*" + name, SearchOption.AllDirectories).FirstOrDefault();
-                        if (!string.IsNullOrEmpty(found)) return found;
+                        return found;
                     }
                 }
 
-                try
-                {
-                    if (_dbLocal != null && !string.IsNullOrEmpty(name))
-                    {
-                        var symbol = _dbLocal.Symbols.FirstOrDefault(sy => sy.ImageUrl != null && sy.ImageUrl.EndsWith(name, StringComparison.OrdinalIgnoreCase));
-                        if (symbol != null && !string.IsNullOrEmpty(symbol.ImageUrl))
-                        {
-                            var url = symbol.ImageUrl.Trim();
-                            if (url.StartsWith("/")) url = url.TrimStart('/');
-                            var candidate2 = Path.Combine(_webRoot ?? string.Empty, url.Replace('/', Path.DirectorySeparatorChar));
-                            if (System.IO.File.Exists(candidate2)) return candidate2;
-                        }
-                    }
-                }
-                catch
-                {
+                var symbol = _db.Symbols.FirstOrDefault(symbol =>
+                    symbol.ImageUrl != null &&
+                    symbol.ImageUrl.EndsWith(fileName, StringComparison.OrdinalIgnoreCase));
 
+                if (string.IsNullOrWhiteSpace(symbol?.ImageUrl))
+                {
+                    return null;
                 }
 
-                return null;
+                var imageUrl = symbol.ImageUrl.TrimStart('/');
+                var fromDb = Path.Combine(_webRoot, imageUrl.Replace('/', Path.DirectorySeparatorChar));
+
+                return System.IO.File.Exists(fromDb) ? fromDb : null;
             }
         }
     }

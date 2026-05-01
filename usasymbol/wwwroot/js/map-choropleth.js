@@ -3,13 +3,14 @@
 
     var container = document.getElementById('usmap-container');
     var tooltip = document.getElementById('map-tooltip');
-    var ttAccent = document.getElementById('tt-accent');
+    var ttImage = document.getElementById('tt-image');
     var ttState = document.getElementById('tt-state');
-    var ttSub = document.getElementById('tt-sub');
+    var ttDetails = document.getElementById('tt-details');
     var ttRankRow = document.getElementById('tt-rank-row');
     var ttRank = document.getElementById('tt-rank');
     var ttValueLabel = document.getElementById('tt-value-label');
     var ttValue = document.getElementById('tt-value');
+    var ttValueBlock = ttValue ? ttValue.parentElement : null;
     var dataEl = document.getElementById('choropleth-data');
 
     if (!container || !tooltip || !dataEl) return;
@@ -36,6 +37,10 @@
     function getStateUrl(key) {
         var record = getStateRecord(key);
         if (!record || !record.s) return null;
+        var rows = getRowsForKey(key);
+        if (rows.length && rows[0].dataset.symbolUrl) {
+            return rows[0].dataset.symbolUrl;
+        }
         return '/states/' + record.s;
     }
 
@@ -121,34 +126,45 @@
 
         ttState.textContent = d.n || '';
 
-        if (ttSub) {
-            if (d.sub) {
-                ttSub.textContent = d.sub;
-                ttSub.classList.remove('hidden');
+        if (ttImage) {
+            if (d.img) {
+                ttImage.src = d.img;
+                ttImage.classList.remove('hidden');
             } else {
-                ttSub.textContent = '';
-                ttSub.classList.add('hidden');
+                ttImage.removeAttribute('src');
+                ttImage.classList.add('hidden');
+            }
+        }
+
+        var hasItems = Array.isArray(d.items) && d.items.length > 1;
+        if (ttDetails) {
+            if (hasItems) {
+                renderItems(ttDetails, d.items);
+            } else {
+                renderDetails(ttDetails, d.details);
             }
         }
 
         var val = d.v || '';
         ttValueLabel.textContent = metricLabel || 'Value';
 
-        if (d.r != null) {
+        if (ttValueBlock) {
+            ttValueBlock.classList.toggle('hidden', hasItems);
+        }
+
+        if (d.r != null && !hasItems) {
             ttRank.textContent = '#' + d.r;
             ttRankRow.classList.remove('hidden');
             ttValue.textContent = val ? val + (metricLabel ? ' ' + metricLabel : '') : '';
         } else {
             ttRank.textContent = '';
             ttRankRow.classList.add('hidden');
-            ttValue.textContent = val + (metricLabel && val ? ' ' + metricLabel : '');
+            ttValue.textContent = hasItems ? '' : val + (metricLabel && val ? ' ' + metricLabel : '');
         }
 
-        if (!ttValue.textContent) {
+        if (!hasItems && !ttValue.textContent) {
             ttValue.textContent = 'No value';
         }
-
-        if (ttAccent && d.f) ttAccent.style.backgroundColor = d.f;
 
         tooltip.classList.remove('hidden');
         positionTooltip(clientX, clientY);
@@ -160,6 +176,86 @@
         highlightState(key);
         activeKey = key;
         activeSource = source || 'map';
+    }
+
+    function renderDetails(target, details) {
+        target.textContent = '';
+
+        if (!Array.isArray(details) || !details.length) {
+            target.classList.add('hidden');
+            return;
+        }
+
+        details.forEach(function (detail) {
+            if (!detail || !detail.v) return;
+
+            var row = document.createElement('p');
+            row.style.margin = '0';
+            row.style.fontSize = '10px';
+            row.style.lineHeight = '1.3';
+            row.style.fontWeight = '500';
+            row.style.color = '#cbd5e1';
+
+            var label = detail.l ? String(detail.l) + ': ' : '';
+            row.textContent = label + detail.v;
+            target.appendChild(row);
+        });
+
+        target.classList.toggle('hidden', target.childElementCount === 0);
+    }
+
+    function renderItems(target, items) {
+        target.textContent = '';
+
+        if (!Array.isArray(items) || !items.length) {
+            target.classList.add('hidden');
+            return;
+        }
+
+        items.forEach(function (item, index) {
+            if (!item || !item.v) return;
+
+            var block = document.createElement('div');
+            block.style.margin = index === 0 ? '0' : '6px 0 0 0';
+            block.style.paddingTop = index === 0 ? '0' : '6px';
+            block.style.borderTop = index === 0 ? '0' : '1px solid rgba(148,163,184,.28)';
+
+            var title = document.createElement('p');
+            title.style.margin = '0';
+            title.style.fontSize = '11px';
+            title.style.lineHeight = '1.25';
+            title.style.fontWeight = '800';
+            title.style.color = '#f8fafc';
+            title.textContent = item.v;
+            block.appendChild(title);
+
+            var detailText = formatItemDetails(item.details);
+            if (detailText) {
+                var meta = document.createElement('p');
+                meta.style.margin = '2px 0 0 0';
+                meta.style.fontSize = '10px';
+                meta.style.lineHeight = '1.3';
+                meta.style.fontWeight = '500';
+                meta.style.color = '#cbd5e1';
+                meta.textContent = detailText;
+                block.appendChild(meta);
+            }
+
+            target.appendChild(block);
+        });
+
+        target.classList.toggle('hidden', target.childElementCount === 0);
+    }
+
+    function formatItemDetails(details) {
+        if (!Array.isArray(details) || !details.length) return '';
+
+        return details
+            .filter(function (detail) { return detail && detail.v; })
+            .map(function (detail) {
+                return (detail.l ? String(detail.l) + ': ' : '') + detail.v;
+            })
+            .join(' • ');
     }
 
     function hideTooltip(force) {

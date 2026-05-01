@@ -1,5 +1,6 @@
 @model USASymbol.Models.ViewModels.ISymbolDetailViewModel
 @inject IImageUrlService Images
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 
 @{
     var allItems = Model.RelatedSymbols?.ToList() ?? new List<USASymbol.Models.Symbol>();
@@ -26,12 +27,14 @@
         <section class="mt-6 space-y-4">
             @foreach (var symbol in desktopItems)
             {
+                var imageUrl = ResolveRelatedImageUrl(symbol);
+
                 <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
                    class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
                     <div class="h-[4.4rem] w-[4.4rem] shrink-0 overflow-hidden rounded-2xl bg-slate-100">
-                        @if (!string.IsNullOrWhiteSpace(symbol.ImageUrl))
+                        @if (!string.IsNullOrWhiteSpace(imageUrl))
                         {
-                            <img src="@Images.Card(symbol.ImageUrl)"
+                            <img src="@Images.Card(imageUrl)"
                                  alt="@symbol.Name"
                                  class="h-full w-full object-cover"
                                  loading="lazy" />
@@ -72,12 +75,14 @@
         <div class="mt-6 space-y-4">
             @foreach (var symbol in mobilePrimary)
             {
+                var imageUrl = ResolveRelatedImageUrl(symbol);
+
                 <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
                    class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
                     <div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
-                        @if (!string.IsNullOrWhiteSpace(symbol.ImageUrl))
+                        @if (!string.IsNullOrWhiteSpace(imageUrl))
                         {
-                            <img src="@Images.Card(symbol.ImageUrl)"
+                            <img src="@Images.Card(imageUrl)"
                                  alt="@symbol.Name"
                                  class="h-full w-full object-cover"
                                  loading="lazy" />
@@ -110,12 +115,14 @@
                 <div class="mt-4 space-y-4">
                     @foreach (var symbol in mobileRest)
                     {
+                        var imageUrl = ResolveRelatedImageUrl(symbol);
+
                         <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
                            class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
                             <div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
-                                @if (!string.IsNullOrWhiteSpace(symbol.ImageUrl))
+                                @if (!string.IsNullOrWhiteSpace(imageUrl))
                                 {
-                                    <img src="@Images.Card(symbol.ImageUrl)"
+                                    <img src="@Images.Card(imageUrl)"
                                          alt="@symbol.Name"
                                          class="h-full w-full object-cover"
                                          loading="lazy" />
@@ -152,4 +159,85 @@
 @functions {
     string GetSymbolInitial(string name)
         => string.IsNullOrWhiteSpace(name) ? "?" : name.Trim()[0].ToString().ToUpper();
+
+    string ResolveRelatedImageUrl(USASymbol.Models.Symbol symbol)
+    {
+        var imageUrl = symbol.ImageUrl?.Trim();
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            return string.Empty;
+        }
+
+        if (Uri.TryCreate(imageUrl, UriKind.Absolute, out var absoluteUri)
+            && (absoluteUri.Scheme == Uri.UriSchemeHttp || absoluteUri.Scheme == Uri.UriSchemeHttps))
+        {
+            return imageUrl;
+        }
+
+        if (LocalImageExists(imageUrl))
+        {
+            return imageUrl;
+        }
+
+        if (imageUrl.StartsWith("/images/mottos/", StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Empty;
+        }
+
+        var stateSlug = Model.State?.Slug;
+        if (string.IsNullOrWhiteSpace(stateSlug))
+        {
+            return string.Empty;
+        }
+
+        var fileName = System.IO.Path.GetFileNameWithoutExtension(imageUrl);
+        if (!string.IsNullOrWhiteSpace(fileName)
+            && imageUrl.StartsWith("/images/mammals/", StringComparison.OrdinalIgnoreCase))
+        {
+            var stateMammalImage = $"/images/mammals/{stateSlug}/{fileName}.jpg";
+            if (LocalImageExists(stateMammalImage))
+            {
+                return stateMammalImage;
+            }
+        }
+
+        if (imageUrl.StartsWith("/images/flags/", StringComparison.OrdinalIgnoreCase))
+        {
+            var stateFlagImage = $"/images/flags/{stateSlug}/flag.webp";
+            if (LocalImageExists(stateFlagImage))
+            {
+                return stateFlagImage;
+            }
+        }
+
+        if (imageUrl.StartsWith("/images/nicknames/", StringComparison.OrdinalIgnoreCase))
+        {
+            var stateNicknameImage = $"/images/nicknames/{stateSlug}.webp";
+            if (LocalImageExists(stateNicknameImage))
+            {
+                return stateNicknameImage;
+            }
+        }
+
+        return string.Empty;
+    }
+
+    bool LocalImageExists(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            return false;
+        }
+
+        var relativePath = imageUrl.Split('?', '#')[0].Trim().TrimStart('/', '\\').Replace('/', System.IO.Path.DirectorySeparatorChar);
+        var webRootPath = string.IsNullOrWhiteSpace(WebHostEnvironment.WebRootPath)
+            ? System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "wwwroot")
+            : WebHostEnvironment.WebRootPath;
+
+        var fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(webRootPath, relativePath));
+        var rootPath = System.IO.Path.GetFullPath(webRootPath);
+
+        return fullPath.StartsWith(rootPath, StringComparison.OrdinalIgnoreCase)
+            && System.IO.File.Exists(fullPath);
+    }
 }

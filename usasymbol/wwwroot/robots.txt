@@ -2,7 +2,9 @@
 
 User-agent: *
 Allow: /
-Disallow: /print/
+
+# PDF endpoints send X-Robots-Tag: noindex and old direct links redirect to the page.
+# Keep crawl access open so search engines can see those signals and drop stale URLs.
 
 # Sitemap location
 Sitemap: https://usasymbol.com/sitemap.xml

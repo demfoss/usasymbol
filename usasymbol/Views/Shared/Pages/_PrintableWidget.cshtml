@@ -7,20 +7,8 @@
     var isRanking = Model.IsRanking;
     var isCollection = Model.IsCollection;
     var category = (Model.Content?.Category ?? "").Trim().ToLowerInvariant();
-    var encodedSlug = Uri.EscapeDataString(slug);
-    var encodedCategory = Uri.EscapeDataString(category);
 
-    var downloadUrl = isRanking
-        ? $"/print/download?source=rankings&category={encodedCategory}&slug={encodedSlug}"
-        : isCollection
-            ? $"/print/download?source=collections&category={encodedCategory}&slug={encodedSlug}"
-            : $"/print/download?slug={encodedSlug}";
-
-    var downloadWithImagesUrl = isRanking
-        ? $"/print/download?source=rankings&category={encodedCategory}&slug={encodedSlug}&includeImages=true"
-        : isCollection
-            ? $"/print/download?source=collections&category={encodedCategory}&slug={encodedSlug}&includeImages=true"
-            : $"/print/download?slug={encodedSlug}&includeImages=true";
+    var sourceValue = isRanking ? "rankings" : isCollection ? "collections" : "";
 
     var noun = isRanking ? "ranking" : isCollection ? "collection" : "list";
     var audience = isRanking ? "researchers, teachers, and students" : "teachers, students, and collectors";
@@ -47,24 +35,29 @@
                 </p>
 
                 <div class="mt-4 flex flex-wrap items-center gap-2.5">
-                    <a href="@downloadUrl"
-                       class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition"
-                       aria-label="Download PDF for @pageTitle @noun"
-                       title="Download PDF for @pageTitle @noun">
-                        <i class="fa-solid fa-download text-xs" aria-hidden="true"></i>
-                        <span>Download PDF</span>
-                    </a>
-                    <a href="@downloadWithImagesUrl"
-                       class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition"
-                       aria-label="Download PDF with images for @pageTitle @noun"
-                       title="Download PDF with images for @pageTitle @noun">
-                        <i class="fa-regular fa-image text-xs" aria-hidden="true"></i>
-                        <span>PDF with Images</span>
-                    </a>
+                    <form asp-controller="Print" asp-action="Download" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="slug" value="@slug" />
+                        @if (!string.IsNullOrWhiteSpace(sourceValue))
+                        {
+                            <input type="hidden" name="source" value="@sourceValue" />
+                        }
+                        @if (!string.IsNullOrWhiteSpace(category))
+                        {
+                            <input type="hidden" name="category" value="@category" />
+                        }
+                        <button type="submit"
+                                class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition"
+                                aria-label="Download PDF for @pageTitle @noun"
+                                title="Download PDF for @pageTitle @noun">
+                            <i class="fa-solid fa-download text-xs" aria-hidden="true"></i>
+                            <span>Download PDF</span>
+                        </button>
+                    </form>
                 </div>
 
                 <p class="mt-4 border-t border-slate-200/80 pt-3.5 text-xs leading-5 text-slate-400">
-                    Generated on demand — may take a few seconds. The "with images" version embeds available images from the site.
+                    Generated on demand — may take a few seconds.
                 </p>
             </div>
         </div>

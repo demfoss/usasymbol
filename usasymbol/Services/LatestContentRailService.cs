@@ -18,11 +18,16 @@ namespace USASymbol.Services
         private const int PerTypeLimit = 5;
         private readonly IWebHostEnvironment _env;
         private readonly AppDbContext _db;
+        private readonly ILogger<LatestContentRailService> _logger;
 
-        public LatestContentRailService(IWebHostEnvironment env, AppDbContext db)
+        public LatestContentRailService(
+            IWebHostEnvironment env,
+            AppDbContext db,
+            ILogger<LatestContentRailService> logger)
         {
             _env = env;
             _db = db;
+            _logger = logger;
         }
 
         public async Task<LatestContentRailViewModel> GetLatestItemsAsync(int count = 8)
@@ -95,7 +100,12 @@ namespace USASymbol.Services
                     continue;
                 }
 
-                var data = await ReadYamlAsync(file);
+                var data = await TryReadYamlAsync(file);
+                if (data == null)
+                {
+                    continue;
+                }
+
                 var title = GetString(data, "title");
                 var description = GetString(data, "seo_description");
                 var dateModified = GetDate(data, "date_modified")
@@ -112,7 +122,7 @@ namespace USASymbol.Services
                         Type = dbSymbol.Type,
                         Name = dbSymbol.Name
                     }.ToSymbolUrl(state.Slug),
-                    ImageUrl = dbSymbol.ImageUrl ?? string.Empty,
+                    ImageUrl = ResolveRailImage(GetString(data, "hero_image"), dbSymbol.ImageUrl),
                     Eyebrow = state.Name,
                     SectionLabel = ToTitle(type),
                     DateModified = dateModified
@@ -145,7 +155,12 @@ namespace USASymbol.Services
 
                 var group = parts[0];
                 var slug = Path.GetFileNameWithoutExtension(file);
-                var data = await ReadYamlAsync(file);
+                var data = await TryReadYamlAsync(file);
+                if (data == null)
+                {
+                    continue;
+                }
+
                 var title = GetNestedString(data, "page", "h1");
                 var description = GetNestedListFirst(data, "page", "intro_paragraphs") ?? GetNestedString(data, "seo", "description");
                 var heroImage = GetString(data, "hero_image");
@@ -158,7 +173,7 @@ namespace USASymbol.Services
                     Title = title ?? string.Empty,
                     Description = description ?? string.Empty,
                     Url = $"/{rootFolder}/{group}/{slug}",
-                    ImageUrl = heroImage ?? string.Empty,
+                    ImageUrl = ResolveRailImage(heroImage),
                     Eyebrow = ToTitle(group) ?? string.Empty,
                     SectionLabel = sectionLabel,
                     DateModified = dateModified
@@ -183,15 +198,23 @@ namespace USASymbol.Services
                 .ToList();
         }
 
-        private static async Task<Dictionary<object, object>> ReadYamlAsync(string path)
+        private async Task<Dictionary<object, object>?> TryReadYamlAsync(string path)
         {
-            var yaml = await File.ReadAllTextAsync(path);
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(UnderscoredNamingConvention.Instance)
-                .IgnoreUnmatchedProperties()
-                .Build();
+            try
+            {
+                var yaml = await File.ReadAllTextAsync(path);
+                var deserializer = new DeserializerBuilder()
+                    .WithNamingConvention(UnderscoredNamingConvention.Instance)
+                    .IgnoreUnmatchedProperties()
+                    .Build();
 
-            return deserializer.Deserialize<Dictionary<object, object>>(yaml) ?? new Dictionary<object, object>();
+                return deserializer.Deserialize<Dictionary<object, object>>(yaml) ?? new Dictionary<object, object>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Skipping malformed YAML while building latest content rail: {Path}", path);
+                return null;
+            }
         }
 
         private static string? GetString(Dictionary<object, object> data, string key)
@@ -235,6 +258,59 @@ namespace USASymbol.Services
             }
 
             return DateTime.TryParse(value.ToString(), out var parsed) ? parsed : null;
+        }
+
+        private string ResolveRailImage(params string?[] candidates)
+        {
+            foreach (var candidate in candidates)
+            {
+                var image = NormalizeImagePath(candidate);
+                if (string.IsNullOrWhiteSpace(image))
+                {
+                    continue;
+                }
+
+                if (IsRemoteUrl(image) || LocalImageExists(image))
+                {
+                    return image;
+                }
+            }
+
+            return "/images/usasymbol.png";
+        }
+
+        private static string NormalizeImagePath(string? image)
+        {
+            if (string.IsNullOrWhiteSpace(image))
+            {
+                return string.Empty;
+            }
+
+            var normalized = image.Trim().Trim('"', '\'').Replace('\\', '/');
+            if (IsRemoteUrl(normalized))
+            {
+                return normalized;
+            }
+
+            return normalized.StartsWith("/", StringComparison.Ordinal) ? normalized : "/" + normalized;
+        }
+
+        private bool LocalImageExists(string image)
+        {
+            var pathOnly = image.Split('?', '#')[0];
+            if (string.IsNullOrWhiteSpace(pathOnly) || !pathOnly.StartsWith("/images/", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            var relativePath = pathOnly.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+            return File.Exists(Path.Combine(_env.WebRootPath, relativePath));
+        }
+
+        private static bool IsRemoteUrl(string image)
+        {
+            return Uri.TryCreate(image, UriKind.Absolute, out var uri)
+                && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
         }
 
         private static string ToTitle(string? value)

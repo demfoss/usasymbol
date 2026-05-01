@@ -18,6 +18,7 @@ namespace USASymbol.Models.ViewModels
         public string? LegalReference { get; set; }
         public string? ImageUrl { get; set; }
         public string? ImageAlt { get; set; }
+        public string ImageClass { get; set; } = "absolute inset-0 h-full w-full object-cover";
         public string? FigureTitle { get; set; }
         public string? FigureSubtitle { get; set; }
         public string? ImageLinkUrl { get; set; }

@@ -203,6 +203,11 @@ namespace USASymbol.Services
                     MetricKey   = mapD.ContainsKey("metric_key")   ? Str(mapD, "metric_key")   : null,
                     MetricLabel = mapD.ContainsKey("metric_label") ? Str(mapD, "metric_label") : null,
                     NameKey     = mapD.ContainsKey("name_key")     ? Str(mapD, "name_key")     : null,
+                    ImageKey    = mapD.ContainsKey("image_key")    ? Str(mapD, "image_key")    : null,
+                    DetailKeys  = mapD.TryGetValue("detail_keys", out var detailKeys) && detailKeys is List<object> detailKeyList
+                        ? detailKeyList.Select(x => x?.ToString() ?? "").Where(x => !string.IsNullOrWhiteSpace(x)).ToList()
+                        : new List<string>(),
+                    FillColor   = mapD.ContainsKey("fill_color")   ? Str(mapD, "fill_color")   : null,
                     ColorScheme = mapD.ContainsKey("color_scheme") ? Str(mapD, "color_scheme") : "blue",
                     ColorScale  = mapD.ContainsKey("color_scale")  ? Str(mapD, "color_scale")  : "linear",
                     ShowLabels  = mapD.ContainsKey("show_labels")  && Str(mapD, "show_labels") == "true",
@@ -252,7 +257,7 @@ namespace USASymbol.Services
             if (raw.TryGetValue("table", out var tblObj) && tblObj is Dictionary<object, object> tblD)
             {
                 var table = ParseTable(tblD);
-                AutoFillSlugs(table, content.DetailType);
+                AutoFillSlugs(table, content.DetailType, content.Slug);
                 content.Tables.Add(table);
             }
 
@@ -265,7 +270,7 @@ namespace USASymbol.Services
                     if (t.TryGetValue("title", out var titleObj))
                         table.Title = titleObj?.ToString();
 
-                    AutoFillSlugs(table, content.DetailType);
+                    AutoFillSlugs(table, content.DetailType, content.Slug);
                     content.Tables.Add(table);
                 }
 
@@ -385,8 +390,25 @@ namespace USASymbol.Services
                     StringComparison.OrdinalIgnoreCase);
             }
 
-            if (d.TryGetValue("headers", out var headersObj) && headersObj is List<object> headersL)
+            // columns: dict → keys for data lookup, values as display headers
+            List<string>? columnKeys = null;
+            if (d.TryGetValue("columns", out var colsObj) && colsObj is Dictionary<object, object> colsD)
+            {
+                columnKeys = new List<string>();
+                var labels = new List<string>();
+                foreach (var kvp in colsD)
+                {
+                    var k = kvp.Key?.ToString() ?? "";
+                    if (string.IsNullOrWhiteSpace(k)) continue;
+                    columnKeys.Add(k);
+                    labels.Add(kvp.Value?.ToString() ?? k);
+                }
+                table.Headers = labels;
+            }
+            else if (d.TryGetValue("headers", out var headersObj) && headersObj is List<object> headersL)
+            {
                 table.Headers = headersL.Select(x => x?.ToString() ?? "").ToList();
+            }
 
             if (d.TryGetValue("rows", out var rowsObj) && rowsObj is List<object> rowsL)
             {
@@ -403,12 +425,20 @@ namespace USASymbol.Services
 
                         case Dictionary<object, object> rowDict:
                         {
-                            var keys = table.Headers.Any()
-                                ? table.Headers
-                                : rowDict.Keys.Select(k => k?.ToString() ?? "").Where(k => !string.IsNullOrWhiteSpace(k)).ToList();
-
-                            if (!table.Headers.Any())
+                            List<string> keys;
+                            if (columnKeys != null)
+                            {
+                                keys = columnKeys;
+                            }
+                            else if (table.Headers.Any())
+                            {
+                                keys = table.Headers;
+                            }
+                            else
+                            {
+                                keys = rowDict.Keys.Select(k => k?.ToString() ?? "").Where(k => !string.IsNullOrWhiteSpace(k)).ToList();
                                 table.Headers = keys;
+                            }
 
                             table.Rows.Add(new PageSectionTableRow
                             {
@@ -428,25 +458,92 @@ namespace USASymbol.Services
 
 
 
-        private void AutoFillSlugs(PageTable table, string? detailType)
+        private void AutoFillSlugs(PageTable table, string? detailType, string? contentSlug)
         {
             var nameKey = (detailType ?? "").Trim().ToLowerInvariant();
             if (string.IsNullOrEmpty(nameKey)) return;
+            var imageFolder = (contentSlug ?? "").Trim().Trim('/').ToLowerInvariant();
+            var alternateSlugKey = nameKey == "license-plate" ? "slogan_slug" : "";
 
             foreach (var row in table.Rows)
             {
-                if (row.Data.ContainsKey("symbol_slug")) continue;
-
-
                 var explicitSlugKey = $"{nameKey}_slug";
                 var explicitSlug    = row.GetString(explicitSlugKey);
-                if (!string.IsNullOrWhiteSpace(explicitSlug))
-                    row.Data["symbol_slug"] = explicitSlug;
-                else if (row.Data.ContainsKey(nameKey))
-                    row.Data["symbol_slug"] = GenerateSlug(row.GetString(nameKey));
-                else if (row.Data.ContainsKey("symbol"))
-                    row.Data["symbol_slug"] = GenerateSlug(row.GetString("symbol"));
+                if (string.IsNullOrWhiteSpace(explicitSlug) && !string.IsNullOrWhiteSpace(alternateSlugKey))
+                    explicitSlug = row.GetString(alternateSlugKey);
+
+                if (!row.Data.ContainsKey("symbol_slug"))
+                {
+                    if (!string.IsNullOrWhiteSpace(explicitSlug))
+                        row.Data["symbol_slug"] = explicitSlug;
+                    else if (row.Data.ContainsKey(nameKey))
+                        row.Data["symbol_slug"] = GenerateSlug(row.GetString(nameKey));
+                    else if (row.Data.ContainsKey("symbol"))
+                        row.Data["symbol_slug"] = GenerateSlug(row.GetString("symbol"));
+                }
+
+                if (!row.Data.ContainsKey("symbol_image"))
+                {
+                    var stateSlug = row.GetString("state_slug");
+                    var symbolSlug = row.GetString("symbol_slug");
+
+                    var licensePlateHero = nameKey == "license-plate"
+                        ? GetLicensePlateHeroImage(stateSlug)
+                        : string.Empty;
+
+                    if (!string.IsNullOrWhiteSpace(licensePlateHero))
+                    {
+                        row.Data["symbol_image"] = licensePlateHero;
+                    }
+                    else if (!string.IsNullOrWhiteSpace(stateSlug) &&
+                        !string.IsNullOrWhiteSpace(symbolSlug) &&
+                        !string.IsNullOrWhiteSpace(imageFolder))
+                    {
+                        row.Data["symbol_image"] = $"/images/{imageFolder}/{stateSlug}/{symbolSlug}.webp";
+                    }
+                }
+
+                if (!row.Data.ContainsKey("symbol_url"))
+                {
+                    var stateSlug = row.GetString("state_slug");
+                    var symbolSlug = row.GetString("symbol_slug");
+                    if (!string.IsNullOrWhiteSpace(stateSlug) &&
+                        !string.IsNullOrWhiteSpace(symbolSlug) &&
+                        !string.IsNullOrWhiteSpace(nameKey))
+                    {
+                        row.Data["symbol_url"] = $"/states/{stateSlug}/{nameKey}/{symbolSlug}";
+                    }
+                }
             }
+
+            if (nameKey == "license-plate" &&
+                table.Rows.Any(row => row.Has("symbol_image")) &&
+                table.Columns.All(col => !string.Equals(col.Key, "symbol_image", StringComparison.OrdinalIgnoreCase)))
+            {
+                table.Columns.Insert(0, new TableColumn
+                {
+                    Key = "symbol_image",
+                    Label = "Plate",
+                    Type = "image",
+                    Sortable = false
+                });
+            }
+        }
+
+        private string GetLicensePlateHeroImage(string stateSlug)
+        {
+            if (string.IsNullOrWhiteSpace(stateSlug))
+                return string.Empty;
+
+            var path = Path.Combine(_contentBasePath, "states", stateSlug, "license-plate.yaml");
+            if (!File.Exists(path))
+                return string.Empty;
+
+            var yaml = File.ReadAllText(path);
+            var match = Regex.Match(yaml, @"(?m)^hero_image:\s*(.+?)\s*$");
+            return match.Success
+                ? match.Groups[1].Value.Trim().Trim('"', '\'')
+                : string.Empty;
         }
 
 

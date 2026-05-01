@@ -8,6 +8,7 @@ public interface IImageUrlService
     string Thumb(string? path, int width);
     string Card(string? path);
     string Card(string? path, int width);
+    string Crop(string? path, int width, int height);
     string Hero(string? path);
     string Hero(string? path, int width);
     string Full(string? path);

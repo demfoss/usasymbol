@@ -1,4 +1,5 @@
 @using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
 @model object
 
 @{
@@ -6,7 +7,12 @@
     var hasFaq = false;
     var sectionId = (ViewData["FaqSectionId"] as string ?? "faq").Trim();
 
-    if (Model is ISymbolDetailViewModel symbolModel && symbolModel.HasFaq && symbolModel.Faq != null)
+    if (ViewData["FaqItems"] is IEnumerable<(string Question, string Answer)> providedFaqs)
+    {
+        hasFaq = providedFaqs.Any();
+        faqs = providedFaqs;
+    }
+    else if (Model is ISymbolDetailViewModel symbolModel && symbolModel.HasFaq && symbolModel.Faq != null)
     {
         hasFaq = true;
         faqs = symbolModel.Faq.Select(f => (f.Question, f.Answer));
@@ -42,7 +48,7 @@
 
                         <div class="px-5 pb-5 sm:px-6 -mt-1">
                             <div class="text-[14px] leading-6 text-slate-600">
-                                @faq.Answer
+                                @faq.Answer.RenderMarkdown()
                             </div>
                         </div>
                     </details>

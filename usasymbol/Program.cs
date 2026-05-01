@@ -3,20 +3,17 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using USASymbol.Models.Ai;
 using USASymbol.Options;
 using usasymbol.Services;
-using USASymbol.Services.Ai;
 using usasymbol.Services.Interface;
 using USASymbol.Data;
 using USASymbol.Services;
 using USASymbol.Services.Images;
 using USASymbol.Services.Interface;
+using USASymbol.Services.ContentPipeline;
 using USASymbol.Services.Yaml;
 using USASymbol.Extensions;
 using YamlParse = USASymbol.Services.YamlParse;
-using QuestPDF;
-using QuestPDF.Infrastructure;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,11 +26,7 @@ builder.Services
     .Validate(options => !string.IsNullOrWhiteSpace(options.CdnBaseUrl), "Bunny:CdnBaseUrl is required.")
     .Validate(options => !string.IsNullOrWhiteSpace(options.LocalImagesBasePath), "Bunny:LocalImagesBasePath is required.")
     .ValidateOnStart();
-builder.Services.Configure<AiPipelineOptions>(builder.Configuration.GetSection("AiPipeline"));
-
-
-QuestPDF.Settings.License = LicenseType.Community;
-
+builder.Services.AddContentPipeline(builder.Configuration, builder.Environment);
 
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IImagePathNormalizer, ImagePathNormalizer>();
@@ -47,6 +40,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddScoped<IStateService, StateService>();
+builder.Services.AddScoped<IStateHubContentService, StateHubContentService>();
 builder.Services.AddScoped<ISymbolCanonicalService, SymbolCanonicalService>();
 
 builder.Services.AddScoped<IMottoService, MottoService>();
@@ -59,6 +53,7 @@ builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<IDinosaurService, DinosaurService>();
 builder.Services.AddScoped<IBeverageService, BeverageService>();
 builder.Services.AddScoped<ILicensePlateService, LicensePlateService>();
+builder.Services.AddScoped<ISealService, SealService>();
 builder.Services.AddHostedService<IndexNowBackgroundService>();
 
 
@@ -86,17 +81,6 @@ builder.Services.AddScoped<ISymbolService, YamlParse>();
 builder.Services.AddSingleton<YamlContentLoader>();
 builder.Services.AddScoped<SitemapBuilder>();
 builder.Services.AddScoped<SitemapCacheService>();
-builder.Services.AddHttpClient<OpenAiTextClient>();
-builder.Services.AddHttpClient<ClaudeTextClient>();
-builder.Services.AddScoped<AiPipelineAccessService>();
-builder.Services.AddScoped<PromptTemplateService>();
-builder.Services.AddScoped<GeneratedContentFileService>();
-builder.Services.AddScoped<AiPipelineService>();
-builder.Services.AddScoped<AiBatchRunnerService>();
-builder.Services.AddSingleton<AiPipelineJobService>();
-
-
-
 builder.Services.AddResponseCaching();
 builder.Services.AddResponseCompression(options =>
 {
@@ -142,7 +126,19 @@ app.Use(async (context, next) =>
 
 app.MapGet("/sitemap.xml", async (SitemapCacheService cache) =>
 {
-    var xml = await cache.GetSitemapAsync();
+    var xml = await cache.GetSitemapIndexAsync();
+    return Results.Content(xml, "application/xml");
+});
+
+app.MapGet("/sitemap-main.xml", async (SitemapCacheService cache) =>
+{
+    var xml = await cache.GetMainSitemapAsync();
+    return Results.Content(xml, "application/xml");
+});
+
+app.MapGet("/sitemap-compare.xml", async (SitemapCacheService cache) =>
+{
+    var xml = await cache.GetCompareSitemapAsync();
     return Results.Content(xml, "application/xml");
 });
 
@@ -155,6 +151,7 @@ app.Use(async (context, next) =>
     var request = context.Request;
     var path = request.Path.ToString();
     var isFileRequest = Path.HasExtension(path);
+    var forceHttps = !app.Environment.IsDevelopment();
     var normalizedHost = request.Host.Host.StartsWith("www.", StringComparison.OrdinalIgnoreCase)
         ? request.Host.Host[4..]
         : request.Host.Host;
@@ -171,7 +168,7 @@ app.Use(async (context, next) =>
     }
 
     var needsRedirect =
-        !request.IsHttps ||
+        (forceHttps && !request.IsHttps) ||
         !string.Equals(request.Host.Host, normalizedHost, StringComparison.Ordinal) ||
         !string.Equals(path, normalizedPath, StringComparison.Ordinal);
 
@@ -185,7 +182,7 @@ app.Use(async (context, next) =>
         ? new HostString(normalizedHost, request.Host.Port.Value)
         : new HostString(normalizedHost);
     var redirectUrl = UriHelper.BuildAbsolute(
-        "https",
+        forceHttps ? "https" : request.Scheme,
         redirectHost,
         PathString.Empty,
         new PathString(normalizedPath),
@@ -207,10 +204,23 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
     app.UseResponseCompression();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
+if (!app.Environment.IsDevelopment())
+{
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path.StartsWithSegments("/print"))
+        {
+            context.Response.Headers["X-Robots-Tag"] = "noindex, nofollow";
+        }
+
+        await next();
+    });
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -218,7 +228,12 @@ if (!app.Environment.IsDevelopment())
     {
         OnPrepareResponse = ctx =>
         {
-            ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=31536000");
+            var path = ctx.Context.Request.Path;
+            var cacheControl = path.StartsWithSegments("/ads.txt")
+                ? "public,max-age=3600"
+                : "public,max-age=31536000,immutable";
+
+            ctx.Context.Response.Headers.Append("Cache-Control", cacheControl);
         }
     });
 }
@@ -233,8 +248,8 @@ app.UseRouting();
 bool pipelineEnabled;
 using (var scope = app.Services.CreateScope())
 {
-    var aiPipelineAccess = scope.ServiceProvider.GetRequiredService<AiPipelineAccessService>();
-    pipelineEnabled = aiPipelineAccess.IsEnabled();
+    var contentPipelineAccess = scope.ServiceProvider.GetRequiredService<ContentPipelineAccessService>();
+    pipelineEnabled = contentPipelineAccess.IsEnabled();
 }
 
 app.Use(async (context, next) =>
@@ -247,24 +262,6 @@ app.Use(async (context, next) =>
 
     await next();
 });
-
-if (!app.Environment.IsDevelopment())
-{
-    app.Use(async (context, next) =>
-    {
-        context.Response.Headers["X-Frame-Options"] = "SAMEORIGIN";
-        context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-        context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
-        context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
-
-        if (context.Request.Path.StartsWithSegments("/print"))
-        {
-            context.Response.Headers["X-Robots-Tag"] = "noindex, nofollow";
-        }
-
-        await next();
-    });
-}
 
 app.UseAuthorization();
 

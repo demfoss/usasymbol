@@ -126,7 +126,7 @@
                                      srcset="@heroImageSrcSet"
                                      sizes="@heroImageSizes"
                                      alt="@(string.IsNullOrWhiteSpace(Model.ImageAlt) ? Model.Title : Model.ImageAlt)"
-                                     class="absolute inset-0 h-full w-full object-cover"
+                                     class="@Model.ImageClass"
                                      loading="eager"
                                      fetchpriority="high" />
                             }
@@ -163,7 +163,7 @@
                             {
                                 <a href="@Images.Full(Model.ImageLinkUrl)"
                                    target="_blank"
-                                   rel="noopener"
+                                   rel="nofollow noopener noreferrer"
                                    class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] @(Model.UseLightFigureCaption ? "text-slate-500 hover:text-slate-900" : "text-slate-300 hover:text-white") transition">
                                     <i class="fas fa-up-right-from-square shrink-0 text-[10px]"></i>
                                     View original

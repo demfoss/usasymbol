@@ -5,7 +5,7 @@ using USASymbol.Models;
 
 namespace USASymbol.Models.ViewModels
 {
-    public class SymbolDetailViewModel
+    public class SymbolDetailViewModel : IStateScopedViewModel
     {
         public State State { get; set; } = new();
         public Symbol Symbol { get; set; } = new();

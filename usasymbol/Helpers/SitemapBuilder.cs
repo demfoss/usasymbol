@@ -28,7 +28,7 @@ namespace USASymbol.Services
             _quizService     = quizService;
         }
 
-        public async Task<List<string>> BuildUrlsAsync()
+        public async Task<List<string>> BuildMainUrlsAsync()
         {
             var urls = new List<string>();
 
@@ -42,7 +42,6 @@ namespace USASymbol.Services
             urls.Add("/guides");
             urls.Add("/guides/state-borders");
             urls.Add("/quizzes");
-            urls.Add("/compare-states");
 
 
 
@@ -102,6 +101,16 @@ namespace USASymbol.Services
             foreach (var quiz in quizzes)
                 urls.Add($"/quizzes/{quiz.Slug}");
 
+            return urls.Distinct().ToList();
+        }
+
+        public Task<List<string>> BuildCompareUrlsAsync()
+        {
+            var urls = new List<string>
+            {
+                "/compare-states"
+            };
+
             foreach (var (slug1, slug2) in ComparisonService.TopComparisonPairs)
             {
                 var pairSlug = ComparisonService.CanonicalPairSlug(slug1, slug2);
@@ -115,6 +124,16 @@ namespace USASymbol.Services
                 foreach (var metricSlug in metricSlugs)
                     urls.Add($"/compare/{pairSlug}/{metricSlug}");
             }
+
+            return Task.FromResult(urls.Distinct().ToList());
+        }
+
+        public async Task<List<string>> BuildUrlsAsync()
+        {
+            var urls = new List<string>();
+
+            urls.AddRange(await BuildMainUrlsAsync());
+            urls.AddRange(await BuildCompareUrlsAsync());
 
             return urls.Distinct().ToList();
         }

@@ -1,0 +1,215 @@
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@using System.Linq
+@model SealDetailViewModel
+
+@{
+    var sections = Model.SealContent?.Sections;
+    var stateSlug = Model.State?.Slug ?? "";
+    var quoteRendered = false;
+    var timelineRendered = false;
+    var statRendered = false;
+    var quoteAfterSectionId = Model.SealContent?.ExpertQuoteAfterSectionId ?? string.Empty;
+    var timelineAfterSectionId = Model.SealContent?.TimelineAfterSectionId ?? string.Empty;
+    var statAfterSectionId = Model.SealContent?.BigStatAfterSectionId ?? string.Empty;
+}
+
+@if (sections?.Any() == true)
+{
+    var visualAssets = Model.SealContent?.VisualAssets?.ToList() ?? new List<VisualAsset>();
+    var orphanVisualAssets = visualAssets
+        .Where(asset => asset != null &&
+                        !string.IsNullOrWhiteSpace(asset.Src) &&
+                        !string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                        string.IsNullOrWhiteSpace(asset.Section))
+        .ToList();
+    var fullWidthVisualAsset = visualAssets
+        .FirstOrDefault(asset => asset != null &&
+                                 !string.IsNullOrWhiteSpace(asset.Src) &&
+                                 string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase));
+
+    foreach (var item in sections.Cast<SealSection>())
+    {
+        var isVersionsSection = item.Versions?.Any() == true;
+        var isElementsSection = item.Elements?.Any() == true;
+
+        <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            @if (isVersionsSection || isElementsSection)
+            {
+                <header class="mb-6 lg:mb-8">
+                    <div class="flex items-start gap-3">
+                        @if (!string.IsNullOrWhiteSpace(item.Icon))
+                        {
+                            <span class="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 text-white text-sm mt-1">
+                                <i class="@item.Icon leading-none" aria-hidden="true"></i>
+                            </span>
+                        }
+                        <h2 class="text-[2rem] leading-[1.04] font-bold tracking-tight text-slate-900 lg:text-[3.1rem]">
+                            @item.Title
+                        </h2>
+                    </div>
+                </header>
+            }
+            else
+            {
+                @await Html.PartialAsync("Components/Content/_SectionHeader", (IContentSection)item)
+            }
+
+            @{
+                var sectionAssets = visualAssets
+                    .Where(asset => asset != null &&
+                                    !string.IsNullOrWhiteSpace(asset.Src) &&
+                                    string.Equals(asset.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            @foreach (var asset in sectionAssets)
+            {
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+            }
+
+            @if (item.Paragraphs?.Any() == true)
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                    @for (var i = 0; i < item.Paragraphs.Count; i++)
+                    {
+                        <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                            @item.Paragraphs[i].RenderAutoLinks()
+                        </p>
+                    }
+                </div>
+            }
+
+            @if (item.Subsections?.Any() == true)
+            {
+                <div class="mt-8 space-y-10">
+                    @foreach (var sub in item.Subsections)
+                    {
+                        <article class="pt-8 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+                            <h3 class="text-[1.15rem] lg:text-[1.35rem] font-semibold text-slate-900 mb-3">@sub.Subtitle</h3>
+                            @if (!string.IsNullOrWhiteSpace(sub.Text))
+                            {
+                                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-700">
+                                    <p>@sub.Text.RenderAutoLinks()</p>
+                                </div>
+                            }
+                            @if (sub.ListItems?.Any() == true)
+                            {
+                                <ul class="mt-4 space-y-2 text-sm text-slate-700 max-w-prose">
+                                    @foreach (var listItem in sub.ListItems)
+                                    {
+                                        <li class="pl-5 relative before:content-['-'] before:absolute before:left-0 before:text-slate-400">
+                                            @listItem.RenderListItem()
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </article>
+                    }
+                </div>
+            }
+
+            @if (item.Elements?.Any() == true)
+            {
+                var elementItems = item.Elements
+                    .Select(s => new SymbolDisplayItem
+                    {
+                        Id = s.Id,
+                        Name = s.Name,
+                        Image = s.Image,
+                        Paragraphs = (IReadOnlyList<string>)(s.Paragraphs ?? new List<string>()),
+                    })
+                    .ToList();
+                @await Html.PartialAsync(
+                    "Components/Widgets/_SymbolsShowcase",
+                    ((IReadOnlyList<SymbolDisplayItem>)elementItems, $"/images/state-seals/{stateSlug}/elements"))
+            }
+
+            @if (item.Versions?.Any() == true)
+            {
+                var versionItems = item.Versions
+                    .Select(v => new VersionDisplayItem
+                    {
+                        Name = v.Name,
+                        Years = v.Years,
+                        Image = v.Image,
+                        Description = v.Description
+                    })
+                    .ToList();
+                @await Html.PartialAsync(
+                    "Components/Widgets/_VersionsTimeline",
+                    ((IReadOnlyList<VersionDisplayItem>)versionItems, $"/images/state-seals/{stateSlug}/versions"))
+            }
+
+            @if (item.Facts?.Any() == true)
+            {
+                @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+            }
+
+            <div class="clear-both"></div>
+        </section>
+
+        @if (!quoteRendered &&
+            !string.IsNullOrWhiteSpace(quoteAfterSectionId) &&
+            string.Equals(item.Id, quoteAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.SealContent?.ExpertQuote != null)
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.SealContent.ExpertQuote)
+            quoteRendered = true;
+        }
+
+        @if (!timelineRendered &&
+            !string.IsNullOrWhiteSpace(timelineAfterSectionId) &&
+            string.Equals(item.Id, timelineAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.SealContent?.Timeline?.Any() == true)
+        {
+            @await Html.PartialAsync("Components/Story/_Timeline", Model.SealContent.Timeline)
+            timelineRendered = true;
+        }
+
+        @if (!statRendered &&
+            !string.IsNullOrWhiteSpace(statAfterSectionId) &&
+            string.Equals(item.Id, statAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.SealContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", Model.SealContent.BigStat)
+            statRendered = true;
+        }
+    }
+
+    if (!quoteRendered && Model.SealContent?.ExpertQuote != null)
+    {
+        @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.SealContent.ExpertQuote)
+    }
+
+    if (!timelineRendered && Model.SealContent?.Timeline?.Any() == true)
+    {
+        @await Html.PartialAsync("Components/Story/_Timeline", Model.SealContent.Timeline)
+    }
+
+    if (!statRendered && Model.SealContent?.BigStat != null)
+    {
+        @await Html.PartialAsync("Components/Story/_BigStat", Model.SealContent.BigStat)
+    }
+
+    if (orphanVisualAssets.Any())
+    {
+        foreach (var asset in orphanVisualAssets)
+        {
+            @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+        }
+    }
+
+    if (fullWidthVisualAsset != null)
+    {
+        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", fullWidthVisualAsset)
+    }
+}
+else
+{
+    <div class="text-sm text-slate-500">
+        No sections rendered yet for this state seal.
+    </div>
+}

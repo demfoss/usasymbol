@@ -237,6 +237,7 @@ namespace USASymbol.Data
             await SeedStateDinosaurs(context, states);
             await SeedStateBeverages(context, states);
             await SeedStateLicensePlates(context, states);
+            await SeedStateSeals(context, states);
 
 
             {
@@ -346,6 +347,13 @@ namespace USASymbol.Data
                         Name = "License Plate Slogans",
                         Description = "Explore the official license plate slogans of all 50 U.S. states — from 'Land of Lincoln' to 'Live Free or Die.'",
                         ImageUrl = "/images/symbol-categories/license-plate-slogans.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "state-seals",
+                        Name = "State Seals",
+                        Description = "Explore the official great seals of all 50 U.S. states — the primary emblems used on government documents, flags, and official acts.",
+                        ImageUrl = "/images/symbol-categories/state-seals.webp"
                     },
 
                 };
@@ -583,7 +591,7 @@ namespace USASymbol.Data
                         Designation = "State motto",
                         Legislation = mottoData.Legislation,
                         Meaning = mottoData.Meaning,
-                        ImageUrl = $"/images/seals/{state.Slug}-seal.webp",
+                        ImageUrl = null,
                         YamlPath = $"Content/states/{state.Slug}/motto.yaml"
                     });
                 }
@@ -1583,10 +1591,10 @@ namespace USASymbol.Data
                 ("maine", "Vacationland", "vacationland", 1936, "One of the oldest surviving plate phrases in the country; Maine's coast, lakes, and mountains have drawn summer visitors since the railroad era of the 19th century."),
                 ("maryland", "The Old Line State", "the-old-line-state", 1974, "Honors the Maryland Line, Continental Army soldiers who fought with distinction at the Battle of Brooklyn in 1776 and earned the state its reputation for military courage."),
                 ("massachusetts", "The Spirit of America", "the-spirit-of-america", 1971, "Adopted during the lead-up to the bicentennial; Massachusetts is home to more Revolutionary-era landmarks than any other state, including Lexington, Concord, and Boston."),
-                ("michigan", "Great Lakes State", "great-lakes-state", 1954, "Michigan is the only state bordered by four of the five Great Lakes — Superior, Michigan, Huron, and Erie — giving it the longest freshwater coastline of any state."),
+                ("michigan", "Pure Michigan", "pure-michigan", 2013, "Pure Michigan is the current slogan-bearing standard plate option; earlier Michigan plate slogans included Water Wonderland, Water-Winter Wonderland, Great Lake State, and Great Lakes."),
                 ("minnesota", "Land of 10,000 Lakes", "land-of-10000-lakes", 1950, "There are actually more than 11,800 lakes in Minnesota; the round figure has undersold the state since the phrase was coined."),
-                ("mississippi", "The Magnolia State", "the-magnolia-state", 1955, "Named for the magnolia tree, which is both the state tree and state flower of Mississippi; the phrase ties the plate to multiple other official symbols."),
-                ("missouri", "Show Me State", "show-me-state", 1922, "One of the oldest and most culturally distinctive plate phrases; the skeptical, pragmatic 'show me' character is attributed to a speech by Congressman Willard Vandiver in 1899."),
+                ("mississippi", "No current standard slogan", "no-current-standard-slogan", 2024, "The current 2024-2029 magnolia standard plate carries no text slogan; earlier Mississippi slogans included The Hospitality State in 1977 and Birthplace of American Music in 2012."),
+                ("missouri", "Bicentennial", "bicentennial", 2018, "Missouri's current standard plate is the Bicentennial design introduced on October 15, 2018, ahead of the state's 200th anniversary of statehood in 2021."),
                 ("montana", "Big Sky Country", "big-sky-country", 1967, "The phrase comes from the title of A.B. Guthrie Jr.'s 1947 novel set in Montana; the state adopted it because it captures the experience of the high plains and mountain landscapes more precisely than any geographic description."),
                 ("nebraska", "The Good Life", "the-good-life", 1967, "Replaced 'The Beef State' as Nebraska sought to promote quality of life and livability rather than relying solely on agricultural identity."),
                 ("nevada", "Battle Born", "battle-born", 1983, "Nevada was admitted to the Union in October 1864, during the Civil War — the only state admitted in wartime specifically to support the Union cause."),
@@ -1594,13 +1602,13 @@ namespace USASymbol.Data
                 ("new-jersey", "Garden State", "garden-state", 1954, "The phrase predates the plate — it appears in an 1876 speech by Abraham Browning of Camden, who called New Jersey 'the Garden State' for its role feeding the cities of New York and Philadelphia."),
                 ("new-mexico", "Land of Enchantment", "land-of-enchantment", 1941, "Coined by early 20th-century travel writers; the phrase captures the convergence of desert landscape, Indigenous cultures, and Spanish colonial history that distinguishes New Mexico from other Western states."),
                 ("new-york", "Empire State", "empire-state", 1951, "The phrase is attributed to George Washington and has been part of New York's identity since the early republic; it appears on the state's official buildings, sports venues, and most recognizably the Empire State Building."),
-                ("north-carolina", "First in Flight", "first-in-flight", 1983, "The Wright Brothers made the world's first powered airplane flight at Kitty Hawk, North Carolina on December 17, 1903; Ohio's competing 'Birthplace of Aviation' claim refers to where the brothers were born and built their plane, not where it flew."),
+                ("north-carolina", "First in Flight", "first-in-flight", 1982, "The Wright Brothers made the world's first powered airplane flight at Kitty Hawk, North Carolina on December 17, 1903; Ohio's competing 'Birthplace of Aviation' claim refers to where the brothers were born and built their plane, not where it flew."),
                 ("north-dakota", "Peace Garden State", "peace-garden-state", 1956, "Named for the International Peace Garden on the North Dakota–Manitoba border, established in 1932 as a living monument to the friendship between the United States and Canada."),
                 ("ohio", "The Heart of It All", "the-heart-of-it-all", 1984, "A marketing phrase that works on two levels: Ohio's central geographic position in the Midwest and its role as a presidential election bellwether state."),
-                ("oklahoma", "Native America", "native-america", 1985, "Oklahoma has 39 federally recognized Native American tribes — more than any other state — and more Native Americans by population than any state except California."),
-                ("oregon", "Pacific Wonderland", "pacific-wonderland", 1964, "Promoted Oregon's dramatic combination of coastline, forests, mountains, and high desert during the post-war outdoor recreation boom."),
-                ("pennsylvania", "You've Got a Friend in Pennsylvania", "youve-got-a-friend-in-pennsylvania", 1992, "One of the longest plate slogans in the country; the warmth-focused phrase aimed to reframe Pennsylvania's industrial image with a hospitality message."),
-                ("rhode-island", "The Ocean State", "the-ocean-state", 1972, "Rhode Island has more than 400 miles of coastline relative to its land area — one of the highest ratios of any state — making the ocean genuinely central to its character."),
+                ("oklahoma", "Imagine That", "imagine-that", 2024, "Imagine That is the current standard plate slogan on the Iconic Oklahoma plate introduced September 1, 2024; Native America was Oklahoma's major historical plate slogan from 1994 through 2016."),
+                ("oregon", "Pacific Wonderland", "pacific-wonderland", 1959, "Pacific Wonderland is Oregon's classic centennial-era plate slogan, created for the 1959 statehood centennial and later reissued as a special plate."),
+                ("pennsylvania", "Let Freedom Ring", "let-freedom-ring", 2025, "Let Freedom Ring is Pennsylvania's current Liberty Bell plate slogan, introduced in 2025 ahead of America's 250th anniversary in 2026."),
+                ("rhode-island", "Ocean State", "ocean-state", 1972, "Ocean State has appeared on Rhode Island standard passenger plates since 1972 and continues on the current Ocean plate introduced in 2023."),
                 ("south-carolina", "Smiling Faces Beautiful Places", "smiling-faces-beautiful-places", 1969, "An early hospitality-focused slogan that puts people alongside landscape; relatively unusual among plate phrases, which more commonly emphasize geography alone."),
                 ("south-dakota", "Great Faces Great Places", "great-faces-great-places", 1992, "A deliberate play on Mount Rushmore — 'great faces' refers directly to the four presidential carvings in the Black Hills."),
                 ("tennessee", "The Volunteer State", "the-volunteer-state", 1954, "Tennessee supplied an unusually large number of volunteer soldiers in the War of 1812 and Mexican–American War; the tradition of volunteering became central to Tennessee's self-image."),
@@ -1639,6 +1647,98 @@ namespace USASymbol.Data
             }
 
             context.Symbols.AddRange(symbols);
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedStateSeals(AppDbContext context, List<State> states)
+        {
+            var old = await context.Symbols.Where(s => s.Type == "state-seal").ToListAsync();
+            if (old.Count > 0)
+            {
+                context.Symbols.RemoveRange(old);
+                await context.SaveChangesAsync();
+            }
+
+            var stateSealData = new Dictionary<string, (string Name, int AdoptedYear, int? RevisedYear, string Legislation, string Meaning)>
+            {
+                { "alabama", ("Great Seal of Alabama", 1819, 1939, "Alabama Code § 1-2-1", "Features a central map of Alabama with major rivers and a shield displaying symbolic elements representing the state's history and resources.") },
+                { "alaska", ("Great Seal of Alaska", 1910, 1960, "Alaska Statutes § 44.09.040", "Features the northern lights, mountains, forests, a train, and ships — representing the natural wealth and industries of the Last Frontier.") },
+                { "arizona", ("Great Seal of Arizona", 1912, null, "A.R.S. § 41-851", "A sun rising over mountains, a copper star, a dam, cattle, and a miner — the industries and landscape that define Arizona.") },
+                { "arkansas", ("Great Seal of Arkansas", 1820, 1907, "Arkansas Code Ann. § 1-4-101", "The Goddess of Liberty on top, a sword and shield at center, and an eagle at the bottom — representing sovereignty and justice.") },
+                { "california", ("Great Seal of California", 1849, 1937, "California Government Code § 400", "Minerva — the Roman goddess of wisdom, born an adult — stands as the central figure because California was admitted without a territorial period. Includes a grizzly bear, gold miner, 31 stars, and the motto Eureka.") },
+                { "colorado", ("Great Seal of Colorado", 1877, 1964, "Colorado Revised Statutes § 24-80-901", "The Eye of Providence surmounts a heraldic shield with mountains, a mining pick, and a fasces — representing the union of Roman republican ideals with Colorado's frontier identity.") },
+                { "connecticut", ("Great Seal of Connecticut", 1784, null, "Connecticut General Statutes § 3-105", "Three grapevines on a white field descend from the 1647 colonial seal — making Connecticut's design one of the oldest continuously used state seal compositions in the country.") },
+                { "delaware", ("Great Seal of Delaware", 1777, 1971, "Delaware Code Title 29 § 301", "A farmer and a soldier flank a shield bearing wheat, corn, and an ox — the agricultural foundation of the First State.") },
+                { "florida", ("Great Seal of Florida", 1868, 1985, "Florida Statutes § 15.03", "A Seminole woman scattering flowers, a steamboat on the horizon, a Sabal palmetto, and a rising sun — updated in 1985 to more accurately depict the Seminole woman.") },
+                { "georgia", ("Great Seal of Georgia", 1799, 1914, "Official Code of Georgia § 50-3-30", "An arch supported by three columns representing Wisdom, Justice, and Moderation — the three principles in the state motto 'Wisdom, Justice, Moderation.'") },
+                { "hawaii", ("Great Seal of Hawaii", 1959, null, "Hawaii Revised Statutes § 5-7", "The rising sun, the Hawaiian state flag, and the Phoenix above the state motto — 'Ua Mau ke Ea o ka ʻĀina i ka Pono' (The life of the land is perpetuated in righteousness).") },
+                { "idaho", ("Great Seal of Idaho", 1891, null, "Idaho Code § 59-1001", "A woman representing liberty and equality stands alongside a miner — Idaho was among the first states to grant women suffrage.") },
+                { "illinois", ("Great Seal of Illinois", 1818, 1868, "5 Illinois Compiled Statutes 460/1", "A bald eagle holds a shield and banner with 'State Sovereignty, National Union' — the motto's word order was controversially reversed after the Civil War.") },
+                { "indiana", ("Great Seal of Indiana", 1816, 1963, "Indiana Code § 1-2-3-1", "A woodsman fells a tree while a bison flees and the sun rises over the hills — the clearing of the frontier for settlement.") },
+                { "iowa", ("Great Seal of Iowa", 1847, null, "Iowa Code § 1A.1", "A citizen soldier holding an American flag and a plow stands in a landscape of farming and industrial scenes — agriculture and the frontier.") },
+                { "kansas", ("Great Seal of Kansas", 1861, 1992, "Kansas Statutes § 73-701", "A prairie sunrise, a river with wagons crossing, a farmer plowing, and bison being chased — the frontier landscape of the Great Plains.") },
+                { "kentucky", ("Great Seal of Kentucky", 1792, 1962, "Kentucky Revised Statutes § 2.020", "Two figures — a frontiersman and a statesman — embrace under the motto 'United We Stand, Divided We Fall.'") },
+                { "louisiana", ("Great Seal of Louisiana", 1812, 2006, "Louisiana Revised Statutes § 49:151", "A pelican in her piety — feeding three chicks from her own breast — an ancient Christian symbol of charity and self-sacrifice.") },
+                { "maine", ("Great Seal of Maine", 1820, 1919, "Maine Revised Statutes Title 1 § 201", "A moose beneath a pine tree, flanked by a farmer and a sailor, with the North Star above and the motto 'Dirigo' (I Direct or I Lead).") },
+                { "maryland", ("Great Seal of Maryland", 1648, 1969, "Maryland Code, State Government § 13-201", "The Calvert and Crossland family coats of arms — the oldest heraldic state seal design in the United States, rooted in English heraldry.") },
+                { "massachusetts", ("Great Seal of Massachusetts", 1780, 2022, "Massachusetts General Laws Chapter 2 § 1", "An Algonquian Native American holding a bow — revised in 2022 to remove a sword held over the figure and update the motto from the Latin phrase to a new design.") },
+                { "michigan", ("Great Seal of Michigan", 1835, null, "Michigan Compiled Laws § 2.21", "An elk and a moose support a shield with an eagle crest and the motto 'Si Quaeris Peninsulam Amoenam, Circumspice' (If you seek a pleasant peninsula, look about you).") },
+                { "minnesota", ("Great Seal of Minnesota", 1858, 1983, "Minnesota Statutes § 1.135", "A farmer, a waterfall, and St. Anthony Falls — revised in 1983 to remove a Native American on horseback receding into the distance, deemed demeaning.") },
+                { "mississippi", ("Great Seal of Mississippi", 1817, 2014, "Mississippi Code § 3-3-3", "An eagle with the motto 'Virtute et Armis' (By valor and arms) — one of the few state seals to use a purely Latin motto emphasizing martial valor.") },
+                { "missouri", ("Great Seal of Missouri", 1822, null, "Missouri Revised Statutes § 10.020", "Two grizzly bears support a shield divided between the U.S. coat of arms and a crescent moon with a grizzly — Missouri's position between East and West.") },
+                { "montana", ("Great Seal of Montana", 1865, 1985, "Montana Code § 1-1-501", "The Great Falls of the Missouri River with mining and plow tools — 'Oro y Plata' (Gold and Silver) — the mining identity of the Treasure State.") },
+                { "nebraska", ("Great Seal of Nebraska", 1867, 1966, "Nebraska Revised Statutes § 90-101", "A blacksmith, a settler's cabin, a train, and a steamboat — the industries of the Great Plains frontier at the moment of statehood.") },
+                { "nevada", ("Great Seal of Nevada", 1866, 1915, "Nevada Revised Statutes § 235.010", "A silver star on blue, with mountains, a mine, and a train — 'Battle Born' for admission during the Civil War.") },
+                { "new-hampshire", ("Great Seal of New Hampshire", 1784, 1931, "New Hampshire Revised Statutes § 3:1", "The frigate USS Raleigh, built in Portsmouth in 1776 — one of the first warships of the Continental Navy — surrounded by a laurel wreath.") },
+                { "new-jersey", ("Great Seal of New Jersey", 1777, null, "N.J.S.A. 52:1-1", "Two figures, Ceres and Liberty, flank a shield with three ploughs — representing New Jersey's agricultural character and abundance.") },
+                { "new-mexico", ("Great Seal of New Mexico", 1912, null, "New Mexico Statutes § 12-3-1", "A small American eagle covering a larger Mexican eagle — visually representing the transfer of sovereignty over New Mexico from Mexico to the United States.") },
+                { "new-york", ("Great Seal of New York", 1778, 1882, "New York State Law § 70", "Liberty and Justice flank a shield with the sun rising over the Hudson River — the foundational imagery of the state that calls itself the gateway to America.") },
+                { "north-carolina", ("Great Seal of North Carolina", 1971, null, "North Carolina General Statutes § 144-1", "Liberty and Plenty stand together under the motto 'Esse Quam Videri' (To be rather than to seem) — adopted from Cicero.") },
+                { "north-dakota", ("Great Seal of North Dakota", 1889, null, "North Dakota Century Code § 54-02-01", "A tree stump, a plow, and an Indian on horseback — frontier settlement and indigenous heritage on the Northern Plains.") },
+                { "ohio", ("Great Seal of Ohio", 1803, 1967, "Ohio Revised Code § 5.10", "A rising sun over Mount Logan, the Scioto River, and a bundle of 17 arrows and 17 laurel leaves — Ohio was the 17th state admitted to the Union.") },
+                { "oklahoma", ("Great Seal of Oklahoma", 1907, null, "Oklahoma Statutes § 80-1", "A central star representing Oklahoma; five smaller stars around it for the five major tribes of Indian Territory: Chickasaw, Choctaw, Cherokee, Creek, and Seminole.") },
+                { "oregon", ("Great Seal of Oregon", 1859, 1903, "Oregon Revised Statutes § 186.010", "A covered wagon, a departing British ship, and an arriving American ship — the transfer of Pacific Northwest sovereignty from Britain to the United States.") },
+                { "pennsylvania", ("Great Seal of Pennsylvania", 1778, 1809, "Pennsylvania Statutes Title 71 § 1801", "An eagle, a ship, and a plough on a shield — agriculture and commerce, flanked by corn and olive branches representing peace and prosperity.") },
+                { "rhode-island", ("Great Seal of Rhode Island", 1647, 1875, "Rhode Island General Laws § 42-4-1", "A golden anchor surrounded by 13 stars for the original colonies, with the motto 'Hope' — Rhode Island's anchor and hope have appeared on its seal since the colonial era.") },
+                { "south-carolina", ("Great Seal of South Carolina", 1777, null, "South Carolina Code § 1-1-630", "Two ovals: a palmetto tree over a fallen oak (the palmetto fort that defeated a British naval attack in 1776) and a woman with the motto 'Dum Spiro Spero' (While I breathe, I hope).") },
+                { "south-dakota", ("Great Seal of South Dakota", 1889, 1961, "South Dakota Codified Laws § 1-6-1", "A steamboat, a smelting furnace, corn, and a farmer — the industries of the Dakota Territory at the moment of statehood.") },
+                { "tennessee", ("Great Seal of Tennessee", 1796, 1987, "Tennessee Code § 4-1-301", "A plow, a sheaf of wheat, and a riverboat — the words 'Agriculture' and 'Commerce' on the two sides of the seal identify Tennessee's founding economic identity.") },
+                { "texas", ("Great Seal of Texas", 1839, 1961, "Texas Government Code § 3101.001", "A lone star encircled by olive and live oak branches — the emblem of the Republic of Texas, carried directly into statehood in 1845.") },
+                { "utah", ("Great Seal of Utah", 1896, 2011, "Utah Code § 67-1-3", "A beehive — Deseret, symbol of industry — flanked by Utah lilies and an American eagle, with the motto 'Industry.'") },
+                { "vermont", ("Great Seal of Vermont", 1779, 1937, "Vermont Statutes Title 1 § 491", "A pine tree, a cow, and sheaves of wheat under the motto 'Freedom and Unity' — Vermont's agricultural and independent character.") },
+                { "virginia", ("Great Seal of Virginia", 1776, 1930, "Code of Virginia § 7.1-26", "Virtus, the goddess of virtue, stands victorious over a fallen tyrant — embodying the state motto 'Sic Semper Tyrannis' (Thus always to tyrants).") },
+                { "washington", ("Great Seal of Washington", 1889, 1967, "Revised Code of Washington § 1.20.100", "A portrait of George Washington — the only U.S. state seal to feature the face of a named historical person rather than an allegorical figure.") },
+                { "west-virginia", ("Great Seal of West Virginia", 1863, null, "West Virginia Code § 2-2-1", "A farmer and a miner flank a rock with crossed rifles — the state was carved from Virginia during the Civil War; the rifles honor the Union soldiers who made that possible.") },
+                { "wisconsin", ("Great Seal of Wisconsin", 1851, 1881, "Wisconsin Statutes § 14.47", "A sailor and a miner flank a shield with state industries; a badger crest sits above and a cornucopia and lead below — industry by both land and water.") },
+                { "wyoming", ("Great Seal of Wyoming", 1893, null, "Wyoming Statutes § 8-3-101", "A central pillar with the motto 'Equal Rights,' flanked by a miner, a cowboy, and a woman — Wyoming was the first U.S. territory to grant women's suffrage, in 1869.") }
+            };
+
+            var seals = new List<Symbol>();
+
+            foreach (var state in states)
+            {
+                if (stateSealData.TryGetValue(state.Slug, out var sealData))
+                {
+                    seals.Add(new Symbol
+                    {
+                        StateId = state.Id,
+                        Type = "state-seal",
+                        Name = sealData.Name,
+                        Slug = GenerateSlug(sealData.Name),
+                        ScientificName = null,
+                        AdoptedYear = sealData.AdoptedYear,
+                        Status = "Official",
+                        Designation = "State seal",
+                        Legislation = sealData.Legislation,
+                        WikidataId = null,
+                        Meaning = sealData.Meaning,
+                        ImageUrl = $"/images/state-seals/{state.Slug}/great-seal-of-{state.Slug}.webp",
+                        YamlPath = $"Content/states/{state.Slug}/state-seal.yaml"
+                    });
+                }
+            }
+
+            context.Symbols.AddRange(seals);
             await context.SaveChangesAsync();
         }
 

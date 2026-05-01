@@ -34,7 +34,7 @@ namespace USASymbol.Controllers
             catch (System.Exception ex)
             {
                 _logger.LogError(ex, "Error loading rankings hub");
-                return View("Error");
+                throw;
             }
         }
 
@@ -57,7 +57,7 @@ namespace USASymbol.Controllers
             catch (System.Exception ex)
             {
                 _logger.LogError(ex, "Error loading category: {Category}", category);
-                return View("Error");
+                throw;
             }
         }
 
@@ -79,7 +79,7 @@ namespace USASymbol.Controllers
             catch (System.Exception ex)
             {
                 _logger.LogError(ex, "Error loading ranking: {Category}/{Slug}", category, slug);
-                return View("Error");
+                throw;
             }
         }
     }

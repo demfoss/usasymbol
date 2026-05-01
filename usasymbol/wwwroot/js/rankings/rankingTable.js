@@ -308,6 +308,12 @@ function initMetricToggle() {
                 }
             });
 
+            // Sort by the newly selected metric
+            document.querySelectorAll('.rankingTable').forEach(tbl => {
+                const th = tbl.querySelector(`th[data-sort="${selectedMetric}"]`);
+                if (th) th.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+            });
+
             // Toggle card metric groups
             document.querySelectorAll('.metric-group[data-toggleable="true"]').forEach(el => {
                 const column = el.dataset.column;

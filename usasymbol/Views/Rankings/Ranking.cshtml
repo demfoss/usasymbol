@@ -55,70 +55,6 @@
     var heroImageUrl = Images.Full(heroImageResolved);
     ViewData["OgImage"] = heroImageUrl;
 
-    var categoryUrl = "/rankings";
-    if (!string.IsNullOrWhiteSpace(content?.Url))
-    {
-        var parts = content.Url.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        if (parts.Length >= 2 && parts[0].Equals("rankings", StringComparison.OrdinalIgnoreCase))
-        {
-            categoryUrl = $"/{parts[0]}/{parts[1]}";
-        }
-    }
-
-    var articleSchema = new Dictionary<string, object?>
-    {
-        ["@context"] = "https://schema.org",
-        ["@type"] = "Article",
-        ["headline"] = content?.Page?.H1,
-        ["description"] = content?.Seo?.Description,
-        ["datePublished"] = content?.DatePublished?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
-        ["dateModified"] = content?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
-        ["image"] = heroImageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? heroImageUrl : $"{baseUrl}{heroImageUrl}",
-        ["author"] = new Dictionary<string, object?> { ["@type"] = "Person", ["name"] = content?.Author ?? "USA Symbol Team", ["url"] = $"{baseUrl}/about" },
-        ["publisher"] = new Dictionary<string, object?>
-        {
-            ["@type"] = "Organization",
-            ["name"] = "USA Symbol",
-            ["url"] = baseUrl,
-            ["logo"] = new Dictionary<string, object?> { ["@type"] = "ImageObject", ["url"] = $"{baseUrl}/images/logo.png" }
-        },
-        ["mainEntityOfPage"] = new Dictionary<string, object?> { ["@type"] = "WebPage", ["@id"] = currentUrl }
-    };
-
-    var breadcrumbSchema = new Dictionary<string, object?>
-    {
-        ["@context"] = "https://schema.org",
-        ["@type"] = "BreadcrumbList",
-        ["itemListElement"] = new object[]
-        {
-            new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{baseUrl}/" },
-            new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "Rankings", ["item"] = $"{baseUrl}/rankings" },
-            new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 3, ["name"] = categoryTitle, ["item"] = $"{baseUrl}{categoryUrl}" },
-            new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 4, ["name"] = content?.Page?.H1, ["item"] = currentUrl }
-        }
-    };
-
-    Dictionary<string, object?>? faqSchema = null;
-    if (content?.Faq?.Any() == true)
-    {
-        faqSchema = new Dictionary<string, object?>
-        {
-            ["@context"] = "https://schema.org",
-            ["@type"] = "FAQPage",
-            ["mainEntity"] = content.Faq.Select(f => new Dictionary<string, object?>
-            {
-                ["@type"] = "Question",
-                ["name"] = f.Question,
-                ["acceptedAnswer"] = new Dictionary<string, object?> { ["@type"] = "Answer", ["text"] = f.Answer }
-            }).ToArray()
-        };
-    }
-
-    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = null, WriteIndented = false };
-    var articleSchemaJson = JsonSerializer.Serialize(articleSchema, jsonOptions);
-    var breadcrumbSchemaJson = JsonSerializer.Serialize(breadcrumbSchema, jsonOptions);
-    var faqSchemaJson = faqSchema != null ? JsonSerializer.Serialize(faqSchema, jsonOptions) : null;
-
     var hasFaq = Model.HasFaq;
     var hasSections = Model.HasSections;
     var hasMethodology = !string.IsNullOrWhiteSpace(content?.Page?.Methodology) || Model.HasSources;
@@ -179,12 +115,7 @@
 
 @await Html.PartialAsync("_TocMobileFab", Model)
 
-<script type="application/ld+json">@Html.Raw(articleSchemaJson)</script>
-<script type="application/ld+json">@Html.Raw(breadcrumbSchemaJson)</script>
-@if (!string.IsNullOrEmpty(faqSchemaJson))
-{
-    <script type="application/ld+json">@Html.Raw(faqSchemaJson)</script>
-}
+@await Html.PartialAsync("_StructuredData", Model)
 
 <script src="~/js/rankings/rankingTable.js" asp-append-version="true"></script>
 

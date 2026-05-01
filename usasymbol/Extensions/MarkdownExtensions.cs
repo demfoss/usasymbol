@@ -110,12 +110,18 @@ namespace USASymbol.Extensions
                     uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
                 {
                     safeUrl = uri.ToString();
-                    isExternal = true;
+                    isExternal = !IsInternalHost(uri.Host);
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private static bool IsInternalHost(string host)
+        {
+            return host.Equals("usasymbol.com", StringComparison.OrdinalIgnoreCase) ||
+                   host.Equals("www.usasymbol.com", StringComparison.OrdinalIgnoreCase);
         }
 
         private static string RenderMarkdownLinks(string htmlEncodedText)
@@ -131,7 +137,7 @@ namespace USASymbol.Extensions
 
                 var href = WebUtility.HtmlEncode(safeUrl);
                 var cls = "text-slate-900 border-b border-slate-300 hover:border-slate-900 hover:text-blue-700 transition-colors";
-                var rel = external ? " rel=\"nofollow noopener\"" : "";
+                var rel = external ? " rel=\"nofollow noopener noreferrer\"" : "";
                 var target = external ? " target=\"_blank\"" : "";
 
                 return $"<a href=\"{href}\" class=\"{cls}\"{target}{rel}>{label}</a>";
@@ -147,7 +153,7 @@ namespace USASymbol.Extensions
 
                 var href = WebUtility.HtmlEncode(safeUrl);
                 var cls = "text-slate-900 border-b border-slate-300 hover:border-slate-900 hover:text-blue-700 transition-colors";
-                var rel = external ? " rel=\"nofollow noopener\"" : "";
+                var rel = external ? " rel=\"nofollow noopener noreferrer\"" : "";
                 var target = external ? " target=\"_blank\"" : "";
 
                 return $"<a href=\"{href}\" class=\"{cls}\"{target}{rel}>{url}</a>";

@@ -15,6 +15,9 @@ namespace USASymbol.Models.Content
         public DateTime? LastModified { get; set; }
         public string SeoTitle { get; set; } = "";
         public string SeoDescription { get; set; } = "";
+        public string HeroImage { get; set; } = "";
+        public string HeroImageAlt { get; set; } = "";
+        public string HeroImageCaption { get; set; } = "";
         public string IntroText { get; set; } = "";
         public List<LicensePlateSection> Sections { get; set; } = new();
         public List<LicensePlateSource> Sources { get; set; } = new();

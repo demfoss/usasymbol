@@ -2,7 +2,7 @@ using USASymbol.Models.Content;
 
 namespace USASymbol.Models.ViewModels
 {
-    public class SurnamesViewModel
+    public class SurnamesViewModel : IStateScopedViewModel
     {
         public required State State { get; set; }
         public required SurnamesContent Content { get; set; }

@@ -84,7 +84,9 @@
                             <i class="fas fa-gun text-3xl text-slate-200 absolute z-0"></i>
                             @if (!string.IsNullOrEmpty(vm.Symbol.ImageUrl))
                             {
-                                <img src="@Images.Card(vm.Symbol.ImageUrl)" class="absolute inset-0 w-full h-full object-cover z-10" />
+                                <img src="@Images.Card(vm.Symbol.ImageUrl)"
+                                     alt="@vm.Symbol.Name"
+                                     class="absolute inset-0 w-full h-full object-cover z-10" />
                             }
                         </div>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">@vm.Symbol.Name</p>

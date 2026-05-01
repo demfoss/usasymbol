@@ -63,13 +63,17 @@
                             : "";
                     }
 
-                    var primaryUrl = !string.IsNullOrWhiteSpace(symbolUrl) ? symbolUrl : stateUrl;
+                    var explicitSymbolUrl = row.GetString("symbol_url");
+                    var primaryUrl = !string.IsNullOrWhiteSpace(explicitSymbolUrl)
+                        ? explicitSymbolUrl
+                        : !string.IsNullOrWhiteSpace(symbolUrl) ? symbolUrl : stateUrl;
 
                     // ── Image ───────────────────────────────────────────────────────
                     string imgSrc = "";
                     var imageCol = columns.FirstOrDefault(c => c.Type == "image");
                     if (imageCol != null && row.Data.TryGetValue(imageCol.Key, out var imgVal) && imgVal != null)
                         imgSrc = imgVal.ToString() ?? "";
+                    var isSymbolImage = imageCol != null && string.Equals(imageCol.Key, "symbol_image", StringComparison.OrdinalIgnoreCase);
 
                     // ── Main detail value (column matching DetailType) ─────────────
                     var mainCol   = displayColumns.FirstOrDefault(c => c.Key.Equals(Model.DetailType, StringComparison.OrdinalIgnoreCase));
@@ -134,8 +138,8 @@
                     {
                         <div class="w-[72px] md:w-[88px] h-[72px] md:h-[88px] rounded-xl overflow-hidden
                                     border border-slate-100 bg-slate-50 flex items-center justify-center">
-                            <img src="@Images.Thumb(imgSrc)" alt="@(mainValue ?? stateName)"
-                                 class="w-full h-full object-contain"
+                            <img src="@(isSymbolImage ? Images.Crop(imgSrc, 176, 176) : Images.Thumb(imgSrc))" alt="@(mainValue ?? stateName)"
+                                 class="w-full h-full @(isSymbolImage ? "object-cover" : "object-contain")"
                                  loading="lazy" decoding="async" />
                         </div>
                     }
@@ -252,10 +256,10 @@
             }
         </div>
 
-        <div id="cardsEmptyState" class="hidden text-center py-12">
+        <div id="cardsEmptyState" class="hidden text-center py-12" aria-live="polite">
             <div class="text-6xl mb-4">🔍</div>
-            <h3 class="text-xl font-black text-slate-900 mb-2">No results found</h3>
-            <p class="text-slate-600">Try adjusting your search.</p>
+            <h3 class="text-xl font-black text-slate-900 mb-2">No matching entries</h3>
+            <p class="text-slate-600">Adjust the filter to show more entries.</p>
         </div>
     </div>
 }

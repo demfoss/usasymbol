@@ -1,44 +1,37 @@
-/* =====================================================
-   MUSEUM EDITORIAL DESIGN SYSTEM
-   Typography + palette for USA Symbol encyclopedia
-   ===================================================== */
 
 :root {
-    /* ── Museum Palette ───────────────────────────────── */
-    --navy:          #1B2A4A;    /* Deep Navy — headers, hero, UI */
-    --navy-light:    #2C3E6B;    /* Lighter navy for hover states */
-    --cream:         #F8F4ED;    /* Parchment — article backgrounds */
-    --cream-dark:    #EDE8DF;    /* Slightly deeper cream for borders */
-    --gold:          #C09B4F;    /* Muted Gold — accent, timeline, active */
+    
+    --navy:          #1B2A4A;    
+    --navy-light:    #2C3E6B;    
+    --cream:         #F8F4ED;    
+    --cream-dark:    #EDE8DF;    
+    --gold:          #C09B4F;    
     --gold-border:   rgba(192, 155, 79, 0.35);
     --gold-muted:    rgba(192, 155, 79, 0.12);
-    --ink:           #1A1A2E;    /* Near-black for body text */
-    --slate-ed:      #6B7D8A;    /* Slate grey for labels, muted text */
+    --ink:           #1A1A2E;    
+    --slate-ed:      #6B7D8A;    
     --white:         #FFFFFF;
 
-    /* ── 8px Spacing Scale ────────────────────────────── */
-    --sp-1: 0.5rem;   /* 8px  */
-    --sp-2: 1rem;     /* 16px */
-    --sp-3: 1.5rem;   /* 24px */
-    --sp-4: 2rem;     /* 32px */
-    --sp-6: 3rem;     /* 48px */
-    --sp-8: 4rem;     /* 64px */
-    --sp-12: 6rem;    /* 96px */
+    
+    --sp-1: 0.5rem;   
+    --sp-2: 1rem;     
+    --sp-3: 1.5rem;   
+    --sp-4: 2rem;     
+    --sp-6: 3rem;     
+    --sp-8: 4rem;     
+    --sp-12: 6rem;    
 
-    /* ── Heritage Font Stack ──────────────────────────── */
+    
     --font-article:  "Libre Baskerville", Georgia, Cambria, "Times New Roman", serif;
     --font-ui:       "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-    /* Legacy aliases (keep existing references working) */
+    
     --ui-color:      var(--ink);
     --article-color: var(--ink);
     --link-color:    #2563eb;
     --link-hover:    #1e40af;
 }
 
-/* =====================================================
-   BASE & RESET
-   ===================================================== */
 
 html {
     scroll-behavior: smooth;
@@ -56,7 +49,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* UI elements use sans-serif (Manrope/Inter) */
+
 button, input, select, textarea,
 nav, header, footer,
 .toc, .sidebar, .card,
@@ -64,15 +57,11 @@ table, th, td {
     font-family: var(--font-ui);
 }
 
-/* UI headings stay sans-serif (content headings use .content-h2/.content-h3) */
+
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-ui);
 }
 
-/* =====================================================
-   ARTICLE TYPOGRAPHY
-   Applies to sections with prose content
-   ===================================================== */
 
 .site-content section p {
     color: var(--article-color);
@@ -84,12 +73,12 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
-/* Paragraph spacing */
+
 .site-content section p + p {
     margin-top: 1.25rem;
 }
 
-/* Lead paragraph — same size as body text per design spec */
+
 .site-content section > p:first-of-type,
 .site-content section .max-w-prose > p:first-of-type {
     font-size: 19px;
@@ -97,9 +86,6 @@ h1, h2, h3, h4, h5, h6 {
     color: #2d2d2d;
 }
 
-/* =====================================================
-   HEADINGS
-   ===================================================== */
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-ui);
@@ -121,9 +107,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     .site-content section .max-w-prose > p:first-of-type { font-size: 18px; line-height: 29px; }
 }
 
-/* =====================================================
-   LISTS (inside prose sections)
-   ===================================================== */
 
 .site-content section ul,
 .site-content section ol {
@@ -143,9 +126,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     padding-left: 0;
 }
 
-/* =====================================================
-   BLOCKQUOTES
-   ===================================================== */
 
 .site-content section blockquote {
     font-family: var(--font-article);
@@ -158,10 +138,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     border-left: 3px solid var(--gold);
 }
 
-/* =====================================================
-   EDITORIAL HERO COMPONENT
-   Full-bleed dark navy header
-   ===================================================== */
 
 .editorial-hero {
     background-color: var(--navy);
@@ -169,7 +145,7 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     overflow: hidden;
 }
 
-/* Subtle dot-grid texture */
+
 .editorial-hero::before {
     content: '';
     position: absolute;
@@ -179,7 +155,7 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     pointer-events: none;
 }
 
-/* Bottom fade into page background */
+
 .editorial-hero::after {
     content: '';
     position: absolute;
@@ -191,7 +167,7 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     pointer-events: none;
 }
 
-/* Category pill inside hero */
+
 .hero-pill {
     display: inline-flex;
     align-items: center;
@@ -208,7 +184,7 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     letter-spacing: 0.12em;
 }
 
-/* Hero H1 — uses serif for gravitas */
+
 .hero-title {
     font-family: var(--font-article);
     color: var(--cream);
@@ -217,7 +193,7 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     line-height: 1.1;
 }
 
-/* Hero subtitle (scientific name, action type, etc.) */
+
 .hero-subtitle {
     font-family: var(--font-article);
     color: rgba(248, 244, 237, 0.6);
@@ -225,9 +201,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     line-height: 1.5;
 }
 
-/* =====================================================
-   QUICK FACTS BAR (horizontal strip inside hero)
-   ===================================================== */
 
 .facts-bar {
     display: flex;
@@ -269,9 +242,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     margin-top: 3px;
 }
 
-/* =====================================================
-   READING PROGRESS BAR
-   ===================================================== */
 
 .reading-progress {
     position: fixed;
@@ -285,10 +255,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     will-change: width;
 }
 
-/* =====================================================
-   EDITORIAL TOC SIDEBAR
-   Minimalist strip with progress line
-   ===================================================== */
 
 .toc-editorial {
     position: relative;
@@ -331,7 +297,7 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     gap: 0.5rem;
     padding: 0.3rem 0;
     font-family: var(--font-ui);
-    font-size: 0.875rem; /* 14px — consistent across desktop and mobile */
+    font-size: 0.875rem; 
     line-height: 1.4;
     color: rgba(107, 125, 138, 0.8);
     text-decoration: none;
@@ -343,7 +309,7 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     color: var(--navy);
 }
 
-/* Active state — overrides JS-injected classes */
+
 .toc-link.toc-active,
 .toc-link[aria-current="true"] {
     color: var(--navy) !important;
@@ -360,9 +326,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     color: var(--navy) !important;
 }
 
-/* =====================================================
-   SECTION HEADERS (in _FirearmSections)
-   ===================================================== */
 
 .section-label {
     font-family: var(--font-ui);
@@ -372,22 +335,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     letter-spacing: 0.14em;
     color: var(--gold);
 }
-
-/* =====================================================
-   LINKS (prose content only)
-   ===================================================== */
-
-/* =====================================================
-   OPTIMAL READING WIDTH
-   ===================================================== */
-
-.max-w-prose {
-    max-width: 65ch;
-}
-
-/* =====================================================
-   SUBSECTION DIVIDERS
-   ===================================================== */
 
 .subsection-divider {
     margin: 30px auto 0 0;
@@ -402,9 +349,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     padding-top: 0;
 }
 
-/* =====================================================
-   STICKY SIDEBAR
-   ===================================================== */
 
 @media (min-width: 1024px) {
     .sticky-sidebar {
@@ -414,9 +358,6 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     }
 }
 
-/* =====================================================
-   MOBILE OPTIMIZATIONS
-   ===================================================== */
 
 @media (max-width: 640px) {
     button,
@@ -425,22 +366,12 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
         min-height: 44px;
         min-width: 44px;
     }
-
-    .site-content article {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
 }
 
-/* =====================================================
-   CONTENT TYPOGRAPHY UTILITIES
-   Single source of truth — use these classes instead of
-   hardcoding Tailwind font sizes on every page.
-   ===================================================== */
 
-/* Serif headings like Audubon — Libre Baskerville for content sections */
+
 .content-h2 {
-    font-family: var(--font-article); /* Libre Baskerville */
+    font-family: var(--font-article); 
     font-size: 41px;
     font-weight: 700;
     color: #161B26;
@@ -451,7 +382,7 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
 }
 
 .content-h3 {
-    font-family: var(--font-article); /* Libre Baskerville */
+    font-family: var(--font-article); 
     font-size: 23px;
     font-weight: 700;
     line-height: 50px;
@@ -486,14 +417,11 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     }
 }
 
-/* TOC link consistent size across all contexts */
+
 .toc-link {
-    font-size: 0.875rem; /* 14px everywhere */
+    font-size: 0.875rem; 
 }
 
-/* =====================================================
-   PRINT STYLES
-   ===================================================== */
 
 @media print {
     .no-print, nav, aside, button, .toc, .share-buttons { display: none !important; }

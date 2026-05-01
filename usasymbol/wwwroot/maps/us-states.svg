@@ -7,6 +7,16 @@
 .borders {stroke:#FFFFFF; stroke-width:1}    /* color and width of borders between states */
 .dccircle {display:yes}                      /* set display to yes to show the circle for the District of Columbia, or none to hide it */
 .separator1 {stroke:#B0B0B0; stroke-width:2} /* color and width of lines around Alaska and Hawaii */
+.state-labels {pointer-events:none}
+.state-labels text {
+  fill:#1f2937;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:16px;
+  font-weight:700;
+  text-anchor:middle;
+  dominant-baseline:middle;
+}
+.state-labels text.compact {font-size:11px}
 
 /* Individual states can be colored as follows:
 .ks,.mt,.pa {fill:#0000FF}
@@ -292,5 +302,58 @@ Place this code in the empty space below. */
 <title>District of Columbia</title></circle>
 
 <path class="separator1" fill="none" d="m 215,493 v 55 l 36,45 m -251,-168 h 147 l 68,68 h 85 l 54,54 v 46"/>
+
+<g class="state-labels" aria-hidden="true">
+<text x="128.0" y="493.0">AK</text>
+<text x="654.2" y="415.5">AL</text>
+<text x="544.8" y="374.3">AR</text>
+<text x="194.4" y="366.0">AZ</text>
+<text x="66.3" y="267.8">CA</text>
+<text x="317.3" y="273.0">CO</text>
+<text class="compact" x="855.5" y="178.5">CT</text>
+<text class="compact" x="827.1" y="241.9">DE</text>
+<text x="757.0" y="486.0">FL</text>
+<text x="714.2" y="404.8">GA</text>
+<text x="309.0" y="548.0">HI</text>
+<text x="523.4" y="215.1">IA</text>
+<text x="193.0" y="141.7">ID</text>
+<text x="590.5" y="260.8">IL</text>
+<text x="644.2" y="256.7">IN</text>
+<text x="439.5" y="291.3">KS</text>
+<text x="658.1" y="309.0">KY</text>
+<text x="546.1" y="456.3">LA</text>
+<text x="895.3" y="87.5">ME</text>
+<text class="compact" x="867.0" y="159.5">MA</text>
+<text class="compact" x="805.0" y="249.0">MD</text>
+<text x="661.0" y="185.0">MI</text>
+<text x="504.2" y="132.8">MN</text>
+<text x="542.9" y="295.3">MO</text>
+<text x="594.0" y="419.4">MS</text>
+<text x="273.3" y="87.1">MT</text>
+<text x="750.0" y="334.0">NC</text>
+<text x="414.7" y="92.3">ND</text>
+<text x="419.6" y="223.5">NE</text>
+<text class="compact" x="867.0" y="134.0">NH</text>
+<text class="compact" x="837.1" y="217.4">NJ</text>
+<text x="297.3" y="374.1">NM</text>
+<text x="133.1" y="252.3">NV</text>
+<text x="800.0" y="167.0">NY</text>
+<text x="700.1" y="237.3">OH</text>
+<text x="448.0" y="361.4">OK</text>
+<text x="96.8" y="118.6">OR</text>
+<text x="782.7" y="212.0">PA</text>
+<text class="compact" x="880.5" y="174.5">RI</text>
+<text x="752.1" y="380.2">SC</text>
+<text x="412.6" y="163.7">SD</text>
+<text x="657.0" y="342.0">TN</text>
+<text x="418.6" y="452.5">TX</text>
+<text x="216.4" y="249.4">UT</text>
+<text x="776.0" y="293.0">VA</text>
+<text class="compact" x="842.5" y="124.0">VT</text>
+<text x="126.0" y="53.5">WA</text>
+<text x="575.7" y="151.5">WI</text>
+<text x="743.7" y="269.2">WV</text>
+<text x="294.3" y="181.1">WY</text>
+</g>
 
 </svg>

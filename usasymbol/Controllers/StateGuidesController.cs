@@ -52,6 +52,7 @@ namespace USASymbol.Controllers
             ViewData["Description"] = content.SeoDescription;
             ViewData["OgImage"] = state.FlagImageUrl;
             ViewData["Canonical"] = $"/states/{stateSlug}/surnames";
+            ViewData["AllStates"] = await _stateService.GetAllStatesAsync();
             ViewData["LatestContentRail"] = await _latestContentRailService.GetLatestItemsAsync(8);
 
             var surnamesPath = Path.Combine(_env.ContentRootPath, "Content", "states", stateSlug, "surnames.yaml");

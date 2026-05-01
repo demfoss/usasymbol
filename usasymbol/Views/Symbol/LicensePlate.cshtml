@@ -15,14 +15,22 @@
         ? "License Plate Slogan"
         : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
 
-    var h1 = $"{stateName} {designation}: {sloganName}";
+    var titleIsAlreadyPageTitle =
+        sloganName.Contains(stateName, StringComparison.OrdinalIgnoreCase) &&
+        sloganName.Contains("License Plate Slogan", StringComparison.OrdinalIgnoreCase);
+    var h1 = titleIsAlreadyPageTitle ? sloganName : $"{stateName} {designation}: {sloganName}";
+    var displayName = titleIsAlreadyPageTitle ? Model.Symbol.Name : sloganName;
 
     ViewData["Title"] = Model.LicensePlateContent?.SeoTitle ?? h1;
     var descRaw = Model.LicensePlateContent?.SeoDescription ?? "";
     ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
         ? $"Learn about {stateName}'s {designation.ToLowerInvariant()} {sloganName}, including its history, meaning, and significance."
         : System.Net.WebUtility.HtmlDecode(descRaw);
-    var heroImage = Model.Symbol.ImageUrl;
+    var heroImage = Model.LicensePlateContent?.HeroImage;
+    if (string.IsNullOrWhiteSpace(heroImage))
+    {
+        heroImage = Model.Symbol.ImageUrl;
+    }
     if (string.IsNullOrWhiteSpace(heroImage))
     {
         heroImage = Model.LicensePlateContent?.VisualAssets?
@@ -55,8 +63,10 @@
         Description = heroDescription,
         LegalReference = Model.Legislation,
         ImageUrl = heroImage,
-        ImageAlt = $"{sloganName} - {stateName} {designation}",
-        FigureTitle = sloganName,
+        ImageAlt = !string.IsNullOrWhiteSpace(Model.LicensePlateContent?.HeroImageAlt)
+            ? Model.LicensePlateContent.HeroImageAlt
+            : $"{displayName} - {stateName} {designation}",
+        FigureTitle = displayName,
         FigureSubtitle = $"Official {designation} of {stateName}",
         ImageLinkUrl = heroImage,
         EyebrowItems = new List<string> { stateName, designation, adoptedYear > 0 ? $"Adopted {adoptedYear}" : string.Empty }
@@ -147,6 +157,29 @@
                         </div>
                     </section>
                 }
+
+                <section id="plate-quiz-promo" class="content-divider">
+                    <div class="overflow-hidden rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/80 to-slate-50/60">
+                        <div class="border-b border-amber-200/60 px-5 py-4 sm:px-6">
+                            <div class="flex items-center gap-4">
+                                <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                                    <i class="fa-solid fa-id-card text-xs"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <h2 class="content-h2 !text-[1.4rem] !leading-snug text-slate-900">Can You Match All 50 License Plate Slogans?</h2>
+                                    <div class="mt-1 text-sm leading-6 text-slate-500">From 'Vacationland' to 'Live Free or Die' — see how many you know.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-5 py-5 sm:px-6">
+                            <p class="content-p text-slate-700">Each round shows a license plate and asks which state issued it. Some slogans are instantly recognizable. Others — 'Legendary,' 'Pacific Wonderland,' 'Constitution State' — will make you think. Questions and answer positions shuffle every time.</p>
+                            <a href="/quizzes/state-license-plate-slogans-quiz" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 transition-colors">
+                                <span>Take the License Plate Slogans Quiz</span>
+                                <i class="fas fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </section>
 
                 <section id="faq" class="content-divider">
                     @await Html.PartialAsync("_Faq", Model)

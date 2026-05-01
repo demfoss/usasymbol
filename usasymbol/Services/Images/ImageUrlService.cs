@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using USASymbol.Options;
@@ -77,6 +79,8 @@ public sealed class ImageUrlService : IImageUrlService
 
     public string Card(string? path, int width) => UrlWithWidth(path, width);
 
+    public string Crop(string? path, int width, int height) => UrlWithCrop(path, width, height);
+
     public string Hero(string? path) => Url(path, ImagePreset.Hero);
 
     public string Hero(string? path, int width) => UrlWithWidth(path, width);
@@ -122,6 +126,53 @@ public sealed class ImageUrlService : IImageUrlService
         return AppendQueryString(resolved, "width", width.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
 
+    private string UrlWithCrop(string? path, int width, int height)
+    {
+        var normalizedPath = _pathNormalizer.Normalize(path);
+
+        if (string.IsNullOrEmpty(normalizedPath))
+        {
+            return string.Empty;
+        }
+
+        if (_pathNormalizer.IsAbsoluteUrl(normalizedPath))
+        {
+            return normalizedPath;
+        }
+
+        if (!_environment.IsProduction() || !_options.UseCdnInProduction)
+        {
+            return normalizedPath;
+        }
+
+        if (!IsImagePath(normalizedPath))
+        {
+            return normalizedPath;
+        }
+
+        var cdnBaseUrl = (_options.CdnBaseUrl ?? string.Empty).Trim().TrimEnd('/');
+        if (string.IsNullOrEmpty(cdnBaseUrl))
+        {
+            return normalizedPath;
+        }
+
+        var resolved = $"{cdnBaseUrl}{normalizedPath}";
+        if (IsVectorAsset(normalizedPath) || width <= 0 || height <= 0)
+        {
+            return resolved;
+        }
+
+        return AppendQueryString(resolved, new Dictionary<string, string>
+        {
+            ["width"] = width.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["height"] = height.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["aspect_ratio"] = $"{width}:{height}",
+            ["crop_gravity"] = "center",
+            ["quality"] = "82",
+            ["auto_optimize"] = "medium"
+        });
+    }
+
     private bool IsImagePath(string path)
     {
         var localBasePath = (_options.LocalImagesBasePath ?? "/images").Trim();
@@ -150,5 +201,12 @@ public sealed class ImageUrlService : IImageUrlService
     {
         var separator = url.Contains('?', StringComparison.Ordinal) ? "&" : "?";
         return $"{url}{separator}{Uri.EscapeDataString(key)}={Uri.EscapeDataString(value)}";
+    }
+
+    private static string AppendQueryString(string url, IReadOnlyDictionary<string, string> parameters)
+    {
+        var separator = url.Contains('?', StringComparison.Ordinal) ? "&" : "?";
+        return url + separator + string.Join("&", parameters.Select(parameter =>
+            $"{Uri.EscapeDataString(parameter.Key)}={Uri.EscapeDataString(parameter.Value)}"));
     }
 }

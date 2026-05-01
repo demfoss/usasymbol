@@ -10,7 +10,7 @@ date_modified: "2026-02-16"
 
 seo:
   title: "Official U.S. State Horses: List by State and Year"
-  description: "See official U.S. state horses by state, with designation year and background on each breed or equine symbol."
+  description: "Not every state has an official horse, but the ones that do usually tie it to ranching, military, or regional heritage. This list covers state horses by designation year and background."
 
 page:
   h1: "Official U.S. State Horses"
@@ -44,9 +44,14 @@ page:
 
 map:
   title: "Official U.S. State Horses"
-  image: "/images/rankings/state-horses-map.jpg"
-  image_alt: "Official state horses of the United States shown in a museum-style educational layout featuring various horse breeds."
   caption: "17 U.S. states have designated official state horses, ponies, or honorary equines representing local equine heritage and history."
+  metric_key: mammal
+  metric_label: "State Horse"
+  image_key: symbol_image
+  detail_keys:
+    - year_adopted
+  color_scheme: blue
+  color_scale: categorical
 
 table:
   columns:
@@ -178,7 +183,7 @@ sections:
     icon: "fa-solid fa-star"
     title: "The Morgan Horse: America's First Breed"
     paragraphs:
-      - "Vermont was the first state to designate a state horse in 1961, choosing the Morgan Horse. This breed traces its lineage to a single stallion named Figure, foaled around 1789 in West Springfield, Massachusetts. Despite being born in Massachusetts, Figure spent most of his life in Vermont, where he became the foundation sire of the entire Morgan breed. Every Morgan Horse alive today descends from this one remarkable stallion who lived to the impressive age of 32."
+      - "Vermont was the first state to designate a state horse in 1961, choosing the Morgan Horse. This breed traces its lineage to a single stallion named Figure, foaled around 1789 in West Springfield, Massachusetts. Despite being born in Massachusetts, Figure spent most of his life in Vermont, where he became the foundation sire of the entire Morgan breed. Every Morgan Horse alive today descends from this one remarkable stallion who lived to the impressive age of 32. State horses also appear in the broader [state mammals and animals list](/symbols/mammals)."
       - "Massachusetts designated the Morgan Horse as its state horse in 1970, creating a friendly rivalry with Vermont over which state can claim this iconic breed. The dispute stems from Figure's birthplace in Springfield, Massachusetts, versus his working life in Vermont. Regardless of the debate, both states celebrate the Morgan's remarkable contributions to American equine history. During the Civil War, Morgans served as cavalry mounts, prized for their strength, stamina, and calm temperament under fire."
       - "The Morgan Horse influenced the development of several other American breeds, including the Standardbred, American Quarter Horse, and Tennessee Walking Horse. Morgans are known for their versatility — they excel in driving, dressage, endurance riding, jumping, and Western disciplines. Their compact, muscular build, arched neck, and expressive eyes make them instantly recognizable. Today, Morgan enthusiasts worldwide celebrate this breed as a living piece of American heritage."
 
@@ -254,3 +259,4 @@ faq:
   
   - question: "What is the Morgan Horse?"
     answer: "The Morgan Horse is one of America's first native breeds and serves as the state horse for both Vermont (adopted 1961) and Massachusetts (adopted 1970). The breed descends from a single stallion named Figure, born around 1789. Morgans are known for their strength, versatility, and distinctive compact, muscular build with an arched neck."
+date_modified: "2026-04-20"

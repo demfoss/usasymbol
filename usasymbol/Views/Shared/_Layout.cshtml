@@ -1,3 +1,4 @@
+@inject USASymbol.Services.Images.IImageUrlService ImagesLayout
 @{
     var currentPath = Context.Request.Path.Value?.ToLowerInvariant() ?? "/";
     var bodyClass = ViewData["BodyClass"] as string ?? string.Empty;
@@ -9,6 +10,13 @@
             || rawCanonical.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
                 ? rawCanonical
                 : $"{requestBaseUrl}{(rawCanonical.StartsWith("/") ? rawCanonical : "/" + rawCanonical)}");
+
+    var rawOgImage = ViewData["OgImage"] as string ?? "/images/usasymbol.png";
+    var resolvedOgImage = ImagesLayout.Full(rawOgImage);
+    var ogImageUrl = resolvedOgImage.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+        || resolvedOgImage.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
+        ? resolvedOgImage
+        : $"{requestBaseUrl}{resolvedOgImage}";
 
     bool isHome = currentPath == "/";
     bool isStates = currentPath.StartsWith("/states");
@@ -50,16 +58,20 @@
     <meta property="og:description" content="@(ViewData["Description"] ?? "Explore official state symbols across all 50 U.S. states")" />
     <meta property="og:type" content="@(ViewData["OgType"] ?? "website")" />
     <meta property="og:url" content="@(ViewData["OgUrl"] ?? $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path.Value?.ToLower().TrimEnd('/')}")" />
-    <meta property="og:image" content="@(ViewData["OgImage"] ?? "/images/og-default.webp")" />
+    <meta property="og:image" content="@ogImageUrl" />
+    <meta property="og:image:width" content="@(ViewData["OgImageWidth"] ?? "1200")" />
+    <meta property="og:image:height" content="@(ViewData["OgImageHeight"] ?? "630")" />
+    <meta property="og:image:alt" content="@(ViewData["Title"] ?? "USA Symbol")" />
     <meta property="og:site_name" content="USA Symbol" />
+    <meta property="og:locale" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="@(ViewData["Title"] ?? "USA State Symbols")" />
     <meta name="twitter:description" content="@(ViewData["Description"] ?? "Explore official state symbols")" />
-    <meta name="twitter:image" content="@(ViewData["OgImage"] ?? "/images/og-default.webp")" />
+    <meta name="twitter:image" content="@ogImageUrl" />
 
     <meta name="p:domain_verify" content="b51fe0a585fdde3d137d1f624a53ba30" />
-    <meta name="robots" content="max-image-preview:large" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -83,462 +95,6 @@
     <link rel="stylesheet" href="~/css/editorial-typography.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
-    <style>
-        :root {
-            --site-ink: #11203d;
-            --site-ink-soft: #57657d;
-            --site-paper: #f8f1e5;
-            --site-paper-deep: #efe4d2;
-            --site-surface: rgba(255, 255, 255, 0.78);
-            --site-surface-strong: rgba(255, 255, 255, 0.92);
-            --site-line: rgba(17, 32, 61, 0.1);
-            --site-brand: #1f4b99;
-            --site-brand-strong: #17356a;
-            --site-accent: #c46243;
-            --site-shadow: 0 22px 70px rgba(15, 23, 42, 0.11);
-            --site-shadow-soft: 0 14px 40px rgba(15, 23, 42, 0.08);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body.usas-site {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-variant-ligatures: none;
-            font-feature-settings: "liga" 0, "dlig" 0, "calt" 0;
-            color: var(--site-ink);
-            background:
-                radial-gradient(circle at top left, rgba(31, 75, 153, 0.18), transparent 28%),
-                radial-gradient(circle at top right, rgba(196, 98, 67, 0.14), transparent 24%),
-                linear-gradient(180deg, #fffdf8 0%, var(--site-paper) 42%, #fcfaf5 100%);
-        }
-
-        body.usas-site.symbols-surface {
-            background: #FFF9F0;
-        }
-
-        body.usas-site.symbols-surface::before,
-        body.usas-site.symbols-surface .site-shell::before,
-        body.usas-site.symbols-surface .site-shell::after {
-            opacity: 0.12;
-        }
-
-        body.usas-site.symbols-surface .site-header {
-            background: rgba(255, 249, 240, 0.82);
-        }
-
-        body.usas-site::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-            background-size: 32px 32px;
-            opacity: 0.2;
-            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent 85%);
-        }
-
-        .display-font {
-            font-family: 'Libre Baskerville', Georgia, serif;
-        }
-
-        .site-shell {
-            position: relative;
-            isolation: isolate;
-        }
-
-        .site-shell::before,
-        .site-shell::after {
-            content: "";
-            position: fixed;
-            z-index: -1;
-            width: 26rem;
-            height: 26rem;
-            border-radius: 999px;
-            pointer-events: none;
-            filter: blur(18px);
-            opacity: 0.38;
-        }
-
-        .site-shell::before {
-            top: -10rem;
-            right: -8rem;
-            background: radial-gradient(circle, rgba(31, 75, 153, 0.18) 0%, rgba(31, 75, 153, 0) 68%);
-        }
-
-        .site-shell::after {
-            left: -9rem;
-            bottom: 7rem;
-            background: radial-gradient(circle, rgba(196, 98, 67, 0.15) 0%, rgba(196, 98, 67, 0) 72%);
-        }
-
-        .site-header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            padding: 1rem 0;
-            background: rgba(248, 241, 229, 0.72);
-            border-bottom: 1px solid rgba(17, 32, 61, 0.08);
-            backdrop-filter: blur(18px);
-        }
-
-        .site-nav {
-            max-width: 80rem;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        .site-nav-frame {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--site-line);
-            border-radius: 1.75rem;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.68));
-            box-shadow: var(--site-shadow-soft);
-        }
-
-        .site-logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.9rem;
-            min-width: 0;
-        }
-
-        .site-logo-mark {
-            width: 3rem;
-            height: 3rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            border-radius: 1rem;
-            background: linear-gradient(145deg, #17356a 0%, #1f4b99 58%, #d2a55d 100%);
-            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 10px 20px rgba(23, 53, 106, 0.2);
-        }
-
-        .site-logo-mark img {
-            width: 2rem;
-            height: 2rem;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.16));
-        }
-
-        .site-logo-copy {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        .site-logo-copy strong {
-            font-size: 1rem;
-            line-height: 1.1;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            color: var(--site-brand-strong);
-        }
-
-        .site-logo-copy span {
-            margin-top: 0.2rem;
-            font-size: 0.8rem;
-            line-height: 1.2;
-            color: var(--site-ink-soft);
-        }
-
-        .site-nav-links {
-            display: none;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .nav-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1rem;
-            border-radius: 999px;
-            color: var(--site-ink-soft);
-            font-size: 0.95rem;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            transition: color 0.25s ease, background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--site-brand-strong);
-            background: rgba(31, 75, 153, 0.08);
-            transform: translateY(-1px);
-        }
-
-        .nav-link.is-active {
-            color: var(--site-brand-strong);
-            background: rgba(23, 53, 106, 0.08);
-            box-shadow: inset 0 0 0 1px rgba(23, 53, 106, 0.09);
-        }
-
-        .nav-link.nav-cta {
-            color: #fffaf4;
-            background: linear-gradient(135deg, #17356a 0%, #1f4b99 65%, #b85a3a 100%);
-            box-shadow: 0 12px 26px rgba(23, 53, 106, 0.22);
-        }
-
-        .nav-link.nav-cta:hover {
-            color: white;
-            background: linear-gradient(135deg, #112c59 0%, #173f83 65%, #aa4d31 100%);
-        }
-
-        .mobile-nav-button {
-            width: 3rem;
-            height: 3rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--site-line);
-            border-radius: 1rem;
-            background: rgba(255, 255, 255, 0.72);
-            color: var(--site-brand-strong);
-            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
-            transition: transform 0.25s ease, background-color 0.25s ease;
-        }
-
-        .mobile-nav-button:hover {
-            transform: translateY(-1px);
-            background: rgba(255, 255, 255, 0.95);
-        }
-
-        #mobile-menu {
-            padding-top: 0.9rem;
-        }
-
-        .mobile-menu-panel {
-            padding: 0.6rem;
-            border: 1px solid var(--site-line);
-            border-radius: 1.5rem;
-            background: rgba(255, 255, 255, 0.92);
-            box-shadow: var(--site-shadow-soft);
-        }
-
-        .mobile-menu-link {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.75rem;
-            padding: 0.95rem 1rem;
-            border-radius: 1rem;
-            color: var(--site-ink);
-            font-weight: 700;
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
-        }
-
-        .mobile-menu-link:hover {
-            background: rgba(31, 75, 153, 0.08);
-            color: var(--site-brand-strong);
-            transform: translateX(2px);
-        }
-
-        .mobile-menu-link.is-active {
-            background: linear-gradient(135deg, rgba(23, 53, 106, 0.08), rgba(31, 75, 153, 0.12));
-            color: var(--site-brand-strong);
-        }
-
-        .site-main {
-            position: relative;
-            flex: 1;
-        }
-
-        .site-footer {
-            position: relative;
-            margin-top: 5rem;
-            padding: 4.5rem 0 2rem;
-            overflow: hidden;
-            color: #fff7ee;
-            background: linear-gradient(180deg, #17356a 0%, #102544 100%);
-        }
-
-        .site-footer::before,
-        .site-footer::after {
-            content: "";
-            position: absolute;
-            border-radius: 999px;
-            pointer-events: none;
-            opacity: 0.28;
-        }
-
-        .site-footer::before {
-            top: -9rem;
-            right: -6rem;
-            width: 22rem;
-            height: 22rem;
-            background: radial-gradient(circle, rgba(240, 197, 123, 0.9) 0%, rgba(240, 197, 123, 0) 65%);
-        }
-
-        .site-footer::after {
-            bottom: -11rem;
-            left: -8rem;
-            width: 26rem;
-            height: 26rem;
-            background: radial-gradient(circle, rgba(196, 98, 67, 0.75) 0%, rgba(196, 98, 67, 0) 68%);
-        }
-
-        .site-footer-wrap {
-            position: relative;
-            z-index: 1;
-        }
-
-        .site-footer-grid {
-            display: grid;
-            gap: 2rem;
-            padding-bottom: 2.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .site-footer-brand h3,
-        .site-footer-column h3 {
-            margin-bottom: 0.95rem;
-            font-size: 1.05rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            color: white;
-        }
-
-        .site-footer-brand p,
-        .site-footer-column li,
-        .site-footer-bottom {
-            color: rgba(241, 245, 255, 0.76);
-        }
-
-        .site-footer-brand p {
-            max-width: 32rem;
-            font-size: 0.95rem;
-            line-height: 1.75;
-        }
-
-        .site-footer-email {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.55rem;
-            margin-top: 1.25rem;
-            padding: 0.8rem 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            font-weight: 700;
-        }
-
-        .site-footer-socials {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-        }
-
-        .site-footer-socials a {
-            width: 2.75rem;
-            height: 2.75rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
-        }
-
-        .site-footer-socials a:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.25);
-        }
-
-        .site-footer-list {
-            display: grid;
-            gap: 0.7rem;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .site-footer-list a {
-            color: rgba(241, 245, 255, 0.76);
-            transition: color 0.25s ease, transform 0.25s ease;
-        }
-
-        .site-footer-list a:hover,
-        .site-footer-meta a:hover {
-            color: white;
-        }
-
-        .site-footer-bottom {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            padding-top: 1.5rem;
-            font-size: 0.92rem;
-        }
-
-        .site-footer-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem 1.5rem;
-        }
-
-        .site-footer-meta a {
-            color: rgba(241, 245, 255, 0.76);
-            transition: color 0.25s ease;
-        }
-
-        @@media (min-width: 768px) {
-            .site-nav-links {
-                display: flex;
-            }
-
-            .mobile-nav-button {
-                display: none;
-            }
-
-            .site-footer-grid {
-                grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 0.8fr));
-            }
-
-            .site-footer-bottom {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-            }
-        }
-
-        @@media (max-width: 767px) {
-            .site-logo-copy span {
-                display: none;
-            }
-        }
-
-        @@media (prefers-reduced-motion: reduce) {
-            html {
-                scroll-behavior: auto;
-            }
-
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-        }
-    </style>
-
     @RenderSection("Styles", required: false)
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TBCLTSYXNQ"></script>
@@ -624,13 +180,13 @@
                             <span>contact@usasymbol.com</span>
                         </a>
                         <div class="site-footer-socials">
-                            <a href="https://www.facebook.com/profile.php?id=61586291576329" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                            <a href="https://www.facebook.com/profile.php?id=61586291576329" target="_blank" rel="nofollow noopener noreferrer" aria-label="Facebook">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="https://www.pinterest.com/usasymbol/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+                            <a href="https://www.pinterest.com/usasymbol/" target="_blank" rel="nofollow noopener noreferrer" aria-label="Pinterest">
                                 <i class="fab fa-pinterest-p"></i>
                             </a>
-                            <a href="https://www.linkedin.com/company/usasymbol/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                            <a href="https://www.linkedin.com/company/usasymbol/" target="_blank" rel="nofollow noopener noreferrer" aria-label="LinkedIn">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                         </div>

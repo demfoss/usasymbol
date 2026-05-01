@@ -1,5 +1,13 @@
 namespace Usasymbol.ViewModels
 {
+    public record MapEntryDetail(string Label, string Value);
+
+    public record StateMapEntryItem(
+        string DisplayValue,
+        IReadOnlyList<MapEntryDetail> Details,
+        string? ImageUrl = null
+    );
+
     public record StateMapEntry(
         string PostalCode,
         string StateName,
@@ -8,6 +16,8 @@ namespace Usasymbol.ViewModels
         int? Rank,
         string DisplayValue,
         string FillColor,
-        string? SubLabel = null
+        IReadOnlyList<MapEntryDetail> Details,
+        string? ImageUrl = null,
+        IReadOnlyList<StateMapEntryItem>? Items = null
     );
 }

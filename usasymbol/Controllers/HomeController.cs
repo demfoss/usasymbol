@@ -44,7 +44,7 @@ namespace USASymbol.Controllers
             var model = new HomeViewModel
             {
                 FeaturedStates = await _stateService.GetFeaturedStatesAsync(5),
-                SymbolCategories = await GetSymbolCategoriesAsync(),
+                SymbolCategories = await GetSymbolCategoriesAsync(allWithImages),
                 SymbolOfTheDayPool = pool,
                 StateMapItems = allStates.Select(state => new HomeStateMapItem
                 {
@@ -119,39 +119,100 @@ namespace USASymbol.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private async Task<List<SymbolCategoryViewModel>> GetSymbolCategoriesAsync()
+        private async Task<List<SymbolCategoryViewModel>> GetSymbolCategoriesAsync(IReadOnlyList<Symbol> symbols)
         {
             var dbCats = await _dbContext.SymbolCategories.ToListAsync();
 
-            var order = new[] { "birds", "flowers", "trees", "flags", "beverages", "mammals", "dinosaurs", "mottos", "nicknames", "colors", "license-plate-slogans" };
+            var rng = new Random();
+            // symbols.Type is singular ("bird"), categories.Type is plural ("birds") — match via TrimEnd('s')
+            // exclude SVGs (color swatches) — not suitable as card photos
+            var imagesByType = symbols
+                .Where(s => !s.ImageUrl!.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+                .GroupBy(s => s.Type)
+                .ToDictionary(g => g.Key, g => g.Select(s => s.ImageUrl!).ToList());
+            var licensePlateImages = GetLicensePlateHeroImages();
+            if (licensePlateImages.Count > 0)
+            {
+                imagesByType["license-plate"] = licensePlateImages;
+            }
+
+            var order = new[] { "birds", "flowers", "trees", "flags", "beverages", "mammals", "dinosaurs", "mottos", "nicknames", "colors", "license-plate-slogans", "state-seals" };
 
             return order
                 .Select(slug => dbCats.FirstOrDefault(c => c.Type == slug))
                 .Where(c => c != null)
-                .Select(c => new SymbolCategoryViewModel
+                .Select(c =>
                 {
-                    Type = c!.Type.TrimEnd('s'),
-                    Name = c.Name,
-                    Description = c.Description,
-                    Url = $"/symbols/{c.Type}",
-                    ImageUrl = c.ImageUrl,
-                    Icon = c.Type switch
+                    var singularType = c!.Type switch
                     {
-                        "birds" => "🦅",
-                        "flowers" => "🌸",
-                        "trees" => "🌳",
-                        "flags" => "🏴",
-                        "beverages" => "🥤",
-                        "mammals" => "🦌",
-                        "dinosaurs" => "🦖",
-                        "mottos" => "📜",
-                        "nicknames" => "🏷️",
-                        "colors" => "🎨",
-                        "license-plate-slogans" => "🚗",
-                        _ => "⭐"
-                    }
+                        "license-plate-slogans" => "license-plate",
+                        "state-seals" => "state-seal",
+                        _ => c.Type.TrimEnd('s')
+                    };
+                    var randomImg = imagesByType.TryGetValue(singularType, out var imgs) && imgs.Count > 0
+                        ? imgs[rng.Next(imgs.Count)]
+                        : c.ImageUrl;
+
+                    return new SymbolCategoryViewModel
+                    {
+                        Type = singularType,
+                        Name = c.Name,
+                        Description = c.Description,
+                        Url = $"/symbols/{c.Type}",
+                        ImageUrl = randomImg,
+                        Icon = c.Type switch
+                        {
+                            "birds" => "🦅",
+                            "flowers" => "🌸",
+                            "trees" => "🌳",
+                            "flags" => "🏴",
+                            "beverages" => "🥤",
+                            "mammals" => "🦌",
+                            "dinosaurs" => "🦖",
+                            "mottos" => "📜",
+                            "nicknames" => "🏷️",
+                            "colors" => "🎨",
+                            "license-plate-slogans" => "🚗",
+                            "state-seals" => "🔖",
+                            _ => "⭐"
+                        }
+                    };
                 })
                 .ToList();
+        }
+
+        private List<string> GetLicensePlateHeroImages()
+        {
+            var images = new List<string>();
+            var statesDir = Path.Combine(_env.ContentRootPath, "Content", "states");
+            if (!Directory.Exists(statesDir))
+            {
+                return images;
+            }
+
+            foreach (var file in Directory.EnumerateFiles(statesDir, "license-plate.yaml", SearchOption.AllDirectories))
+            {
+                var yaml = System.IO.File.ReadAllText(file);
+                var match = Regex.Match(yaml, @"(?m)^hero_image:\s*(.+?)\s*$");
+                if (!match.Success)
+                {
+                    continue;
+                }
+
+                var imageUrl = match.Groups[1].Value.Trim().Trim('"', '\'');
+                if (string.IsNullOrWhiteSpace(imageUrl))
+                {
+                    continue;
+                }
+
+                var localPath = Path.Combine(_env.WebRootPath, imageUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                if (System.IO.File.Exists(localPath))
+                {
+                    images.Add(imageUrl);
+                }
+            }
+
+            return images;
         }
 
         private string GetHomeMapSvg()

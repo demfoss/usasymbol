@@ -101,14 +101,14 @@
                                         ? "ring-1 ring-orange-200/80 bg-gradient-to-r from-orange-50 via-white to-white"
                                         : "";
 
-                            <tr class="tableRow @rowBg @topRankRowClass cursor-pointer hover:bg-slate-50 transition-colors"
+                            <tr class="tableRow group @rowBg @topRankRowClass cursor-pointer hover:bg-slate-50 transition-colors"
                                 data-state="@(stateName?.ToLower())"
                                 data-search="@rowSearchText"
                                 data-state-slug="@stateSlug"
                                 data-state-code="@postalCode"
                                 data-rank="@rowRank"
                                 data-state-url="@stateUrl"
-                                data-symbol-url="@symbolUrl">
+                                data-symbol-url="@(row.GetString("symbol_url") is { Length: > 0 } explicitSymbolUrl ? explicitSymbolUrl : symbolUrl)">
 
                                 @foreach (var col in columns)
                                 {
@@ -146,11 +146,11 @@
                                                 <span class="inline-flex items-center gap-2 font-semibold text-slate-900">
                                                     @if (!string.IsNullOrEmpty(flagPath))
                                                     {
-                                                        <img src="@Images.Thumb(flagPath)" alt=""
+                                                        <img src="@Images.Thumb(flagPath)" alt="@(stateName ?? "State") flag"
                                                              class="h-5 w-auto object-contain rounded-sm flex-shrink-0"
                                                              loading="lazy" decoding="async" />
                                                     }
-                                                    @(cellValue?.ToString() ?? stateName ?? "—")
+                                                    <span class="group-hover:underline underline-offset-2">@(cellValue?.ToString() ?? stateName ?? "—")</span>
                                                 </span>
                                                 break;
                                             }
@@ -159,7 +159,12 @@
                                                 var imgSrc = cellValue?.ToString() ?? "";
                                                 if (!string.IsNullOrEmpty(imgSrc))
                                                 {
-                                                    <img src="@Images.Thumb(imgSrc)" alt="" class="h-14 md:h-16 w-auto object-contain" loading="lazy" decoding="async" />
+                                                    var isSymbolImage = string.Equals(col.Key, "symbol_image", StringComparison.OrdinalIgnoreCase);
+                                                    var tableImageSrc = isSymbolImage ? Images.Crop(imgSrc, 192, 128) : Images.Thumb(imgSrc);
+                                                    var imageClass = isSymbolImage
+                                                        ? "h-14 w-20 md:h-16 md:w-24 rounded-md object-cover"
+                                                        : "h-14 md:h-16 w-auto object-contain";
+                                                    <img src="@tableImageSrc" alt="@GetTableImageAlt(imgSrc, stateName, col.Label)" class="@imageClass" loading="lazy" decoding="async" />
                                                 }
                                                 else
                                                 {
@@ -171,7 +176,7 @@
                                                 var linkUrl = cellValue?.ToString() ?? "";
                                                 if (!string.IsNullOrEmpty(linkUrl))
                                                 {
-                                                    <a href="@linkUrl" target="_blank" rel="noopener"
+                                                    <a href="@linkUrl" target="_blank" rel="nofollow noopener noreferrer"
                                                        class="row-link inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 no-underline hover:no-underline">
                                                         <span class="text-xs font-semibold">Open</span>
                                                         <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400"></i>
@@ -223,12 +228,31 @@
             </div>
         }
 
-        <div id="tableEmptyState" class="hidden text-center py-12">
+        <div id="tableEmptyState" class="hidden text-center py-12" aria-live="polite">
             <div class="text-6xl mb-4">🔍</div>
-            <h3 class="text-xl font-black text-slate-900 mb-2">No results found</h3>
-            <p class="text-slate-600">Try adjusting your search.</p>
+            <h3 class="text-xl font-black text-slate-900 mb-2">No matching entries</h3>
+            <p class="text-slate-600">Adjust the filter to show more entries.</p>
         </div>
     </div>
+}
+
+@functions {
+    string GetTableImageAlt(string imagePath, string? stateName, string? columnLabel)
+    {
+        if (!string.IsNullOrWhiteSpace(stateName) && !string.IsNullOrWhiteSpace(columnLabel))
+        {
+            return $"{stateName} {columnLabel}".Trim();
+        }
+
+        var fileName = System.IO.Path.GetFileNameWithoutExtension(imagePath ?? string.Empty)
+            .Replace('-', ' ')
+            .Replace('_', ' ')
+            .Trim();
+
+        return string.IsNullOrWhiteSpace(fileName)
+            ? "Table image"
+            : System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(fileName.ToLowerInvariant());
+    }
 }
 
 @functions {

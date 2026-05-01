@@ -632,7 +632,7 @@
                     {
                         <div class="rounded-2xl border border-gray-200 overflow-hidden">
                             <div class="bg-slate-900 px-5 py-4 text-white flex items-center gap-3">
-                                <img src="@Images.Thumb(state.FlagImageUrl)" class="w-10 h-7 object-cover rounded shrink-0" alt="" onerror="this.style.display='none'" />
+                                <img src="@Images.Thumb(state.FlagImageUrl)" class="w-10 h-7 object-cover rounded shrink-0" alt="@state.Name flag" onerror="this.style.display='none'" />
                                 <div class="text-lg font-bold">@state.Name</div>
                             </div>
                             <div class="divide-y divide-gray-100">
@@ -665,7 +665,7 @@
                         var densityVal = stats?.PopulationDensity(state.Population);
                         <div class="rounded-2xl border border-gray-200 overflow-hidden">
                             <div class="bg-slate-900 px-5 py-4 text-white flex items-center gap-3">
-                                <img src="@Images.Thumb(state.FlagImageUrl)" class="w-10 h-7 object-cover rounded shrink-0" alt="" onerror="this.style.display='none'" />
+                                <img src="@Images.Thumb(state.FlagImageUrl)" class="w-10 h-7 object-cover rounded shrink-0" alt="@state.Name flag" onerror="this.style.display='none'" />
                                 <div class="text-lg font-bold">@state.Name</div>
                             </div>
                             <div class="divide-y divide-gray-100">
@@ -1430,11 +1430,11 @@
         <h2 class="text-lg font-bold text-gray-900 mb-4">Explore Each State</h2>
         <div class="flex gap-4 flex-wrap">
             <a href="/states/@Model.StateA.Slug" class="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-700 transition">
-                <img src="@Images.Thumb(Model.StateA.FlagImageUrl)" class="w-6 h-4 object-cover rounded" onerror="this.style.display='none'" alt="" />
+                <img src="@Images.Thumb(Model.StateA.FlagImageUrl)" class="w-6 h-4 object-cover rounded" onerror="this.style.display='none'" alt="@Model.StateA.Name flag" />
                 @Model.StateA.Name Symbols
             </a>
             <a href="/states/@Model.StateB.Slug" class="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-700 transition">
-                <img src="@Images.Thumb(Model.StateB.FlagImageUrl)" class="w-6 h-4 object-cover rounded" onerror="this.style.display='none'" alt="" />
+                <img src="@Images.Thumb(Model.StateB.FlagImageUrl)" class="w-6 h-4 object-cover rounded" onerror="this.style.display='none'" alt="@Model.StateB.Name flag" />
                 @Model.StateB.Name Symbols
             </a>
             <a href="/compare-states" class="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-700 transition">

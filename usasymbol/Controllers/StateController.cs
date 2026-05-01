@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using usasymbol.Services.Interface;
+using USASymbol.Services;
 using USASymbol.Models.ViewModels;
 
 namespace USASymbol.Controllers
@@ -8,11 +9,16 @@ namespace USASymbol.Controllers
     {
         private readonly IStateService _stateService;
         private readonly ISymbolService _symbolService;
+        private readonly IStateHubContentService _stateHubContentService;
 
-        public StateController(IStateService stateService, ISymbolService symbolService)
+        public StateController(
+            IStateService stateService,
+            ISymbolService symbolService,
+            IStateHubContentService stateHubContentService)
         {
             _stateService = stateService;
             _symbolService = symbolService;
+            _stateHubContentService = stateHubContentService;
         }
 
         [Route("states")]
@@ -43,12 +49,14 @@ namespace USASymbol.Controllers
 
             var symbols = await _symbolService.GetSymbolsByStateAsync(state.Id);
             var relatedStates = await _stateService.GetStatesByRegionAsync(state.Region ?? "");
+            var hubContent = await _stateHubContentService.GetHubAsync(state.Slug);
 
             var model = new StateViewModel
             {
                 State = state,
                 Symbols = symbols,
-                RelatedStates = relatedStates.Where(s => s.Id != state.Id).Take(3).ToList()
+                RelatedStates = relatedStates.Where(s => s.Id != state.Id).Take(3).ToList(),
+                HubContent = hubContent
             };
 
             ViewData["OgImage"] = state.FlagImageUrl;

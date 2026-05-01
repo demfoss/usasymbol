@@ -1,252 +1,371 @@
 @model USASymbol.Models.ViewModels.StateViewModel
 @inject IImageUrlService Images
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using USASymbol.Extensions
 
 @{
     ViewData["Title"] = $"{Model.State.Name} State Symbols | Bird, Flower, Flag & More";
-    ViewData["Description"] = $"Explore the official symbols of {Model.State.Name}, including the state bird, flower, tree, flag, beverage, dinosaur, motto, and other recognized state symbols.";
+    ViewData["Description"] = !string.IsNullOrWhiteSpace(Model.HubContent?.SeoDescription)
+        ? Model.HubContent.SeoDescription
+        : $"{Model.State.Name} state symbols list: official state symbols including the flag, bird, flower, tree, motto, nickname, animals, and other state emblems and symbols.";
+    var stateFaqItems = GetStateFaq(Model).ToList();
+    ViewData["FaqItems"] = stateFaqItems;
+    var faqViewData = new ViewDataDictionary(ViewData) { ["FaqItems"] = stateFaqItems, ["FaqSectionId"] = "state-faq" };
+    var regionKey = (Model.State.Region ?? "default").ToLower().Replace(" ", "-");
+    var oldestSymbol = Model.Symbols.Where(s => s.AdoptedYear.HasValue).OrderBy(s => s.AdoptedYear).FirstOrDefault();
+    var newestSymbols = Model.Symbols.Where(s => s.AdoptedYear.HasValue).OrderByDescending(s => s.AdoptedYear).Take(2).ToList();
+    var recognizedSymbols = GetRecognizedSymbols(Model).ToList();
 }
 
 @section Styles {
 <style>
-    /* === STATE DETAIL ========================================= */
+/* ── Layout ──────────────────────────────────────────── */
+.state-main { background: var(--cream); padding: 2.5rem 0 4rem; }
+.editorial-hero.state-hero { padding-top: 3rem; padding-bottom: 4.25rem; }
+.state-hero .facts-bar { margin-bottom: .5rem; }
 
-    /* Breadcrumbs */
-    .state-breadcrumb {
-        background: var(--cream);
-        border-bottom: 1px solid var(--cream-dark);
-        padding: .75rem 0;
-        font-size: .8rem;
-    }
-    .state-breadcrumb a { color: #2C5F9E; text-decoration: none; }
-    .state-breadcrumb a:hover { text-decoration: underline; }
-    .state-breadcrumb span { color: var(--slate-ed); margin: 0 .4rem; }
-
-    /* Hero */
-    .state-hero { padding: clamp(3rem,7vw,5rem) 0 clamp(2rem,5vw,3.5rem); }
-
-    /* Symbol grid */
-    .symbol-card {
-        display: flex;
-        align-items: center;
-        gap: .75rem;
-        padding: .75rem;
-        background: white;
-        border: 1px solid var(--cream-dark);
-        border-radius: .875rem;
-        text-decoration: none;
-        transition: box-shadow .2s, border-color .2s, transform .2s;
-    }
-    .symbol-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(27,42,74,.08);
-        border-color: var(--gold-border);
-    }
-    .sym-thumb {
-        flex-shrink: 0;
-        width: 4rem;
-        height: 4rem;
-        border-radius: .625rem;
-        overflow: hidden;
-        background: var(--cream);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .sym-thumb img {
-        width: 100%; height: 100%; object-fit: cover;
-        transition: transform .3s ease;
-    }
-    .symbol-card:hover .sym-thumb img { transform: scale(1.07); }
-    .sym-thumb .sym-icon { font-size: 1.5rem; color: var(--navy); opacity: .4; }
-    .sym-info { flex: 1; min-width: 0; }
-    .sym-type {
-        font-size: .6rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .14em;
-        color: var(--gold);
-        margin-bottom: .15rem;
-    }
-    .sym-name {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        font-size: .9rem;
-        font-weight: 700;
-        color: var(--navy);
-        line-height: 1.2;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .sym-sub { font-size: .72rem; color: var(--slate-ed); margin-top: .15rem; font-style: italic; }
-
-    /* Sidebar widgets */
-    .sidebar-widget {
-        background: white;
-        border: 1px solid var(--cream-dark);
-        border-radius: 1rem;
-        padding: 1.25rem;
-    }
-    .widget-title {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--navy);
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: .5rem;
-    }
-    .widget-title i { color: var(--gold); }
-    .fact-row {
+@@media (min-width: 1024px) {
+    .state-layout-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: .1rem;
-        padding: .5rem 0;
-        border-bottom: 1px solid var(--cream-dark);
-        font-size: .82rem;
+        grid-template-columns: minmax(0, 1fr) 288px;
+        gap: 2.5rem;
+        align-items: start;
     }
-    .fact-row:last-child { border-bottom: none; }
-    .fact-label { color: var(--slate-ed); }
-    .fact-value { font-weight: 700; color: var(--navy); text-align: right; }
+}
+.state-sidebar-sticky { position: sticky; top: 5.5rem; }
 
-    /* Related state */
-    .related-state {
-        display: flex;
-        align-items: center;
-        gap: .75rem;
-        padding: .625rem;
-        border-radius: .625rem;
-        text-decoration: none;
-        transition: background .2s;
-    }
-    .related-state:hover { background: var(--cream); }
-    .rs-flag {
-        width: 3rem; height: 2rem;
-        object-fit: cover; border-radius: .25rem;
-        border: 1px solid var(--cream-dark);
-        flex-shrink: 0;
-    }
-    .rs-name { font-size: .85rem; font-weight: 700; color: var(--navy); }
-    .rs-capital { font-size: .72rem; color: var(--slate-ed); }
+/* ── Overview card ──────────────────────────────────── */
+.state-overview {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, rgba(255,255,255,.7) 0%, rgba(255,249,240,.1) 100%);
+    padding: 1.5rem 1.5rem 1.5rem 2.25rem;
+    margin-bottom: 2rem;
+}
+.state-overview::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 1.75rem; bottom: 1.75rem;
+    width: 3px;
+    background: linear-gradient(180deg, #d8b36a 0%, #c46243 100%);
+    border-radius: 9999px;
+}
+.state-overview-icon {
+    flex-shrink: 0;
+    width: 2.75rem; height: 2.75rem;
+    background: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--slate-ed);
+    border: 1px solid var(--cream-dark);
+}
 
-    /* Compare CTA */
-    .compare-cta {
-        background: var(--cream);
-        border-top: 1px solid var(--cream-dark);
-        border-bottom: 1px solid var(--cream-dark);
-        padding: 2.5rem 0;
-    }
-    .compare-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: .5rem;
-        padding: .55rem 1.1rem;
-        background: white;
-        border: 1px solid var(--cream-dark);
-        border-radius: 9999px;
-        font-size: .82rem;
-        font-weight: 600;
-        color: var(--navy);
-        text-decoration: none;
-        transition: border-color .2s, box-shadow .2s;
-    }
-    .compare-pill:hover {
-        border-color: var(--gold-border);
-        box-shadow: 0 4px 14px rgba(27,42,74,.08);
-    }
-    .compare-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: .5rem;
-        padding: .65rem 1.4rem;
-        background: var(--navy);
-        color: var(--cream);
-        border-radius: .625rem;
-        font-weight: 700;
-        font-size: .85rem;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: background .2s;
-        white-space: nowrap;
-    }
-    .compare-btn:hover { background: var(--navy-light); }
+/* ── Typography — used across all content sections ── */
 
-    /* Guide cards */
-    .guide-card {
-        background: white;
-        border: 1px solid var(--cream-dark);
-        border-radius: 1rem;
-        padding: 1.5rem;
-        border-left: 4px solid var(--gold);
-        text-decoration: none;
-        display: block;
-        transition: box-shadow .2s, transform .2s;
-    }
-    .guide-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(27,42,74,.08);
-    }
-    .guide-card-icon {
-        width: 2.75rem; height: 2.75rem;
-        background: var(--cream);
-        border-radius: .625rem;
-        display: flex; align-items: center; justify-content: center;
-        margin-bottom: 1rem;
-    }
-    .guide-card-icon i { color: var(--navy); font-size: 1.1rem; }
-    .guide-card h3 {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--navy);
-        margin-bottom: .5rem;
-    }
-    .guide-card p { font-size: .85rem; color: var(--slate-ed); line-height: 1.6; }
-    .guide-card-cta {
-        margin-top: .875rem;
-        font-size: .82rem;
-        font-weight: 700;
-        color: var(--navy);
-        display: inline-flex;
-        align-items: center;
-        gap: .375rem;
-    }
+/* Section eyebrow label */
+.state-label {
+    font-family: var(--font-ui);
+    font-size: .65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    color: var(--slate-ed);
+    margin-bottom: .5rem;
+}
+
+/* Main content paragraphs — article font, readable ink */
+.state-body {
+    font-family: var(--font-article);
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--ink);
+    margin: 0 0 .875rem;
+}
+.state-body strong { color: var(--navy); font-weight: 700; }
+.state-body a { color: var(--link-color); }
+
+/* Secondary / helper text — UI font, muted */
+.state-meta {
+    font-family: var(--font-ui);
+    font-size: .82rem;
+    line-height: 1.6;
+    color: var(--slate-ed);
+}
+
+/* ── Mini facts ─────────────────────────────────────── */
+.state-mini-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .75rem;
+}
+.state-mini-fact {
+    background: white;
+    border: 1px solid var(--cream-dark);
+    border-radius: .625rem;
+    padding: .75rem .875rem;
+}
+.state-mini-fact span {
+    display: block;
+    font-family: var(--font-ui);
+    color: var(--gold);
+    font-size: .6rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: .25rem;
+}
+.state-mini-fact strong {
+    font-family: var(--font-ui);
+    color: var(--navy);
+    font-size: .9rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+/* ── Section separators ─────────────────────────────── */
+.state-section {
+    margin-top: 2.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--cream-dark);
+}
+
+/* ── Symbol table ───────────────────────────────────── */
+.state-table-wrap { background: white; border: 1px solid var(--cream-dark); border-radius: .5rem; overflow: hidden; }
+.state-symbol-table { width: 100%; border-collapse: collapse; }
+.state-symbol-table th {
+    font-family: var(--font-ui);
+    background: #fbfaf7;
+    color: var(--navy);
+    font-size: .62rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-align: left;
+    text-transform: uppercase;
+    padding: .75rem .9rem;
+    border-bottom: 1px solid var(--cream-dark);
+}
+.state-symbol-table td {
+    font-family: var(--font-ui);
+    color: var(--slate-ed);
+    font-size: .875rem;
+    padding: .75rem .9rem;
+    border-bottom: 1px solid var(--cream-dark);
+    vertical-align: middle;
+}
+.state-symbol-table tbody tr { cursor: pointer; transition: background .18s; }
+.state-symbol-table tbody tr:hover { background: #fbfaf7; }
+.state-symbol-table tbody tr:focus-visible { outline: 2px solid var(--gold-border); outline-offset: -2px; }
+.state-symbol-table tr:last-child td { border-bottom: none; }
+.state-symbol-table strong { color: var(--navy); font-weight: 700; }
+.table-symbol-thumb { width: 2.75rem; height: 2.75rem; border-radius: .375rem; overflow: hidden; background: var(--cream); border: 1px solid var(--cream-dark); display: flex; align-items: center; justify-content: center; }
+.table-symbol-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.table-symbol-thumb i { color: var(--navy); opacity: .4; font-size: .85rem; }
+.table-page-link { display: inline-flex; width: 1.75rem; height: 1.75rem; align-items: center; justify-content: center; border-radius: 999px; background: var(--cream); color: var(--navy) !important; text-decoration: none !important; font-size: .65rem; }
+
+/* ── Meaning groups ─────────────────────────────────── */
+.meaning-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .875rem; margin-top: 1.25rem; }
+.meaning-group {
+    background: white;
+    border: 1px solid var(--cream-dark);
+    border-top: 3px solid var(--gold);
+    border-radius: .5rem;
+    padding: 1.1rem 1.1rem 1rem;
+    box-shadow: 0 2px 8px rgba(27,42,74,.04);
+}
+.meaning-group h3 {
+    font-family: var(--font-article);
+    color: var(--navy);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: .875rem;
+    padding-bottom: .625rem;
+    border-bottom: 1px solid var(--cream-dark);
+}
+.meaning-item { display: grid; gap: .2rem; padding: .5rem 0; border-top: 1px solid var(--cream-dark); }
+.meaning-item:first-of-type { border-top: none; padding-top: 0; }
+.meaning-item dt {
+    font-family: var(--font-ui);
+    color: var(--gold);
+    font-size: .6rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+.meaning-item dd {
+    font-family: var(--font-ui);
+    color: var(--ink);
+    font-size: .875rem;
+    line-height: 1.6;
+    margin: 0;
+}
+.meaning-item dd a { color: var(--link-color); }
+
+/* ── Timeline ───────────────────────────────────────── */
+.timeline-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1rem; }
+.timeline-card { background: white; border: 1px solid var(--cream-dark); border-radius: .625rem; padding: 1rem 1.1rem; }
+.timeline-card span {
+    display: block;
+    font-family: var(--font-ui);
+    color: var(--gold);
+    font-size: .6rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: .35rem;
+}
+.timeline-card strong {
+    font-family: var(--font-article);
+    color: var(--navy);
+    font-size: 1rem;
+    font-weight: 700;
+    display: block;
+    line-height: 1.3;
+}
+.timeline-card p {
+    font-family: var(--font-ui);
+    color: var(--slate-ed);
+    font-size: .82rem;
+    line-height: 1.6;
+    margin: .4rem 0 0;
+}
+
+/* ── Sidebar widgets ────────────────────────────────── */
+.sidebar-widget { background: white; border: 1px solid var(--cream-dark); border-radius: .875rem; padding: 1.25rem; }
+.widget-title {
+    font-family: var(--font-article);
+    font-size: .97rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: .875rem;
+    display: flex; align-items: center; gap: .5rem;
+}
+.widget-title i { color: var(--gold); font-size: .85rem; }
+.fact-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: .5rem;
+    padding: .45rem 0;
+    border-bottom: 1px solid var(--cream-dark);
+    font-family: var(--font-ui);
+    font-size: .82rem;
+}
+.fact-row:last-child { border-bottom: none; }
+.fact-label { color: var(--slate-ed); }
+.fact-value { font-weight: 700; color: var(--navy); text-align: right; }
+
+/* ── Recognized list ────────────────────────────────── */
+.recognized-list { display: flex; flex-direction: column; border-top: 1px solid var(--cream-dark); }
+.recognized-list__item { display: flex; align-items: center; gap: .65rem; border-bottom: 1px solid var(--cream-dark); padding: .65rem 0; text-decoration: none; }
+.recognized-list__item:last-child { border-bottom: none; }
+.recognized-list__icon { width: 1.875rem; height: 1.875rem; border-radius: .35rem; background: #fbfaf7; display: flex; align-items: center; justify-content: center; color: var(--gold); flex-shrink: 0; font-size: .75rem; }
+.recognized-list__type {
+    font-family: var(--font-ui);
+    color: var(--gold);
+    display: block;
+    font-size: .55rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+.recognized-list__name {
+    font-family: var(--font-ui);
+    color: var(--navy);
+    display: block;
+    font-size: .85rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-top: .1rem;
+}
+
+/* ── Related state ──────────────────────────────────── */
+.related-state { display: flex; align-items: center; gap: .65rem; padding: .45rem .35rem; border-radius: .5rem; text-decoration: none; transition: background .2s; }
+.related-state:hover { background: var(--cream); }
+.rs-flag { width: 2.75rem; height: 1.8rem; object-fit: cover; border-radius: .25rem; border: 1px solid var(--cream-dark); flex-shrink: 0; }
+.rs-name { font-family: var(--font-ui); font-size: .85rem; font-weight: 700; color: var(--navy); }
+.rs-capital { font-family: var(--font-ui); font-size: .72rem; color: var(--slate-ed); }
+
+
+/* ── Guide cards ────────────────────────────────────── */
+.guide-carousel {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: .65rem;
+}
+.guide-card {
+    background: white;
+    border: 1px solid var(--cream-dark);
+    border-radius: .5rem;
+    overflow: hidden;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow .2s, transform .2s, border-color .2s;
+}
+.guide-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(27,42,74,.07); border-color: var(--gold-border); }
+.guide-card-banner { height: 4.75rem; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.guide-card-banner i { color: rgba(255,255,255,.75); font-size: 1.6rem; }
+.guide-card-body { padding: .75rem; display: flex; flex-direction: column; flex: 1; }
+.guide-card-eyebrow { font-family: var(--font-ui); font-size: .52rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--gold); margin-bottom: .25rem; }
+.guide-card h3 { font-family: var(--font-article); font-size: .9rem; font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: .35rem; }
+.guide-card p { font-family: var(--font-ui); font-size: .72rem; color: var(--slate-ed); line-height: 1.45; flex: 1; }
+.guide-card-cta { font-family: var(--font-ui); margin-top: .55rem; font-size: .7rem; font-weight: 700; color: var(--navy); display: inline-flex; align-items: center; gap: .3rem; }
+@@media (max-width: 900px) {
+    .guide-carousel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@@media (max-width: 560px) {
+    .guide-carousel { grid-template-columns: 1fr; }
+}
+
+/* ── Compare ────────────────────────────────────────── */
+.compare-pill { font-family: var(--font-ui); display: inline-flex; align-items: center; gap: .5rem; padding: .5rem 1rem; background: white; border: 1px solid var(--cream-dark); border-radius: 9999px; font-size: .82rem; font-weight: 600; color: var(--navy); text-decoration: none; transition: border-color .2s, box-shadow .2s; }
+.compare-pill:hover { border-color: var(--gold-border); box-shadow: 0 4px 14px rgba(27,42,74,.08); }
+.compare-btn { font-family: var(--font-ui); display: inline-flex; align-items: center; gap: .5rem; padding: .6rem 1.3rem; background: var(--navy); color: var(--cream); border-radius: .5rem; font-weight: 700; font-size: .84rem; text-decoration: none; border: none; cursor: pointer; transition: background .2s; white-space: nowrap; }
+.compare-btn:hover { background: var(--navy-light); }
+
+/* ── Mobile overrides ───────────────────────────────── */
+@@media (max-width: 640px) {
+    .state-mini-facts, .meaning-groups, .timeline-grid { grid-template-columns: 1fr; }
+    .state-table-wrap { border: none; background: transparent; overflow: visible; }
+    .state-symbol-table, .state-symbol-table thead, .state-symbol-table tbody, .state-symbol-table tr, .state-symbol-table td { display: block; width: 100%; }
+    .state-symbol-table thead { display: none; }
+    .state-symbol-table tr { position: relative; background: white; border: 1px solid var(--cream-dark); border-radius: .5rem; margin-bottom: .65rem; padding: .75rem 2.75rem .75rem 4.25rem; min-height: 4rem; }
+    .state-symbol-table td { border: 0; padding: 0; }
+    .state-symbol-table td:first-child { position: absolute; left: .65rem; top: .65rem; width: 2.75rem; }
+    .state-symbol-table td:nth-child(2) { color: var(--gold); font-size: .58rem; font-weight: 800; letter-spacing: .1em; line-height: 1.25; text-transform: uppercase; margin-bottom: .15rem; }
+    .state-symbol-table td:nth-child(3) { color: var(--navy); font-size: .9rem; line-height: 1.3; }
+    .state-symbol-table td:nth-child(4) { color: var(--slate-ed); font-size: .76rem; margin-top: .2rem; }
+    .state-symbol-table td:nth-child(4)::before { content: "Adopted: "; font-weight: 700; color: var(--navy); }
+    .state-symbol-table td:nth-child(5) { position: absolute; right: .65rem; top: 50%; transform: translateY(-50%); }
+}
 </style>
 }
 
-<!-- Breadcrumbs -->
-<nav class="state-breadcrumb">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ol class="flex items-center flex-wrap gap-1">
-            <li><a href="/">Home</a></li>
-            <li><span>/</span><a href="/states">States</a></li>
-            <li><span>/</span><strong style="color:var(--navy)">@Model.State.Name</strong></li>
+<!-- Breadcrumb -->
+<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <ol class="flex items-center flex-wrap gap-1 text-sm" style="color:var(--slate-ed)">
+            <li><a href="/" style="color:var(--slate-ed);text-decoration:none" class="hover:text-slate-800">Home</a></li>
+            <li style="display:flex;align-items:center;gap:.35rem"><i class="fa-solid fa-chevron-right" style="font-size:.6rem;opacity:.5"></i><a href="/states" style="color:var(--slate-ed);text-decoration:none" class="hover:text-slate-800">States</a></li>
+            <li style="display:flex;align-items:center;gap:.35rem"><i class="fa-solid fa-chevron-right" style="font-size:.6rem;opacity:.5"></i><span style="font-weight:700;color:var(--navy)">@Model.State.Name</span></li>
         </ol>
     </div>
 </nav>
 
-<!-- ════════════════════════════════════════════════════════
-     HERO
-     ════════════════════════════════════════════════════════ -->
+<div id="top"></div>
+
+<!-- Hero -->
 <section class="editorial-hero state-hero">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="position:relative;z-index:1">
-        <div class="grid md:grid-cols-3 gap-10 items-center">
+        <div class="grid md:grid-cols-3 gap-8 items-center">
 
-            <!-- Left: text + facts bar -->
             <div class="md:col-span-2 order-2 md:order-1">
-                <div class="hero-pill inline-flex mb-4">
-                    <i class="fa-solid fa-star"></i>
-                    State Symbols Guide
-                </div>
                 <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.25rem);margin:.5rem 0 .75rem">
-                    @Model.State.Name
+                    @Model.State.Name State Symbols
                 </h1>
-                <p class="hero-subtitle mb-6">
-                    @(Model.State.Region ?? "U.S.") State &mdash; Official symbols, history, and cultural heritage.
-                </p>
+                <p class="hero-subtitle mb-6">@GetHeroSubtitle(Model)</p>
 
-                <div class="facts-bar" style="max-width:520px">
+                <div class="facts-bar" style="max-width:500px">
                     <div class="facts-bar__cell">
                         <div class="facts-bar__value">@Model.State.Abbreviation</div>
                         <div class="facts-bar__label">Abbreviation</div>
@@ -269,7 +388,6 @@
                 </div>
             </div>
 
-            <!-- Right: flag -->
             <div class="md:col-span-1 order-1 md:order-2 flex justify-center">
                 @if (!string.IsNullOrEmpty(Model.State.FlagImageUrl))
                 {
@@ -286,259 +404,615 @@
     </div>
 </section>
 
-<!-- ════════════════════════════════════════════════════════
-     MAIN CONTENT
-     ════════════════════════════════════════════════════════ -->
-<section style="padding:3.5rem 0 4rem;background:var(--cream)">
+<!-- Main -->
+<div class="state-main">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-3 gap-10 items-start">
+        <div class="state-layout-grid">
 
-            <!-- Symbols grid -->
-            <div class="lg:col-span-2">
-                <h2 class="content-h2 mb-6">Official State Symbols</h2>
+            <!-- ── Content ─────────────────────────────── -->
+            <div style="min-width:0">
 
+                <!-- Overview -->
+                <div class="state-overview">
+                    <div style="display:flex;align-items:flex-start;gap:1rem">
+                        <div class="state-overview-icon">
+                            <i class="fa-solid fa-map" style="font-size:.875rem"></i>
+                        </div>
+                        <div style="flex:1;min-width:0">
+                            <div class="state-label">Overview</div>
+                            <p class="state-body">@GetSnippetAnswer(Model)</p>
+                            <div class="state-mini-facts">
+                                @foreach (var fact in GetMiniFacts(Model))
+                                {
+                                    <div class="state-mini-fact">
+                                        <span>@fact.Label</span>
+                                        @if (!string.IsNullOrWhiteSpace(fact.Url))
+                                        {
+                                            <a href="@fact.Url" style="text-decoration:none"><strong>@fact.Value</strong></a>
+                                        }
+                                        else
+                                        {
+                                            <strong>@fact.Value</strong>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile: Quick Facts -->
+                <div class="state-section" style="display:block" id="mobile-qf">
+                    <style>@@media (min-width:1024px){#mobile-qf{display:none!important}}</style>
+                    <div class="sidebar-widget">
+                        <div class="widget-title"><i class="fa-solid fa-chart-bar"></i>Quick Facts</div>
+                        <dl>
+                            <div class="fact-row"><dt class="fact-label">Official Name</dt><dd class="fact-value">@Model.State.Name</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value">@Model.State.Abbreviation</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Capital City</dt><dd class="fact-value">@Model.State.Capital</dd></div>
+                            @if (Model.State.Population.HasValue) { <div class="fact-row"><dt class="fact-label">Population</dt><dd class="fact-value">@Model.State.Population.Value.ToString("N0")</dd></div> }
+                            @if (Model.State.StateHoodDate.HasValue) { <div class="fact-row"><dt class="fact-label">Statehood</dt><dd class="fact-value">@Model.State.StateHoodDate.Value.ToString("MMMM d, yyyy")</dd></div> }
+                            <div class="fact-row"><dt class="fact-label">Region</dt><dd class="fact-value">@(Model.State.Region ?? "N/A")</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Symbols</dt><dd class="fact-value">@Model.Symbols.Count</dd></div>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Symbol table -->
                 @if (Model.Symbols.Any())
                 {
-                    var regionKey = (Model.State.Region ?? "default").ToLower().Replace(" ", "-");
-                    <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                        @foreach (var symbol in Model.Symbols)
+                    <div class="state-section">
+                        <h2 class="content-h2 mb-5">@Model.State.Name State Symbols — Complete List</h2>
+                        <div class="state-table-wrap">
+                            <table class="state-symbol-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Category</th>
+                                        <th>Official Symbol</th>
+                                        <th>Adopted</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var symbol in Model.Symbols.OrderBy(s => GetSymbolSortRank(s)).ThenBy(s => GetSymbolTypeName(s)).ThenBy(s => s.Name))
+                                    {
+                                        var symbolUrl = symbol.ToSymbolUrl(Model.State.Slug);
+                                        <tr tabindex="0"
+                                            onclick="window.location.href='@symbolUrl'"
+                                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='@symbolUrl';}">
+                                            <td>
+                                                <div class="table-symbol-thumb">
+                                                    @if (!string.IsNullOrEmpty(symbol.ImageUrl))
+                                                    {
+                                                        <img src="@Images.Thumb(symbol.ImageUrl)" alt="@symbol.Name"
+                                                             onerror="this.onerror=null;this.src='/images/regions/@(regionKey).webp'" loading="lazy">
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="fa-solid @GetSymbolFaIcon(symbol.Type)"></i>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td><strong>@GetSymbolTypeName(symbol)</strong></td>
+                                            <td>
+                                                <strong>@symbol.Name</strong>
+                                                @if (!string.IsNullOrWhiteSpace(symbol.ScientificName))
+                                                {
+                                                    <span style="display:block;font-style:italic;font-size:.77rem;margin-top:.1rem;color:var(--slate-ed)">@symbol.ScientificName</span>
+                                                }
+                                            </td>
+                                            <td>@(symbol.AdoptedYear.HasValue ? symbol.AdoptedYear.Value.ToString() : "—")</td>
+                                            <td>
+                                                <a href="@symbolUrl" class="table-page-link" aria-label="Open @symbol.Name page" onclick="event.stopPropagation()">
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Name meaning -->
+                    @if (Model.HubContent?.NameMeaning?.Paragraphs.Any() == true)
+                    {
+                        <div class="state-section">
+                            <h2 class="content-h2 mb-4" style="font-size:1.45rem">
+                                @(string.IsNullOrWhiteSpace(Model.HubContent.NameMeaning.Heading) ? $"What Does {Model.State.Name} Mean?" : Model.HubContent.NameMeaning.Heading)
+                            </h2>
+                            @foreach (var paragraph in Model.HubContent.NameMeaning.Paragraphs)
+                            {
+                                <p class="state-body">@Html.Raw(paragraph.RenderAutoLinks())</p>
+                            }
+                            @if (Model.HubContent.NameMeaning.InfoGroups.Any())
+                            {
+                                <div class="meaning-groups">
+                                    @foreach (var group in Model.HubContent.NameMeaning.InfoGroups)
+                                    {
+                                        <div class="meaning-group">
+                                            <h3>@group.Heading</h3>
+                                            <dl>
+                                                @foreach (var item in group.Items)
+                                                {
+                                                    <div class="meaning-item">
+                                                        <dt>@item.Label</dt>
+                                                        <dd>@Html.Raw(item.Text.RenderAutoLinks())</dd>
+                                                    </div>
+                                                }
+                                            </dl>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <!-- Oldest / Newest -->
+                    <div class="state-section">
+                        <h2 class="content-h2 mb-4" style="font-size:1.45rem">Newest and Oldest Symbols</h2>
+                        <div class="timeline-grid">
+                            <div class="timeline-card">
+                                <span>Oldest listed</span>
+                                <strong>@(oldestSymbol != null ? $"{oldestSymbol.Name}, {oldestSymbol.AdoptedYear}" : "No adoption year listed")</strong>
+                                <p>Older symbols tend to anchor the state's public identity: flag, bird, flower, motto, or nickname.</p>
+                            </div>
+                            <div class="timeline-card">
+                                <span>Newest listed</span>
+                                <strong>@(newestSymbols.Any() ? string.Join(", ", newestSymbols.Select(s => $"{s.Name} ({s.AdoptedYear})")) : "No recent year listed")</strong>
+                                <p>Recent designations often show how states keep adding wildlife, foods, breeds, and cultural traditions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Editorial -->
+                    <div class="state-section">
+                        <h2 class="content-h2 mb-4" style="font-size:1.45rem">@GetEditorialHeading(Model)</h2>
+                        @foreach (var paragraph in GetEditorialParagraphs(Model))
                         {
-                            var symbolUrl = symbol.ToSymbolUrl(Model.State.Slug);
-                            <a href="@symbolUrl" class="symbol-card">
-                                <div class="sym-thumb">
-                                    @if (!string.IsNullOrEmpty(symbol.ImageUrl))
-                                    {
-                                        <img src="@Images.Card(symbol.ImageUrl)"
-                                             alt="@symbol.Name"
-                                             onerror="this.onerror=null;this.src='/images/regions/@(regionKey).webp'"
-                                             loading="lazy">
-                                    }
-                                    else
-                                    {
-                                        <i class="fa-solid @GetSymbolFaIcon(symbol.Type) sym-icon"></i>
-                                    }
-                                </div>
-                                <div class="sym-info">
-                                    <div class="sym-type">@GetSymbolTypeName(symbol)</div>
-                                    <div class="sym-name">@symbol.Name</div>
-                                    @if (!string.IsNullOrEmpty(symbol.ScientificName))
-                                    {
-                                        <div class="sym-sub">@symbol.ScientificName</div>
-                                    }
-                                    else if (symbol.AdoptedYear.HasValue)
-                                    {
-                                        <div class="sym-sub">Since @symbol.AdoptedYear</div>
-                                    }
-                                </div>
-                                <i class="fa-solid fa-chevron-right" style="color:var(--cream-dark);font-size:.7rem;flex-shrink:0"></i>
-                            </a>
+                            <p class="state-body">@Html.Raw(paragraph.RenderAutoLinks())</p>
                         }
                     </div>
+
+                    <!-- FAQ -->
+                    <div class="state-section">
+                        @await Html.PartialAsync("_Faq", Model, faqViewData)
+                    </div>
+
+                    <!-- Sources -->
+                    @if (Model.HubContent?.Sources.Any() == true)
+                    {
+                        <div class="state-section" id="sources">
+                            <div style="border-bottom:1px solid rgb(226 232 240 / .8);padding-bottom:1rem;margin-bottom:1.25rem">
+                                <h2 style="font-size:1.8rem;font-weight:600;line-height:1;color:#0f172a">Sources</h2>
+                            </div>
+                            <ul style="display:flex;flex-direction:column;gap:.625rem;list-style:none;padding:0;margin:0">
+                                @foreach (var source in Model.HubContent.Sources)
+                                {
+                                    <li>
+                                        <a href="@source.Url" target="_blank" rel="nofollow noopener noreferrer"
+                                           style="display:inline-flex;align-items:center;gap:.5rem;font-size:1rem;line-height:1.75;color:#475569;text-decoration:underline;text-decoration-color:#cbd5e1;text-underline-offset:4px;transition:color .2s,text-decoration-color .2s"
+                                           onmouseover="this.style.color='#0f172a';this.style.textDecorationColor='#64748b'"
+                                           onmouseout="this.style.color='#475569';this.style.textDecorationColor='#cbd5e1'">
+                                            <span>@source.Name</span>
+                                            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.69rem;opacity:.7"></i>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                            <div style="margin-top:1.5rem;border-top:1px solid rgb(226 232 240 / .7);padding-top:1rem;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:space-between;font-size:.75rem;color:#94a3b8">
+                                <span>Information is cross-referenced with official state archives.</span>
+                                <span>Found an error? <a href="/contact" style="color:var(--gold);font-weight:600;text-decoration:none">Report it here</a>.</span>
+                            </div>
+                        </div>
+                    }
                 }
                 else
                 {
-                    <div style="background:white;border:1.5px dashed var(--cream-dark);border-radius:1rem;padding:3rem;text-align:center">
-                        <i class="fa-solid fa-leaf text-4xl mb-3" style="color:var(--cream-dark);display:block"></i>
+                    <div class="state-section" style="text-align:center;padding:3rem 1rem">
+                        <i class="fa-solid fa-leaf" style="font-size:2.5rem;color:var(--cream-dark);display:block;margin-bottom:.75rem"></i>
                         <p style="color:var(--slate-ed)">No symbols available yet. New content coming soon.</p>
                     </div>
                 }
+
+                <!-- Guides & Collections -->
+                <div class="state-section">
+                    <h2 class="content-h2 mb-5" style="font-size:1.45rem">Guides &amp; Collections</h2>
+                    <div class="guide-carousel" aria-label="Guides and collections">
+                        <a asp-controller="StateGuides" asp-action="BordersListing" class="guide-card">
+                            <div class="guide-card-banner" style="background:linear-gradient(135deg,#1B3A6B,#2C5F9E)">
+                                <i class="fa-solid fa-map"></i>
+                            </div>
+                            <div class="guide-card-body">
+                                <div class="guide-card-eyebrow">Geography</div>
+                                <h3>State Borders</h3>
+                                <p>What borders each state? Neighbors, coastlines, rivers, and waterways for all 50 states.</p>
+                                <span class="guide-card-cta">Explore Borders <i class="fa-solid fa-arrow-right" style="font-size:.7rem"></i></span>
+                            </div>
+                        </a>
+                        <a asp-controller="Rankings" asp-action="Index" class="guide-card">
+                            <div class="guide-card-banner" style="background:linear-gradient(135deg,#2d3a8c,#5b4fcf)">
+                                <i class="fa-solid fa-ranking-star"></i>
+                            </div>
+                            <div class="guide-card-body">
+                                <div class="guide-card-eyebrow">Data</div>
+                                <h3>State Rankings</h3>
+                                <p>Compare all 50 states by population, land area, statehood date, and more.</p>
+                                <span class="guide-card-cta">View Rankings <i class="fa-solid fa-arrow-right" style="font-size:.7rem"></i></span>
+                            </div>
+                        </a>
+                        <a href="/collections" class="guide-card">
+                            <div class="guide-card-banner" style="background:linear-gradient(135deg,#145940,#1E8A5E)">
+                                <i class="fa-solid fa-list"></i>
+                            </div>
+                            <div class="guide-card-body">
+                                <div class="guide-card-eyebrow">Curated</div>
+                                <h3>Collections</h3>
+                                <p>Themed lists - states sharing the same bird, oldest symbols, flags with bears, and more.</p>
+                                <span class="guide-card-cta">Browse Collections <i class="fa-solid fa-arrow-right" style="font-size:.7rem"></i></span>
+                            </div>
+                        </a>
+                        <a href="/compare-states" class="guide-card">
+                            <div class="guide-card-banner" style="background:linear-gradient(135deg,#1A4A6E,#1E7EA8)">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                            </div>
+                            <div class="guide-card-body">
+                                <div class="guide-card-eyebrow">Compare</div>
+                                <h3>Compare States</h3>
+                                <p>Side-by-side comparison of population, area, income, taxes, climate, and more.</p>
+                                <span class="guide-card-cta">Compare Now <i class="fa-solid fa-arrow-right" style="font-size:.7rem"></i></span>
+                            </div>
+                        </a>
+                        <a href="/guides/surnames" class="guide-card">
+                            <div class="guide-card-banner" style="background:linear-gradient(135deg,#1c1c2e,#2d2d44)">
+                                <i class="fa-solid fa-users"></i>
+                                <div style="position:absolute;bottom:10px;left:12px;display:flex;gap:5px">
+                                    <span style="width:8px;height:8px;border-radius:50%;background:#3b82f6;opacity:.85"></span>
+                                    <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;opacity:.85"></span>
+                                    <span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;opacity:.85"></span>
+                                    <span style="width:8px;height:8px;border-radius:50%;background:#ef4444;opacity:.85"></span>
+                                    <span style="width:8px;height:8px;border-radius:50%;background:#a855f7;opacity:.85"></span>
+                                </div>
+                            </div>
+                            <div class="guide-card-body">
+                                <div class="guide-card-eyebrow">Genealogy</div>
+                                <h3>Last Names by State</h3>
+                                <p>Top 20 most common surnames per state - with origins, meanings, and heritage context. Is yours on the list?</p>
+                                <span class="guide-card-cta">Explore Last Names <i class="fa-solid fa-arrow-right" style="font-size:.7rem"></i></span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mobile: recognized + related -->
+                <div id="mobile-sidebar-widgets" style="margin-top:2rem;display:grid;grid-template-columns:1fr;gap:1.25rem">
+                    <style>@@media (min-width:1024px){#mobile-sidebar-widgets{display:none!important}}</style>
+                    @if (recognizedSymbols.Any())
+                    {
+                        <div class="sidebar-widget">
+                            <div class="widget-title"><i class="fa-solid fa-star"></i>Most Recognized</div>
+                            <div class="recognized-list">
+                                @foreach (var symbol in recognizedSymbols.Take(6))
+                                {
+                                    <a href="@symbol.ToSymbolUrl(Model.State.Slug)" class="recognized-list__item">
+                                        <span class="recognized-list__icon"><i class="fa-solid @GetSymbolFaIcon(symbol.Type)"></i></span>
+                                        <span>
+                                            <span class="recognized-list__type">@GetSymbolTypeName(symbol)</span>
+                                            <span class="recognized-list__name">@symbol.Name</span>
+                                        </span>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
+                    @if (Model.RelatedStates.Any())
+                    {
+                        <div class="sidebar-widget">
+                            <div class="widget-title"><i class="fa-solid fa-map"></i>@(Model.State.Region ?? "Related") States</div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.25rem">
+                                @foreach (var rs in Model.RelatedStates.Take(6))
+                                {
+                                    <a href="/states/@rs.Slug" class="related-state">
+                                        @if (!string.IsNullOrEmpty(rs.FlagImageUrl)) { <img src="@Images.Thumb(rs.FlagImageUrl)" alt="@rs.Name flag" class="rs-flag"> }
+                                        <div><div class="rs-name">@rs.Name</div><div class="rs-capital">@rs.Capital</div></div>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
             </div>
 
-            <!-- Sidebar -->
-            <div class="lg:col-span-1">
-                <div style="display:flex;flex-direction:column;gap:1.25rem" class="lg:sticky lg:top-24">
+            <!-- ── Sidebar (desktop only) ──────────────── -->
+            <aside style="display:none" id="desktop-sidebar">
+                <style>@@media (min-width:1024px){#desktop-sidebar{display:block!important}}</style>
+                <div class="state-sidebar-sticky" style="display:flex;flex-direction:column;gap:1.25rem">
 
-                    <!-- Quick Facts -->
+                    <!-- Quick Facts (untouched) -->
                     <div class="sidebar-widget">
-                        <div class="widget-title">
-                            <i class="fa-solid fa-chart-bar"></i>
-                            Quick Facts
-                        </div>
+                        <div class="widget-title"><i class="fa-solid fa-chart-bar"></i>Quick Facts</div>
                         <dl>
-                            <div class="fact-row">
-                                <dt class="fact-label">Official Name</dt>
-                                <dd class="fact-value">@Model.State.Name</dd>
-                            </div>
-                            <div class="fact-row">
-                                <dt class="fact-label">Abbreviation</dt>
-                                <dd class="fact-value">@Model.State.Abbreviation</dd>
-                            </div>
-                            <div class="fact-row">
-                                <dt class="fact-label">Capital City</dt>
-                                <dd class="fact-value">@Model.State.Capital</dd>
-                            </div>
-                            @if (Model.State.Population.HasValue)
-                            {
-                                <div class="fact-row">
-                                    <dt class="fact-label">Population</dt>
-                                    <dd class="fact-value">@Model.State.Population.Value.ToString("N0")</dd>
-                                </div>
-                            }
-                            @if (Model.State.StateHoodDate.HasValue)
-                            {
-                                <div class="fact-row">
-                                    <dt class="fact-label">Statehood</dt>
-                                    <dd class="fact-value">@Model.State.StateHoodDate.Value.ToString("MMMM d, yyyy")</dd>
-                                </div>
-                            }
-                            <div class="fact-row">
-                                <dt class="fact-label">Region</dt>
-                                <dd class="fact-value">@(Model.State.Region ?? "N/A")</dd>
-                            </div>
-                            <div class="fact-row">
-                                <dt class="fact-label">Symbols</dt>
-                                <dd class="fact-value">@Model.Symbols.Count</dd>
-                            </div>
+                            <div class="fact-row"><dt class="fact-label">Official Name</dt><dd class="fact-value">@Model.State.Name</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value">@Model.State.Abbreviation</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Capital City</dt><dd class="fact-value">@Model.State.Capital</dd></div>
+                            @if (Model.State.Population.HasValue) { <div class="fact-row"><dt class="fact-label">Population</dt><dd class="fact-value">@Model.State.Population.Value.ToString("N0")</dd></div> }
+                            @if (Model.State.StateHoodDate.HasValue) { <div class="fact-row"><dt class="fact-label">Statehood</dt><dd class="fact-value">@Model.State.StateHoodDate.Value.ToString("MMMM d, yyyy")</dd></div> }
+                            <div class="fact-row"><dt class="fact-label">Region</dt><dd class="fact-value">@(Model.State.Region ?? "N/A")</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Symbols</dt><dd class="fact-value">@Model.Symbols.Count</dd></div>
                         </dl>
                     </div>
+
+                    <!-- Most Recognized -->
+                    @if (recognizedSymbols.Any())
+                    {
+                        <div class="sidebar-widget">
+                            <div class="widget-title"><i class="fa-solid fa-star"></i>Most Recognized</div>
+                            <div class="recognized-list">
+                                @foreach (var symbol in recognizedSymbols.Take(7))
+                                {
+                                    <a href="@symbol.ToSymbolUrl(Model.State.Slug)" class="recognized-list__item">
+                                        <span class="recognized-list__icon"><i class="fa-solid @GetSymbolFaIcon(symbol.Type)"></i></span>
+                                        <span>
+                                            <span class="recognized-list__type">@GetSymbolTypeName(symbol)</span>
+                                            <span class="recognized-list__name">@symbol.Name</span>
+                                        </span>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
 
                     <!-- Related States -->
                     @if (Model.RelatedStates.Any())
                     {
                         <div class="sidebar-widget">
-                            <div class="widget-title">
-                                <i class="fa-solid fa-map"></i>
-                                Other @(Model.State.Region ?? "Related") States
-                            </div>
-                            <div style="display:flex;flex-direction:column;gap:.25rem">
+                            <div class="widget-title"><i class="fa-solid fa-map"></i>Other @(Model.State.Region ?? "Related") States</div>
+                            <div style="display:flex;flex-direction:column">
                                 @foreach (var rs in Model.RelatedStates)
                                 {
                                     <a href="/states/@rs.Slug" class="related-state">
-                                        @if (!string.IsNullOrEmpty(rs.FlagImageUrl))
-                                        {
-                                            <img src="@Images.Thumb(rs.FlagImageUrl)" alt="@rs.Name flag" class="rs-flag">
-                                        }
-                                        <div>
-                                            <div class="rs-name">@rs.Name</div>
-                                            <div class="rs-capital">@rs.Capital</div>
-                                        </div>
+                                        @if (!string.IsNullOrEmpty(rs.FlagImageUrl)) { <img src="@Images.Thumb(rs.FlagImageUrl)" alt="@rs.Name flag" class="rs-flag"> }
+                                        <div><div class="rs-name">@rs.Name</div><div class="rs-capital">@rs.Capital</div></div>
                                     </a>
                                 }
                             </div>
-                            <a href="/states"
-                               style="display:block;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--cream-dark);font-size:.8rem;font-weight:700;color:#2C5F9E;text-align:center;text-decoration:none">
-                                View All States <i class="fa-solid fa-arrow-right text-xs"></i>
+                            <a href="/states" style="display:block;margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--cream-dark);font-size:.79rem;font-weight:700;color:#2C5F9E;text-align:center;text-decoration:none">
+                                View All States <i class="fa-solid fa-arrow-right" style="font-size:.6rem"></i>
                             </a>
                         </div>
                     }
 
                 </div>
-            </div>
+            </aside>
+
         </div>
     </div>
-</section>
+</div>
 
-<!-- ════════════════════════════════════════════════════════
-     COMPARE CTA
-     ════════════════════════════════════════════════════════ -->
-<section class="compare-cta">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-start gap-4 mb-5">
-            <div style="flex-shrink:0;width:2.75rem;height:2.75rem;background:var(--navy);border-radius:.625rem;display:flex;align-items:center;justify-content:center">
-                <i class="fa-solid fa-scale-balanced" style="color:var(--cream);font-size:1rem"></i>
+<!-- Compare CTA -->
+@if (Model.RelatedStates.Any())
+{
+    <section style="background:white;border-top:1px solid var(--cream-dark);padding:2.5rem 0">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div style="display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.25rem">
+                <div style="flex-shrink:0;width:2.5rem;height:2.5rem;background:var(--navy);border-radius:.5rem;display:flex;align-items:center;justify-content:center">
+                    <i class="fa-solid fa-scale-balanced" style="color:var(--cream);font-size:.9rem"></i>
+                </div>
+                <div>
+                    <h2 style="font-family:'Libre Baskerville',Georgia,serif;font-size:1.15rem;font-weight:700;color:var(--navy);margin-bottom:.2rem">Compare @Model.State.Name with Another State</h2>
+                    <p style="font-size:.84rem;color:var(--slate-ed)">See how @Model.State.Name ranks by population, area, cost of living, taxes, and more.</p>
+                </div>
             </div>
-            <div>
-                <h2 style="font-family:'Libre Baskerville',Georgia,serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:.25rem">
-                    Compare @Model.State.Name with Another State
-                </h2>
-                <p style="font-size:.85rem;color:var(--slate-ed)">
-                    See how @Model.State.Name ranks by population, land area, cost of living, taxes, income, and more.
-                </p>
-            </div>
-        </div>
 
-        @if (Model.RelatedStates.Any())
-        {
-            <div class="flex flex-wrap gap-2 mb-5">
+            <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem">
                 @foreach (var rs in Model.RelatedStates)
                 {
                     var pairSlug = string.Compare(Model.State.Slug, rs.Slug, StringComparison.Ordinal) < 0
-                        ? $"{Model.State.Slug}-vs-{rs.Slug}"
-                        : $"{rs.Slug}-vs-{Model.State.Slug}";
+                        ? $"{Model.State.Slug}-vs-{rs.Slug}" : $"{rs.Slug}-vs-{Model.State.Slug}";
                     <a href="/compare/@pairSlug" class="compare-pill">
                         @if (!string.IsNullOrWhiteSpace(rs.FlagImageUrl))
                         {
-                            <img src="@Images.Thumb(rs.FlagImageUrl)" alt="@rs.Name flag"
-                                 style="width:1.75rem;height:1.15rem;object-fit:cover;border-radius:2px;flex-shrink:0"
-                                 onerror="this.style.display='none'" />
+                            <img src="@Images.Thumb(rs.FlagImageUrl)" alt="@rs.Name" style="width:1.6rem;height:1.05rem;object-fit:cover;border-radius:2px;flex-shrink:0" onerror="this.style.display='none'" />
                         }
                         <span>vs @rs.Name</span>
-                        <i class="fa-solid fa-arrow-right" style="font-size:.6rem;opacity:.5"></i>
+                        <i class="fa-solid fa-arrow-right" style="font-size:.58rem;opacity:.5"></i>
                     </a>
                 }
             </div>
-        }
 
-        <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-            <span style="font-size:.82rem;color:var(--slate-ed);font-weight:600;white-space:nowrap">Or compare with any state:</span>
-            <div class="flex gap-3 flex-1">
-                <select id="compare-state-select"
-                        style="display:block;flex:1;max-width:13rem;border:1px solid var(--cream-dark);background:white;border-radius:.625rem;padding:.6rem 1rem;font-size:.85rem;color:var(--navy)">
-                    <option value="">Choose a state&hellip;</option>
-                    @foreach (var rs in Model.RelatedStates)
-                    {
-                        <option value="@rs.Slug">@rs.Name</option>
-                    }
-                </select>
-                <a id="compare-go-btn" href="/compare-states" class="compare-btn">
-                    <i class="fa-solid fa-scale-balanced"></i> Compare
-                </a>
+            <div style="display:flex;flex-wrap:wrap;gap:.75rem;align-items:center">
+                <span style="font-size:.82rem;color:var(--slate-ed);font-weight:600;white-space:nowrap">Or compare with any state:</span>
+                <div style="display:flex;gap:.75rem;flex:1;min-width:0">
+                    <select id="compare-state-select" style="flex:1;max-width:12rem;border:1px solid var(--cream-dark);background:white;border-radius:.5rem;padding:.55rem .875rem;font-size:.84rem;color:var(--navy)">
+                        <option value="">Choose a state&hellip;</option>
+                        @foreach (var rs in Model.RelatedStates)
+                        {
+                            <option value="@rs.Slug">@rs.Name</option>
+                        }
+                    </select>
+                    <a id="compare-go-btn" href="/compare-states" class="compare-btn">
+                        <i class="fa-solid fa-scale-balanced"></i> Compare
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     GUIDES
-     ════════════════════════════════════════════════════════ -->
-<section style="padding:3.5rem 0 4.5rem;background:white">
-    <div class="max-w-6xl mx-auto px-4">
-        <h2 class="content-h2 mb-8 text-center">@Model.State.Name Guides</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <a href="/states/@Model.State.Slug/borders" class="guide-card">
-                <div class="guide-card-icon">
-                    <i class="fa-solid fa-map"></i>
-                </div>
-                <h3>Borders</h3>
-                <p>See what states, countries, and waters border @Model.State.Name. Complete breakdown with facts.</p>
-                <span class="guide-card-cta">View Borders <i class="fa-solid fa-arrow-right text-xs"></i></span>
-            </a>
-        </div>
-    </div>
-</section>
+    </section>
+}
 
 <script>
     (function () {
         var slug = '@Model.State.Slug';
         var sel = document.getElementById('compare-state-select');
         var btn = document.getElementById('compare-go-btn');
-        sel.addEventListener('change', function () {
-            if (!sel.value) { btn.href = '/compare-states'; return; }
-            var pair = [slug, sel.value].sort().join('-vs-');
-            btn.href = '/compare/' + pair;
-        });
+        if (sel && btn) {
+            sel.addEventListener('change', function () {
+                if (!sel.value) { btn.href = '/compare-states'; return; }
+                btn.href = '/compare/' + [slug, sel.value].sort().join('-vs-');
+            });
+        }
     })();
 </script>
 
+@await Html.PartialAsync("_StructuredData", Model)
+
 @functions {
+    string GetHeroSubtitle(StateViewModel model)
+    {
+        if (!string.IsNullOrWhiteSpace(model.HubContent?.SeoDescription))
+            return model.HubContent.SeoDescription;
+
+        return $"{model.State.Name} state symbols list: official state symbols including the flag, bird, flower, tree, motto, nickname, animals, and other state emblems and symbols.";
+    }
+
+    string JoinReadable(List<string> items)
+    {
+        if (items.Count == 0) return string.Empty;
+        if (items.Count == 1) return items[0];
+        if (items.Count == 2) return $"{items[0]} and {items[1]}";
+        return $"{string.Join(", ", items.Take(items.Count - 1))}, and {items.Last()}";
+    }
+
+    string GetSnippetAnswer(StateViewModel model)
+    {
+        if (!string.IsNullOrWhiteSpace(model.HubContent?.SnippetAnswer))
+            return model.HubContent.SnippetAnswer;
+
+        return $"Explore the official emblems and state symbols that represent {model.State.Name}, including the flag, bird, flower, tree, motto, nickname, animals, and other symbols listed in this guide.";
+    }
+
+    IEnumerable<StateHubFact> GetMiniFacts(StateViewModel model)
+    {
+        if (model.HubContent?.MiniFacts.Any() == true)
+        {
+            foreach (var fact in model.HubContent.MiniFacts) yield return fact;
+            yield break;
+        }
+        var bestKnown = GetBestKnownSymbol(model.Symbols);
+        var oldestSym = model.Symbols.Where(s => s.AdoptedYear.HasValue).OrderBy(s => s.AdoptedYear).FirstOrDefault();
+        var regionalSymbol = model.Symbols.FirstOrDefault(s =>
+            s.Name.Contains("manatee", StringComparison.OrdinalIgnoreCase) ||
+            s.Designation?.Contains("marine", StringComparison.OrdinalIgnoreCase) == true);
+        yield return new StateHubFact { Label = "Best-known symbol", Value = bestKnown != null ? bestKnown.Name : $"{model.State.Name} flag", Url = bestKnown?.ToSymbolUrl(model.State.Slug) };
+        yield return new StateHubFact { Label = "Oldest in this guide", Value = oldestSym != null ? $"{oldestSym.Name} ({oldestSym.AdoptedYear})" : "Adoption dates vary", Url = oldestSym?.ToSymbolUrl(model.State.Slug) };
+        yield return new StateHubFact { Label = "Regional clue", Value = regionalSymbol != null ? regionalSymbol.Name : $"{model.State.Region ?? "U.S."} heritage", Url = regionalSymbol?.ToSymbolUrl(model.State.Slug) };
+    }
+
+    IEnumerable<USASymbol.Models.Symbol> GetRecognizedSymbols(StateViewModel model)
+    {
+        var yieldedIds = new HashSet<int>();
+        if (model.HubContent?.MostRecognized.Any() == true)
+        {
+            foreach (var key in model.HubContent.MostRecognized)
+            {
+                var symbol = FindSymbolByKey(model.Symbols, key);
+                if (symbol != null && yieldedIds.Add(symbol.Id)) yield return symbol;
+            }
+        }
+        foreach (var type in new[] { "flag", "bird", "flower", "tree", "motto", "nickname", "mammal", "beverage", "color", "dinosaur" })
+        {
+            foreach (var match in model.Symbols.Where(s => s.Type.Equals(type, StringComparison.OrdinalIgnoreCase)).OrderBy(s => s.Name))
+                if (yieldedIds.Add(match.Id)) yield return match;
+        }
+    }
+
+    USASymbol.Models.Symbol? FindSymbolByKey(List<USASymbol.Models.Symbol> symbols, string key)
+    {
+        var normalized = (key ?? string.Empty).Trim().Trim('/').ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(normalized)) return null;
+        var parts = normalized.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length == 1)
+            return symbols.FirstOrDefault(s => s.Type.Equals(parts[0], StringComparison.OrdinalIgnoreCase) || s.Slug.Equals(parts[0], StringComparison.OrdinalIgnoreCase));
+        return symbols.FirstOrDefault(s => s.Type.Equals(parts[0], StringComparison.OrdinalIgnoreCase) && s.Slug.Equals(parts[1], StringComparison.OrdinalIgnoreCase));
+    }
+
+    USASymbol.Models.Symbol? GetBestKnownSymbol(List<USASymbol.Models.Symbol> symbols)
+    {
+        return symbols.FirstOrDefault(s => s.Type.Equals("bird", StringComparison.OrdinalIgnoreCase))
+            ?? symbols.FirstOrDefault(s => s.Type.Equals("flag", StringComparison.OrdinalIgnoreCase))
+            ?? symbols.FirstOrDefault();
+    }
+
+    int GetSymbolSortRank(USASymbol.Models.Symbol symbol)
+    {
+        return symbol.Type switch
+        {
+            "flag" => 1, "bird" => 2, "flower" => 3, "tree" => 4, "motto" => 5,
+            "nickname" => 6, "mammal" => 7, "beverage" => 8, "color" => 9, "dinosaur" => 10,
+            _ => 50
+        };
+    }
+
+    string GetEditorialHeading(StateViewModel model)
+    {
+        if (!string.IsNullOrWhiteSpace(model.HubContent?.Editorial?.Heading)) return model.HubContent.Editorial.Heading;
+        return $"What {model.State.Name}'s Symbols Say About the State";
+    }
+
+    IEnumerable<string> GetEditorialParagraphs(StateViewModel model)
+    {
+        if (model.HubContent?.Editorial?.Paragraphs.Any() == true)
+        {
+            foreach (var p in model.HubContent.Editorial.Paragraphs) yield return p;
+            yield break;
+        }
+        var bird = model.Symbols.FirstOrDefault(s => s.Type == "bird");
+        var flower = model.Symbols.FirstOrDefault(s => s.Type == "flower");
+        var flag = model.Symbols.FirstOrDefault(s => s.Type == "flag");
+        var animal = model.Symbols.FirstOrDefault(s => s.Type == "mammal");
+        var firstLine = new List<string>();
+        if (flag != null) firstLine.Add($"the flag centers the public image of {model.State.Name}");
+        if (bird != null) firstLine.Add($"the {bird.Name} gives the state a recognizable wildlife symbol");
+        if (flower != null) firstLine.Add($"the {flower.Name} connects the list to local plant and garden culture");
+        if (firstLine.Any())
+            yield return char.ToUpper(firstLine[0][0]) + firstLine[0].Substring(1) + (firstLine.Count > 1 ? ", while " + string.Join(" and ", firstLine.Skip(1)) : ".") + ".";
+        if (animal != null)
+            yield return $"Animal and nature symbols such as the {animal.Name} help show how {model.State.Name}'s official list moves beyond civics into landscape, habitat, and everyday regional identity.";
+        else
+            yield return $"Taken together, these symbols make the {model.State.Name} hub more than a list: they show which places, species, colors, mottoes, and traditions the state has chosen to make official.";
+    }
+
+    IEnumerable<(string Question, string Answer)> GetStateFaq(StateViewModel model)
+    {
+        if (model.HubContent?.Faq.Any() == true)
+        {
+            foreach (var faq in model.HubContent.Faq) yield return (faq.Question, faq.Answer);
+            yield break;
+        }
+        var bird = model.Symbols.FirstOrDefault(s => s.Type.Equals("bird", StringComparison.OrdinalIgnoreCase));
+        var flower = model.Symbols.FirstOrDefault(s => s.Type.Equals("flower", StringComparison.OrdinalIgnoreCase));
+        var flag = model.Symbols.FirstOrDefault(s => s.Type.Equals("flag", StringComparison.OrdinalIgnoreCase));
+        var colors = model.Symbols.FirstOrDefault(s => s.Type.Equals("color", StringComparison.OrdinalIgnoreCase));
+        var known = GetBestKnownSymbol(model.Symbols);
+        yield return ($"What is {model.State.Name}'s most famous state symbol?",
+            known != null ? $"{model.State.Name}'s most recognizable state symbol is often the {known.Name}, listed here as {GetSymbolTypeName(known).ToLowerInvariant()}."
+                : $"{model.State.Name}'s flag is usually one of its most recognizable official symbols.");
+        if (bird != null)
+            yield return ($"What is {model.State.Name}'s state bird?",
+                $"{model.State.Name}'s state bird is the <a href=\"{bird.ToSymbolUrl(model.State.Slug)}\">{bird.Name}</a>{(bird.AdoptedYear.HasValue ? $", adopted in {bird.AdoptedYear}" : "")}.");
+        if (flower != null)
+            yield return ($"What is {model.State.Name}'s state flower?",
+                $"{model.State.Name}'s state flower is the <a href=\"{flower.ToSymbolUrl(model.State.Slug)}\">{flower.Name}</a>{(flower.AdoptedYear.HasValue ? $", adopted in {flower.AdoptedYear}" : "")}.");
+        if (colors != null)
+            yield return ($"Does {model.State.Name} have official state colors?",
+                $"Yes. This guide includes a <a href=\"{colors.ToSymbolUrl(model.State.Slug)}\">{model.State.Name} state colors</a> page.");
+        else if (flag != null)
+            yield return ($"Does {model.State.Name} have official state colors?",
+                $"This guide does not list a separate state-colors symbol for {model.State.Name}; color questions usually connect back to the <a href=\"{flag.ToSymbolUrl(model.State.Slug)}\">state flag</a>.");
+        yield return ($"How many official state symbols does {model.State.Name} have?",
+            $"This hub currently lists {model.Symbols.Count} {model.State.Name} state symbol{(model.Symbols.Count == 1 ? "" : "s")}, with individual pages for the major symbols above.");
+    }
+
     string GetSymbolTypeName(USASymbol.Models.Symbol symbol)
     {
         if (!string.IsNullOrWhiteSpace(symbol.Designation))
-        {
-            return System.Globalization.CultureInfo.InvariantCulture.TextInfo
-                .ToTitleCase(symbol.Designation.Trim().ToLowerInvariant());
-        }
-
+            return System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase(symbol.Designation.Trim().ToLowerInvariant());
         return symbol.Type switch
         {
-            "bird"      => "State Bird",
-            "flower"    => "State Flower",
-            "tree"      => "State Tree",
-            "motto"     => "State Motto",
-            "mammal"    => "State Mammal",
-            "beverage"  => "State Beverage",
-            "dinosaur"  => "State Dinosaur",
-            "flag"      => "State Flag",
+            "bird" => "State Bird", "flower" => "State Flower", "tree" => "State Tree",
+            "motto" => "State Motto", "mammal" => "State Mammal", "beverage" => "State Beverage",
+            "dinosaur" => "State Dinosaur", "flag" => "State Flag",
             _ => $"State {char.ToUpper(symbol.Type[0]) + symbol.Type.Substring(1)}"
         };
     }
@@ -547,22 +1021,12 @@
     {
         return type switch
         {
-            "bird"      => "fa-dove",
-            "flower"    => "fa-seedling",
-            "tree"      => "fa-tree",
-            "motto"     => "fa-scroll",
-            "mammal"    => "fa-paw",
-            "beverage"  => "fa-mug-hot",
-            "dinosaur"  => "fa-dragon",
-            "flag"      => "fa-flag",
-            "color"     => "fa-palette",
-            "fish"      => "fa-fish",
-            "insect"    => "fa-bug",
-            "mineral"   => "fa-gem",
-            "rock"      => "fa-mountain",
-            "song"      => "fa-music",
-            "sport"     => "fa-trophy",
-            _           => "fa-star"
+            "bird" => "fa-dove", "flower" => "fa-seedling", "tree" => "fa-tree",
+            "motto" => "fa-scroll", "mammal" => "fa-paw", "beverage" => "fa-mug-hot",
+            "dinosaur" => "fa-dragon", "flag" => "fa-flag", "color" => "fa-palette",
+            "fish" => "fa-fish", "insect" => "fa-bug", "mineral" => "fa-gem",
+            "rock" => "fa-mountain", "song" => "fa-music", "sport" => "fa-trophy",
+            _ => "fa-star"
         };
     }
 }

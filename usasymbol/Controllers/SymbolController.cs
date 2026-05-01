@@ -30,6 +30,7 @@ namespace USASymbol.Controllers
         private readonly IBeverageService _beverageService;
         private readonly ILicensePlateService _licensePlateService;
         private readonly IColorService _colorService;
+        private readonly ISealService _sealService;
         private readonly ILatestContentRailService _latestContentRailService;
         private readonly QuizService _quizService;
         private readonly ILogger<SymbolController> _logger;
@@ -51,6 +52,7 @@ namespace USASymbol.Controllers
             IBeverageService beverageService,
             ILicensePlateService licensePlateService,
             IColorService colorService,
+            ISealService sealService,
             ILatestContentRailService latestContentRailService,
             QuizService quizService,
             ILogger<SymbolController> logger,
@@ -71,6 +73,7 @@ namespace USASymbol.Controllers
             _beverageService = beverageService;
             _licensePlateService = licensePlateService;
             _colorService = colorService;
+            _sealService = sealService;
             _latestContentRailService = latestContentRailService;
             _quizService = quizService;
             _logger = logger;
@@ -152,6 +155,7 @@ namespace USASymbol.Controllers
                         "firearms" => "🔫",
                         "dinosaurs" => "🦖",
                         "license-plate-slogans" => "🚗",
+                        "state-seals" => "🔖",
                         _ => "⭐"
                     }
 
@@ -885,6 +889,69 @@ namespace USASymbol.Controllers
             };
 
             return View(model);
+        }
+
+        [Route("states/{stateSlug}/state-seal/{sealSlug}")]
+        public async Task<IActionResult> StateSeal(string stateSlug, string sealSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var sealSymbol = await _symbolService.GetSymbolAsync(state.Id, "state-seal");
+            if (sealSymbol == null)
+            {
+                _logger.LogWarning("State seal symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(sealSlug, sealSymbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var sealContent = await _sealService.GetSealContentAsync(stateSlug);
+            if (sealContent == null)
+                _logger.LogInformation("State seal YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State seal content loaded: Name={Name}, Sections={SectionCount}, FAQ={FaqCount}",
+                    sealContent.Name, sealContent.Sections?.Count ?? 0, sealContent.Faq?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, sealSymbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new SealDetailViewModel
+            {
+                State = state,
+                Symbol = sealSymbol,
+                SealContent = sealContent,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions,
+
+                BigStat = sealContent?.BigStat == null ? null : new BigStatViewModel
+                {
+                    Number = sealContent.BigStat.Number,
+                    Description = sealContent.BigStat.Description
+                },
+
+                Timeline = (sealContent?.Timeline == null || sealContent.Timeline.Count == 0)
+                    ? null
+                    : sealContent.Timeline.Select(t => new TimelineEventViewModel
+                    {
+                        Year = t.Year,
+                        Description = t.Description
+                    }).ToList(),
+
+                ExpertQuote = sealContent?.ExpertQuote == null ? null : new ExpertQuoteViewModel
+                {
+                    Text = sealContent.ExpertQuote.Text,
+                    Source = sealContent.ExpertQuote.Source
+                }
+            };
+
+            return View("Seal", model);
         }
 
         [Route("states/{stateSlug}/{symbolType}")]
