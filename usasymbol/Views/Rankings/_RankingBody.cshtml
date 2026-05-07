@@ -30,9 +30,12 @@
                 @await Html.PartialAsync("Pages/_QuickAnswer", Model, ViewData)
             </section>
 
-            <section class="content-divider">
-                @await Html.RenderMapBlockAsync(content?.Map, content?.Table)
-            </section>
+            @if (content?.Map != null)
+            {
+                <section class="content-divider">
+                    @await Html.RenderMapBlockAsync(content.Map, content?.Table)
+                </section>
+            }
 
             <section id="@rankingTableSectionId" class="scroll-mt-24 content-divider">
                 <div class="flex items-baseline justify-between gap-4">

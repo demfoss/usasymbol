@@ -78,7 +78,8 @@
                  sizes="@imageSizes"
                  alt="@alt"
                  class="@imgClass"
-                 loading="lazy" />
+                 loading="@(isFull ? "eager" : "lazy")"
+                 @(isFull ? "fetchpriority=\"high\"" : "") />
 
             <button type="button"
                     class="js-visual-lightbox absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-[0.8rem] bg-slate-900/88 text-white transition hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-white/70"

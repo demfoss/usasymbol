@@ -30,6 +30,7 @@ namespace USASymbol.Services
 
                 AppendSitemap(sb, "/sitemap-main.xml");
                 AppendSitemap(sb, "/sitemap-compare.xml");
+                AppendSitemap(sb, "/sitemap-images.xml");
 
                 sb.AppendLine("</sitemapindex>");
 
@@ -47,6 +48,41 @@ namespace USASymbol.Services
         public Task<string> GetCompareSitemapAsync()
         {
             return GetUrlSetAsync("sitemap_compare_xml", () => _builder.BuildCompareUrlsAsync());
+        }
+
+        public Task<string> GetImageSitemapAsync()
+        {
+            return _cache.GetOrCreateAsync("sitemap_images_xml", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+
+                var entries = await _builder.BuildImageEntriesAsync();
+                var sb = new System.Text.StringBuilder();
+
+                sb.AppendLine(@"<?xml version=""1.0"" encoding=""utf-8""?>");
+                sb.AppendLine(@"<urlset xmlns=""http://www.sitemaps.org/schemas/sitemap/0.9"" xmlns:image=""http://www.google.com/schemas/sitemap-image/1.1"">");
+
+                foreach (var group in entries.GroupBy(e => e.PageUrl))
+                {
+                    sb.AppendLine("<url>");
+                    sb.AppendLine($"<loc>{BaseUrl}{group.Key}</loc>");
+                    foreach (var (_, imageUrl, title) in group)
+                    {
+                        var absUrl = imageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                            ? imageUrl
+                            : $"{BaseUrl}{imageUrl}";
+                        sb.AppendLine("<image:image>");
+                        sb.AppendLine($"<image:loc>{System.Security.SecurityElement.Escape(absUrl)}</image:loc>");
+                        sb.AppendLine($"<image:title>{System.Security.SecurityElement.Escape(title)}</image:title>");
+                        sb.AppendLine("</image:image>");
+                    }
+                    sb.AppendLine("</url>");
+                }
+
+                sb.AppendLine("</urlset>");
+
+                return sb.ToString();
+            }) ?? Task.FromResult(string.Empty);
         }
 
         public Task<string> GetSitemapAsync()

@@ -12,6 +12,8 @@
     ViewData["BodyClass"] = "symbols-surface";
 
     var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var imageRightsUrl = $"{baseUrl}/terms#image-rights";
+    var imageLicensePageUrl = $"{baseUrl}/contact";
     var canonicalPath = !string.IsNullOrWhiteSpace(content?.Url) ? content.Url : Context.Request.Path.Value ?? "/collections";
     var canonicalUrl = canonicalPath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
         ? canonicalPath
@@ -59,6 +61,27 @@
     var heroImageUrl = Images.Full(heroImageResolved);
     ViewData["OgImage"] = heroImageUrl;
 
+    Dictionary<string, object?> ImageRightsHolder(string? name = null) => new()
+    {
+        ["@type"] = "Organization",
+        ["name"] = string.IsNullOrWhiteSpace(name) ? "USA Symbol and credited image licensors" : name,
+        ["url"] = baseUrl
+    };
+
+    Dictionary<string, object?> ImageSchema(string imageUrl, string? name = null, string? caption = null) => new()
+    {
+        ["@type"] = "ImageObject",
+        ["url"] = imageUrl,
+        ["contentUrl"] = imageUrl,
+        ["name"] = string.IsNullOrWhiteSpace(name) ? null : name,
+        ["caption"] = string.IsNullOrWhiteSpace(caption) ? null : caption,
+        ["creator"] = ImageRightsHolder(),
+        ["creditText"] = "Image credits and license details belong to USA Symbol, Wikimedia Commons contributors, Creative Commons licensors, public-domain sources, or cited image providers as applicable.",
+        ["copyrightNotice"] = "Copyright belongs to the credited creator or licensor unless the image is in the public domain.",
+        ["license"] = imageRightsUrl,
+        ["acquireLicensePage"] = imageLicensePageUrl
+    };
+
     var articleSchema = new Dictionary<string, object?>
     {
         ["@context"] = "https://schema.org",
@@ -67,13 +90,14 @@
         ["description"] = content?.Seo?.Description,
         ["datePublished"] = content?.DatePublished?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
         ["dateModified"] = content?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
+        ["image"] = ImageSchema(heroImageUrl, content?.Page?.H1, content?.HeroImageCaption),
         ["author"] = new Dictionary<string, object?> { ["@type"] = "Person", ["name"] = content?.Author ?? "USA Symbol Team", ["url"] = $"{baseUrl}/about" },
         ["publisher"] = new Dictionary<string, object?>
         {
             ["@type"] = "Organization",
             ["name"] = "USA Symbol",
             ["url"] = baseUrl,
-            ["logo"] = new Dictionary<string, object?> { ["@type"] = "ImageObject", ["url"] = $"{baseUrl}/images/logo.png" }
+            ["logo"] = ImageSchema($"{baseUrl}/images/logo.png", "USA Symbol logo")
         },
         ["mainEntityOfPage"] = new Dictionary<string, object?> { ["@type"] = "WebPage", ["@id"] = currentUrl }
     };

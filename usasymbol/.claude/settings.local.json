@@ -39,7 +39,22 @@
       "WebFetch(domain:www.visualcapitalist.com)",
       "WebFetch(domain:www.horsesmouth.com)",
       "WebFetch(domain:en.wikipedia.org)",
-      "WebFetch(domain:licenseplateroom.com)"
+      "WebFetch(domain:licenseplateroom.com)",
+      "Bash(Get-Content \"D:\\\\сайты\\\\usasymbol\\\\usasymbol\\\\Content\\\\test\\\\usasymbol.com_KeywordReport_5_2_2026.csv\")",
+      "Bash(Select-Object -First 30)",
+      "Bash(Get-ChildItem \"D:\\\\сайты\\\\usasymbol\\\\usasymbol\\\\Content\\\\states\" -Recurse -Filter \"license-plate.yaml\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(grep -r \"states.*hub\\\\|states.*collection\" \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Controllers\")",
+      "Bash(find \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Content\" -name \"*.yaml\" -o -name \"*.yml\")",
+      "Bash(ls -la \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Content\\\\\\\\states\\\\\\\\alabama\")",
+      "Bash(find \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Content\\\\\\\\states\" -maxdepth 2 -type f -name \"*.yaml\")",
+      "Bash(find \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Services\" -name \"*Border*\" -o -name \"*Hub*\")",
+      "Bash(find \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Content\\\\\\\\states\" -name \"borders*\" -o -name \"border*\")",
+      "Bash(find \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Content\" -maxdepth 1 -type d)",
+      "Bash(ls -la \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Content\\\\\\\\borders\")",
+      "Bash(find \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Content\\\\\\\\borders\" -type f)",
+      "Bash(grep -n \"hub\\\\|Hub\" \"D:\\\\\\\\сайты\\\\\\\\usasymbol\\\\\\\\usasymbol\\\\\\\\Controllers\\\\\\\\StateController.cs\")",
+      "Bash(dir \"d:\\\\сайты\\\\usasymbol\\\\usasymbol\\\\Content\\\\borders\\\\\" 2>&1 | head -20)"
     ]
   }
 }

@@ -5,6 +5,10 @@
 @{
     ViewData["Title"] = $"{Model.Symbol.Name} - {Model.State.Name} State {GetSymbolTypeName(Model.Symbol.Type)}";
     var heroImage = Model.Symbol.ImageUrl ?? "/images/default-symbol.jpg";
+    var origin = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var imageRightsUrl = $"{origin}/terms#image-rights";
+    var imageLicensePageUrl = $"{origin}/contact";
+    var contentLicenseUrl = $"{origin}/terms";
 }
 
 <!-- Schema.org Structured Data -->
@@ -14,7 +18,27 @@
       "@@type": "Article",
       "headline": "@Model.Symbol.Name - @Model.State.Name State @GetSymbolTypeName(Model.Symbol.Type)",
       "description": "Complete guide to @Model.State.Name's official state @Model.Symbol.Type, the @Model.Symbol.Name",
-      "image": "@Images.Full(heroImage)",
+      "image": {
+        "@@type": "ImageObject",
+        "url": "@Images.Full(heroImage)",
+        "contentUrl": "@Images.Full(heroImage)",
+        "name": "@Model.Symbol.Name",
+        "creator": {
+          "@@type": "Organization",
+          "name": "USA Symbol and credited image licensors",
+          "url": "@origin"
+        },
+        "creditText": "Image credits and license details belong to USA Symbol, Wikimedia Commons contributors, Creative Commons licensors, public-domain sources, or cited image providers as applicable.",
+        "copyrightNotice": "Copyright belongs to the credited creator or licensor unless the image is in the public domain.",
+        "license": "@imageRightsUrl",
+        "acquireLicensePage": "@imageLicensePageUrl"
+      },
+      "license": "@contentLicenseUrl",
+      "creator": {
+        "@@type": "Organization",
+        "name": "USA Symbol",
+        "url": "@origin"
+      },
       "datePublished": "@(Model.Symbol.AdoptedYear.HasValue ? new DateTime(Model.Symbol.AdoptedYear.Value, 1, 1).ToString("yyyy-MM-dd") : "2020-01-01")",
       "dateModified": "@DateTime.Now.ToString("yyyy-MM-dd")",
       "author": {
@@ -26,7 +50,17 @@
         "name": "USA Symbol",
         "logo": {
           "@@type": "ImageObject",
-          "url": "@(Context.Request.Scheme)://@(Context.Request.Host)/logo.png"
+          "url": "@origin/images/logo.png",
+          "contentUrl": "@origin/images/logo.png",
+          "creator": {
+            "@@type": "Organization",
+            "name": "USA Symbol",
+            "url": "@origin"
+          },
+          "creditText": "USA Symbol",
+          "copyrightNotice": "Copyright USA Symbol unless otherwise noted.",
+          "license": "@imageRightsUrl",
+          "acquireLicensePage": "@imageLicensePageUrl"
         }
       }
     }

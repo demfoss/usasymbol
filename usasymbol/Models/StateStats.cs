@@ -168,5 +168,72 @@ namespace USASymbol.Models
 
             return Math.Round(monthlyIncome.Value - MedianGrossRent.Value, 0);
         }
+
+        public double? BestStateToLiveInScore()
+        {
+            return LivabilityScore;
+        }
+
+        public double? OlderAdultHealthScore()
+        {
+            var components = new List<double>();
+
+            if (LifeExpectancyYears.HasValue)
+                components.Add(Scale(LifeExpectancyYears.Value, 70, 82, higherIsBetter: true));
+
+            if (UninsuredRatePct.HasValue)
+                components.Add(Scale(UninsuredRatePct.Value, 3, 17, higherIsBetter: false));
+
+            if (ObesityRatePct.HasValue)
+                components.Add(Scale(ObesityRatePct.Value, 24, 42, higherIsBetter: false));
+
+            return AverageScore(components);
+        }
+
+        public double? RetirementScore()
+        {
+            var components = new List<double>();
+
+            if (CostOfLivingIndex.HasValue)
+                components.Add(Scale(CostOfLivingIndex.Value, 84, 187, higherIsBetter: false));
+
+            if (IncomeTaxRatePct.HasValue)
+                components.Add(Scale(IncomeTaxRatePct.Value, 0, 13.3, higherIsBetter: false));
+
+            if (PropertyTaxRatePct.HasValue)
+                components.Add(Scale(PropertyTaxRatePct.Value, 0.25, 2.25, higherIsBetter: false));
+
+            if (MedianHomeValue.HasValue)
+                components.Add(Scale(MedianHomeValue.Value, 125000, 815000, higherIsBetter: false));
+
+            if (LifeExpectancyYears.HasValue)
+                components.Add(Scale(LifeExpectancyYears.Value, 70, 82, higherIsBetter: true));
+
+            if (ViolentCrimeRatePer100k.HasValue)
+                components.Add(Scale(ViolentCrimeRatePer100k.Value, 175, 840, higherIsBetter: false));
+
+            if (WinterTemperatureF.HasValue)
+                components.Add(Scale(WinterTemperatureF.Value, 15, 68, higherIsBetter: true));
+
+            return AverageScore(components);
+        }
+
+        private static double? AverageScore(List<double> components)
+        {
+            return components.Count == 0 ? null : Math.Round(components.Average(), 1);
+        }
+
+        private static double Scale(double value, double min, double max, bool higherIsBetter)
+        {
+            if (max <= min)
+                return 0;
+
+            var normalized = (value - min) / (max - min);
+            normalized = Math.Max(0, Math.Min(1, normalized));
+            if (!higherIsBetter)
+                normalized = 1 - normalized;
+
+            return normalized * 100;
+        }
     }
 }

@@ -9,6 +9,9 @@
     var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
     var currentPath = Context.Request.Path.Value ?? "/";
     var currentUrl = $"{baseUrl}{currentPath}";
+    var imageRightsUrl = $"{baseUrl}/terms#image-rights";
+    var imageLicensePageUrl = $"{baseUrl}/contact";
+    var contentLicenseUrl = $"{baseUrl}/terms";
     var schemas = new List<Dictionary<string, object?>>();
     var jsonOptions = new JsonSerializerOptions
     {
@@ -26,7 +29,13 @@
         ["logo"] = new Dictionary<string, object?>
         {
             ["@type"] = "ImageObject",
-            ["url"] = $"{baseUrl}/images/logo.png"
+            ["url"] = $"{baseUrl}/images/logo.png",
+            ["contentUrl"] = $"{baseUrl}/images/logo.png",
+            ["creator"] = ImageRightsHolder("USA Symbol"),
+            ["creditText"] = "USA Symbol",
+            ["copyrightNotice"] = "Copyright USA Symbol unless otherwise noted.",
+            ["license"] = imageRightsUrl,
+            ["acquireLicensePage"] = imageLicensePageUrl
         }
     };
 
@@ -55,6 +64,33 @@
         ["url"] = $"{baseUrl}/about"
     };
 
+    Dictionary<string, object?> ImageRightsHolder(string? name = null) => new()
+    {
+        ["@type"] = "Organization",
+        ["name"] = string.IsNullOrWhiteSpace(name) ? "USA Symbol and credited image licensors" : name,
+        ["url"] = baseUrl
+    };
+
+    Dictionary<string, object?> ImageObject(string? image, string? name = null, string? caption = null, int? width = null, int? height = null)
+    {
+        var imageUrl = FullImageUrl(image);
+        return new Dictionary<string, object?>
+        {
+            ["@type"] = "ImageObject",
+            ["url"] = imageUrl,
+            ["contentUrl"] = imageUrl,
+            ["name"] = string.IsNullOrWhiteSpace(name) ? null : name,
+            ["caption"] = string.IsNullOrWhiteSpace(caption) ? null : caption,
+            ["width"] = width,
+            ["height"] = height,
+            ["creator"] = ImageRightsHolder(),
+            ["creditText"] = "Image credits and license details belong to USA Symbol, Wikimedia Commons contributors, Creative Commons licensors, public-domain sources, or cited image providers as applicable.",
+            ["copyrightNotice"] = "Copyright belongs to the credited creator or licensor unless the image is in the public domain.",
+            ["license"] = imageRightsUrl,
+            ["acquireLicensePage"] = imageLicensePageUrl
+        };
+    }
+
     if (Model is StateViewModel stateModel)
     {
         var pageTitle = ViewData["Title"]?.ToString() ?? $"{stateModel.State.Name} State Symbols";
@@ -76,8 +112,15 @@
             ["name"] = pageTitle,
             ["description"] = pageDescription,
             ["url"] = pageUrl,
-            ["image"] = imageUrl,
+            ["image"] = ImageObject(stateModel.State.FlagImageUrl ?? ViewData["OgImage"]?.ToString(), pageTitle),
+            ["license"] = contentLicenseUrl,
+            ["creator"] = Organization(),
             ["publisher"] = Organization(),
+            ["speakable"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "SpeakableSpecification",
+                ["cssSelector"] = new[] { "h1" }
+            },
             ["mainEntity"] = new Dictionary<string, object?>
             {
                 ["@id"] = $"{pageUrl}#symbols"
@@ -126,6 +169,27 @@
                         }
                     }
                 }).ToArray()
+            });
+
+            schemas.Add(new Dictionary<string, object?>
+            {
+                ["@context"] = "https://schema.org",
+                ["@type"] = "Dataset",
+                ["@id"] = $"{pageUrl}#dataset",
+                ["name"] = $"Complete {stateModel.State.Name} State Symbols List",
+                ["description"] = pageDescription,
+                ["url"] = pageUrl,
+                ["creator"] = Organization(),
+                ["publisher"] = Organization(),
+                ["license"] = contentLicenseUrl,
+                ["isAccessibleForFree"] = true,
+                ["variableMeasured"] = new object[]
+                {
+                    new Dictionary<string, object?> { ["@type"] = "PropertyValue", ["name"] = "Symbol Name", ["propertyID"] = "name" },
+                    new Dictionary<string, object?> { ["@type"] = "PropertyValue", ["name"] = "Category", ["propertyID"] = "type" },
+                    new Dictionary<string, object?> { ["@type"] = "PropertyValue", ["name"] = "Designation", ["propertyID"] = "designation" },
+                    new Dictionary<string, object?> { ["@type"] = "PropertyValue", ["name"] = "Year Adopted", ["propertyID"] = "adoptedYear" }
+                }
             });
         }
 
@@ -180,9 +244,18 @@
             ["description"] = pageDescription,
             ["datePublished"] = datePublished,
             ["dateModified"] = dateModified,
-            ["image"] = FullImageUrl(content?.HeroImage ?? content?.Map?.Image ?? ViewData["OgImage"]?.ToString()),
+            ["image"] = ImageObject(content?.HeroImage ?? content?.Map?.Image ?? ViewData["OgImage"]?.ToString(), pageTitle, content?.HeroImageCaption ?? content?.Map?.Caption),
+            ["license"] = contentLicenseUrl,
+            ["creator"] = Person(content?.Author),
             ["author"] = Person(content?.Author),
             ["publisher"] = Organization(),
+            ["speakable"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "SpeakableSpecification",
+                ["cssSelector"] = pageModel.HasQuickAnswer
+                    ? new[] { "h1", "#quick-answer" }
+                    : new[] { "h1" }
+            },
             ["mainEntityOfPage"] = new Dictionary<string, object?>
             {
                 ["@type"] = "WebPage",
@@ -255,6 +328,7 @@
                 ["dateModified"] = dateModified,
                 ["creator"] = Organization(),
                 ["publisher"] = Organization(),
+                ["license"] = contentLicenseUrl,
                 ["isAccessibleForFree"] = true,
                 ["citation"] = citations,
                 ["variableMeasured"] = visibleColumns.Select(c => new Dictionary<string, object?>
@@ -312,7 +386,6 @@
     }
     else if (Model is ISymbolDetailViewModel symbolModel)
     {
-        var imageUrl = FullImageUrl(!string.IsNullOrEmpty(symbolModel.Symbol?.ImageUrl) ? symbolModel.Symbol.ImageUrl : "/images/default-symbol.jpg");
         string? meaning = null;
         string? legislation = null;
 
@@ -355,13 +428,9 @@
             ["@id"] = $"{currentUrl}#article",
             ["headline"] = $"{symbolModel.State.Name} {symbolModel.SymbolTypeName}: {symbolModel.ContentTitle ?? symbolModel.Symbol?.Name}",
             ["description"] = System.Net.WebUtility.HtmlDecode(ViewData["Description"]?.ToString() ?? ""),
-            ["image"] = new Dictionary<string, object?>
-            {
-                ["@type"] = "ImageObject",
-                ["url"] = imageUrl,
-                ["width"] = 1200,
-                ["height"] = 630
-            },
+            ["image"] = ImageObject(!string.IsNullOrEmpty(symbolModel.Symbol?.ImageUrl) ? symbolModel.Symbol.ImageUrl : "/images/default-symbol.jpg", symbolModel.ContentTitle ?? symbolModel.Symbol?.Name),
+            ["license"] = contentLicenseUrl,
+            ["creator"] = Person(symbolModel.Author),
             ["datePublished"] = datePublishedStr,
             ["dateModified"] = dateModifiedStr,
             ["author"] = Person(symbolModel.Author),
@@ -372,8 +441,46 @@
                 ["@id"] = currentUrl
             },
             ["about"] = aboutObj,
-            ["citation"] = citations.Any() ? citations : null
+            ["citation"] = citations.Any() ? citations : null,
+            ["speakable"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "SpeakableSpecification",
+                ["cssSelector"] = new[] { "h1" }
+            }
         });
+
+        if (!string.IsNullOrEmpty(legislation))
+        {
+            var claimText = $"{symbolModel.Symbol?.Name} is the official {symbolModel.SymbolTypeName} of {symbolModel.State.Name}";
+            schemas.Add(new Dictionary<string, object?>
+            {
+                ["@context"] = "https://schema.org",
+                ["@type"] = "ClaimReview",
+                ["@id"] = $"{currentUrl}#claim-review",
+                ["url"] = currentUrl,
+                ["claimReviewed"] = claimText,
+                ["author"] = Organization(),
+                ["reviewRating"] = new Dictionary<string, object?>
+                {
+                    ["@type"] = "Rating",
+                    ["ratingValue"] = "5",
+                    ["bestRating"] = "5",
+                    ["worstRating"] = "1",
+                    ["alternateName"] = "True"
+                },
+                ["itemReviewed"] = new Dictionary<string, object?>
+                {
+                    ["@type"] = "Claim",
+                    ["name"] = claimText,
+                    ["author"] = Organization(),
+                    ["appearance"] = new Dictionary<string, object?>
+                    {
+                        ["@type"] = "CreativeWork",
+                        ["url"] = currentUrl
+                    }
+                }
+            });
+        }
 
         var pluralName = string.IsNullOrEmpty(symbolModel.SymbolTypePlural)
             ? ""

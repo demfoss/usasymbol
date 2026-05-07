@@ -27,12 +27,12 @@
                 r = e.Rank,
                 f = e.FillColor,
                 details = e.Details.Select(d => new { l = d.Label, v = d.Value }),
-                img = string.IsNullOrWhiteSpace(e.ImageUrl) ? null : Images.Crop(e.ImageUrl, 320, 180),
+                img = string.IsNullOrWhiteSpace(e.ImageUrl) ? null : Images.Card(e.ImageUrl, 320),
                 items = e.Items?.Select(item => new
                 {
                     v = item.DisplayValue,
                     details = item.Details.Select(d => new { l = d.Label, v = d.Value }),
-                    img = string.IsNullOrWhiteSpace(item.ImageUrl) ? null : Images.Crop(item.ImageUrl, 320, 180)
+                    img = string.IsNullOrWhiteSpace(item.ImageUrl) ? null : Images.Card(item.ImageUrl, 320)
                 })
             }
         );
@@ -41,7 +41,7 @@
 }
 
 <section id="choropleth-map"
-         class="my-12 md:my-14 border-t border-slate-200 pt-8 sm:pt-10 scroll-mt-24"
+         class="scroll-mt-24"
          aria-labelledby="map-block-title">
 
     <header class="mb-5 sm:mb-6">
@@ -74,7 +74,8 @@
                          class="mb-[10px] hidden h-[92px] w-full rounded border border-white/10 bg-white/95 object-contain p-2"
                          alt=""
                          loading="lazy"
-                         decoding="async" />
+                         decoding="async"
+                         onerror="this.removeAttribute('src');this.classList.add('hidden')" />
                     <p class="text-[12px] font-semibold leading-tight tracking-[0.01em] text-white"
                        style="margin:0;font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;line-height:1.25;font-weight:800;letter-spacing:.01em;color:#fff"
                        id="tt-state"></p>

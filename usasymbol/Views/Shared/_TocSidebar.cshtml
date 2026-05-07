@@ -30,6 +30,22 @@
         return string.Join(" ", parts);
     }
 
+    string CompactTocLabel(string text, int maxLength = 34)
+    {
+        if (string.IsNullOrWhiteSpace(text) || text.Length <= maxLength)
+        {
+            return text;
+        }
+
+        var cut = text.LastIndexOf(' ', Math.Min(maxLength, text.Length - 1));
+        if (cut < 16)
+        {
+            cut = maxLength;
+        }
+
+        return text[..cut].TrimEnd() + "...";
+    }
+
     string GetSectionIcon(IContentSection sec)
     {
         if (!string.IsNullOrWhiteSpace(sec?.Icon))
@@ -59,12 +75,12 @@
 
         var sections = (symbolModel.Sections ?? new List<IContentSection>())
             .Where(s => !string.IsNullOrWhiteSpace(s?.Id) && !string.IsNullOrWhiteSpace(s?.Title))
-            .Take(4)
+            .Take(3)
             .ToList();
 
         foreach (var sec in sections)
         {
-            Add($"section-{sec.Id}", LabelFromSectionId(sec.Id), GetSectionIcon(sec));
+            Add($"section-{sec.Id}", CompactTocLabel(LabelFromSectionId(sec.Id)), GetSectionIcon(sec));
         }
 
         if (symbolModel.HasFaq)
@@ -174,50 +190,50 @@
                 {
                     <img src="@Images.Card(imageUrl)"
                          alt="@title"
-                         class="mx-auto h-28 w-28 rounded-full object-cover"
+                         class="mx-auto h-24 w-24 rounded-full object-cover"
                          loading="lazy" />
                 }
                 else
                 {
-                    <div class="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-white/80">
+                    <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-white/80">
                         <i class="fa-solid fa-bookmark text-2xl text-slate-400"></i>
                     </div>
                 }
 
-                <h2 class="mt-5 text-[1.05rem] font-semibold tracking-tight text-slate-900 leading-snug">
+                <h2 class="mt-4 line-clamp-2 text-[1rem] font-semibold tracking-tight text-slate-900 leading-snug">
                     @title
                 </h2>
 
                 @if (!string.IsNullOrWhiteSpace(subtitle))
                 {
-                    <p class="mt-1.5 text-[0.95rem] leading-6 text-slate-500">
+                    <p class="mt-1 line-clamp-1 text-[0.85rem] leading-5 text-slate-500">
                         @subtitle
                     </p>
                 }
             </div>
 
-            <div id="tocList" class="mt-8 space-y-2">
+            <div id="tocList" class="mt-6 space-y-1">
                 @foreach (var it in items)
                 {
                     <a href="#@it.Id"
                        data-toc-id="@it.Id"
-                       class="toc-link bird-toc-link group flex items-center gap-3 rounded-[1rem] px-4 py-2.5 text-[0.875rem] font-semibold uppercase tracking-[0.09em] text-slate-900 transition-all duration-200 hover:bg-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+                       class="toc-link bird-toc-link group flex items-center gap-2.5 rounded-xl px-3 py-2 text-[0.78rem] font-semibold uppercase tracking-[0.07em] text-slate-900 transition-all duration-200 hover:bg-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
                        aria-current="false">
                         <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center text-slate-900">
-                            <i class="@it.IconClass text-sm"></i>
+                            <i class="@it.IconClass text-xs"></i>
                         </span>
-                        <span class="min-w-0 leading-6">@it.Title</span>
+                        <span class="min-w-0 line-clamp-2 leading-5">@it.Title</span>
                     </a>
                 }
             </div>
 
-            <div class="mt-2">
+            <div class="mt-1">
                 <button type="button"
                         id="tocBackToTop"
-                        class="toc-link bird-toc-link group flex w-full items-center gap-3 rounded-[1rem] px-4 py-2.5 text-[0.875rem] font-semibold uppercase tracking-[0.09em] text-slate-900 transition-all duration-200 hover:bg-white/70"
+                        class="toc-link bird-toc-link group flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[0.78rem] font-semibold uppercase tracking-[0.07em] text-slate-900 transition-all duration-200 hover:bg-white/70"
                         aria-current="false">
                     <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center text-slate-900">
-                        <i class="fa-solid fa-chevron-up text-sm"></i>
+                        <i class="fa-solid fa-chevron-up text-xs"></i>
                     </span>
                     <span>Back to Top</span>
                 </button>
@@ -233,7 +249,7 @@
         box-shadow: inset 3px 0 0 #d8b36a;
         color: #161b26 !important;
         border-left-color: transparent !important;
-        padding-left: 1rem !important;
+        padding-left: 0.75rem !important;
     }
 
     .toc-minimal .bird-toc-link.toc-active i,

@@ -22,6 +22,17 @@
     var heroHeading = $"{stateName} {designation}";
     var descRaw = Model.MottoContent?.SeoDescription ?? "";
     var hasIntroText = !string.IsNullOrWhiteSpace(Model.MottoContent?.IntroText);
+    var quickAnswerQuestion = $"What is {stateName}'s state motto?";
+    var quickAnswerTranslation = !string.IsNullOrWhiteSpace(translation)
+        ? $" It means \"{translation}\" in English."
+        : string.Empty;
+    var quickAnswerAdoption = adoptedYear > 0
+        ? $" {stateName} adopted it in {adoptedYear}."
+        : string.Empty;
+    var quickAnswerLocation = !string.IsNullOrWhiteSpace(Model.Legislation)
+        ? $" It is recognized in {Model.Legislation}."
+        : $" It appears in {stateName}'s official state symbolism.";
+    var quickAnswerText = $"{stateName}'s state motto is \"{mottoText}\".{quickAnswerTranslation}{quickAnswerAdoption}{quickAnswerLocation}";
     var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw)
         ? descRaw
         : (!string.IsNullOrWhiteSpace(translation)
@@ -109,11 +120,15 @@
                                     <i class="fa-solid fa-book-open text-sm"></i>
                                 </div>
                                 <div class="min-w-0">
-                                    <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
+                                    <h2 class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">@quickAnswerQuestion</h2>
+
+                                    <p class="mt-3 text-[1.08rem] font-semibold leading-8 text-slate-900">
+                                        @quickAnswerText
+                                    </p>
 
                                     @if (hasIntroText)
                                     {
-                                        <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                        <div class="site-content prose prose-slate prose-lg mt-4 max-w-none text-slate-700">
                                             @Model.MottoContent!.IntroText.RenderAutoLinks()
                                         </div>
                                     }

@@ -160,9 +160,9 @@
                                                 if (!string.IsNullOrEmpty(imgSrc))
                                                 {
                                                     var isSymbolImage = string.Equals(col.Key, "symbol_image", StringComparison.OrdinalIgnoreCase);
-                                                    var tableImageSrc = isSymbolImage ? Images.Crop(imgSrc, 192, 128) : Images.Thumb(imgSrc);
+                                                    var tableImageSrc = isSymbolImage ? Images.Thumb(imgSrc) : Images.Thumb(imgSrc);
                                                     var imageClass = isSymbolImage
-                                                        ? "h-14 w-20 md:h-16 md:w-24 rounded-md object-cover"
+                                                        ? "h-14 md:h-16 w-auto rounded-md object-contain"
                                                         : "h-14 md:h-16 w-auto object-contain";
                                                     <img src="@tableImageSrc" alt="@GetTableImageAlt(imgSrc, stateName, col.Label)" class="@imageClass" loading="lazy" decoding="async" />
                                                 }

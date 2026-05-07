@@ -127,8 +127,9 @@
         ttState.textContent = d.n || '';
 
         if (ttImage) {
-            if (d.img) {
-                ttImage.src = d.img;
+            var image = d.img || getFirstItemImage(d.items);
+            if (image) {
+                ttImage.src = image;
                 ttImage.classList.remove('hidden');
             } else {
                 ttImage.removeAttribute('src');
@@ -202,6 +203,14 @@
         });
 
         target.classList.toggle('hidden', target.childElementCount === 0);
+    }
+
+    function getFirstItemImage(items) {
+        if (!Array.isArray(items)) return '';
+        for (var i = 0; i < items.length; i += 1) {
+            if (items[i] && items[i].img) return items[i].img;
+        }
+        return '';
     }
 
     function renderItems(target, items) {

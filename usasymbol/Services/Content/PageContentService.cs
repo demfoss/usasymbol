@@ -190,6 +190,9 @@ namespace USASymbol.Services
                             Url         = Str(s, "url"),
                             Description = Str(s, "description"),
                         });
+
+                if (pageD.TryGetValue("sections", out var pageSects) && pageSects is List<object> pageSectsList)
+                    ParseSectionsInto(content, pageSectsList);
             }
 
 
@@ -215,43 +218,7 @@ namespace USASymbol.Services
 
 
             if (raw.TryGetValue("sections", out var sectsObj) && sectsObj is List<object> sectsL)
-                foreach (var s in sectsL.OfType<Dictionary<object, object>>())
-                {
-                    var sect = new PageSection
-                    {
-                        Id       = Str(s, "id"),
-                        Icon     = Str(s, "icon"),
-                        Title    = Str(s, "title"),
-                        Img      = s.ContainsKey("img")       ? Str(s, "img")       : null,
-                        ImgRight = s.ContainsKey("img_right") ? Str(s, "img_right") : null,
-                    };
-
-                    if (s.TryGetValue("style",      out var style))
-                        sect.Style = style?.ToString();
-
-                    if (s.TryGetValue("paragraphs", out var parObj) && parObj is List<object> parL)
-                        sect.Paragraphs = parL.Select(x => x?.ToString() ?? "").ToList();
-
-                    if (s.TryGetValue("subsections", out var subObj) && subObj is List<object> subL)
-                    {
-                        sect.Subsections = new List<PageSubsection>();
-                        foreach (var sub in subL.OfType<Dictionary<object, object>>())
-                        {
-                            var pageSub = new PageSubsection { Subtitle = Str(sub, "subtitle"), Text = Str(sub, "text") };
-                            if (sub.TryGetValue("link", out var linkObj) && linkObj is Dictionary<object, object> linkD)
-                                pageSub.Link = new LinkData { Label = Str(linkD, "label"), Url = Str(linkD, "url") };
-                            sect.Subsections.Add(pageSub);
-                        }
-                    }
-
-                    if (s.TryGetValue("facts", out var factsObj) && factsObj is List<object> factsL)
-                        sect.Facts = factsL.Select(x => x?.ToString() ?? "").ToList();
-
-                    if (s.TryGetValue("table", out var tableObj) && tableObj is Dictionary<object, object> tableD)
-                        sect.Table = ParseSectionTable(tableD);
-
-                    content.Sections.Add(sect);
-                }
+                ParseSectionsInto(content, sectsL);
 
 
             if (raw.TryGetValue("table", out var tblObj) && tblObj is Dictionary<object, object> tblD)
@@ -372,6 +339,60 @@ namespace USASymbol.Services
                 }
 
             return table;
+        }
+
+        private static void ParseSectionsInto(PageContent content, List<object> sectsL)
+        {
+            foreach (var s in sectsL.OfType<Dictionary<object, object>>())
+            {
+                var sect = new PageSection
+                {
+                    Id       = Str(s, "id"),
+                    Icon     = Str(s, "icon"),
+                    Title    = Str(s, "title"),
+                    Img      = s.ContainsKey("img")       ? Str(s, "img")       : null,
+                    ImgRight = s.ContainsKey("img_right") ? Str(s, "img_right") : null,
+                };
+
+                if (s.TryGetValue("style", out var style))
+                    sect.Style = style?.ToString();
+
+                if (s.TryGetValue("paragraphs", out var parObj) && parObj is List<object> parL)
+                    sect.Paragraphs = parL.Select(x => x?.ToString() ?? "").ToList();
+
+                if (s.TryGetValue("subsections", out var subObj) && subObj is List<object> subL)
+                {
+                    sect.Subsections = new List<PageSubsection>();
+                    foreach (var sub in subL.OfType<Dictionary<object, object>>())
+                    {
+                        var pageSub = new PageSubsection { Subtitle = Str(sub, "subtitle"), Text = Str(sub, "text") };
+                        if (sub.TryGetValue("link", out var linkObj) && linkObj is Dictionary<object, object> linkD)
+                            pageSub.Link = new LinkData { Label = Str(linkD, "label"), Url = Str(linkD, "url") };
+                        sect.Subsections.Add(pageSub);
+                    }
+                }
+
+                if (s.TryGetValue("facts", out var factsObj) && factsObj is List<object> factsL)
+                    sect.Facts = factsL.Select(x => x?.ToString() ?? "").ToList();
+
+                if (s.TryGetValue("table", out var tableObj) && tableObj is Dictionary<object, object> tableD)
+                    sect.Table = ParseSectionTable(tableD);
+
+                if (s.TryGetValue("highlights", out var hlObj) && hlObj is List<object> hlL)
+                {
+                    sect.Highlights = new List<PageHighlight>();
+                    foreach (var h in hlL.OfType<Dictionary<object, object>>())
+                        sect.Highlights.Add(new PageHighlight
+                        {
+                            Name        = Str(h, "name"),
+                            State       = h.ContainsKey("state") ? Str(h, "state") : "",
+                            Image       = h.ContainsKey("image") ? Str(h, "image") : "",
+                            Description = h.ContainsKey("description") ? Str(h, "description") : "",
+                        });
+                }
+
+                content.Sections.Add(sect);
+            }
         }
 
         private static PageSectionTable ParseSectionTable(Dictionary<object, object> d)

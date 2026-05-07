@@ -142,6 +142,15 @@ namespace USASymbol.Models.Content
         public List<PageSubsection>? Subsections { get; set; }
         public List<string>? Facts { get; set; }
         public PageSectionTable? Table { get; set; }
+        public List<PageHighlight>? Highlights { get; set; }
+    }
+
+    public class PageHighlight
+    {
+        public string Name { get; set; } = "";
+        public string State { get; set; } = "";
+        public string Image { get; set; } = "";
+        public string Description { get; set; } = "";
     }
 
     public class PageSectionTable

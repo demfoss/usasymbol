@@ -180,7 +180,7 @@
             @await Html.PartialAsync("_SymbolHero", heroModel)
 
             <aside class="hidden xl:block relative self-start xl:sticky xl:top-32">
-                <div class="max-h-[calc(100vh-9rem)] overflow-y-auto pr-2 pb-10 [scrollbar-width:thin]">
+                <div class="pr-2 pb-10">
                     @await Html.PartialAsync("_TocSidebar", Model)
                 </div>
             </aside>

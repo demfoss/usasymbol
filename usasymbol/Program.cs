@@ -142,6 +142,12 @@ app.MapGet("/sitemap-compare.xml", async (SitemapCacheService cache) =>
     return Results.Content(xml, "application/xml");
 });
 
+app.MapGet("/sitemap-images.xml", async (SitemapCacheService cache) =>
+{
+    var xml = await cache.GetImageSitemapAsync();
+    return Results.Content(xml, "application/xml");
+});
+
 
 
 
@@ -229,7 +235,7 @@ if (!app.Environment.IsDevelopment())
         OnPrepareResponse = ctx =>
         {
             var path = ctx.Context.Request.Path;
-            var cacheControl = path.StartsWithSegments("/ads.txt")
+            var cacheControl = path.StartsWithSegments("/ads.txt") || path.StartsWithSegments("/llms.txt")
                 ? "public,max-age=3600"
                 : "public,max-age=31536000,immutable";
 

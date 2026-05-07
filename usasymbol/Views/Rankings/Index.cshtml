@@ -282,6 +282,8 @@
   "name": "@(isGroupPage ? $"{groupCategory?.Title} Rankings" : "U.S. State Rankings")",
   "description": "@ViewData["Description"]",
   "url": "@($"{baseUrl}{ViewData["Canonical"]}")",
+  "license": "@($"{baseUrl}/terms")",
+  "creator": { "@@type": "Organization", "name": "USA Symbol", "url": "@baseUrl" },
   "publisher": {
     "@@type": "Organization",
     "name": "USA Symbol",

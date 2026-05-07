@@ -132,9 +132,11 @@ namespace USASymbol.Controllers
                 .ToDictionary(g => g.Key, g => g.Select(s => s.ImageUrl!).ToList());
             var licensePlateImages = GetLicensePlateHeroImages();
             if (licensePlateImages.Count > 0)
-            {
                 imagesByType["license-plate"] = licensePlateImages;
-            }
+
+            var sealImages = GetSealImages();
+            if (sealImages.Count > 0)
+                imagesByType["state-seal"] = sealImages;
 
             var order = new[] { "birds", "flowers", "trees", "flags", "beverages", "mammals", "dinosaurs", "mottos", "nicknames", "colors", "license-plate-slogans", "state-seals" };
 
@@ -178,6 +180,19 @@ namespace USASymbol.Controllers
                         }
                     };
                 })
+                .ToList();
+        }
+
+        private List<string> GetSealImages()
+        {
+            var sealsDir = Path.Combine(_env.WebRootPath, "images", "seals");
+            if (!Directory.Exists(sealsDir))
+                return new List<string>();
+
+            return Directory
+                .EnumerateFiles(sealsDir, "seal.webp", SearchOption.AllDirectories)
+                .Select(f => "/images/seals/" + Path.GetFileName(Path.GetDirectoryName(f)) + "/seal.webp")
+                .Where(url => !string.IsNullOrEmpty(url))
                 .ToList();
         }
 

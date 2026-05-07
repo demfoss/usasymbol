@@ -1471,6 +1471,8 @@
   "name": "@Html.Raw(System.Text.Json.JsonSerializer.Serialize($"{Model.StateA.Name} vs {Model.StateB.Name}: {Model.Metric.Name} Comparison"))",
   "description": "@Html.Raw(System.Text.Json.JsonSerializer.Serialize(directAnswer ?? $"Compare {Model.Metric.Name.ToLower()} between {Model.StateA.Name} and {Model.StateB.Name}."))",
   "url": "https://usasymbol.com/compare/@Model.PairSlug/@Model.Metric.Slug",
+  "license": "https://usasymbol.com/terms",
+  "creator": { "@@type": "Organization", "name": "USA Symbol", "url": "https://usasymbol.com" },
   "about": [
     { "@@type": "AdministrativeArea", "name": "@Model.StateA.Name", "identifier": "@Model.StateA.Abbreviation" },
     { "@@type": "AdministrativeArea", "name": "@Model.StateB.Name", "identifier": "@Model.StateB.Abbreviation" }

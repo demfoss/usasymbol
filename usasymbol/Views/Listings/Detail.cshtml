@@ -177,12 +177,18 @@
             @if (Model.HasQuickAnswer)
             {
                 @await Html.PartialAsync("Pages/_QuickAnswer", Model)
-                <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+                @if (content?.Map == null)
+                {
+                    <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+                }
             }
 
-            <section class="content-divider">
-                @await Html.RenderMapBlockAsync(content?.Map, content?.Table)
-            </section>
+            @if (content?.Map != null)
+            {
+                <section class="content-divider">
+                    @await Html.RenderMapBlockAsync(content.Map, content?.Table)
+                </section>
+            }
 
             <section id="listing-table" class="scroll-mt-24">
                 <div class="flex items-baseline justify-between gap-4">

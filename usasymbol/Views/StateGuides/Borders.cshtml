@@ -758,7 +758,22 @@
       "@@type": "Article",
       "headline": "@Model.State.Name Borders: States, Map & Complete Guide",
       "description": "@Html.Raw(ViewData["Description"]?.ToString())",
-      "image": "@Images.Full(Model.BorderContent?.Map?.Image ?? Model.State.FlagImageUrl)",
+      "image": {
+        "@@type": "ImageObject",
+        "url": "@Images.Full(Model.BorderContent?.Map?.Image ?? Model.State.FlagImageUrl)",
+        "contentUrl": "@Images.Full(Model.BorderContent?.Map?.Image ?? Model.State.FlagImageUrl)",
+        "name": "@Model.State.Name Borders Map",
+        "caption": "@(Model.BorderContent?.Map?.Caption ?? "")",
+        "creator": {
+          "@@type": "Organization",
+          "name": "USA Symbol and credited image licensors",
+          "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}")"
+        },
+        "creditText": "Image credits and license details belong to USA Symbol, Wikimedia Commons contributors, Creative Commons licensors, public-domain sources, or cited image providers as applicable.",
+        "copyrightNotice": "Copyright belongs to the credited creator or licensor unless the image is in the public domain.",
+        "license": "@($"{Context.Request.Scheme}://{Context.Request.Host}/terms#image-rights")",
+        "acquireLicensePage": "@($"{Context.Request.Scheme}://{Context.Request.Host}/contact")"
+      },
       "datePublished": "@(Model.BorderContent?.DatePublished?.ToString("yyyy-MM-dd") ?? "2024-01-15")",
       "dateModified": "@(Model.BorderContent?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"))",
       "author": {
@@ -772,8 +787,24 @@
         "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}")",
         "logo": {
           "@@type": "ImageObject",
-          "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")"
+          "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")",
+          "contentUrl": "@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")",
+          "creator": {
+            "@@type": "Organization",
+            "name": "USA Symbol",
+            "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}")"
+          },
+          "creditText": "USA Symbol",
+          "copyrightNotice": "Copyright USA Symbol unless otherwise noted.",
+          "license": "@($"{Context.Request.Scheme}://{Context.Request.Host}/terms#image-rights")",
+          "acquireLicensePage": "@($"{Context.Request.Scheme}://{Context.Request.Host}/contact")"
         }
+      },
+      "license": "@($"{Context.Request.Scheme}://{Context.Request.Host}/terms")",
+      "creator": {
+        "@@type": "Organization",
+        "name": "USA Symbol",
+        "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}")"
       },
       "mainEntityOfPage": {
         "@@type": "WebPage",

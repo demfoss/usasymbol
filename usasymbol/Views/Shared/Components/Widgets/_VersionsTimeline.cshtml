@@ -62,7 +62,7 @@
                         </div>
 
                         @* Card body *@
-                        <div class="p-5 sm:p-6 @(!string.IsNullOrWhiteSpace(imageUrl) ? "grid sm:grid-cols-[180px_minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)] gap-5 sm:gap-6 items-start" : "")">
+                        <div class="p-5 sm:p-6 @(!string.IsNullOrWhiteSpace(imageUrl) ? "grid grid-cols-1 sm:grid-cols-[200px_minmax(0,1fr)] lg:grid-cols-[260px_minmax(0,1fr)] gap-4 sm:gap-6 items-start" : "")">
 
                             @if (!string.IsNullOrWhiteSpace(imageUrl))
                             {

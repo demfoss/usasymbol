@@ -210,6 +210,8 @@
   "name": "@(isGroupPage ? $"{groupCategory?.Title} Collections" : "U.S. State Collections")",
   "description": "@ViewData["Description"]",
   "url": "@($"{baseUrl}{ViewData["Canonical"]}")",
+  "license": "@($"{baseUrl}/terms")",
+  "creator": { "@@type": "Organization", "name": "USA Symbol", "url": "@baseUrl" },
   "publisher": {
     "@@type": "Organization",
     "name": "USA Symbol",
