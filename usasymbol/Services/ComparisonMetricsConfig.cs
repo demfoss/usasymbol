@@ -223,6 +223,28 @@ namespace USASymbol.Services
             },
             new()
             {
+                Slug = "purchasing-power",
+                Name = "Purchasing Power of $100",
+                Description = "Real local value of $100 after adjusting for BEA Regional Price Parities.",
+                GroupSlug = "economy",
+                GroupName = "Income",
+                GroupOrder = 2,
+                SortOrder = 2,
+                Unit = "USD",
+                Icon = "fa-solid fa-money-bill-wave",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.PurchasingPower100,
+                GetDisplayValue = (_, stats) => stats?.PurchasingPower100 is double value ? $"${value:F2}" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.PurchasingPower100, sb?.PurchasingPower100, true,
+                    "Purchasing power data is not available for comparison.",
+                    "give the same real value for $100",
+                    "makes $100 go further than",
+                    "USD")
+            },
+            new()
+            {
                 Slug = "minimum-wage",
                 Name = "Minimum Wage",
                 Description = "State minimum wage in U.S. dollars per hour (U.S. Department of Labor, updated January 1, 2026).",
@@ -348,6 +370,27 @@ namespace USASymbol.Services
                     "have the same average regular gas price",
                     "has cheaper regular gas than",
                     "USD")
+            },
+            new()
+            {
+                Slug = "gas-tax",
+                Name = "Gas Tax",
+                Description = "State gasoline excise tax in cents per gallon. Lower = lower state fuel tax burden.",
+                GroupSlug = "quality-of-life",
+                GroupName = "Quality of Life",
+                GroupOrder = 3,
+                SortOrder = 4,
+                Unit = "cents-gal",
+                Icon = "fa-solid fa-gas-pump",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.GasTaxCents,
+                GetDisplayValue = (_, stats) => stats?.GasTaxCents is double value ? $"{value:F2} c/gal" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.GasTaxCents, sb?.GasTaxCents, false,
+                    "Gas tax data is not available for comparison.",
+                    "have the same state gas tax rate",
+                    "has a lower state gas tax than")
             },
             new()
             {
@@ -1037,6 +1080,52 @@ namespace USASymbol.Services
             },
             new()
             {
+                Slug = "marriage-age",
+                Name = "Minimum Marriage Age",
+                Description = "Minimum marriage age with statutory exceptions. California has no statutory minimum age.",
+                GroupSlug = "laws",
+                GroupName = "Laws",
+                GroupOrder = 8,
+                SortOrder = 4,
+                Unit = "years",
+                Icon = "fa-solid fa-ring",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.MarriageMinAge,
+                GetDisplayValue = (_, stats) =>
+                {
+                    if (stats?.MarriageMinAge is null)
+                        return null;
+
+                    if (stats.MarriageMinAge.Value == 0)
+                        return "No statutory minimum";
+
+                    return string.IsNullOrWhiteSpace(stats.MarriageMinAgeLabel)
+                        ? $"{stats.MarriageMinAge.Value}"
+                        : stats.MarriageMinAgeLabel;
+                },
+                GenerateSummary = (a, sa, b, sb) =>
+                {
+                    var ageA = sa?.MarriageMinAge;
+                    var ageB = sb?.MarriageMinAge;
+                    if (ageA is null || ageB is null)
+                        return "Marriage age data is not available for comparison.";
+
+                    if (ageA.Value == ageB.Value)
+                    {
+                        var label = ageA.Value == 0
+                            ? "no statutory minimum marriage age"
+                            : $"a minimum marriage age of {ageA.Value}";
+                        return $"{a.Name} and {b.Name} both have {label}.";
+                    }
+
+                    var higherState = ageA.Value > ageB.Value ? a : b;
+                    var lowerState = higherState == a ? b : a;
+                    return $"{higherState.Name} has a higher minimum marriage age than {lowerState.Name}.";
+                }
+            },
+            new()
+            {
                 Slug = "land-area",
                 Name = "Land Area",
                 Description = "Total land area in square miles.",
@@ -1277,6 +1366,182 @@ namespace USASymbol.Services
                     "Property crime data is not available for comparison.",
                     "have the same property crime rate",
                     "has a lower property crime rate than")
+            },
+
+            // ── Education (GroupOrder 12) ────────────────────────────────────────
+            new()
+            {
+                Slug = "k12-rank",
+                Name = "K-12 Education Rank",
+                Description = "US News Best States K-12 education sub-ranking (1 = best, 50 = worst).",
+                GroupSlug = "education",
+                GroupName = "Education",
+                GroupOrder = 12,
+                SortOrder = 1,
+                Unit = "",
+                Icon = "fa-solid fa-graduation-cap",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.K12Rank.HasValue == true ? (double)stats.K12Rank.Value : null,
+                GetDisplayValue = (_, stats) => stats?.K12Rank is int r ? $"#{r}" : null,
+                GenerateSummary = (a, sa, b, sb) =>
+                {
+                    if (sa?.K12Rank is null || sb?.K12Rank is null) return "K-12 ranking data is not available.";
+                    if (sa.K12Rank == sb.K12Rank) return $"{a.Name} and {b.Name} share the same K-12 education rank.";
+                    var better = sa.K12Rank < sb.K12Rank ? a : b;
+                    var worse  = better == a ? b : a;
+                    var rankBetter = better == a ? sa.K12Rank!.Value : sb.K12Rank!.Value;
+                    var rankWorse  = better == a ? sb.K12Rank!.Value : sa.K12Rank!.Value;
+                    return $"{better.Name} ranks #{rankBetter} for K-12 education, higher than {worse.Name} at #{rankWorse} (US News).";
+                }
+            },
+            new()
+            {
+                Slug = "hs-graduation-rate",
+                Name = "High School Graduation Rate",
+                Description = "4-year adjusted cohort graduation rate for public high schools (NCES).",
+                GroupSlug = "education",
+                GroupName = "Education",
+                GroupOrder = 12,
+                SortOrder = 2,
+                Unit = "%",
+                Icon = "fa-solid fa-user-graduate",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.HighSchoolGraduationPct,
+                GetDisplayValue = (_, stats) => stats?.HighSchoolGraduationPct is double v ? $"{v:F1}%" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.HighSchoolGraduationPct, sb?.HighSchoolGraduationPct, true,
+                    "High school graduation data is not available.",
+                    "have the same high school graduation rate",
+                    "has a higher high school graduation rate than")
+            },
+            new()
+            {
+                Slug = "student-teacher-ratio",
+                Name = "Student-Teacher Ratio",
+                Description = "Average number of pupils per teacher in public K-12 schools (NCES).",
+                GroupSlug = "education",
+                GroupName = "Education",
+                GroupOrder = 12,
+                SortOrder = 3,
+                Unit = ":1",
+                Icon = "fa-solid fa-chalkboard-teacher",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.StudentTeacherRatio,
+                GetDisplayValue = (_, stats) => stats?.StudentTeacherRatio is double v ? $"{v:F1}:1" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.StudentTeacherRatio, sb?.StudentTeacherRatio, false,
+                    "Student-teacher ratio data is not available.",
+                    "have the same student-teacher ratio",
+                    "has a lower student-teacher ratio than")
+            },
+
+            // ── Natural Disaster Risk (GroupOrder 13) ───────────────────────────
+            new()
+            {
+                Slug = "hurricane-risk",
+                Name = "Hurricane Risk",
+                Description = "Relative hurricane exposure based on FEMA National Risk Index (None / Low / Moderate / High / Very High).",
+                GroupSlug = "disasters",
+                GroupName = "Natural Disasters",
+                GroupOrder = 13,
+                SortOrder = 1,
+                Unit = "",
+                Icon = "fa-solid fa-wind",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.HurricaneRisk switch {
+                    "None" => 0, "Low" => 1, "Moderate" => 2, "High" => 3, "Very High" => 4, _ => null
+                },
+                GetDisplayValue = (_, stats) => stats?.HurricaneRisk,
+                GenerateSummary = (a, sa, b, sb) =>
+                {
+                    var rA = sa?.HurricaneRisk; var rB = sb?.HurricaneRisk;
+                    if (rA is null || rB is null) return "Hurricane risk data is not available.";
+                    return rA == rB
+                        ? $"{a.Name} and {b.Name} share the same hurricane risk level ({rA.ToLowerInvariant()})."
+                        : $"{a.Name} has {rA.ToLowerInvariant()} hurricane risk, while {b.Name} has {rB.ToLowerInvariant()} hurricane risk.";
+                }
+            },
+            new()
+            {
+                Slug = "tornado-risk",
+                Name = "Tornado Risk",
+                Description = "Relative tornado exposure based on FEMA National Risk Index (None / Low / Moderate / High / Very High).",
+                GroupSlug = "disasters",
+                GroupName = "Natural Disasters",
+                GroupOrder = 13,
+                SortOrder = 2,
+                Unit = "",
+                Icon = "fa-solid fa-tornado",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.TornadoRisk switch {
+                    "None" => 0, "Low" => 1, "Moderate" => 2, "High" => 3, "Very High" => 4, _ => null
+                },
+                GetDisplayValue = (_, stats) => stats?.TornadoRisk,
+                GenerateSummary = (a, sa, b, sb) =>
+                {
+                    var rA = sa?.TornadoRisk; var rB = sb?.TornadoRisk;
+                    if (rA is null || rB is null) return "Tornado risk data is not available.";
+                    return rA == rB
+                        ? $"{a.Name} and {b.Name} share the same tornado risk level ({rA.ToLowerInvariant()})."
+                        : $"{a.Name} has {rA.ToLowerInvariant()} tornado risk, while {b.Name} has {rB.ToLowerInvariant()} tornado risk.";
+                }
+            },
+            new()
+            {
+                Slug = "earthquake-risk",
+                Name = "Earthquake Risk",
+                Description = "Relative seismic exposure based on FEMA National Risk Index (None / Low / Moderate / High / Very High).",
+                GroupSlug = "disasters",
+                GroupName = "Natural Disasters",
+                GroupOrder = 13,
+                SortOrder = 3,
+                Unit = "",
+                Icon = "fa-solid fa-house-crack",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.EarthquakeRisk switch {
+                    "None" => 0, "Low" => 1, "Moderate" => 2, "High" => 3, "Very High" => 4, _ => null
+                },
+                GetDisplayValue = (_, stats) => stats?.EarthquakeRisk,
+                GenerateSummary = (a, sa, b, sb) =>
+                {
+                    var rA = sa?.EarthquakeRisk; var rB = sb?.EarthquakeRisk;
+                    if (rA is null || rB is null) return "Earthquake risk data is not available.";
+                    return rA == rB
+                        ? $"{a.Name} and {b.Name} share the same earthquake risk level ({rA.ToLowerInvariant()})."
+                        : $"{a.Name} has {rA.ToLowerInvariant()} earthquake risk, while {b.Name} has {rB.ToLowerInvariant()} earthquake risk.";
+                }
+            },
+            new()
+            {
+                Slug = "wildfire-risk",
+                Name = "Wildfire Risk",
+                Description = "Relative wildfire exposure based on FEMA National Risk Index (None / Low / Moderate / High / Very High).",
+                GroupSlug = "disasters",
+                GroupName = "Natural Disasters",
+                GroupOrder = 13,
+                SortOrder = 4,
+                Unit = "",
+                Icon = "fa-solid fa-fire",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.WildfireRisk switch {
+                    "None" => 0, "Low" => 1, "Moderate" => 2, "High" => 3, "Very High" => 4, _ => null
+                },
+                GetDisplayValue = (_, stats) => stats?.WildfireRisk,
+                GenerateSummary = (a, sa, b, sb) =>
+                {
+                    var rA = sa?.WildfireRisk; var rB = sb?.WildfireRisk;
+                    if (rA is null || rB is null) return "Wildfire risk data is not available.";
+                    return rA == rB
+                        ? $"{a.Name} and {b.Name} share the same wildfire risk level ({rA.ToLowerInvariant()})."
+                        : $"{a.Name} has {rA.ToLowerInvariant()} wildfire risk, while {b.Name} has {rB.ToLowerInvariant()} wildfire risk.";
+                }
             }
         };
 

@@ -13,6 +13,7 @@ namespace USASymbol.Models
         public double? CollegeEducatedPct { get; set; }
         public double? AdvancedDegreePct { get; set; }
         public double? RegionalPriceParity { get; set; }
+        public double? PurchasingPower100 { get; set; }
         public double? PovertyRatePct { get; set; }
         public double? EmploymentPopulationRatioPct { get; set; }
         public double? UnemploymentRatePct { get; set; }
@@ -39,6 +40,9 @@ namespace USASymbol.Models
 
         /// <summary>Effective real-estate property tax rate (% of home value, WalletHub 2026 using 2024 data).</summary>
         public double? PropertyTaxRatePct { get; set; }
+
+        /// <summary>State gasoline excise tax in cents per gallon.</summary>
+        public double? GasTaxCents { get; set; }
 
         /// <summary>Signed 2024 presidential margin in percentage points (positive = Democratic, negative = Republican).</summary>
         public double? PresidentialVotingMarginPct { get; set; }
@@ -70,6 +74,15 @@ namespace USASymbol.Models
         /// <summary>Current statewide marijuana legalization status.</summary>
         public string? MarijuanaLegalizationStatus { get; set; }
 
+        /// <summary>Age at which a person may marry without parental consent.</summary>
+        public int? MarriageAgeWithoutConsent { get; set; }
+
+        /// <summary>Minimum marriage age with exceptions; 0 means no statutory minimum is set.</summary>
+        public int? MarriageMinAge { get; set; }
+
+        /// <summary>Human-readable minimum marriage age label from the state statute summary.</summary>
+        public string? MarriageMinAgeLabel { get; set; }
+
         // Tier 2 - quality of life / livability
         /// <summary>WalletHub Best States to Live In total score.</summary>
         public double? LivabilityScore { get; set; }
@@ -100,6 +113,22 @@ namespace USASymbol.Models
 
         /// <summary>Property crime incidents per 100,000 residents.</summary>
         public double? PropertyCrimeRatePer100k { get; set; }
+
+        // Education
+        /// <summary>US News K-12 education ranking (1 = best, 50 = worst).</summary>
+        public int? K12Rank { get; set; }
+
+        /// <summary>4-year adjusted cohort high school graduation rate (NCES).</summary>
+        public double? HighSchoolGraduationPct { get; set; }
+
+        /// <summary>Pupils per teacher in public K-12 schools (NCES).</summary>
+        public double? StudentTeacherRatio { get; set; }
+
+        // Natural disaster risk (FEMA NRI composite: None / Low / Moderate / High / Very High)
+        public string? HurricaneRisk { get; set; }
+        public string? TornadoRisk { get; set; }
+        public string? EarthquakeRisk { get; set; }
+        public string? WildfireRisk { get; set; }
 
         // Calculated
         public double? PopulationDensity(int? population)

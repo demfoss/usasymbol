@@ -72,6 +72,9 @@ namespace USASymbol.Services
                 if (fields.TryGetValue("regional_price_parity", out var rpp) && rpp != null)
                     stats.RegionalPriceParity = Convert.ToDouble(rpp);
 
+                if (fields.TryGetValue("purchasing_power_100", out var purchasingPower) && purchasingPower != null)
+                    stats.PurchasingPower100 = Convert.ToDouble(purchasingPower);
+
                 if (fields.TryGetValue("poverty_rate_pct", out var poverty) && poverty != null)
                     stats.PovertyRatePct = Convert.ToDouble(poverty);
 
@@ -105,6 +108,9 @@ namespace USASymbol.Services
                 if (fields.TryGetValue("property_tax_rate_pct", out var ptax) && ptax != null)
                     stats.PropertyTaxRatePct = Convert.ToDouble(ptax);
 
+                if (fields.TryGetValue("gas_tax_cents", out var gasTax) && gasTax != null)
+                    stats.GasTaxCents = Convert.ToDouble(gasTax);
+
                 if (fields.TryGetValue("presidential_margin_pct", out var presidentialMargin) && presidentialMargin != null)
                     stats.PresidentialVotingMarginPct = Convert.ToDouble(presidentialMargin);
 
@@ -134,6 +140,15 @@ namespace USASymbol.Services
 
                 if (fields.TryGetValue("marijuana_legalization_status", out var marijuanaLegalizationStatus) && marijuanaLegalizationStatus != null)
                     stats.MarijuanaLegalizationStatus = Convert.ToString(marijuanaLegalizationStatus);
+
+                if (fields.TryGetValue("marriage_age_without_consent", out var marriageAgeWithoutConsent) && marriageAgeWithoutConsent != null)
+                    stats.MarriageAgeWithoutConsent = Convert.ToInt32(marriageAgeWithoutConsent);
+
+                if (fields.TryGetValue("marriage_min_age", out var marriageMinAge) && marriageMinAge != null)
+                    stats.MarriageMinAge = Convert.ToInt32(marriageMinAge);
+
+                if (fields.TryGetValue("marriage_min_age_label", out var marriageMinAgeLabel) && marriageMinAgeLabel != null)
+                    stats.MarriageMinAgeLabel = Convert.ToString(marriageMinAgeLabel);
 
                 if (fields.TryGetValue("median_home_value", out var home) && home != null)
                     stats.MedianHomeValue = Convert.ToInt32(home);
@@ -188,6 +203,27 @@ namespace USASymbol.Services
 
                 if (fields.TryGetValue("property_crime_rate_per_100k", out var propertyCrime) && propertyCrime != null)
                     stats.PropertyCrimeRatePer100k = Convert.ToDouble(propertyCrime);
+
+                if (fields.TryGetValue("k12_rank", out var k12Rank) && k12Rank != null)
+                    stats.K12Rank = Convert.ToInt32(k12Rank);
+
+                if (fields.TryGetValue("high_school_graduation_pct", out var hsGrad) && hsGrad != null)
+                    stats.HighSchoolGraduationPct = Convert.ToDouble(hsGrad);
+
+                if (fields.TryGetValue("student_teacher_ratio", out var strRatio) && strRatio != null)
+                    stats.StudentTeacherRatio = Convert.ToDouble(strRatio);
+
+                if (fields.TryGetValue("hurricane_risk", out var hurricaneRisk) && hurricaneRisk != null)
+                    stats.HurricaneRisk = hurricaneRisk.ToString();
+
+                if (fields.TryGetValue("tornado_risk", out var tornadoRisk) && tornadoRisk != null)
+                    stats.TornadoRisk = tornadoRisk.ToString();
+
+                if (fields.TryGetValue("earthquake_risk", out var earthquakeRisk) && earthquakeRisk != null)
+                    stats.EarthquakeRisk = earthquakeRisk.ToString();
+
+                if (fields.TryGetValue("wildfire_risk", out var wildfireRisk) && wildfireRisk != null)
+                    stats.WildfireRisk = wildfireRisk.ToString();
 
                 result[slug] = stats;
             }

@@ -45,6 +45,21 @@
             "/compare/" + Model.PairSlug + "/cost-of-living"));
     }
 
+    if (Model.StatsA?.PurchasingPower100.HasValue == true && Model.StatsB?.PurchasingPower100.HasValue == true)
+    {
+        var stronger = Model.StatsA.PurchasingPower100 > Model.StatsB.PurchasingPower100 ? Model.StateA : Model.StateB;
+        var weaker = stronger == Model.StateA ? Model.StateB : Model.StateA;
+        var diff = Math.Abs(Model.StatsA.PurchasingPower100.Value - Model.StatsB.PurchasingPower100.Value);
+        spotlightCards.Add((
+            "fa-solid fa-money-bill-wave",
+            "Real Dollar Value",
+            $"$100 goes ${diff:F2} further in {stronger.Name}",
+            $"After BEA price-level adjustments, $100 has about ${Math.Max(Model.StatsA.PurchasingPower100.Value, Model.StatsB.PurchasingPower100.Value):F2} of local buying power in {stronger.Name}, versus ${Math.Min(Model.StatsA.PurchasingPower100.Value, Model.StatsB.PurchasingPower100.Value):F2} in {weaker.Name}.",
+            "from-lime-100 via-emerald-50 to-white",
+            "text-emerald-700 bg-emerald-100 border-emerald-200",
+            "/compare/" + Model.PairSlug + "/purchasing-power"));
+    }
+
     if (Model.StatsA?.MedianHouseholdIncome.HasValue == true && Model.StatsB?.MedianHouseholdIncome.HasValue == true)
     {
         var higher = Model.StatsA.MedianHouseholdIncome > Model.StatsB.MedianHouseholdIncome ? Model.StateA : Model.StateB;
@@ -217,6 +232,7 @@
     }
 
     var costOfLivingResult = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == "cost-of-living");
+    var purchasingPowerResult = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == "purchasing-power");
     var livabilityResult   = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == "livability-score");
     var incomeResult = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == "median-income");
     var incomeTaxResult = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == "income-tax");
@@ -225,10 +241,30 @@
     var popResult = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == "population");
     var areaResult = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == "land-area");
 
-    // Hero winner driven by livability score (higher = better quality of life)
+    // QoL-based winner used for the quality-of-life section bars
     var winnerSlug = livabilityResult?.WinnerSlug ?? costOfLivingResult?.WinnerSlug;
     var winnerState = winnerSlug == Model.StateA.Slug ? Model.StateA : winnerSlug == Model.StateB.Slug ? Model.StateB : null;
     var diffLabel = livabilityResult?.DifferenceText;
+
+    // Overall winner for the hero card highlight — same scoring logic as the score section below
+    string? heroWinnerSlug = null;
+    {
+        var _heroSlugs = new HashSet<string> {
+            "population","density","college-educated","median-income","minimum-wage","poverty-rate",
+            "employment-population-ratio","regional-price-parity","livability-score","cost-of-living",
+            "gas-price","electricity-rates","average-temperature","summer-temperature","winter-temperature",
+            "sunny-days","annual-precipitation","commute-time","home-value","median-rent",
+            "owner-costs-with-mortgage","owner-costs-without-mortgage","homeownership-rate",
+            "home-value-to-income","rent-to-income","owner-costs-to-income","income-tax","sales-tax",
+            "property-tax","land-area","highest-point","life-expectancy","violent-crime"
+        };
+        var _heroResults = Model.MetricResults.Where(r => _heroSlugs.Contains(r.Metric.Slug) && r.WinnerSlug != null).ToList();
+        var _heroWinsA = _heroResults.Count(r => r.WinnerSlug == Model.StateA.Slug);
+        var _heroWinsB = _heroResults.Count(r => r.WinnerSlug == Model.StateB.Slug);
+        heroWinnerSlug = _heroWinsA > _heroWinsB ? Model.StateA.Slug
+                       : _heroWinsB > _heroWinsA ? Model.StateB.Slug
+                       : winnerSlug; // fall back to QoL winner on a tie
+    }
 
     string? scaleStatement = null;
     if (areaResult?.NumericA.HasValue == true && areaResult?.NumericB.HasValue == true && areaResult.NumericA.Value != areaResult.NumericB.Value)
@@ -256,6 +292,12 @@
     {
         var cheaper = costOfLivingResult.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
         heroSummaryParts.Add($"{cheaper.Name} is cheaper overall");
+    }
+
+    if (purchasingPowerResult?.WinnerSlug != null)
+    {
+        var strongerDollar = purchasingPowerResult.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
+        heroSummaryParts.Add($"$100 goes further in {strongerDollar.Name}");
     }
 
     if (incomeResult?.WinnerSlug != null)
@@ -289,6 +331,99 @@
         2 => heroSummaryParts[0] + ", while " + heroSummaryParts[1] + ".",
         _ => heroSummaryParts[0] + ", while " + string.Join(", ", heroSummaryParts.Skip(1).Take(heroSummaryParts.Count - 2)) + ", and " + heroSummaryParts.Last() + "."
     };
+
+    string? BuildTradeoffLine(string slug, State state, bool stateWins)
+    {
+        return slug switch
+        {
+            "cost-of-living" => stateWins
+                ? $"{state.Name} has a lower overall cost of living."
+                : $"{state.Name} has a higher overall cost of living.",
+            "home-value-to-income" => stateWins
+                ? $"{state.Name} has a lower housing cost index."
+                : $"{state.Name} has a higher housing cost index.",
+            "home-value" => stateWins
+                ? $"{state.Name} has lower median home values."
+                : $"{state.Name} has higher median home values.",
+            "median-income" => stateWins
+                ? $"{state.Name} shows higher median income."
+                : $"{state.Name} shows lower median income.",
+            "property-tax" => stateWins
+                ? $"{state.Name} has lower property tax rates on average."
+                : $"{state.Name} has higher property tax rates on average.",
+            "violent-crime" => stateWins
+                ? $"{state.Name} has a lower violent crime rate."
+                : $"{state.Name} has a higher violent crime rate.",
+            "job-growth" => stateWins
+                ? $"{state.Name} job growth trend is stronger."
+                : $"{state.Name} job growth trend is weaker.",
+            "life-expectancy" => stateWins
+                ? $"{state.Name} health access/outcomes proxy is higher."
+                : $"{state.Name} health access/outcomes proxy is lower.",
+            "uninsured-rate" => stateWins
+                ? $"{state.Name} health coverage access proxy is stronger."
+                : $"{state.Name} health coverage access proxy is weaker.",
+            "college-educated" => stateWins
+                ? $"{state.Name} education proxy is higher."
+                : $"{state.Name} education proxy is lower.",
+            "sunny-days" => stateWins
+                ? $"{state.Name} has more sunny days."
+                : $"{state.Name} has fewer sunny days.",
+            _ => null
+        };
+    }
+
+    var prosConsSourceSlugs = new[]
+    {
+        "cost-of-living",
+        "home-value-to-income",
+        "home-value",
+        "median-income",
+        "property-tax",
+        "violent-crime",
+        "job-growth",
+        "life-expectancy",
+        "uninsured-rate",
+        "college-educated",
+        "sunny-days"
+    };
+
+    List<string> BuildTradeoffList(State state, bool pros)
+    {
+        var items = new List<string>();
+        foreach (var slug in prosConsSourceSlugs)
+        {
+            var result = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == slug);
+            if (result?.WinnerSlug == null)
+            {
+                continue;
+            }
+
+            var stateWins = result.WinnerSlug == state.Slug;
+            if (stateWins != pros)
+            {
+                continue;
+            }
+
+            var line = BuildTradeoffLine(slug, state, stateWins);
+            if (!string.IsNullOrWhiteSpace(line) && !items.Contains(line))
+            {
+                items.Add(line);
+            }
+
+            if (items.Count >= 6)
+            {
+                break;
+            }
+        }
+
+        return items;
+    }
+
+    var prosA = BuildTradeoffList(Model.StateA, true);
+    var consA = BuildTradeoffList(Model.StateA, false);
+    var prosB = BuildTradeoffList(Model.StateB, true);
+    var consB = BuildTradeoffList(Model.StateB, false);
 
     ViewData["Title"] = ViewData["Title"] ?? $"{titleA} vs {titleB}";
 }
@@ -324,16 +459,16 @@
                 var livA = livabilityResult?.NumericA;
                 var livB = livabilityResult?.NumericB;
             }
-            <article class="rounded-[1.8rem] border @(winnerSlug == Model.StateA.Slug ? "border-emerald-300 bg-white text-slate-900 shadow-[0_26px_60px_-30px_rgba(16,185,129,0.6)]" : "border-white/15 bg-white/10 text-white") backdrop-blur-sm p-6 md:p-7">
+            <article class="rounded-[1.8rem] border @(heroWinnerSlug == Model.StateA.Slug ? "border-emerald-300 bg-white text-slate-900 shadow-[0_26px_60px_-30px_rgba(16,185,129,0.6)]" : "border-white/15 bg-white/10 text-white") backdrop-blur-sm p-6 md:p-7">
                 <div class="flex items-start gap-4">
                     <img src="@Images.Card(Model.StateA.FlagImageUrl)" alt="@Model.StateA.Name flag" class="w-16 h-11 md:w-20 md:h-14 object-cover rounded-lg shadow-md shrink-0" onerror="this.style.display='none'" />
                     <div class="min-w-0">
                         <div class="text-2xl md:text-3xl font-extrabold leading-tight">@Model.StateA.Name</div>
-                        <div class="text-sm md:text-base @(winnerSlug == Model.StateA.Slug ? "text-slate-500" : "text-blue-100")">@Model.StateA.Abbreviation &bull; @(Model.StateA.Region ?? "United States")</div>
-                        @if (winnerSlug == Model.StateA.Slug)
+                        <div class="text-sm md:text-base @(heroWinnerSlug == Model.StateA.Slug ? "text-slate-500" : "text-blue-100")"><a href="/states/@Model.StateA.Slug/abbreviation" class="hover:underline">@Model.StateA.Abbreviation</a> &bull; @(Model.StateA.Region ?? "United States")</div>
+                        @if (heroWinnerSlug == Model.StateA.Slug)
                         {
                             <div class="mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 text-emerald-700 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]">
-                                <i class="fa-solid fa-crown text-[10px]"></i> Better quality of life
+                                <i class="fa-solid fa-crown text-[10px]"></i> Overall winner
                             </div>
                         }
                     </div>
@@ -341,7 +476,7 @@
                 @if (livA.HasValue)
                 {
                     <div class="mt-5">
-                        <div class="text-xs font-semibold uppercase tracking-[0.18em] @(winnerSlug == Model.StateA.Slug ? "text-slate-500" : "text-blue-200") mb-1">Quality of Life Score</div>
+                        <div class="text-xs font-semibold uppercase tracking-[0.18em] @(heroWinnerSlug == Model.StateA.Slug ? "text-slate-500" : "text-blue-200") mb-1">Quality of Life Score</div>
                         <div class="text-4xl md:text-5xl font-extrabold tracking-tight">@livabilityResult!.DisplayValueA</div>
                     </div>
                 }
@@ -353,16 +488,16 @@
                 </div>
             </div>
 
-            <article class="rounded-[1.8rem] border @(winnerSlug == Model.StateB.Slug ? "border-emerald-300 bg-white text-slate-900 shadow-[0_26px_60px_-30px_rgba(16,185,129,0.6)]" : "border-white/15 bg-white/10 text-white") backdrop-blur-sm p-6 md:p-7">
+            <article class="rounded-[1.8rem] border @(heroWinnerSlug == Model.StateB.Slug ? "border-emerald-300 bg-white text-slate-900 shadow-[0_26px_60px_-30px_rgba(16,185,129,0.6)]" : "border-white/15 bg-white/10 text-white") backdrop-blur-sm p-6 md:p-7">
                 <div class="flex items-start gap-4">
                     <img src="@Images.Card(Model.StateB.FlagImageUrl)" alt="@Model.StateB.Name flag" class="w-16 h-11 md:w-20 md:h-14 object-cover rounded-lg shadow-md shrink-0" onerror="this.style.display='none'" />
                     <div class="min-w-0">
                         <div class="text-2xl md:text-3xl font-extrabold leading-tight">@Model.StateB.Name</div>
-                        <div class="text-sm md:text-base @(winnerSlug == Model.StateB.Slug ? "text-slate-500" : "text-blue-100")">@Model.StateB.Abbreviation &bull; @(Model.StateB.Region ?? "United States")</div>
-                        @if (winnerSlug == Model.StateB.Slug)
+                        <div class="text-sm md:text-base @(heroWinnerSlug == Model.StateB.Slug ? "text-slate-500" : "text-blue-100")"><a href="/states/@Model.StateB.Slug/abbreviation" class="hover:underline">@Model.StateB.Abbreviation</a> &bull; @(Model.StateB.Region ?? "United States")</div>
+                        @if (heroWinnerSlug == Model.StateB.Slug)
                         {
                             <div class="mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 text-emerald-700 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]">
-                                <i class="fa-solid fa-crown text-[10px]"></i> Better quality of life
+                                <i class="fa-solid fa-crown text-[10px]"></i> Overall winner
                             </div>
                         }
                     </div>
@@ -370,7 +505,7 @@
                 @if (livB.HasValue)
                 {
                     <div class="mt-5">
-                        <div class="text-xs font-semibold uppercase tracking-[0.18em] @(winnerSlug == Model.StateB.Slug ? "text-slate-500" : "text-blue-200") mb-1">Quality of Life Score</div>
+                        <div class="text-xs font-semibold uppercase tracking-[0.18em] @(heroWinnerSlug == Model.StateB.Slug ? "text-slate-500" : "text-blue-200") mb-1">Quality of Life Score</div>
                         <div class="text-4xl md:text-5xl font-extrabold tracking-tight">@livabilityResult!.DisplayValueB</div>
                     </div>
                 }
@@ -510,8 +645,8 @@
 }
 
 <section class="bg-white py-8 md:py-10 border-b">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid gap-6 lg:grid-cols-2">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div>
             <article class="rounded-[1.8rem] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-6 md:p-7 shadow-sm">
                 <div class="flex items-center gap-3 mb-5">
                     <span class="w-11 h-11 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center">
@@ -603,23 +738,6 @@
                 }
             </article>
 
-            <article class="rounded-[1.8rem] border border-amber-200 bg-[linear-gradient(180deg,#fffdf6_0%,#fff7e6_100%)] p-6 md:p-7">
-                <div class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700 mb-3">Quick Take</div>
-                <h2 class="text-2xl font-bold text-slate-900 mb-3">@titleA vs @titleB</h2>
-                <p class="text-sm leading-6 text-slate-700 mb-4">This quick read mixes affordability, housing, income, politics, density, and climate so the biggest tradeoffs show up fast.</p>
-                @if (quickTakeItems.Any())
-                {
-                    <ul class="space-y-2">
-                        @foreach (var take in quickTakeItems)
-                        {
-                            <li class="flex items-start gap-3 rounded-2xl border border-amber-200 bg-white/70 px-4 py-3 text-sm font-medium text-slate-700">
-                                <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0"></i>
-                                <span>@take</span>
-                            </li>
-                        }
-                    </ul>
-                }
-            </article>
         </div>
     </div>
 </section>
@@ -739,6 +857,107 @@
         .ThenBy(t => t.Label)
         .ToList();
 
+}
+
+@await Html.PartialAsync("_SalaryCompare", Model)
+
+@if (prosA.Any() || consA.Any() || prosB.Any() || consB.Any())
+{
+    <section class="bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] py-10 border-t border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-6 max-w-3xl">
+                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 mb-2">Tradeoffs</p>
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Pros and cons for each state</h2>
+                <p class="text-sm text-slate-600 mt-1.5">A fast scan of the biggest advantages and drawbacks pulled from affordability, housing, income, taxes, safety, health, education, jobs, and weather.</p>
+            </div>
+
+            <div class="grid gap-5 lg:grid-cols-2">
+                <article class="rounded-[1.7rem] border border-slate-200 bg-slate-950 text-white p-6 shadow-[0_22px_50px_-28px_rgba(15,23,42,0.7)]">
+                    <div class="flex items-center gap-3 mb-5">
+                        <img src="@Images.Card(Model.StateA.FlagImageUrl)" alt="@Model.StateA.Name flag" class="w-12 h-8 object-cover rounded-md shrink-0" onerror="this.style.display='none'" />
+                        <div>
+                            <h3 class="text-2xl font-bold">@Model.StateA.Name</h3>
+                            <p class="text-sm text-slate-300">At-a-glance strengths and tradeoffs</p>
+                        </div>
+                    </div>
+
+                    @if (prosA.Any())
+                    {
+                        <div class="mb-6">
+                            <h4 class="text-xl font-bold text-white mb-3">Pros: @Model.StateA.Name</h4>
+                            <ul class="space-y-2.5">
+                                @foreach (var item in prosA)
+                                {
+                                    <li class="flex items-start gap-3 text-base leading-6 text-slate-100">
+                                        <i class="fa-solid fa-circle-check text-emerald-400 mt-1 shrink-0"></i>
+                                        <span>@item</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    @if (consA.Any())
+                    {
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-3">Cons</h4>
+                            <ul class="space-y-2.5">
+                                @foreach (var item in consA)
+                                {
+                                    <li class="flex items-start gap-3 text-base leading-6 text-slate-100">
+                                        <i class="fa-solid fa-circle text-rose-400 text-[9px] mt-2 shrink-0"></i>
+                                        <span>@item</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </article>
+
+                <article class="rounded-[1.7rem] border border-slate-200 bg-slate-950 text-white p-6 shadow-[0_22px_50px_-28px_rgba(15,23,42,0.7)]">
+                    <div class="flex items-center gap-3 mb-5">
+                        <img src="@Images.Card(Model.StateB.FlagImageUrl)" alt="@Model.StateB.Name flag" class="w-12 h-8 object-cover rounded-md shrink-0" onerror="this.style.display='none'" />
+                        <div>
+                            <h3 class="text-2xl font-bold">@Model.StateB.Name</h3>
+                            <p class="text-sm text-slate-300">At-a-glance strengths and tradeoffs</p>
+                        </div>
+                    </div>
+
+                    @if (prosB.Any())
+                    {
+                        <div class="mb-6">
+                            <h4 class="text-xl font-bold text-white mb-3">Pros: @Model.StateB.Name</h4>
+                            <ul class="space-y-2.5">
+                                @foreach (var item in prosB)
+                                {
+                                    <li class="flex items-start gap-3 text-base leading-6 text-slate-100">
+                                        <i class="fa-solid fa-circle-check text-emerald-400 mt-1 shrink-0"></i>
+                                        <span>@item</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    @if (consB.Any())
+                    {
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-3">Cons</h4>
+                            <ul class="space-y-2.5">
+                                @foreach (var item in consB)
+                                {
+                                    <li class="flex items-start gap-3 text-base leading-6 text-slate-100">
+                                        <i class="fa-solid fa-circle text-rose-400 text-[9px] mt-2 shrink-0"></i>
+                                        <span>@item</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </article>
+            </div>
+        </div>
+    </section>
 }
 
 <section class="bg-white py-10 md:py-12 border-t" id="comparison-table">
@@ -1385,31 +1604,59 @@
 @if (bestForCards.Any())
 {
     var intentChips = new[] { "All" }.Concat(bestForCards.Select(card => card.Category).Distinct()).ToList();
+    var intentPreviewCount = Math.Min(6, bestForCards.Count);
     <section class="bg-[radial-gradient(circle_at_top_right,rgba(96,165,250,0.12),transparent_40%),linear-gradient(180deg,#f8fbff_0%,#fff_100%)] py-12 border-t">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
-                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700 mb-2">Intent-Oriented</p>
-                <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Which state fits your priorities better?</h2>
-                <p class="text-sm text-slate-500 mt-1.5">Use these cards as decision shortcuts for common goals like saving money, buying a home, finding better weather, or optimizing for work and family life.</p>
+            <div class="mb-7 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700 mb-2">Intent-Oriented</p>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Which state fits your priorities better?</h2>
+                    <p class="text-sm text-slate-500 mt-1.5 max-w-3xl">Use these cards as decision shortcuts for common goals like saving money, buying a home, finding better weather, or optimizing for work and family life.</p>
+                </div>
+                <div class="text-sm text-slate-500 lg:text-right">
+                    <span id="intent-visible-count" class="font-semibold text-slate-900">@intentPreviewCount</span>
+                    <span>of</span>
+                    <span class="font-semibold text-slate-900">@bestForCards.Count</span>
+                    <span>shown</span>
+                </div>
             </div>
 
-            <div class="flex flex-wrap gap-2 mb-6">
-                @foreach (var chip in intentChips)
+            <div class="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div class="flex flex-wrap gap-2">
+                    @foreach (var chip in intentChips)
+                    {
+                        var isAll = chip == "All";
+                        var count = isAll ? bestForCards.Count : bestForCards.Count(card => card.Category == chip);
+                        <button type="button"
+                                class="intent-chip inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition @(isAll ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-700 border-slate-300 hover:border-blue-300 hover:text-blue-700")"
+                                data-intent-filter="@chip">
+                            <span>@chip</span>
+                            <span class="rounded-full px-2 py-0.5 text-[11px] leading-none @(isAll ? "bg-white/15 text-white" : "bg-slate-100 text-slate-500")">@count</span>
+                        </button>
+                    }
+                </div>
+                @if (bestForCards.Count > intentPreviewCount)
                 {
-                    var isAll = chip == "All";
                     <button type="button"
-                            class="intent-chip inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition @(isAll ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-700 border-slate-300 hover:border-blue-300 hover:text-blue-700")"
-                            data-intent-filter="@chip">
-                        @chip
+                            id="intent-toggle"
+                            class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-700"
+                            data-preview-count="@intentPreviewCount"
+                            data-total-count="@bestForCards.Count"
+                            aria-expanded="false">
+                        <span>Show all</span>
+                        <i class="fa-solid fa-chevron-down text-[11px]"></i>
                     </button>
                 }
             </div>
 
             <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                @foreach (var card in bestForCards)
+                @for (var i = 0; i < bestForCards.Count; i++)
                 {
-                    <article class="intent-card rounded-[1.6rem] border border-white/80 bg-gradient-to-br @card.Tone p-5 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition"
-                             data-intent-category="@card.Category">
+                    var card = bestForCards[i];
+                    var isPreviewHidden = i >= intentPreviewCount;
+                    <article class="intent-card @(isPreviewHidden ? "hidden" : "") rounded-2xl border border-white/80 bg-gradient-to-br @card.Tone p-4 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition"
+                             data-intent-category="@card.Category"
+                             data-intent-index="@i">
                         <div class="flex items-center gap-3 mb-3">
                             <span class="w-10 h-10 rounded-xl bg-white/80 border border-white shadow-sm flex items-center justify-center shrink-0">
                                 <i class="@card.Icon text-slate-700 text-sm"></i>
@@ -1417,7 +1664,7 @@
                             <span class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">@card.Label</span>
                         </div>
                         <h3 class="text-lg font-extrabold text-slate-900 leading-tight mb-2">@card.Title</h3>
-                        <p class="text-sm leading-6 text-slate-600 mb-3">@card.Body</p>
+                        <p class="text-sm leading-6 text-slate-600 mb-3 line-clamp-3">@card.Body</p>
                         @if (!string.IsNullOrWhiteSpace(card.Link))
                         {
                             <a href="@card.Link" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900">
@@ -1434,12 +1681,45 @@
         (function () {
             var chips = Array.from(document.querySelectorAll('.intent-chip'));
             var cards = Array.from(document.querySelectorAll('.intent-card'));
+            var toggle = document.getElementById('intent-toggle');
+            var visibleCount = document.getElementById('intent-visible-count');
+            var activeFilter = 'All';
+            var expanded = false;
+            var previewCount = toggle ? parseInt(toggle.getAttribute('data-preview-count') || '6', 10) : cards.length;
 
             if (!chips.length || !cards.length) return;
 
+            function setToggleState(showToggle) {
+                if (!toggle) return;
+                toggle.classList.toggle('hidden', !showToggle);
+                toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                toggle.querySelector('span').textContent = expanded ? 'Show fewer' : 'Show all';
+                toggle.querySelector('i').classList.toggle('fa-chevron-up', expanded);
+                toggle.querySelector('i').classList.toggle('fa-chevron-down', !expanded);
+            }
+
+            function applyIntentFilter() {
+                var shown = 0;
+
+                cards.forEach(function (card) {
+                    var category = card.getAttribute('data-intent-category');
+                    var index = parseInt(card.getAttribute('data-intent-index') || '0', 10);
+                    var inFilter = activeFilter === 'All' || category === activeFilter;
+                    var inPreview = activeFilter !== 'All' || expanded || index < previewCount;
+                    var show = inFilter && inPreview;
+
+                    card.classList.toggle('hidden', !show);
+                    if (show) shown += 1;
+                });
+
+                if (visibleCount) visibleCount.textContent = shown.toString();
+                setToggleState(activeFilter === 'All' && cards.length > previewCount);
+            }
+
             chips.forEach(function (chip) {
                 chip.addEventListener('click', function () {
-                    var filter = chip.getAttribute('data-intent-filter');
+                    activeFilter = chip.getAttribute('data-intent-filter');
+                    expanded = false;
 
                     chips.forEach(function (btn) {
                         btn.classList.remove('bg-slate-900', 'text-white', 'border-slate-900');
@@ -1449,13 +1729,18 @@
                     chip.classList.add('bg-slate-900', 'text-white', 'border-slate-900');
                     chip.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
 
-                    cards.forEach(function (card) {
-                        var category = card.getAttribute('data-intent-category');
-                        var show = filter === 'All' || category === filter;
-                        card.classList.toggle('hidden', !show);
-                    });
+                    applyIntentFilter();
                 });
             });
+
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    expanded = !expanded;
+                    applyIntentFilter();
+                });
+            }
+
+            applyIntentFilter();
         })();
     </script>
 }
@@ -1464,8 +1749,9 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
             <div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">Detailed Metric Pages</h2>
-                <p class="text-sm text-gray-600">Grouped tabs keep the deep-dive links tighter and easier to scan.</p>
+                <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-400 mb-1">Explore by Category</p>
+                <h2 class="text-2xl font-bold text-gray-900 mb-1">Dive Deeper</h2>
+                <p class="text-sm text-gray-600">Each link opens a full one-on-one breakdown for that metric — national rankings, charts, and context.</p>
             </div>
         </div>
 
@@ -1530,6 +1816,23 @@
             faqItems.Add((
                 $"Is {titleA} cheaper to live in than {titleB}?",
                 $"{cheaper.Name} has the lower cost of living. On the national index (100 = average), {cheaper.Name} scores {loVal:F1} versus {hiVal:F1} for {pricier.Name} - a gap of {diff:F1} points."
+            ));
+        }
+    }
+
+    // Q1b - Purchasing power
+    {
+        var r = Model.MetricResults.FirstOrDefault(x => x.Metric.Slug == "purchasing-power");
+        if (r?.WinnerSlug != null)
+        {
+            var isAWin = r.WinnerSlug == Model.StateA.Slug;
+            var stronger = isAWin ? Model.StateA : Model.StateB;
+            var weaker = isAWin ? Model.StateB : Model.StateA;
+            var strongVal = isAWin ? r.DisplayValueA : r.DisplayValueB;
+            var weakVal = isAWin ? r.DisplayValueB : r.DisplayValueA;
+            faqItems.Add((
+                $"Where does $100 go further - {titleA} or {titleB}?",
+                $"$100 goes further in {stronger.Name}. After BEA regional price adjustments, $100 is worth about {strongVal ?? "-"} in {stronger.Name}, compared with {weakVal ?? "-"} in {weaker.Name}."
             ));
         }
     }
@@ -1661,7 +1964,7 @@
 
 @if (faqItems.Any())
 {
-    <section class="bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] py-12 border-t" itemscope itemtype="https://schema.org/FAQPage">
+    <section class="bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] py-12 border-t">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8">
                 <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700 mb-2">People Also Ask</p>
@@ -1671,13 +1974,13 @@
             <div class="space-y-0 divide-y divide-slate-100 rounded-[1.6rem] border border-slate-200 bg-white shadow-sm overflow-hidden">
                 @foreach (var (q, a) in faqItems)
                 {
-                    <div class="px-6 py-5" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                        <h3 class="text-base font-semibold text-slate-900 mb-2 flex items-start gap-3" itemprop="name">
+                    <div class="px-6 py-5">
+                        <h3 class="text-base font-semibold text-slate-900 mb-2 flex items-start gap-3">
                             <span class="mt-0.5 w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 text-xs font-bold">Q</span>
                             @q
                         </h3>
-                        <div class="ml-9" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                            <p class="text-sm leading-7 text-slate-600" itemprop="text">@a</p>
+                        <div class="ml-9">
+                            <p class="text-sm leading-7 text-slate-600">@a</p>
                         </div>
                     </div>
                 }
@@ -1724,8 +2027,8 @@
 {
   "@@context": "https://schema.org",
   "@@type": "WebPage",
-  "name": "@Html.Raw(System.Text.Json.JsonSerializer.Serialize($"{Model.StateA.Name} vs {Model.StateB.Name} - State Comparison"))",
-  "description": "@Html.Raw(System.Text.Json.JsonSerializer.Serialize($"Compare {Model.StateA.Name} and {Model.StateB.Name} by demographics, housing, taxes, politics, cost of living, geography, and more."))",
+  "name": @Html.Raw(System.Text.Json.JsonSerializer.Serialize($"{Model.StateA.Name} vs {Model.StateB.Name} | State Comparison")),
+  "description": @Html.Raw(System.Text.Json.JsonSerializer.Serialize($"Compare {Model.StateA.Name} and {Model.StateB.Name} by demographics, housing, taxes, politics, cost of living, geography, and more.")),
   "url": "https://usasymbol.com/compare/@Model.PairSlug",
   "license": "https://usasymbol.com/terms",
   "creator": { "@@type": "Organization", "name": "USA Symbol", "url": "https://usasymbol.com" },
@@ -1757,7 +2060,7 @@
                         All figures are sourced from U.S. government datasets and updated annually. Page last updated: <strong>April 2026</strong>.
                     </p>
                     <p class="leading-7 mt-3">
-                        Core demographic data comes from the 2020 U.S. Census, with land area from U.S. Census Bureau TIGER files and statehood dates from the National Archives. Income, housing, affordability, and tax fields are maintained in our comparison dataset, with minimum wage data from the U.S. Department of Labor, gas prices from AAA, and electricity rates from the U.S. Energy Information Administration. Political control and election fields use 2024 presidential results together with National Conference of State Legislatures data. Gun-law labels use the Giffords scorecard, alcohol system data comes from NABCA, and marijuana status uses NCSL's state cannabis laws tracker. See our <a href="/editorial-policy" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline">editorial policy</a> for how we review and update these pages.
+                        Core demographic data comes from the 2020 U.S. Census, with land area from U.S. Census Bureau TIGER files and statehood dates from the National Archives. Income, housing, affordability, and tax fields are maintained in our comparison dataset; purchasing-power figures use BEA Regional Price Parities. Minimum wage data comes from the U.S. Department of Labor, gas prices from AAA, and electricity rates from the U.S. Energy Information Administration. Political control and election fields use 2024 presidential results together with National Conference of State Legislatures data. Gun-law labels use the Giffords scorecard, alcohol system data comes from NABCA, and marijuana status uses NCSL's state cannabis laws tracker. See our <a href="/editorial-policy" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline">editorial policy</a> for how we review and update these pages.
                     </p>
                 </div>
             </div>
