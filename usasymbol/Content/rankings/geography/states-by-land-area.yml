@@ -2,6 +2,13 @@ type: ranking
 slug: states-by-land-area
 category: geography
 url: /rankings/geography/states-by-land-area
+auto_link_phrases:
+  - "largest states by land area"
+  - "US states by size"
+  - "biggest states in America"
+  - "smallest states by area"
+extremes_mode: both
+extremes_title: "Largest and Smallest U.S. States by Land Area"
 hero_image: "/images/rankings/geography/us-states-by-land-area-map.webp"
 hero_image_alt: "Choropleth map of all 50 U.S. states shaded by land area from largest to smallest"
 
@@ -20,7 +27,7 @@ page:
     - "Alaska (570,641 sq mi) is the largest state in the USA by land area, Texas (261,914 sq mi) is the second-largest and the biggest state in the contiguous United States, and Rhode Island (1,034 sq mi) is the smallest — more than 550 times smaller than Alaska."
     - "All 10 of the largest states are west of the Mississippi River. All 10 of the smallest states are in the East, concentrated in New England and the Mid-Atlantic."
 
-  methodology: "Land area is measured in square miles and square kilometers using U.S. Census Bureau data. Land area counts only solid ground within a state's boundaries and excludes rivers, lakes, reservoirs, and coastal waters. Total area (land + water) and water area are available as alternate sort metrics in the main table."
+  methodology: "Land area uses U.S. Census Bureau measurements and excludes water. Total area and water area are available as alternate table metrics."
 
   sources:
     - name: "U.S. Census Bureau (Gazetteer Files)"
@@ -41,7 +48,7 @@ table:
     region: "Region"
 
   metric_default: land_sq_mi
-  sort_default: asc
+  sort_default: desc
   metrics_available: [land_sq_mi, total_sq_mi, water_sq_mi]
 
   rows:
@@ -515,6 +522,14 @@ map:
     - "Medium"
     - "Small"
     - "Smallest"
+compare:
+  metric_slug: land-area
+  title: "Compare Land Area Between States"
+  description: "Choose two states and see how their land area stacks up, with population and density context."
+  button_text: "Compare land area"
+  icon: "fa-solid fa-map"
+  default_state_a: alaska
+  default_state_b: rhode-island
 
 sections:
   - id: "largest-states"

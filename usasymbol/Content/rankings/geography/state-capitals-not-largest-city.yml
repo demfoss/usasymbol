@@ -2,6 +2,13 @@ type: ranking
 slug: state-capitals-not-largest-city
 category: geography
 url: /rankings/geography/state-capitals-not-largest-city
+auto_link_phrases:
+  - "state capitals that are not the largest city"
+  - "capitals not the biggest city in state"
+  - "state capitals smaller than largest city"
+  - "what states have capitals that are not the largest city"
+extremes_mode: none
+extremes_title: "State Capitals by Population: Largest and Smallest"
 hero_image: "/images/rankings/geography/state-capitals-not-largest-city/state-capitals-not-largest-city.png"
 hero_image_alt: "Map infographic highlighting the 33 U.S. state capitals that are not the largest city in their state"
 
@@ -10,8 +17,8 @@ date_published: "2026-04-21"
 date_modified: "2026-04-21"
 
 seo:
-  title: "State Capitals That Aren't the Largest City | All 33 States"
-  description: "33 US state capitals are not the largest city in their state. See every capital vs. largest city, from Albany to Olympia, with the historical reasons each capital was chosen."
+  title: "State Capitals Not the Largest City | 33 States"
+  description: "33 U.S. state capitals are not the largest city in their state. Every capital vs. largest city, with the historical reasons each was chosen."
 
 page:
   h1: "33 State Capitals That Are Not the Largest City in Their State"
@@ -20,7 +27,7 @@ page:
     - "Of the 50 U.S. states, 33 have a capital that is not also the largest city - including Springfield, Illinois (pop. 114,000), which shares a state with Chicago (pop. 2.7 million). Only 17 capitals, among them Phoenix, Atlanta, and Denver, are also the most populous city in their state."
     - "The gaps range from modest (Saint Paul, Minnesota is smaller than Minneapolis by about 118,000 people) to staggering (Albany, New York is smaller than New York City by more than 8.2 million). Three forces drove most placements: legislators choosing a geographic midpoint, deliberate separation of political from commercial power, and simple timing -- the capital was fixed before the state's future economic engine existed."
 
-  methodology: "Population figures are city-proper totals from the U.S. Census Bureau 2020 decennial census. 'Largest city' means the most populous incorporated city proper, not the metropolitan statistical area. Where a city-county consolidation exists (Louisville-Jefferson County), the consolidated figure is used. Tennessee is included here per widely cited pre-2020 sources in which Memphis exceeded Nashville; by the 2020 Census, Nashville-Davidson (consolidated) has surpassed Memphis, making Tennessee an edge case noted in the table."
+  methodology: "Population uses 2020 Census city-proper totals, not metro areas. Consolidated city-counties use consolidated totals."
 
   sources:
     - name: "U.S. Census Bureau -- 2020 Decennial Census"
@@ -252,6 +259,14 @@ map:
     - city
   color_scheme: blue
   color_scale: linear
+compare:
+  metric_slug: capital
+  title: "Compare State Capitals"
+  description: "Choose two states and compare their capitals, largest cities, and basic state context."
+  button_text: "Compare capitals"
+  icon: "fa-solid fa-building-columns"
+  default_state_a: california
+  default_state_b: new-york
 
 sections:
   - id: "why-capitals-are-not-largest-cities"

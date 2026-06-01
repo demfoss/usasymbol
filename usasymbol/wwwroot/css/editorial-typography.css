@@ -429,3 +429,71 @@ h3 { font-size: 23px; font-weight: 700; line-height: 50px; margin-top: 1.5rem; m
     h1, h2, h3 { page-break-after: avoid; }
     img { max-width: 100%; page-break-inside: avoid; }
 }
+
+/* =====================================================
+   Unified Symbol & Ranking Editorial Typography
+   Shared by all symbol pages and ranking pages.
+   ===================================================== */
+.symbol-editorial {
+    color: #161B26;
+}
+
+.symbol-editorial .content-flow h2 {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    color: #161B26;
+    font-size: 41px;
+    font-weight: 700;
+    line-height: 50px;
+    letter-spacing: -0.02em;
+}
+
+.symbol-editorial .content-flow h3 {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    color: #161B26;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 50px;
+    letter-spacing: 0;
+}
+
+.symbol-editorial .site-content,
+.symbol-editorial .site-content p,
+.symbol-editorial .site-content li,
+.symbol-editorial .site-content dd,
+.symbol-editorial .site-content blockquote,
+.symbol-editorial .site-content .prose,
+.symbol-editorial .content-flow > section > div,
+.symbol-editorial .content-flow > div {
+    font-size: 19px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 34px;
+    letter-spacing: 0.19px;
+}
+
+@media (max-width: 767px) {
+    .symbol-editorial .content-flow h2 {
+        font-size: 26px;
+        line-height: 37px;
+        letter-spacing: -0.405px;
+    }
+
+    .symbol-editorial .content-flow h3 {
+        font-size: 19px;
+        line-height: 24px;
+        letter-spacing: 0.38px;
+    }
+
+    .symbol-editorial .site-content,
+    .symbol-editorial .site-content p,
+    .symbol-editorial .site-content li,
+    .symbol-editorial .site-content dd,
+    .symbol-editorial .site-content blockquote,
+    .symbol-editorial .site-content .prose,
+    .symbol-editorial .content-flow > section > div,
+    .symbol-editorial .content-flow > div {
+        font-size: 18px;
+        line-height: 29px;
+        letter-spacing: 0.18px;
+    }
+}

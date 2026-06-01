@@ -1,0 +1,701 @@
+type: ranking
+slug: states-by-border-type
+category: geography
+url: /rankings/geography/states-by-border-type
+auto_link_phrases:
+  - "states with straight borders vs natural borders"
+  - "US states with geometric borders"
+  - "which states have straight borders"
+  - "natural vs artificial state borders"
+extremes_mode: both
+extremes_title: "Most Geometric and Most Natural State Borders"
+hero_image: "/images/rankings/geography/states-by-border-type/states-by-border-type.webp"
+hero_image_alt: "Map of all 50 U.S. states shaded by percentage of straight surveyed borders versus natural borders"
+
+author: "USA Symbol Team"
+date_published: "2026-05-16"
+date_modified: "2026-05-16"
+
+seo:
+  title: "U.S. States Ranked by Straight-Line Borders"
+  description: "Colorado (99%) has the most geometric state borders in the U.S. All 50 states ranked by percentage of straight lines, rivers, mountains, and coastline."
+
+page:
+  h1: "U.S. States Ranked by Straight and Natural Borders"
+
+  quick_answer:
+    - "Colorado (99%) and Wyoming (98%) have the most geometric borders of any U.S. state; nearly every mile is a surveyed parallel or meridian. West Virginia (0%) and Hawaii (0%) have no straight borders at all."
+    - "Western states were carved from federal territory after 1785, when Congress adopted the rectangular Public Land Survey System. That grid produced straight borders by default. Eastern states predate the survey and follow colonial rivers, ridgelines, and coastlines instead."
+    - "The Mississippi River alone forms borders for 10 states. The Rio Grande defines all of Texas's southern and southwestern boundary, roughly 1,250 miles of river border with Mexico."
+
+  methodology: "Border segments were classified using Census TIGER/Line boundary files. Straight segments are surveyed parallels and meridians. Water segments include rivers, lakes, and ocean or Gulf coastline used as legal boundaries. Mountain segments follow topographic ridge divides. Percentages are approximate (plus or minus 5%) based on linear perimeter share and rounded to the nearest whole number."
+
+  sources:
+    - name: "WV Encyclopedia — The Boundary of West Virginia"
+      url: "https://www.wvencyclopedia.org/entries/594"
+      description: "Documented breakdown of West Virginia border types: 52% rivers, 31% ridge crests, 17% lat/long lines"
+
+map:
+  title: "States by Percentage of Straight-Line Borders"
+  image: "/images/rankings/geography/states-by-border-type/states-by-border-type-map.webp"
+  image_alt: "Choropleth map of the U.S. shaded by straight border percentage, from darkest (Colorado) to lightest (West Virginia and Hawaii)"
+  caption: "The East-West divide is sharp: states west of the Mississippi average over 70% straight borders; states east average under 45%. Colorado, Wyoming, Kansas, New Mexico, and Utah all exceed 90%."
+  metric_key: straight_pct
+  metric_label: "% straight"
+  color_scheme: purple
+  color_scale: linear
+  tooltip_fields:
+    - key: state
+      label: "State"
+    - key: straight_pct
+      label: "Straight (%)"
+    - key: water_pct
+      label: "Rivers & coast (%)"
+    - key: mountain_pct
+      label: "Ridgelines (%)"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    straight_pct: "Straight lines (%)"
+    water_pct: "Rivers & coast (%)"
+    mountain_pct: "Ridgelines (%)"
+    character: "Character"
+
+  metric_default: straight_pct
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Colorado"
+      state_slug: "colorado"
+      straight_pct: 99
+      water_pct: 1
+      mountain_pct: 0
+      character: "Geometric"
+
+    - rank: 2
+      state: "Wyoming"
+      state_slug: "wyoming"
+      straight_pct: 98
+      water_pct: 2
+      mountain_pct: 0
+      character: "Geometric"
+
+    - rank: 3
+      state: "Kansas"
+      state_slug: "kansas"
+      straight_pct: 97
+      water_pct: 3
+      mountain_pct: 0
+      character: "Geometric"
+
+    - rank: 4
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      straight_pct: 96
+      water_pct: 4
+      mountain_pct: 0
+      character: "Geometric"
+
+    - rank: 5
+      state: "Utah"
+      state_slug: "utah"
+      straight_pct: 93
+      water_pct: 7
+      mountain_pct: 0
+      character: "Geometric"
+
+    - rank: 6
+      state: "Nevada"
+      state_slug: "nevada"
+      straight_pct: 88
+      water_pct: 12
+      mountain_pct: 0
+      character: "Geometric"
+
+    - rank: 7
+      state: "Arizona"
+      state_slug: "arizona"
+      straight_pct: 81
+      water_pct: 19
+      mountain_pct: 0
+      character: "Geometric"
+
+    - rank: 8
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      straight_pct: 80
+      water_pct: 20
+      mountain_pct: 0
+      character: "Geometric"
+
+    - rank: 9
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      straight_pct: 80
+      water_pct: 20
+      mountain_pct: 0
+      character: "Geometric"
+
+    - rank: 10
+      state: "Montana"
+      state_slug: "montana"
+      straight_pct: 79
+      water_pct: 6
+      mountain_pct: 15
+      character: "Geometric"
+
+    - rank: 11
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      straight_pct: 77
+      water_pct: 23
+      mountain_pct: 0
+      character: "Mostly geometric"
+
+    - rank: 12
+      state: "Arkansas"
+      state_slug: "arkansas"
+      straight_pct: 76
+      water_pct: 24
+      mountain_pct: 0
+      character: "Mostly geometric"
+
+    - rank: 13
+      state: "Nebraska"
+      state_slug: "nebraska"
+      straight_pct: 75
+      water_pct: 25
+      mountain_pct: 0
+      character: "Mostly geometric"
+
+    - rank: 14
+      state: "Alabama"
+      state_slug: "alabama"
+      straight_pct: 73
+      water_pct: 27
+      mountain_pct: 0
+      character: "Mostly geometric"
+
+    - rank: 15
+      state: "Mississippi"
+      state_slug: "mississippi"
+      straight_pct: 72
+      water_pct: 28
+      mountain_pct: 0
+      character: "Mostly geometric"
+
+    - rank: 16
+      state: "Connecticut"
+      state_slug: "connecticut"
+      straight_pct: 68
+      water_pct: 32
+      mountain_pct: 0
+      character: "Mostly geometric"
+
+    - rank: 17
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      straight_pct: 68
+      water_pct: 32
+      mountain_pct: 0
+      character: "Mostly geometric"
+
+    - rank: 18
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      straight_pct: 65
+      water_pct: 35
+      mountain_pct: 0
+      character: "Mostly geometric"
+
+    - rank: 19
+      state: "Indiana"
+      state_slug: "indiana"
+      straight_pct: 59
+      water_pct: 41
+      mountain_pct: 0
+      character: "Mixed"
+
+    - rank: 20
+      state: "Washington"
+      state_slug: "washington"
+      straight_pct: 57
+      water_pct: 43
+      mountain_pct: 0
+      character: "Mixed"
+
+    - rank: 21
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      straight_pct: 55
+      water_pct: 16
+      mountain_pct: 29
+      character: "Mixed"
+
+    - rank: 22
+      state: "Idaho"
+      state_slug: "idaho"
+      straight_pct: 53
+      water_pct: 27
+      mountain_pct: 20
+      character: "Mixed"
+
+    - rank: 23
+      state: "Minnesota"
+      state_slug: "minnesota"
+      straight_pct: 52
+      water_pct: 48
+      mountain_pct: 0
+      character: "Mixed"
+
+    - rank: 24
+      state: "Georgia"
+      state_slug: "georgia"
+      straight_pct: 51
+      water_pct: 34
+      mountain_pct: 15
+      character: "Mixed"
+
+    - rank: 25
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      straight_pct: 50
+      water_pct: 50
+      mountain_pct: 0
+      character: "Mixed"
+
+    - rank: 26
+      state: "California"
+      state_slug: "california"
+      straight_pct: 46
+      water_pct: 54
+      mountain_pct: 0
+      character: "Mixed"
+
+    - rank: 27
+      state: "Oregon"
+      state_slug: "oregon"
+      straight_pct: 45
+      water_pct: 55
+      mountain_pct: 0
+      character: "Mixed"
+
+    - rank: 28
+      state: "Tennessee"
+      state_slug: "tennessee"
+      straight_pct: 45
+      water_pct: 30
+      mountain_pct: 25
+      character: "Mixed"
+
+    - rank: 29
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      straight_pct: 44
+      water_pct: 56
+      mountain_pct: 0
+      character: "Mixed"
+
+    - rank: 30
+      state: "New York"
+      state_slug: "new-york"
+      straight_pct: 42
+      water_pct: 58
+      mountain_pct: 0
+      character: "Mixed"
+
+    - rank: 31
+      state: "Iowa"
+      state_slug: "iowa"
+      straight_pct: 38
+      water_pct: 62
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 32
+      state: "Virginia"
+      state_slug: "virginia"
+      straight_pct: 38
+      water_pct: 37
+      mountain_pct: 25
+      character: "Mostly natural"
+
+    - rank: 33
+      state: "Vermont"
+      state_slug: "vermont"
+      straight_pct: 37
+      water_pct: 63
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 34
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      straight_pct: 35
+      water_pct: 60
+      mountain_pct: 5
+      character: "Mostly natural"
+
+    - rank: 35
+      state: "Ohio"
+      state_slug: "ohio"
+      straight_pct: 35
+      water_pct: 65
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 36
+      state: "Alaska"
+      state_slug: "alaska"
+      straight_pct: 30
+      water_pct: 58
+      mountain_pct: 12
+      character: "Mostly natural"
+
+    - rank: 37
+      state: "Maryland"
+      state_slug: "maryland"
+      straight_pct: 30
+      water_pct: 70
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 38
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      straight_pct: 28
+      water_pct: 72
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 39
+      state: "Missouri"
+      state_slug: "missouri"
+      straight_pct: 27
+      water_pct: 73
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 40
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      straight_pct: 27
+      water_pct: 73
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 41
+      state: "Illinois"
+      state_slug: "illinois"
+      straight_pct: 25
+      water_pct: 75
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 42
+      state: "Louisiana"
+      state_slug: "louisiana"
+      straight_pct: 25
+      water_pct: 75
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 43
+      state: "Florida"
+      state_slug: "florida"
+      straight_pct: 24
+      water_pct: 76
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 44
+      state: "Maine"
+      state_slug: "maine"
+      straight_pct: 24
+      water_pct: 76
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 45
+      state: "Delaware"
+      state_slug: "delaware"
+      straight_pct: 20
+      water_pct: 80
+      mountain_pct: 0
+      character: "Mostly natural"
+
+    - rank: 46
+      state: "Kentucky"
+      state_slug: "kentucky"
+      straight_pct: 20
+      water_pct: 50
+      mountain_pct: 30
+      character: "Mostly natural"
+
+    - rank: 47
+      state: "Texas"
+      state_slug: "texas"
+      straight_pct: 17
+      water_pct: 83
+      mountain_pct: 0
+      character: "Natural"
+
+    - rank: 48
+      state: "Michigan"
+      state_slug: "michigan"
+      straight_pct: 12
+      water_pct: 88
+      mountain_pct: 0
+      character: "Natural"
+
+    - rank: 49
+      state: "Hawaii"
+      state_slug: "hawaii"
+      straight_pct: 0
+      water_pct: 100
+      mountain_pct: 0
+      character: "Natural"
+
+    - rank: 50
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      straight_pct: 0
+      water_pct: 60
+      mountain_pct: 40
+      character: "Natural"
+
+sections:
+  - id: "most-geometric"
+    icon: "fa-solid fa-ruler-horizontal"
+    title: "States with the Most Straight Borders"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        straight_pct: "Straight lines (%)"
+        water_pct: "Rivers & coast (%)"
+        mountain_pct: "Ridgelines (%)"
+      rows:
+        - rank: 1
+          state: "Colorado"
+          state_slug: "colorado"
+          straight_pct: 99
+          water_pct: 1
+          mountain_pct: 0
+        - rank: 2
+          state: "Wyoming"
+          state_slug: "wyoming"
+          straight_pct: 98
+          water_pct: 2
+          mountain_pct: 0
+        - rank: 3
+          state: "Kansas"
+          state_slug: "kansas"
+          straight_pct: 97
+          water_pct: 3
+          mountain_pct: 0
+        - rank: 4
+          state: "New Mexico"
+          state_slug: "new-mexico"
+          straight_pct: 96
+          water_pct: 4
+          mountain_pct: 0
+        - rank: 5
+          state: "Utah"
+          state_slug: "utah"
+          straight_pct: 93
+          water_pct: 7
+          mountain_pct: 0
+        - rank: 6
+          state: "Nevada"
+          state_slug: "nevada"
+          straight_pct: 88
+          water_pct: 12
+          mountain_pct: 0
+        - rank: 7
+          state: "Arizona"
+          state_slug: "arizona"
+          straight_pct: 81
+          water_pct: 19
+          mountain_pct: 0
+        - rank: 8
+          state: "Pennsylvania"
+          state_slug: "pennsylvania"
+          straight_pct: 80
+          water_pct: 20
+          mountain_pct: 0
+        - rank: 9
+          state: "South Dakota"
+          state_slug: "south-dakota"
+          straight_pct: 80
+          water_pct: 20
+          mountain_pct: 0
+        - rank: 10
+          state: "Montana"
+          state_slug: "montana"
+          straight_pct: 79
+          water_pct: 6
+          mountain_pct: 15
+    paragraphs:
+      - "The five most geometric states — Colorado, Wyoming, Kansas, New Mexico, and Utah — all exceed 90% straight borders and were created entirely from federal territory using the Public Land Survey System grid. All five share at least two borders that are perfect parallels and two that are meridians. Colorado is the closest any U.S. state gets to a true rectangle: four surveyed lines, no rivers, no ridges."
+      - "Pennsylvania ranks 8th despite being a colonial-era eastern state. The Mason-Dixon line (south, with Maryland) was surveyed between 1763 and 1767 and is one of the most precisely drawn lines in American history. The western border with Ohio follows the 80°31' meridian, and the northern border with New York was surveyed in the 1780s. Only the Delaware River (east) and Lake Erie (northwest) break the geometry."
+
+  - id: "most-natural"
+    icon: "fa-solid fa-water"
+    title: "States with the Most Natural Borders"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        straight_pct: "Straight lines (%)"
+        water_pct: "Rivers & coast (%)"
+        mountain_pct: "Ridgelines (%)"
+      rows:
+        - rank: 50
+          state: "West Virginia"
+          state_slug: "west-virginia"
+          straight_pct: 0
+          water_pct: 60
+          mountain_pct: 40
+        - rank: 49
+          state: "Hawaii"
+          state_slug: "hawaii"
+          straight_pct: 0
+          water_pct: 100
+          mountain_pct: 0
+        - rank: 48
+          state: "Michigan"
+          state_slug: "michigan"
+          straight_pct: 12
+          water_pct: 88
+          mountain_pct: 0
+        - rank: 47
+          state: "Texas"
+          state_slug: "texas"
+          straight_pct: 17
+          water_pct: 83
+          mountain_pct: 0
+        - rank: 46
+          state: "Kentucky"
+          state_slug: "kentucky"
+          straight_pct: 20
+          water_pct: 50
+          mountain_pct: 30
+        - rank: 45
+          state: "Delaware"
+          state_slug: "delaware"
+          straight_pct: 20
+          water_pct: 80
+          mountain_pct: 0
+        - rank: 44
+          state: "Maine"
+          state_slug: "maine"
+          straight_pct: 24
+          water_pct: 76
+          mountain_pct: 0
+        - rank: 43
+          state: "Florida"
+          state_slug: "florida"
+          straight_pct: 24
+          water_pct: 76
+          mountain_pct: 0
+        - rank: 42
+          state: "Louisiana"
+          state_slug: "louisiana"
+          straight_pct: 25
+          water_pct: 75
+          mountain_pct: 0
+        - rank: 41
+          state: "Illinois"
+          state_slug: "illinois"
+          straight_pct: 25
+          water_pct: 75
+          mountain_pct: 0
+    paragraphs:
+      - "West Virginia has no straight borders at all: 0% of its perimeter is a surveyed line. The WV Encyclopedia documents the breakdown as 52% rivers, 31% ridge crests, and 17% lat/long lines — but those lat/long segments are not straight surveyed lines drawn by Congress; they follow watershed logic and local agreement. Every practical mile of its boundary follows the Ohio River (northwest), Big Sandy and Tug Fork rivers (east, with Kentucky), the Potomac River (northeast, with Maryland), or Allegheny ridge crests (southeast). Its jagged shape, often compared to a turkey foot, is entirely the product of physical geography."
+      - "Texas ranks 47th despite its reputation as a large, boxy state. The Rio Grande runs roughly 1,254 miles along the Mexican border. The Red River runs approximately 640 miles along the Oklahoma border. The Sabine River defines most of the Louisiana border. Only the borders with New Mexico and the Oklahoma panhandle are straight lines, totaling about 17% of the full perimeter. Michigan ranks 48th because the Great Lakes define nearly its entire boundary; the only straight segment is the short Indiana-Ohio land border in the south."
+
+  - id: "geometric-west"
+    icon: "fa-solid fa-ruler"
+    title: "The Surveyed West: Why Straight Lines Dominate"
+    paragraphs:
+      - "Congress passed the Land Ordinance of 1785, establishing the Public Land Survey System, a rectangular grid of north-south meridians and east-west parallels that would be used to partition all federal territory west of the Ohio River. Every state created from that territory afterward had its borders drawn on this grid, regardless of rivers, ridges, or any physical feature on the ground."
+      - "Colorado has four borders, all perfectly straight: the 37th and 41st parallels (south and north) and the 102nd and 109th meridians (east and west). The only break is a fraction of a percent where the Colorado River grazes the southwestern corner near the Four Corners monument. Wyoming's borders are equally rigid: four surveyed lines with no natural feature serving as a legal boundary anywhere along the full perimeter."
+      - "Kansas, New Mexico, and Utah are similar, all exceeding 93% straight. The practical effect was that western borders were drawn on paper before settlers arrived, with no existing rivers or colonial boundaries to negotiate. The result is visible from any satellite image: the West looks like a grid, the East does not."
+
+  - id: "natural-east"
+    icon: "fa-solid fa-droplet"
+    title: "Natural Borders: Rivers and the Eastern States"
+    paragraphs:
+      - "Missouri's borders are 73% river: the Mississippi along the east and southeast, the Missouri River along the north and west, and the Des Moines River at the northeast corner. Its only straight segment is the southern border with Arkansas along the 36°30' parallel, about 27% of the total perimeter. Iowa has a near-identical profile: straight only on the north and south parallels, with the Mississippi on the east and the Missouri plus Big Sioux on the west."
+      - "Texas combines all three natural types. The Red River defines its northern border with Oklahoma, running approximately 640 miles. The Sabine River defines most of its eastern border with Louisiana. The Rio Grande defines the entire southern and southwestern border with Mexico, roughly 1,254 miles of river border. Only the borders with New Mexico and the Oklahoma panhandle use straight lines. Texas is 83% natural despite its reputation as a large, boxy state — that mental image comes from its straight panhandle top, which is only a small fraction of the full perimeter."
+      - "Illinois ranks 41st at just 25% straight. The Mississippi River forms the entire western border, roughly 590 miles. The Ohio River defines the southern tip. The Wabash River forms part of the Indiana border. Only the Wisconsin border in the north and a portion of the Indiana border in the east are surveyed straight lines."
+
+  - id: "appalachian-ridges"
+    icon: "fa-solid fa-mountain"
+    title: "Mountain Border States: Appalachia and the Divide"
+    paragraphs:
+      - "Kentucky's eastern border with Virginia and West Virginia follows Appalachian ridge crests for about 30% of its perimeter. Tennessee's eastern border with North Carolina runs along the same chain for 25%. North Carolina's western border is defined by the Blue Ridge and Great Smoky Mountain divide. These ridge borders predate formal surveys; colonial-era governors agreed the watershed was the line because it was the most visible feature on the landscape."
+      - "Montana and Idaho share the Continental Divide along part of their mutual border. Idaho's eastern border follows the divide and the Snake River in alternating sections, producing a 20% mountain share. Montana's western border runs through the Bitterroot Range for about 15% of its perimeter. Alaska's border with Canada follows the 141st meridian on the east, then traces a coastal mountain arc in the southeast panhandle."
+
+  - id: "surprising-outliers"
+    icon: "fa-solid fa-star"
+    title: "Surprising Cases: Pennsylvania, Connecticut, and Texas"
+    paragraphs:
+      - "Pennsylvania ranks 8th most geometric despite being a colonial-era eastern state. The Mason-Dixon line on the south, surveyed by Charles Mason and Jeremiah Dixon between 1763 and 1767, is one of the most precisely executed surveys in American history. The western border with Ohio follows the 80°31' meridian. The northern border with New York was surveyed in the 1780s. Only the Delaware River on the east (~140 miles) and Lake Erie on the northwest (~40 miles) introduce natural segments into an otherwise rectangular state."
+      - "Connecticut ranks 16th at 68% straight, higher than most people expect for a colonial New England state. Its three land borders with Massachusetts, Rhode Island, and New York were all established by colonial surveys in the 17th and 18th centuries and drawn as straight lines. Long Island Sound coastline on the south accounts for the remaining 32%. Massachusetts has an identical profile: three straight land borders and Atlantic coastline."
+      - "Texas ranks 47th, one of the most naturally bordered states in the country, despite the common image of a boxy state. Most of the outline that looks like a box — the panhandle top and the New Mexico line on the west — is only about 17% of the actual perimeter. The rest is three major rivers: the Red River, Sabine River, and Rio Grande, plus Gulf coastline."
+
+visual_assets:
+  - id: geometric-west-four-corners
+    src: /images/rankings/geography/states-by-border-type/four-corners-monument.jpg
+    alt: Four Corners Monument where Colorado, Utah, Arizona, and New Mexico meet at surveyed state lines
+    caption: Four states meet on a survey point at Four Corners, the only place in the United States where Colorado, Utah, Arizona, and New Mexico touch at one monument.
+    section: geometric-west
+    layout: right
+
+  - id: texas-rio-grande-border
+    src: /images/rankings/geography/states-by-border-type/rio-grande-big-bend.jpg
+    alt: Rio Grande curving through the desert at Big Bend along the Texas-Mexico border
+    caption: The Rio Grande cuts a long natural boundary through Big Bend, part of the river corridor that defines Texas for roughly 1,250 miles along its southern and southwestern edge.
+    section: natural-east
+    layout: left
+
+  - id: newfound-gap-ridge-border
+    src: /images/rankings/geography/states-by-border-type/newfound-gap-ridgeline.jpg
+    alt: Appalachian ridgeline at Newfound Gap on the Tennessee and North Carolina state line
+    caption: Newfound Gap sits on the crest line between Tennessee and North Carolina in Great Smoky Mountains National Park, a classic example of a state border following a watershed divide.
+    section: appalachian-ridges
+    layout: right
+
+faq:
+  - question: "What U.S. state has the most straight borders"
+    answer: "Colorado has the most straight-line borders of any U.S. state at 99%. All four borders are surveyed parallels and meridians: the 37th and 41st parallels (south and north) and the 102nd and 109th meridians (east and west). Wyoming is second at 98%, followed by Kansas (97%) and New Mexico (96%)."
+
+  - question: "What state has the most natural borders"
+    answer: "West Virginia has no straight borders at all: 0% of its perimeter is a surveyed line. Every mile follows rivers (Ohio, Big Sandy, Tug Fork, Potomac) or Appalachian ridge crests. Hawaii also has 0% straight borders because it is entirely island coastline with no land boundaries."
+
+  - question: "Why do western states have straight borders"
+    answer: "Western states were created from federal territory after the Land Ordinance of 1785, which established the Public Land Survey System, a rectangular grid of meridians and parallels. Borders were drawn on paper before settlement, with no existing rivers or colonial claims to follow. Eastern states predate the survey and used visible natural features instead."
+
+  - question: "Which states have the most river borders"
+    answer: "Missouri is 73% river borders: the Mississippi, Missouri, and Des Moines rivers form nearly its entire perimeter. Iowa (62%), Texas (roughly 65% rivers including the Red River, Sabine River, and Rio Grande), and Illinois (about 50% rivers including the Mississippi and Ohio) also rank among the highest."
+
+  - question: "Do any U.S. state borders follow mountain ridges"
+    answer: "Yes. West Virginia (40%), Kentucky (30%), and Virginia (25%) have the highest mountain ridge shares. Tennessee, North Carolina, and Idaho all have significant ridgeline segments. Montana and Idaho share the Continental Divide along part of their mutual border. Mountain ridge borders are most common in the Appalachian states, where watershed divides served as colonial-era boundaries before formal surveys."
+
+  - question: "What is the squarest state in the U.S."
+    answer: "Colorado and Wyoming are the squarest U.S. states, both near-perfect rectangles with four straight borders and no natural boundary interruptions. Colorado's borders are four surveyed lines (37th and 41st parallels; 102nd and 109th meridians). Wyoming shares the same geometry. Kansas and New Mexico are close behind at 97% and 96% straight."
+
+related:
+  - title: "U.S. States by Land Area"
+    url: "/rankings/geography/states-by-land-area"
+  - title: "States with the Most Neighboring States"
+    url: "/rankings/geography/states-neighboring-states"
+  - title: "Highest Point by State"
+    url: "/rankings/geography/highest-point-by-state"
+  - title: "Oldest City by State"
+    url: "/rankings/geography/oldest-city-by-state"

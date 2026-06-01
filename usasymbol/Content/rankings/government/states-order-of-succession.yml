@@ -1,7 +1,14 @@
-﻿type: ranking
+type: ranking
 slug: states-order-of-succession
 category: government
 url: /rankings/government/states-order-of-succession
+auto_link_phrases:
+  - "order states joined the union"
+  - "what order did states enter the US"
+  - "states by admission date"
+  - "when did each state join the United States"
+extremes_mode: both
+extremes_title: "First and Last States to Join the Union"
 hero_image: "/images/rankings/government/us-states-by-order-of-admission-map.webp"
 hero_image_alt: "Map showing the order in which U.S. states were admitted to the Union"
 
@@ -10,8 +17,8 @@ date_published: "2026-01-15"
 date_modified: "2026-04-20"
 
 seo:
-  title: "States in Order of Statehood | All 50 States (1787–1959)"
-  description: "All 50 US states in order of statehood. Delaware was first (Dec 7, 1787); Hawaii was last (Aug 21, 1959). Complete chronological list of US states ranked by date of joining the Union."
+  title: "States by Statehood Order | 1787-1959"
+  description: "All 50 U.S. states by statehood order, from Delaware in 1787 to Hawaii in 1959, with admission dates."
 
 page:
   h1: "50 States in Order of Statehood"
@@ -20,7 +27,7 @@ page:
     - "Delaware was the 1st state to join the United States, ratifying the U.S. Constitution on December 7, 1787, and earning its nickname 'The First State.' Hawaii became the 50th and last state on August 21, 1959. Alaska was #49, admitted just months earlier on January 3, 1959."
     - "The original 13 colonies ratified the Constitution between 1787–1790, while the remaining 37 states were admitted to the Union by Congress between 1791–1959, spanning 168 years of American expansion."
 
-  methodology: "Admission dates are based on official records from the U.S. Congress and National Archives. The first 13 states are listed by their ratification dates of the U.S. Constitution. States 14-50 are listed by their official admission date to the Union as determined by Congressional acts."
+  methodology: "Order follows Constitution ratification dates for the first 13 states and official admission dates for later states."
   
   sources:
     - name: "National Archives - The Constitution"
@@ -405,6 +412,14 @@ map:
   color_scheme: warm
   color_scale: linear
 
+compare:
+  metric_slug: statehood
+  title: "Compare Statehood Dates"
+  description: "Choose two states and compare when each joined the Union, including admission order and date."
+  button_text: "Compare statehood"
+  icon: "fa-solid fa-landmark-flag"
+  default_state_a: delaware
+  default_state_b: hawaii
 
 sections:
   - id: "first-state"

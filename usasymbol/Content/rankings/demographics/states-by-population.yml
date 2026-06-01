@@ -1,7 +1,14 @@
-﻿type: ranking
+type: ranking
 slug: states-by-population
 category: demographics
 url: /rankings/demographics/states-by-population
+auto_link_phrases:
+  - "most populous states"
+  - "US state populations"
+  - "population ranking by state"
+  - "largest states by population"
+extremes_mode: both
+extremes_title: "Most and Least Populated U.S. States"
 hero_image: "/images/rankings/demographics/states-by-population-map.webp"
 hero_image_alt: "Map ranking U.S. states by population, with California, Texas, and Florida as top three"
 
@@ -22,7 +29,7 @@ page:
     - "The top 10 states by population contain 54% of all Americans. California, Texas, and Florida alone account for about 28% of the U.S. population."
     - "Idaho has the largest percentage gain since 2020 at +11.9%. Hawaii (-1.7%) and West Virginia (-1.6%) show the steepest declines in the table."
 
-  methodology: "Population figures are based on U.S. Census Bureau estimates for 2025. These estimates use the 2020 Census as a base and incorporate birth, death, and migration data. Change since 2020 is calculated against the April 2020 decennial Census count. Rankings may shift as official 2030 Census data becomes available. Washington D.C. is included for comparison but listed separately as it is not a state."
+  methodology: "Population uses U.S. Census Bureau 2025 estimates. Change is measured against the 2020 Census."
 
   sources:
     - name: "U.S. Census Bureau Population Estimates"
@@ -457,6 +464,14 @@ table:
       percent_us: "0.2%"
       change_2020: "+2.4%"
 
+compare:
+  metric_slug: population
+  title: "Compare Population Between States"
+  description: "Choose two states and jump into a side-by-side population comparison with density, land area, and related context."
+  button_text: "Compare population"
+  icon: "fa-solid fa-people-group"
+  default_state_a: california
+  default_state_b: wyoming
 
 sections:
   - id: "biggest-states"

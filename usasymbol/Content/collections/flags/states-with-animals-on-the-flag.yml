@@ -1,11 +1,16 @@
-﻿type: collection
+type: collection
 slug: states-with-animals-on-the-flag
 category: flags
 url: /collections/flags/states-with-animals-on-the-flag
+auto_link_phrases:
+  - "state flags with animals"
+  - "which states have animals on their flag"
+  - "animal on state flag"
+  - "states that feature animals on their flag"
 
 author: USA Symbol Team
 date_published: 2026-03-07
-date_modified: 2026-05-07
+date_modified: 2026-05-29
 
 seo:
   title: "U.S. State Flags with Animals | Bears, Birds & Bison"
@@ -26,11 +31,7 @@ page:
     - "The 2024 flag redesigns for Minnesota and Utah removed animals from their flags. Both new designs use geometric symbols and no longer display state seals."
     - "Nine state flags feature the bald eagle — the most common animal on US state flags by a wide margin."
 
-  methodology: >
-    All 50 US state flags were cross-referenced against official state statutes, North American Vexillological
-    Association (NAVA) design records, and each state's Secretary of State office. Animal imagery was assessed
-    across both primary flag designs and incorporated state seals and coats of arms, including heraldic supporters.
-
+  methodology: "Flags were included when an animal appears in the official design. Sources prioritize state specs and flag references."
   sources:
     - name: "North American Vexillological Association (NAVA)"
       url: "https://nava.org/"
@@ -40,37 +41,21 @@ page:
       url: "https://www.library.ca.gov/california-history/state-symbols/"
     - name: "Wyoming Secretary of State — State Flag"
       url: "https://sos.wyo.gov/Services/StateInfo_Symbols.aspx"
-    - name: "Oregon Blue Book — State Flag"
-      url: "https://sos.oregon.gov/blue-book/Pages/state/symbols/flag.aspx"
-    - name: "Maine Secretary of State — 2024 Flag Referendum"
-      url: "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/Citizens-20Guide-2011.5.2024-20FINAL.pdf"
-
-
 big_stat:
   number: "15+"
   description: "US state flags feature animals — from bald eagles and grizzly bears to badgers, beavers, and oxen hidden in state seals."
 
-timeline:
-  - year: "1782"
-    description: "The Great Seal of the United States is adopted, placing the bald eagle at the center of American national identity. Nine current state flags eventually inherit eagle imagery through seals or coats of arms."
-  - year: "1804"
-    description: "Louisiana's territorial seal is adopted, featuring the pelican-in-her-piety. The pelican has been Louisiana's symbol since the French colonial era and will appear on the state flag from 1912."
-  - year: "1820"
-    description: "Maine enters the Union as the 23rd state. The state coat of arms adopted at statehood features a moose reclining beneath a pine tree — a design that will persist for over 200 years."
-  - year: "1822"
-    description: "Missouri adopts its state seal featuring two grizzly bears as heraldic shield-holders. The bears represent frontier strength and will appear on Missouri's flag when it is adopted in 1913."
-  - year: "1846"
-    description: "The Bear Flag Revolt. American settlers raise a handmade grizzly bear flag in Sonoma, declaring the California Republic. The grizzly becomes California's defining emblem."
-  - year: "1863"
-    description: "Wisconsin adopts its state flag with the coat of arms featuring a badger on top — the Badger State's defining heraldic animal."
-  - year: "1911"
-    description: "California officially adopts the Bear Flag as its state flag, featuring the California grizzly bear (Ursus arctos californicus) — a subspecies that will be declared extinct just eleven years later."
-  - year: "1917"
-    description: "Wyoming adopts its state flag featuring a white American bison silhouette designed by Verna Keays — one of the boldest and cleanest animal flag designs in American vexillology."
-  - year: "1925"
-    description: "Oregon adopts its two-sided flag. The obverse shows the state seal; the reverse shows a golden beaver — the only state flag with two completely different designs."
-  - year: "2024"
-    description: "Minnesota and Utah both adopt redesigned state flags that remove animal imagery entirely. Maine holds a statewide referendum on its flag — voters choose to keep the moose and pine tree design."
+map:
+  title: "Interactive Map: U.S. State Flags Featuring Animals"
+  image_alt: "Map of the United States highlighting states whose current flags feature animals, including California, Wyoming, Louisiana, Oregon, Maine, Missouri, Michigan, Wisconsin, Delaware, and Idaho."
+  caption: "California and Wyoming are the clearest animal-first flag designs. Most other states place the animal inside a seal or coat of arms, where it is much harder to see at normal flag-viewing distance."
+  metric_key: animal
+  metric_label: "Animal Featured"
+  image_key: flag_image
+  detail_keys:
+    - placement
+    - year_adopted
+  color_scale: categorical
 
 expert_quote:
   text: "Animal figures on state flags usually enter through one of two routes: a dominant standalone design, as in California and Wyoming, or a state seal detail, as in Missouri, Maine, Wisconsin, Delaware, and Idaho."
@@ -78,28 +63,74 @@ expert_quote:
 
 
 visual_assets:
-  - id: california-bear-flag
+  - id: california-bear-subsection
     src: /images/flags/california/flag.webp
     alt: California Bear Flag featuring the California grizzly bear walking left across a white field with a red star and CALIFORNIA REPUBLIC text
-    caption: "The California Bear Flag. The California grizzly (Ursus arctos californicus) has been extinct since 1922, so the animal on the flag no longer exists in the wild."
+    caption: "California's extinct grizzly."
+    section: iconic-mammals::california-the-grizzly-bear
     layout: right
 
-  - id: wyoming-bison-detail
-    src: /images/flags/wyoming/symbols/bison.svg
-    alt: White American bison silhouette from the Wyoming state flag — the central design element on a blue and red field
-    caption: "Wyoming's bison silhouette carries the state seal on its body. Verna Keays designed the flag for a 1916 DAR contest."
+  - id: wyoming-bison-subsection
+    src: /images/flags/wyoming/flag.webp
+    alt: Wyoming state flag with a white American bison silhouette centered on a blue field with a red and white border
+    caption: "Wyoming's bison at center."
+    section: iconic-mammals::wyoming-the-american-bison
     layout: right
 
   - id: oregon-flag-reverse
-    src: /images/flags/oregon/flag-reverse.webp
+    src: /images/flags/oregon/flag-reverse.png
     alt: Oregon state flag reverse side showing a golden beaver on a navy blue background — the only reverse-side animal on any US state flag
-    caption: "The reverse side of the Oregon state flag — the only US state flag with two completely different designs. The golden beaver appears only here; the front shows the state seal with an eagle."
+    caption: "Oregon's reverse-side beaver."
+    section: oregon-beaver-flag
     layout: right
 
-  - id: wisconsin-badger-detail
-    src: /images/flags/wisconsin/symbols/badger.svg
-    alt: Badger from the Wisconsin state coat of arms — perched directly above the state shield on the Wisconsin flag
-    caption: "Wisconsin's badger sits directly above the shield in the state coat of arms, matching the state's 'Badger State' nickname."
+  - id: maine-moose-subsection
+    src: /images/flags/maine/versions/current-1909.webp
+    alt: Maine state flag showing the coat of arms with a moose beneath a pine tree on a blue field
+    caption: "Maine's moose in the arms."
+    section: moose-badger-elk::maine-the-moose-and-the-2024-referendum
+    layout: right
+
+  - id: michigan-supporters-subsection
+    src: /images/flags/michigan/flag.webp
+    alt: Michigan state flag showing the coat of arms with an elk and moose as supporters on a dark blue field
+    caption: "Michigan's elk and moose."
+    section: moose-badger-elk::michigan-elk-and-moose-as-heraldic-supporters
+    layout: right
+
+  - id: wisconsin-badger-subsection
+    src: /images/flags/wisconsin/flag.webp
+    alt: Wisconsin state flag showing the state coat of arms with a badger above the shield
+    caption: "Wisconsin's badger above the shield."
+    section: moose-badger-elk::wisconsin-the-badger-above-the-shield
+    layout: right
+
+  - id: delaware-ox-subsection
+    src: /images/flags/delaware/flag.webp
+    alt: Delaware state flag with a buff diamond and central coat of arms containing an ox in the shield
+    caption: "Delaware's ox inside the shield."
+    section: agricultural-animals::delaware-the-ox
+    layout: right
+
+  - id: idaho-elk-horse-subsection
+    src: /images/flags/idaho/flag.webp
+    alt: Idaho state flag showing the state seal on a blue field with elk and horse imagery in the full composition
+    caption: "Idaho's elk and horse in the seal."
+    section: agricultural-animals::idaho-elk-and-horse
+    layout: right
+
+  - id: missouri-bears-flag
+    src: /images/flags/missouri/flag.webp
+    alt: Missouri state flag with the state seal centered on a red, white, and blue tricolor
+    caption: "Missouri's three hidden bears."
+    section: missouri-bears
+    layout: right
+
+  - id: louisiana-pelican-flag
+    src: /images/flags/louisiana/flag.webp
+    alt: Louisiana state flag showing a brown pelican feeding chicks at the center of a blue field
+    caption: "Louisiana's pelican at center."
+    section: bird-flags-overview
     layout: right
 
 
@@ -111,18 +142,18 @@ table:
     flag_image: "Flag"
     animal_image: "Animal"
     state: "State"
-    animal: "Animal Featured"
-    symbol_meaning: "What It Represents"
-    placement: "Position on Flag"
-    year_adopted: "Flag Adopted"
+    animal: "Species"
+    symbol_meaning: "Meaning"
+    placement: "Placement"
+    year_adopted: "Adopted"
   rows:
     - flag_image: "/images/flags/california/flag.webp"
       animal_image: "/images/flags/california/symbols/bear.svg"
       state: "California"
       state_slug: "california"
       animal: "California Grizzly Bear"
-      symbol_meaning: "Independence and defiance — born from the 1846 Bear Flag Revolt against Mexican rule"
-      placement: "Center — walking left across a green grass strip, dominant flag element"
+      symbol_meaning: "Independence and defiance"
+      placement: "Center; dominant figure"
       year_adopted: 1911
 
     - flag_image: "/images/flags/wyoming/flag.webp"
@@ -130,8 +161,8 @@ table:
       state: "Wyoming"
       state_slug: "wyoming"
       animal: "American Bison"
-      symbol_meaning: "Frontier heritage and wildlife conservation — the bison nearly went extinct before Wyoming made it its emblem"
-      placement: "Center — large white silhouette carrying the state seal on its body"
+      symbol_meaning: "Frontier heritage"
+      placement: "Center; seal on body"
       year_adopted: 1917
 
     - flag_image: "/images/flags/louisiana/flag.webp"
@@ -139,8 +170,8 @@ table:
       state: "Louisiana"
       state_slug: "louisiana"
       animal: "Brown Pelican"
-      symbol_meaning: "Self-sacrifice and parental devotion — the medieval 'pelican in her piety' symbol of a parent feeding young with her own blood"
-      placement: "Center — pelican in her piety feeding chicks in a nest on a blue field"
+      symbol_meaning: "Self-sacrifice and care"
+      placement: "Center; nest scene"
       year_adopted: 1912
 
     - flag_image: "/images/flags/oregon/flag.webp"
@@ -148,17 +179,17 @@ table:
       state: "Oregon"
       state_slug: "oregon"
       animal: "North American Beaver"
-      symbol_meaning: "Industry and resourcefulness — beavers drove the fur trade that opened the Pacific Northwest to settlement"
-      placement: "Reverse side only — golden beaver on navy blue; obverse shows state seal with eagle"
+      symbol_meaning: "Industry and trade"
+      placement: "Reverse only"
       year_adopted: 1925
 
     - flag_image: "/images/flags/maine/flag.webp"
-      animal_image: "/images/flags/maine/symbols/moose.svg"
+      animal_image: "/images/flags/maine/symbols/coat-of-arms.svg"
       state: "Maine"
       state_slug: "maine"
       animal: "Moose"
-      symbol_meaning: "Wilderness and northwoods identity — the moose represents Maine's vast forests and frontier character"
-      placement: "Center of state coat of arms — reclining beneath a pine tree"
+      symbol_meaning: "Wilderness identity"
+      placement: "Coat of arms center"
       year_adopted: 1909
 
     - flag_image: "/images/flags/missouri/flag.webp"
@@ -166,17 +197,17 @@ table:
       state: "Missouri"
       state_slug: "missouri"
       animal: "Grizzly Bear (×2 as shield-holders + 1 on shield)"
-      symbol_meaning: "Strength and bravery of Missouri's frontier citizens — chosen by the legislature in 1822 to project power"
-      placement: "State seal at center — two bears as heraldic shield-supporters"
+      symbol_meaning: "Strength and bravery"
+      placement: "Center seal"
       year_adopted: 1913
 
     - flag_image: "/images/flags/michigan/flag.webp"
-      animal_image: "/images/flags/michigan/symbols/elk-moose.svg"
+      animal_image: "/images/flags/michigan/symbols/supporters.svg"
       state: "Michigan"
       state_slug: "michigan"
       animal: "Elk & Moose"
-      symbol_meaning: "Great Lakes wilderness heritage — two native megafauna representing the region's wild landscape"
-      placement: "State coat of arms — elk on left, moose on right as heraldic shield-supporters"
+      symbol_meaning: "Wilderness heritage"
+      placement: "Coat of arms sides"
       year_adopted: 1911
 
     - flag_image: "/images/flags/wisconsin/flag.webp"
@@ -184,36 +215,30 @@ table:
       state: "Wisconsin"
       state_slug: "wisconsin"
       animal: "Badger"
-      symbol_meaning: "Tenacity and hard labor — miners who dug into hillsides for shelter earned Wisconsin the 'Badger State' nickname"
-      placement: "Top of state coat of arms — perched directly above the state shield"
+      symbol_meaning: "Tenacity and labor"
+      placement: "Above the shield"
       year_adopted: 1863
 
     - flag_image: "/images/flags/delaware/flag.webp"
-      animal_image: "/images/flags/delaware/symbols/ox.svg"
+      animal_image: "/images/flags/delaware/symbols/coat-of-arms.svg"
       state: "Delaware"
       state_slug: "delaware"
       animal: "Ox (Bull)"
-      symbol_meaning: "Agricultural heritage and the farming economy that sustained Delaware's colonial communities"
-      placement: "Lower-left quarter of state coat of arms shield"
+      symbol_meaning: "Agricultural heritage"
+      placement: "Shield lower-left"
       year_adopted: 1913
 
     - flag_image: "/images/flags/idaho/flag.webp"
-      animal_image: "/images/flags/idaho/symbols/elk.svg"
+      animal_image: "/images/flags/idaho/symbols/state-seal.png"
       state: "Idaho"
       state_slug: "idaho"
       animal: "Elk & Horse"
-      symbol_meaning: "Rocky Mountain wildlife and frontier ranching culture that shaped Idaho's economy and identity"
-      placement: "State coat of arms — elk head as crest above shield; horse in supporting imagery"
+      symbol_meaning: "Wildlife and ranching"
+      placement: "Crest and seal"
       year_adopted: 1907
 
 
 sections:
-  - id: interactive-map-intro
-    icon: "fa-solid fa-map"
-    title: "Interactive Map: US State Flags Featuring Animals"
-    paragraphs:
-      - "Animal imagery ranges from dominant flag designs in California and Wyoming to tiny seal details such as Missouri's bears and Wyoming's seal eagle."
-
   - id: table-intro
     icon: "fa-solid fa-table"
     title: "State-by-State Reference: Animals on US Flags"
@@ -222,40 +247,37 @@ sections:
 
   - id: iconic-mammals
     icon: "fa-solid fa-paw"
-    img: california-bear-flag
     title: "California and Wyoming: Animal-First Flag Designs"
     paragraphs:
-      - "Two US state flags place a single mammal at the center of the design rather than inside a seal: California's **grizzly bear** and Wyoming's **American bison**."
+      - "Two US state flags place a single mammal at the center of the design rather than inside a seal: California's grizzly bear and Wyoming's American bison."
     subsections:
       - subtitle: "California: The Grizzly Bear"
-        text: "The **California state flag** — the Bear Flag — features a **California grizzly bear** (*Ursus arctos californicus*) walking left across a strip of green grass on a white field. Below the bear, the words **CALIFORNIA REPUBLIC** appear in bold black capitals. The design traces to the Bear Flag Revolt of June 14, 1846, when American settlers briefly declared independence from Mexico in Sonoma and raised a handmade grizzly flag. The bear was officially standardized in 1953 based on illustrations of **Monarch**, the last California grizzly in captivity. The California grizzly has been extinct since 1922."
+        text: "The California state flag features a California grizzly bear (*Ursus arctos californicus*) walking across a white field above the words CALIFORNIA REPUBLIC. The design traces to the Bear Flag Revolt of June 14, 1846, and was standardized in 1953 from illustrations of Monarch, the last California grizzly in captivity. The California grizzly has been extinct since 1922."
       - subtitle: "Wyoming: The American Bison"
-        text: "Wyoming's flag shows a large **white American bison** (*Bison bison*) silhouette at center on a blue field, framed by a red and white border. The bison carries the **state seal** on its body. Verna Keays of Buffalo, Wyoming designed it after winning a 1916 Daughters of the American Revolution contest; the flag was adopted on January 31, 1917. The bison is also the **national mammal of the United States** (since 2016) and the state mammal of Wyoming, Kansas, and Oklahoma."
+        text: "Wyoming's flag shows a large white American bison (*Bison bison*) silhouette at center on a blue field, framed by a red and white border. The bison carries the state seal on its body. Verna Keays of Buffalo, Wyoming designed it after winning a 1916 Daughters of the American Revolution contest; the flag was adopted on January 31, 1917. The bison is also the national mammal of the United States (since 2016) and the state mammal of Wyoming, Kansas, and Oklahoma."
 
   - id: oregon-beaver-flag
     icon: "fa-solid fa-arrows-rotate"
-    img: oregon-flag-reverse
     title: "The Only Two-Sided State Flag: Oregon's Beaver"
     paragraphs:
-      - "Oregon holds a unique distinction in American vexillology: it is the **only US state with a completely different design on each side of its flag**. The **obverse side** (front) — the side displayed on a standard flag pole — features the state seal on a navy blue background, with a bald eagle at the top of the shield. Turn the flag over, and the eagle is gone. The **reverse side** shows only a **golden beaver** on the same navy field."
-      - "The **North American beaver** (*Castor canadensis*) has been Oregon's official state animal since 1969, but its appearance on the flag predates that designation by 44 years — the beaver was added to the reverse side when the [Oregon state flag](/states/oregon/flag/oregon-state-flag) was adopted in 1925, so that the flag would read clearly from both sides on parade floats and public buildings. Because both faces must be separately printed, Oregon's flag costs more to manufacture than a single-sided design."
+      - "Oregon holds a unique distinction in American vexillology: it is the only US state with a completely different design on each side of its flag. The obverse side (front) — the side displayed on a standard flag pole — features the state seal on a navy blue background, with a bald eagle at the top of the shield. Turn the flag over, and the eagle is gone. The reverse side shows only a golden beaver on the same navy field."
+      - "The North American beaver (*Castor canadensis*) has been Oregon's official state animal since 1969, but its appearance on the flag predates that designation by 44 years — the beaver was added to the reverse side when the [Oregon state flag](/states/oregon/flag/oregon-state-flag) was adopted in 1925, so that the flag would read clearly from both sides on parade floats and public buildings. Because both faces must be separately printed, Oregon's flag costs more to manufacture than a single-sided design."
     subsections:
       - subtitle: "Why Does Oregon Have Two Flag Sides?"
         text: "The two-sided design was a practical decision made at the time of the flag's 1925 adoption. A flag displaying only the state seal on one side would show a mirror image of the seal on the reverse. Oregon instead chose a separate reverse design: the state animal on a plain field. The result is a flag that requires printing two different faces."
 
   - id: moose-badger-elk
     icon: "fa-solid fa-tree"
-    img: wisconsin-badger-detail
     title: "Flags with Moose, Badgers, and Elk"
     paragraphs:
       - "California's grizzly and Wyoming's bison are impossible to miss. The animals on the next tier are different: a moose reclining inside a coat of arms, an elk head rising above a shield, a badger perched at the apex of heraldic design. You need to know where to look — but they were placed there intentionally."
     subsections:
       - subtitle: "Maine: The Moose and the 2024 Referendum"
-        text: "Maine's state flag features the **state coat of arms** on a blue field. At the center of that coat of arms, a **moose** reclines beneath a pine tree. A farmer and a sailor flank the shield as supporters, and the North Star appears above with the motto *Dirigo* ('I Lead'). In **November 2024**, Maine held a statewide **flag referendum** asking voters whether to adopt a simpler pine tree design. Voters chose to **keep the current moose and pine tree design**."
+        text: "Maine's state flag features the state coat of arms on a blue field. At the center of that coat of arms, a moose reclines beneath a pine tree. A farmer and a sailor flank the shield as supporters, and the North Star appears above with the motto *Dirigo* ('I Lead'). In November 2024, Maine held a statewide flag referendum asking voters whether to adopt a simpler pine tree design. Voters chose to keep the current moose and pine tree design."
       - subtitle: "Michigan: Elk and Moose as Heraldic Supporters"
-        text: "Michigan's flag shows the **state coat of arms** on a dark blue field, with an **elk** on the left and a **moose** on the right as heraldic shield-supporters. Above the shield, a bald eagle serves as the crest, so Michigan's flag includes three animal figures."
+        text: "Michigan's flag shows the state coat of arms on a dark blue field, with an elk on the left and a moose on the right as heraldic shield-supporters. Above the shield, a bald eagle serves as the crest, so Michigan's flag includes three animal figures."
       - subtitle: "Wisconsin: The Badger Above the Shield"
-        text: "Wisconsin's flag carries the **state coat of arms**. Directly above the shield sits a **badger**, matching Wisconsin's 'Badger State' nickname. The nickname traces to lead miners who burrowed into hillsides for winter shelter in the early 19th century."
+        text: "Wisconsin's flag carries the state coat of arms. Directly above the shield sits a badger, matching Wisconsin's 'Badger State' nickname. The nickname traces to lead miners who burrowed into hillsides for winter shelter in the early 19th century."
 
   - id: agricultural-animals
     icon: "fa-solid fa-wheat-awn"
@@ -264,23 +286,23 @@ sections:
       - "Delaware's ox and Idaho's elk are seal details rather than central flag designs. Both are hard to see at distance, but each is part of the official coat of arms shown on the flag."
     subsections:
       - subtitle: "Delaware: The Ox"
-        text: "Delaware's flag displays the **state coat of arms** on a buff diamond background. Inside the central shield, an **ox** fills the lower-left quadrant. Delaware ratified the US Constitution on December 7, 1787, making it the first state, and the ox points to the livestock and grain farming in the state's early economy."
+        text: "Delaware's flag displays the state coat of arms on a buff diamond background. Inside the central shield, an ox fills the lower-left quadrant. Delaware ratified the US Constitution on December 7, 1787, making it the first state, and the ox points to the livestock and grain farming in the state's early economy."
       - subtitle: "Idaho: Elk and Horse"
-        text: "Idaho's flag shows the **state coat of arms** on a blue field, with an **elk head** as the crest above the central shield. The shield also includes mountains, forests, a steamer on the river, and a woman holding scales and a torch. A **horse** appears within the wider seal composition. Idaho adopted this flag in 1907."
+        text: "Idaho's flag shows the state coat of arms on a blue field, with an elk head as the crest above the central shield. The shield also includes mountains, forests, a steamer on the river, and a woman holding scales and a torch. A horse appears within the wider seal composition. Idaho adopted this flag in 1907."
 
   - id: missouri-bears
     icon: "fa-solid fa-shield"
     title: "Missouri: Three Hidden Grizzly Bears"
     paragraphs:
-      - "Missouri's flag is a horizontal **tricolor** of red, white, and blue. The **state seal** at the center contains **three grizzly bears**: two stand upright as heraldic **shield-holders** on either side of the central shield, and a third grizzly appears within the inner shield."
+      - "Missouri's flag is a horizontal tricolor of red, white, and blue. The state seal at the center contains three grizzly bears: two stand upright as heraldic shield-holders on either side of the central shield, and a third grizzly appears within the inner shield."
       - "The bears were added to the Missouri state seal in 1822 — one year after statehood — to represent the strength of Missouri's frontier citizens. When the flag was formally adopted in 1913, the seal came with it. From normal flag-viewing distance, the grizzlies disappear into the heraldic detail."
 
   - id: bird-flags-overview
     icon: "fa-solid fa-feather"
     title: "State Flags with Birds: Eagles and Pelicans"
     paragraphs:
-      - "Nine US state flags feature the **bald eagle** — *Haliaeetus leucocephalus* — embedded in state seals and coats of arms: Illinois, Iowa, Michigan, Missouri, New York, North Dakota, Oregon (obverse only), Pennsylvania, and Wyoming. The eagle's presence on these flags traces directly to the **Great Seal of the United States** (1782), which established the bald eagle as the national emblem."
-      - "**Louisiana** is the only current state flag featuring a bird other than the bald eagle: the **brown pelican** in the heraldic pose of **'pelican in her piety.'** Louisiana inherited this symbol from French colonial heraldry — the pelican appears on Louisiana's territorial seal of 1804, a full eight years before statehood. See [US state flags with birds](/collections/flags/states-with-birds-on-the-flag) for the ten bird flags and [US state flags with eagles](/collections/flags/state-flags-with-eagles) for the nine eagle states."
+      - "Nine US state flags feature the bald eagle — *Haliaeetus leucocephalus* — embedded in state seals and coats of arms: Illinois, Iowa, Michigan, Missouri, New York, North Dakota, Oregon (obverse only), Pennsylvania, and Wyoming. The eagle's presence on these flags traces directly to the Great Seal of the United States (1782), which established the bald eagle as the national emblem."
+      - "Louisiana is the only current state flag featuring a bird other than the bald eagle: the brown pelican in the heraldic pose of 'pelican in her piety.' Louisiana inherited this symbol from French colonial heraldry — the pelican appears on Louisiana's territorial seal of 1804, a full eight years before statehood. See [US state flags with birds](/collections/flags/states-with-birds-on-the-flag) for the ten bird flags and [US state flags with eagles](/collections/flags/state-flags-with-eagles) for the nine eagle states."
 
   - id: interesting-facts
     icon: "fa-solid fa-lightbulb"
@@ -307,7 +329,7 @@ faq:
     answer: "Wyoming is the only US state flag featuring an American bison (Bison bison). The flag shows a large white bison silhouette at the center of a blue field, with the state seal imprinted on the bison's body. Verna Keays designed it after winning a 1916 DAR contest; the flag was adopted January 31, 1917."
 
   - question: "Do the new Minnesota and Utah flags feature animals?"
-    answer: "No. Both the 2024 Minnesota flag and the 2024 Utah flag removed animal imagery from their designs. Minnesota's new flag features a stylized eight-pointed North Star on a dark blue and light blue background — no animals of any kind. The common loon, Minnesota's state bird, now appears only on the state seal, which is no longer displayed on the flag. Utah's new flag centers on a beehive, a sego lily, and a star — geometric and botanical symbols with no animals. Both redesigns were part of a broader movement to simplify seal-on-blue state flags."
+    answer: "No. Both the 2024 Minnesota flag and the 2024 Utah flag removed animal imagery from their designs. Minnesota now uses an eight-pointed North Star, while Utah centers a beehive, sego lily, and star. Both redesigns moved away from seal-on-blue flags."
 
   - question: "What US state flag has an animal on both sides?"
     answer: "Oregon is the only US state flag with two completely different designs, each featuring a different animal. The obverse (front) shows the state seal, which includes a bald eagle. The reverse shows a golden beaver."

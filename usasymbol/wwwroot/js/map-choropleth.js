@@ -74,6 +74,8 @@
         var x = clientX - rect.left;
         var y = clientY - rect.top;
 
+        tooltip.style.maxWidth = Math.max(180, Math.min(320, rect.width - 8)) + 'px';
+
         var ttW = tooltip.offsetWidth || 180;
         var ttH = tooltip.offsetHeight || 72;
 
@@ -83,6 +85,8 @@
         if (left + ttW > rect.width - 4) left = x - ttW - 16;
         if (top < 4) top = y + 16;
         if (top + ttH > rect.height - 4) top = rect.height - ttH - 4;
+        left = Math.max(4, Math.min(left, Math.max(4, rect.width - ttW - 4)));
+        top = Math.max(4, top);
 
         tooltip.style.left = left + 'px';
         tooltip.style.top = top + 'px';

@@ -1,7 +1,14 @@
-﻿type: ranking
+type: ranking
 slug: states-by-population-density
 category: demographics
 url: /rankings/demographics/states-by-population-density
+auto_link_phrases:
+  - "most densely populated states"
+  - "population density by state"
+  - "least dense US states"
+  - "US state density ranking"
+extremes_mode: both
+extremes_title: "Most and Least Densely Populated U.S. States"
 hero_image: "/images/rankings/demographics/states-by-population-density-map.webp"
 hero_image_alt: "Map of the United States showing population density by state"
 
@@ -21,7 +28,7 @@ page:
     - "Alaska is the least densely populated state with just 1.3 people per square mile — nearly 1,000 times less dense than New Jersey. Wyoming (6.1/sq mi), Montana (7.9/sq mi), and North Dakota (12/sq mi) are also among the least dense."
     - "Washington D.C., while not a state, has the highest population density in the U.S. at 11,410 people per square mile — nearly 9 times denser than New Jersey."
 
-  methodology: "Population density is calculated by dividing the total population by the total land area in square miles. Water area is excluded. This 2026 ranking uses the latest U.S. Census Bureau state population estimates available in 2026, from the Vintage 2025 series. Land area comes from the U.S. Census Bureau's geographic data. Washington D.C. is included for comparison but listed separately as it is not a state."
+  methodology: "Density is population divided by land area, excluding water. Population uses Census 2025 estimates."
 
   sources:
     - name: "U.S. Census Bureau Population Estimates"
@@ -456,6 +463,14 @@ table:
       population: 738003
       land_area: 567695
 
+compare:
+  metric_slug: density
+  title: "Compare Population Density Between States"
+  description: "Choose two states and compare people per square mile, total population, and land area in one focused view."
+  button_text: "Compare density"
+  icon: "fa-solid fa-city"
+  default_state_a: new-jersey
+  default_state_b: alaska
 
 sections:
   - id: "northeast-density"

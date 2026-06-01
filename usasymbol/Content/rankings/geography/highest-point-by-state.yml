@@ -1,7 +1,14 @@
-﻿type: ranking
+type: ranking
 slug: highest-point-by-state
 category: geography
 url: /rankings/geography/highest-point-by-state
+auto_link_phrases:
+  - "highest point in each state"
+  - "highest elevation by state"
+  - "tallest mountain by state"
+  - "state high points"
+extremes_mode: both
+extremes_title: "Highest and Lowest State High Points in the U.S."
 hero_image: "/images/rankings/geography/highest-point-by-state-map.webp"
 hero_image_alt: "Map of the United States showing the highest point in each state by elevation"
 
@@ -10,8 +17,8 @@ date_published: "2026-01-23"
 date_modified: "2026-04-20"
 
 seo:
-  title: "Highest Point by State | All 50 U.S. State High Points"
-  description: "The highest point in each US state with elevation in feet and meters. Denali, Alaska (20,310 ft) is the highest point in the US. All 50 state high points listed with map."
+  title: "Highest Point by State | All 50 U.S. States"
+  description: "Highest point in every U.S. state with elevations in feet and meters. Denali leads at 20,310 ft; Florida's Britton Hill is lowest."
 
 page:
   h1: "Highest Point in Each U.S. State"
@@ -22,7 +29,7 @@ page:
     - "Florida has the lowest high point of any state — Britton Hill at just 345 feet (105 m). Delaware (448 ft) and Louisiana (535 ft) are also extremely flat."
     - "Colorado has the highest average elevation of any state at 6,800 feet, with 58 peaks over 14,000 feet (fourteeners)."
 
-  methodology: "Elevations are measured from sea level to the summit. Heights reflect the most recent USGS surveys. Some high points are mountain peaks with prominent summits, while others are high plateaus or ridgelines. Prominence (height above surrounding terrain) varies significantly."
+  methodology: "Elevations are measured from sea level using USGS and state reference data. High points may be summits, plateaus, or ridgelines."
   
   sources:
     - name: "U.S. Geological Survey (USGS)"
@@ -558,6 +565,14 @@ table:
       mountain_range: "None (hill)"
       prominence_ft: 95
       difficulty: "Drive-up / Short Walk"
+compare:
+  metric_slug: highest-point
+  title: "Compare Highest Points Between States"
+  description: "Choose two states and compare their highest natural points, summit elevations, and geography context."
+  button_text: "Compare highest points"
+  icon: "fa-solid fa-mountain"
+  default_state_a: alaska
+  default_state_b: florida
 
 sections:
   - id: "denali-king"

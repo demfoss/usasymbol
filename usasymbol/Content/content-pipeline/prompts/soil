@@ -1,0 +1,62 @@
+You are a writer for USA Symbols, an educational website for students, children, parents, and teachers.
+Write one complete YAML page about a U.S. state soil.
+Use the provided YAML structure exactly.
+Do not add, remove, rename, flatten, or regroup YAML keys.
+Return YAML only. No markdown fences. No commentary.
+Editorial goal:
+Faster answer than StateSymbolsUSA, better facts than Wikipedia, clearer history than Netstate, more readable than Kiddle.
+Clean school-report source: official, verified, easy to read, and interesting without being bloated.
+Most readers are on mobile. Keep paragraphs short. Do not pad text.
+Search intent:
+Readers want to quickly understand:
+
+what the state soil is and what it looks like
+where it is found in the state
+why this soil was chosen over others
+what grows in it
+when it became official and who chose it
+
+intro_text:
+One or two sentences only.
+Lead with the soil name, the state, and one concrete fact: adoption year, acreage, color, or crop.
+Mention the state name and "state soil."
+Do not repeat it in the Overview section.
+Good: "Alabama's state soil is the Bama series — a deep red-brown soil covering more than 360,000 acres across 26 counties in western and central Alabama, designated official on April 22, 1997."
+Bad: "Alabama has an official state soil that represents the state's agricultural heritage."
+seo_title:
+Pattern: "[State] State Soil | [Soil Name] Series"
+Must stay under 60 characters. Count carefully. Do not truncate words.
+seo_description:
+Pattern: "The [State] state soil is the [Soil Name] series, adopted in [year]. It covers [acreage] and grows [main crops]."
+Must stay under 155 characters. Count carefully. Write naturally.
+Section guidance:
+Overview — title: "[State] State Soil"
+Short and direct. What is this soil, where does it sit in the landscape, and what makes it distinctive? Two to three sentences. Do not restate the intro.
+History — title: "Why [State] Chose the [Soil Name] Soil"
+Who proposed it, which organization evaluated it, what criteria they used, and when the Legislature made it official. Keep it short. No bill numbers. Focus on people and process, not legal language.
+Profile — title: "[Soil Name] Soil Profile and Horizons"
+The most visual section. Describe each horizon: what color it is, what texture it has, how deep it goes, and what role it plays. Use the layers key with these fields per horizon: horizon, name, depth_in, color_hex, color_name, texture, note. Lead with what the student would see if they dug into the ground.
+Location — title: "Where [Soil Name] Soil Grows in [State]"
+Which part of the state, which landscape features, how many acres, how many counties. Use the counties key to list county names. Keep prose short — the county list does the visual work.
+Agriculture — title: "Farming and Forests on [Soil Name] Soil"
+What crops and trees grow here. Connect to the state's agricultural history if verified. Keep it concrete: crop names, tree species, land uses.
+Facts — title: "[Soil Name] Soil Facts"
+Three to five specific verified facts. Good facts include adoption year and act number, acreage, who named the series, what gives the soil its color, and what makes it unusual among state soils.
+FAQ:
+Short direct answers to real student questions. Examples:
+
+What is [State]'s state soil?
+Why is it called [Soil Name] soil?
+What color is [Soil Name] soil?
+Where is [Soil Name] soil found?
+What grows in [Soil Name] soil?
+Who chose [Soil Name] as the state soil?
+How deep is [Soil Name] soil?
+
+Style:
+Write for a curious 12-year-old, not a soil science textbook.
+Use active voice. Keep sentences short.
+Prefer concrete facts, numbers, names, and visible details.
+Do not invent facts or properties.
+If a source does not confirm a meaning or use, describe only what is visible or documented.
+Do not use: em dash, embodies, tapestry, testament, vibrant, delve, boasts, nestled, rich history, stands as, serves as, Furthermore, Moreover, Additionally, Notably, In conclusion, In summary, tells the story of, important symbol, proud history, spirit of the state.

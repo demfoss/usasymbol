@@ -1,7 +1,13 @@
-﻿type: ranking
+type: ranking
 slug: states-capital-cities
 category: geography
 url: /rankings/geography/states-capital-cities
+auto_link_phrases:
+  - "all US state capitals"
+  - "list of state capital cities"
+  - "state capitals by state"
+  - "US state capital city list"
+extremes_mode: none
 hero_image: "/images/rankings/geography/us-state-capitals-map.webp"
 hero_image_alt: "U.S. map showing the capital city of each state"
 
@@ -10,7 +16,7 @@ date_published: "2026-01-15"
 date_modified: "2026-04-20"
 
 seo:
-  title: "U.S. State Capitals | Complete List of All 50"
+  title: "State Capitals List | All 50 U.S. States"
   description: "Check the capital city for every U.S. state, with abbreviations, population context, and a map for quick reference."
 
 page:
@@ -20,15 +26,9 @@ page:
     - "Each of the 50 U.S. states has exactly one designated capital city where state government operates. The table below lists all 50 — with postal abbreviations and population figures."
     - "Only 17 of 50 state capitals are also the largest city in their state. Phoenix, Arizona is the largest capital by population (1.6M+), while Montpelier, Vermont is the smallest (≈8,000). The rest were chosen for geographic centrality, political compromise, or historical inertia."
 
-  methodology: "This list includes all 50 U.S. state capitals with their official two-letter postal abbreviations as designated by the United States Postal Service. Population figures are approximate estimates based on recent U.S. Census data. States are listed alphabetically for easy reference."
+  methodology: "This page lists all 50 state capitals with USPS abbreviations. Population figures are approximate recent Census-based estimates."
   
   sources:
-    - name: "United States Postal Service"
-      url: "https://about.usps.com/who/profile/history/state-abbreviations.htm"
-      description: "Official two-letter state postal abbreviations"
-    - name: "National Conference of State Legislatures"
-      url: "https://www.ncsl.org/about-state-legislatures/state-capitals"
-      description: "Information about state capitals and legislatures"
     - name: "U.S. Census Bureau"
       url: "https://www.census.gov/programs-surveys/popest.html"
       description: "Population estimates for cities and metropolitan areas"
@@ -403,6 +403,14 @@ map:
   metric_label: "people"
   color_scheme: blue
   color_scale: log
+compare:
+  metric_slug: capital
+  title: "Compare State Capitals"
+  description: "Choose two states and compare their capitals alongside population, region, and state facts."
+  button_text: "Compare capitals"
+  icon: "fa-solid fa-building-columns"
+  default_state_a: california
+  default_state_b: new-york
 
 sections:
   - id: "why-not-largest"

@@ -1,7 +1,12 @@
-﻿type: collection
+type: collection
 slug: states-with-birds-on-the-flag
 category: flags
 url: /collections/flags/states-with-birds-on-the-flag
+auto_link_phrases:
+  - "state flags with birds"
+  - "which states have birds on their flag"
+  - "bird on state flag"
+  - "states that feature birds on their flag"
 
 author: USA Symbol Team
 date_published: 2026-03-07
@@ -25,11 +30,7 @@ page:
     - "Oregon's eagle appears only on the obverse (front) side of its two-sided flag — the reverse shows only a beaver."
     - "The 2024 Minnesota and Utah flag redesigns do not feature birds. Minnesota's loon and Utah's historic eagle are no longer on the current flag designs."
 
-  methodology: >
-    Sources include official state flag statutes, the Congressional Research Service report on the Great Seal,
-    and North American Vexillological Association (NAVA) vexillological archives. Each of the 50 US state flags
-    was examined individually for bird imagery, whether as a standalone design element or embedded within a state seal.
-
+  methodology: "Flags were included when a bird appears in the official design. Sources prioritize state specs and flag references."
   sources:
     - name: "Congressional Research Service — The Great Seal of the United States"
       url: "https://crsreports.congress.gov/product/pdf/RL/98-4"
@@ -39,10 +40,6 @@ page:
       url: "https://www.sos.la.gov/HistoricalResources/AboutLouisiana/Pages/default.aspx"
     - name: "Oregon Blue Book — State Flag"
       url: "https://sos.oregon.gov/blue-book/Pages/state/symbols/flag.aspx"
-    - name: "Minnesota Secretary of State — New State Flag"
-      url: "https://www.sos.mn.gov/about-minnesota/state-symbols/state-flag/"
-
-
 big_stat:
   number: "10"
   description: "US state flags feature birds — 9 bald eagles and 1 brown pelican (Louisiana)."
@@ -81,6 +78,7 @@ visual_assets:
     src: /images/flags/louisiana/symbols/pelican.svg
     alt: Louisiana state flag pelican in her piety — brown pelican feeding three chicks with blood drops, the heraldic image on the Louisiana flag
     caption: "The pelican in her piety on the Louisiana flag. The three blood drops falling from the pelican's breast represent self-sacrifice — a heraldic symbol dating to medieval Europe."
+    section: louisiana-pelican-flag
     layout: right
 
   - id: louisiana-flag-full
@@ -99,6 +97,7 @@ visual_assets:
     src: /images/flags/iowa/symbols/eagle.svg
     alt: Bald eagle on the Iowa state flag carrying a blue ribbon with the state motto — the only eagle on a tricolor among bird-flag states
     caption: "Iowa's eagle flies freely across the center stripe of a tricolor — the only US state bird flag where the bird is not enclosed within a state seal or coat of arms."
+    section: eagle-flags-utah-oregon
     layout: right
 
 
@@ -139,7 +138,7 @@ table:
       year_adopted: 1921
 
     - flag_image: "/images/flags/michigan/flag.webp"
-      bird_image: "/images/flags/michigan/symbols/eagle.svg"
+      bird_image: "/images/flags/michigan/symbols/coat-of-arms.svg"
       state: "Michigan"
       state_slug: "michigan"
       bird_species: "Bald Eagle (Haliaeetus leucocephalus)"
@@ -155,7 +154,7 @@ table:
       year_adopted: 1913
 
     - flag_image: "/images/flags/new-york/flag.webp"
-      bird_image: "/images/flags/new-york/symbols/eagle.svg"
+      bird_image: "/images/flags/new-york/symbols/coat-of-arms.svg"
       state: "New York"
       state_slug: "new-york"
       bird_species: "Bald Eagle (Haliaeetus leucocephalus)"
@@ -210,7 +209,6 @@ sections:
 
   - id: louisiana-pelican-flag
     icon: "fa-solid fa-dove"
-    img: louisiana-pelican-detail
     title: "The Only US State Flag with a Pelican"
     paragraphs:
       - "Louisiana is the only US state whose flag features a bird other than the bald eagle. That bird is the **brown pelican** (*Pelecanus occidentalis*), rendered in the heraldic pose known as **'pelican in her piety'**: the mother pelican stands in her nest, wings spread, wounding her own breast to feed three chicks below her with her blood. The three drops falling from her breast appear explicitly on the flag."
@@ -247,7 +245,6 @@ sections:
 
   - id: eagle-flags-utah-oregon
     icon: "fa-solid fa-arrows-rotate"
-    img: iowa-eagle-detail
     title: "Oregon, Missouri & Wyoming"
     paragraphs:
       - "Oregon, Missouri, and Wyoming show how easy it is for an eagle to be present but visually secondary: one appears on Oregon's front-side seal, one inside Missouri's seal, and one inside the seal printed on Wyoming's bison."
