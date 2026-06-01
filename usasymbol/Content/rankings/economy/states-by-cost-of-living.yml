@@ -27,6 +27,16 @@ page:
       url: "https://meric.mo.gov/data/cost-living-data-series"
       description: "Annual average composite cost of living index by state"
 
+map:
+  title: "Cost of Living Index by State 2025"
+  image_alt: "U.S. map showing cost of living index by state, darkest red for most expensive states"
+  caption: "Hawaii stands alone at the top. The coasts run red; the South and Plains run light. Mississippi, Oklahoma, and Kansas are the most affordable. The national average index is 100."
+  metric_key: col_index
+  metric_label: "CoL Index"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
 computed_data:
   field: cost_of_living_index
   sort: desc

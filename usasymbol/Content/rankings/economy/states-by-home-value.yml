@@ -27,6 +27,16 @@ page:
       url: "https://data.census.gov"
       description: "1-year ACS estimates, Table B25077"
 
+map:
+  title: "Median Home Value by State 2025"
+  image_alt: "U.S. map showing median home value by state, color-coded from lightest for lowest values to darkest blue for highest"
+  caption: "Hawaii and California are the clear outliers above $600,000. The Mountain West and Northeast follow. West Virginia, Mississippi, and Arkansas anchor the most affordable end under $160,000."
+  metric_key: home_value
+  metric_label: "Median Value"
+  name_key: state
+  color_scheme: blue
+  color_scale: linear
+
 computed_data:
   field: median_home_value
   sort: desc

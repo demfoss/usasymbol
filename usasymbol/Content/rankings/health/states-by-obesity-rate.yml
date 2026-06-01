@@ -27,6 +27,16 @@ page:
       url: "https://www.cdc.gov/obesity/data/prevalence-maps.html"
       description: "Annual state-level adult obesity prevalence estimates"
 
+map:
+  title: "Adult Obesity Rate by State 2025"
+  image_alt: "U.S. map showing adult obesity rate by state, darkest red for states with the highest obesity prevalence"
+  caption: "Mississippi and West Virginia top 40%. Colorado, Hawaii, and Massachusetts cluster at the light end under 25%. The South forms a distinct high-obesity belt across the entire region."
+  metric_key: obesity_rate
+  metric_label: "Obesity %"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
 computed_data:
   field: obesity_rate_pct
   sort: desc

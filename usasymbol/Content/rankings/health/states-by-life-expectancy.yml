@@ -27,6 +27,16 @@ page:
       url: "https://www.cdc.gov/nchs/data-analysis-tools/state-health-statistics.htm"
       description: "State-level life expectancy at birth estimates"
 
+map:
+  title: "Life Expectancy by State 2025"
+  image_alt: "U.S. map showing life expectancy at birth by state, darkest green for longest lifespans"
+  caption: "Hawaii and the Northeast cluster at the top. The Deep South and Appalachian states are the lightest -- a gap of nearly 9 years separates the best and worst states."
+  metric_key: life_expectancy
+  metric_label: "Years"
+  name_key: state
+  color_scheme: green
+  color_scale: linear
+
 computed_data:
   field: life_expectancy_years
   sort: desc

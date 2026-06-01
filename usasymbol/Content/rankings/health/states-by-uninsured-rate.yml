@@ -30,6 +30,16 @@ page:
       url: "https://www.kff.org/other/state-indicator/total-population/"
       description: "Annual state-level uninsured rate estimates"
 
+map:
+  title: "Uninsured Rate by State 2025"
+  image_alt: "U.S. map showing share of population without health insurance by state, darkest red for highest uninsured rates"
+  caption: "Texas stands alone at the top. The South and Southwest show the deepest red. Massachusetts and Hawaii are near-white -- both have near-universal coverage through state-level insurance mandates."
+  metric_key: uninsured_rate
+  metric_label: "Uninsured %"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
 computed_data:
   field: uninsured_rate_pct
   sort: desc

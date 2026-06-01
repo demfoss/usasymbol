@@ -27,6 +27,16 @@ page:
       url: "https://www.usnews.com/news/best-states/rankings/education/k-12-education"
       description: "Annual state K-12 education rankings based on NAEP scores, graduation rates, and quality indicators"
 
+map:
+  title: "K-12 Education Ranking by State 2025"
+  image_alt: "U.S. map showing US News K-12 education rank by state, lightest for top-ranked states and darkest for lowest-ranked"
+  caption: "Rank 1 = best. Massachusetts and New Jersey are lightest. New Mexico, Nevada, and Louisiana are darkest. The Northeast dominates the top of the map; the South clusters at the bottom."
+  metric_key: k12_rank
+  metric_label: "K-12 Rank"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
 computed_data:
   field: k12_rank
   sort: asc

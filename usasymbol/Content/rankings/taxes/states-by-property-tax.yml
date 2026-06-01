@@ -27,6 +27,16 @@ page:
       url: "https://wallethub.com/edu/states-with-the-highest-and-lowest-property-taxes/11585"
       description: "Effective property tax rates using 2024 U.S. Census and local government data"
 
+map:
+  title: "Effective Property Tax Rate by State 2025"
+  image_alt: "U.S. map showing effective property tax rate by state, darkest blue for highest rates"
+  caption: "New Jersey and Illinois stand out at the top. Hawaii and Alabama are lightest. No-income-tax states like Texas and New Hampshire are among the darkest — property tax compensates."
+  metric_key: property_tax
+  metric_label: "Eff. Rate %"
+  name_key: state
+  color_scheme: blue
+  color_scale: linear
+
 computed_data:
   field: property_tax_rate_pct
   sort: desc

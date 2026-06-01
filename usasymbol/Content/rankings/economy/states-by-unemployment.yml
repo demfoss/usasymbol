@@ -27,6 +27,16 @@ page:
       url: "https://www.bls.gov/lau/"
       description: "State-level seasonally adjusted unemployment rates"
 
+map:
+  title: "Unemployment Rate by State 2025"
+  image_alt: "U.S. map showing unemployment rate by state, darkest red for highest unemployment"
+  caption: "Nevada and California show the deepest red. The Plains and Mountain states cluster at the light end. South Dakota and Nebraska are consistently the tightest labor markets in the country."
+  metric_key: unemployment
+  metric_label: "Unempl. Rate"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
 computed_data:
   field: unemployment_rate_pct
   sort: desc

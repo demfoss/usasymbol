@@ -30,6 +30,16 @@ page:
       url: "https://www.gasbuddy.com/gaspricemap"
       description: "Crowdsourced real-time state average gas prices"
 
+map:
+  title: "Average Gas Price by State 2025"
+  image_alt: "U.S. map showing average gas price by state, darkest red for most expensive states"
+  caption: "California stands alone as the most expensive. The West Coast and Hawaii cluster at the top. Gulf Coast states — Mississippi, Texas, Louisiana — anchor the cheapest end of the map."
+  metric_key: gas_price
+  metric_label: "$/gal"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
 computed_data:
   field: gas_price_regular
   sort: desc

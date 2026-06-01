@@ -27,6 +27,16 @@ page:
       url: "https://data.census.gov"
       description: "One-year ACS estimates, Table B19013"
 
+map:
+  title: "Median Household Income by State 2025"
+  image_alt: "U.S. map showing median household income by state, color-coded from lightest for lowest income to darkest green for highest"
+  caption: "Maryland, New Jersey, and Massachusetts anchor the top — all above $85,000. Mississippi anchors the bottom at roughly $50,000. The Northeast and West Coast dominate the top half of the map."
+  metric_key: income
+  metric_label: "Median Income"
+  name_key: state
+  color_scheme: green
+  color_scale: linear
+
 computed_data:
   field: median_household_income
   sort: desc

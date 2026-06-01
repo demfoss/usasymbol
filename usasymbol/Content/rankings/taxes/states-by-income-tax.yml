@@ -27,6 +27,16 @@ page:
       url: "https://taxfoundation.org/data/all/state/state-income-tax-rates/"
       description: "Annual state income tax rates and brackets by state"
 
+map:
+  title: "State Income Tax Rate 2025"
+  image_alt: "U.S. map showing top state income tax rate by state, lightest for no-tax states and darkest blue for highest rates"
+  caption: "Nine states show as lightest — no income tax. California's 13.3% is the darkest. The no-tax cluster spans from Texas and Florida through Alaska, Nevada, and Wyoming."
+  metric_key: income_tax
+  metric_label: "Top Rate %"
+  name_key: state
+  color_scheme: blue
+  color_scale: linear
+
 computed_data:
   field: income_tax_rate_pct
   sort: desc

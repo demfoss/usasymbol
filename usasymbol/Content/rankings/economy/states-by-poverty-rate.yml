@@ -27,6 +27,16 @@ page:
       url: "https://data.census.gov"
       description: "1-year ACS estimates, Table B17001"
 
+map:
+  title: "Poverty Rate by State 2025"
+  image_alt: "U.S. map showing poverty rate by state, darkest red for states with the highest poverty"
+  caption: "Mississippi, Louisiana, and New Mexico are the deepest red. New Hampshire and Maryland anchor the low end. The South and Southwest form a distinct high-poverty belt across the map."
+  metric_key: poverty_rate
+  metric_label: "Poverty Rate"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
 computed_data:
   field: poverty_rate_pct
   sort: desc
