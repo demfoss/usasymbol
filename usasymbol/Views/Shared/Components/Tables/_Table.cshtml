@@ -21,7 +21,7 @@
                 </h3>
             }
 
-            <div class="overflow-x-auto rounded-[1.25rem] border border-slate-200 bg-white/90 @(Model.Tables.Count > 1 ? "mb-6" : "")">
+            <div class="ranking-table-scroll overflow-x-auto rounded-[1.25rem] border border-slate-200 bg-white/90 @(Model.Tables.Count > 1 ? "mb-6" : "")">
                 <table class="rankingTable min-w-full text-left text-sm">
 
                     <!-- HEADER -->
@@ -268,6 +268,8 @@
             case "rank":
                 if (long.TryParse(s.Replace(",", "").Replace(" ", ""), out var n))
                     return n.ToString(col.Format ?? "N0");
+                if (double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
+                    return dbl.ToString(col.Format ?? "N2");
                 return s;
 
             case "date":

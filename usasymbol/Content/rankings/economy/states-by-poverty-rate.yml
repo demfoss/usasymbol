@@ -1,0 +1,61 @@
+type: ranking
+slug: states-by-poverty-rate
+category: economy
+url: /rankings/economy/states-by-poverty-rate
+hero_image: "/images/rankings/economy/states-by-poverty-rate/states-by-poverty-rate.webp"
+hero_image_alt: "Map showing poverty rate by state"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Poverty Rates"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Poverty Rate by State 2025 | Ranked Highest to Lowest"
+  description: "Mississippi leads all states with a poverty rate above 15%. New Hampshire and Maryland have the lowest rates. See all 50 states ranked."
+
+page:
+  h1: "Poverty Rate by State 2025"
+  quick_answer:
+    - "Mississippi has the highest poverty rate of any U.S. state at over 15%. Louisiana, New Mexico, and West Virginia also rank near the top. These states share lower median incomes, higher rates of rural poverty, and limited access to high-wage employment."
+    - "New Hampshire and Maryland consistently have the lowest poverty rates, both below 8%. These states combine high median incomes with strong labor markets and above-average access to education and public services."
+    - "The national poverty rate is approximately 12.9% (U.S. Census Bureau, 2023 ACS). The federal poverty line for a family of four in 2023 was $30,000."
+  methodology: "Poverty rates are 2023 one-year estimates from the U.S. Census Bureau American Community Survey (ACS). The official poverty measure compares pre-tax cash income to federal poverty thresholds, which vary by family size and composition but not by geographic location or cost of living."
+  sources:
+    - name: "U.S. Census Bureau — American Community Survey 2023"
+      url: "https://data.census.gov"
+      description: "1-year ACS estimates, Table B17001"
+
+computed_data:
+  field: poverty_rate_pct
+  sort: desc
+  format: "F1"
+  label: "Poverty Rate (%)"
+  metric_key: poverty_rate
+
+compare:
+  metric_slug: economy
+  title: "Compare Poverty Rates Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of income, poverty, employment, and economic data."
+  icon: "fa-solid fa-chart-line"
+
+faq:
+  - question: "Which state has the highest poverty rate"
+    answer: "Mississippi has the highest poverty rate in the U.S. at over 15%. The state has ranked last or near last on this measure for decades due to a combination of low median wages, limited economic diversification, and high rates of rural poverty."
+  - question: "Which state has the lowest poverty rate"
+    answer: "New Hampshire consistently records the lowest poverty rate of any U.S. state, typically below 7–8%. The state has a highly educated workforce, low unemployment, no state income tax on wages, and a strong technology and manufacturing economy."
+  - question: "What is the federal poverty level"
+    answer: "The federal poverty level (FPL) is a set of income thresholds published annually by the Department of Health and Human Services. In 2023, the poverty line was $14,580 for one person and $30,000 for a family of four. It does not vary by geographic location, which critics argue understates poverty in high-cost states."
+  - question: "Does the poverty rate capture all forms of economic hardship"
+    answer: "No. The official poverty measure counts only pre-tax cash income and does not include non-cash benefits like SNAP, Medicaid, or housing assistance. The Supplemental Poverty Measure (SPM), which does account for these factors, produces somewhat different state rankings and generally shows a lower poverty rate nationwide."
+
+related:
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"
+  - title: "States by Unemployment Rate"
+    url: "/rankings/economy/states-by-unemployment"
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"
+  - title: "States by K-12 Education Ranking"
+    url: "/rankings/education/states-by-k12-education"

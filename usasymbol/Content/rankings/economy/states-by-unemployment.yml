@@ -1,0 +1,61 @@
+type: ranking
+slug: states-by-unemployment
+category: economy
+url: /rankings/economy/states-by-unemployment
+hero_image: "/images/rankings/economy/states-by-unemployment/states-by-unemployment.webp"
+hero_image_alt: "Map showing unemployment rate by state"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Unemployment Rates"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Unemployment Rate by State 2025 | Ranked Highest to Lowest"
+  description: "Nevada and California have the highest unemployment rates in 2025. South Dakota and Nebraska are near the lowest. See all 50 states ranked."
+
+page:
+  h1: "Unemployment Rate by State 2025"
+  quick_answer:
+    - "Nevada and California typically lead all states in unemployment rate, driven by large leisure, hospitality, and entertainment sectors that are sensitive to economic cycles. D.C. also ranks near the top when included."
+    - "South Dakota, Nebraska, and New Hampshire regularly post the lowest unemployment rates, reflecting tight labor markets, diversified economies, and relatively low population growth."
+    - "The national unemployment rate has ranged from 3.4% to 4.1% throughout 2024–2025 (BLS). Most states fall within two percentage points of that range; outliers on both ends reflect structural rather than cyclical factors."
+  methodology: "Unemployment rates are seasonally adjusted annual averages from the Bureau of Labor Statistics (BLS) Local Area Unemployment Statistics (LAUS) program. The rate measures the percentage of the civilian labor force that is unemployed and actively seeking work."
+  sources:
+    - name: "Bureau of Labor Statistics — Local Area Unemployment Statistics (LAUS)"
+      url: "https://www.bls.gov/lau/"
+      description: "State-level seasonally adjusted unemployment rates"
+
+computed_data:
+  field: unemployment_rate_pct
+  sort: desc
+  format: "F1"
+  label: "Unemployment Rate (%)"
+  metric_key: unemployment
+
+compare:
+  metric_slug: economy
+  title: "Compare Unemployment Between Two States"
+  description: "Pick two states to see a side-by-side breakdown of employment, income, and economic data."
+  icon: "fa-solid fa-briefcase"
+
+faq:
+  - question: "Which state has the highest unemployment rate"
+    answer: "Nevada and California consistently rank among the states with the highest unemployment rates. Nevada's economy depends heavily on tourism and hospitality — industries that are especially sensitive to recessions and travel slowdowns. California's large size and diverse economy produces both high-wage tech jobs and high unemployment in lower-wage service sectors."
+  - question: "Which state has the lowest unemployment rate"
+    answer: "South Dakota, Nebraska, and New Hampshire regularly record the lowest unemployment rates in the U.S. These states have low population density, tight labor markets, and economies anchored by agriculture, finance, and education — sectors that offer stable employment."
+  - question: "What counts as unemployed in the BLS data"
+    answer: "The BLS counts someone as unemployed only if they are without a job, available to work, and have actively looked for work in the past four weeks. People who have stopped looking (discouraged workers) are not counted in the official unemployment rate, which is why some economists also track U-6, a broader measure."
+  - question: "Does a low unemployment rate mean the economy is strong"
+    answer: "A low unemployment rate is a positive indicator, but context matters. A state can have low unemployment because it has a thriving economy or because people have left the labor force entirely. The employment-to-population ratio captures a fuller picture of how many working-age residents are actually employed."
+
+related:
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"
+  - title: "States by Poverty Rate"
+    url: "/rankings/economy/states-by-poverty-rate"
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"
+  - title: "Most Common Job by State"
+    url: "/rankings/economy/most-common-job-by-state"

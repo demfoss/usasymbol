@@ -1,0 +1,61 @@
+type: ranking
+slug: states-by-obesity-rate
+category: health
+url: /rankings/health/states-by-obesity-rate
+hero_image: "/images/rankings/health/states-by-obesity-rate/states-by-obesity-rate.webp"
+hero_image_alt: "Map showing adult obesity rate by state"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Adult Obesity Rates"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Obesity Rate by State 2025 | Adult Obesity Ranked by State"
+  description: "Mississippi and West Virginia have the highest adult obesity rates above 40%. Colorado and Hawaii are the lowest under 25%. See all 50 states ranked."
+
+page:
+  h1: "Obesity Rate by State 2025"
+  quick_answer:
+    - "Mississippi and West Virginia have the highest adult obesity rates in the U.S., both exceeding 40% of the adult population. The Deep South and Appalachian states dominate the top of this ranking, reflecting patterns of food access, physical activity, poverty, and health care that have persisted for decades."
+    - "Colorado has the lowest adult obesity rate at around 23%, followed closely by Hawaii and Massachusetts. These states combine active outdoor lifestyles, lower poverty rates, higher educational attainment, and better access to fresh food."
+    - "The national adult obesity rate is approximately 36.2% (CDC Behavioral Risk Factor Surveillance System). Obesity is defined as a body mass index (BMI) of 30 or higher."
+  methodology: "Adult obesity prevalence figures are from the CDC Behavioral Risk Factor Surveillance System (BRFSS), self-reported annual surveys. Obesity is defined as BMI ≥ 30, where BMI is calculated from self-reported height and weight. Self-reported measures may underestimate true prevalence due to systematic underreporting of weight."
+  sources:
+    - name: "CDC BRFSS — Adult Obesity Prevalence by State"
+      url: "https://www.cdc.gov/obesity/data/prevalence-maps.html"
+      description: "Annual state-level adult obesity prevalence estimates"
+
+computed_data:
+  field: obesity_rate_pct
+  sort: desc
+  format: "F1"
+  label: "Adult Obesity Rate (%)"
+  metric_key: obesity_rate
+
+compare:
+  metric_slug: health
+  title: "Compare Obesity Rates Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of health, income, education, and quality of life."
+  icon: "fa-solid fa-heart-pulse"
+
+faq:
+  - question: "Which state has the highest obesity rate"
+    answer: "Mississippi has the highest adult obesity rate in the U.S. at over 40%. The state consistently ranks last on health metrics including obesity, diabetes, and physical inactivity. Factors include high poverty rates, limited access to fresh food, few safe spaces for physical activity in rural areas, and a food culture heavy in calorie-dense traditional dishes."
+  - question: "Which state has the lowest obesity rate"
+    answer: "Colorado has the lowest adult obesity rate in the U.S. at around 23%. The state's active outdoor recreation culture — skiing, hiking, cycling — paired with a younger, highly educated population and strong public health infrastructure contribute to lower obesity rates."
+  - question: "Why do Southern states have higher obesity rates"
+    answer: "Obesity rates in Southern states reflect a combination of higher poverty, lower educational attainment, greater food insecurity, fewer recreational facilities, a hotter climate that limits outdoor activity, and weaker public health investment. These are structural and systemic factors, not individual choices alone."
+  - question: "What health risks are associated with obesity"
+    answer: "Obesity is a major risk factor for type 2 diabetes, heart disease, high blood pressure, stroke, certain cancers, sleep apnea, and osteoarthritis. States with higher obesity rates also tend to have higher rates of all these conditions, which directly affects state-level health care costs and workforce productivity."
+
+related:
+  - title: "States by Life Expectancy"
+    url: "/rankings/health/states-by-life-expectancy"
+  - title: "States by Uninsured Rate"
+    url: "/rankings/health/states-by-uninsured-rate"
+  - title: "States by Poverty Rate"
+    url: "/rankings/economy/states-by-poverty-rate"
+  - title: "States by K-12 Education Ranking"
+    url: "/rankings/education/states-by-k12-education"

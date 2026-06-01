@@ -1,0 +1,61 @@
+type: ranking
+slug: states-by-property-tax
+category: taxes
+url: /rankings/taxes/states-by-property-tax
+hero_image: "/images/rankings/taxes/states-by-property-tax/states-by-property-tax.webp"
+hero_image_alt: "Map showing property tax rate by state"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Property Tax Rates"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Property Tax by State 2025 | Effective Rates Ranked Highest to Lowest"
+  description: "New Jersey has the highest effective property tax rate at 2.23%. Hawaii is the lowest at 0.27%. See all 50 states ranked by effective property tax rate."
+
+page:
+  h1: "Property Tax Rate by State 2025"
+  quick_answer:
+    - "New Jersey has the highest effective property tax rate in the U.S. at 2.23% of assessed home value — meaning a homeowner with a $400,000 house pays roughly $8,900 per year. Illinois, Connecticut, New Hampshire, and Vermont round out the top five."
+    - "Hawaii has the lowest effective property tax rate at just 0.27%. Alabama, Colorado, and Louisiana also rank among the lowest. Low rates in Hawaii are partly offset by very high home values — the dollar tax bill can still be substantial."
+    - "Effective property tax rate measures actual taxes paid as a percentage of assessed home value, which is more useful for comparison than statutory rates, which vary by local assessment practices."
+  methodology: "Effective property tax rates are from WalletHub's 2026 Property Tax by State report using 2024 data. The effective rate is calculated as median annual property taxes paid divided by the median home value, expressing taxes as a percentage of the home's value. This controls for differences in assessment ratios across states."
+  sources:
+    - name: "WalletHub — Property Taxes by State 2026"
+      url: "https://wallethub.com/edu/states-with-the-highest-and-lowest-property-taxes/11585"
+      description: "Effective property tax rates using 2024 U.S. Census and local government data"
+
+computed_data:
+  field: property_tax_rate_pct
+  sort: desc
+  format: "F2"
+  label: "Effective Property Tax Rate (%)"
+  metric_key: property_tax
+
+compare:
+  metric_slug: taxes
+  title: "Compare Property Taxes Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of property tax, income tax, cost of living, and more."
+  icon: "fa-solid fa-house-circle-check"
+
+faq:
+  - question: "Which state has the highest property taxes"
+    answer: "New Jersey has the highest effective property tax rate in the U.S. at 2.23%. The state relies heavily on property taxes to fund local schools, and its densely populated suburbs command high home values that generate large tax bills even at moderate rates."
+  - question: "Which state has the lowest property taxes"
+    answer: "Hawaii has the lowest effective property tax rate at 0.27%, making it the most property-tax-friendly state despite having the highest home values in the country. The low rate means homeowners in Hawaii pay relatively modest annual tax bills as a percentage of their home's value."
+  - question: "What is an effective property tax rate"
+    answer: "The effective property tax rate is the annual property tax bill divided by the home's market value, expressed as a percentage. It is more useful for cross-state comparisons than nominal tax rates because it accounts for local assessment ratios, exemptions, and abatements that vary widely across jurisdictions."
+  - question: "Does a no-income-tax state compensate with higher property taxes"
+    answer: "Often, yes. Texas and New Hampshire both lack a broad-based state income tax and compensate partly through higher property taxes. Texas has one of the highest effective property tax rates in the country at around 1.65%. New Hampshire is similar at around 1.86%. The trade-off is not uniform across all no-income-tax states — Florida, Nevada, and Wyoming maintain relatively moderate property tax rates."
+
+related:
+  - title: "States by Income Tax Rate"
+    url: "/rankings/taxes/states-by-income-tax"
+  - title: "Gas Tax by State"
+    url: "/rankings/economy/gas-tax-by-state"
+  - title: "States by Median Home Value"
+    url: "/rankings/economy/states-by-home-value"
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"

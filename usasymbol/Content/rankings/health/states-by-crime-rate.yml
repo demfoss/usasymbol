@@ -1,0 +1,61 @@
+type: ranking
+slug: states-by-crime-rate
+category: health
+url: /rankings/health/states-by-crime-rate
+hero_image: "/images/rankings/health/states-by-crime-rate/states-by-crime-rate.webp"
+hero_image_alt: "Map showing violent crime rate by state"
+extremes_mode: both
+extremes_title: "Safest and Most Dangerous States by Violent Crime Rate"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Violent Crime Rate by State 2025 | Safest and Most Dangerous States"
+  description: "New Mexico and Alaska have the highest violent crime rates. Maine and New Hampshire are the safest states. See all 50 states ranked."
+
+page:
+  h1: "Violent Crime Rate by State 2025"
+  quick_answer:
+    - "New Mexico and Alaska have the highest violent crime rates in the U.S., each exceeding 800 incidents per 100,000 residents. Both states face specific challenges: New Mexico struggles with persistent poverty and drug trafficking along the southern border, while Alaska's geography isolates communities and limits law enforcement response."
+    - "Maine, New Hampshire, and Connecticut have the lowest violent crime rates, all below 200 per 100,000. These states combine low poverty, high educational attainment, cohesive communities, and well-funded local law enforcement."
+    - "Violent crime includes murder and non-negligent manslaughter, rape, robbery, and aggravated assault, as defined by the FBI Uniform Crime Reporting program. The national rate is approximately 380 incidents per 100,000 residents."
+  methodology: "Violent crime rates are per 100,000 residents using FBI Unified Crime Reporting (UCR) 2022 data, the most recent year with complete state-level coverage. Violent crime includes murder and non-negligent manslaughter, rape (revised definition), robbery, and aggravated assault. Not all agencies report to the UCR; states with lower coverage rates may have estimates adjusted by the FBI."
+  sources:
+    - name: "FBI Crime Data Explorer — Uniform Crime Reporting 2022"
+      url: "https://cde.ucr.cjis.gov"
+      description: "State-level violent crime counts and rates per 100,000 residents"
+
+computed_data:
+  field: violent_crime_rate_per_100k
+  sort: desc
+  format: "F0"
+  label: "Violent Crime Rate (per 100k)"
+  metric_key: crime_rate
+
+compare:
+  metric_slug: health
+  title: "Compare Crime Rates Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of safety, health, income, and quality of life."
+  icon: "fa-solid fa-shield-halved"
+
+faq:
+  - question: "Which state has the highest violent crime rate"
+    answer: "New Mexico has the highest violent crime rate among U.S. states, with over 800 incidents per 100,000 residents. The state's high poverty rate, drug trafficking activity near the southern border, and limited rural law enforcement coverage all contribute to elevated crime."
+  - question: "Which states are the safest from violent crime"
+    answer: "Maine, New Hampshire, and Vermont consistently have the lowest violent crime rates in the U.S., all well below 200 per 100,000. These states share low poverty rates, high social trust, predominantly rural or small-city populations, and low rates of drug trafficking."
+  - question: "What counts as violent crime in FBI data"
+    answer: "The FBI defines violent crime as offenses that involve force or the threat of force: murder and non-negligent manslaughter, rape, robbery, and aggravated assault. Property crimes (burglary, theft, arson) are tracked separately. Only incidents reported to law enforcement and submitted to the FBI are included."
+  - question: "Does a low violent crime rate mean a state is truly safe"
+    answer: "Not entirely — violent crime rates capture reported offenses but miss unreported crimes, property crime, fraud, cybercrime, and traffic fatalities. States with high violent crime can have low property crime, and vice versa. The FBI and BJS publish separate measures for property crime, drug offenses, and other categories."
+
+related:
+  - title: "States by Life Expectancy"
+    url: "/rankings/health/states-by-life-expectancy"
+  - title: "States by Poverty Rate"
+    url: "/rankings/economy/states-by-poverty-rate"
+  - title: "States by Unemployment Rate"
+    url: "/rankings/economy/states-by-unemployment"
+  - title: "States by K-12 Education Ranking"
+    url: "/rankings/education/states-by-k12-education"

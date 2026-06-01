@@ -65,6 +65,8 @@
                 }
             </section>
 
+            @await Html.PartialAsync("~/Views/Rankings/_RankingExtremesBlock.cshtml", Model)
+
             @if (hasSections)
             {
                 <section id="@sectionsSectionId" class="scroll-mt-24 content-divider">
@@ -84,6 +86,13 @@
                 <section id="@methodologySectionId" class="scroll-mt-24 content-divider">
                     @await Html.PartialAsync("Pages/_MethodologySources", Model, ViewData)
                 </section>
+            }
+
+            @if (content?.Compare != null)
+            {
+                <div class="content-divider">
+                    @await Html.PartialAsync("~/Views/Rankings/_RankingComparePicker.cshtml", content.Compare)
+                </div>
             }
 
             <div class="content-divider">

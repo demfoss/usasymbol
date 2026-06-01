@@ -96,7 +96,23 @@ namespace USASymbol.Models.Content
         public string? HeroImageCaption { get; set; }
         public PageMap? Map { get; set; }
         public List<VisualAsset> VisualAssets { get; set; } = new();
+        public RankingCompareData? Compare { get; set; }
+        public ComputedRankingConfig? ComputedData { get; set; }
 
+
+        /// <summary>
+        /// Controls how the RankingExtremesBlock renders on this page.
+        /// Values: "both" (default), "topOnly", "bottomOnly", "none".
+        /// Set via YAML field <c>extremes_mode</c>.
+        /// </summary>
+        public string? ExtremesMode { get; set; }
+
+        /// <summary>
+        /// Optional SEO-friendly heading for the RankingExtremesBlock.
+        /// If omitted, the block auto-generates a title from the metric column label.
+        /// Set via YAML field <c>extremes_title</c>.
+        /// </summary>
+        public string? ExtremesTitle { get; set; }
 
         public BigStatData? BigStat { get; set; }
         public List<TimelineEvent> Timeline { get; set; } = new();
@@ -135,9 +151,6 @@ namespace USASymbol.Models.Content
         public string Icon { get; set; } = "";
         public string Title { get; set; } = "";
         public string? Style { get; set; }
-        public string? Img { get; set; }
-
-        public string? ImgRight { get; set; }
         public List<string> Paragraphs { get; set; } = new();
         public List<PageSubsection>? Subsections { get; set; }
         public List<string>? Facts { get; set; }
@@ -208,6 +221,35 @@ namespace USASymbol.Models.Content
         public string ColorScheme { get; set; } = "blue";
         public string ColorScale { get; set; } = "linear";
         public bool ShowLabels { get; set; } = false;
+    }
+
+    public class RankingCompareData
+    {
+        public string MetricSlug { get; set; } = "";
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public string? ButtonText { get; set; }
+        public string? Icon { get; set; }
+        public string? DefaultStateA { get; set; }
+        public string? DefaultStateB { get; set; }
+    }
+
+    public class ComputedRankingConfig
+    {
+        /// <summary>snake_case field name matching StateStats property (e.g. median_household_income).</summary>
+        public string Field { get; set; } = "";
+
+        /// <summary>"asc" or "desc". Default is "desc" (highest first).</summary>
+        public string Sort { get; set; } = "desc";
+
+        /// <summary>.NET format string for the metric column (e.g. "C0", "F1", "N0").</summary>
+        public string Format { get; set; } = "N2";
+
+        /// <summary>Column header displayed in the table.</summary>
+        public string Label { get; set; } = "";
+
+        /// <summary>Short key used as the column key in the table row data.</summary>
+        public string MetricKey { get; set; } = "value";
     }
 
 

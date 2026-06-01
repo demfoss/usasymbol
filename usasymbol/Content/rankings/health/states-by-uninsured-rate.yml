@@ -1,0 +1,64 @@
+type: ranking
+slug: states-by-uninsured-rate
+category: health
+url: /rankings/health/states-by-uninsured-rate
+hero_image: "/images/rankings/health/states-by-uninsured-rate/states-by-uninsured-rate.webp"
+hero_image_alt: "Map showing uninsured rate by state"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Uninsured Rates"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Uninsured Rate by State 2025 | Share Without Health Insurance"
+  description: "Texas has the highest uninsured rate at nearly 17%. Massachusetts and Hawaii are lowest below 3%. See all 50 states ranked."
+
+page:
+  h1: "Uninsured Rate by State 2025"
+  quick_answer:
+    - "Texas has the highest share of residents without health insurance at approximately 16–17%, a position it has held for many years. Texas is the largest state that did not expand Medicaid under the Affordable Care Act, which leaves a significant coverage gap for low-income adults who earn too much for traditional Medicaid but too little for ACA marketplace subsidies."
+    - "Massachusetts and Hawaii have the lowest uninsured rates, both below 3%. Massachusetts has had near-universal coverage since enacting its own health reform law in 2006 — the model for the ACA. Hawaii has a long-standing employer mandate that predates the ACA."
+    - "The national uninsured rate is approximately 8% as of 2023, down significantly from 16% in 2010. States that expanded Medicaid have consistently lower uninsured rates than non-expansion states."
+  methodology: "Uninsured rates represent the percentage of the civilian noninstitutionalized population with no health insurance coverage. Figures are 2023 one-year estimates from the U.S. Census Bureau American Community Survey (ACS), Table B27010."
+  sources:
+    - name: "U.S. Census Bureau — American Community Survey 2023"
+      url: "https://data.census.gov"
+      description: "1-year ACS estimates, health insurance coverage by state"
+    - name: "KFF — Health Insurance Coverage of the Total Population"
+      url: "https://www.kff.org/other/state-indicator/total-population/"
+      description: "Annual state-level uninsured rate estimates"
+
+computed_data:
+  field: uninsured_rate_pct
+  sort: desc
+  format: "F1"
+  label: "Uninsured Rate (%)"
+  metric_key: uninsured_rate
+
+compare:
+  metric_slug: health
+  title: "Compare Health Insurance Coverage Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of health coverage, income, taxes, and more."
+  icon: "fa-solid fa-notes-medical"
+
+faq:
+  - question: "Which state has the most people without health insurance"
+    answer: "Texas has the highest uninsured rate in the U.S. at approximately 16–17%. The state has not expanded Medicaid under the Affordable Care Act, which leaves roughly 1–2 million low-income adults in a coverage gap. Texas also has a large undocumented immigrant population ineligible for most public coverage programs."
+  - question: "Which states have near-universal health coverage"
+    answer: "Massachusetts and Hawaii have the lowest uninsured rates, both under 3%. Massachusetts enacted the Health Connector reform in 2006 with an individual mandate, employer requirement, and Medicaid expansion — the template for the ACA. Hawaii has required employers to provide insurance to employees working more than 20 hours per week since 1974."
+  - question: "How does Medicaid expansion affect uninsured rates"
+    answer: "States that expanded Medicaid under the ACA (38 states plus D.C. as of 2025) cover adults earning up to 138% of the federal poverty level. Non-expansion states leave a gap for adults above traditional Medicaid eligibility but below income thresholds for marketplace subsidies. Non-expansion states consistently have higher uninsured rates."
+  - question: "Why does having health insurance matter for state comparisons"
+    answer: "Uninsured individuals delay or forgo preventive care, leading to worse health outcomes and higher emergency department use. States with higher uninsured rates tend to have lower life expectancy, higher rates of undetected chronic disease, and higher uncompensated care costs shifted to hospitals and insured patients."
+
+related:
+  - title: "States by Life Expectancy"
+    url: "/rankings/health/states-by-life-expectancy"
+  - title: "States by Obesity Rate"
+    url: "/rankings/health/states-by-obesity-rate"
+  - title: "States by Poverty Rate"
+    url: "/rankings/economy/states-by-poverty-rate"
+  - title: "States by Income Tax Rate"
+    url: "/rankings/taxes/states-by-income-tax"

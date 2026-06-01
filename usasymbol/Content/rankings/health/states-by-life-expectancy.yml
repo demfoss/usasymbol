@@ -1,0 +1,61 @@
+type: ranking
+slug: states-by-life-expectancy
+category: health
+url: /rankings/health/states-by-life-expectancy
+hero_image: "/images/rankings/health/states-by-life-expectancy/states-by-life-expectancy.webp"
+hero_image_alt: "Map showing life expectancy by state"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Life Expectancy"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Life Expectancy by State 2025 | Longest and Shortest Lifespans"
+  description: "Hawaii has the longest life expectancy at 80.7 years. Mississippi is lowest at 71.9 years. See how all 50 states rank based on CDC data."
+
+page:
+  h1: "Life Expectancy by State 2025"
+  quick_answer:
+    - "Hawaii has the highest life expectancy of any U.S. state at approximately 80.7 years at birth, followed by California, Minnesota, and Connecticut. Hawaii's advantage is attributed to lower smoking rates, a physically active lifestyle, a diet with more fish and vegetables, and strong social cohesion in its communities."
+    - "Mississippi has the lowest life expectancy at roughly 71.9 years — nearly a nine-year gap from Hawaii. West Virginia, Louisiana, Alabama, and Kentucky also rank near the bottom, reflecting higher rates of chronic disease, obesity, smoking, and limited access to health care."
+    - "The national average life expectancy at birth is approximately 76.4 years (CDC 2021), which is below many peer nations. The COVID-19 pandemic caused a two-year decline in U.S. life expectancy between 2019 and 2021."
+  methodology: "Life expectancy figures are from the CDC National Center for Health Statistics (NCHS), 2021 state-level estimates. Life expectancy at birth represents the average number of years a person born in that state could expect to live under current age-specific mortality rates. 2021 data reflects the first full year of COVID-19 mortality impact."
+  sources:
+    - name: "CDC National Center for Health Statistics — State Life Expectancy 2021"
+      url: "https://www.cdc.gov/nchs/data-analysis-tools/state-health-statistics.htm"
+      description: "State-level life expectancy at birth estimates"
+
+computed_data:
+  field: life_expectancy_years
+  sort: desc
+  format: "F1"
+  label: "Life Expectancy (years)"
+  metric_key: life_expectancy
+
+compare:
+  metric_slug: health
+  title: "Compare Life Expectancy Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of health, income, education, and quality of life."
+  icon: "fa-solid fa-heart-pulse"
+
+faq:
+  - question: "Which state has the highest life expectancy"
+    answer: "Hawaii has the highest life expectancy in the U.S. at approximately 80.7 years. The state consistently tops national health rankings due to low smoking rates, an active outdoor lifestyle, a diet rich in fish and vegetables, and a diverse multicultural population that includes large Asian-American communities with above-average health outcomes."
+  - question: "Which state has the lowest life expectancy"
+    answer: "Mississippi has the lowest life expectancy at approximately 71.9 years. The state has the highest poverty rate, the highest obesity rate, and significant rates of tobacco use and cardiovascular disease. Limited access to preventive health care in rural areas compounds these factors."
+  - question: "Why did U.S. life expectancy drop in 2020–2021"
+    answer: "U.S. life expectancy fell by 2.7 years between 2019 and 2021, the largest two-year decline since World War II. COVID-19 was the primary cause, accounting for roughly half the decrease. Drug overdoses, heart disease, and other factors contributed to the remainder. The gap between states widened significantly during the pandemic."
+  - question: "What factors most influence life expectancy at the state level"
+    answer: "The strongest predictors of state-level life expectancy are smoking rates, obesity rates, poverty, educational attainment, and access to health insurance. States with high rates of preventive care access and low tobacco use tend to cluster at the top of life expectancy rankings."
+
+related:
+  - title: "States by Obesity Rate"
+    url: "/rankings/health/states-by-obesity-rate"
+  - title: "States by Uninsured Rate"
+    url: "/rankings/health/states-by-uninsured-rate"
+  - title: "States by Poverty Rate"
+    url: "/rankings/economy/states-by-poverty-rate"
+  - title: "States by K-12 Education Ranking"
+    url: "/rankings/education/states-by-k12-education"

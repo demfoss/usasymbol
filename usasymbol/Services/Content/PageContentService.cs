@@ -63,6 +63,10 @@ namespace USASymbol.Services
             try
             {
                 var filePath = Path.Combine(_contentBasePath, category, $"{slug}.yml");
+                if (!File.Exists(filePath))
+                {
+                    filePath = Path.Combine(_contentBasePath, category, $"{slug}.yaml");
+                }
 
                 if (!File.Exists(filePath))
                 {
@@ -112,7 +116,7 @@ namespace USASymbol.Services
                         Icon  = GetCategoryIcon(categoryName),
                     };
 
-                    foreach (var file in Directory.GetFiles(categoryDir, "*.yml"))
+                    foreach (var file in Directory.GetFiles(categoryDir, "*.yml").Concat(Directory.GetFiles(categoryDir, "*.yaml")))
                     {
                         var content = await GetContentAsync(categoryName, Path.GetFileNameWithoutExtension(file));
                         if (content != null)
@@ -214,6 +218,34 @@ namespace USASymbol.Services
                     ColorScheme = mapD.ContainsKey("color_scheme") ? Str(mapD, "color_scheme") : "blue",
                     ColorScale  = mapD.ContainsKey("color_scale")  ? Str(mapD, "color_scale")  : "linear",
                     ShowLabels  = mapD.ContainsKey("show_labels")  && Str(mapD, "show_labels") == "true",
+                };
+
+            if (raw.TryGetValue("extremes_mode", out var emObj))
+                content.ExtremesMode = emObj?.ToString();
+
+            if (raw.TryGetValue("extremes_title", out var etObj))
+                content.ExtremesTitle = etObj?.ToString();
+
+            if (raw.TryGetValue("compare", out var compareObj) && compareObj is Dictionary<object, object> compareD)
+                content.Compare = new RankingCompareData
+                {
+                    MetricSlug    = Str(compareD, "metric_slug"),
+                    Title         = compareD.ContainsKey("title") ? Str(compareD, "title") : null,
+                    Description   = compareD.ContainsKey("description") ? Str(compareD, "description") : null,
+                    ButtonText    = compareD.ContainsKey("button_text") ? Str(compareD, "button_text") : null,
+                    Icon          = compareD.ContainsKey("icon") ? Str(compareD, "icon") : null,
+                    DefaultStateA = compareD.ContainsKey("default_state_a") ? Str(compareD, "default_state_a") : null,
+                    DefaultStateB = compareD.ContainsKey("default_state_b") ? Str(compareD, "default_state_b") : null,
+                };
+
+            if (raw.TryGetValue("computed_data", out var cdObj) && cdObj is Dictionary<object, object> cdD)
+                content.ComputedData = new ComputedRankingConfig
+                {
+                    Field     = Str(cdD, "field"),
+                    Sort      = cdD.ContainsKey("sort")       ? Str(cdD, "sort")       : "desc",
+                    Format    = cdD.ContainsKey("format")     ? Str(cdD, "format")     : "N2",
+                    Label     = cdD.ContainsKey("label")      ? Str(cdD, "label")      : "",
+                    MetricKey = cdD.ContainsKey("metric_key") ? Str(cdD, "metric_key") : "value",
                 };
 
 
@@ -350,8 +382,6 @@ namespace USASymbol.Services
                     Id       = Str(s, "id"),
                     Icon     = Str(s, "icon"),
                     Title    = Str(s, "title"),
-                    Img      = s.ContainsKey("img")       ? Str(s, "img")       : null,
-                    ImgRight = s.ContainsKey("img_right") ? Str(s, "img_right") : null,
                 };
 
                 if (s.TryGetValue("style", out var style))
@@ -484,7 +514,14 @@ namespace USASymbol.Services
             var nameKey = (detailType ?? "").Trim().ToLowerInvariant();
             if (string.IsNullOrEmpty(nameKey)) return;
             var imageFolder = (contentSlug ?? "").Trim().Trim('/').ToLowerInvariant();
-            var alternateSlugKey = nameKey == "license-plate" ? "slogan_slug" : "";
+            var alternateSlugKey = nameKey switch
+            {
+                "license-plate" => "slogan_slug",
+                "state-seal" => "seal_slug",
+                "coat-of-arms" => "coat_of_arms_slug",
+                "state-soil" => "soil_slug",
+                _ => string.Empty
+            };
 
             foreach (var row in table.Rows)
             {

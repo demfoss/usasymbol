@@ -1,0 +1,61 @@
+type: ranking
+slug: states-by-median-income
+category: economy
+url: /rankings/economy/states-by-median-income
+hero_image: "/images/rankings/economy/states-by-median-income/states-by-median-income.webp"
+hero_image_alt: "Map showing median household income by state in 2025"
+extremes_mode: both
+extremes_title: "Highest and Lowest Median Household Income by State"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Median Household Income by State 2025 | Ranked Highest to Lowest"
+  description: "Maryland leads all 50 states with a median household income above $98,000. See how every state ranks, from the highest-earning to the lowest."
+
+page:
+  h1: "Median Household Income by State 2025"
+  quick_answer:
+    - "Maryland has the highest median household income of any U.S. state at around $98,000, driven by proximity to federal government jobs in the Washington, D.C., metro area. New Jersey, Massachusetts, and Hawaii round out the top five."
+    - "Mississippi has the lowest median household income at roughly $50,000. West Virginia, Arkansas, and New Mexico cluster near the bottom. The gap between the top and bottom state is approximately $48,000 per year."
+    - "The national median household income is approximately $77,540 (U.S. Census Bureau, 2023 American Community Survey). Twenty-one states fall below that threshold."
+  methodology: "Figures are 2023 one-year estimates from the U.S. Census Bureau American Community Survey (ACS). Median household income represents the midpoint income for all households in the state, including wages, salaries, self-employment income, and transfer payments. All values are in nominal dollars and are not adjusted for cost of living."
+  sources:
+    - name: "U.S. Census Bureau — American Community Survey 2023"
+      url: "https://data.census.gov"
+      description: "One-year ACS estimates, Table B19013"
+
+computed_data:
+  field: median_household_income
+  sort: desc
+  format: "C0"
+  label: "Median Household Income"
+  metric_key: income
+
+compare:
+  metric_slug: economy
+  title: "Compare Household Income Between Two States"
+  description: "Pick any two states to see a full side-by-side breakdown of income, cost of living, taxes, and more."
+  icon: "fa-solid fa-coins"
+
+faq:
+  - question: "Which state has the highest median household income"
+    answer: "Maryland has the highest median household income in the U.S. at approximately $98,000, according to the 2023 American Community Survey. The state benefits from a large share of high-paying federal government and defense contractor jobs in the Washington, D.C., metropolitan area."
+  - question: "Which state has the lowest median household income"
+    answer: "Mississippi has the lowest median household income of any U.S. state at around $50,000. The state has historically ranked last or near last on this measure due to a lower cost of living paired with a lower-wage economy dominated by agriculture, manufacturing, and service industries."
+  - question: "How does median household income differ from average income"
+    answer: "Median household income is the midpoint value — half of households earn more and half earn less. Average (mean) income is pulled upward by very high earners at the top. The median is a better measure of what a typical household actually earns, which is why economists and policymakers prefer it."
+  - question: "Does high median income mean a state is more affordable"
+    answer: "Not necessarily. States like Hawaii and Massachusetts have high incomes but also very high costs of living, which erodes purchasing power. Comparing median income alongside cost-of-living indexes gives a more accurate picture of real living standards. See our states-by-cost-of-living and purchasing-power rankings."
+
+related:
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"
+  - title: "States by Poverty Rate"
+    url: "/rankings/economy/states-by-poverty-rate"
+  - title: "States by Unemployment Rate"
+    url: "/rankings/economy/states-by-unemployment"
+  - title: "Purchasing Power by State"
+    url: "/rankings/economy/purchasing-power-by-state"

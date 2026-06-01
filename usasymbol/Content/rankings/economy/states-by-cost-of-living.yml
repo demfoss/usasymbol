@@ -1,0 +1,61 @@
+type: ranking
+slug: states-by-cost-of-living
+category: economy
+url: /rankings/economy/states-by-cost-of-living
+hero_image: "/images/rankings/economy/states-by-cost-of-living/states-by-cost-of-living.webp"
+hero_image_alt: "Map showing cost of living index by state"
+extremes_mode: both
+extremes_title: "Most and Least Expensive States to Live In"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Cost of Living by State 2025 | Most and Least Expensive States"
+  description: "Hawaii is the most expensive state with a cost of living index of 187. Mississippi is the cheapest at 83. See how all 50 states rank."
+
+page:
+  h1: "Cost of Living by State 2025"
+  quick_answer:
+    - "Hawaii is the most expensive state in the U.S. with a composite cost of living index of 187 — meaning everyday expenses run 87% above the national average. Housing, groceries, and utilities all run significantly higher due to the state's remote island location and reliance on imports."
+    - "Mississippi is the cheapest state with an index of 83, followed by Oklahoma and Kansas. In these states, the same dollar buys significantly more than it would in a high-cost state like Hawaii or California."
+    - "The national average is set at 100 by the MERIC/C2ER index. States above 100 are more expensive than average; states below 100 are cheaper. Thirty states fall below the national average."
+  methodology: "Cost of living index values are composite MERIC/C2ER (Missouri Economic Research and Information Center / Council for Community and Economic Research) scores using data from the most recent quarterly Cost of Living Index report. The index covers grocery items, housing, utilities, transportation, health care, and miscellaneous goods and services. 100 = national average."
+  sources:
+    - name: "Missouri Economic Research and Information Center (MERIC) — Cost of Living Index"
+      url: "https://meric.mo.gov/data/cost-living-data-series"
+      description: "Annual average composite cost of living index by state"
+
+computed_data:
+  field: cost_of_living_index
+  sort: desc
+  format: "F1"
+  label: "Cost of Living Index"
+  metric_key: col_index
+
+compare:
+  metric_slug: economy
+  title: "Compare Cost of Living Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of cost of living, income, taxes, and more."
+  icon: "fa-solid fa-cart-shopping"
+
+faq:
+  - question: "Which state has the highest cost of living"
+    answer: "Hawaii has the highest cost of living in the U.S. with a composite index of around 187, meaning expenses run 87% above the national average. The state's remote location in the Pacific Ocean means most goods must be shipped or flown in, which drives up prices for groceries, fuel, and building materials."
+  - question: "Which state has the lowest cost of living"
+    answer: "Mississippi consistently ranks as the least expensive state in the U.S. with a cost of living index around 83. Housing costs in particular are very low — the median home value is among the lowest of any state — and everyday expenses like groceries and utilities are below the national average."
+  - question: "What does a cost of living index of 100 mean"
+    answer: "An index of 100 represents the national average. A state with an index of 120 costs 20% more than average to live in; a state with an index of 85 costs 15% less. The C2ER index covers six categories: groceries, housing, utilities, transportation, health care, and miscellaneous goods and services."
+  - question: "Does a high cost of living mean a lower standard of living"
+    answer: "Not necessarily. High-cost states often have higher wages that partially offset expenses. Purchasing power — income adjusted for cost of living — is a better measure of real living standards. Some low-income, low-cost states offer less purchasing power than high-income, high-cost states."
+
+related:
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"
+  - title: "Purchasing Power by State"
+    url: "/rankings/economy/purchasing-power-by-state"
+  - title: "States by Median Home Value"
+    url: "/rankings/economy/states-by-home-value"
+  - title: "States by Income Tax Rate"
+    url: "/rankings/economy/states-by-income-tax"

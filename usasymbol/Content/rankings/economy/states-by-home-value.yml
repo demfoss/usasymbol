@@ -1,0 +1,61 @@
+type: ranking
+slug: states-by-home-value
+category: economy
+url: /rankings/economy/states-by-home-value
+hero_image: "/images/rankings/economy/states-by-home-value/states-by-home-value.webp"
+hero_image_alt: "Map showing median home value by state"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Median Home Values"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Median Home Value by State 2025 | Most and Least Expensive Housing"
+  description: "Hawaii leads with a median home value above $800,000. West Virginia is the most affordable state for housing at around $125,000. See all 50 states ranked."
+
+page:
+  h1: "Median Home Value by State 2025"
+  quick_answer:
+    - "Hawaii has the highest median home value in the U.S. at over $800,000, followed by California and Massachusetts. Limited land, restricted zoning, and high demand in coastal metros drive prices far above the national median."
+    - "West Virginia has the lowest median home value at around $125,000 — roughly one-sixth of Hawaii's figure. Mississippi and Oklahoma also rank among the most affordable states for homebuyers."
+    - "The national median home value is approximately $308,000 (U.S. Census Bureau, 2023 ACS). Twenty-six states fall below that national median."
+  methodology: "Figures are 2023 one-year estimates from the U.S. Census Bureau American Community Survey (ACS), Table B25077 (Median Value of Owner-Occupied Housing Units). Values reflect owner-occupied units only and are in nominal dollars."
+  sources:
+    - name: "U.S. Census Bureau — American Community Survey 2023"
+      url: "https://data.census.gov"
+      description: "1-year ACS estimates, Table B25077"
+
+computed_data:
+  field: median_home_value
+  sort: desc
+  format: "C0"
+  label: "Median Home Value"
+  metric_key: home_value
+
+compare:
+  metric_slug: economy
+  title: "Compare Housing Costs Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of home values, income, cost of living, and more."
+  icon: "fa-solid fa-house"
+
+faq:
+  - question: "Which state has the most expensive housing"
+    answer: "Hawaii has the highest median home value in the U.S. at over $800,000. The combination of limited buildable land on the islands, high construction costs due to imported materials, and strong demand from both residents and investors keeps prices at the top of every national ranking."
+  - question: "Which state has the cheapest housing"
+    answer: "West Virginia has the lowest median home value of any U.S. state at around $125,000. The state has a rural economy with limited high-wage employment, which suppresses housing demand and keeps prices well below the national average."
+  - question: "How does median home value compare to median home price"
+    answer: "The Census Bureau's median home value is self-reported by homeowners and reflects estimated market value of owner-occupied units. Median home price (from Redfin, Zillow, or NAR) reflects actual sales transaction prices and may differ due to sampling differences and market timing. Both measures show similar trends across states."
+  - question: "Which states have the best home value relative to income"
+    answer: "States where home values are low relative to median household income offer the best affordability. Mississippi, West Virginia, and Oklahoma typically score well on home-value-to-income ratios. California, Hawaii, and Massachusetts have the worst ratios — buyers in those states need 10x or more their annual income to purchase a median-priced home."
+
+related:
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"
+  - title: "States by Property Tax Rate"
+    url: "/rankings/economy/states-by-property-tax"
+  - title: "States by Unemployment Rate"
+    url: "/rankings/economy/states-by-unemployment"

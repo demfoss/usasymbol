@@ -1,0 +1,64 @@
+type: ranking
+slug: states-by-gas-price
+category: economy
+url: /rankings/economy/states-by-gas-price
+hero_image: "/images/rankings/economy/states-by-gas-price/states-by-gas-price.webp"
+hero_image_alt: "Map showing average gas price by state"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Gas Prices"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Gas Prices by State 2025 | Average Regular Unleaded Ranked"
+  description: "California has the highest gas prices in the country at over $4.50/gal. Mississippi and Texas are consistently cheapest. See all 50 states ranked."
+
+page:
+  h1: "Gas Prices by State 2025"
+  quick_answer:
+    - "California consistently has the highest gas prices of any U.S. state, often exceeding $4.50 per gallon for regular unleaded. High state gas taxes, unique blend requirements that limit refinery options, and limited competition among fuel distributors all contribute to California's premium."
+    - "Mississippi, Texas, and Oklahoma typically have the cheapest gas in the country, often below $3.00 per gallon. These states have lower fuel taxes, proximity to Gulf Coast refineries, and no special blend requirements."
+    - "The national average for regular unleaded gasoline fluctuates with crude oil prices, refinery capacity, and seasonal demand. State-level differences are largely driven by taxes, local regulations, and proximity to refineries."
+  methodology: "Average retail gas prices for regular unleaded gasoline are sourced from the U.S. Energy Information Administration (EIA) and GasBuddy price tracking. Figures reflect annual averages or most recent available monthly average prices in dollars per gallon."
+  sources:
+    - name: "U.S. Energy Information Administration — Weekly Retail Gasoline Prices"
+      url: "https://www.eia.gov/petroleum/gasdiesel/"
+      description: "Weekly state-level retail gasoline price data"
+    - name: "GasBuddy State Gas Price Averages"
+      url: "https://www.gasbuddy.com/gaspricemap"
+      description: "Crowdsourced real-time state average gas prices"
+
+computed_data:
+  field: gas_price_regular
+  sort: desc
+  format: "F3"
+  label: "Avg. Gas Price ($/gal)"
+  metric_key: gas_price
+
+compare:
+  metric_slug: economy
+  title: "Compare Gas Prices Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of fuel costs, taxes, income, and more."
+  icon: "fa-solid fa-gas-pump"
+
+faq:
+  - question: "Which state has the highest gas prices"
+    answer: "California consistently has the highest gas prices in the U.S. The state imposes the highest state gasoline excise tax in the country, requires a unique summer-blend formulation that can only be produced by a limited number of refineries, and charges an additional cap-and-trade carbon fee. These factors often push California prices 80–120 cents above the national average."
+  - question: "Which state has the cheapest gas"
+    answer: "Mississippi, Texas, and Oklahoma regularly record the lowest gas prices in the U.S. These states benefit from low state fuel taxes, proximity to Gulf Coast refining infrastructure, and no special blend requirements that would raise production costs."
+  - question: "What drives the difference in gas prices between states"
+    answer: "Four main factors explain state-level gas price differences: (1) state and local fuel taxes, which vary from under 30 cents to over 70 cents per gallon; (2) distance from refineries, which affects transportation costs; (3) special blend requirements that limit the number of refineries that can supply a state; and (4) local market competition."
+  - question: "How much of the gas price is state taxes"
+    answer: "State gasoline taxes range from around 14 cents per gallon in Alaska to over 70 cents per gallon in California (including all state-level fees). The federal excise tax adds 18.4 cents per gallon on top of state taxes. See our gas-tax-by-state ranking for the full breakdown."
+
+related:
+  - title: "Gas Tax by State"
+    url: "/rankings/economy/gas-tax-by-state"
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"
+  - title: "States by Income Tax Rate"
+    url: "/rankings/economy/states-by-income-tax"
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"
