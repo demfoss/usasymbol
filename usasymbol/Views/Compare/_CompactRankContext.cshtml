@@ -1,0 +1,205 @@
+@using System.Globalization
+@using USASymbol.Models.ViewModels
+@model USASymbol.Models.ViewModels.MetricComparisonViewModel
+
+@{
+    var ranks = Model.AllStateRanks;
+    if (ranks == null || ranks.Count < 3) { return; }
+
+    var slugA = Model.StateA.Slug;
+    var slugB = Model.StateB.Slug;
+    var rowA  = ranks.FirstOrDefault(r => r.StateSlug == slugA);
+    var rowB  = ranks.FirstOrDefault(r => r.StateSlug == slugB);
+    if (rowA == null || rowB == null) { return; }
+
+    // Strip: position from left = (value - min) / (max - min), clamped to 2..96% to keep labels in view
+    var minVal = ranks.Min(r => r.Value);
+    var maxVal = ranks.Max(r => r.Value);
+    var range  = maxVal - minVal;
+
+    double StripPct(double val) =>
+        range > 0 ? Math.Clamp(Math.Round((val - minVal) / range * 100, 1), 2.0, 96.0) : 50.0;
+
+    var pctA = StripPct(rowA.Value);
+    var pctB = StripPct(rowB.Value);
+
+    // Focus chart — top 10 best-ranked states
+    var focusRows    = ranks.Take(10).ToList();
+    var aInFocus     = focusRows.Any(r => r.StateSlug == slugA);
+    var bInFocus     = focusRows.Any(r => r.StateSlug == slugB);
+    var separateRows = new List<StateRankRow>();
+    if (!aInFocus) separateRows.Add(rowA);
+    if (!bInFocus) separateRows.Add(rowB);
+
+    var focusMin = focusRows.Min(r => r.Value);
+    var focusMax = focusRows.Max(r => r.Value);
+
+    // Rank 1 always gets the widest bar regardless of metric direction
+    double BarPct(double val)
+    {
+        if (Model.HigherIsBetter)
+            return focusMax > 0 ? Math.Round(val / focusMax * 100, 1) : 0;
+        return (focusMax > focusMin)
+            ? Math.Round((focusMax - val) / (focusMax - focusMin) * 100, 1)
+            : 100.0;
+    }
+
+    // Separate-row bars: compare against full dataset range
+    var globalMax = ranks.Max(r => r.Value);
+    var globalMin = ranks.Min(r => r.Value);
+    double SepBarPct(double val)
+    {
+        if (Model.HigherIsBetter)
+            return globalMax > 0 ? Math.Round(val / globalMax * 100, 1) : 0;
+        return (globalMax > globalMin)
+            ? Math.Round((globalMax - val) / (globalMax - globalMin) * 100, 1)
+            : 100.0;
+    }
+
+    var metricLabel  = Model.Metric.Name;
+    var higherBetter = Model.HigherIsBetter;
+
+    string OrdinalSuffix(int n)
+    {
+        if (n % 100 is 11 or 12 or 13) return $"{n}th";
+        return (n % 10) switch { 1 => $"{n}st", 2 => $"{n}nd", 3 => $"{n}rd", _ => $"{n}th" };
+    }
+    var takeaway = $"{Model.StateA.Name} ranks {OrdinalSuffix(rowA.Rank)} and {Model.StateB.Name} ranks {OrdinalSuffix(rowB.Rank)} nationally for {metricLabel.ToLowerInvariant()}.";
+
+    string F(double v) => v.ToString("F1", CultureInfo.InvariantCulture);
+}
+
+<section class="bg-white py-10 border-t border-gray-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="mb-6">
+            <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-400 mb-1">National Rankings</p>
+            <h2 class="text-2xl font-bold text-gray-900">Where They Rank Nationally</h2>
+            <p class="text-sm text-gray-500 mt-1">See where both states fall among all 50 states for @metricLabel.ToLowerInvariant().</p>
+        </div>
+
+        @* ── Rank strip ── *@
+        @{
+            // clamp label anchor so chips stay within the card on edge positions
+            var clampA = Math.Clamp(pctA, 8.0, 92.0);
+            var clampB = Math.Clamp(pctB, 8.0, 92.0);
+        }
+        <div class="border border-gray-200 rounded-2xl bg-gray-50 pt-5 pb-5 mb-5" style="padding-left: 2rem; padding-right: 2rem; overflow: visible;">
+
+            @* wrapper: chips row + track + axis *@
+            <div class="relative" style="padding-top: 56px;">
+
+                @* gradient track *@
+                <div class="h-2 rounded-full mx-2" style="background: linear-gradient(to right, #cbd5e1 0%, #60a5fa 50%, #34d399 100%);"></div>
+
+                @* State A chip + dot *@
+                <div class="absolute flex flex-col items-center" style="left: @F(clampA)%; top: 0; transform: translateX(-50%);">
+                    <div class="flex items-center gap-1.5 bg-blue-50 border border-blue-200 rounded-full px-3 py-1.5 whitespace-nowrap shadow-sm">
+                        <div class="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0"></div>
+                        <span class="text-sm font-bold text-blue-700">@Model.StateA.Name</span>
+                        <span class="text-xs text-gray-400">#@rowA.Rank &middot; @rowA.FormattedValue</span>
+                    </div>
+                    <div class="w-px bg-blue-300" style="height: 18px;"></div>
+                    <div class="w-4 h-4 rounded-full bg-blue-600 border-2 border-white shadow -translate-y-1 relative z-10"></div>
+                </div>
+
+                @* State B chip + dot *@
+                <div class="absolute flex flex-col items-center" style="left: @F(clampB)%; top: 0; transform: translateX(-50%);">
+                    <div class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1.5 whitespace-nowrap shadow-sm">
+                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></div>
+                        <span class="text-sm font-bold text-emerald-700">@Model.StateB.Name</span>
+                        <span class="text-xs text-gray-400">#@rowB.Rank &middot; @rowB.FormattedValue</span>
+                    </div>
+                    <div class="w-px bg-emerald-300" style="height: 18px;"></div>
+                    <div class="w-4 h-4 rounded-full bg-emerald-500 border-2 border-white shadow -translate-y-1 relative z-10"></div>
+                </div>
+
+            </div>
+
+            <div class="flex justify-between text-[10px] text-gray-400 mx-2 mt-2">
+                <span>@(higherBetter ? "Lowest" : "Best")</span>
+                <span>@(higherBetter ? "Highest" : "Worst")</span>
+            </div>
+        </div>
+
+        @* ── Focus chart: top 10 states ── *@
+        <div class="border border-gray-200 rounded-2xl overflow-hidden mb-4">
+            <div class="flex items-center justify-between px-5 py-3 bg-gray-50 border-b border-gray-100">
+                <h3 class="text-sm font-semibold text-gray-700">
+                    @(higherBetter ? "Top 10" : "10 Best") States &mdash; @metricLabel
+                </h3>
+                @if (!higherBetter)
+                {
+                    <span class="text-[10px] uppercase tracking-widest text-gray-400">Lower is better</span>
+                }
+            </div>
+
+            <div class="divide-y divide-gray-50">
+                @foreach (var row in focusRows)
+                {
+                    var isA      = row.StateSlug == slugA;
+                    var isB      = row.StateSlug == slugB;
+                    var barW     = F(BarPct(row.Value));
+                    var barColor = isA ? "bg-blue-400" : isB ? "bg-amber-400" : "bg-slate-200";
+                    var rowBg    = (isA || isB) ? "bg-blue-50/60" : "";
+                    var bold     = (isA || isB) ? "font-semibold" : "";
+                    <div class="flex items-center gap-3 px-4 py-2 @rowBg">
+                        <span class="text-[11px] text-gray-400 w-5 text-right shrink-0 tabular-nums">#@row.Rank</span>
+                        @if (!string.IsNullOrEmpty(row.FlagImageUrl))
+                        {
+                            <img src="@row.FlagImageUrl" alt="@row.StateName flag"
+                                 class="w-7 h-[18px] object-cover rounded-sm shadow-sm shrink-0"
+                                 onerror="this.style.display='none'" loading="lazy" />
+                        }
+                        else
+                        {
+                            <span class="text-[10px] font-bold text-gray-500 w-7 shrink-0">@row.Abbreviation</span>
+                        }
+                        <span class="text-sm text-gray-800 w-28 shrink-0 truncate @bold">@row.StateName</span>
+                        <div class="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden min-w-0">
+                            <div class="h-full rounded-sm @barColor" style="width: @barW%"></div>
+                        </div>
+                        <span class="text-xs text-gray-700 w-20 text-right shrink-0 tabular-nums @bold">@row.FormattedValue</span>
+                    </div>
+                }
+            </div>
+
+            @if (separateRows.Any())
+            {
+                <div class="border-t-2 border-dashed border-gray-200">
+                    <div class="px-4 pt-2.5 pb-1">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Selected states</span>
+                    </div>
+                    @foreach (var row in separateRows)
+                    {
+                        var isA      = row.StateSlug == slugA;
+                        var barW     = F(SepBarPct(row.Value));
+                        var barColor = isA ? "bg-blue-400" : "bg-amber-400";
+                        <div class="flex items-center gap-3 px-4 py-2 bg-slate-50/80">
+                            <span class="text-[11px] text-gray-400 w-5 text-right shrink-0 tabular-nums">#@row.Rank</span>
+                            @if (!string.IsNullOrEmpty(row.FlagImageUrl))
+                            {
+                                <img src="@row.FlagImageUrl" alt="@row.StateName flag"
+                                     class="w-7 h-[18px] object-cover rounded-sm shadow-sm shrink-0"
+                                     onerror="this.style.display='none'" loading="lazy" />
+                            }
+                            else
+                            {
+                                <span class="text-[10px] font-bold text-gray-500 w-7 shrink-0">@row.Abbreviation</span>
+                            }
+                            <span class="text-sm font-semibold text-gray-800 w-28 shrink-0 truncate">@row.StateName</span>
+                            <div class="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden min-w-0">
+                                <div class="h-full rounded-sm @barColor" style="width: @barW%"></div>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-700 w-20 text-right shrink-0 tabular-nums">@row.FormattedValue</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        @* Takeaway *@
+        <p class="text-sm text-gray-400 italic">@takeaway</p>
+
+    </div>
+</section>

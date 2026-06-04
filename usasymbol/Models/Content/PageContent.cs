@@ -151,6 +151,8 @@ namespace USASymbol.Models.Content
         public string Icon { get; set; } = "";
         public string Title { get; set; } = "";
         public string? Style { get; set; }
+        public string? Img { get; set; }
+        public string? ImgRight { get; set; }
         public List<string> Paragraphs { get; set; } = new();
         public List<PageSubsection>? Subsections { get; set; }
         public List<string>? Facts { get; set; }

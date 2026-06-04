@@ -1,0 +1,87 @@
+@using USASymbol.Models.Content
+@model ParkContent
+
+@if (Model == null || (Model.Location.Latitude == 0 && Model.Location.Longitude == 0))
+{
+    return;
+}
+
+@{
+    var mapId = $"park-map-{Guid.NewGuid():N}";
+    var lat = Model.Location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    var lng = Model.Location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    var zoom = Model.Map.Zoom > 0 ? Model.Map.Zoom : 10;
+}
+
+<div class="border border-slate-200/80 bg-white/55 overflow-hidden">
+    <div id="@mapId" class="w-full" style="height:340px;" aria-label="Park location map"></div>
+    <div id="@($"{mapId}-fallback")" class="hidden px-5 py-4 text-sm text-slate-600 border-t border-slate-100">
+        The interactive map is temporarily unavailable. Use the links below to open this park in Google Maps.
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Map.GoogleSearchUrl) || !string.IsNullOrWhiteSpace(Model.Map.GoogleDirectionsUrl))
+    {
+        <div class="flex flex-wrap gap-3 px-5 py-4 border-t border-slate-100">
+            @if (!string.IsNullOrWhiteSpace(Model.Map.GoogleSearchUrl))
+            {
+                <a href="@Model.Map.GoogleSearchUrl"
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-800 text-white text-sm font-semibold rounded-lg transition active:scale-95">
+                    <i class="fa-solid fa-location-dot text-xs"></i>
+                    Open in Google Maps
+                </a>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Map.GoogleDirectionsUrl))
+            {
+                <a href="@Model.Map.GoogleDirectionsUrl"
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-800 text-sm font-semibold rounded-lg border border-slate-300 transition active:scale-95">
+                    <i class="fa-solid fa-route text-xs text-green-700"></i>
+                    Get Directions
+                </a>
+            }
+        </div>
+    }
+</div>
+
+<link rel="stylesheet" href="~/vendor/leaflet/leaflet.css" />
+<script src="~/vendor/leaflet/leaflet.js"></script>
+<script>
+(function () {
+    var el = document.getElementById('@mapId');
+    var fallback = document.getElementById('@($"{mapId}-fallback")');
+    if (!el) return;
+    if (typeof window.L === 'undefined') {
+        el.classList.add('hidden');
+        if (fallback) fallback.classList.remove('hidden');
+        return;
+    }
+
+    var map = L.map('@mapId', { zoomControl: true, scrollWheelZoom: false }).setView([@lat, @lng], @zoom);
+
+    var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+    });
+
+    var tileErrors = 0;
+    tiles.on('tileerror', function () {
+        tileErrors += 1;
+        if (tileErrors >= 2) {
+            el.classList.add('hidden');
+            if (fallback) fallback.classList.remove('hidden');
+        }
+    });
+
+    tiles.addTo(map);
+
+    var icon = L.divIcon({
+        html: '<div style="background:#166534;color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)"><i class="fa-solid fa-tree"></i></div>',
+        className: '',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+    });
+
+    L.marker([@lat, @lng], { icon: icon }).addTo(map);
+}());
+</script>

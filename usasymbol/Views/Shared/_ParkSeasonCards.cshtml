@@ -1,0 +1,78 @@
+@using USASymbol.Models.Content
+@model List<ParkSeason>
+
+@{
+    string SeasonIcon(string s) => s.ToLower() switch
+    {
+        "spring" => "fa-solid fa-seedling",
+        "summer" => "fa-solid fa-sun",
+        "fall"   => "fa-solid fa-leaf",
+        "winter" => "fa-solid fa-snowflake",
+        _        => "fa-solid fa-calendar"
+    };
+
+    string SeasonBg(string s) => s.ToLower() switch
+    {
+        "spring" => "bg-emerald-50 border-emerald-200",
+        "summer" => "bg-amber-50 border-amber-200",
+        "fall"   => "bg-orange-50 border-orange-200",
+        "winter" => "bg-sky-50 border-sky-200",
+        _        => "bg-slate-50 border-slate-200"
+    };
+
+    string SeasonIconColor(string s) => s.ToLower() switch
+    {
+        "spring" => "text-emerald-600",
+        "summer" => "text-amber-500",
+        "fall"   => "text-orange-500",
+        "winter" => "text-sky-500",
+        _        => "text-slate-500"
+    };
+
+    string CrowdBadge(string level) => level.ToLower() switch
+    {
+        "peak"     => "bg-red-100 text-red-700",
+        "moderate" => "bg-yellow-100 text-yellow-700",
+        "low"      => "bg-green-100 text-green-700",
+        _          => "bg-slate-100 text-slate-600"
+    };
+
+    string CrowdLabel(string level) => level.ToLower() switch
+    {
+        "peak"     => "Peak crowds",
+        "moderate" => "Moderate",
+        "low"      => "Low crowds",
+        _          => level
+    };
+}
+
+<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    @foreach (var s in Model)
+    {
+        <div class="border @SeasonBg(s.Season) p-4">
+            <div class="flex items-start gap-3">
+                <div class="shrink-0 mt-0.5">
+                    <i class="@SeasonIcon(s.Season) @SeasonIconColor(s.Season) text-lg"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-bold text-slate-900 text-[15px]">@s.Season</span>
+                        <span class="text-[11px] text-slate-500">@s.Months</span>
+                        @if (!string.IsNullOrWhiteSpace(s.CrowdLevel))
+                        {
+                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold @CrowdBadge(s.CrowdLevel)">@CrowdLabel(s.CrowdLevel)</span>
+                        }
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(s.TempRim))
+                    {
+                        <div class="mt-1 text-[12px] font-medium text-slate-600">Rim: @s.TempRim</div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(s.Verdict))
+                    {
+                        <p class="mt-1.5 text-[13px] leading-5 text-slate-700">@s.Verdict</p>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

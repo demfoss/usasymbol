@@ -1,0 +1,18 @@
+@using USASymbol.Models.Content
+@model List<ParkFeeItem>
+
+<div class="border border-slate-200/80 bg-white/55 overflow-hidden">
+    @foreach (var (fee, i) in Model.Select((f, i) => (f, i)))
+    {
+        <div class="flex items-baseline justify-between gap-4 px-4 py-3 @(i > 0 ? "border-t border-slate-100" : "") @(fee.Note == "" ? "" : "flex-wrap")">
+            <span class="text-[14px] font-medium text-slate-800">@fee.PassType</span>
+            <div class="shrink-0 text-right">
+                <span class="text-[15px] font-bold text-slate-900">@fee.Cost</span>
+                @if (!string.IsNullOrWhiteSpace(fee.Note))
+                {
+                    <div class="text-[11px] text-slate-500 mt-0.5">@fee.Note</div>
+                }
+            </div>
+        </div>
+    }
+</div>

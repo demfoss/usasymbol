@@ -1,0 +1,471 @@
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@using System.Text.Json
+@model SoilDetailViewModel
+
+@{
+    var sections = Model.SoilContent?.Sections;
+    var stateFips = Model.SoilContent?.StateFips ?? "";
+    var quoteRendered = false;
+    var statRendered = false;
+    var quoteAfterSectionId = Model.SoilContent?.ExpertQuoteAfterSectionId ?? string.Empty;
+    var statAfterSectionId = Model.SoilContent?.BigStatAfterSectionId ?? string.Empty;
+
+    static (int s, int e) ParseSoilDepth(string depthIn)
+    {
+        var d = depthIn.Replace("–", "-").Replace("—", "-").Trim();
+        if (d.EndsWith("+"))
+        {
+            int.TryParse(d.TrimEnd('+').Trim(), out int ss);
+            return (ss, ss + 20);
+        }
+        var parts = d.Split('-');
+        int.TryParse(parts[0].Trim(), out int start);
+        int end = start + 10;
+        if (parts.Length > 1) int.TryParse(parts[1].Trim(), out end);
+        return (start, end);
+    }
+}
+
+@if (sections?.Any() == true)
+{
+    var visualAssets = Model.SoilContent?.VisualAssets?.ToList() ?? new List<VisualAsset>();
+
+    foreach (var item in sections.Cast<SoilSection>())
+    {
+        var hasLayers = item.Layers?.Any() == true;
+        var hasCounties = item.Counties?.Any() == true && !string.IsNullOrWhiteSpace(stateFips);
+
+        <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            @await Html.PartialAsync("Components/Content/_SectionHeader", (IContentSection)item)
+
+            @{
+                var sectionAssets = visualAssets
+                    .Where(a => a != null && !string.IsNullOrWhiteSpace(a.Src) &&
+                                string.Equals(a.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            @foreach (var asset in sectionAssets)
+            {
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+            }
+
+            @if (item.Paragraphs?.Any() == true)
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                    @for (var i = 0; i < item.Paragraphs.Count; i++)
+                    {
+                        <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                            @item.Paragraphs[i].RenderAutoLinks()
+                        </p>
+                    }
+                </div>
+            }
+
+            @if (item.Subsections?.Any() == true)
+            {
+                <div class="mt-8 space-y-10">
+                    @foreach (var sub in item.Subsections)
+                    {
+                        <article class="pt-8 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+                            <h3 class="text-[1.15rem] lg:text-[1.35rem] font-semibold text-slate-900 mb-3">@sub.Subtitle</h3>
+                            @if (!string.IsNullOrWhiteSpace(sub.Text))
+                            {
+                                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-700">
+                                    <p>@sub.Text.RenderAutoLinks()</p>
+                                </div>
+                            }
+                            @if (sub.ListItems?.Any() == true)
+                            {
+                                <ul class="mt-4 space-y-2 text-sm text-slate-700">
+                                    @foreach (var listItem in sub.ListItems)
+                                    {
+                                        <li class="pl-5 relative before:content-['-'] before:absolute before:left-0 before:text-slate-400">
+                                            @listItem.RenderListItem()
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </article>
+                    }
+                </div>
+            }
+
+            @if (item.Facts?.Any() == true)
+            {
+                @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+            }
+
+            @* ── Soil Profile Widget ────────────────────────────────────────────── *@
+            @if (hasLayers)
+            {
+                var layers = item.Layers;
+                // 5 px per depth-inch; floor 52 px so thin transition layers stay legible
+                var pxPerIn = 5;
+                var minPx   = 100;
+                var parsedLayers = layers.Select((l, idx) =>
+                {
+                    var (s, e) = ParseSoilDepth(l.DepthIn);
+                    var px = Math.Max(minPx, Math.Max(2, e - s) * pxPerIn);
+                    return new { Layer = l, Start = s, End = e, Px = px, Index = idx };
+                }).ToList();
+
+                // Cumulative px offsets for ruler tick positioning
+                var cumulPx = new List<int>();
+                var cumAcc = 0;
+                foreach (var pe in parsedLayers) { cumulPx.Add(cumAcc); cumAcc += pe.Px; }
+                var totalPx = cumAcc;
+                var lastPe  = parsedLayers.LastOrDefault();
+                var profileId = $"sp-{item.Id}";
+
+                <div id="@profileId" class="mt-8">
+                    <div class="flex gap-8 items-start overflow-x-auto pb-1">
+
+                        @* Left: ruler + bands *@
+                        <div class="flex shrink-0">
+
+                            @* depth ruler *@
+                            <div class="relative shrink-0" style="width:46px; height:@(totalPx)px;">
+                                @for (var li = 0; li < parsedLayers.Count; li++)
+                                {
+                                    var pe  = parsedLayers[li];
+                                    var top = cumulPx[li];
+                                    <span class="absolute right-2 text-[11px] font-mono leading-none select-none whitespace-nowrap"
+                                          style="color:#9ca3af; top:@(top)px; @(li == 0 ? "" : "transform:translateY(-50%);")">@pe.Start"</span>
+                                }
+                                @if (lastPe != null)
+                                {
+                                    <span class="absolute right-2 bottom-0 text-[11px] font-mono leading-none select-none whitespace-nowrap"
+                                          style="color:#9ca3af;">@lastPe.End"</span>
+                                }
+                            </div>
+
+                            @* horizon bands *@
+                            <div class="flex flex-col rounded-lg overflow-hidden shrink-0"
+                                 style="width:180px; border:0.5px solid #d3d1c7;">
+                                @for (var li = 0; li < parsedLayers.Count; li++)
+                                {
+                                    var pe = parsedLayers[li];
+                                    <div class="sp-band flex items-center justify-center select-none cursor-default"
+                                         style="height:@(pe.Px)px; background-color:@pe.Layer.ColorHex;
+                                                color:rgba(255,255,255,0.92); font-size:22px; font-weight:500;
+                                                clip-path:inset(0 0 100% 0);"
+                                         data-idx="@pe.Index">@pe.Layer.Horizon</div>
+                                }
+                            </div>
+
+                        </div>
+
+                        @* Right: info cards — strict height matches band height, no growth *@
+                        <div class="flex-1 min-w-0">
+                            @for (var li = 0; li < parsedLayers.Count; li++)
+                            {
+                                var pe = parsedLayers[li];
+                                <div class="sp-info border-b border-slate-100 last:border-b-0 overflow-hidden"
+                                     style="height:@(pe.Px)px; padding:12px 0; opacity:0; transform:translateX(10px);"
+                                     data-idx="@pe.Index">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="sp-dot w-2.5 h-2.5 rounded-sm shrink-0 flex-shrink-0" style="background:@pe.Layer.ColorHex; transition:transform 0.15s ease;"></span>
+                                        <span class="text-[14px] font-medium text-slate-900 leading-snug">@pe.Layer.Name</span>
+                                        <span class="text-[11px] font-mono text-slate-400 shrink-0">@pe.Layer.DepthIn in</span>
+                                    </div>
+                                    <div class="text-xs text-slate-500 truncate" style="padding-left:18px;">@pe.Layer.Texture</div>
+                                    @if (!string.IsNullOrWhiteSpace(pe.Layer.Note))
+                                    {
+                                        <div class="text-[11px] text-slate-400 leading-relaxed mt-0.5" style="padding-left:18px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">@pe.Layer.Note</div>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+
+                <script>
+                (function () {
+                    var root = document.getElementById("@profileId");
+                    if (!root) return;
+                    var bands = Array.from(root.querySelectorAll(".sp-band"));
+                    var infos  = Array.from(root.querySelectorAll(".sp-info"));
+
+                    // Set staggered transitions in JS to avoid locale issues with decimal separators
+                    bands.forEach(function (b, i) {
+                        b.style.transition = "clip-path 0.6s " + (i * 0.18) + "s cubic-bezier(.4,0,.2,1), filter 0.2s";
+                    });
+                    infos.forEach(function (c, i) {
+                        var d = (i * 0.18 + 0.1).toFixed(2);
+                        c.style.transition = "opacity 0.4s " + d + "s ease, transform 0.4s " + d + "s ease";
+                    });
+
+                    function reveal() {
+                        bands.forEach(function (b) { b.style.clipPath = "inset(0 0 0% 0)"; });
+                        infos.forEach(function (c)  { c.style.opacity = "1"; c.style.transform = "translateX(0)"; });
+                    }
+                    function highlight(idx) {
+                        bands.forEach(function (b) {
+                            b.style.filter = b.dataset.idx == idx ? "brightness(1.18)" : "brightness(0.72)";
+                        });
+                        infos.forEach(function (c) {
+                            var dot = c.querySelector(".sp-dot");
+                            if (dot) dot.style.transform = c.dataset.idx == idx ? "scale(1.5)" : "";
+                        });
+                    }
+                    function unhighlight() {
+                        bands.forEach(function (b) { b.style.filter = ""; });
+                        infos.forEach(function (c) {
+                            var dot = c.querySelector(".sp-dot");
+                            if (dot) dot.style.transform = "";
+                        });
+                    }
+                    bands.forEach(function (b) {
+                        b.addEventListener("mouseenter", function () { highlight(b.dataset.idx); });
+                        b.addEventListener("mouseleave", unhighlight);
+                    });
+                    infos.forEach(function (c) {
+                        c.addEventListener("mouseenter", function () { highlight(c.dataset.idx); });
+                        c.addEventListener("mouseleave", unhighlight);
+                    });
+
+                    if ("IntersectionObserver" in window) {
+                        var obs = new IntersectionObserver(function (entries) {
+                            if (entries[0].isIntersecting) { reveal(); obs.disconnect(); }
+                        }, { threshold: 0.1 });
+                        obs.observe(root);
+                    } else {
+                        reveal();
+                    }
+                })();
+                </script>
+            }
+
+            @* ── County Map Widget ─────────────────────────────────────────────── *@
+            @if (hasCounties)
+            {
+                var soilName = Model.SoilContent?.Name ?? "State Soil";
+                var countiesJson = JsonSerializer.Serialize(item.Counties);
+                var btLayer = item.Layers?.FirstOrDefault(l =>
+                    l.Horizon.StartsWith("Bt", StringComparison.OrdinalIgnoreCase)) ?? item.Layers?.FirstOrDefault();
+                var fillColor = btLayer?.ColorHex ?? "#8B2500";
+                var mapId = $"sm-{item.Id}";
+                var countTotal = item.Counties.Count;
+
+                <div class="mt-8" data-nosnippet>
+                    <div class="overflow-hidden border border-slate-200/70 bg-white">
+
+                        @* map area *@
+                        <div id="@mapId-wrap" class="relative w-full bg-slate-50/60" style="min-height:260px;">
+                            <svg id="@mapId" class="block w-full" aria-label="@soilName county distribution map"></svg>
+                            <div id="@mapId-tip"
+                                 class="pointer-events-none absolute z-10 rounded-lg px-3 py-1.5 text-xs font-semibold shadow-lg"
+                                 style="background:rgba(15,23,42,0.88); color:#f8fafc; display:none; white-space:nowrap;
+                                        border:1px solid rgba(255,255,255,0.08);">
+                            </div>
+                        </div>
+
+                        @* legend *@
+                        <div class="flex flex-wrap items-center gap-x-6 gap-y-1.5 px-5 py-3 bg-slate-50/80 border-t border-slate-200/70">
+                            <div class="flex items-center gap-2">
+                                <span class="inline-block w-3.5 h-3.5 rounded-sm shrink-0 border border-black/10" style="background:@fillColor;"></span>
+                                <span class="text-xs font-medium text-slate-600">@soilName · @countTotal counties</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="inline-block w-3.5 h-3.5 rounded-sm shrink-0 bg-slate-200 border border-slate-300/60"></span>
+                                <span class="text-xs text-slate-400">Other counties</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <script>
+                (function () {
+                    var FIPS      = "@stateFips";
+                    var SOIL_LIST = @Html.Raw(countiesJson);
+                    var FILL      = "@fillColor";
+                    var MAP_ID    = "@mapId";
+
+                    function norm(s) {
+                        return (s || "").toLowerCase()
+                            .replace(/\s+county$/i, "")
+                            .replace(/\s+parish$/i, "")
+                            .trim();
+                    }
+                    var soilSet = new Set(SOIL_LIST.map(norm));
+
+                    function buildMap(us) {
+                        var wrap = document.getElementById(MAP_ID + "-wrap");
+                        var svg  = document.getElementById(MAP_ID);
+                        var tip  = document.getElementById(MAP_ID + "-tip");
+                        if (!wrap || !svg) return;
+
+                        var W = Math.max(wrap.clientWidth || 560, 280);
+                        var H = Math.round(W * 0.68);
+                        svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+                        svg.setAttribute("height", H);
+
+                        var topo = window.__soilTopo;
+                        var d3   = window.__soilD3;
+
+                        var allCounties = topo.feature(us, us.objects.counties);
+                        var allStates   = topo.feature(us, us.objects.states);
+
+                        var stateGeo = allStates.features.find(function (f) {
+                            return String(f.id).padStart(2, "0") === FIPS;
+                        });
+                        var stateCounties = allCounties.features.filter(function (f) {
+                            return String(f.id).padStart(5, "0").startsWith(FIPS);
+                        });
+
+                        if (!stateCounties.length) return;
+
+                        var proj = d3.geoIdentity().reflectY(true)
+                            .fitExtent([[12, 12], [W - 12, H - 12]],
+                                { type: "FeatureCollection", features: stateCounties });
+                        var path = d3.geoPath().projection(proj);
+
+                        var ns = "http://www.w3.org/2000/svg";
+                        var g  = document.createElementNS(ns, "g");
+
+                        // county fills
+                        stateCounties.forEach(function (f) {
+                            var cName   = f.properties && f.properties.name ? f.properties.name : "";
+                            var matched = soilSet.has(norm(cName));
+
+                            var el = document.createElementNS(ns, "path");
+                            el.setAttribute("d", path(f));
+                            el.setAttribute("fill", matched ? FILL : "#e2e8f0");
+                            el.setAttribute("stroke", "#ffffff");
+                            el.setAttribute("stroke-width", "0.8");
+                            el.style.cursor = "default";
+                            el.style.transition = "fill 0.15s ease";
+
+                            if (tip) {
+                                el.addEventListener("mouseenter", function () {
+                                    el.setAttribute("fill", matched ? lighten(FILL, 0.15) : "#cbd5e1");
+                                    var label = cName || "County";
+                                    tip.textContent = matched ? label + " — soil present" : label;
+                                    tip.style.display = "block";
+                                });
+                                el.addEventListener("mousemove", function (ev) {
+                                    var rect = wrap.getBoundingClientRect();
+                                    var tx = ev.clientX - rect.left + 12;
+                                    var ty = ev.clientY - rect.top - 36;
+                                    if (tx + 200 > W) tx = ev.clientX - rect.left - 200;
+                                    tip.style.left = tx + "px";
+                                    tip.style.top  = Math.max(4, ty) + "px";
+                                });
+                                el.addEventListener("mouseleave", function () {
+                                    el.setAttribute("fill", matched ? FILL : "#e2e8f0");
+                                    tip.style.display = "none";
+                                });
+                            }
+                            g.appendChild(el);
+                        });
+
+                        // state border
+                        if (stateGeo) {
+                            var border = document.createElementNS(ns, "path");
+                            border.setAttribute("d", path(stateGeo));
+                            border.setAttribute("fill", "none");
+                            border.setAttribute("stroke", "#475569");
+                            border.setAttribute("stroke-width", "1.6");
+                            border.setAttribute("stroke-linejoin", "round");
+                            border.setAttribute("pointer-events", "none");
+                            g.appendChild(border);
+                        }
+
+                        svg.appendChild(g);
+                    }
+
+                    function lighten(hex, amt) {
+                        var c = parseInt(hex.replace("#", ""), 16);
+                        var r = Math.min(255, ((c >> 16) & 255) + Math.round(255 * amt));
+                        var gv = Math.min(255, ((c >> 8)  & 255) + Math.round(255 * amt));
+                        var b  = Math.min(255, (c & 255)         + Math.round(255 * amt));
+                        return "#" + [r, gv, b].map(function (x) { return x.toString(16).padStart(2, "0"); }).join("");
+                    }
+
+                    function loadScript(src) {
+                        return new Promise(function (resolve) {
+                            if (document.querySelector('script[src="' + src + '"]')) { resolve(); return; }
+                            var s = document.createElement("script");
+                            s.src = src; s.onload = resolve;
+                            document.head.appendChild(s);
+                        });
+                    }
+
+                    function init() {
+                        var d3Load   = window.__soilD3   ? Promise.resolve() : loadScript("https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js").then(function () { window.__soilD3 = window.d3; });
+                        var topoLoad = window.__soilTopo ? Promise.resolve() : loadScript("https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js").then(function () { window.__soilTopo = window.topojson; });
+                        Promise.all([d3Load, topoLoad]).then(function () {
+                            if (window.__soilAtlas) { buildMap(window.__soilAtlas); return; }
+                            fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json")
+                                .then(function (r) { return r.json(); })
+                                .then(function (us) { window.__soilAtlas = us; buildMap(us); });
+                        });
+                    }
+
+                    if (document.readyState === "loading") {
+                        document.addEventListener("DOMContentLoaded", init);
+                    } else {
+                        init();
+                    }
+                })();
+                </script>
+            }
+
+            <div class="clear-both"></div>
+        </section>
+
+        @if (!quoteRendered &&
+            !string.IsNullOrWhiteSpace(quoteAfterSectionId) &&
+            string.Equals(item.Id, quoteAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.SoilContent?.ExpertQuote != null)
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.SoilContent.ExpertQuote)
+            quoteRendered = true;
+        }
+
+        @if (!statRendered &&
+            !string.IsNullOrWhiteSpace(statAfterSectionId) &&
+            string.Equals(item.Id, statAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            Model.SoilContent?.BigStat != null)
+        {
+            @await Html.PartialAsync("Components/Story/_BigStat", Model.SoilContent.BigStat)
+            statRendered = true;
+        }
+
+    }
+
+    if (!quoteRendered && Model.SoilContent?.ExpertQuote != null)
+    {
+        @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.SoilContent.ExpertQuote)
+    }
+    if (!statRendered && Model.SoilContent?.BigStat != null)
+    {
+        @await Html.PartialAsync("Components/Story/_BigStat", Model.SoilContent.BigStat)
+    }
+    var orphanAssets = visualAssets
+        .Where(a => a != null && !string.IsNullOrWhiteSpace(a.Src) &&
+                    !string.Equals(a.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                    string.IsNullOrWhiteSpace(a.Section))
+        .ToList();
+    var fullWidthAsset = visualAssets
+        .FirstOrDefault(a => a != null && !string.IsNullOrWhiteSpace(a.Src) &&
+                             string.Equals(a.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                             string.IsNullOrWhiteSpace(a.Section));
+
+    @foreach (var asset in orphanAssets)
+    {
+        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+    }
+    @if (fullWidthAsset != null)
+    {
+        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", fullWidthAsset)
+    }
+}
+else
+{
+    <div class="text-sm text-slate-500">@Model.EmptySectionsMessage</div>
+}

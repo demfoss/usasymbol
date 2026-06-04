@@ -1,0 +1,249 @@
+@using System.Globalization
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+
+@{
+    var table = Model.Content?.Table;
+    if (table == null || table.Rows.Count < 3) { return; }
+
+    // Mode from YAML extremes_mode field. If omitted or invalid, do not render the block.
+    var rawMode = (Model.Content?.ExtremesMode ?? "none").Trim().ToLowerInvariant();
+    if (string.IsNullOrWhiteSpace(rawMode) || rawMode == "none") { return; }
+    if (rawMode is not ("both" or "toponly" or "bottomonly")) { return; }
+    var showTop    = rawMode is "both" or "toponly";
+    var showBottom = rawMode is "both" or "bottomonly";
+
+    // System keys never used as the metric column
+    var systemKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        { "rank", "order", "state", "state_slug", "postal_code",
+          "symbol_slug", "custom_url", "symbol_image" };
+
+    // Metric column: prefer DefaultColumn, otherwise first non-system non-image column
+    var metricKey = table.DefaultColumn
+        ?? table.Columns
+               .Where(c => !systemKeys.Contains(c.Key) && c.Type != "image" && c.Type != "url")
+               .Select(c => c.Key)
+               .FirstOrDefault();
+
+    if (metricKey == null) { return; }
+
+    var metricCol    = table.Columns.FirstOrDefault(c => c.Key == metricKey);
+    var metricLabel  = metricCol?.Label ?? metricKey;
+    var extremesTitle = Model.Content?.ExtremesTitle;
+
+    // Parse a row's metric value as double (for bar-width math)
+    double? ParseVal(TableRow row)
+    {
+        if (!row.Has(metricKey)) return null;
+        var raw = row.Data[metricKey]?.ToString() ?? "";
+        raw = raw.Replace(",", "").Replace("$", "").Replace("%", "").Trim();
+        return double.TryParse(raw, NumberStyles.Any, CultureInfo.InvariantCulture, out var d) ? d : (double?)null;
+    }
+
+    // Pre-compute values; skip rows where metric is unparseable
+    var rowsWithVals = table.Rows
+        .Select(r => (Row: r, Val: ParseVal(r)))
+        .Where(x => x.Val.HasValue)
+        .ToList();
+
+    if (rowsWithVals.Count < 3) { return; }
+
+    // Rows are already sorted best-rank-first in the YAML
+    var topRows    = rowsWithVals.Take(10).ToList();
+    var bottomRows = showBottom && rowsWithVals.Count > 10
+        ? rowsWithVals.TakeLast(10).ToList()
+        : new List<(TableRow Row, double? Val)>();
+
+    if (!showTop && bottomRows.Count == 0) { return; }
+
+    // Highlight cards: first and last row
+    var topCard    = topRows.FirstOrDefault();
+    var bottomCard = bottomRows.LastOrDefault();
+
+    // Bar width helpers — rank 1 always gets the widest bar within its group
+    var topMax = topRows.Max(x => x.Val!.Value);
+    var topMin = topRows.Min(x => x.Val!.Value);
+
+    double TopBarPct(double val)
+    {
+        // If top row = highest value: direct ratio
+        if (topRows[0].Val!.Value >= topRows[^1].Val!.Value)
+            return topMax > 0 ? Math.Round(val / topMax * 100, 1) : 0;
+        // Top row = lowest value (e.g. year founded): invert
+        return (topMax > topMin)
+            ? Math.Round((topMax - val) / (topMax - topMin) * 100, 1)
+            : 100.0;
+    }
+
+    double BotBarPct(double val)
+    {
+        if (bottomRows.Count == 0) return 0;
+        var botMax = bottomRows.Max(x => x.Val!.Value);
+        var botMin = bottomRows.Min(x => x.Val!.Value);
+        // In the "lowest" chart, smaller values should look smaller visually.
+        // Example: 0% should render as an empty bar, not a full one.
+        return (botMax > botMin)
+            ? Math.Round((val - botMin) / (botMax - botMin) * 100, 1)
+            : 100.0;
+    }
+
+    string F(double v) => v.ToString("F1", CultureInfo.InvariantCulture);
+
+    // Helpers to pull common row fields
+    string RowState(TableRow r) => r.GetString("state");
+    string RowSlug(TableRow r)  => r.GetString("state_slug");
+    string RowAbbr(TableRow r)  => r.GetString("postal_code");
+    string RowVal(TableRow r)   => r.Has(metricKey) ? r.Data[metricKey]?.ToString() ?? "" : "";
+    int    RowRank(TableRow r)  => r.Has("rank") ? r.Get<int>("rank") : 0;
+}
+
+<div class="content-divider">
+
+    @* ── Section heading ── *@
+    <div class="mb-6">
+        @if (!string.IsNullOrWhiteSpace(extremesTitle))
+        {
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">@extremesTitle</h2>
+        }
+        else if (showTop && showBottom)
+        {
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">Highest and Lowest @metricLabel by State</h2>
+        }
+        else if (showTop)
+        {
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">Top 10 States by @metricLabel</h2>
+        }
+        else
+        {
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">Bottom 10 States by @metricLabel</h2>
+        }
+    </div>
+
+    @* ── Highlight cards ── *@
+    <div class="grid @(showTop && showBottom ? "sm:grid-cols-2" : "sm:grid-cols-1 max-w-xs") gap-4 mb-7">
+
+        @if (showTop && topCard.Row != null)
+        {
+            var slug = RowSlug(topCard.Row);
+            var abbr = RowAbbr(topCard.Row);
+            var rank = RowRank(topCard.Row);
+            <div class="rounded-2xl border border-gray-200 bg-white p-5">
+                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400 mb-2">Highest</p>
+                <div class="text-3xl font-extrabold text-slate-900 mb-3 leading-none">@RowVal(topCard.Row)</div>
+                <div class="flex items-center gap-2">
+                    <img src="/images/flags/@slug/flag.webp" alt="@RowState(topCard.Row) flag"
+                         class="w-8 h-[21px] object-cover rounded-sm shadow-sm shrink-0"
+                         onerror="this.style.display='none'" loading="lazy" />
+                    <div>
+                        <span class="text-sm font-semibold text-slate-800">@RowState(topCard.Row)</span>
+                        @if (rank > 0)
+                        {
+                            <span class="ml-1.5 text-[11px] text-slate-400">#@rank</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (showBottom && bottomCard.Row != null)
+        {
+            var slug = RowSlug(bottomCard.Row);
+            var abbr = RowAbbr(bottomCard.Row);
+            var rank = RowRank(bottomCard.Row);
+            <div class="rounded-2xl border border-gray-200 bg-white p-5">
+                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400 mb-2">Lowest</p>
+                <div class="text-3xl font-extrabold text-slate-900 mb-3 leading-none">@RowVal(bottomCard.Row)</div>
+                <div class="flex items-center gap-2">
+                    <img src="/images/flags/@slug/flag.webp" alt="@RowState(bottomCard.Row) flag"
+                         class="w-8 h-[21px] object-cover rounded-sm shadow-sm shrink-0"
+                         onerror="this.style.display='none'" loading="lazy" />
+                    <div>
+                        <span class="text-sm font-semibold text-slate-800">@RowState(bottomCard.Row)</span>
+                        @if (rank > 0)
+                        {
+                            <span class="ml-1.5 text-[11px] text-slate-400">#@rank</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+    @* ── Bar charts ── *@
+    <div class="grid @(showTop && showBottom ? "md:grid-cols-2" : "grid-cols-1") gap-5">
+
+        @* Top chart *@
+        @if (showTop && topRows.Any())
+        {
+            <div class="rounded-2xl border border-gray-200 overflow-hidden">
+                <div class="px-5 py-3 bg-gray-50 border-b border-gray-100">
+                    <h3 class="text-sm font-semibold text-slate-700">
+                        @(showBottom ? "Top 10 Highest" : "Top 10") — @metricLabel
+                    </h3>
+                </div>
+                <div class="divide-y divide-gray-50">
+                    @foreach (var (row, val) in topRows)
+                    {
+                        var barW = F(TopBarPct(val!.Value));
+                        var rank = RowRank(row);
+                        var abbr = RowAbbr(row);
+                        var slug = RowSlug(row);
+                        <div class="flex items-center gap-3 px-4 py-2">
+                            @if (rank > 0)
+                            {
+                                <span class="text-[11px] text-slate-400 w-5 text-right shrink-0 tabular-nums">#@rank</span>
+                            }
+                            <img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
+                                 class="w-7 h-[18px] object-cover rounded-sm shadow-sm shrink-0"
+                                 onerror="this.replaceWith(document.createTextNode('@abbr'))" loading="lazy" />
+                            <span class="text-sm text-slate-800 w-28 shrink-0 truncate">@RowState(row)</span>
+                            <div class="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden min-w-0">
+                                <div class="h-full rounded-sm bg-slate-400" style="width: @barW%"></div>
+                            </div>
+                            <span class="text-xs text-slate-700 w-16 text-right shrink-0 tabular-nums">@RowVal(row)</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @* Bottom chart *@
+        @if (showBottom && bottomRows.Any())
+        {
+            <div class="rounded-2xl border border-gray-200 overflow-hidden">
+                <div class="px-5 py-3 bg-gray-50 border-b border-gray-100">
+                    <h3 class="text-sm font-semibold text-slate-700">
+                        Top 10 Lowest — @metricLabel
+                    </h3>
+                </div>
+                <div class="divide-y divide-gray-50">
+                    @foreach (var (row, val) in Enumerable.Reverse(bottomRows))
+                    {
+                        var barW = F(BotBarPct(val!.Value));
+                        var rank = RowRank(row);
+                        var abbr = RowAbbr(row);
+                        var slug = RowSlug(row);
+                        <div class="flex items-center gap-3 px-4 py-2">
+                            @if (rank > 0)
+                            {
+                                <span class="text-[11px] text-slate-400 w-5 text-right shrink-0 tabular-nums">#@rank</span>
+                            }
+                            <img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
+                                 class="w-7 h-[18px] object-cover rounded-sm shadow-sm shrink-0"
+                                 onerror="this.replaceWith(document.createTextNode('@abbr'))" loading="lazy" />
+                            <span class="text-sm text-slate-800 w-28 shrink-0 truncate">@RowState(row)</span>
+                            <div class="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden min-w-0">
+                                <div class="h-full rounded-sm bg-slate-400" style="width: @barW%"></div>
+                            </div>
+                            <span class="text-xs text-slate-700 w-16 text-right shrink-0 tabular-nums">@RowVal(row)</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+    </div>
+
+</div>

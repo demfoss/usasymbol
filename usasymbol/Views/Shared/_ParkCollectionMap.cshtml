@@ -1,0 +1,106 @@
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@model List<USASymbol.Models.Content.ParkContent>
+
+@{
+    var mapId = $"pcm-{Guid.NewGuid():N}";
+
+    var markers = Model
+        .Where(p => p.Location.Latitude != 0 && p.Location.Longitude != 0)
+        .Select((p, i) => new
+        {
+            lat   = p.Location.Latitude,
+            lng   = p.Location.Longitude,
+            name  = p.Name,
+            slug  = p.Slug,
+            state = p.Location.State,
+            rank  = i + 1,
+        })
+        .ToList();
+
+    var markersJson = JsonSerializer.Serialize(markers, new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    });
+}
+
+@if (markers.Count == 0)
+{
+    return;
+}
+
+<div class="relative overflow-hidden rounded-xl border border-slate-200/80 shadow-sm">
+    <div id="@mapId" class="w-full" style="height: 420px;" aria-label="Map of national parks in this collection"></div>
+    <div id="@($"{mapId}-fallback")" class="hidden px-5 py-4 text-sm text-slate-600">
+        The interactive map is temporarily unavailable.
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/vendor/leaflet/leaflet.css" />
+<script src="~/vendor/leaflet/leaflet.js"></script>
+<script>
+(function () {
+    var el = document.getElementById('@mapId');
+    var fallback = document.getElementById('@($"{mapId}-fallback")');
+    if (!el || typeof window.L === 'undefined') {
+        if (el) el.classList.add('hidden');
+        if (fallback) fallback.classList.remove('hidden');
+        return;
+    }
+
+    var parks = @Html.Raw(markersJson);
+
+    var map = L.map('@mapId', { zoomControl: true, scrollWheelZoom: false });
+
+    var tileErrors = 0;
+    var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+    });
+    tiles.on('tileerror', function () {
+        tileErrors++;
+        if (tileErrors >= 2) {
+            el.classList.add('hidden');
+            if (fallback) fallback.classList.remove('hidden');
+        }
+    });
+    tiles.addTo(map);
+
+    var bounds = [];
+
+    parks.forEach(function (park) {
+        var icon = L.divIcon({
+            html: '<div style="'
+                + 'background:#166534;color:#fff;border-radius:50%;'
+                + 'width:28px;height:28px;display:flex;align-items:center;justify-content:center;'
+                + 'font-size:11px;font-weight:700;border:2px solid #fff;'
+                + 'box-shadow:0 1px 4px rgba(0,0,0,.4);font-family:sans-serif;">'
+                + park.rank
+                + '</div>',
+            className: '',
+            iconSize: [28, 28],
+            iconAnchor: [14, 14],
+        });
+
+        var popup = '<div style="min-width:160px">'
+            + '<strong style="font-size:13px">' + park.name + '</strong>'
+            + '<div style="font-size:11px;color:#64748b;margin-top:2px">' + park.state + '</div>'
+            + '<a href="/national-parks/' + park.slug + '" '
+            + 'style="display:inline-block;margin-top:6px;font-size:12px;color:#166534;font-weight:600">'
+            + 'View Park &rarr;</a></div>';
+
+        L.marker([park.lat, park.lng], { icon: icon })
+            .addTo(map)
+            .bindTooltip(park.name, { direction: 'top', offset: [0, -18], className: 'park-map-tooltip' })
+            .bindPopup(popup, { maxWidth: 220 });
+
+        bounds.push([park.lat, park.lng]);
+    });
+
+    if (bounds.length === 1) {
+        map.setView(bounds[0], 8);
+    } else if (bounds.length > 1) {
+        map.fitBounds(bounds, { padding: [32, 32], maxZoom: 10 });
+    }
+}());
+</script>

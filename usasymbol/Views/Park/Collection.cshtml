@@ -1,0 +1,676 @@
+@model USASymbol.Models.ViewModels.ParkCollectionViewModel
+@using System.Globalization
+@inject USASymbol.Services.Images.IImageUrlService Images
+
+@{
+    var config      = Model.Config;
+    var parks       = Model.Parks;
+    var h1          = Model.PageTitle;
+    var isStatePage = Model.IsStatePage;
+    var cardsLimit  = Model.CardsLimit;
+    var showRank    = Model.ShowRankBadge;
+    var cardParks   = parks.Take(cardsLimit).ToList();
+
+    // Hero from first park
+    var heroPark  = parks.FirstOrDefault();
+    var heroImage = heroPark?.Media.HeroImage ?? "";
+    var heroAlt   = heroPark?.Media.HeroAlt ?? h1;
+
+    ViewData["OgType"]    = "article";
+    ViewData["BodyClass"] = "symbols-surface";
+    if (!string.IsNullOrWhiteSpace(heroImage))
+        ViewData["OgImage"] = heroImage;
+
+    // Helpers
+    string Fact(ParkContent p, string label) =>
+        p.QuickFacts.FirstOrDefault(f =>
+            string.Equals(f.Label, label, StringComparison.OrdinalIgnoreCase))?.Value ?? "";
+
+    string ParkArea(ParkContent p) =>
+        p.Stats.AreaAcres > 0 ? $"{p.Stats.AreaAcres:N0} acres" :
+        Fact(p, "Area") is { Length: > 0 } qa ? qa : "—";
+
+    string ParkEstablished(ParkContent p) =>
+        p.EstablishedYear.HasValue ? p.EstablishedYear.Value.ToString() :
+        Fact(p, "Established") is { Length: > 0 } qe ? qe : "—";
+
+    string ParkVisitors(ParkContent p) =>
+        Fact(p, "Annual visitors") is { Length: > 0 } qv ? qv : "—";
+
+    string ParkFee(ParkContent p) =>
+        !string.IsNullOrWhiteSpace(p.Stats.EntranceFeeDisplay) ? p.Stats.EntranceFeeDisplay :
+        p.Filters.HasEntranceFee ? "Paid" : "Free";
+
+    // Stats strip
+    var freeCount   = parks.Count(p => !p.Filters.HasEntranceFee);
+    var statesCount = parks.Select(p => p.Location.State).Distinct().Count();
+
+    // ── Primary metric column (always visible, matches what users searched for) ──
+    // most-visited → Visitors; largest → Area; oldest → Est.; free/dogs/dark-sky/state → Fee
+    string PrimaryHeader = config.SortBy switch
+    {
+        "visitation_rank"  => "Visitors (2023)",
+        "area_acres"       => "Area",
+        "established_year" => "Established",
+        _ => config.FilterField switch
+        {
+            "pets_allowed" => "Dogs on trails",
+            "dark_sky"     => "Dark Sky",
+            _              => "Entry fee",
+        },
+    };
+
+    string PrimaryValue(ParkContent p) => config.SortBy switch
+    {
+        "visitation_rank"  => ParkVisitors(p),
+        "area_acres"       => ParkArea(p),
+        "established_year" => ParkEstablished(p),
+        _ => config.FilterField switch
+        {
+            "pets_allowed" => p.Filters.PetsAllowed switch
+            {
+                "full"    => "All trails",
+                "partial" => "Selected trails",
+                _         => "No dogs",
+            },
+            "dark_sky" => p.Filters.DarkSky ? "Certified ★" : "—",
+            _          => ParkFee(p),
+        },
+    };
+
+    string PrimaryClass(ParkContent p)
+    {
+        if (config.FilterField == "free" || (config.SortBy == "name" && string.IsNullOrEmpty(config.FilterField)))
+            return !p.Filters.HasEntranceFee ? "text-emerald-700 font-semibold" : "text-slate-700";
+        if (config.FilterField == "pets_allowed")
+            return p.Filters.PetsAllowed == "full" ? "text-blue-700 font-semibold" : "text-slate-700";
+        if (config.FilterField == "dark_sky")
+            return p.Filters.DarkSky ? "text-indigo-700 font-semibold" : "text-slate-400";
+        return "text-slate-700";
+    }
+
+    // Secondary columns — don't show if it's already the primary
+    bool showEstCol      = config.SortBy != "established_year";
+    bool showAreaCol     = config.SortBy != "area_acres";
+    bool showVisitorsCol = config.SortBy != "visitation_rank";
+}
+
+@* ── Hero — mirrors Detail.cshtml exactly ──────────────────────────────── *@
+<header class="relative overflow-hidden" style="height: clamp(340px, 60vh, 660px)">
+
+    @if (!string.IsNullOrWhiteSpace(heroImage))
+    {
+        <img src="@Images.Hero(heroImage)"
+             srcset="@(Images.Hero(heroImage, 800)) 800w,
+                     @(Images.Hero(heroImage, 1200)) 1200w,
+                     @(Images.Hero(heroImage, 1800)) 1800w"
+             sizes="100vw"
+             alt="@heroAlt"
+             class="absolute inset-0 h-full w-full object-cover"
+             loading="eager" decoding="async" fetchpriority="high" />
+    }
+    else
+    {
+        <div class="absolute inset-0 bg-gradient-to-br from-green-900 to-emerald-800"></div>
+    }
+
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/40"></div>
+
+    @* Breadcrumb inside hero *@
+    <nav class="absolute inset-x-0 top-0 z-10 px-4 py-3 sm:px-6 xl:px-8" aria-label="Breadcrumb">
+        <div class="max-w-[1440px] mx-auto">
+            <ol class="flex flex-wrap items-center gap-1 text-[12px] text-white/70"
+                itemscope itemtype="https://schema.org/BreadcrumbList">
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="/" itemprop="item" class="hover:text-white transition">
+                        <span itemprop="name">Home</span></a>
+                    <meta itemprop="position" content="1" />
+                </li>
+                <li><span class="mx-1 text-white/40">/</span></li>
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="/national-parks" itemprop="item" class="hover:text-white transition">
+                        <span itemprop="name">National Parks</span></a>
+                    <meta itemprop="position" content="2" />
+                </li>
+                <li><span class="mx-1 text-white/40">/</span></li>
+                <li class="text-white/90 font-medium truncate max-w-[60vw]">@h1</li>
+            </ol>
+        </div>
+    </nav>
+
+    @* Title block at bottom *@
+    <div class="absolute bottom-0 inset-x-0 px-4 pb-7 sm:px-6 xl:px-8">
+        <div class="max-w-[1440px] mx-auto">
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/70">
+                <span class="inline-flex items-center gap-2 text-emerald-300">
+                    <span class="block h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                    National Parks
+                </span>
+                @if (parks.Count > 0)
+                {
+                    <span>@parks.Count park@(parks.Count == 1 ? "" : "s")</span>
+                }
+                @if (isStatePage && Model.StateDisplayName != null)
+                {
+                    <span>@Model.StateDisplayName</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(config.Updated))
+                {
+                    <span class="font-normal normal-case tracking-normal text-white/40">Updated @config.Updated</span>
+                }
+            </div>
+
+            <h1 class="text-3xl font-bold tracking-tight text-white leading-tight sm:text-5xl lg:text-[3.5rem]">
+                @h1
+            </h1>
+
+            @* Collection type chips *@
+            @if (!string.IsNullOrWhiteSpace(config.FilterField) || (!isStatePage && config.SortBy != "name"))
+            {
+                <div class="mt-4 hidden sm:flex flex-wrap gap-2">
+                    @if (config.FilterField == "free")
+                    {
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+                            Free Entry
+                        </span>
+                    }
+                    @if (config.FilterField == "pets_allowed")
+                    {
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+                            Dogs Welcome
+                        </span>
+                    }
+                    @if (config.FilterField == "dark_sky")
+                    {
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+                            Dark Sky Certified
+                        </span>
+                    }
+                    @if (config.SortBy == "visitation_rank")
+                    {
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+                            Ranked by Visitors
+                        </span>
+                    }
+                    @if (config.SortBy == "area_acres")
+                    {
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+                            Ranked by Area
+                        </span>
+                    }
+                    @if (config.SortBy == "established_year")
+                    {
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+                            Ranked by Year
+                        </span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(heroPark?.Media.HeroCredit))
+    {
+        <div class="absolute bottom-2 right-3 text-[10px] text-white/50">Photo: @heroPark.Media.HeroCredit</div>
+    }
+</header>
+
+@* ── Stats strip ─────────────────────────────────────────────────────────── *@
+@if (parks.Count > 0)
+{
+    <div class="bg-white border-b border-slate-100 shadow-sm">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-8">
+            <dl class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-slate-100">
+                <div class="px-3 py-5 text-center sm:px-4">
+                    <dd class="text-xl font-bold text-slate-900 leading-tight sm:text-2xl">@parks.Count</dd>
+                    <dt class="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">Parks</dt>
+                </div>
+                @if (!isStatePage && statesCount > 1)
+                {
+                    <div class="px-3 py-5 text-center sm:px-4">
+                        <dd class="text-xl font-bold text-slate-900 leading-tight sm:text-2xl">@statesCount</dd>
+                        <dt class="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">States</dt>
+                    </div>
+                }
+                @if (freeCount > 0)
+                {
+                    <div class="px-3 py-5 text-center sm:px-4">
+                        <dd class="text-xl font-bold text-emerald-700 leading-tight sm:text-2xl">@freeCount</dd>
+                        <dt class="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">Free Entry</dt>
+                    </div>
+                }
+                @{
+                    var mostVisited = parks.Where(p => p.Stats.VisitationRank == 1).FirstOrDefault()
+                                  ?? parks.Where(p => p.Stats.VisitationRank > 0).OrderBy(p => p.Stats.VisitationRank).FirstOrDefault();
+                    var shortMV = mostVisited?.Name
+                        .Replace(" National Park & Preserve", "")
+                        .Replace(" National Park and Preserve", "")
+                        .Replace(" National Park", "")
+                        .Replace(" National Preserve", "");
+                }
+                @if (mostVisited != null && !string.IsNullOrWhiteSpace(shortMV))
+                {
+                    <div class="px-3 py-5 text-center sm:px-4 col-span-2 sm:col-span-1">
+                        <dd class="text-sm font-bold text-slate-900 leading-tight truncate">@shortMV</dd>
+                        <dt class="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                            @(isStatePage ? "Most Visited" : "#1 Most Visited")
+                        </dt>
+                    </div>
+                }
+            </dl>
+        </div>
+    </div>
+}
+
+@* ── Body grid ───────────────────────────────────────────────────────────── *@
+<div class="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-8 pb-20 pt-8">
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-12">
+
+        @* ── Main column ─────────────────────────────────────────────── *@
+        <div class="min-w-0">
+
+            @* Quick answer *@
+            @if (!string.IsNullOrWhiteSpace(config.QuickAnswer))
+            {
+                <section class="mb-6">
+                    <div class="border border-slate-200/80 bg-white/55 px-5 py-5 sm:px-6">
+                        <p class="text-[15px] leading-7 text-slate-700">
+                            <span class="font-semibold text-emerald-700">Quick answer: </span>@config.QuickAnswer
+                        </p>
+                    </div>
+                </section>
+            }
+
+            @* Intro *@
+            @if (!string.IsNullOrWhiteSpace(config.Intro))
+            {
+                <p class="mb-8 text-[17px] leading-[30px] text-slate-600">@config.Intro</p>
+            }
+
+            @* Map *@
+            @if (parks.Count > 0)
+            {
+                <section class="mb-10 scroll-mt-32" id="map">
+                    <h2 class="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Map</h2>
+                    @await Html.PartialAsync("_ParkCollectionMap", parks)
+                </section>
+            }
+
+            @* ── Table ────────────────────────────────────────────────── *@
+            @if (parks.Count > 0)
+            {
+                <section class="mb-10 scroll-mt-32" id="all-parks">
+                    <h2 class="content-h2 mb-4">@h1</h2>
+                    <div class="border border-slate-200/80 overflow-hidden">
+                        <table class="w-full text-sm" aria-label="@h1">
+                            <thead>
+                                <tr class="bg-slate-50/80 border-b border-slate-200 text-left">
+                                    <th class="px-3 py-3 font-semibold text-slate-500 text-[11px] uppercase tracking-[0.1em] w-8">#</th>
+                                    <th class="px-3 py-3 font-semibold text-slate-500 text-[11px] uppercase tracking-[0.1em]">Park</th>
+                                    @if (!isStatePage)
+                                    {
+                                        <th class="px-3 py-3 font-semibold text-slate-500 text-[11px] uppercase tracking-[0.1em] hidden sm:table-cell">State</th>
+                                    }
+                                    @* Secondary cols — only when they're not the primary metric *@
+                                    @if (showEstCol)
+                                    {
+                                        <th class="px-3 py-3 font-semibold text-slate-500 text-[11px] uppercase tracking-[0.1em] hidden md:table-cell">Est.</th>
+                                    }
+                                    @if (showAreaCol && showVisitorsCol)
+                                    {
+                                        <th class="px-3 py-3 font-semibold text-slate-500 text-[11px] uppercase tracking-[0.1em] hidden lg:table-cell">Area</th>
+                                    }
+                                    @* Primary metric — always visible, right-aligned *@
+                                    <th class="px-3 py-3 font-semibold text-slate-500 text-[11px] uppercase tracking-[0.1em] text-right">@PrimaryHeader</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @for (int i = 0; i < parks.Count; i++)
+                                {
+                                    var park = parks[i];
+                                    var flagSrc = !string.IsNullOrWhiteSpace(park.Location.StateCode)
+                                        ? $"/images/states/flags/small/{park.Location.StateCode.ToLower()}.webp"
+                                        : "";
+                                    <tr class="hover:bg-slate-50/60 transition-colors">
+                                        <td class="px-3 py-3 text-slate-400 font-mono text-[12px] tabular-nums">@(i + 1)</td>
+
+                                        @* Park cell: photo + name *@
+                                        <td class="px-3 py-2.5">
+                                            <div class="flex items-center gap-2.5">
+                                                @if (!string.IsNullOrWhiteSpace(park.Media.HeroImage))
+                                                {
+                                                    <img src="@Images.Crop(park.Media.HeroImage, 112, 80)"
+                                                         alt="@park.Media.HeroAlt"
+                                                         class="w-14 h-10 object-cover shrink-0 hidden sm:block"
+                                                         loading="lazy" decoding="async" width="56" height="40" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="w-14 h-10 shrink-0 hidden sm:flex items-center justify-center bg-green-50">
+                                                        <i class="fa-solid fa-mountain-sun text-green-300 text-xs"></i>
+                                                    </div>
+                                                }
+                                                <div>
+                                                    <a href="/national-parks/@park.Slug"
+                                                       class="font-semibold text-slate-900 hover:text-emerald-700 transition leading-snug text-[13px]">
+                                                        @park.Name
+                                                    </a>
+                                                    @* State shown inline on mobile (no State col) *@
+                                                    <div class="text-[11px] text-slate-400 sm:hidden mt-0.5">@park.Location.State</div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        @* State with flag (ranking pages only) *@
+                                        @if (!isStatePage)
+                                        {
+                                            <td class="px-3 py-3 text-[13px] text-slate-600 hidden sm:table-cell">
+                                                <div class="flex items-center gap-1.5">
+                                                    @if (!string.IsNullOrWhiteSpace(flagSrc))
+                                                    {
+                                                        <img src="@flagSrc" alt="@park.Location.State flag"
+                                                             class="w-5 h-[14px] object-cover shrink-0 opacity-90"
+                                                             loading="lazy" width="20" height="14" />
+                                                    }
+                                                    <span>@park.Location.State</span>
+                                                </div>
+                                            </td>
+                                        }
+
+                                        @* Est. secondary (only when not primary) *@
+                                        @if (showEstCol)
+                                        {
+                                            <td class="px-3 py-3 text-slate-500 text-[12px] hidden md:table-cell tabular-nums">@ParkEstablished(park)</td>
+                                        }
+
+                                        @* Area secondary (only when not primary, and when we're not already showing visitors as secondary) *@
+                                        @if (showAreaCol && showVisitorsCol)
+                                        {
+                                            <td class="px-3 py-3 text-slate-500 text-[12px] hidden lg:table-cell tabular-nums">@ParkArea(park)</td>
+                                        }
+
+                                        @* Primary metric — always visible *@
+                                        <td class="px-3 py-3 text-right text-[12px] font-medium whitespace-nowrap @PrimaryClass(park)">
+                                            @PrimaryValue(park)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            }
+
+            @* ── Park profiles / cards ────────────────────────────────── *@
+            @if (parks.Count > 0)
+            {
+                <section class="scroll-mt-32" id="profiles">
+                    <h2 class="content-h2 mb-6">
+                        @if (!isStatePage && cardsLimit < parks.Count)
+                        {
+                            @:Top @cardsLimit — @h1
+                        }
+                        else if (isStatePage && Model.StateDisplayName != null)
+                        {
+                            @:All @parks.Count National Parks in @Model.StateDisplayName
+                        }
+                        else
+                        {
+                            @:Park Profiles
+                        }
+                    </h2>
+
+                    <div class="space-y-8">
+                        @for (int i = 0; i < cardParks.Count; i++)
+                        {
+                            var park = cardParks[i];
+                            var established = ParkEstablished(park);
+                            var area        = ParkArea(park);
+                            var visitors    = ParkVisitors(park);
+                            var fee         = ParkFee(park);
+                            var overview    = park.IntroText ?? park.SectionOverview ?? "";
+
+                            <article class="border border-slate-200/80 bg-white/55 overflow-hidden" id="park-@park.Slug">
+
+                                @* Heading above photo *@
+                                <div class="px-5 pt-5 pb-3 flex items-baseline gap-3 sm:px-6">
+                                    @if (showRank)
+                                    {
+                                        <span class="text-2xl font-black text-emerald-700 tabular-nums shrink-0 leading-none">@(i + 1).</span>
+                                    }
+                                    <h3 class="text-[18px] font-bold text-slate-900 leading-snug">
+                                        <a href="/national-parks/@park.Slug" class="hover:text-emerald-700 transition">@park.Name</a>
+                                    </h3>
+                                </div>
+
+                                @* Location tag (non-state pages only) *@
+                                @if (!isStatePage)
+                                {
+                                    <div class="px-5 pb-3 sm:px-6 text-[12px] font-semibold uppercase tracking-[0.15em] text-emerald-700 flex items-center gap-2">
+                                        <span class="block h-1 w-1 rounded-full bg-emerald-400"></span>
+                                        @park.Location.State
+                                        @if (!string.IsNullOrWhiteSpace(park.Location.Region)
+                                             && !park.Location.Region.Equals(park.Location.State, StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="text-slate-400 font-normal normal-case tracking-normal">· @park.Location.Region</span>
+                                        }
+                                    </div>
+                                }
+
+                                @* Full-width photo *@
+                                <a href="/national-parks/@park.Slug" tabindex="-1" aria-hidden="true"
+                                   class="block relative overflow-hidden" style="height:260px">
+                                    @if (!string.IsNullOrWhiteSpace(park.Media.HeroImage))
+                                    {
+                                        <img src="@Images.Crop(park.Media.HeroImage, 900, 540)"
+                                             srcset="@(Images.Crop(park.Media.HeroImage, 600, 360)) 600w,
+                                                     @(Images.Crop(park.Media.HeroImage, 900, 540)) 900w,
+                                                     @(Images.Crop(park.Media.HeroImage, 1200, 720)) 1200w"
+                                             sizes="(min-width: 1024px) 780px, 100vw"
+                                             alt="@park.Media.HeroAlt"
+                                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                                             loading="lazy" decoding="async" />
+                                    }
+                                    else
+                                    {
+                                        <div class="w-full h-full bg-gradient-to-br from-green-800 to-emerald-700 flex items-center justify-center">
+                                            <i class="fa-solid fa-mountain-sun text-5xl text-white/30"></i>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(park.Media.HeroCredit))
+                                    {
+                                        <div class="absolute bottom-2 right-3 text-[10px] text-white/50">Photo: @park.Media.HeroCredit</div>
+                                    }
+                                </a>
+
+                                @* Key facts + overview *@
+                                <div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-0 sm:gap-6 px-5 py-5 sm:px-6">
+
+                                    @* Facts box *@
+                                    <div class="mb-5 sm:mb-0 border border-slate-200/80 bg-slate-50/60 px-4 py-4 self-start">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3">Key Facts</p>
+                                        <dl class="space-y-2">
+                                            @if (established != "—")
+                                            {
+                                                <div class="flex justify-between items-baseline gap-2">
+                                                    <dt class="text-[12px] text-slate-500 shrink-0">Established</dt>
+                                                    <dd class="text-[13px] font-semibold text-slate-800 text-right">@established</dd>
+                                                </div>
+                                            }
+                                            @if (area != "—")
+                                            {
+                                                <div class="flex justify-between items-baseline gap-2">
+                                                    <dt class="text-[12px] text-slate-500 shrink-0">Area</dt>
+                                                    <dd class="text-[13px] font-semibold text-slate-800 text-right">@area</dd>
+                                                </div>
+                                            }
+                                            @if (visitors != "—")
+                                            {
+                                                <div class="flex justify-between items-baseline gap-2">
+                                                    <dt class="text-[12px] text-slate-500 shrink-0">Visitors / yr</dt>
+                                                    <dd class="text-[13px] font-semibold text-slate-800 text-right">@visitors</dd>
+                                                </div>
+                                            }
+                                            <div class="flex justify-between items-baseline gap-2 border-t border-slate-200 pt-2 mt-1">
+                                                <dt class="text-[12px] text-slate-500 shrink-0">Entry fee</dt>
+                                                <dd class="text-[13px] font-semibold text-right @(park.Filters.HasEntranceFee ? "text-slate-800" : "text-emerald-700")">@fee</dd>
+                                            </div>
+                                            @if (config.FilterField == "pets_allowed")
+                                            {
+                                                <div class="flex justify-between items-baseline gap-2">
+                                                    <dt class="text-[12px] text-slate-500 shrink-0">Dogs on trails</dt>
+                                                    <dd class="text-[13px] font-semibold text-blue-700 text-right">@(park.Filters.PetsAllowed == "full" ? "All trails" : "Selected")</dd>
+                                                </div>
+                                            }
+                                            @if (config.FilterField == "dark_sky" && park.Filters.DarkSky)
+                                            {
+                                                <div class="flex justify-between items-baseline gap-2">
+                                                    <dt class="text-[12px] text-slate-500 shrink-0">Night sky</dt>
+                                                    <dd class="text-[13px] font-semibold text-indigo-700 text-right">Dark Sky ★</dd>
+                                                </div>
+                                            }
+                                        </dl>
+                                    </div>
+
+                                    @* Overview + CTA *@
+                                    <div class="flex flex-col">
+                                        @if (!string.IsNullOrWhiteSpace(overview))
+                                        {
+                                            <p class="text-[15px] leading-[26px] text-slate-700 flex-1">@overview</p>
+                                        }
+                                        <a href="/national-parks/@park.Slug"
+                                           class="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold text-emerald-700 hover:text-emerald-900 transition">
+                                            Read more about @park.Name
+                                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </article>
+                        }
+                    </div>
+
+                    @if (!isStatePage && cardsLimit < parks.Count)
+                    {
+                        <p class="mt-6 text-[13px] text-slate-500 text-center">
+                            Showing @cardsLimit of @parks.Count parks. ·
+                            <a href="#all-parks" class="text-emerald-700 font-semibold hover:underline">See full list above ↑</a>
+                        </p>
+                    }
+                </section>
+            }
+
+            @if (parks.Count == 0)
+            {
+                <p class="py-16 text-center text-slate-500 text-lg">No parks found for this collection.</p>
+            }
+
+        </div>
+
+        @* ── Sidebar ─────────────────────────────────────────────────── *@
+        <aside class="space-y-6 lg:sticky lg:top-24 lg:self-start">
+
+            @* Collection quick stats *@
+            @if (parks.Count > 0)
+            {
+                <div>
+                    <h2 class="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Collection Stats</h2>
+                    <div class="border border-slate-200/80 bg-white/55 divide-y divide-slate-100">
+                        <div class="flex justify-between px-5 py-3">
+                            <span class="text-[13px] text-slate-500">Total parks</span>
+                            <span class="text-[13px] font-semibold text-slate-800">@parks.Count</span>
+                        </div>
+                        @if (!isStatePage && statesCount > 1)
+                        {
+                            <div class="flex justify-between px-5 py-3">
+                                <span class="text-[13px] text-slate-500">States covered</span>
+                                <span class="text-[13px] font-semibold text-slate-800">@statesCount</span>
+                            </div>
+                        }
+                        @if (freeCount > 0)
+                        {
+                            <div class="flex justify-between px-5 py-3">
+                                <span class="text-[13px] text-slate-500">Free admission</span>
+                                <span class="text-[13px] font-semibold text-emerald-700">@freeCount park@(freeCount > 1 ? "s" : "")</span>
+                            </div>
+                        }
+                        @{
+                            var dogFriendly = parks.Count(p => p.Filters.PetsAllowed is "full" or "partial");
+                            var darkSky = parks.Count(p => p.Filters.DarkSky);
+                        }
+                        @if (dogFriendly > 0 && config.FilterField != "pets_allowed")
+                        {
+                            <div class="flex justify-between px-5 py-3">
+                                <span class="text-[13px] text-slate-500">Dog-friendly</span>
+                                <span class="text-[13px] font-semibold text-slate-800">@dogFriendly park@(dogFriendly > 1 ? "s" : "")</span>
+                            </div>
+                        }
+                        @if (darkSky > 0 && config.FilterField != "dark_sky")
+                        {
+                            <div class="flex justify-between px-5 py-3">
+                                <span class="text-[13px] text-slate-500">Dark Sky parks</span>
+                                <span class="text-[13px] font-semibold text-slate-800">@darkSky park@(darkSky > 1 ? "s" : "")</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @* Explore more *@
+            <div>
+                <h2 class="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">More Park Lists</h2>
+                <div class="border border-slate-200/80 bg-white/55 divide-y divide-slate-100">
+                    @{
+                        var related = new (string Label, string Href, string Icon)[]
+                        {
+                            ("Most Visited",  "/national-parks/most-visited",  "fa-users"),
+                            ("Least Visited", "/national-parks/least-visited", "fa-map-location-dot"),
+                            ("Largest Parks", "/national-parks/largest",       "fa-expand"),
+                            ("Oldest Parks",  "/national-parks/oldest",        "fa-hourglass"),
+                            ("Free Entry",    "/national-parks/free",          "fa-ticket"),
+                            ("Dog-Friendly",  "/national-parks/dog-friendly",  "fa-dog"),
+                            ("Stargazing",    "/national-parks/stargazing",    "fa-star"),
+                        };
+                    }
+                    @foreach (var (label, href, icon) in related)
+                    {
+                        if (href == $"/national-parks/{config.Slug}") continue;
+                        <a href="@href"
+                           class="flex items-center gap-3 px-5 py-3 text-[13px] text-slate-700 hover:text-emerald-700 hover:bg-slate-50/60 transition">
+                            <i class="fa-solid @icon text-emerald-600 w-4 text-center text-xs"></i>
+                            @label
+                        </a>
+                    }
+                </div>
+            </div>
+
+            @* Back to index *@
+            <div class="border border-slate-200/80 bg-white/55 px-5 py-4">
+                <a href="/national-parks"
+                   class="inline-flex items-center gap-2 text-[13px] font-medium text-slate-600 hover:text-slate-900 transition">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                    All National Parks
+                </a>
+            </div>
+
+        </aside>
+    </div>
+</div>
+
+@* ── JSON-LD ──────────────────────────────────────────────────────────────── *@
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "ItemList",
+    "name": "@h1",
+    "description": "@(config.SeoDescription?.Replace("\"", "\\\"") ?? "")",
+    "numberOfItems": @parks.Count,
+    "itemListElement": [
+        @for (int i = 0; i < parks.Count; i++)
+        {
+            var p = parks[i];
+            @:{ "@@type": "ListItem", "position": @(i + 1), "name": "@p.Name.Replace("\"", "\\\"")", "url": "https://usasymbol.com/national-parks/@p.Slug" }@(i < parks.Count - 1 ? "," : "")
+        }
+    ]
+}
+</script>

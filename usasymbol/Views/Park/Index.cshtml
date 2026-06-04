@@ -1,0 +1,1512 @@
+@model List<USASymbol.Models.Content.ParkContent>
+@using System.Globalization
+@using System.Text.Json
+@using System.Text.RegularExpressions
+@inject USASymbol.Services.Images.IImageUrlService Images
+@{
+    ViewData["Title"] = "All 63 US National Parks Ranked Best to Worst";
+
+    var activityLabels = new Dictionary<string, string>
+    {
+        ["hiking"] = "Hiking",
+        ["camping"] = "Camping",
+        ["rock_climbing"] = "Climbing",
+        ["scenic_driving"] = "Scenic Drives",
+        ["wildlife_watching"] = "Wildlife",
+        ["stargazing"] = "Stargazing",
+        ["photography"] = "Photography",
+        ["swimming"] = "Swimming",
+        ["kayaking"] = "Kayaking",
+        ["canoeing"] = "Canoeing",
+        ["snorkeling"] = "Snorkeling",
+        ["diving"] = "Diving",
+        ["biking"] = "Biking",
+        ["mountain_biking"] = "Mountain Biking",
+        ["fishing"] = "Fishing",
+        ["skiing"] = "Skiing",
+        ["cross_country_skiing"] = "Cross-Country Skiing",
+        ["snowshoeing"] = "Snowshoeing",
+        ["horseback_riding"] = "Horseback Riding",
+        ["mule_riding"] = "Mule Riding",
+        ["surfing"] = "Surfing",
+        ["rafting"] = "Rafting",
+        ["paddleboarding"] = "Paddleboarding",
+        ["backpacking"] = "Backpacking",
+        ["boating"] = "Boating",
+        ["sailing"] = "Sailing",
+        ["birdwatching"] = "Birdwatching",
+        ["tidepooling"] = "Tidepooling",
+        ["spelunking"] = "Caving",
+    };
+
+    var landscapeLabels = new Dictionary<string, string>
+    {
+        ["mountains"] = "Mountains",
+        ["desert"] = "Desert",
+        ["coastline"] = "Coastline",
+        ["forest"] = "Forest",
+        ["waterfalls"] = "Waterfalls",
+        ["glacier"] = "Glaciers",
+        ["valley"] = "Valley",
+        ["canyon"] = "Canyon",
+        ["lake"] = "Lakes",
+        ["river"] = "Rivers",
+        ["wetlands"] = "Wetlands",
+        ["tundra"] = "Tundra",
+        ["volcano"] = "Volcano",
+        ["cave"] = "Caves",
+        ["island"] = "Islands",
+    };
+
+    var seasonLabels = new Dictionary<string, string>
+    {
+        ["spring"] = "Spring",
+        ["summer"] = "Summer",
+        ["fall"] = "Fall",
+        ["winter"] = "Winter",
+    };
+
+    var featuredPark = Model
+        .Where(p => p.Stats.VisitationRank > 0 && !string.IsNullOrWhiteSpace(p.Media.HeroImage))
+        .OrderBy(p => p.Stats.VisitationRank)
+        .FirstOrDefault();
+
+    var allStates = Model.Select(p => p.Location.State).Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().OrderBy(s => s).ToList();
+    var allRegions = Model.Select(p => p.Location.Region).Where(r => !string.IsNullOrWhiteSpace(r)).Distinct().OrderBy(r => r).ToList();
+    var allSeasons = Model
+        .SelectMany(p => p.Filters.Seasons)
+        .Where(s => !string.IsNullOrWhiteSpace(s))
+        .Distinct()
+        .OrderBy(s => GetSeasonSortValue(new List<string> { s }))
+        .ToList();
+    var allActivities = Model.SelectMany(p => p.Filters.Activities).Distinct().OrderBy(a => activityLabels.GetValueOrDefault(a, a)).ToList();
+    var allLandscapes = Model.SelectMany(p => p.Filters.Landscapes).Distinct().OrderBy(l => landscapeLabels.GetValueOrDefault(l, l)).ToList();
+
+    var mapData = Model
+        .Where(p => p.Location.Latitude != 0 && p.Location.Longitude != 0)
+        .Select(p => new {
+            slug = p.Slug,
+            name = p.Name,
+            state = p.Location.State,
+            lat = p.Location.Latitude,
+            lng = p.Location.Longitude,
+        })
+        .ToList();
+    var mapDataJson = JsonSerializer.Serialize(mapData);
+    var maxEntranceFee = (int)Math.Ceiling(
+        Model
+            .Where(p => p.Filters.HasEntranceFee)
+            .Select(p => ExtractFeeAmount(p.Stats.EntranceFeeDisplay))
+            .DefaultIfEmpty(0m)
+            .Max()
+    );
+
+    decimal ExtractFeeAmount(string? feeDisplay)
+    {
+        if (string.IsNullOrWhiteSpace(feeDisplay))
+        {
+            return 0m;
+        }
+
+        var match = Regex.Match(feeDisplay, @"\d+(?:\.\d+)?");
+        return match.Success && decimal.TryParse(match.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount)
+            ? amount
+            : 0m;
+    }
+
+    int GetSeasonSortValue(List<string>? seasons)
+    {
+        if (seasons == null || seasons.Count == 0)
+        {
+            return 999;
+        }
+
+        var order = new Dictionary<string, int>
+        {
+            ["spring"] = 1,
+            ["summer"] = 2,
+            ["fall"] = 3,
+            ["winter"] = 4,
+        };
+
+        var values = seasons
+            .Select(s => s?.Trim().ToLowerInvariant() ?? string.Empty)
+            .Where(order.ContainsKey)
+            .Select(s => order[s])
+            .ToList();
+
+        return values.Count > 0 ? values.Min() : 999;
+    }
+}
+
+<link rel="stylesheet" href="~/vendor/leaflet/leaflet.css" />
+<link rel="stylesheet" href="~/vendor/markercluster/MarkerCluster.css" />
+<link rel="stylesheet" href="~/vendor/markercluster/MarkerCluster.Default.css" />
+
+
+<section class="relative overflow-hidden text-white" style="height: clamp(260px, 42vh, 500px)">
+    @if (featuredPark != null && !string.IsNullOrWhiteSpace(featuredPark.Media.HeroImage))
+    {
+        <img src="@Images.Hero(featuredPark.Media.HeroImage)"
+             alt="@featuredPark.Media.HeroAlt"
+             class="absolute inset-0 h-full w-full object-cover"
+             loading="eager" decoding="async" fetchpriority="high" />
+    }
+    else
+    {
+        <div class="absolute inset-0 bg-gradient-to-br from-green-900 to-green-800"></div>
+    }
+    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/20"></div>
+
+    <div class="relative h-full flex flex-col justify-end px-4 pb-8 sm:px-6 xl:px-8">
+        <div class="max-w-[1440px] mx-auto w-full">
+            <p class="text-green-300 text-[11px] font-bold uppercase tracking-[0.2em] mb-2">United States</p>
+            <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-3">National Parks</h1>
+            <p class="text-white/80 text-base leading-relaxed max-w-2xl hidden sm:block">
+                63 national parks spanning 31 states and two territories, from the Alaskan wilderness to the Hawaiian volcanoes.
+                Use the map and filters to find your next park.
+            </p>
+        </div>
+    </div>
+    @if (featuredPark != null && !string.IsNullOrWhiteSpace(featuredPark.Media.HeroCredit))
+    {
+        <div class="absolute bottom-2 right-3 text-[10px] text-white/40">Photo: @featuredPark.Media.HeroCredit — @featuredPark.Name</div>
+    }
+</section>
+
+
+@* ─── Collection quick-links ─────────────────────────────────────── *@
+<div class="bg-slate-50/80 border-b border-slate-200">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-8 py-3">
+
+        @* Rankings row *@
+        <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap shrink-0">Rankings</span>
+            @foreach (var (label, icon, href) in new[] {
+                ("Most Visited",  "fa-users",        "/national-parks/most-visited"),
+                ("Least Visited", "fa-eye-slash",    "/national-parks/least-visited"),
+                ("Largest",       "fa-expand",       "/national-parks/largest"),
+                ("Oldest",        "fa-hourglass",    "/national-parks/oldest"),
+                ("Free Entry",    "fa-ticket",       "/national-parks/free"),
+                ("Dog-Friendly",  "fa-paw",          "/national-parks/dog-friendly"),
+                ("Stargazing",    "fa-star",         "/national-parks/stargazing"),
+            })
+            {
+                <a href="@href"
+                   class="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-700 hover:border-green-600 hover:text-green-700 hover:bg-green-50 transition whitespace-nowrap">
+                    <i class="fa-solid @icon text-[10px] text-green-600"></i>
+                    @label
+                </a>
+            }
+        </div>
+
+        @* By state row — top states by park count *@
+        <div class="flex flex-wrap items-center gap-2">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap shrink-0">By state</span>
+            @foreach (var (name, slug) in new[] {
+                ("Alaska",      "alaska"),
+                ("California",  "california"),
+                ("Utah",        "utah"),
+                ("Colorado",    "colorado"),
+                ("Arizona",     "arizona"),
+                ("Wyoming",     "wyoming"),
+                ("Washington",  "washington"),
+                ("Florida",     "florida"),
+                ("Tennessee",   "tennessee"),
+                ("Texas",       "texas"),
+            })
+            {
+                <a href="/national-parks/in/@slug"
+                   class="inline-flex items-center gap-1 px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-700 hover:border-green-600 hover:text-green-700 hover:bg-green-50 transition whitespace-nowrap">
+                    @name
+                </a>
+            }
+        </div>
+
+    </div>
+</div>
+
+<div class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm" id="parks-toolbar">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-8 py-2.5 flex flex-wrap items-center gap-3">
+        <div class="relative flex-1 min-w-[180px] max-w-sm">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+            <input type="search" id="park-search" placeholder="Search parks or states…"
+                   class="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent" />
+        </div>
+
+        <span id="parks-counter" class="text-sm text-slate-500 whitespace-nowrap">
+            @Model.Count of @Model.Count parks
+        </span>
+
+        <button id="map-toggle-btn" type="button"
+                class="ml-auto inline-flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-800 text-white text-sm font-semibold rounded-lg transition active:scale-95">
+            <i class="fa-solid fa-map text-xs"></i>
+            <span id="map-toggle-label">Show Map</span>
+        </button>
+
+        <button id="filter-mobile-btn" type="button"
+                class="lg:hidden inline-flex items-center gap-2 px-4 py-2 border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg transition">
+            <i class="fa-solid fa-sliders text-xs"></i>
+            Filters
+        </button>
+    </div>
+</div>
+
+
+<div id="parks-map-wrap" class="hidden border-b border-slate-200">
+    <div class="relative" style="height:460px;">
+        <div id="parks-index-map" class="absolute inset-0" aria-label="Map of all U.S. national parks"></div>
+        @* Alaska inset *@
+        <div id="ak-inset" style="position:absolute;bottom:8px;left:8px;width:135px;height:95px;z-index:1000;border:2px solid #e2e8f0;border-radius:6px;overflow:hidden;background:#f8fafc;">
+            <div style="position:absolute;top:2px;left:4px;z-index:10;font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em;background:rgba(255,255,255,.85);padding:1px 4px;border-radius:3px;">Alaska</div>
+        </div>
+        @* Hawaii inset *@
+        <div id="hi-inset" style="position:absolute;bottom:8px;left:151px;width:95px;height:75px;z-index:1000;border:2px solid #e2e8f0;border-radius:6px;overflow:hidden;background:#f8fafc;">
+            <div style="position:absolute;top:2px;left:4px;z-index:10;font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em;background:rgba(255,255,255,.85);padding:1px 4px;border-radius:3px;">Hawaii</div>
+        </div>
+    </div>
+    <div id="parks-map-fallback" class="hidden max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-8 py-5 text-sm text-slate-600">
+        The interactive map is temporarily unavailable. You can still browse all parks in the list below.
+    </div>
+</div>
+
+
+<div class="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-8 py-8 flex gap-8 items-start">
+
+    
+    <aside id="filters-sidebar"
+           class="hidden lg:block w-56 xl:w-64 shrink-0 sticky top-[57px] max-h-[calc(100vh-72px)] overflow-y-auto">
+        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+            <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                <span class="text-sm font-semibold text-slate-800">Filters</span>
+                <button id="clear-filters-btn" type="button"
+                        class="hidden text-xs text-green-700 hover:underline font-medium">Clear all</button>
+            </div>
+
+            @* State *@
+            <div class="px-4 py-3 border-b border-slate-100">
+                <label for="filter-state" class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">State</label>
+                <select id="filter-state"
+                        class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 bg-white">
+                    <option value="">All states</option>
+                    @foreach (var state in allStates)
+                    {
+                        <option value="@state">@state</option>
+                    }
+                </select>
+            </div>
+
+            @* Region — compact since only ~8 items *@
+            @if (allRegions.Count > 1)
+            {
+                <div class="border-b border-slate-100" data-filter-group="region">
+                    <button type="button" class="filter-group-toggle w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition"
+                            aria-expanded="true">
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Region</span>
+                        <i class="fa-solid fa-chevron-up text-[10px] text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="filter-group-body px-4 pb-3">
+                        @foreach (var region in allRegions)
+                        {
+                            <label class="flex items-center gap-2.5 py-0.5 cursor-pointer group">
+                                <input type="checkbox" class="filter-region accent-green-700 w-4 h-4" value="@region" />
+                                <span class="text-sm text-slate-700 group-hover:text-slate-900">@region</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (allSeasons.Count > 0)
+            {
+                <div class="border-b border-slate-100" data-filter-group="seasons">
+                    <button type="button" class="filter-group-toggle w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition"
+                            aria-expanded="true">
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Best Season</span>
+                        <i class="fa-solid fa-chevron-up text-[10px] text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="filter-group-body px-4 pb-3">
+                        @foreach (var season in allSeasons)
+                        {
+                            <label class="flex items-center gap-2.5 py-0.5 cursor-pointer group">
+                                <input type="checkbox" class="filter-season accent-green-700 w-4 h-4" value="@season" />
+                                <span class="text-sm text-slate-700 group-hover:text-slate-900">@seasonLabels.GetValueOrDefault(season, season)</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+            }
+
+            @* Activities — show first 6, collapse rest *@
+            @if (allActivities.Count > 0)
+            {
+                const int actVisible = 6;
+                <div class="border-b border-slate-100" data-filter-group="activities">
+                    <button type="button" class="filter-group-toggle w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition"
+                            aria-expanded="true">
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Activities</span>
+                        <i class="fa-solid fa-chevron-up text-[10px] text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="filter-group-body px-4 pb-3">
+                        @for (int i = 0; i < allActivities.Count; i++)
+                        {
+                            var act = allActivities[i];
+                            <label class="flex items-center gap-2.5 py-0.5 cursor-pointer group @(i >= actVisible ? "filter-extra hidden" : "")">
+                                <input type="checkbox" class="filter-activity accent-green-700 w-4 h-4" value="@act" />
+                                <span class="text-sm text-slate-700 group-hover:text-slate-900">@activityLabels.GetValueOrDefault(act, act)</span>
+                            </label>
+                        }
+                        @if (allActivities.Count > actVisible)
+                        {
+                            <button type="button" class="show-more-btn mt-1 text-xs text-green-700 hover:underline font-medium"
+                                    data-group="activities" data-total="@allActivities.Count" data-visible="@actVisible">
+                                + @(allActivities.Count - actVisible) more
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+
+            @* Landscapes — show first 6, collapse rest *@
+            @if (allLandscapes.Count > 0)
+            {
+                const int lsVisible = 6;
+                <div class="border-b border-slate-100" data-filter-group="landscapes">
+                    <button type="button" class="filter-group-toggle w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition"
+                            aria-expanded="true">
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Landscape</span>
+                        <i class="fa-solid fa-chevron-up text-[10px] text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="filter-group-body px-4 pb-3">
+                        @for (int i = 0; i < allLandscapes.Count; i++)
+                        {
+                            var ls = allLandscapes[i];
+                            <label class="flex items-center gap-2.5 py-0.5 cursor-pointer group @(i >= lsVisible ? "filter-extra hidden" : "")">
+                                <input type="checkbox" class="filter-landscape accent-green-700 w-4 h-4" value="@ls" />
+                                <span class="text-sm text-slate-700 group-hover:text-slate-900">@landscapeLabels.GetValueOrDefault(ls, ls)</span>
+                            </label>
+                        }
+                        @if (allLandscapes.Count > lsVisible)
+                        {
+                            <button type="button" class="show-more-btn mt-1 text-xs text-green-700 hover:underline font-medium"
+                                    data-group="landscapes" data-total="@allLandscapes.Count" data-visible="@lsVisible">
+                                + @(allLandscapes.Count - lsVisible) more
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+
+            @* Score filter *@
+            <div class="border-b border-slate-100" data-filter-group="score">
+                <button type="button" class="filter-group-toggle w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition"
+                        aria-expanded="true">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Our Score</span>
+                    <i class="fa-solid fa-chevron-up text-[10px] text-slate-400 transition-transform"></i>
+                </button>
+                <div class="filter-group-body px-4 pb-3">
+                    <div class="flex items-center justify-between gap-3 mb-2">
+                        <span class="text-sm text-slate-700">Min. score</span>
+                        <span id="score-range-value" class="text-sm font-semibold text-green-700">Any</span>
+                    </div>
+                    <input type="range" id="filter-score-min" min="0" max="100" value="0" step="5"
+                           class="w-full accent-green-700 cursor-pointer" />
+                    <div class="mt-1 flex justify-between text-[11px] text-slate-400">
+                        <span>0</span>
+                        <span>100</span>
+                    </div>
+                </div>
+            </div>
+
+            @* Personality sub-scores *@
+            <div class="border-b border-slate-100" data-filter-group="personality-scores">
+                <button type="button" class="filter-group-toggle w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition"
+                        aria-expanded="false">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Personality</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform"></i>
+                </button>
+                <div class="filter-group-body hidden px-4 pb-3 space-y-3">
+                    @foreach (var sub in new[] {
+                        ("beauty",     "Beauty",     15),
+                        ("recreation", "Recreation", 15),
+                        ("privacy",    "Privacy",    10),
+                        ("weather",    "Weather",    10),
+                        ("wildlife",   "Wildlife",   10),
+                    })
+                    {
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[11px] text-slate-600">@sub.Item2</span>
+                                <span class="subscore-val text-[11px] font-semibold text-green-700" data-sub="@sub.Item1">Any</span>
+                            </div>
+                            <input type="range" class="filter-subscore w-full accent-green-700 cursor-pointer"
+                                   data-sub="@sub.Item1" data-max="@sub.Item3"
+                                   min="0" max="@sub.Item3" value="0" step="1" />
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* Practicality sub-scores *@
+            <div class="border-b border-slate-100" data-filter-group="practicality-scores">
+                <button type="button" class="filter-group-toggle w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition"
+                        aria-expanded="false">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Practicality</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform"></i>
+                </button>
+                <div class="filter-group-body hidden px-4 pb-3 space-y-3">
+                    @foreach (var sub in new[] {
+                        ("accessibility", "Accessibility", 15),
+                        ("amenities",     "Amenities",     10),
+                        ("lodging",       "Lodging",        5),
+                        ("frugality",     "Affordability",  5),
+                        ("family",        "Family",         5),
+                    })
+                    {
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[11px] text-slate-600">@sub.Item2</span>
+                                <span class="subscore-val text-[11px] font-semibold text-green-700" data-sub="@sub.Item1">Any</span>
+                            </div>
+                            <input type="range" class="filter-subscore w-full accent-green-700 cursor-pointer"
+                                   data-sub="@sub.Item1" data-max="@sub.Item3"
+                                   min="0" max="@sub.Item3" value="0" step="1" />
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* Admission *@
+            <div data-filter-group="admission">
+                <button type="button" class="filter-group-toggle w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition"
+                        aria-expanded="true">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Admission</span>
+                    <i class="fa-solid fa-chevron-up text-[10px] text-slate-400 transition-transform"></i>
+                </button>
+                <div class="filter-group-body px-4 pb-3">
+                    @if (maxEntranceFee > 0)
+                    {
+                        <div class="pb-3 mb-3 border-b border-slate-100">
+                            <div class="flex items-center justify-between gap-3 mb-2">
+                                <span class="text-sm text-slate-700">Max entrance fee</span>
+                                <span id="fee-range-value" class="text-sm font-semibold text-green-700">Any</span>
+                            </div>
+                            <input type="range"
+                                   id="filter-fee-max"
+                                   min="0"
+                                   max="@maxEntranceFee"
+                                   value="@maxEntranceFee"
+                                   step="1"
+                                   class="w-full accent-green-700 cursor-pointer" />
+                            <div class="mt-1 flex justify-between text-[11px] text-slate-400">
+                                <span>Free</span>
+                                <span>$@maxEntranceFee</span>
+                            </div>
+                        </div>
+                    }
+                    <label class="flex items-center gap-2.5 cursor-pointer group py-0.5">
+                        <input type="checkbox" id="filter-free" class="accent-green-700 w-4 h-4" />
+                        <span class="text-sm text-slate-700 group-hover:text-slate-900">Free admission only</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 cursor-pointer group py-0.5">
+                        <input type="checkbox" id="filter-no-reservation" class="accent-green-700 w-4 h-4" />
+                        <span class="text-sm text-slate-700 group-hover:text-slate-900">No reservation required</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    
+    <main class="flex-1 min-w-0">
+
+        @* View toggle: Cards / Table *@
+        <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+            <p class="text-sm text-slate-500 lg:hidden" id="parks-counter-mobile"></p>
+            <div class="flex items-center gap-2 mr-auto">
+                <label for="cards-sort" class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">Sort</label>
+                <select id="cards-sort" class="text-sm border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-green-600">
+                    <option value="name">Name A–Z</option>
+                    <option value="rating" selected>Rating (best first)</option>
+                    <option value="visitors">Most Visited</option>
+                    <option value="area">Largest First</option>
+                </select>
+            </div>
+            <div class="flex gap-1 bg-slate-100 rounded-lg p-1">
+                <button id="view-cards-btn" type="button" onclick="setView('cards')"
+                        class="view-btn active-view px-3 py-1.5 text-sm font-semibold rounded-md transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-grip text-xs"></i> Cards
+                </button>
+                <button id="view-table-btn" type="button" onclick="setView('table')"
+                        class="view-btn px-3 py-1.5 text-sm font-semibold rounded-md transition flex items-center gap-1.5 text-slate-500 hover:text-slate-800">
+                    <i class="fa-solid fa-table-list text-xs"></i> Table
+                </button>
+            </div>
+        </div>
+
+        <div id="parks-grid" class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            @foreach (var park in Model)
+            {
+                var topActivities = park.Filters.Activities.Take(3).ToList();
+                var actStr = string.Join(" ", park.Filters.Activities);
+                var lsStr = string.Join(" ", park.Filters.Landscapes);
+                var seasonStr = string.Join(" ", park.Filters.Seasons);
+                var feeAmount = park.Filters.HasEntranceFee ? ExtractFeeAmount(park.Stats.EntranceFeeDisplay) : 0m;
+                var ratingRank  = park.Rankings.OverallRank;
+                var ratingScore = ratingRank > 0 ? (double)park.Rankings.OverallScore : 0.0;
+
+                <a href="/national-parks/@park.Slug"
+                   class="park-card group flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-green-400 hover:shadow-lg transition"
+                   data-name="@park.Name.ToLowerInvariant() @park.Location.State.ToLowerInvariant()"
+                   data-state="@park.Location.State"
+                   data-region="@park.Location.Region"
+                   data-activities="@actStr"
+                   data-seasons="@seasonStr"
+                   data-landscapes="@lsStr"
+                   data-fee="@(park.Filters.HasEntranceFee ? "true" : "false")"
+                   data-fee-amount="@feeAmount.ToString(CultureInfo.InvariantCulture)"
+                   data-reservation="@park.Filters.ReservationStatus"
+                   data-id="@park.Slug"
+                   data-rating-rank="@ratingRank"
+                   data-rating-score="@((int)ratingScore)"
+                   data-visitors-rank="@park.Stats.VisitationRank"
+                   data-area="@park.Stats.AreaAcres"
+                   data-personality="@park.Rankings.Personality"
+                   data-practicality="@park.Rankings.Practicality"
+                   data-beauty="@park.Rankings.Beauty"
+                   data-recreation="@park.Rankings.Recreation"
+                   data-privacy="@park.Rankings.Privacy"
+                   data-weather="@park.Rankings.Weather"
+                   data-wildlife="@park.Rankings.Wildlife"
+                   data-accessibility="@park.Rankings.Accessibility"
+                   data-amenities="@park.Rankings.Amenities"
+                   data-lodging="@park.Rankings.Lodging"
+                   data-frugality="@park.Rankings.Frugality"
+                   data-family="@park.Rankings.Family">
+
+                    
+                    <div class="relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-green-800 to-green-600 shrink-0">
+                        @if (!string.IsNullOrWhiteSpace(park.Media.HeroImage))
+                        {
+                            <img src="@Images.Crop(park.Media.HeroImage, 640, 360)"
+                                 srcset="@(Images.Crop(park.Media.HeroImage, 320, 180)) 320w,
+                                         @(Images.Crop(park.Media.HeroImage, 640, 360)) 640w,
+                                         @(Images.Crop(park.Media.HeroImage, 960, 540)) 960w"
+                                 sizes="(min-width: 1280px) 30vw, (min-width: 640px) 50vw, 100vw"
+                                 alt="@park.Media.HeroAlt"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                 loading="lazy"
+                                 decoding="async"
+                                 fetchpriority="low" />
+                        }
+                        else
+                        {
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fa-solid fa-tree text-white/30 text-5xl"></i>
+                            </div>
+                        }
+
+                        @* Rank badge top-left *@
+                        @if (ratingRank > 0)
+                        {
+                            <div class="absolute top-2.5 left-2.5">
+                                <span class="bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-md">#@ratingRank</span>
+                            </div>
+                        }
+
+                        @* Fee badge top-right *@
+                        <div class="absolute top-2.5 right-2.5">
+                            @if (!park.Filters.HasEntranceFee)
+                            {
+                                <span class="bg-green-600/90 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">Free</span>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(park.Stats.EntranceFeeDisplay))
+                            {
+                                <span class="bg-black/55 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">
+                                    @park.Stats.EntranceFeeDisplay
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    
+                    <div class="flex flex-col flex-1 px-4 pt-3 pb-4">
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-green-700 mb-1">@park.Location.State</p>
+                        <h2 class="text-[15px] font-bold text-slate-900 leading-snug group-hover:text-green-800 transition mb-2">@park.Name</h2>
+
+                        @if (topActivities.Count > 0)
+                        {
+                            <div class="flex flex-wrap gap-1.5 mb-3">
+                                @foreach (var act in topActivities)
+                                {
+                                    <span class="inline-block text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                                        @activityLabels.GetValueOrDefault(act, act)
+                                    </span>
+                                }
+                            </div>
+                        }
+
+                        <div class="flex items-center gap-3 text-[11px] text-slate-400 mt-auto pt-2 border-t border-slate-100">
+                            @if (ratingScore > 0)
+                            {
+                                <span class="text-emerald-700 font-semibold">★ @((int)ratingScore)/100</span>
+                            }
+                            @if (park.Stats.AreaAcres > 0)
+                            {
+                                if (ratingScore > 0) { <span class="text-slate-300">·</span> }
+                                <span><i class="fa-solid fa-expand text-[10px] mr-1"></i>@park.Stats.AreaAcres.ToString("N0") ac</span>
+                            }
+                            @if (park.Stats.VisitationRank > 0)
+                            {
+                                <span class="text-slate-300 ml-auto">·</span>
+                                <span title="Ranked by annual visitors among 63 national parks">
+                                    @if (park.Stats.VisitationRank <= 5)
+                                    {
+                                        <span class="text-amber-600 font-semibold">#@park.Stats.VisitationRank most visited</span>
+                                    }
+                                    else
+                                    {
+                                        <span>#@park.Stats.VisitationRank visits</span>
+                                    }
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+
+        @* Sortable table view (hidden by default) *@
+        <div id="parks-table-wrap" class="hidden overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                        <th class="sort-th px-4 py-3 font-semibold text-slate-700 cursor-pointer select-none whitespace-nowrap" data-col="name">
+                            Park <i class="fa-solid fa-sort text-slate-300 text-xs ml-1"></i>
+                        </th>
+                        <th class="sort-th px-4 py-3 font-semibold text-slate-700 cursor-pointer select-none whitespace-nowrap" data-col="state">
+                            State <i class="fa-solid fa-sort text-slate-300 text-xs ml-1"></i>
+                        </th>
+                        <th class="sort-th px-4 py-3 font-semibold text-slate-700 cursor-pointer select-none whitespace-nowrap" data-col="region">
+                            Region <i class="fa-solid fa-sort text-slate-300 text-xs ml-1"></i>
+                        </th>
+                        <th class="sort-th px-4 py-3 font-semibold text-slate-700 cursor-pointer select-none whitespace-nowrap" data-col="activities">
+                            Activities <i class="fa-solid fa-sort text-slate-300 text-xs ml-1"></i>
+                        </th>
+                        <th class="sort-th px-4 py-3 font-semibold text-slate-700 cursor-pointer select-none whitespace-nowrap" data-col="fee">
+                            Fee <i class="fa-solid fa-sort text-slate-300 text-xs ml-1"></i>
+                        </th>
+                        <th class="sort-th px-4 py-3 font-semibold text-slate-700 cursor-pointer select-none whitespace-nowrap" data-col="area">
+                            Acres <i class="fa-solid fa-sort text-slate-300 text-xs ml-1"></i>
+                        </th>
+                        <th class="sort-th px-4 py-3 font-semibold text-slate-700 cursor-pointer select-none whitespace-nowrap" data-col="rating">
+                            Rating <i class="fa-solid fa-sort text-slate-300 text-xs ml-1"></i>
+                        </th>
+                        <th class="sort-th px-4 py-3 font-semibold text-slate-700 cursor-pointer select-none whitespace-nowrap" data-col="rank">
+                            Visitation <i class="fa-solid fa-sort text-slate-300 text-xs ml-1"></i>
+                        </th>
+                        <th class="sort-th px-4 py-3 font-semibold text-slate-700 cursor-pointer select-none whitespace-nowrap" data-col="season">
+                            Best Season <i class="fa-solid fa-sort text-slate-300 text-xs ml-1"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="parks-tbody">
+                    @foreach (var park in Model)
+                    {
+                        var topActivities = park.Filters.Activities.Take(3).ToList();
+                        var actStr = string.Join(" ", park.Filters.Activities);
+                        var lsStr = string.Join(" ", park.Filters.Landscapes);
+                        var seasonStr = string.Join(" ", park.Filters.Seasons);
+                        var activityCount = park.Filters.Activities.Count;
+                        var feeAmount = park.Filters.HasEntranceFee ? ExtractFeeAmount(park.Stats.EntranceFeeDisplay) : 0m;
+                        var tblRatingRank  = park.Rankings.OverallRank;
+                        var tblRatingScore = tblRatingRank > 0 ? park.Rankings.OverallScore : 0;
+                        var bestSeasons = park.Seasons
+                            .Where(s => !string.IsNullOrWhiteSpace(s.Season))
+                            .Select(s => s.Season)
+                            .ToList();
+                        if (bestSeasons.Count == 0)
+                        {
+                            bestSeasons = park.Filters.Seasons
+                                .Where(s => !string.IsNullOrWhiteSpace(s))
+                                .ToList();
+                        }
+                        var seasonSortValue = GetSeasonSortValue(bestSeasons);
+                        <tr class="park-row border-b border-slate-100 hover:bg-green-50 transition"
+                            data-name="@park.Name.ToLowerInvariant() @park.Location.State.ToLowerInvariant()"
+                            data-state="@park.Location.State"
+                            data-region="@park.Location.Region"
+                            data-activities="@actStr"
+                            data-seasons="@seasonStr"
+                            data-landscapes="@lsStr"
+                            data-fee="@(park.Filters.HasEntranceFee ? "true" : "false")"
+                            data-fee-amount="@feeAmount.ToString(CultureInfo.InvariantCulture)"
+                            data-reservation="@park.Filters.ReservationStatus"
+                            data-id="@park.Slug"
+                            data-area="@park.Stats.AreaAcres"
+                            data-rank="@park.Stats.VisitationRank"
+                            data-rating-rank="@tblRatingRank"
+                            data-rating-score="@tblRatingScore"
+                            data-activity-count="@activityCount"
+                            data-season-sort="@seasonSortValue"
+                            data-season-label="@(string.Join(", ", bestSeasons.Select(s => seasonLabels.GetValueOrDefault(s, s))))">
+                            <td class="px-4 py-3">
+                                <a href="/national-parks/@park.Slug"
+                                   class="font-semibold text-slate-900 hover:text-green-800 transition">@park.Name</a>
+                            </td>
+                            <td class="px-4 py-3 text-slate-600 whitespace-nowrap">@park.Location.State</td>
+                            <td class="px-4 py-3 text-slate-500 whitespace-nowrap">@park.Location.Region</td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach (var act in topActivities)
+                                    {
+                                        <span class="text-[11px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full whitespace-nowrap">
+                                            @activityLabels.GetValueOrDefault(act, act)
+                                        </span>
+                                    }
+                                    @if (activityCount > topActivities.Count)
+                                    {
+                                        <span class="text-[11px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full whitespace-nowrap">
+                                            +@(activityCount - topActivities.Count)
+                                        </span>
+                                    }
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                @if (park.Filters.HasEntranceFee)
+                                {
+                                    <span class="text-slate-700">@(string.IsNullOrWhiteSpace(park.Stats.EntranceFeeDisplay) ? "Fee" : park.Stats.EntranceFeeDisplay)</span>
+                                }
+                                else
+                                {
+                                    <span class="text-green-700 font-medium">Free</span>
+                                }
+                            </td>
+                            <td class="px-4 py-3 text-slate-500 whitespace-nowrap">
+                                @(park.Stats.AreaAcres > 0 ? park.Stats.AreaAcres.ToString("N0") + " ac" : "—")
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                @if (tblRatingRank > 0)
+                                {
+                                    <span class="text-emerald-700 font-semibold">@tblRatingScore</span>
+                                    <span class="text-slate-400 text-[11px] ml-1">#@tblRatingRank</span>
+                                }
+                                else
+                                {
+                                    <span class="text-slate-400">—</span>
+                                }
+                            </td>
+                            <td class="px-4 py-3 text-slate-500 text-center">
+                                @(park.Stats.VisitationRank > 0 ? "#" + park.Stats.VisitationRank : "—")
+                            </td>
+                            <td class="px-4 py-3">
+                                @if (bestSeasons.Count > 0)
+                                {
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach (var season in bestSeasons)
+                                        {
+                                            var seasonDetails = park.Seasons.FirstOrDefault(s => string.Equals(s.Season, season, StringComparison.OrdinalIgnoreCase));
+                                            var seasonTitle = seasonDetails != null
+                                                ? string.Join(" | ", new[] { seasonDetails.Months, seasonDetails.CrowdLevel, seasonDetails.Verdict }.Where(v => !string.IsNullOrWhiteSpace(v)))
+                                                : null;
+                                            <span class="text-[11px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full whitespace-nowrap">
+                                                @if (!string.IsNullOrWhiteSpace(seasonTitle))
+                                                {
+                                                    <span title="@seasonTitle">@seasonLabels.GetValueOrDefault(season, season)</span>
+                                                }
+                                                else
+                                                {
+                                                    @seasonLabels.GetValueOrDefault(season, season)
+                                                }
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-slate-400">—</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div id="parks-no-results" class="hidden py-24 text-center">
+            <i class="fa-solid fa-tree text-4xl text-slate-200 mb-4 block"></i>
+            <p class="text-slate-500 text-lg font-medium mb-2">No parks match your filters</p>
+            <p class="text-slate-400 text-sm mb-6">Try adjusting your search or removing some filters.</p>
+            <button onclick="clearAllFilters()"
+                    class="px-5 py-2 bg-green-700 hover:bg-green-800 text-white text-sm font-semibold rounded-lg transition">
+                Clear all filters
+            </button>
+        </div>
+    </main>
+</div>
+
+
+<div id="filter-drawer-overlay" class="hidden fixed inset-0 z-40 bg-black/40" aria-hidden="true"></div>
+<div id="filter-drawer" class="hidden fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-2xl max-h-[80vh] overflow-y-auto lg:hidden">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 sticky top-0 bg-white">
+        <span class="font-bold text-slate-900">Filters</span>
+        <button id="filter-drawer-close" class="text-slate-500 hover:text-slate-800 p-1">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+    </div>
+    <div class="px-5 py-4 space-y-6">
+        <div>
+            <label for="filter-state-mobile" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">State</label>
+            <select id="filter-state-mobile" class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-green-600">
+                <option value="">All states</option>
+                @foreach (var state in allStates)
+                {
+                    <option value="@state">@state</option>
+                }
+            </select>
+        </div>
+        @if (allActivities.Count > 0)
+        {
+            @if (allSeasons.Count > 0)
+            {
+                <div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Best Season</p>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach (var season in allSeasons)
+                        {
+                            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 rounded-full text-sm cursor-pointer has-[:checked]:bg-green-700 has-[:checked]:border-green-700 has-[:checked]:text-white transition">
+                                <input type="checkbox" class="filter-season-mobile sr-only" value="@season" />
+                                @seasonLabels.GetValueOrDefault(season, season)
+                            </label>
+                        }
+                    </div>
+                </div>
+            }
+            <div>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Activities</p>
+                <div class="flex flex-wrap gap-2">
+                    @foreach (var act in allActivities)
+                    {
+                        <label class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 rounded-full text-sm cursor-pointer has-[:checked]:bg-green-700 has-[:checked]:border-green-700 has-[:checked]:text-white transition">
+                            <input type="checkbox" class="filter-activity-mobile sr-only" value="@act" />
+                            @activityLabels.GetValueOrDefault(act, act)
+                        </label>
+                    }
+                </div>
+            </div>
+        }
+        <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Admission</p>
+            @if (maxEntranceFee > 0)
+            {
+                <div class="mb-4">
+                    <div class="flex items-center justify-between gap-3 mb-2">
+                        <span class="text-sm text-slate-700">Max entrance fee</span>
+                        <span id="fee-range-value-mobile" class="text-sm font-semibold text-green-700">Any</span>
+                    </div>
+                    <input type="range"
+                           id="filter-fee-max-mobile"
+                           min="0"
+                           max="@maxEntranceFee"
+                           value="@maxEntranceFee"
+                           step="1"
+                           class="w-full accent-green-700 cursor-pointer" />
+                    <div class="mt-1 flex justify-between text-[11px] text-slate-400">
+                        <span>Free</span>
+                        <span>$@maxEntranceFee</span>
+                    </div>
+                </div>
+            }
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" id="filter-free-mobile" class="accent-green-700 w-4 h-4" />
+                <span class="text-sm text-slate-700">Free admission only</span>
+            </label>
+        </div>
+        <button onclick="applyMobileFilters(); closeFilterDrawer()"
+                class="w-full py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-xl transition">
+            Apply Filters
+        </button>
+    </div>
+</div>
+
+<script src="~/vendor/leaflet/leaflet.js"></script>
+<script src="~/vendor/markercluster/leaflet.markercluster.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    const PARKS_DATA = @Html.Raw(mapDataJson);
+    const DEFAULT_MAX_FEE = @maxEntranceFee;
+
+    // ── Map ──────────────────────────────────────────────────────────────
+    let indexMap = null;
+    let clusterGroup = null;
+    const markerMap = {};
+    let akMap = null, hiMap = null;
+    let mapVisible = false;
+
+    function makeIcon(small) {
+        const sz = small ? 22 : 28;
+        return L.divIcon({
+            html: '<div style="background:#166534;color:#fff;border-radius:50%;width:' + sz + 'px;height:' + sz + 'px;display:flex;align-items:center;justify-content:center;font-size:' + (small ? 9 : 11) + 'px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"><i class="fa-solid fa-tree"></i></div>',
+            className: '',
+            iconSize: [sz, sz],
+            iconAnchor: [sz / 2, sz / 2]
+        });
+    }
+
+    function makePopup(p) {
+        return '<strong style="font-size:13px">' + p.name + '</strong>' +
+            '<br><span style="font-size:11px;color:#64748b">' + p.state + '</span>' +
+            '<br><a href="/national-parks/' + p.slug + '" style="font-size:12px;color:#166534;font-weight:600">View park →</a>';
+    }
+
+    function initMap() {
+        const fallback = document.getElementById('parks-map-fallback');
+        const mapCanvas = document.getElementById('parks-index-map');
+        if (typeof window.L === 'undefined') {
+            mapCanvas.classList.add('hidden');
+            fallback.classList.remove('hidden');
+            return;
+        }
+
+        // ── Tile layer ───────────────────────────────────────────────────
+        const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const tileOpts = {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            maxZoom: 18
+        };
+
+        // ── Main map — continental US + Puerto Rico / territories ────────
+        indexMap = L.map('parks-index-map', { scrollWheelZoom: false });
+        const tiles = L.tileLayer(tileUrl, tileOpts);
+        let tileErrors = 0;
+        tiles.on('tileerror', function () {
+            if (++tileErrors >= 4) { mapCanvas.classList.add('hidden'); fallback.classList.remove('hidden'); }
+        });
+        tiles.addTo(indexMap);
+
+        const icon = makeIcon(false);
+
+        // Cluster group (MarkerCluster handles density on west coast)
+        const hasCluster = typeof L.markerClusterGroup === 'function';
+        clusterGroup = hasCluster ? L.markerClusterGroup({ maxClusterRadius: 40 }) : null;
+
+        const mainParks = PARKS_DATA.filter(function (p) {
+            return p.state !== 'Alaska' && p.state !== 'Hawaii';
+        });
+
+        mainParks.forEach(function (p) {
+            if (!p.lat || !p.lng) return;
+            const marker = L.marker([p.lat, p.lng], { icon: icon }).bindPopup(makePopup(p));
+            if (clusterGroup) clusterGroup.addLayer(marker);
+            else marker.addTo(indexMap);
+            markerMap[p.slug] = marker;
+        });
+
+        if (clusterGroup) indexMap.addLayer(clusterGroup);
+
+        // Fit to continental US markers, fallback to default view
+        if (mainParks.length > 0) {
+            const lats = mainParks.map(function (p) { return p.lat; });
+            const lngs = mainParks.map(function (p) { return p.lng; });
+            indexMap.fitBounds(
+                [[Math.min.apply(null, lats) - 1, Math.min.apply(null, lngs) - 2],
+                 [Math.max.apply(null, lats) + 1, Math.max.apply(null, lngs) + 2]],
+                { maxZoom: 6 }
+            );
+        } else {
+            indexMap.setView([39.5, -98.5], 4);
+        }
+
+        // ── Alaska inset ─────────────────────────────────────────────────
+        const akParks = PARKS_DATA.filter(function (p) { return p.state === 'Alaska' && p.lat && p.lng; });
+        if (akParks.length > 0) {
+            akMap = L.map('ak-inset', { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false });
+            L.tileLayer(tileUrl, tileOpts).addTo(akMap);
+            const akIcon = makeIcon(true);
+            akParks.forEach(function (p) {
+                const m = L.marker([p.lat, p.lng], { icon: akIcon }).bindPopup(makePopup(p)).addTo(akMap);
+                markerMap[p.slug] = m;
+            });
+            const akLats = akParks.map(function (p) { return p.lat; });
+            const akLngs = akParks.map(function (p) { return p.lng; });
+            akMap.fitBounds([[Math.min.apply(null, akLats) - 1, Math.min.apply(null, akLngs) - 2], [Math.max.apply(null, akLats) + 1, Math.max.apply(null, akLngs) + 2]], { maxZoom: 5 });
+        }
+
+        // ── Hawaii inset ─────────────────────────────────────────────────
+        const hiParks = PARKS_DATA.filter(function (p) { return p.state === 'Hawaii' && p.lat && p.lng; });
+        if (hiParks.length > 0) {
+            hiMap = L.map('hi-inset', { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false });
+            L.tileLayer(tileUrl, tileOpts).addTo(hiMap);
+            const hiIcon = makeIcon(true);
+            hiParks.forEach(function (p) {
+                const m = L.marker([p.lat, p.lng], { icon: hiIcon }).bindPopup(makePopup(p)).addTo(hiMap);
+                markerMap[p.slug] = m;
+            });
+            const hiLats = hiParks.map(function (p) { return p.lat; });
+            const hiLngs = hiParks.map(function (p) { return p.lng; });
+            hiMap.fitBounds([[Math.min.apply(null, hiLats) - 0.5, Math.min.apply(null, hiLngs) - 1], [Math.max.apply(null, hiLats) + 0.5, Math.max.apply(null, hiLngs) + 1]], { maxZoom: 7 });
+        }
+    }
+
+    document.getElementById('map-toggle-btn').addEventListener('click', function () {
+        mapVisible = !mapVisible;
+        const wrap = document.getElementById('parks-map-wrap');
+        wrap.classList.toggle('hidden', !mapVisible);
+        document.getElementById('map-toggle-label').textContent = mapVisible ? 'Hide Map' : 'Show Map';
+
+        if (mapVisible) {
+            if (!indexMap) initMap();
+            setTimeout(function () {
+                if (indexMap) indexMap.invalidateSize();
+                if (akMap) akMap.invalidateSize();
+                if (hiMap) hiMap.invalidateSize();
+            }, 60);
+        }
+    });
+
+    // ── Filters ──────────────────────────────────────────────────────────
+    const state = { search: '', states: '', regions: [], seasons: [], activities: [], landscapes: [], free: false, noReservation: false, maxFee: DEFAULT_MAX_FEE, minScore: 0, subScores: {} };
+
+    function formatFeeValue(value) {
+        return value >= DEFAULT_MAX_FEE ? 'Any' : '$' + value;
+    }
+
+    function syncFeeLabels() {
+        const desktopLabel = document.getElementById('fee-range-value');
+        const mobileLabel = document.getElementById('fee-range-value-mobile');
+        const label = formatFeeValue(state.maxFee);
+
+        if (desktopLabel) desktopLabel.textContent = label;
+        if (mobileLabel) mobileLabel.textContent = label;
+    }
+
+    function matchesFilters(el) {
+        const name = el.dataset.name || '';
+        const elState = el.dataset.state || '';
+        const region = el.dataset.region || '';
+        const seasons = el.dataset.seasons || '';
+        const acts = el.dataset.activities || '';
+        const lands = el.dataset.landscapes || '';
+        const fee = el.dataset.fee === 'true';
+        const feeAmount = parseFloat(el.dataset.feeAmount || '0');
+        const reservation = el.dataset.reservation || '';
+
+        if (state.search && !name.includes(state.search)) return false;
+        if (state.states && elState !== state.states) return false;
+        if (state.regions.length && !state.regions.includes(region)) return false;
+        if (state.seasons.length && !state.seasons.some(function (s) { return seasons.includes(s); })) return false;
+        if (state.activities.length && !state.activities.every(function (a) { return acts.includes(a); })) return false;
+        if (state.landscapes.length && !state.landscapes.every(function (l) { return lands.includes(l); })) return false;
+        if (state.free && fee) return false;
+        if (state.maxFee < DEFAULT_MAX_FEE && feeAmount > state.maxFee) return false;
+        if (state.noReservation && (reservation === 'required' || reservation === 'seasonal')) return false;
+        if (state.minScore > 0) {
+            const score = parseInt(el.dataset.ratingScore || '0', 10);
+            if (score < state.minScore) return false;
+        }
+        for (const [sub, minVal] of Object.entries(state.subScores)) {
+            if (minVal > 0) {
+                const val = parseInt(el.dataset[sub] || '0', 10);
+                if (val < minVal) return false;
+            }
+        }
+        return true;
+    }
+
+    function applyFilters() {
+        let visible = 0;
+        const total = document.querySelectorAll('.park-card').length;
+
+        document.querySelectorAll('.park-card').forEach(function (card) {
+            const show = matchesFilters(card);
+            card.classList.toggle('hidden', !show);
+            if (show) visible++;
+
+            const slug = card.dataset.id || '';
+            if (markerMap[slug]) {
+                const el = markerMap[slug].getElement();
+                if (el) el.style.opacity = show ? '1' : '0.2';
+            }
+        });
+
+        document.querySelectorAll('.park-row').forEach(function (row) {
+            row.classList.toggle('hidden', !matchesFilters(row));
+        });
+
+        const label = visible + ' of ' + total + ' parks';
+        document.getElementById('parks-counter').textContent = label;
+        document.getElementById('parks-no-results').classList.toggle('hidden', visible > 0);
+
+        const hasSubScoreFilter = Object.values(state.subScores).some(function (v) { return v > 0; });
+        const hasFilters = state.search || state.states || state.regions.length || state.seasons.length || state.activities.length || state.landscapes.length || state.free || state.noReservation || state.maxFee < DEFAULT_MAX_FEE || state.minScore > 0 || hasSubScoreFilter;
+        document.getElementById('clear-filters-btn').classList.toggle('hidden', !hasFilters);
+    }
+
+    window.clearAllFilters = function () {
+        state.search = ''; state.states = ''; state.regions = []; state.seasons = []; state.activities = [];
+        state.landscapes = []; state.free = false; state.noReservation = false; state.maxFee = DEFAULT_MAX_FEE; state.minScore = 0; state.subScores = {};
+
+        document.getElementById('park-search').value = '';
+        document.getElementById('filter-state').value = '';
+        document.querySelectorAll('.filter-region, .filter-season, .filter-activity, .filter-landscape').forEach(function (cb) { cb.checked = false; });
+        const scoreSlider = document.getElementById('filter-score-min');
+        if (scoreSlider) scoreSlider.value = '0';
+        document.querySelectorAll('.filter-subscore').forEach(function (sl) { sl.value = '0'; });
+        document.querySelectorAll('.subscore-val').forEach(function (el) { el.textContent = 'Any'; });
+        syncScoreLabel();
+        document.querySelectorAll('.filter-season-mobile, .filter-activity-mobile').forEach(function (cb) { cb.checked = false; });
+        document.getElementById('filter-free').checked = false;
+        document.getElementById('filter-no-reservation').checked = false;
+        const stateMobile = document.getElementById('filter-state-mobile');
+        if (stateMobile) stateMobile.value = '';
+        const filterFreeMobile = document.getElementById('filter-free-mobile');
+        if (filterFreeMobile) filterFreeMobile.checked = false;
+        const feeDesktop = document.getElementById('filter-fee-max');
+        const feeMobile = document.getElementById('filter-fee-max-mobile');
+        if (feeDesktop) feeDesktop.value = String(DEFAULT_MAX_FEE);
+        if (feeMobile) feeMobile.value = String(DEFAULT_MAX_FEE);
+
+        syncFeeLabels();
+        applyFilters();
+    };
+
+    // Desktop filter wiring
+    document.getElementById('park-search').addEventListener('input', function () {
+        state.search = this.value.toLowerCase().trim();
+        applyFilters();
+    });
+
+    document.getElementById('filter-state').addEventListener('change', function () {
+        state.states = this.value;
+        applyFilters();
+    });
+
+    document.querySelectorAll('.filter-region').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+            if (this.checked) state.regions.push(this.value);
+            else state.regions = state.regions.filter(function (r) { return r !== cb.value; });
+            applyFilters();
+        });
+    });
+
+    document.querySelectorAll('.filter-season').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+            if (this.checked) state.seasons.push(this.value);
+            else state.seasons = state.seasons.filter(function (s) { return s !== cb.value; });
+            applyFilters();
+        });
+    });
+
+    document.querySelectorAll('.filter-activity').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+            if (this.checked) state.activities.push(this.value);
+            else state.activities = state.activities.filter(function (a) { return a !== cb.value; });
+            applyFilters();
+        });
+    });
+
+    document.querySelectorAll('.filter-landscape').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+            if (this.checked) state.landscapes.push(this.value);
+            else state.landscapes = state.landscapes.filter(function (l) { return l !== cb.value; });
+            applyFilters();
+        });
+    });
+
+    document.getElementById('filter-free').addEventListener('change', function () {
+        state.free = this.checked;
+        applyFilters();
+    });
+
+    const feeRange = document.getElementById('filter-fee-max');
+    if (feeRange) {
+        feeRange.addEventListener('input', function () {
+            state.maxFee = parseInt(this.value, 10);
+            const feeMobile = document.getElementById('filter-fee-max-mobile');
+            if (feeMobile) feeMobile.value = this.value;
+            syncFeeLabels();
+            applyFilters();
+        });
+    }
+
+    document.getElementById('filter-no-reservation').addEventListener('change', function () {
+        state.noReservation = this.checked;
+        applyFilters();
+    });
+
+    function syncScoreLabel() {
+        const el = document.getElementById('score-range-value');
+        if (el) el.textContent = state.minScore > 0 ? state.minScore + '+' : 'Any';
+    }
+
+    const scoreSlider = document.getElementById('filter-score-min');
+    if (scoreSlider) {
+        scoreSlider.addEventListener('input', function () {
+            state.minScore = parseInt(this.value, 10);
+            syncScoreLabel();
+            applyFilters();
+        });
+    }
+
+    document.querySelectorAll('.filter-subscore').forEach(function (sl) {
+        sl.addEventListener('input', function () {
+            const sub = this.dataset.sub;
+            const max = parseInt(this.dataset.max, 10);
+            const val = parseInt(this.value, 10);
+            state.subScores[sub] = val;
+            const label = document.querySelector('.subscore-val[data-sub="' + sub + '"]');
+            if (label) label.textContent = val > 0 ? val + '+' : 'Any';
+            applyFilters();
+        });
+    });
+
+    document.getElementById('clear-filters-btn').addEventListener('click', clearAllFilters);
+
+    // ── Mobile drawer ────────────────────────────────────────────────────
+    function openFilterDrawer() {
+        document.getElementById('filter-drawer').classList.remove('hidden');
+        document.getElementById('filter-drawer-overlay').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    window.closeFilterDrawer = function () {
+        document.getElementById('filter-drawer').classList.add('hidden');
+        document.getElementById('filter-drawer-overlay').classList.add('hidden');
+        document.body.style.overflow = '';
+    };
+
+    window.applyMobileFilters = function () {
+        const mobileState = document.getElementById('filter-state-mobile').value;
+        state.states = mobileState;
+        document.getElementById('filter-state').value = mobileState;
+
+        state.seasons = [];
+        document.querySelectorAll('.filter-season-mobile').forEach(function (cb) {
+            if (cb.checked) state.seasons.push(cb.value);
+        });
+        document.querySelectorAll('.filter-season').forEach(function (cb) {
+            cb.checked = state.seasons.includes(cb.value);
+        });
+
+        state.activities = [];
+        document.querySelectorAll('.filter-activity-mobile').forEach(function (cb) {
+            if (cb.checked) state.activities.push(cb.value);
+        });
+        document.querySelectorAll('.filter-activity').forEach(function (cb) {
+            cb.checked = state.activities.includes(cb.value);
+        });
+
+        state.free = document.getElementById('filter-free-mobile').checked;
+        document.getElementById('filter-free').checked = state.free;
+
+        const feeMobile = document.getElementById('filter-fee-max-mobile');
+        if (feeMobile) {
+            state.maxFee = parseInt(feeMobile.value, 10);
+            const feeDesktop = document.getElementById('filter-fee-max');
+            if (feeDesktop) feeDesktop.value = feeMobile.value;
+        }
+
+        syncFeeLabels();
+        applyFilters();
+    };
+
+    const feeRangeMobile = document.getElementById('filter-fee-max-mobile');
+    if (feeRangeMobile) {
+        feeRangeMobile.addEventListener('input', function () {
+            state.maxFee = parseInt(this.value, 10);
+            syncFeeLabels();
+        });
+    }
+
+    document.getElementById('filter-mobile-btn').addEventListener('click', openFilterDrawer);
+    document.getElementById('filter-drawer-close').addEventListener('click', closeFilterDrawer);
+    document.getElementById('filter-drawer-overlay').addEventListener('click', closeFilterDrawer);
+
+    // ── View switcher (Cards / Table) ────────────────────────────────────
+    let currentView = 'cards';
+
+    window.setView = function (view) {
+        currentView = view;
+        const grid = document.getElementById('parks-grid');
+        const tableWrap = document.getElementById('parks-table-wrap');
+        const cardBtn = document.getElementById('view-cards-btn');
+        const tableBtn = document.getElementById('view-table-btn');
+
+        if (view === 'cards') {
+            grid.classList.remove('hidden');
+            tableWrap.classList.add('hidden');
+            cardBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+            cardBtn.classList.remove('text-slate-500', 'hover:text-slate-800');
+            tableBtn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+            tableBtn.classList.add('text-slate-500', 'hover:text-slate-800');
+        } else {
+            grid.classList.add('hidden');
+            tableWrap.classList.remove('hidden');
+            tableBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+            tableBtn.classList.remove('text-slate-500', 'hover:text-slate-800');
+            cardBtn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+            cardBtn.classList.add('text-slate-500', 'hover:text-slate-800');
+        }
+    };
+
+    // Initialize card view styling
+    setView('cards');
+
+    // ── Cards sort ───────────────────────────────────────────────────────
+    function sortCards(mode) {
+        const grid = document.getElementById('parks-grid');
+        const cards = Array.from(grid.querySelectorAll('.park-card'));
+        cards.sort(function (a, b) {
+            if (mode === 'rating') {
+                const as_ = parseInt(a.dataset.ratingScore || '0', 10);
+                const bs_ = parseInt(b.dataset.ratingScore || '0', 10);
+                return bs_ - as_;
+            } else if (mode === 'visitors') {
+                const av = parseInt(a.dataset.visitorsRank || '999', 10) || 999;
+                const bv = parseInt(b.dataset.visitorsRank || '999', 10) || 999;
+                return av - bv;
+            } else if (mode === 'area') {
+                const aa = parseInt(a.dataset.area || '0', 10);
+                const ba = parseInt(b.dataset.area || '0', 10);
+                return ba - aa;
+            } else {
+                const an = (a.dataset.name || '').split(' ')[0];
+                const bn = (b.dataset.name || '').split(' ')[0];
+                return an.localeCompare(bn);
+            }
+        });
+        cards.forEach(function (c) { grid.appendChild(c); });
+    }
+
+    const cardsSort = document.getElementById('cards-sort');
+    if (cardsSort) {
+        cardsSort.addEventListener('change', function () { sortCards(this.value); });
+    }
+
+    // ── Table sort ───────────────────────────────────────────────────────
+    let sortCol = null, sortAsc = true;
+
+    function compareText(aVal, bVal) {
+        return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+    }
+
+    function compareNumber(aVal, bVal, missingValue) {
+        const aMissing = aVal === missingValue;
+        const bMissing = bVal === missingValue;
+
+        if (aMissing && bMissing) return 0;
+        if (aMissing) return 1;
+        if (bMissing) return -1;
+
+        return sortAsc ? aVal - bVal : bVal - aVal;
+    }
+
+    document.querySelectorAll('.sort-th').forEach(function (th) {
+        th.addEventListener('click', function () {
+            const col = this.dataset.col;
+            if (sortCol === col) {
+                sortAsc = !sortAsc;
+            } else {
+                sortCol = col;
+                sortAsc = true;
+            }
+
+            // Update sort icons
+            document.querySelectorAll('.sort-th i').forEach(function (icon) {
+                icon.className = 'fa-solid fa-sort text-slate-300 text-xs ml-1';
+            });
+            const icon = th.querySelector('i');
+            if (icon) icon.className = 'fa-solid fa-sort-' + (sortAsc ? 'up' : 'down') + ' text-green-700 text-xs ml-1';
+
+            // Sort rows
+            const tbody = document.getElementById('parks-tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort(function (a, b) {
+                let aVal, bVal;
+                if (col === 'name') {
+                    aVal = (a.dataset.name || '').split(' ')[0];
+                    bVal = (b.dataset.name || '').split(' ')[0];
+                    return compareText(aVal, bVal);
+                } else if (col === 'state') {
+                    aVal = a.dataset.state || '';
+                    bVal = b.dataset.state || '';
+                    return compareText(aVal, bVal);
+                } else if (col === 'region') {
+                    aVal = a.dataset.region || '';
+                    bVal = b.dataset.region || '';
+                    return compareText(aVal, bVal);
+                } else if (col === 'activities') {
+                    aVal = parseInt(a.dataset.activityCount || '0', 10);
+                    bVal = parseInt(b.dataset.activityCount || '0', 10);
+                    const diff = compareNumber(aVal, bVal, -1);
+                    return diff || compareText(a.dataset.name || '', b.dataset.name || '');
+                } else if (col === 'fee') {
+                    aVal = parseFloat(a.dataset.feeAmount || '0');
+                    bVal = parseFloat(b.dataset.feeAmount || '0');
+                    const diff = compareNumber(aVal, bVal, -1);
+                    return diff || compareText(a.dataset.name || '', b.dataset.name || '');
+                } else if (col === 'area') {
+                    aVal = parseInt(a.dataset.area || '0', 10);
+                    bVal = parseInt(b.dataset.area || '0', 10);
+                    return compareNumber(aVal, bVal, 0);
+                } else if (col === 'rating') {
+                    aVal = parseInt(a.dataset.ratingScore || '0', 10);
+                    bVal = parseInt(b.dataset.ratingScore || '0', 10);
+                    return compareNumber(bVal, aVal, 0);
+                } else if (col === 'rank') {
+                    aVal = parseInt(a.dataset.rank || '999', 10) || 999;
+                    bVal = parseInt(b.dataset.rank || '999', 10) || 999;
+                    return compareNumber(aVal, bVal, 999);
+                } else if (col === 'season') {
+                    aVal = parseInt(a.dataset.seasonSort || '999', 10) || 999;
+                    bVal = parseInt(b.dataset.seasonSort || '999', 10) || 999;
+                    const diff = compareNumber(aVal, bVal, 999);
+                    return diff || compareText(a.dataset.seasonLabel || '', b.dataset.seasonLabel || '');
+                }
+                return 0;
+            });
+
+            rows.forEach(function (row) { tbody.appendChild(row); });
+        });
+    });
+
+    // Initial render
+    syncFeeLabels();
+    syncScoreLabel();
+    applyFilters();
+    if (cardsSort) sortCards(cardsSort.value);
+
+    // ── Collapsible filter groups ─────────────────────────────────────────
+    document.querySelectorAll('.filter-group-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const group = this.closest('[data-filter-group]');
+            const body = group.querySelector('.filter-group-body');
+            const icon = this.querySelector('i');
+            const expanded = this.getAttribute('aria-expanded') === 'true';
+
+            body.classList.toggle('hidden', expanded);
+            this.setAttribute('aria-expanded', String(!expanded));
+            icon.style.transform = expanded ? 'rotate(180deg)' : '';
+        });
+    });
+
+    // ── Show more / show less in Activities and Landscape ────────────────
+    document.querySelectorAll('.show-more-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const group = this.closest('[data-filter-group]');
+            const extras = group.querySelectorAll('.filter-extra');
+            const allShown = !extras[0].classList.contains('hidden');
+            const total = parseInt(this.dataset.total, 10);
+            const visible = parseInt(this.dataset.visible, 10);
+
+            extras.forEach(function (el) { el.classList.toggle('hidden', allShown); });
+            this.textContent = allShown
+                ? '+ ' + (total - visible) + ' more'
+                : 'Show less';
+        });
+    });
+}());
+</script>

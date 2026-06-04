@@ -27,5 +27,12 @@ namespace USASymbol.Models.ViewModels
             DateModified = DateModified,
             Author = Author
         };
+
+        protected static string? FirstNonEmpty(params string?[] values)
+        {
+            foreach (var v in values)
+                if (!string.IsNullOrWhiteSpace(v)) return v;
+            return null;
+        }
     }
 }

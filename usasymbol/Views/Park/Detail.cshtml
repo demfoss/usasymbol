@@ -1,0 +1,683 @@
+@model USASymbol.Models.ViewModels.ParkDetailViewModel
+@using USASymbol.Models.Content
+@using USASymbol.Extensions
+@inject IImageUrlService Images
+
+@{
+    var park = Model.Park;
+
+    ViewData["OgType"] = "article";
+
+    var faqItems = park.Faq.Select(f => (f.Question, f.Answer)).ToList();
+    if (faqItems.Any())
+        ViewData["FaqItems"] = (IEnumerable<(string Question, string Answer)>)faqItems;
+}
+
+@await Html.PartialAsync("_StructuredData", Model)
+
+@* ─── Hero: full-bleed photo with overlay ──────────────────────── *@
+<header class="relative overflow-hidden" style="height: clamp(340px, 60vh, 660px)">
+
+    @* Background: photo or gradient fallback *@
+    @if (!string.IsNullOrWhiteSpace(park.Media.HeroImage))
+    {
+        <img src="@Images.Hero(park.Media.HeroImage)"
+             srcset="@(Images.Hero(park.Media.HeroImage, 800)) 800w,
+                     @(Images.Hero(park.Media.HeroImage, 1200)) 1200w,
+                     @(Images.Hero(park.Media.HeroImage, 1800)) 1800w"
+             sizes="100vw"
+             alt="@park.Media.HeroAlt"
+             class="absolute inset-0 h-full w-full object-cover"
+             loading="eager"
+             decoding="async"
+             fetchpriority="high" />
+    }
+    else
+    {
+        <div class="absolute inset-0 bg-gradient-to-br from-green-900 to-emerald-800"></div>
+    }
+
+    @* Gradient overlay: dark top for breadcrumb, dark bottom for title *@
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/40"></div>
+
+    @* ── Breadcrumb at top ─── *@
+    <nav class="absolute inset-x-0 top-0 z-10 px-4 py-3 sm:px-6 xl:px-8" aria-label="Breadcrumb">
+        <div class="max-w-[1440px] mx-auto">
+            <ol class="flex flex-wrap items-center gap-1 text-[12px] text-white/70" itemscope itemtype="https://schema.org/BreadcrumbList">
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="/" itemprop="item" class="hover:text-white transition">
+                        <span itemprop="name">Home</span>
+                    </a>
+                    <meta itemprop="position" content="1" />
+                </li>
+                <li><span class="mx-1 text-white/40">/</span></li>
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="/national-parks" itemprop="item" class="hover:text-white transition">
+                        <span itemprop="name">National Parks</span>
+                    </a>
+                    <meta itemprop="position" content="2" />
+                </li>
+                <li><span class="mx-1 text-white/40">/</span></li>
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="text-white/90 font-medium">
+                    <span itemprop="name">@park.Name</span>
+                    <meta itemprop="position" content="3" />
+                </li>
+            </ol>
+        </div>
+    </nav>
+
+    @* ── Title block at bottom ─── *@
+    <div class="absolute bottom-0 inset-x-0 px-4 pb-7 sm:px-6 xl:px-8">
+        <div class="max-w-[1440px] mx-auto">
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/70">
+                <span class="inline-flex items-center gap-2 text-emerald-300">
+                    <span class="block h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                    National Park
+                </span>
+                @if (!string.IsNullOrWhiteSpace(park.Location.State))
+                {
+                    <span>@park.Location.State</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(park.Location.Region))
+                {
+                    <span>@park.Location.Region</span>
+                }
+                @if (park.EstablishedYear.HasValue)
+                {
+                    <span>est. @park.EstablishedYear.Value</span>
+                }
+            </div>
+
+            <h1 class="text-3xl font-bold tracking-tight text-white leading-tight sm:text-5xl lg:text-[3.5rem]">
+                @park.Name
+            </h1>
+
+            @if (park.Filters.Activities.Count > 0)
+            {
+                <div class="mt-4 hidden sm:flex flex-wrap gap-2">
+                    @foreach (var activity in park.Filters.Activities.Take(6))
+                    {
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+                            @activity.Replace("_", " ")
+                        </span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    @* Photo credit bottom right *@
+    @if (!string.IsNullOrWhiteSpace(park.Media.HeroCredit))
+    {
+        <div class="absolute bottom-2 right-3 text-[10px] text-white/50">Photo: @park.Media.HeroCredit</div>
+    }
+</header>
+
+@* ─── Stats strip (highlight_stats big numbers) ─────────────────── *@
+@if (park.HighlightStats.Count > 0)
+{
+    <div class="bg-white border-b border-slate-100 shadow-sm">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-8">
+            <dl class="grid grid-cols-2 sm:grid-cols-4 @(park.HighlightStats.Count > 4 ? "lg:grid-cols-8" : "lg:grid-cols-4") divide-x divide-slate-100">
+                @foreach (var s in park.HighlightStats)
+                {
+                    <div class="px-3 py-5 text-center sm:px-4">
+                        <dd class="text-xl font-bold text-slate-900 leading-tight sm:text-2xl">@s.Stat</dd>
+                        <dt class="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">@s.Label</dt>
+                    </div>
+                }
+            </dl>
+        </div>
+    </div>
+}
+
+@* ─── Body grid ─────────────────────────────────────────────────── *@
+<div class="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-8 pb-20 pt-8">
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-12">
+
+        @* ── Main column ──────────────────────────────────────────── *@
+        <div class="min-w-0">
+
+            @* Quick Answer *@
+            @if (!string.IsNullOrWhiteSpace(park.IntroText))
+            {
+                <section id="overview" class="scroll-mt-32">
+                    <div class="border border-slate-200/80 bg-white/55 px-5 py-5 sm:px-6">
+                        <p class="content-p text-slate-700">@park.IntroText</p>
+                    </div>
+                </section>
+            }
+
+            @* About *@
+            @if (!string.IsNullOrWhiteSpace(park.SectionOverview))
+            {
+                <section id="about" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-3">About @park.Name</h2>
+                    <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                        @park.SectionOverview.RenderAutoLinks()
+                    </div>
+                </section>
+            }
+
+            @* Rankings scorecard — inline in main column *@
+            @if (park.Rankings.OverallScore > 0)
+            {
+                var r = park.Rankings;
+                void RRow(string label, int score, int max)
+                {
+                    var pct  = (int)Math.Round((double)score / max * 100);
+                    var fill = score >= (int)Math.Round(max * 0.75) ? "bg-emerald-500"
+                             : score >= (int)Math.Round(max * 0.50) ? "bg-amber-400"
+                             : "bg-red-400";
+                    <div class="flex items-center gap-3">
+                        <span class="w-24 shrink-0 text-[11px] text-slate-500">@label</span>
+                        <div class="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                            <div class="h-full rounded-full @fill" style="width:@(pct)%"></div>
+                        </div>
+                        <span class="w-10 shrink-0 text-right text-[11px] font-semibold text-slate-700">@score<span class="text-slate-400 font-normal">/@max</span></span>
+                    </div>
+                }
+
+                <section id="ranking" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <div class="border border-slate-200/80 bg-white/55 px-5 py-5 sm:px-6">
+
+                        @* Header: score + rank badge *@
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-0.5">USASymbol Score</p>
+                                <div class="flex items-baseline gap-1.5">
+                                    <span class="text-4xl font-black text-slate-900 leading-none">@r.OverallScore</span>
+                                    <span class="text-sm text-slate-400">/100</span>
+                                </div>
+                            </div>
+                            @if (Model.ScoreRank > 0)
+                            {
+                                <span class="mt-0.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full whitespace-nowrap">
+                                    #@Model.ScoreRank of @Model.TotalRanked
+                                </span>
+                            }
+                        </div>
+
+                        @* Overall bar *@
+                        <div class="mb-5">
+                            <div class="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+                                <div class="h-full rounded-full bg-emerald-500" style="width:@(r.OverallScore)%"></div>
+                            </div>
+                        </div>
+
+                        @* Personality block *@
+                        <div class="mb-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-700">Personality</span>
+                                <span class="text-[11px] font-semibold text-slate-500">@r.Personality<span class="font-normal text-slate-400">/60</span></span>
+                            </div>
+                            <div class="space-y-1.5">
+                                @{ RRow("Beauty",     r.Beauty,     15); }
+                                @{ RRow("Recreation", r.Recreation, 15); }
+                                @{ RRow("Privacy",    r.Privacy,    10); }
+                                @{ RRow("Weather",    r.Weather,    10); }
+                                @{ RRow("Wildlife",   r.Wildlife,   10); }
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 my-4"></div>
+
+                        @* Practicality block *@
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-700">Practicality</span>
+                                <span class="text-[11px] font-semibold text-slate-500">@r.Practicality<span class="font-normal text-slate-400">/40</span></span>
+                            </div>
+                            <div class="space-y-1.5">
+                                @{ RRow("Accessibility", r.Accessibility, 15); }
+                                @{ RRow("Amenities",     r.Amenities,     10); }
+                                @{ RRow("Lodging",       r.Lodging,        5); }
+                                @{ RRow("Affordability", r.Frugality,      5); }
+                                @{ RRow("Family",        r.Family,         5); }
+                            </div>
+                        </div>
+
+                        <p class="mt-4 text-[10px] text-slate-400">Privacy: higher score = less crowded</p>
+                    </div>
+                </section>
+            }
+
+            @* Known For *@
+            @if (!string.IsNullOrWhiteSpace(park.SectionKnownFor))
+            {
+                <section id="known-for" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-3">What Is @(park.Name.Replace(" National Park", "")) Known For?</h2>
+                    <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                        @park.SectionKnownFor.RenderAutoLinks()
+                    </div>
+                </section>
+            }
+
+            @* Photo highlights — after the intro sections, before Best Things to See *@
+            @if (park.Media.Highlights.Count > 0)
+            {
+                <div class="mt-8 grid grid-cols-2 gap-3 @(park.Media.Highlights.Count >= 3 ? "sm:grid-cols-3" : "sm:grid-cols-2")">
+                    @foreach (var hl in park.Media.Highlights.Take(3))
+                    {
+                        <figure class="overflow-hidden rounded-lg border border-slate-200">
+                            <img src="@Images.Crop(hl.Image, 640, 480)"
+                                 srcset="@(Images.Crop(hl.Image, 320, 240)) 320w,
+                                         @(Images.Crop(hl.Image, 640, 480)) 640w,
+                                         @(Images.Crop(hl.Image, 960, 720)) 960w"
+                                 sizes="(min-width: 640px) 33vw, 50vw"
+                                 alt="@hl.Alt"
+                                 class="w-full object-cover aspect-[4/3]"
+                                 loading="lazy"
+                                 decoding="async" />
+                            @if (!string.IsNullOrWhiteSpace(hl.Credit))
+                            {
+                                <figcaption class="bg-slate-50 px-2 py-1 text-[10px] text-slate-400 truncate">@hl.Credit</figcaption>
+                            }
+                        </figure>
+                    }
+                </div>
+            }
+
+            @* Best Things to See — structured cards (or markdown fallback) *@
+            @if (park.BestThingsToSeeItems.Count > 0)
+            {
+                <section id="best-things-to-see" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-4">Best Things to See in @(park.Name.Replace(" National Park", ""))</h2>
+                    <div class="space-y-3">
+                        @foreach (var item in park.BestThingsToSeeItems)
+                        {
+                            var hasImg = !string.IsNullOrWhiteSpace(item.Image);
+                            <div class="overflow-hidden border border-slate-200/80 bg-white/55 grid sm:grid-cols-[180px_1fr]">
+                                @if (hasImg)
+                                {
+                                    <div class="shrink-0 bg-slate-100">
+                                        <img src="@Images.Crop(item.Image, 360, 270)"
+                                             srcset="@(Images.Crop(item.Image, 240, 180)) 240w,
+                                                     @(Images.Crop(item.Image, 360, 270)) 360w,
+                                                     @(Images.Crop(item.Image, 540, 405)) 540w"
+                                             sizes="180px"
+                                             alt="@(item.Alt ?? item.Name)"
+                                             class="h-full w-full object-cover aspect-[4/3] sm:aspect-auto"
+                                             loading="lazy"
+                                             decoding="async" />
+                                        @if (!string.IsNullOrWhiteSpace(item.Credit))
+                                        {
+                                            <div class="px-2 py-1 text-[10px] text-slate-400 bg-slate-50 truncate">@item.Credit</div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="shrink-0 bg-gradient-to-br from-green-800 to-emerald-700 flex items-center justify-center aspect-[4/3] sm:aspect-auto">
+                                        <i class="fa-solid fa-mountain-sun text-3xl text-white/40"></i>
+                                    </div>
+                                }
+                                <div class="px-4 py-4 sm:px-5">
+                                    <h3 class="mb-1 text-[15px] font-bold text-slate-900">@item.Name</h3>
+                                    <p class="text-[14px] leading-6 text-slate-600">@item.Description</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+            else if (!string.IsNullOrWhiteSpace(park.SectionBestThingsToSee))
+            {
+                <section id="best-things-to-see" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-3">Best Things to See in @(park.Name.Replace(" National Park", ""))</h2>
+                    <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                        @park.SectionBestThingsToSee.RenderAutoLinks()
+                    </div>
+                </section>
+            }
+
+            @* Best Time to Visit *@
+            @if (park.Seasons.Count > 0 || !string.IsNullOrWhiteSpace(park.SectionBestTimeToVisit))
+            {
+                <section id="best-time-to-visit" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-4">Best Time to Visit @(park.Name.Replace(" National Park", ""))</h2>
+                    @if (park.Seasons.Count > 0)
+                    {
+                        @await Html.PartialAsync("_ParkSeasonCards", park.Seasons)
+                        @if (!string.IsNullOrWhiteSpace(park.SectionBestTimeToVisit))
+                        {
+                            <div class="mt-4 prose prose-slate max-w-none text-[15px] leading-7 text-slate-600">
+                                @park.SectionBestTimeToVisit.RenderAutoLinks()
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                            @park.SectionBestTimeToVisit.RenderAutoLinks()
+                        </div>
+                    }
+                </section>
+            }
+
+            @* Map — moved below content intro *@
+            <section id="map" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                <h2 class="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Location</h2>
+                @await Html.PartialAsync("_ParkMap", park)
+                @if (!string.IsNullOrWhiteSpace(park.Location.NearestCity))
+                {
+                    <p class="mt-2 text-[12px] text-slate-500">
+                        <i class="fa-solid fa-location-dot mr-1 text-green-700"></i>
+                        Nearest city: @park.Location.NearestCity
+                        @if (!string.IsNullOrWhiteSpace(park.Location.NearestMajorAirport))
+                        {
+                            <span class="ml-3">
+                                <i class="fa-solid fa-plane mr-1 text-slate-400"></i>
+                                @park.Location.NearestMajorAirport
+                            </span>
+                        }
+                    </p>
+                }
+            </section>
+
+            @* Hiking *@
+            @if (park.HikingTrails.Count > 0 || !string.IsNullOrWhiteSpace(park.SectionHiking))
+            {
+                <section id="hiking" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-4">Hiking in @(park.Name.Replace(" National Park", ""))</h2>
+                    @if (!string.IsNullOrWhiteSpace(park.SectionImageHiking))
+                    {
+                        <figure class="mb-4 overflow-hidden">
+                            <img src="@Images.Crop(park.SectionImageHiking, 1200, 560)"
+                                 srcset="@(Images.Crop(park.SectionImageHiking, 640, 299)) 640w,
+                                         @(Images.Crop(park.SectionImageHiking, 900, 420)) 900w,
+                                         @(Images.Crop(park.SectionImageHiking, 1200, 560)) 1200w"
+                                 sizes="(min-width: 1024px) 900px, 100vw"
+                                 alt="Hiking trail at @park.Name"
+                                 class="w-full object-cover max-h-[280px]"
+                                 loading="lazy" decoding="async" />
+                        </figure>
+                    }
+                    @if (park.HikingTrails.Count > 0)
+                    {
+                        @await Html.PartialAsync("_ParkTrailTable", park.HikingTrails)
+                        @if (!string.IsNullOrWhiteSpace(park.SectionHiking))
+                        {
+                            <div class="mt-4 prose prose-slate max-w-none text-[15px] leading-7 text-slate-600">
+                                @park.SectionHiking.RenderAutoLinks()
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                            @park.SectionHiking.RenderAutoLinks()
+                        </div>
+                    }
+                </section>
+            }
+
+            @* Camping *@
+            @if (park.Campgrounds.Count > 0 || !string.IsNullOrWhiteSpace(park.SectionCamping))
+            {
+                <section id="camping" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-4">Camping &amp; Lodging</h2>
+                    @if (!string.IsNullOrWhiteSpace(park.SectionImageCamping))
+                    {
+                        <figure class="mb-4 overflow-hidden">
+                            <img src="@Images.Crop(park.SectionImageCamping, 1200, 560)"
+                                 srcset="@(Images.Crop(park.SectionImageCamping, 640, 299)) 640w,
+                                         @(Images.Crop(park.SectionImageCamping, 900, 420)) 900w,
+                                         @(Images.Crop(park.SectionImageCamping, 1200, 560)) 1200w"
+                                 sizes="(min-width: 1024px) 900px, 100vw"
+                                 alt="Camping at @park.Name"
+                                 class="w-full object-cover max-h-[280px]"
+                                 loading="lazy" decoding="async" />
+                        </figure>
+                    }
+                    @if (park.Campgrounds.Count > 0)
+                    {
+                        @await Html.PartialAsync("_ParkCampgroundTable", park.Campgrounds)
+                        @if (!string.IsNullOrWhiteSpace(park.SectionCamping))
+                        {
+                            <div class="mt-4 prose prose-slate max-w-none text-[15px] leading-7 text-slate-600">
+                                @park.SectionCamping.RenderAutoLinks()
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                            @park.SectionCamping.RenderAutoLinks()
+                        </div>
+                    }
+                </section>
+            }
+
+            @* Fees & Reservations *@
+            @if (park.Fees.Count > 0 || !string.IsNullOrWhiteSpace(park.SectionFeesReservations))
+            {
+                <section id="fees-reservations" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-4">Entrance Fees &amp; Reservations</h2>
+                    @if (park.Fees.Count > 0)
+                    {
+                        @await Html.PartialAsync("_ParkFeesTable", park.Fees)
+                        @if (!string.IsNullOrWhiteSpace(park.SectionFeesReservations))
+                        {
+                            <div class="mt-4 prose prose-slate max-w-none text-[15px] leading-7 text-slate-600">
+                                @park.SectionFeesReservations.RenderAutoLinks()
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                            @park.SectionFeesReservations.RenderAutoLinks()
+                        </div>
+                    }
+                </section>
+            }
+
+            @* Getting There *@
+            @if (!string.IsNullOrWhiteSpace(park.SectionGettingThere))
+            {
+                <section id="getting-there" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-3">Getting There</h2>
+                    <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                        @park.SectionGettingThere.RenderAutoLinks()
+                    </div>
+                </section>
+            }
+
+            @* Second photo row (highlights 4+) — breaks up the bottom half of the page *@
+            @if (park.Media.Highlights.Count > 3)
+            {
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    @foreach (var hl in park.Media.Highlights.Skip(3).Take(4))
+                    {
+                        <figure class="overflow-hidden rounded-lg border border-slate-200">
+                            <img src="@Images.Crop(hl.Image, 320, 320)"
+                                 srcset="@(Images.Crop(hl.Image, 160, 160)) 160w,
+                                         @(Images.Crop(hl.Image, 320, 320)) 320w,
+                                         @(Images.Crop(hl.Image, 480, 480)) 480w"
+                                 sizes="(min-width: 640px) 25vw, 50vw"
+                                 alt="@hl.Alt"
+                                 class="w-full object-cover aspect-square"
+                                 loading="lazy"
+                                 decoding="async" />
+                            @if (!string.IsNullOrWhiteSpace(hl.Credit))
+                            {
+                                <figcaption class="bg-slate-50 px-2 py-1 text-[10px] text-slate-400 truncate">@hl.Credit</figcaption>
+                            }
+                        </figure>
+                    }
+                </div>
+            }
+
+            @* Geology *@
+            @if (!string.IsNullOrWhiteSpace(park.SectionGeology))
+            {
+                <section id="geology" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-3">Geology</h2>
+                    <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                        @park.SectionGeology.RenderAutoLinks()
+                    </div>
+                </section>
+            }
+
+            @* Wildlife *@
+            @if (!string.IsNullOrWhiteSpace(park.SectionWildlife))
+            {
+                <section id="wildlife" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-3">Wildlife</h2>
+                    @if (!string.IsNullOrWhiteSpace(park.SectionImageWildlife))
+                    {
+                        <figure class="mb-4 overflow-hidden">
+                            <img src="@Images.Crop(park.SectionImageWildlife, 1200, 560)"
+                                 srcset="@(Images.Crop(park.SectionImageWildlife, 640, 299)) 640w,
+                                         @(Images.Crop(park.SectionImageWildlife, 900, 420)) 900w,
+                                         @(Images.Crop(park.SectionImageWildlife, 1200, 560)) 1200w"
+                                 sizes="(min-width: 1024px) 900px, 100vw"
+                                 alt="Wildlife at @park.Name"
+                                 class="w-full object-cover max-h-[280px]"
+                                 loading="lazy" decoding="async" />
+                        </figure>
+                    }
+                    <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                        @park.SectionWildlife.RenderAutoLinks()
+                    </div>
+                </section>
+            }
+
+            @* History *@
+            @if (!string.IsNullOrWhiteSpace(park.SectionHistory))
+            {
+                <section id="history" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <h2 class="content-h2 mb-3">History</h2>
+                    @if (!string.IsNullOrWhiteSpace(park.SectionImageHistory))
+                    {
+                        <figure class="mb-4 overflow-hidden">
+                            <img src="@Images.Crop(park.SectionImageHistory, 1200, 560)"
+                                 srcset="@(Images.Crop(park.SectionImageHistory, 640, 299)) 640w,
+                                         @(Images.Crop(park.SectionImageHistory, 900, 420)) 900w,
+                                         @(Images.Crop(park.SectionImageHistory, 1200, 560)) 1200w"
+                                 sizes="(min-width: 1024px) 900px, 100vw"
+                                 alt="Historical landmark at @park.Name"
+                                 class="w-full object-cover max-h-[280px]"
+                                 loading="lazy" decoding="async" />
+                        </figure>
+                    }
+                    <div class="prose prose-slate max-w-none text-[19px] leading-[34px] tracking-[0.19px]">
+                        @park.SectionHistory.RenderAutoLinks()
+                    </div>
+                </section>
+            }
+
+            @* FAQ *@
+            @if (Model.HasFaq)
+            {
+                @await Html.PartialAsync("_Faq", (object)Model)
+            }
+
+            @* Editorial / Author box — before sources *@
+            <div class="mt-8 pt-8 border-t border-slate-200/70">
+                @await Html.PartialAsync("_AuthorBox", new USASymbol.Models.ViewModels.AuthorBox
+                {
+                    DateModified = park.DateModified,
+                    Author = park.Author
+                })
+            </div>
+
+            @* Sources *@
+            @if (Model.HasSources)
+            {
+                <section id="sources" class="scroll-mt-32 mt-8 pt-8 border-t border-slate-200/70">
+                    <div class="border border-slate-200/80 bg-white/55 px-5 py-5 sm:px-6">
+                        <h2 class="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Sources</h2>
+                        <ul class="space-y-2">
+                            @foreach (var src in park.Sources)
+                            {
+                                <li class="text-[13px] text-slate-600">
+                                    <a href="@src.Url" target="_blank" rel="noopener noreferrer"
+                                       class="font-medium text-green-700 hover:text-green-900 underline decoration-green-300 transition">@src.Name</a>
+                                    @if (!string.IsNullOrWhiteSpace(src.Description))
+                                    {
+                                        <span class="text-slate-400"> — @src.Description</span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </section>
+            }
+
+        </div>
+
+        @* ── Sidebar ───────────────────────────────────────────────── *@
+        <aside class="space-y-6 lg:sticky lg:top-24 lg:self-start">
+
+            @* Quick Facts *@
+            @if (Model.QuickFacts?.Count > 0)
+            {
+                <div>
+                    <h2 class="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Quick Facts</h2>
+                    @await Html.PartialAsync("_QuickFacts", Model.QuickFacts)
+                </div>
+            }
+
+            @* Activities tags *@
+            @if (park.Filters.Activities.Count > 0)
+            {
+                <div class="border border-slate-200/80 bg-white/55 px-5 py-4">
+                    <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Activities</h3>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach (var act in park.Filters.Activities)
+                        {
+                            <span class="inline-flex items-center gap-1 rounded-full bg-green-50 border border-green-200 px-2.5 py-1 text-[11px] font-medium text-green-800">
+                                @act.Replace("_", " ")
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+
+            @* Landscapes tags *@
+            @if (park.Filters.Landscapes.Count > 0)
+            {
+                <div class="border border-slate-200/80 bg-white/55 px-5 py-4">
+                    <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Landscapes</h3>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach (var ls in park.Filters.Landscapes)
+                        {
+                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-700">
+                                @ls
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+
+            @* Official link *@
+            @if (!string.IsNullOrWhiteSpace(park.NpsCode))
+            {
+                <div class="border border-slate-200/80 bg-white/55 px-5 py-4">
+                    <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Official Resources</h3>
+                    <a href="https://www.nps.gov/@park.NpsCode.ToLower()/"
+                       target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2 text-[13px] font-medium text-green-700 hover:text-green-900 transition">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        NPS.gov — @park.Name
+                    </a>
+                </div>
+            }
+
+            @* Back to index *@
+            <div class="border border-slate-200/80 bg-white/55 px-5 py-4">
+                <a href="/national-parks"
+                   class="inline-flex items-center gap-2 text-[13px] font-medium text-slate-600 hover:text-slate-900 transition">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                    All National Parks
+                </a>
+            </div>
+
+            @* Explore more sidebar *@
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+
+        </aside>
+    </div>
+</div>

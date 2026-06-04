@@ -1,0 +1,115 @@
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@model FossilDetailViewModel
+
+@{
+    var sections = Model.FossilContent?.Sections;
+}
+
+@if (sections?.Any() == true)
+{
+    foreach (var item in sections)
+    {
+        var hasSites = item.Sites?.Any() == true;
+
+        <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            @await Html.PartialAsync("Components/Content/_SectionHeader", (IContentSection)item)
+
+            @if (item.Paragraphs?.Any() == true)
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                    @for (var i = 0; i < item.Paragraphs.Count; i++)
+                    {
+                        <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                            @item.Paragraphs[i].RenderAutoLinks()
+                        </p>
+                    }
+                </div>
+            }
+
+            @if (item.Facts?.Any() == true)
+            {
+                @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+            }
+
+            @* ── Fossil Sites Leaflet Map (location section) ─────────────────── *@
+            @if (hasSites)
+            {
+                var fossilName = Model.FossilContent?.Name ?? "State Fossil";
+                var mapId = $"fossil-map-{item.Id}";
+                var primarySite = item.Sites.FirstOrDefault(s =>
+                    string.Equals(s.Type, "primary", StringComparison.OrdinalIgnoreCase))
+                    ?? item.Sites.First();
+
+                var lat = primarySite.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                var lng = primarySite.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+                <div class="mt-8" data-nosnippet>
+                    <div class="overflow-hidden border border-amber-200/60 bg-white/55">
+                        <div id="@mapId" class="w-full" style="height:340px;" aria-label="@fossilName fossil sites map"></div>
+                        <div id="@($"{mapId}-fallback")" class="hidden px-5 py-4 text-sm text-slate-600 border-t border-slate-100">
+                            The interactive map is temporarily unavailable.
+                        </div>
+                    </div>
+                </div>
+
+                <link rel="stylesheet" href="~/vendor/leaflet/leaflet.css" />
+                <script src="~/vendor/leaflet/leaflet.js"></script>
+                <script>
+                (function () {
+                    var mapEl = document.getElementById('@mapId');
+                    var fallback = document.getElementById('@($"{mapId}-fallback")');
+                    if (!mapEl) return;
+                    if (typeof window.L === 'undefined') {
+                        mapEl.classList.add('hidden');
+                        if (fallback) fallback.classList.remove('hidden');
+                        return;
+                    }
+
+                    var map = L.map('@mapId', { zoomControl: true, scrollWheelZoom: false })
+                        .setView([@lat, @lng], 7);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                        maxZoom: 18
+                    }).addTo(map);
+
+                    var sites = [
+                        @foreach (var site in item.Sites)
+                        {
+                            var siteLat = site.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                            var siteLng = site.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                            var isPrimary = string.Equals(site.Type, "primary", StringComparison.OrdinalIgnoreCase);
+                            <text>
+                        { lat: @siteLat, lng: @siteLng, name: @Json.Serialize(site.Name), note: @Json.Serialize(site.Note), primary: @(isPrimary ? "true" : "false") },
+                            </text>
+                        }
+                    ];
+
+                    sites.forEach(function (s) {
+                        var size = s.primary ? 36 : 28;
+                        var bg = s.primary ? '#b45309' : '#92400e';
+                        var icon = L.divIcon({
+                            html: '<div style="background:' + bg + ';color:#fff;border-radius:50%;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;font-size:' + Math.round(size * 0.4) + 'px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"><i class="fa-solid fa-bone"></i></div>',
+                            className: '',
+                            iconSize: [size, size],
+                            iconAnchor: [size / 2, size / 2]
+                        });
+                        var popup = '<strong>' + s.name + '</strong>' + (s.note ? '<br><span style="font-size:12px;color:#64748b">' + s.note + '</span>' : '');
+                        L.marker([s.lat, s.lng], { icon: icon })
+                            .bindPopup(popup)
+                            .addTo(map);
+                    });
+                }());
+                </script>
+            }
+
+            <div class="clear-both"></div>
+        </section>
+    }
+}
+else
+{
+    <div class="text-sm text-slate-500">@Model.EmptySectionsMessage</div>
+}

@@ -1,0 +1,38 @@
+@using USASymbol.Models.Content
+@model List<ParkCampground>
+
+<div class="overflow-x-auto -mx-1">
+    <table class="w-full text-[13px] border-collapse">
+        <thead>
+            <tr class="border-b-2 border-slate-200">
+                <th class="py-2 px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Campground</th>
+                <th class="py-2 px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 whitespace-nowrap">Sites</th>
+                <th class="py-2 px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 whitespace-nowrap">Season</th>
+                <th class="py-2 px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 hidden sm:table-cell">Reservations</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition-colors">
+                    <td class="py-3 px-3 align-top">
+                        <div class="font-semibold text-slate-900">@c.Name</div>
+                        @if (!string.IsNullOrWhiteSpace(c.Note))
+                        {
+                            <div class="mt-0.5 text-[12px] text-slate-500">@c.Note</div>
+                        }
+                    </td>
+                    <td class="py-3 px-3 text-slate-700 align-top whitespace-nowrap">@(c.Sites > 0 ? c.Sites.ToString() : "—")</td>
+                    <td class="py-3 px-3 text-slate-700 align-top">@c.Season</td>
+                    <td class="py-3 px-3 text-slate-600 align-top hidden sm:table-cell leading-5">@c.Reservations</td>
+                </tr>
+                @if (!string.IsNullOrWhiteSpace(c.Reservations))
+                {
+                    <tr class="border-b border-slate-100 sm:hidden">
+                        <td colspan="3" class="pb-3 px-3 text-[12px] text-slate-500 italic leading-5">@c.Reservations</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,230 @@
+@using System.Text.Json
+@using usasymbol.Services.Interface
+@using USASymbol.Models.Content
+@model RankingCompareData
+@inject IStateService StateService
+@inject IImageUrlService Images
+
+@{
+    var metricSlug = (Model?.MetricSlug ?? "").Trim();
+    if (string.IsNullOrWhiteSpace(metricSlug))
+    {
+        return;
+    }
+
+    var states = await StateService.GetAllStatesAsync();
+    var pickerStates = states
+        .Select(s => new
+        {
+            slug = s.Slug,
+            name = s.Name,
+            abbreviation = s.Abbreviation,
+            region = s.Region,
+            flagImageUrl = Images.Card(s.FlagImageUrl)
+        })
+        .ToList();
+
+    var widgetId = $"ranking-compare-{metricSlug.Replace("-", "_")}";
+    var title = string.IsNullOrWhiteSpace(Model?.Title)
+        ? "Compare two states"
+        : Model!.Title!;
+    var description = string.IsNullOrWhiteSpace(Model?.Description)
+        ? "Pick two states and jump straight into the matching comparison page."
+        : Model!.Description!;
+    var buttonText = string.IsNullOrWhiteSpace(Model?.ButtonText)
+        ? "Compare States"
+        : Model!.ButtonText!;
+    var icon = string.IsNullOrWhiteSpace(Model?.Icon)
+        ? "fa-solid fa-scale-balanced"
+        : Model!.Icon!;
+    var defaultA = Model?.DefaultStateA ?? "";
+    var defaultB = Model?.DefaultStateB ?? "";
+}
+
+<section id="compare-states" class="scroll-mt-24">
+    <div id="@widgetId"
+         class="relative border border-slate-200 bg-white shadow-sm"
+         data-metric-slug="@metricSlug"
+         data-default-a="@defaultA"
+         data-default-b="@defaultB">
+        <div class="border-b border-slate-200 px-5 py-6 md:px-7">
+            <div class="flex items-start gap-4">
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center border border-slate-200 bg-slate-50 text-slate-800">
+                    <i class="@icon text-sm"></i>
+                </span>
+                <div class="min-w-0">
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-blue-700">Build A Comparison</p>
+                    <h2 class="text-2xl font-semibold tracking-tight text-slate-950 md:text-3xl">@title</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600 md:text-base">@description</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 px-5 py-6 md:px-7">
+            <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_64px_minmax(0,1fr)] md:items-end">
+                <div class="relative ranking-compare-picker" data-slot="a">
+                    <label class="mb-2 block text-sm font-semibold text-slate-900">First state</label>
+                    <input type="hidden" class="ranking-compare-value" />
+                    <button type="button"
+                            class="ranking-compare-trigger flex w-full items-center gap-3 border border-slate-300 bg-white px-4 py-3.5 text-left shadow-sm transition hover:border-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100">
+                        <img class="ranking-compare-flag hidden h-6 w-9 shrink-0 object-cover ring-1 ring-slate-200" alt="" />
+                        <span class="ranking-compare-label min-w-0 flex-1 truncate text-sm font-medium text-slate-400">Choose a state...</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+                    </button>
+                    <div class="ranking-compare-menu absolute left-0 right-0 top-full z-40 mt-2 hidden border border-slate-200 bg-white shadow-xl">
+                        <div class="border-b border-slate-100 p-3">
+                            <label class="flex items-center gap-2 border border-slate-200 bg-slate-50 px-3 py-2">
+                                <i class="fa-solid fa-magnifying-glass text-xs text-slate-400"></i>
+                                <input type="text" class="ranking-compare-search min-w-0 flex-1 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none" placeholder="Search states..." autocomplete="off" />
+                            </label>
+                        </div>
+                        <ul class="ranking-compare-list max-h-64 overflow-y-auto py-1"></ul>
+                    </div>
+                </div>
+
+                <div class="hidden justify-center pb-1 md:flex">
+                    <span class="flex h-12 w-12 items-center justify-center bg-slate-950 text-xs font-black uppercase tracking-[0.18em] text-white shadow-sm">VS</span>
+                </div>
+
+                <div class="relative ranking-compare-picker" data-slot="b">
+                    <label class="mb-2 block text-sm font-semibold text-slate-900">Second state</label>
+                    <input type="hidden" class="ranking-compare-value" />
+                    <button type="button"
+                            class="ranking-compare-trigger flex w-full items-center gap-3 border border-slate-300 bg-white px-4 py-3.5 text-left shadow-sm transition hover:border-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100">
+                        <img class="ranking-compare-flag hidden h-6 w-9 shrink-0 object-cover ring-1 ring-slate-200" alt="" />
+                        <span class="ranking-compare-label min-w-0 flex-1 truncate text-sm font-medium text-slate-400">Choose a state...</span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+                    </button>
+                    <div class="ranking-compare-menu absolute left-0 right-0 top-full z-40 mt-2 hidden border border-slate-200 bg-white shadow-xl">
+                        <div class="border-b border-slate-100 p-3">
+                            <label class="flex items-center gap-2 border border-slate-200 bg-slate-50 px-3 py-2">
+                                <i class="fa-solid fa-magnifying-glass text-xs text-slate-400"></i>
+                                <input type="text" class="ranking-compare-search min-w-0 flex-1 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none" placeholder="Search states..." autocomplete="off" />
+                            </label>
+                        </div>
+                        <ul class="ranking-compare-list max-h-64 overflow-y-auto py-1"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button"
+                    class="ranking-compare-submit mt-5 inline-flex w-full items-center justify-center gap-2 bg-slate-950 px-5 py-3.5 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40">
+                <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
+                @buttonText
+            </button>
+        </div>
+    </div>
+</section>
+
+<script>
+(function () {
+    const root = document.getElementById('@widgetId');
+    if (!root) return;
+
+    const states = @Html.Raw(JsonSerializer.Serialize(pickerStates));
+    const metricSlug = root.dataset.metricSlug;
+
+    function findState(slug) {
+        return states.find(s => s.slug === slug);
+    }
+
+    function closeAll(except) {
+        root.querySelectorAll('.ranking-compare-menu').forEach(menu => {
+            if (menu !== except) menu.classList.add('hidden');
+        });
+    }
+
+    function renderList(picker, query) {
+        const list = picker.querySelector('.ranking-compare-list');
+        const q = (query || '').trim().toLowerCase();
+        list.innerHTML = '';
+
+        states
+            .filter(s => !q || s.name.toLowerCase().includes(q) || s.abbreviation.toLowerCase().startsWith(q))
+            .forEach(state => {
+                const item = document.createElement('li');
+                item.className = 'flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm transition hover:bg-blue-50';
+                item.dataset.slug = state.slug;
+                item.innerHTML = `
+                    ${state.flagImageUrl ? `<img src="${state.flagImageUrl}" alt="${state.name} flag" class="h-6 w-9 shrink-0 object-cover ring-1 ring-slate-200" loading="lazy" />` : `<span class="h-6 w-9 shrink-0 bg-slate-200"></span>`}
+                    <span class="w-8 shrink-0 font-bold text-slate-500">${state.abbreviation}</span>
+                    <span class="min-w-0 flex-1 truncate font-medium text-slate-800">${state.name}</span>
+                `;
+                item.addEventListener('click', () => selectState(picker, state.slug));
+                list.appendChild(item);
+            });
+    }
+
+    function selectState(picker, slug) {
+        const state = findState(slug);
+        if (!state) return;
+
+        picker.querySelector('.ranking-compare-value').value = state.slug;
+        const label = picker.querySelector('.ranking-compare-label');
+        const flag = picker.querySelector('.ranking-compare-flag');
+        label.textContent = `${state.abbreviation} · ${state.name}`;
+        label.classList.remove('text-slate-400');
+        label.classList.add('text-slate-950', 'font-semibold');
+
+        if (state.flagImageUrl) {
+            flag.src = state.flagImageUrl;
+            flag.alt = `${state.name} flag`;
+            flag.classList.remove('hidden');
+        } else {
+            flag.classList.add('hidden');
+        }
+
+        picker.querySelector('.ranking-compare-menu').classList.add('hidden');
+        updateSubmit();
+    }
+
+    function updateSubmit() {
+        const values = Array.from(root.querySelectorAll('.ranking-compare-value')).map(input => input.value);
+        const submit = root.querySelector('.ranking-compare-submit');
+        submit.disabled = !values[0] || !values[1] || values[0] === values[1];
+    }
+
+    root.querySelectorAll('.ranking-compare-picker').forEach(picker => {
+        const trigger = picker.querySelector('.ranking-compare-trigger');
+        const menu = picker.querySelector('.ranking-compare-menu');
+        const search = picker.querySelector('.ranking-compare-search');
+
+        renderList(picker, '');
+
+        trigger.addEventListener('click', () => {
+            const opening = menu.classList.contains('hidden');
+            closeAll(menu);
+            menu.classList.toggle('hidden', !opening);
+            if (opening) {
+                search.value = '';
+                renderList(picker, '');
+                setTimeout(() => search.focus(), 20);
+            }
+        });
+
+        search.addEventListener('input', () => renderList(picker, search.value));
+        search.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                menu.classList.add('hidden');
+                trigger.focus();
+            }
+        });
+    });
+
+    document.addEventListener('click', event => {
+        if (!root.contains(event.target)) closeAll();
+    });
+
+    root.querySelector('.ranking-compare-submit').addEventListener('click', () => {
+        const values = Array.from(root.querySelectorAll('.ranking-compare-value')).map(input => input.value);
+        if (!values[0] || !values[1] || values[0] === values[1]) return;
+
+        const pair = values.slice().sort().join('-vs-');
+        window.location.href = `/compare/${pair}/${metricSlug}`;
+    });
+
+    if (root.dataset.defaultA) selectState(root.querySelector('[data-slot="a"]'), root.dataset.defaultA);
+    if (root.dataset.defaultB) selectState(root.querySelector('[data-slot="b"]'), root.dataset.defaultB);
+    updateSubmit();
+})();
+</script>

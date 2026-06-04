@@ -1,0 +1,372 @@
+@model Usasymbol.Views.Shared.Components.StateHubMapViewModel
+
+@{
+    var mapId  = $"hub-map-{Model.Abbreviation.ToLower()}";
+    var dataId = $"hub-map-data-{Model.Abbreviation.ToLower()}";
+    var region = string.IsNullOrWhiteSpace(Model.Region)
+        ? "the United States"
+        : $"the {Model.Region} United States";
+}
+
+<section id="state-map" class="state-section scroll-mt-24" aria-labelledby="state-map-title">
+
+    <h2 id="state-map-title" class="content-h2 mb-5">Map of @Model.StateName</h2>
+
+    <div id="@mapId"
+         style="aspect-ratio:960/580;position:relative;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.375rem;overflow:hidden;min-height:220px"
+         role="img"
+         aria-label="Interactive map of @Model.StateName. Click the state to zoom in and view counties.">
+    </div>
+
+    <div style="margin-top:.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem">
+        <p class="border-l-2 border-slate-300 pl-4 text-sm leading-6 text-slate-700" style="margin:0">
+            @Model.StateName is a state in @region, with its capital city in @Model.Capital.
+        </p>
+        <a href="/states/@Model.Slug/map"
+           style="display:inline-flex;align-items:center;gap:.4rem;font:600 .8rem/1 system-ui,sans-serif;color:#1e3a8a;text-decoration:none;white-space:nowrap;padding:.45rem .85rem;border:1px solid #bfdbfe;border-radius:6px;background:#eff6ff;transition:background .15s"
+           onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l4-4 4 4"/><path d="M7 3v13"/><path d="M13 17l4 4 4-4"/><path d="M17 21V8"/></svg>
+            Full interactive map
+        </a>
+    </div>
+
+</section>
+
+<script type="application/json" id="@dataId">
+{
+    "fips":    @Model.Fips,
+    "lat":     @Model.CapitalLat.ToString("F6", System.Globalization.CultureInfo.InvariantCulture),
+    "lon":     @Model.CapitalLon.ToString("F6", System.Globalization.CultureInfo.InvariantCulture),
+    "capital": "@Html.Raw(Model.Capital.Replace("\\", "\\\\").Replace("\"", "\\\""))",
+    "slugs":   @Html.Raw(Model.StateSlugsJson),
+    "abbrs":   @Html.Raw(Model.FipsToAbbrJson)
+}
+</script>
+
+<script>
+(function () {
+    'use strict';
+
+    var CONTAINER_ID = '@mapId';
+    var DATA_ID      = '@dataId';
+    var W = 960, H = 580;
+
+    // ── Render ──────────────────────────────────────────────────────────────
+    function render(d3, topojson, usData) {
+        var container = document.getElementById(CONTAINER_ID);
+        var rawEl     = document.getElementById(DATA_ID);
+        if (!container || !rawEl) return;
+
+        var cfg      = JSON.parse(rawEl.textContent);
+        var features = topojson.feature(usData, usData.objects.states).features;
+
+        var svg = d3.select(container)
+            .append('svg')
+            .attr('viewBox', '0 0 ' + W + ' ' + H)
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .attr('preserveAspectRatio', 'xMidYMid meet')
+            .attr('aria-hidden', 'true')
+            .style('display', 'block');
+
+        var g          = svg.append('g');
+        var gStates    = g.append('g').attr('class', 'g-states');
+        var gCounties  = g.append('g').attr('class', 'g-counties');
+        var gCapital   = g.append('g').attr('class', 'g-capital');
+        var gLabels    = g.append('g').attr('class', 'g-labels').style('pointer-events', 'none');
+
+        var projection = d3.geoAlbersUsa().scale(1280).translate([W / 2, H / 2]);
+        var pathGen    = d3.geoPath().projection(projection);
+        var capitalPt  = projection([cfg.lon, cfg.lat]);
+
+        // ── State paths ─────────────────────────────────────────────────────
+        var statePaths = gStates.selectAll('path')
+            .data(features)
+            .join('path')
+            .attr('d', pathGen)
+            .style('fill',         function (d) { return +d.id === cfg.fips ? '#1e3a8a' : '#e2e8f0'; })
+            .style('stroke',       '#fff')
+            .style('stroke-width', '0.8')
+            .style('cursor',       function (d) {
+                return +d.id === cfg.fips ? 'zoom-in' : (cfg.slugs[d.id] ? 'pointer' : 'default');
+            });
+
+        // ── State abbreviation labels ────────────────────────────────────────
+        features.forEach(function (f) {
+            var abbr = cfg.abbrs[f.id];
+            if (!abbr) return;
+            var c = pathGen.centroid(f);
+            if (!c || isNaN(c[0]) || isNaN(c[1])) return;
+            var isCurrent = +f.id === cfg.fips;
+            gLabels.append('text')
+                .attr('x', c[0]).attr('y', c[1])
+                .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                .style('font',         '700 8px system-ui, sans-serif')
+                .style('fill',         isCurrent ? 'rgba(255,255,255,.85)' : '#64748b')
+                .style('stroke',       isCurrent ? 'rgba(30,58,138,.4)' : 'rgba(255,255,255,.7)')
+                .style('stroke-width', '2px')
+                .style('paint-order',  'stroke')
+                .style('user-select',  'none')
+                .text(abbr);
+        });
+
+        // ── Capital marker ──────────────────────────────────────────────────
+        if (capitalPt) {
+            gCapital.append('circle').attr('class', 'cap-ring')
+                .attr('cx', capitalPt[0]).attr('cy', capitalPt[1]).attr('r', 6)
+                .style('fill', '#fff').style('stroke', '#1e3a8a').style('stroke-width', '2.5')
+                .style('pointer-events', 'none');
+            gCapital.append('circle').attr('class', 'cap-dot')
+                .attr('cx', capitalPt[0]).attr('cy', capitalPt[1]).attr('r', 2.5)
+                .style('fill', '#1e3a8a')
+                .style('pointer-events', 'none');
+            gCapital.append('text').attr('class', 'cap-label')
+                .attr('x', capitalPt[0]).attr('y', capitalPt[1] - 11)
+                .attr('text-anchor', 'middle')
+                .style('font-family', 'system-ui, sans-serif')
+                .style('font-size',   '10px')
+                .style('font-weight', '700')
+                .style('fill',        '#1e3a8a')
+                .style('stroke',      '#f8fafc')
+                .style('stroke-width','2.5px')
+                .style('paint-order', 'stroke')
+                .style('pointer-events', 'none')
+                .text(cfg.capital);
+        }
+
+        // ── Hover tooltip ────────────────────────────────────────────────────
+        var tipEl = document.createElement('div');
+        tipEl.style.cssText = [
+            'display:none', 'position:absolute', 'pointer-events:none', 'z-index:15',
+            'background:rgba(15,23,42,.88)', 'color:#f8fafc',
+            'font:600 11px/1.3 system-ui,sans-serif',
+            'padding:5px 9px', 'border-radius:5px',
+            'white-space:nowrap', 'box-shadow:0 2px 8px rgba(0,0,0,.25)'
+        ].join(';');
+        container.appendChild(tipEl);
+
+        function showTip(text, mx, my) {
+            tipEl.textContent = text;
+            tipEl.style.display = 'block';
+            var rect = container.getBoundingClientRect();
+            var x = mx - rect.left + 12;
+            var y = my - rect.top - 28;
+            if (x + 160 > rect.width) x = mx - rect.left - 12 - (tipEl.offsetWidth || 120);
+            if (y < 4) y = my - rect.top + 12;
+            tipEl.style.left = Math.max(4, x) + 'px';
+            tipEl.style.top  = Math.max(4, y) + 'px';
+        }
+        function hideTip() { tipEl.style.display = 'none'; }
+
+        statePaths
+            .on('mousemove', function (event, d) {
+                if (isZoomed) return;
+                var info = cfg.slugs[d.id];
+                if (+d.id === cfg.fips) {
+                    showTip('Click to explore counties', event.clientX, event.clientY);
+                } else if (info) {
+                    // Derive readable name from slug: "new-york" → "New York"
+                    var name = info.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+                    showTip(name, event.clientX, event.clientY);
+                }
+            })
+            .on('mouseleave', hideTip);
+
+        // ── Back button ─────────────────────────────────────────────────────
+        var btn = document.createElement('button');
+        btn.textContent = '← Back';
+        btn.style.cssText = [
+            'display:none', 'position:absolute', 'top:10px', 'left:10px', 'z-index:10',
+            'padding:5px 11px', 'background:rgba(255,255,255,.93)',
+            'border:1px solid #cbd5e1', 'border-radius:6px',
+            'font:600 12px/1 system-ui,sans-serif', 'color:#1e3a8a',
+            'cursor:pointer', 'box-shadow:0 1px 4px rgba(0,0,0,.10)'
+        ].join(';');
+        container.appendChild(btn);
+
+        // ── Hint label ──────────────────────────────────────────────────────
+        var hint = document.createElement('div');
+        hint.textContent = 'Click state to view counties';
+        hint.style.cssText = [
+            'position:absolute', 'bottom:8px', 'right:10px',
+            'font:500 11px system-ui,sans-serif', 'color:#94a3b8',
+            'pointer-events:none', 'transition:opacity .3s'
+        ].join(';');
+        container.appendChild(hint);
+
+        // ── Zoom ─────────────────────────────────────────────────────────────
+        var isZoomed       = false;
+        var countiesLoaded = false;
+
+        var zoom = d3.zoom()
+            .scaleExtent([1, 14])
+            .on('zoom', function (event) {
+                var k = event.transform.k;
+                g.attr('transform', event.transform);
+                gStates.selectAll('path').style('stroke-width', 0.8 / k);
+                gCounties.selectAll('path').style('stroke-width', 0.5 / k);
+                gLabels.selectAll('text').style('font-size', Math.max(6, 8 / k) + 'px');
+                if (capitalPt) {
+                    gCapital.select('.cap-ring').attr('r', 6 / k);
+                    gCapital.select('.cap-dot').attr('r', 2.5 / k);
+                    gCapital.select('.cap-label')
+                        .attr('y', capitalPt[1] - 11 / k)
+                        .style('font-size',    (10 / k) + 'px')
+                        .style('stroke-width', (2.5 / k) + 'px');
+                }
+            });
+
+        svg.call(zoom).on('dblclick.zoom', null);
+
+        // ── Zoom helpers ─────────────────────────────────────────────────────
+        function zoomTo(feature) {
+            var b  = pathGen.bounds(feature);
+            var dx = b[1][0] - b[0][0];
+            var dy = b[1][1] - b[0][1];
+            var cx = (b[0][0] + b[1][0]) / 2;
+            var cy = (b[0][1] + b[1][1]) / 2;
+            var k  = Math.max(1, Math.min(10, 0.88 / Math.max(dx / W, dy / H)));
+            var tx = W / 2 - k * cx;
+            var ty = H / 2 - k * cy;
+
+            isZoomed = true;
+            btn.style.display = 'block';
+            hint.style.opacity = '0';
+            hideTip();
+            // Reset any hover fill
+            gStates.selectAll('path').style('fill', function (d) {
+                return +d.id === cfg.fips ? '#1e3a8a' : '#e2e8f0';
+            });
+            statePaths.style('cursor', function (d) {
+                return +d.id === cfg.fips ? 'zoom-out' : 'default';
+            });
+
+            svg.transition().duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(k));
+
+            if (+feature.id === cfg.fips) loadCounties(cfg.fips);
+        }
+
+        function zoomReset() {
+            isZoomed = false;
+            btn.style.display = 'none';
+            hint.style.opacity = '1';
+            statePaths.style('cursor', function (d) {
+                return +d.id === cfg.fips ? 'zoom-in' : (cfg.slugs[d.id] ? 'pointer' : 'default');
+            });
+            svg.transition().duration(600)
+                .call(zoom.transform, d3.zoomIdentity);
+        }
+
+        // ── County lazy load ─────────────────────────────────────────────────
+        var countyInfo = {};   // fips5 → {n, p}
+
+        function loadCounties(stateFips) {
+            if (countiesLoaded) return;
+            countiesLoaded = true;
+
+            var topoPromise = d3.json('/maps/us-counties-topo.json');
+            var dataPromise = d3.json('/maps/county-data.json');
+
+            Promise.all([topoPromise, dataPromise]).then(function (results) {
+                var countyData = results[0];
+                countyInfo     = results[1] || {};
+
+                var padState   = String(stateFips).padStart(2, '0');
+                var counties   = topojson.feature(countyData, countyData.objects.counties).features
+                    .filter(function (d) { return Math.floor(+d.id / 1000) === stateFips; });
+
+                gCounties.selectAll('path')
+                    .data(counties)
+                    .join('path')
+                    .attr('d', pathGen)
+                    .style('fill',         'rgba(255,255,255,0)')
+                    .style('stroke',       'rgba(255,255,255,.55)')
+                    .style('stroke-width', '0.5')
+                    .style('cursor',       'default')
+                    .on('mouseenter', function (event, d) {
+                        d3.select(this).style('fill', 'rgba(255,255,255,.18)');
+                        var fips5  = String(d.id).padStart(5, '0');
+                        var info   = countyInfo[fips5];
+                        var name   = info ? info.n + ' County' : 'County';
+                        var popStr = info && info.p ? ' — ' + Number(info.p).toLocaleString() : '';
+                        showTip(name + popStr, event.clientX, event.clientY);
+                    })
+                    .on('mousemove', function (event) {
+                        var tipW = tipEl.offsetWidth || 160;
+                        var rect = container.getBoundingClientRect();
+                        var x    = event.clientX - rect.left + 12;
+                        if (x + tipW > rect.width) x = event.clientX - rect.left - tipW - 12;
+                        tipEl.style.left = Math.max(4, x) + 'px';
+                        tipEl.style.top  = Math.max(4, event.clientY - rect.top - 28) + 'px';
+                    })
+                    .on('mouseleave', function () {
+                        d3.select(this).style('fill', 'rgba(255,255,255,0)');
+                        hideTip();
+                    });
+            });
+        }
+
+        // ── Hover fill ──────────────────────────────────────────────────────
+        statePaths
+            .on('mouseenter', function (event, d) {
+                if (isZoomed) return;
+                if (+d.id !== cfg.fips) {
+                    d3.select(this).style('fill', '#cbd5e1');
+                }
+            })
+            .on('mouseleave.fill', function (event, d) {
+                if (+d.id !== cfg.fips) {
+                    d3.select(this).style('fill', '#e2e8f0');
+                }
+            });
+
+        // ── Click handlers ───────────────────────────────────────────────────
+        statePaths.on('click', function (event, d) {
+            event.stopPropagation();
+
+            if (isZoomed) {
+                // clicking anything while zoomed → zoom out
+                zoomReset();
+                return;
+            }
+
+            if (+d.id === cfg.fips) {
+                zoomTo(d);
+            } else if (cfg.slugs[d.id]) {
+                window.location.href = '/states/' + cfg.slugs[d.id];
+            }
+        });
+
+        btn.addEventListener('click', function () { zoomReset(); });
+
+        // ESC key to zoom out
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && isZoomed) zoomReset();
+        });
+    }
+
+    // ── Script loader ────────────────────────────────────────────────────────
+    function loadScript(src, cb) {
+        var s = document.createElement('script');
+        s.src = src; s.onload = cb;
+        document.head.appendChild(s);
+    }
+
+    function init() {
+        d3.json('/maps/us-states-topo.json').then(function (usData) {
+            render(d3, topojson, usData);
+        });
+    }
+
+    if (typeof d3 !== 'undefined' && typeof topojson !== 'undefined') {
+        init();
+    } else if (typeof d3 !== 'undefined') {
+        loadScript('/js/topojson-client.min.js', init);
+    } else {
+        loadScript('/js/d3.min.js', function () {
+            loadScript('/js/topojson-client.min.js', init);
+        });
+    }
+})();
+</script>

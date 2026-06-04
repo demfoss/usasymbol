@@ -1,0 +1,56 @@
+@using USASymbol.Models.Content
+@model List<ParkTrail>
+
+@{
+    string DifficultyBadge(string d) => d.ToLower() switch
+    {
+        "easy"      => "bg-green-100 text-green-800",
+        "moderate"  => "bg-yellow-100 text-yellow-800",
+        "strenuous" => "bg-red-100 text-red-800",
+        "multi_day" => "bg-purple-100 text-purple-800",
+        _           => "bg-slate-100 text-slate-600"
+    };
+
+    string DifficultyLabel(string d) => d.ToLower() switch
+    {
+        "easy"      => "Easy",
+        "moderate"  => "Moderate",
+        "strenuous" => "Strenuous",
+        "multi_day" => "Multi-day",
+        _           => d
+    };
+}
+
+<div class="overflow-x-auto -mx-1">
+    <table class="w-full text-[13px] border-collapse">
+        <thead>
+            <tr class="border-b-2 border-slate-200">
+                <th class="py-2 px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 whitespace-nowrap">Trail</th>
+                <th class="py-2 px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 whitespace-nowrap">Difficulty</th>
+                <th class="py-2 px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 whitespace-nowrap">Distance</th>
+                <th class="py-2 px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 whitespace-nowrap">Elevation</th>
+                <th class="py-2 px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 hidden sm:table-cell">Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var trail in Model)
+            {
+                <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition-colors">
+                    <td class="py-3 px-3 font-semibold text-slate-900 align-top">@trail.Name</td>
+                    <td class="py-3 px-3 align-top whitespace-nowrap">
+                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold @DifficultyBadge(trail.Difficulty)">@DifficultyLabel(trail.Difficulty)</span>
+                    </td>
+                    <td class="py-3 px-3 text-slate-700 align-top whitespace-nowrap">@trail.Distance</td>
+                    <td class="py-3 px-3 text-slate-700 align-top whitespace-nowrap">@trail.Elevation</td>
+                    <td class="py-3 px-3 text-slate-600 align-top hidden sm:table-cell leading-5">@trail.Note</td>
+                </tr>
+                @if (!string.IsNullOrWhiteSpace(trail.Note))
+                {
+                    <tr class="border-b border-slate-100 sm:hidden">
+                        <td colspan="4" class="pb-3 px-3 text-[12px] text-slate-500 leading-5 italic">@trail.Note</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
