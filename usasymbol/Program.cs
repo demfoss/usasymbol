@@ -8,6 +8,7 @@ using usasymbol.Services;
 using usasymbol.Services.Interface;
 using USASymbol.Data;
 using USASymbol.Services;
+using USASymbol.Services.Content;
 using USASymbol.Services.Images;
 using USASymbol.Services.Interface;
 using USASymbol.Services.ContentPipeline;
@@ -74,6 +75,10 @@ builder.Services.AddScoped<IFirearmService, FirearmService>();
 builder.Services.AddScoped<IComparisonStatsService, ComparisonStatsService>();
 builder.Services.AddScoped<IComparisonService, ComparisonService>();
 builder.Services.AddSingleton<QuizService>();
+builder.Services.AddScoped<IParkService, ParkService>();
+builder.Services.AddScoped<ISoilService, SoilService>();
+builder.Services.AddScoped<IFossilService, FossilService>();
+builder.Services.AddScoped<IStateAbbreviationContentService, StateAbbreviationContentService>();
 
 
 
