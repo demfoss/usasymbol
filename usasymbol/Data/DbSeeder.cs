@@ -158,6 +158,8 @@ namespace USASymbol.Data
 
         public static async Task SeedAsync(AppDbContext context)
         {
+            await context.Database.EnsureCreatedAsync();
+
             var states = new List<State>
             {
 
