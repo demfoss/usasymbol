@@ -5,7 +5,7 @@
 @{
     ViewData["Title"] = $"{Model.Symbol.Name} - {Model.State.Name} State {GetSymbolTypeName(Model.Symbol.Type)}";
     var heroImage = Model.Symbol.ImageUrl ?? "/images/default-symbol.jpg";
-    var origin = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    const string origin = "https://usasymbol.com";
     var imageRightsUrl = $"{origin}/terms#image-rights";
     var imageLicensePageUrl = $"{origin}/contact";
     var contentLicenseUrl = $"{origin}/terms";
@@ -75,7 +75,7 @@
 </nav>
 
 <!-- MAIN CONTENT -->
-<main class="max-w-6xl mx-auto px-4 pb-12">
+<div class="max-w-6xl mx-auto px-4 pb-12">
 
     <!-- PAGE TITLE -->
     <div class="mb-6">
@@ -88,28 +88,7 @@
         }
     </div>
 
-    <!-- AUTHOR BOX -->
-    <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-600 mb-8 shadow-sm">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-lg border-2 border-blue-200 bg-gradient-to-br from-blue-900 to-blue-600 flex items-center justify-center text-white font-bold text-xl">
-                    US
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm font-semibold text-gray-800">Researched by USA Symbol Team</span>
-                        <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <p class="text-xs text-gray-500">Fact-checked • Updated @DateTime.Now.ToString("MMMM d, yyyy")</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3 text-xs">
-                <a asp-controller="Home" asp-action="About" class="text-blue-700 hover:text-blue-900 font-semibold transition">About</a>
-            </div>
-        </div>
-    </div>
+    @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
 
     <!-- HERO SECTION -->
     <section class="mb-10">
@@ -238,7 +217,7 @@
         </a>
     </div>
 
-</main>
+</div>
 
 @functions {
     string GetSymbolTypeName(string type)

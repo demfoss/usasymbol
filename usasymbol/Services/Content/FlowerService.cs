@@ -38,11 +38,17 @@ namespace USASymbol.Services
                 {
                     var data = _yamlDeserializer.Deserialize<Dictionary<object, object>>(yaml);
 
+                    var treeName = GetString(data, "name");
+                    if (string.IsNullOrWhiteSpace(treeName))
+                    {
+                        treeName = GetString(data, "title");
+                    }
+
                     var treeContent = new TreeContent
                     {
                         Type = GetString(data, "type"),
                         State = GetString(data, "state"),
-                        Name = GetString(data, "name"),
+                        Name = treeName,
                         ScientificName = GetString(data, "scientific_name"),
                         AdoptedYear = GetInt(data, "adopted_year"),
                         IsOfficial = GetBool(data, "is_official"),
@@ -91,7 +97,7 @@ namespace USASymbol.Services
 
                                 if (secDict.ContainsKey("paragraphs") && secDict["paragraphs"] is List<object> paragraphs)
                                 {
-                                    section.Paragraphs = paragraphs.Select(p => p?.ToString() ?? "").ToList();
+                                    section.Paragraphs = paragraphs.OfType<string>().ToList();
                                 }
 
 

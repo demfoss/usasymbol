@@ -19,14 +19,17 @@ namespace USASymbol.Services
             _yamlDeserializer = new DeserializerBuilder().Build();
         }
 
-        public async Task<SealContent?> GetSealContentAsync(string stateSlug)
+        public async Task<SealContent?> GetSealContentAsync(string stateSlug, string contentFileName = "state-seal.yaml")
         {
-            var path = Path.Combine(_env.ContentRootPath, "Content", "states", stateSlug, "state-seal.yaml");
+            var normalizedFileName = string.IsNullOrWhiteSpace(contentFileName)
+                ? "state-seal.yaml"
+                : contentFileName.Trim();
+            var path = Path.Combine(_env.ContentRootPath, "Content", "states", stateSlug, normalizedFileName);
 
             if (!File.Exists(path))
                 return null;
 
-            var cacheKey = $"state-seal-{stateSlug}-{File.GetLastWriteTimeUtc(path).Ticks}";
+            var cacheKey = $"seal-content-{stateSlug}-{normalizedFileName}-{File.GetLastWriteTimeUtc(path).Ticks}";
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
@@ -49,6 +52,8 @@ namespace USASymbol.Services
                         WikidataId = string.Empty,
                         Legislation = GetString(data, "legislation"),
                         Meaning = GetString(data, "meaning"),
+                        MeaningAfterSectionId = GetString(data, "meaning_after_section"),
+                        MeaningTitle = GetString(data, "meaning_title"),
                         Author = GetString(data, "author"),
                         DatePublished = GetDate(data, "date_published"),
                         DateModified = GetDate(data, "date_modified"),
@@ -81,7 +86,7 @@ namespace USASymbol.Services
                             };
 
                             if (secDict.ContainsKey("paragraphs") && secDict["paragraphs"] is List<object> paragraphs)
-                                section.Paragraphs = paragraphs.Select(p => p?.ToString() ?? "").ToList();
+                                section.Paragraphs = paragraphs.OfType<string>().ToList();
 
                             if (secDict.ContainsKey("facts") && secDict["facts"] is List<object> facts)
                                 section.Facts = facts.Select(f => f?.ToString() ?? "").ToList();
@@ -251,13 +256,29 @@ namespace USASymbol.Services
                     if (sealContent.QuickFacts.Count == 0)
                         sealContent.QuickFacts = BuildQuickFacts(sealContent);
 
+                    if (string.IsNullOrWhiteSpace(sealContent.MeaningTitle) && !string.IsNullOrWhiteSpace(sealContent.Meaning))
+                    {
+                        var title = !string.IsNullOrWhiteSpace(sealContent.Name)
+                            ? sealContent.Name
+                            : sealContent.Type;
+                        sealContent.MeaningTitle = string.IsNullOrWhiteSpace(title) ? "Meaning" : $"{title} Meaning";
+                    }
+
+                    if (string.IsNullOrWhiteSpace(sealContent.MeaningAfterSectionId))
+                    {
+                        sealContent.MeaningAfterSectionId =
+                            sealContent.Sections.FirstOrDefault(section => string.Equals(section.Id, "history", StringComparison.OrdinalIgnoreCase))?.Id
+                            ?? sealContent.Sections.FirstOrDefault()?.Id
+                            ?? string.Empty;
+                    }
+
                     sealContent.VisualAssets = YamlParse.VisualAssets(data);
 
                     return sealContent;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error parsing state-seal.yaml for {stateSlug}: {ex.Message}");
+                    Console.WriteLine($"Error parsing {normalizedFileName} for {stateSlug}: {ex.Message}");
                     Console.WriteLine(ex.StackTrace);
                     return null;
                 }
@@ -316,7 +337,10 @@ namespace USASymbol.Services
             if (content.RevisedYear.HasValue && content.RevisedYear.Value > 0)
                 AddFact("Last revised", content.RevisedYear.Value.ToString());
 
-            AddFact("Status", content.IsOfficial ? "Official seal" : "State seal");
+            var typeLabel = string.IsNullOrWhiteSpace(content.Type)
+                ? "seal"
+                : content.Type.Trim().ToLowerInvariant();
+            AddFact("Status", content.IsOfficial ? $"Official {typeLabel}" : typeLabel);
             AddFact("Legislation", content.Legislation);
 
             return facts;

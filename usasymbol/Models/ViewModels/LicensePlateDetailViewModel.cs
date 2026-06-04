@@ -6,7 +6,7 @@ namespace USASymbol.Models.ViewModels
     {
         public LicensePlateContent? LicensePlateContent { get; set; }
 
-        public string? ContentTitle => LicensePlateContent?.Title ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(LicensePlateContent?.Title, Symbol?.Name);
         public string? ContentIntroText => LicensePlateContent?.IntroText;
         public override string? Author => LicensePlateContent?.Author;
         public override DateTime? DateModified => LicensePlateContent?.DateModified;
@@ -43,6 +43,8 @@ namespace USASymbol.Models.ViewModels
         public string? BigStatAfterSectionId => LicensePlateContent?.BigStatAfterSectionId;
         public string? TimelineAfterSectionId => LicensePlateContent?.TimelineAfterSectionId;
         public string? ExpertQuoteAfterSectionId => LicensePlateContent?.ExpertQuoteAfterSectionId;
+        public string? MeaningAfterSectionId => LicensePlateContent?.MeaningAfterSectionId;
+        public string? MeaningTitle => LicensePlateContent?.MeaningTitle;
         public IReadOnlyList<VisualAsset>? VisualAssets => LicensePlateContent?.VisualAssets;
     }
 }

@@ -10,7 +10,7 @@ namespace USASymbol.Models.ViewModels
     {
         public ColorContent? ColorContent { get; set; }
 
-        public string? ContentTitle => ColorContent?.Title ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(ColorContent?.Title, Symbol?.Name);
         public string? ContentIntroText => ColorContent?.IntroText;
         public override string? Author => ColorContent?.Author;
         public override DateTime? DateModified => ColorContent?.DateModified;

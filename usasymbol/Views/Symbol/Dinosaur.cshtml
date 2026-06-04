@@ -1,11 +1,11 @@
-@model USASymbol.Models.ViewModels.DinosaurDetailViewModel
+﻿@model USASymbol.Models.ViewModels.DinosaurDetailViewModel
 @using System.Globalization
 @using USASymbol.Extensions
 @using USASymbol.Models.ViewModels
 @inject IImageUrlService Images
 
 @{
-    var dinosaurName = Model.DinosaurContent?.Title ?? Model.Symbol.Name;
+    var dinosaurName = SymbolDetailViewModel.FirstNonEmpty(Model.DinosaurContent?.Title, Model.Symbol?.Name) ?? "State Dinosaur";
     var stateName = Model.State.Name;
     var adoptedYear = Model.DinosaurContent?.AdoptedYear ?? Model.Symbol.AdoptedYear ?? 0;
     var colors = Model.Colors;
@@ -28,7 +28,11 @@
         .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
         .ToList();
     var introText = Model.DinosaurContent?.IntroText ?? string.Empty;
-    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw)
+        ? descRaw
+        : !string.IsNullOrWhiteSpace(introText)
+            ? introText
+            : $"The {dinosaurName} is recognized as the official {designation.ToLowerInvariant()} of {stateName}.";
     heroDescriptionSource = System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1");
     var heroDescription = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, "<.*?>", " ")).Trim();
     var heroModel = new SymbolHeroViewModel
@@ -46,7 +50,7 @@
         Description = heroDescription,
         LegalReference = Model.Legislation,
         ImageUrl = Model.Symbol.ImageUrl,
-        ImageAlt = $"{dinosaurName} - {stateName} {designation}",
+        ImageAlt = dinosaurName,
         FigureTitle = dinosaurName,
         FigureSubtitle = $"Official {designation} of {stateName}",
         ImageLinkUrl = Model.Symbol.ImageUrl,
@@ -54,7 +58,7 @@
     };
 }
 
-<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+<nav class="border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
     <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
         @await Html.PartialAsync("_Breadcrumbs", Model)
     </div>
@@ -62,9 +66,9 @@
 
 <div id="top"></div>
 
-<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
-    <article class="w-full">
-        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)_304px] 2xl:gap-12 relative">
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="symbol-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
             @await Html.PartialAsync("_SymbolHero", heroModel)
 
             <aside class="hidden lg:block relative h-full">
@@ -83,7 +87,8 @@
                             </div>
                             <div class="min-w-0">
                                 <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
-                                <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                <h2 class="content-h3 mt-2 mb-3">@designation of @stateName</h2>
+                                <div class="prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
                                     @if (!string.IsNullOrEmpty(introText))
                                     {
                                         @introText.RenderAutoLinks()
@@ -105,49 +110,19 @@
                     </div>
                 }
 
-                @if (!string.IsNullOrEmpty(Model.Meaning))
-                {
-                    <div class="mb-8 rounded-xl bg-slate-50/50 border-l-4 @colors.Border p-6">
-                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-2 flex items-center gap-2">
-                            <i class="fa-solid fa-book-open text-slate-400"></i> Symbolic Meaning
-                        </h3>
-                        <p class="text-slate-800 text-lg leading-relaxed">@Model.Meaning.RenderAutoLinks()</p>
-                    </div>
-                }
-
                 <div class="relative site-content">
                     @await Html.PartialAsync("_DinosaurSections", Model)
                 </div>
 
-                @if (Model.QuizQuestions != null && Model.QuizQuestions.Any())
-                {
-                    <section class="content-divider">
-                        <div class="bg-slate-900 rounded-2xl p-6 sm:p-8 text-white">
-                            <div class="flex items-center gap-4 mb-6">
-                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-white/10">
-                                    <i class="fas fa-graduation-cap text-xl"></i>
-                                </div>
-                                <div>
-                                    <h2 class="text-2xl font-bold m-0 text-white">Test your knowledge</h2>
-                                    <p class="text-slate-300 mt-1">A quick quiz based on this page.</p>
-                                </div>
-                            </div>
-                            <div class="bg-white rounded-xl text-slate-900 p-5">
-                                @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
-                            </div>
-                        </div>
-                    </section>
-                }
-
-                <section id="faq" class="content-divider">
+                <div class="content-divider">
                     @await Html.PartialAsync("_Faq", Model)
-                </section>
+                </div>
 
                 <section id="sources" class="content-divider">
                     @await Html.PartialAsync("_Sources", Model)
                 </section>
 
-                <div class="mt-10 space-y-8 xl:hidden">
+                <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
                     @await Html.PartialAsync("_RelatedSymbols", Model)
                     @await Html.PartialAsync("_RelatedStatesSidebar", Model)
                     @await Html.PartialAsync("_GuidesAndRankingsSidebar")
@@ -195,9 +170,8 @@
             </div>
         }
     </article>
-</main>
+</div>
 
 @await Html.PartialAsync("_TocMobileFab", Model)
 @await Html.PartialAsync("_StructuredData", Model)
 @await Html.PartialAsync("_Scripts")
-<script src="~/js/quizEngine.js" defer></script>

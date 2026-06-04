@@ -4,11 +4,16 @@
 
 @{
     var allItems = Model.RelatedSymbols?.ToList() ?? new List<USASymbol.Models.Symbol>();
+    var stateName = Model.State?.Name?.Trim();
+    var stateSlug = Model.State?.Slug?.Trim();
+    var fallbackHeading = string.IsNullOrWhiteSpace(stateName) ? "State Symbols" : $"{stateName} State Symbols";
     var heading = (ViewData["HeadingOverride"] as string)?.Trim();
     if (string.IsNullOrWhiteSpace(heading))
     {
-        heading = "Related Symbols";
+        heading = fallbackHeading;
     }
+    var allSymbolsUrl = string.IsNullOrWhiteSpace(stateSlug) ? "/states" : $"/states/{stateSlug}";
+    var allSymbolsLabel = string.IsNullOrWhiteSpace(stateName) ? "View all state symbols" : $"View all {stateName} state symbols";
 
     var desktopItems = allItems.Take(5).ToList();
     var mobilePrimary = allItems.Take(3).ToList();
@@ -28,6 +33,9 @@
             @foreach (var symbol in desktopItems)
             {
                 var imageUrl = ResolveRelatedImageUrl(symbol);
+                var imageClass = string.Equals(symbol.Type, "state-seal", StringComparison.OrdinalIgnoreCase) || string.Equals(symbol.Type, "coat-of-arms", StringComparison.OrdinalIgnoreCase)
+                    ? "h-full w-full object-contain p-1"
+                    : "h-full w-full object-cover";
 
                 <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
                    class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
@@ -36,7 +44,7 @@
                         {
                             <img src="@Images.Card(imageUrl)"
                                  alt="@symbol.Name"
-                                 class="h-full w-full object-cover"
+                                 class="@imageClass"
                                  loading="lazy" />
                         }
                         else
@@ -57,15 +65,15 @@
         </section>
 
         <div class="mt-6">
-            <a href="/states/@Model.State.Slug"
+            <a href="@allSymbolsUrl"
                class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
-                <span>View all symbols</span>
+                <span>@allSymbolsLabel</span>
                 <i class="fa-solid fa-arrow-right text-xs"></i>
             </a>
         </div>
     </aside>
 
-    <section class="lg:hidden mt-12">
+    <section class="lg:hidden mt-12" data-nosnippet>
         <h2 class="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#13231D]">
             @heading
         </h2>
@@ -76,6 +84,9 @@
             @foreach (var symbol in mobilePrimary)
             {
                 var imageUrl = ResolveRelatedImageUrl(symbol);
+                var imageClass = string.Equals(symbol.Type, "state-seal", StringComparison.OrdinalIgnoreCase) || string.Equals(symbol.Type, "coat-of-arms", StringComparison.OrdinalIgnoreCase)
+                    ? "h-full w-full object-contain p-1"
+                    : "h-full w-full object-cover";
 
                 <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
                    class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
@@ -84,7 +95,7 @@
                         {
                             <img src="@Images.Card(imageUrl)"
                                  alt="@symbol.Name"
-                                 class="h-full w-full object-cover"
+                                 class="@imageClass"
                                  loading="lazy" />
                         }
                         else
@@ -116,6 +127,9 @@
                     @foreach (var symbol in mobileRest)
                     {
                         var imageUrl = ResolveRelatedImageUrl(symbol);
+                        var imageClass = string.Equals(symbol.Type, "state-seal", StringComparison.OrdinalIgnoreCase) || string.Equals(symbol.Type, "coat-of-arms", StringComparison.OrdinalIgnoreCase)
+                            ? "h-full w-full object-contain p-1"
+                            : "h-full w-full object-cover";
 
                         <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
                            class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
@@ -124,7 +138,7 @@
                                 {
                                     <img src="@Images.Card(imageUrl)"
                                          alt="@symbol.Name"
-                                         class="h-full w-full object-cover"
+                                         class="@imageClass"
                                          loading="lazy" />
                                 }
                                 else
@@ -147,9 +161,9 @@
         }
 
         <div class="mt-6">
-            <a href="/states/@Model.State.Slug"
+            <a href="@allSymbolsUrl"
                class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
-                <span>View all symbols</span>
+                <span>@allSymbolsLabel</span>
                 <i class="fa-solid fa-arrow-right text-xs"></i>
             </a>
         </div>
@@ -216,6 +230,24 @@
             if (LocalImageExists(stateNicknameImage))
             {
                 return stateNicknameImage;
+            }
+        }
+
+        if (string.Equals(symbol.Type, "state-seal", StringComparison.OrdinalIgnoreCase))
+        {
+            var stateSealImage = $"/images/seals/{stateSlug}/seal.webp";
+            if (LocalImageExists(stateSealImage))
+            {
+                return stateSealImage;
+            }
+        }
+
+        if (string.Equals(symbol.Type, "coat-of-arms", StringComparison.OrdinalIgnoreCase))
+        {
+            var coatOfArmsImage = $"/images/coats-of-arms/{stateSlug}/coat-of-arms.webp";
+            if (LocalImageExists(coatOfArmsImage))
+            {
+                return coatOfArmsImage;
             }
         }
 

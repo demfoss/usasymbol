@@ -15,6 +15,7 @@ namespace USASymbol.Models.Content
         public List<TableColumn> Columns { get; set; } = new();
         public List<TableRow> Rows { get; set; } = new();
         public List<string> ToggleableColumns { get; set; } = new();
+        public List<string> HiddenColumns { get; set; } = new();
         public string? DefaultColumn { get; set; }
         public bool Searchable { get; set; } = true;
         public bool Sortable { get; set; } = true;

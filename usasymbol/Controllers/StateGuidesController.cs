@@ -4,6 +4,8 @@ using usasymbol.Services;
 using usasymbol.Services.Interface;
 using USASymbol.Models.ViewModels;
 using USASymbol.Services;
+using USASymbol.Models;
+using USASymbol.Models.Content;
 using USASymbol.Services.Interface;
 
 namespace USASymbol.Controllers
@@ -13,6 +15,7 @@ namespace USASymbol.Controllers
         private readonly IStateService _stateService;
         private readonly ISymbolService _symbolService;
         private readonly IBorderService _borderService;
+        private readonly IStateAbbreviationContentService _stateAbbreviationContentService;
         private readonly ISurnamesService _surnamesService;
         private readonly ILatestContentRailService _latestContentRailService;
         private readonly IWebHostEnvironment _env;
@@ -23,6 +26,7 @@ namespace USASymbol.Controllers
             IStateService stateService,
             ISymbolService symbolService,
             IBorderService borderService,
+            IStateAbbreviationContentService stateAbbreviationContentService,
             ISurnamesService surnamesService,
             ILatestContentRailService latestContentRailService,
             IWebHostEnvironment env,
@@ -32,6 +36,7 @@ namespace USASymbol.Controllers
             _stateService = stateService;
             _symbolService = symbolService;
             _borderService = borderService;
+            _stateAbbreviationContentService = stateAbbreviationContentService;
             _surnamesService = surnamesService;
             _latestContentRailService = latestContentRailService;
             _env = env;
@@ -116,8 +121,72 @@ namespace USASymbol.Controllers
         public IActionResult Index()
         {
             ViewData["Title"] = "State Guides — Geography, Demographics & More";
-            ViewData["Description"] = "Comprehensive guides about U.S. states — borders, last names, climate, and more.";
+            ViewData["Description"] = "Comprehensive guides about U.S. states — borders, abbreviations, last names, climate, and more.";
             return View();
+        }
+
+        [Route("guides/state-abbreviations")]
+        public async Task<IActionResult> StateAbbreviations()
+        {
+            var states = await _stateService.GetAllStatesAsync();
+            var highIntentSlugs = (await _stateAbbreviationContentService.GetHighIntentSlugsAsync()).ToList();
+
+            ViewData["Title"] = "State Abbreviations and Capitals — All 50 US States";
+            ViewData["Description"] = "Complete list of all 50 U.S. state abbreviations with capitals in alphabetical order. Two-letter postal codes, state capitals, regions, and common abbreviation mistakes.";
+            ViewData["Canonical"] = "/guides/state-abbreviations";
+            ViewData["TopAbbreviationStates"] = states
+                .Where(s => highIntentSlugs.Contains(s.Slug, StringComparer.OrdinalIgnoreCase))
+                .OrderBy(s => highIntentSlugs.IndexOf(s.Slug))
+                .ToList();
+
+            return View(states.OrderBy(s => s.Name).ToList());
+        }
+
+        [Route("states/{stateSlug}/abbreviation")]
+        public async Task<IActionResult> StateAbbreviationDetail(string stateSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+                return NotFound();
+
+            var content = await _stateAbbreviationContentService.GetContentAsync(stateSlug);
+            if (content == null)
+                return NotFound();
+
+            var allStates = await _stateService.GetAllStatesAsync();
+            var alphabetical = allStates.OrderBy(s => s.Name).ToList();
+            var stateIndex = alphabetical.FindIndex(s => s.Id == state.Id);
+
+            var model = new StateAbbreviationGuideViewModel
+            {
+                State = state,
+                TraditionalAbbreviation = content.TraditionalAbbreviation,
+                FormationSummary = content.FormationSummary,
+                FormationDetail = content.FormationDetail,
+                SearchIntentSummary = content.SearchIntentSummary,
+                SimilarCodesSummary = content.SimilarCodesSummary,
+                StateSpecificTitle = string.IsNullOrWhiteSpace(content.StateSpecificTitle) ? null : content.StateSpecificTitle,
+                StateSpecificParagraphs = content.StateSpecificParagraphs ?? new List<string>(),
+                SimilarStates = GetSimilarStates(state, alphabetical),
+                RegionalStates = alphabetical
+                    .Where(s => s.Id != state.Id && string.Equals(s.Region, state.Region, StringComparison.OrdinalIgnoreCase))
+                    .Take(4)
+                    .ToList(),
+                AlphabeticalNeighbors = alphabetical
+                    .Where((_, index) => index >= Math.Max(0, stateIndex - 2) && index <= Math.Min(alphabetical.Count - 1, stateIndex + 2))
+                    .Where(s => s.Id != state.Id)
+                    .ToList()
+            };
+
+            ViewData["Title"] = $"{state.Abbreviation} — {state.Name} State Abbreviation";
+            ViewData["H1"] = $"What Is the Abbreviation for {state.Name}?";
+            ViewData["Description"] = $"{state.Abbreviation} is the postal abbreviation for {state.Name}. Learn why {state.Name} uses {state.Abbreviation}, what the old abbreviation was, and how it compares with similar state codes.";
+            ViewData["Canonical"] = $"/states/{state.Slug}/abbreviation";
+            ViewData["OgImage"] = state.FlagImageUrl;
+            ViewData["LatestContentRail"] = await _latestContentRailService.GetLatestItemsAsync(8);
+            ViewData["AllStates"] = allStates.Select(s => new { s.Slug, s.Name, s.Abbreviation, s.Region }).Cast<dynamic>().ToList();
+
+            return View("StateAbbreviationDetail", model);
         }
 
         [Route("guides/surnames")]
@@ -205,6 +274,20 @@ namespace USASymbol.Controllers
             }
 
             return pool.Take(count).ToList();
+        }
+
+        private static List<State> GetSimilarStates(State state, List<State> alphabetical)
+        {
+            var firstLetter = state.Name[..1];
+            return alphabetical
+                .Where(s => s.Id != state.Id)
+                .OrderByDescending(s => s.Name.StartsWith(firstLetter, StringComparison.OrdinalIgnoreCase))
+                .ThenBy(s => s.Name)
+                .Where(s =>
+                    s.Name.StartsWith(firstLetter, StringComparison.OrdinalIgnoreCase) ||
+                    s.Abbreviation.StartsWith(state.Abbreviation[..1], StringComparison.OrdinalIgnoreCase))
+                .Take(4)
+                .ToList();
         }
     }
 }

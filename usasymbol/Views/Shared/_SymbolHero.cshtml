@@ -45,7 +45,7 @@
 
                         @if (!string.IsNullOrWhiteSpace(Model.Description))
                         {
-                            <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-100 sm:text-xl">
+                            <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-100 sm:text-xl hidden lg:block">
                                 @Model.Description
                             </p>
                         }
@@ -88,7 +88,7 @@
 
                         @if (!string.IsNullOrWhiteSpace(Model.LegalReference))
                         {
-                            <div class="mt-7 hidden max-w-prose items-start gap-2 text-sm text-slate-300 lg:flex">
+            <div class="mt-7 hidden items-start gap-2 text-sm text-slate-300 lg:flex">
                                 <i class="fa-solid fa-scale-balanced mt-0.5 shrink-0 text-slate-400"></i>
                                 <span><strong class="text-white">Legal Reference:</strong> @Model.LegalReference</span>
                             </div>
@@ -113,6 +113,14 @@
                             }
 
                             @await Html.PartialAsync("_ShareButtons", Model.PageModel)
+
+                            <a href="/about/artsiom-dusau"
+                               class="ml-auto flex items-center gap-2 text-[11px] text-slate-300 hover:text-white transition-colors">
+                                <img src="/images/profile/artsiom-dusau.png"
+                                     alt="Artsiom Dusau"
+                                     class="h-5 w-5 rounded-full object-cover opacity-80">
+                                <span>Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong></span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -128,7 +136,11 @@
                                      alt="@(string.IsNullOrWhiteSpace(Model.ImageAlt) ? Model.Title : Model.ImageAlt)"
                                      class="@Model.ImageClass"
                                      loading="eager"
-                                     fetchpriority="high" />
+                                     fetchpriority="high"
+                                     onerror="this.style.display='none';var f=this.parentNode.querySelector('.hero-img-fallback');if(f)f.classList.remove('hidden');" />
+                                <div class="hero-img-fallback hidden absolute inset-0 flex items-center justify-center">
+                                    <i class="@(string.IsNullOrWhiteSpace(Model.FallbackIconClass) ? "fa-solid fa-star" : Model.FallbackIconClass) text-7xl text-slate-300"></i>
+                                </div>
                             }
                             else if (Model.PaletteHexes.Any())
                             {
@@ -164,6 +176,7 @@
                                 <a href="@Images.Full(Model.ImageLinkUrl)"
                                    target="_blank"
                                    rel="nofollow noopener noreferrer"
+                                   data-nosnippet
                                    class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] @(Model.UseLightFigureCaption ? "text-slate-500 hover:text-slate-900" : "text-slate-300 hover:text-white") transition">
                                     <i class="fas fa-up-right-from-square shrink-0 text-[10px]"></i>
                                     View original
@@ -194,6 +207,14 @@
                         }
 
                         @await Html.PartialAsync("_ShareButtons", Model.PageModel)
+
+                        <a href="/about/artsiom-dusau"
+                           class="mt-3 flex items-center gap-2 text-[11px] text-slate-300">
+                            <img src="/images/profile/artsiom-dusau.png"
+                                 alt="Artsiom Dusau"
+                                 class="h-5 w-5 rounded-full object-cover opacity-80">
+                            <span>Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong></span>
+                        </a>
                     </div>
                 </div>
             </div>

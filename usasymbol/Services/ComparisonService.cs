@@ -123,6 +123,36 @@ namespace USASymbol.Services
                 .ThenBy(m => m.SortOrder)
                 .ToList();
 
+            var allStateRanks = new List<StateRankRow>();
+            if (metric.Type != MetricType.Text && metric.GetNumericValue != null)
+            {
+                var allStates = await _stateService.GetAllStatesAsync();
+                var allStatsMap = await _statsService.GetAllStatsAsync();
+
+                allStateRanks = allStates
+                    .Select(s =>
+                    {
+                        allStatsMap.TryGetValue(s.Slug, out var st);
+                        var val = metric.GetNumericValue(s, st);
+                        if (!val.HasValue) return null;
+                        return new { State = s, Value = val.Value, Display = metric.GetDisplayValue(s, st) ?? val.Value.ToString() };
+                    })
+                    .Where(x => x != null)
+                    .Select(x => x!)
+                    .OrderByDescending(x => metric.HigherIsBetter ? x.Value : -x.Value)
+                    .Select((x, i) => new StateRankRow
+                    {
+                        StateName = x.State.Name,
+                        StateSlug = x.State.Slug,
+                        Abbreviation = x.State.Abbreviation,
+                        Value = x.Value,
+                        FormattedValue = x.Display,
+                        Rank = i + 1,
+                        FlagImageUrl = x.State.FlagImageUrl
+                    })
+                    .ToList();
+            }
+
             return new MetricComparisonViewModel
             {
                 StateA = stateA,
@@ -131,7 +161,9 @@ namespace USASymbol.Services
                 StatsB = statsB,
                 Metric = metric,
                 Result = BuildResult(metric, stateA, statsA, stateB, statsB),
-                OtherMetrics = metrics.Where(m => m.Slug != metricSlug).ToList()
+                OtherMetrics = metrics.Where(m => m.Slug != metricSlug).ToList(),
+                AllStateRanks = allStateRanks,
+                HigherIsBetter = metric.HigherIsBetter
             };
         }
 
@@ -184,6 +216,7 @@ namespace USASymbol.Services
                         "USD"      => $"${diff:N0}",
                         "per sq mi"=> $"{diff:N1} per sq mi",
                         "per 100k" => $"{diff:F1} per 100k",
+                        "cents-gal" => $"{diff:F2} c/gal",
                         "score"    => $"{diff:F2} points",
                         "index"    => $"{diff:F1} points",
                         "%"        => $"{diff:F2} percentage points",

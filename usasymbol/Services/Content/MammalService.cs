@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Memory;
 using usasymbol.Services.Interface;
 using USASymbol.Models.Content;
 using USASymbol.Models.ViewModels;
@@ -146,7 +146,7 @@ namespace USASymbol.Services
 
                                 if (secDict.ContainsKey("paragraphs") && secDict["paragraphs"] is List<object> paragraphs)
                                 {
-                                    section.Paragraphs = paragraphs.Select(p => p?.ToString() ?? "").ToList();
+                                    section.Paragraphs = paragraphs.OfType<string>().ToList();
                                 }
 
 

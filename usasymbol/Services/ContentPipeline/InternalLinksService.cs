@@ -12,7 +12,22 @@ public sealed class InternalLinksService
     {
         ["surnames"] = "/surnames",
         ["ranking"] = "/rankings",
-        ["state-seals"] = "/state-seals"
+        ["rankings"] = "/rankings",
+        ["bird"] = "/symbols/birds",
+        ["flag"] = "/symbols/flags",
+        ["flower"] = "/symbols/flowers",
+        ["tree"] = "/symbols/trees",
+        ["mammal"] = "/symbols/mammals",
+        ["motto"] = "/symbols/mottos",
+        ["nickname"] = "/symbols/nicknames",
+        ["beverage"] = "/symbols/beverages",
+        ["color"] = "/symbols/colors",
+        ["dinosaur"] = "/symbols/dinosaurs",
+        ["firearm"] = "/symbols/firearms",
+        ["soil"] = "/symbols/soils",
+        ["license-plate"] = "/symbols/license-plate-slogans",
+        ["state-seal"] = "/symbols/state-seals",
+        ["coat-of-arms"] = "/symbols/coats-of-arms"
     };
 
     public InternalLinksService(ContentIndexService contentIndexService, SlugUtility slugUtility)

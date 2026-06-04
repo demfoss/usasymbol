@@ -12,7 +12,7 @@
         ? (ViewData["Description"] as string ?? $"Compare U.S. states by {groupCategory!.Title.ToLower()} with interactive ranking tables.")
         : "Compare and rank all 50 U.S. states by geography, demographics, economy, government, and more. Interactive tables with search and sorting.";
 
-    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    const string baseUrl = "https://usasymbol.com";
     ViewData["Canonical"] = isGroupPage ? $"/rankings/{groupCategory!.Id}" : "/rankings";
 
     const int PreviewCount = 9;

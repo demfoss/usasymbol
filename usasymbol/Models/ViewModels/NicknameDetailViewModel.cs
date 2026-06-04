@@ -10,7 +10,7 @@ namespace USASymbol.Models.ViewModels
         public NicknameContent NicknameContent { get; set; } = null!;
 
 
-        public string? ContentTitle => NicknameContent?.Title ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(NicknameContent?.Title, Symbol?.Name);
         public string? ContentIntroText => NicknameContent?.IntroText;
         public override string? Author => NicknameContent?.Author;
         public override DateTime? DateModified => NicknameContent?.DateModified;

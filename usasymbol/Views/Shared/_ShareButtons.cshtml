@@ -1,61 +1,48 @@
 ﻿@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
-@{
-    var colors = Model.Colors;
-}
 
-<div class="flex items-center gap-3 flex-wrap">
-    <button id="shareButton"
-            class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg shadow active:scale-95 transition">
+<div class="js-share-buttons flex items-center gap-3 flex-wrap" data-nosnippet>
+    <button type="button"
+            class="js-share-btn inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg shadow active:scale-95 transition">
         <i class="fas fa-share-nodes shrink-0"></i>
         <span>Share</span>
     </button>
 
-    <button id="copyLinkBtn"
-            class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 active:scale-95 transition">
+    <button type="button"
+            class="js-copy-link-btn inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 active:scale-95 transition">
         <i class="fas fa-copy shrink-0"></i>
         <span>Copy Link</span>
     </button>
 </div>
 
 <script>
-    // Share functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const shareBtn = document.getElementById('shareButton');
-        const copyBtn = document.getElementById('copyLinkBtn');
-
-        if (shareBtn) {
-            shareBtn.addEventListener('click', async function() {
-                if (navigator.share) {
-                    try {
-                        await navigator.share({
-                            title: document.title,
-                            url: window.location.href
-                        });
-                    } catch (err) {
-                        console.log('Share cancelled');
-                    }
-                } else {
-                    // Fallback: copy to clipboard
-                    copyToClipboard();
-                }
-            });
-        }
-
-        if (copyBtn) {
-            copyBtn.addEventListener('click', copyToClipboard);
-        }
+    (function () {
+        var container = document.currentScript.previousElementSibling;
+        var shareBtn = container.querySelector('.js-share-btn');
+        var copyBtn = container.querySelector('.js-copy-link-btn');
 
         function copyToClipboard() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                const originalText = copyBtn.querySelector('span').textContent;
-                copyBtn.querySelector('span').textContent = 'Copied!';
+            navigator.clipboard.writeText(window.location.href).then(function () {
+                var span = copyBtn.querySelector('span');
+                var original = span.textContent;
+                span.textContent = 'Copied!';
                 copyBtn.classList.add('!bg-green-50', '!border-green-300', '!text-green-700');
-
-                setTimeout(() => {
-                    copyBtn.querySelector('span').textContent = originalText;
+                setTimeout(function () {
+                    span.textContent = original;
                     copyBtn.classList.remove('!bg-green-50', '!border-green-300', '!text-green-700');
                 }, 2000);
             });
         }
-    });
+
+        shareBtn.addEventListener('click', async function () {
+            if (navigator.share) {
+                try {
+                    await navigator.share({ title: document.title, url: window.location.href });
+                } catch (err) { }
+            } else {
+                copyToClipboard();
+            }
+        });
+
+        copyBtn.addEventListener('click', copyToClipboard);
+    })();
 </script>

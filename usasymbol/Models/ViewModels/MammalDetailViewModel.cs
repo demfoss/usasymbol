@@ -8,7 +8,7 @@ namespace USASymbol.Models.ViewModels
     {
         public MammalContent? MammalContent { get; set; }
 
-        public string? ContentTitle => MammalContent?.Title ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(MammalContent?.Title, Symbol?.Name);
         public string? ContentIntroText => MammalContent?.IntroText;
         public override string? Author => MammalContent?.Author;
         public override DateTime? DateModified => MammalContent?.DateModified;

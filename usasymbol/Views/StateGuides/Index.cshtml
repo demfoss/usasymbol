@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "State Guides — Geography, Demographics & More";
-    ViewData["Description"] = "Comprehensive guides about U.S. states — state borders, most common last names, and more. All 50 states.";
+    ViewData["Description"] = "Comprehensive guides about U.S. states — state borders, abbreviations, most common last names, and more. All 50 states.";
 }
 
 <!-- Header -->
@@ -24,6 +24,33 @@
     <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-6">Available Guides</p>
 
     <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+        <!-- State Abbreviations -->
+        <a href="/guides/state-abbreviations"
+           class="group block border border-slate-200 bg-white hover:border-slate-400 transition-colors">
+            <div class="h-44 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 opacity-20" style="background-image:linear-gradient(rgba(255,255,255,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px);background-size:22px 22px"></div>
+                <div class="relative flex items-center gap-3 text-white">
+                    <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black tracking-[0.08em]">CA</span>
+                    <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black tracking-[0.08em]">TX</span>
+                    <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black tracking-[0.08em]">NY</span>
+                </div>
+                <div class="absolute top-4 right-4">
+                    <span class="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-white text-slate-900">Alphabetical List</span>
+                </div>
+            </div>
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-slate-700 transition">State Abbreviations</h2>
+                <p class="text-[14px] text-slate-500 leading-relaxed mb-4">
+                    The full list of all 50 U.S. state abbreviations, with postal codes, capitals, regions, and the most confusing two-letter codes.
+                </p>
+                <div class="flex flex-wrap gap-x-5 gap-y-1.5 text-[12px] text-slate-400">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-slate-500 text-[10px]"></i> All 50 states in order</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-slate-500 text-[10px]"></i> Postal codes &amp; capitals</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-slate-500 text-[10px]"></i> Common mistakes explained</span>
+                </div>
+            </div>
+        </a>
 
         <!-- State Borders -->
         <a href="/guides/state-borders"

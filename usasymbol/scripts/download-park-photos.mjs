@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Downloads photos from NPS API for a national park and saves them locally.
+ * Downloads photos from the NPS API for a national park and saves them locally.
  * Prints a YAML snippet for pasting into the park's media.highlights section.
  *
  * Usage:
@@ -128,24 +128,25 @@ function sizeKb(path) {
 
 // ── Fetch images from NPS API ─────────────────────────────────────────
 async function fetchImages() {
-    // Primary: multimedia/images endpoint (more images, better metadata)
+    // Primary: galleries/assets endpoint (replaces removed multimedia/images endpoint)
     const multimediaUrl =
-        `https://developer.nps.gov/api/v1/multimedia/images` +
+        `https://developer.nps.gov/api/v1/multimedia/galleries/assets` +
         `?parkCode=${npsCode}&api_key=${API_KEY}&limit=${LIMIT}&start=0`;
 
-    console.log('Fetching from NPS multimedia/images endpoint…');
+    console.log('Fetching from NPS multimedia/galleries/assets endpoint…');
     try {
         const data = await fetchJson(multimediaUrl);
         const images = (data.data || []).filter(img => {
             const url = img.fileInfo?.url || img.url;
-            return url && (url.match(/\.(jpg|jpeg|png|webp)/i) || url.includes('nps.gov'));
+            const fileType = img.fileInfo?.fileType || '';
+            return url && fileType.startsWith('image/');
         });
         if (images.length > 0) {
             console.log(`  Found ${data.total} total images, fetching first ${images.length}\n`);
             return images.map(img => ({
                 url:    img.fileInfo?.url || img.url,
                 title:  img.title || '',
-                alt:    img.altText || img.caption || img.title || '',
+                alt:    img.altText || img.description || img.caption || img.title || '',
                 credit: img.credit || img.creditLine || '',
             }));
         }

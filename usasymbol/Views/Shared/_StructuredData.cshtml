@@ -6,7 +6,7 @@
 @inject IImageUrlService Images
 
 @{
-    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    const string baseUrl = "https://usasymbol.com";
     var currentPath = Context.Request.Path.Value ?? "/";
     var currentUrl = $"{baseUrl}{currentPath}";
     var imageRightsUrl = $"{baseUrl}/terms#image-rights";
@@ -60,8 +60,39 @@
     Dictionary<string, object?> Person(string? name) => new()
     {
         ["@type"] = "Person",
-        ["name"] = string.IsNullOrWhiteSpace(name) ? "USA Symbol Team" : name,
+        ["@id"] = $"{baseUrl}/about/artsiom-dusau#person",
+        ["name"] = string.IsNullOrWhiteSpace(name) ? "Artsiom Dusau" : name,
+        ["url"] = $"{baseUrl}/about/artsiom-dusau"
+    };
+
+    Dictionary<string, object?> EditorialTeam() => new()
+    {
+        ["@type"] = "Organization",
+        ["name"] = "USA Symbol Editorial Team",
         ["url"] = $"{baseUrl}/about"
+    };
+
+    Dictionary<string, object?> AuthorEntity(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name) ||
+            name.Equals("USA Symbol Team", StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("USA Symbol Editorial Team", StringComparison.OrdinalIgnoreCase))
+        {
+            return EditorialTeam();
+        }
+
+        return Person(name);
+    }
+
+    Dictionary<string, object?> Reviewer() => new()
+    {
+        ["@type"] = "Person",
+        ["@id"] = $"{baseUrl}/about/artsiom-dusau#person",
+        ["name"] = "Artsiom Dusau",
+        ["jobTitle"] = "Founder & Editor",
+        ["url"] = $"{baseUrl}/about/artsiom-dusau",
+        ["image"] = $"{baseUrl}/images/profile/artsiom-dusau.png",
+        ["sameAs"] = new[] { "https://www.linkedin.com/in/artsiom-dusau/", "https://github.com/demfoss", "https://www.facebook.com/profile.php?id=61575207996319" }
     };
 
     Dictionary<string, object?> ImageRightsHolder(string? name = null) => new()
@@ -246,8 +277,9 @@
             ["dateModified"] = dateModified,
             ["image"] = ImageObject(content?.HeroImage ?? content?.Map?.Image ?? ViewData["OgImage"]?.ToString(), pageTitle, content?.HeroImageCaption ?? content?.Map?.Caption),
             ["license"] = contentLicenseUrl,
-            ["creator"] = Person(content?.Author),
-            ["author"] = Person(content?.Author),
+            ["creator"] = AuthorEntity(content?.Author),
+            ["author"] = AuthorEntity(content?.Author),
+            ["reviewedBy"] = Reviewer(),
             ["publisher"] = Organization(),
             ["speakable"] = new Dictionary<string, object?>
             {
@@ -428,12 +460,13 @@
             ["@id"] = $"{currentUrl}#article",
             ["headline"] = $"{symbolModel.State.Name} {symbolModel.SymbolTypeName}: {symbolModel.ContentTitle ?? symbolModel.Symbol?.Name}",
             ["description"] = System.Net.WebUtility.HtmlDecode(ViewData["Description"]?.ToString() ?? ""),
-            ["image"] = ImageObject(!string.IsNullOrEmpty(symbolModel.Symbol?.ImageUrl) ? symbolModel.Symbol.ImageUrl : "/images/default-symbol.jpg", symbolModel.ContentTitle ?? symbolModel.Symbol?.Name),
+            ["image"] = ImageObject(!string.IsNullOrEmpty(symbolModel.Symbol?.ImageUrl) ? symbolModel.Symbol.ImageUrl : ViewData["OgImage"]?.ToString() ?? "/images/default-symbol.jpg", symbolModel.ContentTitle ?? symbolModel.Symbol?.Name),
             ["license"] = contentLicenseUrl,
-            ["creator"] = Person(symbolModel.Author),
+            ["creator"] = AuthorEntity(symbolModel.Author),
             ["datePublished"] = datePublishedStr,
             ["dateModified"] = dateModifiedStr,
-            ["author"] = Person(symbolModel.Author),
+            ["author"] = AuthorEntity(symbolModel.Author),
+            ["reviewedBy"] = Reviewer(),
             ["publisher"] = Organization(),
             ["mainEntityOfPage"] = new Dictionary<string, object?>
             {
@@ -448,39 +481,6 @@
                 ["cssSelector"] = new[] { "h1" }
             }
         });
-
-        if (!string.IsNullOrEmpty(legislation))
-        {
-            var claimText = $"{symbolModel.Symbol?.Name} is the official {symbolModel.SymbolTypeName} of {symbolModel.State.Name}";
-            schemas.Add(new Dictionary<string, object?>
-            {
-                ["@context"] = "https://schema.org",
-                ["@type"] = "ClaimReview",
-                ["@id"] = $"{currentUrl}#claim-review",
-                ["url"] = currentUrl,
-                ["claimReviewed"] = claimText,
-                ["author"] = Organization(),
-                ["reviewRating"] = new Dictionary<string, object?>
-                {
-                    ["@type"] = "Rating",
-                    ["ratingValue"] = "5",
-                    ["bestRating"] = "5",
-                    ["worstRating"] = "1",
-                    ["alternateName"] = "True"
-                },
-                ["itemReviewed"] = new Dictionary<string, object?>
-                {
-                    ["@type"] = "Claim",
-                    ["name"] = claimText,
-                    ["author"] = Organization(),
-                    ["appearance"] = new Dictionary<string, object?>
-                    {
-                        ["@type"] = "CreativeWork",
-                        ["url"] = currentUrl
-                    }
-                }
-            });
-        }
 
         var pluralName = string.IsNullOrEmpty(symbolModel.SymbolTypePlural)
             ? ""
@@ -543,6 +543,94 @@
                 ["description"] = $"Quick facts about {symbolModel.Symbol?.Name} as the {symbolModel.State.Name} {symbolModel.SymbolTypeName}.",
                 ["about"] = aboutObj,
                 ["additionalProperty"] = quickFactProperties
+            });
+        }
+    }
+    else if (Model is USASymbol.Models.ViewModels.ParkDetailViewModel parkVm)
+    {
+        var park = parkVm.Park;
+        var parkUrl = FullUrl($"/national-parks/{park.Slug}");
+        var parkTitle = ViewData["Title"]?.ToString() ?? park.Name;
+        var parkDescription = System.Net.WebUtility.HtmlDecode(ViewData["Description"]?.ToString() ?? park.IntroText ?? "");
+        var dateModified = park.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd");
+        var datePublished = park.DatePublished?.ToString("yyyy-MM-dd") ?? dateModified;
+        var heroImageUrl = FullImageUrl(park.Media.HeroImage);
+        var parkFaqItems = ViewData["FaqItems"] as IEnumerable<(string Question, string Answer)> ?? Enumerable.Empty<(string Question, string Answer)>();
+
+        schemas.Add(new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = new[] { "TouristAttraction", "LandmarksOrHistoricalBuildings" },
+            ["@id"] = $"{parkUrl}#place",
+            ["name"] = park.Name,
+            ["description"] = parkDescription,
+            ["url"] = parkUrl,
+            ["image"] = ImageObject(park.Media.HeroImage, park.Name, park.Media.HeroAlt),
+            ["geo"] = park.Location.Latitude != 0 ? new Dictionary<string, object?>
+            {
+                ["@type"] = "GeoCoordinates",
+                ["latitude"] = park.Location.Latitude,
+                ["longitude"] = park.Location.Longitude
+            } : null,
+            ["hasMap"] = park.Map.GoogleSearchUrl,
+            ["isAccessibleForFree"] = !park.Filters.HasEntranceFee,
+            ["touristType"] = park.Filters.Activities.Take(3).ToArray(),
+            ["containedInPlace"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "State",
+                ["name"] = park.Location.State
+            },
+            ["sameAs"] = string.IsNullOrWhiteSpace(park.NpsCode) ? null : $"https://www.nps.gov/{park.NpsCode.ToLower()}/"
+        });
+
+        schemas.Add(new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "Article",
+            ["@id"] = $"{parkUrl}#article",
+            ["headline"] = parkTitle,
+            ["description"] = parkDescription,
+            ["url"] = parkUrl,
+            ["datePublished"] = datePublished,
+            ["dateModified"] = dateModified,
+            ["image"] = ImageObject(park.Media.HeroImage, park.Name),
+            ["author"] = AuthorEntity(park.Author),
+            ["reviewedBy"] = Reviewer(),
+            ["publisher"] = Organization(),
+            ["about"] = new Dictionary<string, object?> { ["@id"] = $"{parkUrl}#place" }
+        });
+
+        schemas.Add(new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "BreadcrumbList",
+            ["@id"] = $"{parkUrl}#breadcrumb",
+            ["itemListElement"] = new object[]
+            {
+                new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{baseUrl}/" },
+                new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "National Parks", ["item"] = $"{baseUrl}/national-parks" },
+                new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 3, ["name"] = park.Name, ["item"] = parkUrl }
+            }
+        });
+
+        if (parkFaqItems.Any())
+        {
+            schemas.Add(new Dictionary<string, object?>
+            {
+                ["@context"] = "https://schema.org",
+                ["@type"] = "FAQPage",
+                ["@id"] = $"{parkUrl}#faq",
+                ["name"] = $"FAQ about {park.Name}",
+                ["mainEntity"] = parkFaqItems.Select(f => new Dictionary<string, object?>
+                {
+                    ["@type"] = "Question",
+                    ["name"] = f.Question,
+                    ["acceptedAnswer"] = new Dictionary<string, object?>
+                    {
+                        ["@type"] = "Answer",
+                        ["text"] = f.Answer
+                    }
+                }).ToArray()
             });
         }
     }

@@ -10,7 +10,7 @@ namespace USASymbol.Models.ViewModels
         public FlagContent? FlagContent { get; set; }
 
 
-        public string? ContentTitle => FlagContent?.Name ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(FlagContent?.Name, Symbol?.Name);
         public string? ContentIntroText => FlagContent?.IntroText;
         public override string? Author => FlagContent?.Author;
         public override DateTime? DateModified => FlagContent?.DateModified;

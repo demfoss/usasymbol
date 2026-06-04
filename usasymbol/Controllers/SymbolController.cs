@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using usasymbol.Models;
 using usasymbol.Services;
 using usasymbol.Services.Interface;
+using USASymbol.Services.Interface;
 using USASymbol.Data;
 using USASymbol.Extensions;
 using USASymbol.Models;
 using USASymbol.Models.ViewModels;
 using USASymbol.Services;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Text.RegularExpressions;
 
 
 namespace USASymbol.Controllers
@@ -31,10 +33,36 @@ namespace USASymbol.Controllers
         private readonly ILicensePlateService _licensePlateService;
         private readonly IColorService _colorService;
         private readonly ISealService _sealService;
+        private readonly ISoilService _soilService;
+        private readonly IFossilService _fossilService;
         private readonly ILatestContentRailService _latestContentRailService;
         private readonly QuizService _quizService;
         private readonly ILogger<SymbolController> _logger;
         private readonly AppDbContext _db;
+        private readonly IWebHostEnvironment _env;
+        private static readonly Dictionary<string, string> CategoryIcons = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["birds"] = "fa-solid fa-dove",
+            ["flowers"] = "fa-solid fa-spa",
+            ["trees"] = "fa-solid fa-tree",
+            ["flags"] = "fa-solid fa-flag-usa",
+            ["beverages"] = "fa-solid fa-glass-water",
+            ["mammals"] = "fa-solid fa-paw",
+            ["cats"] = "fa-solid fa-cat",
+            ["dogs"] = "fa-solid fa-dog",
+            ["horses"] = "fa-solid fa-horse",
+            ["dinosaurs"] = "fa-solid fa-dragon",
+            ["mottos"] = "fa-solid fa-scroll",
+            ["nicknames"] = "fa-solid fa-tag",
+            ["colors"] = "fa-solid fa-palette",
+            ["marine-mammals"] = "fa-solid fa-fish",
+            ["firearms"] = "fa-solid fa-bullseye",
+            ["license-plate-slogans"] = "fa-solid fa-car-side",
+            ["state-seals"] = "fa-solid fa-stamp",
+            ["coats-of-arms"] = "fa-solid fa-shield-halved",
+            ["soils"] = "fa-solid fa-mountain",
+            ["fossils"] = "fa-solid fa-bone"
+        };
 
         public SymbolController(
             INicknameService nicknameService,
@@ -53,10 +81,13 @@ namespace USASymbol.Controllers
             ILicensePlateService licensePlateService,
             IColorService colorService,
             ISealService sealService,
+            ISoilService soilService,
+            IFossilService fossilService,
             ILatestContentRailService latestContentRailService,
             QuizService quizService,
             ILogger<SymbolController> logger,
-            AppDbContext db)
+            AppDbContext db,
+            IWebHostEnvironment env)
         {
             _stateService = stateService;
             _symbolCanonicalService = symbolCanonicalService;
@@ -74,10 +105,13 @@ namespace USASymbol.Controllers
             _licensePlateService = licensePlateService;
             _colorService = colorService;
             _sealService = sealService;
+            _soilService = soilService;
+            _fossilService = fossilService;
             _latestContentRailService = latestContentRailService;
             _quizService = quizService;
             _logger = logger;
             _db = db;
+            _env = env;
         }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -109,61 +143,213 @@ namespace USASymbol.Controllers
             ViewData["Title"] = "All State Symbol Categories";
             ViewData["Description"] = "Browse all types of official U.S. state symbols - birds, flowers, trees, flags, and more.";
 
+            var allSymbols = await _db.Symbols
+                .AsNoTracking()
+                .ToListAsync();
+
             var categories = await _db.SymbolCategories
+                .AsNoTracking()
                 .OrderBy(c => c.Id)
                 .ToListAsync();
 
-            var symbolCounts = await _db.Symbols
-                .GroupBy(s => s.Type)
-                .Select(g => new
-                {
-                    Type = g.Key,
-                    StateCount = g.Select(x => x.StateId).Distinct().Count()
-                })
-                .ToDictionaryAsync(x => x.Type, x => x.StateCount);
+            var listingAssets = GetSymbolListingAssets();
+            var licensePlatePreviewImages = GetLicensePlatePreviewImages();
+            var rng = new Random();
 
             var viewModel = categories.Select(c =>
             {
-                var singularType = c.Type.EndsWith("s")
-                    ? c.Type.Substring(0, c.Type.Length - 1)
-                    : c.Type;
+                var matchedSymbols = GetCategorySymbols(c.Type, allSymbols).ToList();
+                var stateCount = matchedSymbols
+                    .Select(s => s.StateId)
+                    .Distinct()
+                    .Count();
 
-                symbolCounts.TryGetValue(singularType, out var stateCount);
+                if (stateCount == 0 && listingAssets.TryGetValue(c.Type, out var listingFallback))
+                    stateCount = listingFallback.StateCount;
+
+                var previewImages = matchedSymbols
+                    .Select(s => s.ImageUrl)
+                    .Where(path => !string.IsNullOrWhiteSpace(path) && !path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+                    .Cast<string>()
+                    .ToList();
+
+                if (c.Type == "cats")
+                {
+                    previewImages = new List<string> { "/images/mammals/maine/maine-coon-cat.jpg" };
+                }
+                else if (c.Type == "license-plate-slogans" && licensePlatePreviewImages.Count > 0)
+                {
+                    previewImages = licensePlatePreviewImages;
+                }
+
+                var randomImage = previewImages.Count > 0
+                    ? previewImages[rng.Next(previewImages.Count)]
+                    : listingAssets.TryGetValue(c.Type, out var listingPreview) && !string.IsNullOrWhiteSpace(listingPreview.ImageUrl)
+                        ? listingPreview.ImageUrl
+                        : c.ImageUrl;
 
                 return new SymbolCategoryViewModel
                 {
                     Type = c.Type,
                     Name = c.Name,
                     Description = c.Description,
-                    ImageUrl = c.ImageUrl,
+                    ImageUrl = randomImage,
                     StateCount = stateCount,
                     Url = $"/symbols/{c.Type}",
-                    Icon = c.Type switch
-                    {
-                        "birds" => "🦅",
-                        "flowers" => "🌸",
-                        "trees" => "🌳",
-                        "flags" => "🏴",
-                        "beverages" => "🥤",
-                        "mottos" => "📜",
-                        "nicknames" => "🏷️",
-                        "mammals" => "🦌",
-                        "colors" => "🎨",
-                        "dogs" => "🐕",
-                        "horses" => "🐴",
-                        "marine-mammals" => "🐬",
-                        "firearms" => "🔫",
-                        "dinosaurs" => "🦖",
-                        "license-plate-slogans" => "🚗",
-                        "state-seals" => "🔖",
-                        _ => "⭐"
-                    }
+                    Icon = GetCategoryIcon(c.Type)
 
                 };
             }).ToList();
 
             return View("Categories", viewModel);
         }
+
+        private static IEnumerable<Symbol> GetCategorySymbols(string categoryType, IEnumerable<Symbol> symbols)
+        {
+            return symbols.Where(symbol => IsCategoryMatch(categoryType, symbol));
+        }
+
+        private static bool IsCategoryMatch(string categoryType, Symbol symbol)
+        {
+            var designation = symbol.Designation ?? string.Empty;
+            var name = symbol.Name ?? string.Empty;
+
+            return categoryType switch
+            {
+                "birds" => symbol.Type == "bird",
+                "flowers" => symbol.Type == "flower",
+                "trees" => symbol.Type == "tree",
+                "flags" => symbol.Type == "flag",
+                "beverages" => symbol.Type == "beverage",
+                "mammals" => symbol.Type == "mammal" && !IsDog(designation) && !IsHorse(designation, name) && !IsMarineMammal(designation) && !IsCat(designation, name),
+                "cats" => symbol.Type == "mammal" && IsCat(designation, name),
+                "dogs" => symbol.Type == "mammal" && IsDog(designation),
+                "horses" => symbol.Type == "mammal" && IsHorse(designation, name),
+                "marine-mammals" => symbol.Type == "mammal" && IsMarineMammal(designation),
+                "dinosaurs" => symbol.Type == "dinosaur",
+                "mottos" => symbol.Type == "motto",
+                "nicknames" => symbol.Type == "nickname",
+                "colors" => symbol.Type == "color",
+                "firearms" => symbol.Type == "firearm",
+                "license-plate-slogans" => symbol.Type == "license-plate",
+                "state-seals" => symbol.Type == "state-seal",
+                "coats-of-arms" => symbol.Type == "coat-of-arms",
+                _ => false
+            };
+        }
+
+        private static bool IsDog(string designation) =>
+            designation.Contains("dog", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsMarineMammal(string designation) =>
+            designation.Contains("marine mammal", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsCat(string designation, string name) =>
+            designation.Contains("state cat", StringComparison.OrdinalIgnoreCase) ||
+            designation.Contains("official state cat", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("maine coon cat", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("calico cat", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("tabby cat", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsHorse(string designation, string name) =>
+            designation.Contains("horse", StringComparison.OrdinalIgnoreCase) ||
+            designation.Contains("pony", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("horse", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("pony", StringComparison.OrdinalIgnoreCase);
+
+        private Dictionary<string, ListingAsset> GetSymbolListingAssets()
+        {
+            var images = new Dictionary<string, ListingAsset>(StringComparer.OrdinalIgnoreCase);
+            var symbolsDir = Path.Combine(_env.ContentRootPath, "Content", "symbols");
+            if (!Directory.Exists(symbolsDir))
+            {
+                return images;
+            }
+
+            foreach (var file in Directory.EnumerateFiles(symbolsDir, "*.yml", SearchOption.TopDirectoryOnly))
+            {
+                var yaml = System.IO.File.ReadAllText(file);
+                var rowImages = Regex.Matches(yaml, @"(?m)^\s+symbol_image:\s*""?(/images/[^\s""]+)""?\s*$")
+                    .Select(m => m.Groups[1].Value.Trim())
+                    .Where(path => !string.IsNullOrWhiteSpace(path))
+                    .ToList();
+
+                var usableRowImages = rowImages
+                    .Where(path => System.IO.File.Exists(Path.Combine(_env.WebRootPath, path.TrimStart('/').Replace('/', Path.DirectorySeparatorChar))))
+                    .ToList();
+
+                var previewImage = usableRowImages.FirstOrDefault(path => !path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+                    ?? usableRowImages.FirstOrDefault();
+
+                if (string.IsNullOrWhiteSpace(previewImage))
+                {
+                    var heroMatch = Regex.Match(yaml, @"(?m)^hero_image:\s*(.+?)\s*$");
+                    if (heroMatch.Success)
+                    {
+                        var heroImage = heroMatch.Groups[1].Value.Trim().Trim('"', '\'');
+                        var heroPath = Path.Combine(_env.WebRootPath, heroImage.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                        if (!string.IsNullOrWhiteSpace(heroImage) && System.IO.File.Exists(heroPath))
+                        {
+                            previewImage = heroImage;
+                        }
+                    }
+                }
+
+                var stateCount = Regex.Matches(yaml, @"(?m)^\s*state_slug:\s*(.+?)\s*$")
+                    .Select(m => m.Groups[1].Value.Trim().Trim('"', '\''))
+                    .Where(slug => !string.IsNullOrWhiteSpace(slug))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .Count();
+
+                images[Path.GetFileNameWithoutExtension(file)] = new ListingAsset(previewImage, stateCount);
+            }
+
+            return images;
+        }
+
+        private List<string> GetLicensePlatePreviewImages()
+        {
+            var images = new List<string>();
+            var statesDir = Path.Combine(_env.ContentRootPath, "Content", "states");
+            if (!Directory.Exists(statesDir))
+            {
+                return images;
+            }
+
+            foreach (var file in Directory.EnumerateFiles(statesDir, "license-plate.yaml", SearchOption.AllDirectories))
+            {
+                var yaml = System.IO.File.ReadAllText(file);
+                var versionMatch = Regex.Match(yaml, @"(?m)^\s*image:\s*(\/images\/license-plates\/.+?)\s*$");
+                var heroMatch = Regex.Match(yaml, @"(?m)^hero_image:\s*(\/images\/license-plates\/.+?)\s*$");
+                var imageUrl = versionMatch.Success
+                    ? versionMatch.Groups[1].Value.Trim().Trim('"', '\'')
+                    : heroMatch.Success
+                        ? heroMatch.Groups[1].Value.Trim().Trim('"', '\'')
+                        : string.Empty;
+
+                if (string.IsNullOrWhiteSpace(imageUrl))
+                {
+                    continue;
+                }
+
+                var localPath = Path.Combine(_env.WebRootPath, imageUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                if (System.IO.File.Exists(localPath))
+                {
+                    images.Add(imageUrl);
+                }
+            }
+
+            return images;
+        }
+
+        private static string GetCategoryIcon(string type)
+        {
+            return CategoryIcons.TryGetValue(type, out var icon)
+                ? icon
+                : "fa-solid fa-star";
+        }
+
+        private sealed record ListingAsset(string? ImageUrl, int StateCount);
 
         [Route("symbol/{symbolType}")]
         public async Task<IActionResult> LegacySymbol(string symbolType)
@@ -952,6 +1138,175 @@ namespace USASymbol.Controllers
             };
 
             return View("Seal", model);
+        }
+
+        [Route("states/{stateSlug}/coat-of-arms/{coatOfArmsSlug}")]
+        public async Task<IActionResult> CoatOfArms(string stateSlug, string coatOfArmsSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var symbol = await _symbolService.GetSymbolAsync(state.Id, "coat-of-arms");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State coat of arms symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(coatOfArmsSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var content = await _sealService.GetSealContentAsync(stateSlug, "coat-of-arms.yaml");
+            if (content == null)
+                _logger.LogInformation("State coat of arms YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State coat of arms content loaded: Name={Name}, Sections={SectionCount}, FAQ={FaqCount}",
+                    content.Name, content.Sections?.Count ?? 0, content.Faq?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new SealDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                SealContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions,
+                SymbolTypeName = "Coat of Arms",
+                SymbolTypeSlug = "coat-of-arms",
+                SymbolTypePlural = "coats-of-arms",
+                SymbolTypeIcon = "🛡️",
+                DefaultDesignation = "Coat of Arms",
+                HeroFallbackIconClass = "fa-solid fa-shield-halved",
+                OverviewIconClass = "fa-solid fa-shield-halved",
+                AssetBasePath = "/images/coats-of-arms",
+                EmptySectionsMessage = "No sections rendered yet for this state coat of arms.",
+                ShowQuizPromo = false,
+
+                BigStat = content?.BigStat == null ? null : new BigStatViewModel
+                {
+                    Number = content.BigStat.Number,
+                    Description = content.BigStat.Description
+                },
+
+                Timeline = (content?.Timeline == null || content.Timeline.Count == 0)
+                    ? null
+                    : content.Timeline.Select(t => new TimelineEventViewModel
+                    {
+                        Year = t.Year,
+                        Description = t.Description
+                    }).ToList(),
+
+                ExpertQuote = content?.ExpertQuote == null ? null : new ExpertQuoteViewModel
+                {
+                    Text = content.ExpertQuote.Text,
+                    Source = content.ExpertQuote.Source
+                }
+            };
+
+            return View("Seal", model);
+        }
+
+        [Route("states/{stateSlug}/soil/{soilSlug}")]
+        public async Task<IActionResult> StateSoil(string stateSlug, string soilSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var symbol = await _symbolService.GetSymbolAsync(state.Id, "soil");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State soil symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(soilSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var content = await _soilService.GetSoilContentAsync(stateSlug);
+            if (content == null)
+                _logger.LogInformation("State soil YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State soil content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new SoilDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                SoilContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions,
+
+                BigStat = content?.BigStat == null ? null : new BigStatViewModel
+                {
+                    Number = content.BigStat.Number,
+                    Description = content.BigStat.Description
+                },
+
+                ExpertQuote = content?.ExpertQuote == null ? null : new ExpertQuoteViewModel
+                {
+                    Text = content.ExpertQuote.Text,
+                    Source = content.ExpertQuote.Source
+                }
+            };
+
+            return View("Soil", model);
+        }
+
+        [Route("states/{stateSlug}/fossil/{fossilSlug}")]
+        public async Task<IActionResult> StateFossil(string stateSlug, string fossilSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var symbol = await _symbolService.GetSymbolAsync(state.Id, "fossil");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State fossil symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(fossilSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var content = await _fossilService.GetFossilContentAsync(stateSlug);
+            if (content == null)
+                _logger.LogInformation("State fossil YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State fossil content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new FossilDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                FossilContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions
+            };
+
+            return View("Fossil", model);
         }
 
         [Route("states/{stateSlug}/{symbolType}")]

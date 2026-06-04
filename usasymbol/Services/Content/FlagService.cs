@@ -81,7 +81,7 @@ namespace USASymbol.Services
 
                                 if (secDict.ContainsKey("paragraphs") && secDict["paragraphs"] is List<object> paragraphs)
                                 {
-                                    section.Paragraphs = paragraphs.Select(p => p?.ToString() ?? "").ToList();
+                                    section.Paragraphs = paragraphs.OfType<string>().ToList();
                                 }
 
 

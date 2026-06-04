@@ -92,6 +92,18 @@
             .Where(block => !string.IsNullOrWhiteSpace(block))
             .ToList();
     }
+
+    private static string SlugifyKey(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalized = value.ToLowerInvariant();
+        normalized = Regex.Replace(normalized, @"[^a-z0-9]+", "-");
+        return normalized.Trim('-');
+    }
 }
 
 @{
@@ -124,28 +136,19 @@
         var isFirst = i == 0;
         var style = sect.Style ?? string.Empty;
 
-        VisualAsset? sectionImg = null;
-        VisualAsset? sectionImgRight = null;
-        if (!string.IsNullOrEmpty(sect.Img))
-        {
-            visualLookup.TryGetValue(sect.Img, out sectionImg);
-        }
-
-        if (!string.IsNullOrEmpty(sect.ImgRight))
-        {
-            visualLookup.TryGetValue(sect.ImgRight, out sectionImgRight);
-        }
-
         var sectionAssets = visuals?.VisualAssets?
             .Where(v => !string.IsNullOrWhiteSpace(v.Section) &&
                         string.Equals(v.Section, sect.Id, StringComparison.OrdinalIgnoreCase))
             .ToList() ?? new List<VisualAsset>();
 
+        var compareLeftAsset = sectionAssets.FirstOrDefault();
+        var compareRightAsset = sectionAssets.Skip(1).FirstOrDefault();
+
         <section id="@sect.Id"
                  class="scroll-mt-24 @(isFirst ? "pt-2 pb-8 md:pb-10" : "py-8 md:py-10")"
                  aria-label="@sect.Title">
 
-            <header class="mb-5 lg:mb-6 max-w-prose">
+            <header class="mb-5 lg:mb-6">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="text-[11px] font-semibold tracking-widest uppercase text-gray-500">
                         Section
@@ -172,16 +175,7 @@
                 }
             </header>
 
-            @if (sectionImg != null && !string.IsNullOrEmpty(sectionImg.Src) && style != "compare-cards")
-            {
-                var imgLayout = string.IsNullOrWhiteSpace(sectionImg.Layout) ? "right" : sectionImg.Layout;
-                var assetToRender = imgLayout == sectionImg.Layout
-                    ? sectionImg
-                    : new VisualAsset { Id = sectionImg.Id, Src = sectionImg.Src, Alt = sectionImg.Alt, Caption = sectionImg.Caption, Layout = imgLayout, Section = sectionImg.Section };
-                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", assetToRender)
-            }
-
-            @if (sectionAssets.Any())
+            @if (sectionAssets.Any() && style != "compare-cards")
             {
                 foreach (var asset in sectionAssets)
                 {
@@ -192,7 +186,7 @@
             @if (sect.Paragraphs?.Any() == true)
             {
                 <div class="mt-6">
-                    <div class="prose prose-lg max-w-prose prose-headings:scroll-mt-24 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-p:leading-relaxed text-gray-800">
+                    <div class="prose prose-lg prose-headings:scroll-mt-24 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-p:leading-relaxed text-gray-800">
                         @for (int p = 0; p < sect.Paragraphs.Count; p++)
                         {
                             var isLead = p == 0;
@@ -215,27 +209,27 @@
             {
                 if (style == "compare-cards")
                 {
-                    @if (sectionImg != null && sectionImgRight != null)
+                    @if (compareLeftAsset != null && compareRightAsset != null)
                     {
                         <div class="mt-6 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
                             <div class="grid grid-cols-[1fr_auto_1fr]">
                                 <figure class="relative aspect-[4/3] overflow-hidden bg-slate-50">
-                                    <img src="@Images.Card(sectionImg.Src)"
-                                         alt="@sectionImg.Alt"
+                                    <img src="@Images.Card(compareLeftAsset.Src)"
+                                         alt="@compareLeftAsset.Alt"
                                          class="absolute inset-0 h-full w-full object-contain p-4"
                                          loading="lazy" />
                                     <button type="button"
                                             class="js-visual-lightbox absolute right-2 top-2 inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-900/80 text-white transition hover:bg-slate-900 focus:outline-none"
-                                            data-lightbox-src="@Images.Full(sectionImg.Src)"
-                                            data-lightbox-alt="@sectionImg.Alt"
-                                            data-lightbox-caption="@(string.IsNullOrWhiteSpace(sectionImg.Caption) ? sectionImg.Alt : sectionImg.Caption)"
+                                            data-lightbox-src="@Images.Full(compareLeftAsset.Src)"
+                                            data-lightbox-alt="@compareLeftAsset.Alt"
+                                            data-lightbox-caption="@(string.IsNullOrWhiteSpace(compareLeftAsset.Caption) ? compareLeftAsset.Alt : compareLeftAsset.Caption)"
                                             aria-label="Open image in popup">
                                         <i class="fa-solid fa-expand text-xs"></i>
                                     </button>
-                                    @if (!string.IsNullOrWhiteSpace(sectionImg.Caption))
+                                    @if (!string.IsNullOrWhiteSpace(compareLeftAsset.Caption))
                                     {
                                         <figcaption class="absolute inset-x-0 bottom-0 bg-white/90 px-3 py-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                                            @sectionImg.Caption
+                                            @compareLeftAsset.Caption
                                         </figcaption>
                                     }
                                 </figure>
@@ -245,22 +239,22 @@
                                 </div>
 
                                 <figure class="relative aspect-[4/3] overflow-hidden bg-slate-50">
-                                    <img src="@Images.Card(sectionImgRight.Src)"
-                                         alt="@sectionImgRight.Alt"
+                                    <img src="@Images.Card(compareRightAsset.Src)"
+                                         alt="@compareRightAsset.Alt"
                                          class="absolute inset-0 h-full w-full object-contain p-4"
                                          loading="lazy" />
                                     <button type="button"
                                             class="js-visual-lightbox absolute right-2 top-2 inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-900/80 text-white transition hover:bg-slate-900 focus:outline-none"
-                                            data-lightbox-src="@Images.Full(sectionImgRight.Src)"
-                                            data-lightbox-alt="@sectionImgRight.Alt"
-                                            data-lightbox-caption="@(string.IsNullOrWhiteSpace(sectionImgRight.Caption) ? sectionImgRight.Alt : sectionImgRight.Caption)"
+                                            data-lightbox-src="@Images.Full(compareRightAsset.Src)"
+                                            data-lightbox-alt="@compareRightAsset.Alt"
+                                            data-lightbox-caption="@(string.IsNullOrWhiteSpace(compareRightAsset.Caption) ? compareRightAsset.Alt : compareRightAsset.Caption)"
                                             aria-label="Open image in popup">
                                         <i class="fa-solid fa-expand text-xs"></i>
                                     </button>
-                                    @if (!string.IsNullOrWhiteSpace(sectionImgRight.Caption))
+                                    @if (!string.IsNullOrWhiteSpace(compareRightAsset.Caption))
                                     {
                                         <figcaption class="absolute inset-x-0 bottom-0 bg-white/90 px-3 py-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                                            @sectionImgRight.Caption
+                                            @compareRightAsset.Caption
                                         </figcaption>
                                     }
                                 </figure>
@@ -299,11 +293,21 @@
                         {
                             var metaItems = ExtractLeadingMeta(sub.Text, out var subsectionBody);
                             var bodyParagraphs = SplitParagraphs(subsectionBody);
+                            var subsectionAssetKey = $"{sect.Id}::{SlugifyKey(sub.Subtitle)}";
+                            var subsectionAssets = visuals?.VisualAssets?
+                                .Where(v => !string.IsNullOrWhiteSpace(v.Section) &&
+                                            string.Equals(v.Section, subsectionAssetKey, StringComparison.OrdinalIgnoreCase))
+                                .ToList() ?? new List<VisualAsset>();
 
                             <article class="border-l-2 border-slate-200 pl-4 md:pl-5">
                                 <h3 class="content-h3 text-slate-900">@sub.Subtitle</h3>
 
                                 <div class="mt-4">
+                                    @foreach (var asset in subsectionAssets)
+                                    {
+                                        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+                                    }
+
                                     @if (metaItems.Any())
                                     {
                                         <dl class="mb-4 flex flex-wrap gap-2.5">
@@ -319,7 +323,7 @@
 
                                     @if (bodyParagraphs.Any())
                                     {
-                                        <div class="prose prose-lg max-w-prose text-gray-800">
+                                        <div class="prose prose-lg text-gray-800">
                                             @for (int p = 0; p < bodyParagraphs.Count; p++)
                                             {
                                                 <p class="content-p @(p == 0 && !metaItems.Any() ? "text-gray-900" : "text-gray-800")">
@@ -340,6 +344,8 @@
                                         </div>
                                     }
                                 </div>
+
+                                <div class="clear-both"></div>
                             </article>
                         }
                     </div>
@@ -400,7 +406,7 @@
                                 }
                                 <div class="p-5 lg:p-6 flex flex-col justify-center min-w-0">
                                     <h3 class="text-[16px] font-semibold leading-snug text-slate-900">@h.Name</h3>
-                                    <p class="mt-2 text-[14px] leading-[1.7] text-slate-600">@h.Description</p>
+                                    <p class="mt-2 text-[14px] leading-[1.7] text-slate-600">@h.Description.RenderMarkdown()</p>
                                 </div>
                             </div>
                         </article>

@@ -93,7 +93,8 @@
 
     heroModel.FigureSubtitle = $"Top 20 Most Common Surnames - {content.DataYear} Census";
 
-    var pageUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    const string baseUrl = "https://usasymbol.com";
+    var pageUrl = $"{baseUrl}{Context.Request.Path}";
     var pageImage = Images.Full(state.FlagImageUrl);
     var dateModified = (ViewData["AuthorBox"] as AuthorBox)?.DateModified ?? DateTime.UtcNow;
     var jsonOptions = new JsonSerializerOptions
@@ -114,15 +115,24 @@
         ["image"] = pageImage,
         ["author"] = new Dictionary<string, object>
         {
-            ["@type"] = "Organization",
-            ["name"] = "USA Symbol Team",
-            ["url"] = $"{Context.Request.Scheme}://{Context.Request.Host}/about"
+            ["@type"] = "Person",
+            ["@id"] = $"{baseUrl}/about/artsiom-dusau#person",
+            ["name"] = "Artsiom Dusau",
+            ["url"] = $"{baseUrl}/about/artsiom-dusau"
+        },
+        ["reviewedBy"] = new Dictionary<string, object>
+        {
+            ["@type"] = "Person",
+            ["@id"] = $"{baseUrl}/about/artsiom-dusau#person",
+            ["name"] = "Artsiom Dusau",
+            ["jobTitle"] = "Founder & Editor",
+            ["url"] = $"{baseUrl}/about/artsiom-dusau"
         },
         ["publisher"] = new Dictionary<string, object>
         {
             ["@type"] = "Organization",
             ["name"] = "USA Symbol",
-            ["url"] = $"{Context.Request.Scheme}://{Context.Request.Host}"
+            ["url"] = baseUrl
         },
         ["mainEntityOfPage"] = new Dictionary<string, object>
         {
@@ -137,8 +147,8 @@
         ["@type"] = "BreadcrumbList",
         ["itemListElement"] = new List<Dictionary<string, object>>
         {
-            new() { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{Context.Request.Scheme}://{Context.Request.Host}/" },
-            new() { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "Last Names by State", ["item"] = $"{Context.Request.Scheme}://{Context.Request.Host}/guides/surnames" },
+            new() { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{baseUrl}/" },
+            new() { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "Last Names by State", ["item"] = $"{baseUrl}/guides/surnames" },
             new() { ["@type"] = "ListItem", ["position"] = 3, ["name"] = state.Name, ["item"] = pageUrl }
         }
     };
@@ -394,7 +404,7 @@
     @await Html.PartialAsync("_PageHero", heroModel)
 
     <article class="w-full">
-    <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)_304px] 2xl:gap-12 relative pb-12">
+    <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_280px] 2xl:justify-center 2xl:gap-12 relative pb-12">
 
         <aside class="hidden lg:block relative h-full">
             <div class="sticky top-24 pb-10">
@@ -535,7 +545,7 @@
                     <div class="border-l-2 border-slate-800 pl-5">
                         <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Heritage</p>
                         <h2 class="text-[1.15rem] font-bold text-slate-900 mb-2">@(content.HeritageTitle ?? "About These Names")</h2>
-                        <p class="text-[15px] text-slate-600 leading-relaxed">@content.HeritageBody</p>
+                        <p class="text-[15px] text-slate-600 leading-relaxed">@content.HeritageBody.RenderAutoLinks()</p>
                     </div>
                     @if (!string.IsNullOrWhiteSpace(content.FunFact))
                     {
@@ -685,7 +695,7 @@
                                     </div>
                                     <h3 class="text-[15px] font-bold text-slate-900">@eg.Type</h3>
                                 </div>
-                                <p class="text-[13px] text-slate-600 leading-relaxed mb-3">@eg.Description</p>
+                                <p class="text-[13px] text-slate-600 leading-relaxed mb-3">@eg.Description.RenderMarkdown()</p>
                                 @if (eg.Examples.Any())
                                 {
                                     <div class="flex flex-wrap gap-2">

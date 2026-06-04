@@ -143,6 +143,23 @@
         font-weight: 700;
         color: #2C5F9E;
     }
+    .slc-footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+        padding-top: .75rem;
+        border-top: 1px solid var(--cream-dark);
+    }
+    .slc-footer-link {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        font-size: .76rem;
+        font-weight: 700;
+        color: #2C5F9E;
+        text-decoration: none;
+    }
+    .slc-footer-link--secondary { color: var(--slate-ed); }
 </style>
 }
 
@@ -218,14 +235,16 @@
                         $"{Images.Card(flagPath, 640)} 640w"
                     });
                     var flagSizes = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 20vw";
-                    <a href="/states/@state.Slug" class="state-listing-card">
+                    <article class="state-listing-card">
                         <div class="slc-flag">
-                            <img src="@flagSrc"
-                                 srcset="@flagSrcSet"
-                                 sizes="@flagSizes"
-                                 alt="@state.Name flag"
-                                 loading="lazy"
-                                 onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                            <a href="/states/@state.Slug" aria-label="@state.Name state page">
+                                <img src="@flagSrc"
+                                     srcset="@flagSrcSet"
+                                     sizes="@flagSizes"
+                                     alt="@state.Name flag"
+                                     loading="lazy"
+                                     onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                            </a>
                             <div class="w-full h-full items-center justify-center" style="display:none;background:linear-gradient(135deg,#1B2A4A,#2C5F9E)">
                                 <span style="font-size:1.75rem;font-weight:800;color:white">@state.Abbreviation</span>
                             </div>
@@ -236,8 +255,8 @@
                         </div>
                         <div class="slc-body">
                             <div class="slc-header">
-                                <div class="slc-name">@state.Name</div>
-                                <span class="slc-abbr">@state.Abbreviation</span>
+                                <a href="/states/@state.Slug" class="slc-name" style="text-decoration:none">@state.Name</a>
+                                <a href="/states/@state.Slug/abbreviation" class="slc-abbr" style="text-decoration:none">@state.Abbreviation</a>
                             </div>
                             <div class="slc-meta">
                                 <div class="slc-meta-row">
@@ -252,12 +271,16 @@
                                     </div>
                                 }
                             </div>
-                            <div class="slc-footer">
-                                <span>View Symbols</span>
-                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            <div class="slc-footer-links">
+                                <a href="/states/@state.Slug" class="slc-footer-link">
+                                    View Symbols <i class="fa-solid fa-arrow-right text-xs"></i>
+                                </a>
+                                <a href="/states/@state.Slug/abbreviation" class="slc-footer-link slc-footer-link--secondary">
+                                    @state.Abbreviation abbreviation <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                </a>
                             </div>
                         </div>
-                    </a>
+                    </article>
                 }
             </div>
         }

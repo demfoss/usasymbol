@@ -11,7 +11,7 @@
     ViewData["OgType"] = "article";
     ViewData["BodyClass"] = "symbols-surface";
 
-    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    const string baseUrl = "https://usasymbol.com";
     var imageRightsUrl = $"{baseUrl}/terms#image-rights";
     var imageLicensePageUrl = $"{baseUrl}/contact";
     var canonicalPath = !string.IsNullOrWhiteSpace(content?.Url) ? content.Url : Context.Request.Path.Value ?? "/collections";
@@ -68,6 +68,33 @@
         ["url"] = baseUrl
     };
 
+    Dictionary<string, object?> EditorialTeam() => new()
+    {
+        ["@type"] = "Organization",
+        ["name"] = "USA Symbol Editorial Team",
+        ["url"] = $"{baseUrl}/about"
+    };
+
+    Dictionary<string, object?> Person(string? name) => new()
+    {
+        ["@type"] = "Person",
+        ["@id"] = $"{baseUrl}/about/artsiom-dusau#person",
+        ["name"] = string.IsNullOrWhiteSpace(name) ? "Artsiom Dusau" : name,
+        ["url"] = $"{baseUrl}/about/artsiom-dusau"
+    };
+
+    Dictionary<string, object?> AuthorEntity(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name) ||
+            name.Equals("USA Symbol Team", StringComparison.OrdinalIgnoreCase) ||
+            name.Equals("USA Symbol Editorial Team", StringComparison.OrdinalIgnoreCase))
+        {
+            return EditorialTeam();
+        }
+
+        return Person(name);
+    }
+
     Dictionary<string, object?> ImageSchema(string imageUrl, string? name = null, string? caption = null) => new()
     {
         ["@type"] = "ImageObject",
@@ -91,7 +118,8 @@
         ["datePublished"] = content?.DatePublished?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
         ["dateModified"] = content?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
         ["image"] = ImageSchema(heroImageUrl, content?.Page?.H1, content?.HeroImageCaption),
-        ["author"] = new Dictionary<string, object?> { ["@type"] = "Person", ["name"] = content?.Author ?? "USA Symbol Team", ["url"] = $"{baseUrl}/about" },
+        ["author"] = AuthorEntity(content?.Author),
+        ["reviewedBy"] = new Dictionary<string, object?> { ["@type"] = "Person", ["@id"] = $"{baseUrl}/about/artsiom-dusau#person", ["name"] = "Artsiom Dusau", ["jobTitle"] = "Founder & Editor", ["url"] = $"{baseUrl}/about/artsiom-dusau" },
         ["publisher"] = new Dictionary<string, object?>
         {
             ["@type"] = "Organization",

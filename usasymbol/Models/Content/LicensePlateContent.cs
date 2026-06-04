@@ -28,6 +28,8 @@ namespace USASymbol.Models.Content
         public string BigStatAfterSectionId { get; set; } = string.Empty;
         public string TimelineAfterSectionId { get; set; } = string.Empty;
         public string ExpertQuoteAfterSectionId { get; set; } = string.Empty;
+        public string MeaningAfterSectionId { get; set; } = string.Empty;
+        public string MeaningTitle { get; set; } = string.Empty;
         public List<VisualAsset> VisualAssets { get; set; } = new();
         public List<QuickFactItem> QuickFacts { get; set; } = new();
     }

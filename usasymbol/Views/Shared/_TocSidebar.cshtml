@@ -7,6 +7,7 @@
     var title = "Contents";
     var subtitle = "";
     var imageUrl = "";
+    var preserveFullImage = false;
 
     void Add(string id, string text, string iconClass)
     {
@@ -58,17 +59,27 @@
 
     if (Model is ISymbolDetailViewModel symbolModel)
     {
-        var rawTitle = symbolModel.ContentTitle ?? symbolModel.Symbol?.Name ?? "Symbol";
+        var rawTitle = FirstNonEmpty(
+            symbolModel.ContentTitle,
+            symbolModel.Symbol?.Name,
+            !string.IsNullOrWhiteSpace(symbolModel.State?.Name) && !string.IsNullOrWhiteSpace(symbolModel.SymbolTypeName)
+                ? $"{symbolModel.State.Name} {symbolModel.SymbolTypeName}"
+                : null,
+            "Symbol");
         var compactTitle = !string.IsNullOrWhiteSpace(symbolModel.State?.Name) && !string.IsNullOrWhiteSpace(symbolModel.SymbolTypeName)
             ? $"{symbolModel.State!.Name} {symbolModel.SymbolTypeName}"
             : rawTitle;
         var shouldUseCompactTitle = rawTitle.Length > 34 && !string.Equals(rawTitle, compactTitle, StringComparison.Ordinal);
 
         title = shouldUseCompactTitle ? compactTitle : rawTitle;
-        subtitle = shouldUseCompactTitle ? rawTitle : symbolModel.Symbol?.ScientificName ?? "";
-        imageUrl = symbolModel.Symbol?.ImageUrl ?? "";
+        subtitle = shouldUseCompactTitle ? rawTitle : FirstNonEmpty(symbolModel.Symbol?.ScientificName);
+        imageUrl = FirstNonEmpty(symbolModel.Symbol?.ImageUrl);
+        preserveFullImage = symbolModel is SealDetailViewModel;
 
-        if (!string.IsNullOrWhiteSpace(symbolModel.ContentIntroText))
+        var hasOverviewSection = symbolModel.Sections?.Any(s =>
+            string.Equals(s?.Id, "overview", StringComparison.OrdinalIgnoreCase)) == true;
+
+        if (!string.IsNullOrWhiteSpace(symbolModel.ContentIntroText) && !hasOverviewSection)
         {
             Add("overview", "Overview", "fa-solid fa-eye");
         }
@@ -190,7 +201,7 @@
                 {
                     <img src="@Images.Card(imageUrl)"
                          alt="@title"
-                         class="mx-auto h-24 w-24 rounded-full object-cover"
+                         class="mx-auto h-24 w-24 rounded-full @(preserveFullImage ? "object-contain p-1 bg-white/80" : "object-cover")"
                          loading="lazy" />
                 }
                 else
@@ -345,3 +356,18 @@
         }, { passive: true });
     });
 </script>
+
+@functions {
+    string FirstNonEmpty(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                return value.Trim();
+            }
+        }
+
+        return string.Empty;
+    }
+}

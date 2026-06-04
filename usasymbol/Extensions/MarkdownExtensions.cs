@@ -42,6 +42,11 @@ namespace USASymbol.Extensions
             @"&lt;(/?(?:i|b|u|s|p|em|strong|br|sup|sub|mark|small|abbr|code|span))\s*/?&gt;",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        private static readonly Regex H1Regex = new(@"(?m)^\s{2,}h1:\s*""?(.+?)""?\s*$", RegexOptions.Compiled);
+        private static readonly Regex AutoLinkPhrasesRegex = new(@"(?m)^auto_link_phrases:\s*\n((?:[ \t]+-[ \t]+.+\n?)+)", RegexOptions.Compiled);
+        private static readonly Regex PhraseListItemRegex = new(@"(?m)^[ \t]+-[ \t]+""?(.+?)""?\s*$", RegexOptions.Compiled);
+        private static readonly Regex LeadingUsRegex = new(@"^U\.?S\.?\s+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private static readonly Dictionary<string, string> StateSlugs = new(StringComparer.OrdinalIgnoreCase)
         {
             {"Alabama", "alabama"}, {"Alaska", "alaska"}, {"Arizona", "arizona"}, {"Arkansas", "arkansas"},
@@ -77,7 +82,7 @@ namespace USASymbol.Extensions
 
         private static string Normalize(string text)
         {
-            text = (text ?? "").Trim();
+            text = WebUtility.HtmlDecode((text ?? "").Trim());
             text = LeadingBulletRegex.Replace(text, "");
             return text;
         }
@@ -179,14 +184,169 @@ namespace USASymbol.Extensions
             }
 
             foreach (var target in LoadSymbolCategoryTargets())
-            {
                 targets.Add(target);
-            }
+
+            foreach (var target in BuildStateSymbolPhraseTargets())
+                targets.Add(target);
+
+            foreach (var target in LoadRankingTargets())
+                targets.Add(target);
+
+            foreach (var target in LoadCollectionTargets())
+                targets.Add(target);
+
+            foreach (var target in LoadParkTargets())
+                targets.Add(target);
+
+            foreach (var target in LoadBorderTargets())
+                targets.Add(target);
+
+            foreach (var target in LoadAbbreviationTargets())
+                targets.Add(target);
 
             return targets
                 .OrderBy(t => t.Priority)
                 .ThenByDescending(t => t.Label.Length)
                 .ToList();
+        }
+
+        private static IEnumerable<string> ExtractPhrasesFromYaml(string content, string url)
+        {
+            var phrases = new List<string>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            void Yield(string? raw)
+            {
+                if (string.IsNullOrWhiteSpace(raw)) return;
+                var clean = raw.Trim().Trim('"');
+                foreach (var sep in new[] { '|', ':', ',' })
+                {
+                    var idx = clean.IndexOf(sep);
+                    if (idx > 0) clean = clean[..idx].Trim();
+                }
+                clean = LeadingUsRegex.Replace(clean, "").Trim();
+                if (clean.Length < 4 || !seen.Add(clean)) return;
+                phrases.Add(clean);
+            }
+
+            // 1. slug-derived phrase (always present)
+            var slug = url.Split('/').Last().Replace('-', ' ');
+            Yield(slug);
+
+            // 2. page.h1 (nested under "page:")
+            var h1 = H1Regex.Match(content);
+            if (h1.Success)
+                Yield(h1.Groups[1].Value.Trim().Trim('"'));
+
+            // 3. auto_link_phrases: list in YAML (manual/generated override)
+            var block = AutoLinkPhrasesRegex.Match(content);
+            if (block.Success)
+            {
+                foreach (Match item in PhraseListItemRegex.Matches(block.Groups[1].Value))
+                    Yield(item.Groups[1].Value.Trim().Trim('"'));
+            }
+
+            return phrases;
+        }
+
+        private static IEnumerable<AutoLinkTarget> LoadYamlUrlTargets(string contentSubPath, int basePriority)
+        {
+            var path = Path.Combine(AppContext.BaseDirectory, "Content", contentSubPath);
+            if (!Directory.Exists(path))
+                yield break;
+
+            var seenPhraseUrl = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var file in Directory.EnumerateFiles(path, "*.yml", SearchOption.AllDirectories))
+            {
+                var content = File.ReadAllText(file);
+                var urlMatch = Regex.Match(content, @"(?m)^url:\s*(.+?)\s*$");
+                if (!urlMatch.Success)
+                    continue;
+
+                var url = urlMatch.Groups[1].Value.Trim().Trim('"');
+                if (string.IsNullOrWhiteSpace(url))
+                    continue;
+
+                foreach (var phrase in ExtractPhrasesFromYaml(content, url))
+                {
+                    // skip if another URL already owns this phrase (first writer wins)
+                    if (!seenPhraseUrl.Add(phrase.ToLowerInvariant()))
+                        continue;
+
+                    var pattern = new Regex(@"\b" + Regex.Escape(phrase) + @"\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    yield return new AutoLinkTarget(phrase, url, pattern, basePriority - phrase.Length, false);
+                }
+            }
+        }
+
+        private static IEnumerable<AutoLinkTarget> LoadRankingTargets()
+            => LoadYamlUrlTargets("rankings", 95);
+
+        private static IEnumerable<AutoLinkTarget> LoadCollectionTargets()
+            => LoadYamlUrlTargets("collections", 90);
+
+        private static IEnumerable<AutoLinkTarget> LoadParkTargets()
+        {
+            var path = Path.Combine(AppContext.BaseDirectory, "Content", "parks", "national");
+            if (!Directory.Exists(path))
+                yield break;
+
+            foreach (var file in Directory.EnumerateFiles(path, "*.yml"))
+            {
+                var content = File.ReadAllText(file);
+                var slugMatch = Regex.Match(content, @"(?m)^slug:\s*(.+?)\s*$");
+                var nameMatch = Regex.Match(content, @"(?m)^name:\s*""?(.+?)""?\s*$");
+                if (!slugMatch.Success || !nameMatch.Success)
+                    continue;
+
+                var slug = slugMatch.Groups[1].Value.Trim().Trim('"');
+                var name = nameMatch.Groups[1].Value.Trim();
+                if (string.IsNullOrWhiteSpace(slug) || string.IsNullOrWhiteSpace(name))
+                    continue;
+
+                var url = $"/national-parks/{slug}";
+                var pattern = new Regex(@"\b" + Regex.Escape(name) + @"\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                yield return new AutoLinkTarget(name, url, pattern, 85 - name.Length, false);
+            }
+        }
+
+        private static IEnumerable<AutoLinkTarget> LoadBorderTargets()
+        {
+            foreach (var (stateName, stateSlug) in StateSlugs)
+            {
+                var url = $"/states/{stateSlug}/borders";
+                var phrases = new[]
+                {
+                    $"states that border {stateName}",
+                    $"{stateName} border states",
+                    $"{stateName} borders",
+                };
+                foreach (var phrase in phrases)
+                {
+                    var pattern = new Regex(@"\b" + Regex.Escape(phrase) + @"\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    yield return new AutoLinkTarget(phrase, url, pattern, 60 - phrase.Length, false);
+                }
+            }
+        }
+
+        private static IEnumerable<AutoLinkTarget> LoadAbbreviationTargets()
+        {
+            foreach (var (stateName, stateSlug) in StateSlugs)
+            {
+                var url = $"/states/{stateSlug}/abbreviation";
+                var phrases = new[]
+                {
+                    $"{stateName} abbreviation",
+                    $"{stateName} postal abbreviation",
+                    $"{stateName} state abbreviation",
+                };
+                foreach (var phrase in phrases)
+                {
+                    var pattern = new Regex(@"\b" + Regex.Escape(phrase) + @"\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    yield return new AutoLinkTarget(phrase, url, pattern, 65 - phrase.Length, false);
+                }
+            }
         }
 
         private static IEnumerable<AutoLinkTarget> LoadSymbolCategoryTargets()
@@ -231,8 +391,67 @@ namespace USASymbol.Extensions
                 "dinosaur" => new[] { "official state dinosaur", "official state dinosaurs", "state dinosaur", "state dinosaurs" },
                 "firearm" => new[] { "official state firearm", "official state firearms", "state firearm", "state firearms" },
                 "color" => new[] { "official state color", "official state colors", "state color", "state colors" },
+                "state-seal" => new[] { "official state seal", "official state seals", "state seal", "state seals", "great seal" },
+                "song" => new[] { "official state song", "official state songs", "state song", "state songs" },
+                "soil" => new[] { "official state soil", "state soil" },
+                "license-plate" => new[] { "state license plate", "state license plates", "license plate slogan" },
+                "coat-of-arms" => new[] { "coat of arms", "state coat of arms" },
+                "abbreviation" => new[] { "state abbreviation", "postal abbreviation", "two-letter abbreviation" },
                 _ => Array.Empty<string>()
             };
+        }
+
+        // Generates "Arizona state bird" → /states/arizona/bird for all 50 × categories
+        private static IEnumerable<AutoLinkTarget> BuildStateSymbolPhraseTargets()
+        {
+            var categoryLabels = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["bird"] = new[] { "state bird", "state birds" },
+                ["flower"] = new[] { "state flower", "state flowers" },
+                ["flag"] = new[] { "state flag", "state flags" },
+                ["tree"] = new[] { "state tree", "state trees" },
+                ["motto"] = new[] { "state motto" },
+                ["nickname"] = new[] { "state nickname" },
+                ["mammal"] = new[] { "state mammal" },
+                ["seal"] = new[] { "state seal", "great seal" },
+            };
+
+            foreach (var (stateName, stateSlug) in StateSlugs)
+            {
+                foreach (var (typeKey, labels) in categoryLabels)
+                {
+                    var url = $"/states/{stateSlug}/{typeKey}";
+                    foreach (var label in labels)
+                    {
+                        var phrase = $"{stateName} {label}";
+                        var pattern = new Regex(
+                            @"\b" + Regex.Escape(phrase) + @"\b",
+                            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                        // priority 50 = higher than generic category phrases (100-N) so state-specific wins
+                        yield return new AutoLinkTarget(phrase, url, pattern, 50 - phrase.Length, false);
+                    }
+                }
+            }
+        }
+
+        private static HashSet<(int Start, int End)> GetOccupiedRanges(string text)
+        {
+            var occupied = new HashSet<(int, int)>();
+            foreach (Match m in ExistingMarkdownLinkRegex.Matches(text))
+                occupied.Add((m.Index, m.Index + m.Length));
+            foreach (Match m in BareUrlRegex.Matches(text))
+                occupied.Add((m.Index, m.Index + m.Length));
+            return occupied;
+        }
+
+        private static bool IsInOccupiedRange(int start, int end, HashSet<(int Start, int End)> occupied)
+        {
+            foreach (var (oStart, oEnd) in occupied)
+            {
+                if (start < oEnd && end > oStart)
+                    return true;
+            }
+            return false;
         }
 
         private static string AutoLinkContent(string text)
@@ -240,18 +459,12 @@ namespace USASymbol.Extensions
             if (string.IsNullOrWhiteSpace(text))
                 return text;
 
-            if (ExistingMarkdownLinkRegex.IsMatch(text) ||
-                text.Contains("http://", StringComparison.OrdinalIgnoreCase) ||
-                text.Contains("https://", StringComparison.OrdinalIgnoreCase))
-            {
-                return text;
-            }
-
             var scope = CurrentAutoLinkScope.Value ??= new AutoLinkScope();
             var remainingPageBudget = MaxAutoLinksPerPage - scope.PageLinkCount;
             if (remainingPageBudget <= 0)
                 return text;
 
+            var occupied = GetOccupiedRanges(text);
             var remainingParagraphBudget = Math.Min(MaxAutoLinksPerParagraph, remainingPageBudget);
             var matches = new List<(int Start, int Length, AutoLinkTarget Target, string Value)>();
 
@@ -266,6 +479,9 @@ namespace USASymbol.Extensions
                 foreach (Match match in target.Pattern.Matches(text))
                 {
                     if (!match.Success || !IsSafeAutoLinkMatch(text, match, target))
+                        continue;
+
+                    if (IsInOccupiedRange(match.Index, match.Index + match.Length, occupied))
                         continue;
 
                     matches.Add((match.Index, match.Length, target, match.Value));
@@ -359,16 +575,19 @@ namespace USASymbol.Extensions
             if (string.IsNullOrWhiteSpace(scope.CurrentPath))
                 return false;
 
+            // General: never link to exact current page
+            if (scope.CurrentPath.Equals(target.Url, StringComparison.OrdinalIgnoreCase))
+                return true;
+
             if (target.IsState)
             {
-                return scope.CurrentPath.Equals(target.Url, StringComparison.OrdinalIgnoreCase) ||
-                       scope.CurrentPath.StartsWith(target.Url + "/", StringComparison.OrdinalIgnoreCase);
+                // Sub-pages don't link back to their parent state hub
+                return scope.CurrentPath.StartsWith(target.Url + "/", StringComparison.OrdinalIgnoreCase);
             }
 
             if (target.IsCompareHub)
             {
-                return scope.CurrentPath.Equals("/compare-states", StringComparison.OrdinalIgnoreCase) ||
-                       scope.CurrentPath.StartsWith("/compare/", StringComparison.OrdinalIgnoreCase);
+                return scope.CurrentPath.StartsWith("/compare/", StringComparison.OrdinalIgnoreCase);
             }
 
             return false;

@@ -74,6 +74,9 @@
                     if (imageCol != null && row.Data.TryGetValue(imageCol.Key, out var imgVal) && imgVal != null)
                         imgSrc = imgVal.ToString() ?? "";
                     var isSymbolImage = imageCol != null && string.Equals(imageCol.Key, "symbol_image", StringComparison.OrdinalIgnoreCase);
+                    var preserveFullSymbolImage = isSymbolImage &&
+                        (string.Equals(Model.DetailType, "state-seal", StringComparison.OrdinalIgnoreCase) ||
+                         string.Equals(Model.DetailType, "coat-of-arms", StringComparison.OrdinalIgnoreCase));
 
                     // ── Main detail value (column matching DetailType) ─────────────
                     var mainCol   = displayColumns.FirstOrDefault(c => c.Key.Equals(Model.DetailType, StringComparison.OrdinalIgnoreCase));
@@ -130,7 +133,7 @@
 
         <!-- ── Top section ──────────────────────────────────── -->
         <div class="p-4 md:p-5">
-            <div class="flex items-start gap-4">
+            <div class="flex min-w-0 items-start gap-3 sm:gap-4">
 
                 <!-- Thumbnail -->
                 <div class="flex-shrink-0 flex flex-col items-center gap-1.5">
@@ -138,8 +141,8 @@
                     {
                         <div class="w-[72px] md:w-[88px] h-[72px] md:h-[88px] rounded-xl overflow-hidden
                                     border border-slate-100 bg-slate-50 flex items-center justify-center">
-                            <img src="@(isSymbolImage ? Images.Crop(imgSrc, 176, 176) : Images.Thumb(imgSrc))" alt="@(mainValue ?? stateName)"
-                                 class="w-full h-full @(isSymbolImage ? "object-cover" : "object-contain")"
+                            <img src="@((isSymbolImage && !preserveFullSymbolImage) ? Images.Crop(imgSrc, 176, 176) : Images.Thumb(imgSrc))" alt="@(mainValue ?? stateName)"
+                                 class="w-full h-full @((isSymbolImage && !preserveFullSymbolImage) ? "object-cover" : "object-contain")"
                                  loading="lazy" decoding="async" />
                         </div>
                     }
@@ -172,22 +175,22 @@
 
                 <!-- Main content -->
                 <div class="min-w-0 flex-1">
-                    <div class="flex items-start justify-between gap-2">
+                    <div class="flex min-w-0 items-start justify-between gap-2">
                         <div class="min-w-0">
-                            <div class="text-[17px] md:text-[18px] font-black text-slate-900 leading-tight">
+                            <div class="break-words text-[17px] md:text-[18px] font-black text-slate-900 leading-tight">
                                 @stateName
                             </div>
 
                             @if (!string.IsNullOrWhiteSpace(mainValue))
                             {
-                                <div class="mt-0.5 text-sm md:text-[15px] font-semibold text-slate-700 leading-snug">
+                                <div class="mt-0.5 break-words text-sm md:text-[15px] font-semibold text-slate-700 leading-snug">
                                     @mainValue
                                 </div>
                             }
 
                             @if (!string.IsNullOrWhiteSpace(sciVal))
                             {
-                                <div class="mt-0.5 text-[13px] italic text-slate-500 leading-snug">@sciVal</div>
+                                <div class="mt-0.5 break-words text-[13px] italic text-slate-500 leading-snug">@sciVal</div>
                             }
                         </div>
 
@@ -219,10 +222,10 @@
                                 var chipVal = row.Data.TryGetValue(chipCol.Key, out var cv) ? cv?.ToString() : null;
                                 if (!string.IsNullOrEmpty(chipVal))
                                 {
-                                    <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5
+                                    <span class="inline-flex max-w-full items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5
                                                  text-[12px] leading-4">
                                         <span class="font-normal text-slate-400">@chipCol.Label:</span>
-                                        <span class="font-semibold text-slate-600">@chipVal</span>
+                                        <span class="min-w-0 break-words font-semibold text-slate-600">@chipVal</span>
                                     </span>
                                 }
                             }
@@ -244,7 +247,7 @@
                     {
                         <div class="text-[13px] leading-5">
                             <span class="font-semibold text-slate-700">@lc.Label:</span>
-                            <span class="text-slate-500 ml-1">@lv</span>
+                            <span class="ml-1 break-words text-slate-500">@lv</span>
                         </div>
                     }
                 }

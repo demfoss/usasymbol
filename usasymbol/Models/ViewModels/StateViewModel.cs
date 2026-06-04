@@ -1,5 +1,31 @@
-﻿namespace USASymbol.Models.ViewModels
+namespace USASymbol.Models.ViewModels
 {
+    public class StateMapPageViewModel
+    {
+        public State State { get; set; } = new();
+        // JSON: { "<fips>": { name, capital, population, region, statehood, slug } }
+        public string AllStatesJson { get; set; } = "{}";
+        public string StateSlugsJson { get; set; } = "{}";
+        public List<StateCountyMapItem> Counties { get; set; } = new();
+        public StateCountyMapSummary? CountySummary { get; set; }
+    }
+
+    public class StateCountyMapItem
+    {
+        public string Name { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+        public string StateCode { get; set; } = string.Empty;
+        public string FipsCode { get; set; } = string.Empty;
+        public long? Population { get; set; }
+    }
+
+    public class StateCountyMapSummary
+    {
+        public int CountyCount { get; set; }
+        public StateCountyMapItem? LargestByPopulation { get; set; }
+        public StateCountyMapItem? SmallestByPopulation { get; set; }
+    }
+
     public class StateViewModel
     {
         public State State { get; set; } = new();

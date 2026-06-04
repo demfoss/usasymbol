@@ -1,5 +1,6 @@
 @model USASymbol.Models.ViewModels.TableSectionViewModel
 @inject IImageUrlService Images
+@using System.Text.RegularExpressions
 
 @if (Model.Tables.Any())
 {
@@ -9,9 +10,12 @@
         {
             if (!table.Rows.Any() || !table.Columns.Any()) { continue; }
 
-            var columns   = table.Columns;
+            var hiddenColumns = new HashSet<string>(table.HiddenColumns ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
+            var columns   = table.Columns.Where(col => !hiddenColumns.Contains(col.Key)).ToList();
             var toggleable = table.ToggleableColumns;
             var defaultCol = table.DefaultColumn ?? toggleable.FirstOrDefault();
+
+            if (!columns.Any()) { continue; }
 
             @* Title — only for multi-table layouts *@
             @if (Model.Tables.Count > 1 && !string.IsNullOrWhiteSpace(table.Title))
@@ -88,6 +92,7 @@
                             var searchParts = new System.Collections.Generic.List<string?> { stateName };
                             foreach (var c in columns.Where(c => c.Type != "image" && !c.Key.EndsWith("_slug") && c.Key != "state" && c.Key != "custom_url"))
                             {
+                                if (hiddenColumns.Contains(c.Key)) { continue; }
                                 if (row.Data.TryGetValue(c.Key, out var sv)) searchParts.Add(sv?.ToString());
                             }
                             var rowSearchText = string.Join(" ", searchParts.Where(s => !string.IsNullOrEmpty(s))).ToLowerInvariant();
@@ -212,6 +217,11 @@
                                                 {
                                                     <span class="font-semibold text-slate-900">@text</span>
                                                 }
+                                                else if (key == "notes")
+                                                {
+                                                    var shortText = SummarizeTableNote(text);
+                                                    <span class="text-slate-700" title="@text">@shortText</span>
+                                                }
                                                 else
                                                 {
                                                     <span class="text-slate-700">@text</span>
@@ -266,10 +276,11 @@
         {
             case "number":
             case "rank":
+                var usCulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
                 if (long.TryParse(s.Replace(",", "").Replace(" ", ""), out var n))
-                    return n.ToString(col.Format ?? "N0");
+                    return n.ToString(col.Format ?? "N0", usCulture);
                 if (double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
-                    return dbl.ToString(col.Format ?? "N2");
+                    return dbl.ToString(col.Format ?? "N2", usCulture);
                 return s;
 
             case "date":
@@ -280,5 +291,32 @@
             default:
                 return s;
         }
+    }
+
+    string SummarizeTableNote(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return "—";
+        }
+
+        var cleaned = Regex.Replace(text.Trim(), @"\s+", " ");
+        var firstSentence = Regex.Match(cleaned, @"^.*?[.!?](?:\s|$)");
+        var summary = firstSentence.Success ? firstSentence.Value.Trim() : cleaned;
+
+        const int maxLength = 110;
+        if (summary.Length <= maxLength)
+        {
+            return summary;
+        }
+
+        var clipped = summary[..maxLength].TrimEnd();
+        var lastSpace = clipped.LastIndexOf(' ');
+        if (lastSpace > 60)
+        {
+            clipped = clipped[..lastSpace];
+        }
+
+        return clipped.TrimEnd(',', ';', ':', '-') + "...";
     }
 }

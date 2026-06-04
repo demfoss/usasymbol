@@ -11,6 +11,12 @@
     var quoteRendered = false;
     var timelineRendered = false;
     var statRendered = false;
+    var meaningAfterSectionId = (Model.MeaningAfterSectionId ?? string.Empty).Trim();
+    var meaningRendered = false;
+    var meaningTitle = !string.IsNullOrWhiteSpace(Model.MeaningTitle)
+        ? Model.MeaningTitle
+        : $"{Model.SealContent?.Name ?? Model.Symbol?.Name ?? "State Seal"} Meaning";
+    var meaningText = !string.IsNullOrWhiteSpace(Model.SealContent?.Meaning) ? Model.SealContent.Meaning : (Model.Meaning ?? string.Empty);
     var quoteAfterSectionId = Model.SealContent?.ExpertQuoteAfterSectionId ?? string.Empty;
     var timelineAfterSectionId = Model.SealContent?.TimelineAfterSectionId ?? string.Empty;
     var statAfterSectionId = Model.SealContent?.BigStatAfterSectionId ?? string.Empty;
@@ -28,7 +34,9 @@
     var fullWidthVisualAsset = visualAssets
         .FirstOrDefault(asset => asset != null &&
                                  !string.IsNullOrWhiteSpace(asset.Src) &&
-                                 string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase));
+                                 string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                                 string.IsNullOrWhiteSpace(asset.Section));
+    var fallbackMeaningSectionId = sections.Cast<SealSection>().FirstOrDefault()?.Id ?? string.Empty;
 
     foreach (var item in sections.Cast<SealSection>())
     {
@@ -97,7 +105,7 @@
                             }
                             @if (sub.ListItems?.Any() == true)
                             {
-                                <ul class="mt-4 space-y-2 text-sm text-slate-700 max-w-prose">
+                        <ul class="mt-4 space-y-2 text-sm text-slate-700">
                                     @foreach (var listItem in sub.ListItems)
                                     {
                                         <li class="pl-5 relative before:content-['-'] before:absolute before:left-0 before:text-slate-400">
@@ -124,7 +132,7 @@
                     .ToList();
                 @await Html.PartialAsync(
                     "Components/Widgets/_SymbolsShowcase",
-                    ((IReadOnlyList<SymbolDisplayItem>)elementItems, $"/images/state-seals/{stateSlug}/elements"))
+                    ((IReadOnlyList<SymbolDisplayItem>)elementItems, $"{Model.AssetBasePath}/{stateSlug}/elements"))
             }
 
             @if (item.Versions?.Any() == true)
@@ -140,7 +148,7 @@
                     .ToList();
                 @await Html.PartialAsync(
                     "Components/Widgets/_VersionsTimeline",
-                    ((IReadOnlyList<VersionDisplayItem>)versionItems, $"/images/state-seals/{stateSlug}/versions"))
+                    ((IReadOnlyList<VersionDisplayItem>)versionItems, $"{Model.AssetBasePath}/{stateSlug}/versions"))
             }
 
             @if (item.Facts?.Any() == true)
@@ -177,6 +185,14 @@
             @await Html.PartialAsync("Components/Story/_BigStat", Model.SealContent.BigStat)
             statRendered = true;
         }
+
+        @if (!meaningRendered &&
+            string.Equals(item.Id, string.IsNullOrWhiteSpace(meaningAfterSectionId) ? fallbackMeaningSectionId : meaningAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(meaningText))
+        {
+            @await Html.PartialAsync("Components/Story/_MeaningBanner", (meaningTitle, meaningText))
+            meaningRendered = true;
+        }
     }
 
     if (!quoteRendered && Model.SealContent?.ExpertQuote != null)
@@ -192,6 +208,11 @@
     if (!statRendered && Model.SealContent?.BigStat != null)
     {
         @await Html.PartialAsync("Components/Story/_BigStat", Model.SealContent.BigStat)
+    }
+
+    if (!meaningRendered && !string.IsNullOrWhiteSpace(meaningText))
+    {
+        @await Html.PartialAsync("Components/Story/_MeaningBanner", (meaningTitle, meaningText))
     }
 
     if (orphanVisualAssets.Any())
@@ -210,6 +231,6 @@
 else
 {
     <div class="text-sm text-slate-500">
-        No sections rendered yet for this state seal.
+        @Model.EmptySectionsMessage
     </div>
 }

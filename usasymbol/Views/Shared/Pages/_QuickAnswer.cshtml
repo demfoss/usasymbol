@@ -40,7 +40,7 @@
                         </span>
 
                         <p class="content-p @(isLead ? "font-semibold text-slate-900" : "text-slate-700")">
-                            @answer
+                            @answer.RenderAutoLinks()
                         </p>
                     </li>
                 }

@@ -3,74 +3,77 @@
 @inject IImageUrlService Images
 
 @{
-    var authorName = "USA Symbol Team";
     var updated = (Model?.DateModified ?? DateTime.UtcNow).ToString("MMMM d, yyyy", CultureInfo.InvariantCulture);
-    var teamLogoPath = "/images/logo-profile.png";
 }
 
-@if ((Model?.DateModified).HasValue == true || !string.IsNullOrWhiteSpace(Model?.Author))
-{
-    <aside class="overflow-hidden border border-slate-200/80 bg-white/50"
-           itemscope itemtype="https://schema.org/CreativeWork">
+<aside class="overflow-hidden border border-slate-200/80 bg-white/50"
+       itemscope itemtype="https://schema.org/CreativeWork">
 
-        <div class="px-5 py-4 border-b border-slate-200/80">
-            <div class="flex items-center justify-between gap-4">
-                <h3 class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
-                    Editorial Standards
-                </h3>
-                <span class="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-white/80 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
-                    <i class="fa-solid fa-shield-check text-[10px]"></i>
-                    Human Verified
-                </span>
-            </div>
+    <div class="px-5 py-4 border-b border-slate-200/80">
+        <div class="flex items-center justify-between gap-4">
+            <h3 class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                Editorial Standards
+            </h3>
+            <span class="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-white/80 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
+                <i class="fa-solid fa-shield-check text-[10px]"></i>
+                Human Reviewed
+            </span>
         </div>
+    </div>
 
-        <div class="p-5 sm:p-6">
-            <div class="flex flex-row items-start gap-4 sm:gap-6">
+    <div class="p-5 sm:p-6">
+        <div class="flex flex-row items-start gap-4 sm:gap-6">
 
-                <div class="shrink-0">
-                    <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-slate-50 sm:h-16 sm:w-16">
-                        <img src="@Images.Full(teamLogoPath)"
-                             alt="USA Symbol Team"
+            <div class="shrink-0">
+                <a href="/about/artsiom-dusau" class="block">
+                    <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full ring-2 ring-slate-100 sm:h-16 sm:w-16">
+                        <img src="@Images.Full("/images/profile/artsiom-dusau.png")"
+                             alt="Artsiom Dusau — Founder & Editor, USA Symbol"
                              class="h-full w-full object-cover"
-                             onerror="this.parentElement.innerHTML='<span class=\'text-slate-400 font-bold text-xs\'>US</span>'">
+                             onerror="this.parentElement.innerHTML='<span class=\'text-slate-400 font-bold text-xs\'>AD</span>'">
                     </div>
+                </a>
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-baseline gap-x-1.5 gap-y-1 text-sm">
+                    <span class="text-slate-500">By</span>
+                    <a href="/about" class="font-semibold text-slate-700 hover:text-blue-700 transition-colors underline-offset-4 hover:underline">
+                        USA Symbol Editorial Team
+                    </a>
+                    <span class="text-slate-300">·</span>
+                    <span class="text-slate-500">Reviewed by</span>
+                    <a href="/about/artsiom-dusau" class="font-bold text-slate-900 hover:text-blue-700 transition-colors underline-offset-4 hover:underline">
+                        Artsiom Dusau
+                    </a>
+                    <span class="text-slate-500 text-[12px]">Founder &amp; Editor</span>
                 </div>
 
-                <div class="flex-1 min-w-0">
-                    <div class="flex flex-wrap items-center gap-x-1.5 text-sm">
-                        <span class="text-slate-500">Researched & Written by</span>
-                        <a href="/about" class="font-bold text-slate-900 hover:text-blue-700 transition-colors decoration-slate-200 underline-offset-4 hover:underline">
-                            @authorName
-                        </a>
+                <p class="mt-2 max-w-2xl text-[14px] leading-6 text-slate-600">
+                    Official designations, adoption dates, and key symbol details are checked against official state sources, statutes, archives, and governor's proclamations when available.
+                </p>
+
+                <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 pt-1 text-[12px] font-medium">
+                    <div class="flex items-center gap-1.5 text-slate-500">
+                        <i class="fa-regular fa-calendar-check text-slate-400"></i>
+                        <span>Updated @updated</span>
                     </div>
 
-                    <p class="mt-2 max-w-2xl text-[14px] leading-6 text-slate-600">
-                        Every fact on this page has been cross-referenced with <strong class="text-slate-900 font-semibold">official state legislation</strong> and government archives to ensure educational accuracy.
-                    </p>
+                    <span class="hidden xs:inline text-slate-200">|</span>
 
-                    <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 pt-1 text-[12px] font-medium">
-                        <div class="flex items-center gap-1.5 text-slate-500">
-                            <i class="fa-regular fa-calendar-check text-slate-400"></i>
-                            <span>Updated @updated</span>
-                        </div>
+                    <a href="/about" class="text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors group">
+                        About our process
+                        <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-0.5 transition-transform"></i>
+                    </a>
 
-                        <span class="hidden xs:inline text-slate-200">|</span>
+                    <span class="hidden xs:inline text-slate-200">|</span>
 
-                        <a href="/about" class="text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors group">
-                            About our process
-                            <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-0.5 transition-transform"></i>
-                        </a>
-
-                        <span class="hidden xs:inline text-slate-200">|</span>
-
-                        <a href="#sources" class="text-slate-900 hover:text-blue-700 flex items-center gap-1 transition-colors">
-                            <i class="fa-solid fa-book-open text-slate-400"></i>
-                            Sources
-                        </a>
-                    </div>
+                    <a href="#sources" class="text-slate-900 hover:text-blue-700 flex items-center gap-1 transition-colors">
+                        <i class="fa-solid fa-book-open text-slate-400"></i>
+                        Sources
+                    </a>
                 </div>
             </div>
         </div>
-    </aside>
-}
+    </div>
+</aside>

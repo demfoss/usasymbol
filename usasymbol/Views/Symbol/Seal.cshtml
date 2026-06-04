@@ -1,4 +1,4 @@
-@model USASymbol.Models.ViewModels.SealDetailViewModel
+﻿@model USASymbol.Models.ViewModels.SealDetailViewModel
 @using System.Globalization
 @using USASymbol.Extensions
 @using USASymbol.Models.ViewModels
@@ -11,9 +11,9 @@
     var adoptedYear = Model.SealContent?.AdoptedYear ?? Model.Symbol?.AdoptedYear ?? 0;
     var revisedYear = Model.SealContent?.RevisedYear ?? 0;
 
-    var designationRaw = (Model.Symbol?.Designation ?? "State Seal").Trim();
+    var designationRaw = (Model.Symbol?.Designation ?? Model.DefaultDesignation).Trim();
     var designation = string.IsNullOrWhiteSpace(designationRaw)
-        ? "State Seal"
+        ? Model.DefaultDesignation
         : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
 
     var pageHeading = !string.IsNullOrWhiteSpace(Model.SealContent?.Name)
@@ -23,7 +23,7 @@
     var descRaw = Model.SealContent?.SeoDescription ?? "";
     ViewData["Title"] = Model.SealContent?.SeoTitle ?? pageHeading;
     ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
-        ? $"Learn about {stateName}'s official state seal — its history, symbolism, and every element explained."
+        ? $"Learn about {stateName}'s official {designation.ToLowerInvariant()} — its history, symbolism, and every element explained."
         : System.Net.WebUtility.HtmlDecode(descRaw);
 
     var heroImage = Model.SealContent?.HeroImage;
@@ -40,13 +40,16 @@
         .ToList();
 
     var hasMeaning = !string.IsNullOrWhiteSpace(Model.Meaning);
-    var hasQuiz = Model.QuizQuestions?.Any() == true;
     var introText = Model.SealContent?.IntroText ?? string.Empty;
+    var isCoatOfArmsPage = string.Equals(Model.SymbolTypeSlug, "coat-of-arms", StringComparison.OrdinalIgnoreCase);
+    var overviewHeading = isCoatOfArmsPage
+        ? pageHeading
+        : $"{designation} of {stateName}";
     var overviewText = !string.IsNullOrWhiteSpace(introText)
         ? introText
         : adoptedYear > 0
-            ? $"The official state seal of {stateName} was adopted in <strong>{adoptedYear}</strong>."
-            : $"{stateName} recognizes {pageHeading} as its official state seal.";
+            ? $"The official {designation.ToLowerInvariant()} of {stateName} was adopted in <strong>{adoptedYear}</strong>."
+            : $"{stateName} recognizes {pageHeading} as its official {designation.ToLowerInvariant()}.";
     var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
     var heroDescription = System.Net.WebUtility.HtmlDecode(
         System.Text.RegularExpressions.Regex.Replace(
@@ -63,7 +66,7 @@
         SecondaryGlowClass = "bg-white/10",
         AccentDotClass = "bg-indigo-300",
         MediaBackgroundClass = "bg-slate-100/10",
-        FallbackIconClass = "fa-solid fa-stamp",
+        FallbackIconClass = Model.HeroFallbackIconClass,
         Title = pageHeading,
         Description = heroDescription,
         LegalReference = Model.Legislation,
@@ -85,7 +88,7 @@
     };
 }
 
-<nav class="sticky top-16 z-30 bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+<nav class="bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
     <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
         @await Html.PartialAsync("_Breadcrumbs", Model)
     </div>
@@ -93,9 +96,9 @@
 
 <div id="top"></div>
 
-<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
-    <article class="w-full">
-        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)_304px] 2xl:gap-12 relative">
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="symbol-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
             @await Html.PartialAsync("_SymbolHero", heroModel)
 
             <aside class="hidden lg:block relative h-full">
@@ -111,11 +114,12 @@
                             <div class="absolute left-0 top-7 bottom-7 w-[3px] bg-[linear-gradient(180deg,#6366f1_0%,#4338ca_100%)]"></div>
                             <div class="flex items-start gap-4 lg:gap-5">
                                 <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/75 text-slate-600">
-                                    <i class="fa-solid fa-stamp text-sm"></i>
+                                    <i class="@Model.OverviewIconClass text-sm"></i>
                                 </div>
                                 <div class="min-w-0">
                                     <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
-                                    <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                    <h2 class="content-h3 mt-2 mb-3">@overviewHeading</h2>
+                                    <div class="prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
                                         @overviewText.RenderAutoLinks()
                                     </div>
                                 </div>
@@ -132,87 +136,41 @@
 
                     @await Html.PartialAsync("_SealSections", Model)
 
-                    @if (hasMeaning)
+                    @if (Model.ShowQuizPromo)
                     {
-                        <section id="symbolic-meaning" class="content-divider">
-                            <div class="rounded-[1.6rem] border border-slate-200/80 bg-white/40 p-6 sm:p-7">
-                                <div class="flex items-start gap-4 lg:gap-5">
-                                    <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/70 text-slate-600">
-                                        <i class="fa-solid fa-book-open text-sm"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Symbolic Meaning</div>
-                                        <div class="mt-3 max-w-3xl text-slate-700">
-                                            @Model.Meaning.RenderAutoLinks()
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    }
-
-                    @if (hasQuiz)
-                    {
-                        <section id="seal-quiz" class="content-divider">
-                            <div class="overflow-hidden border border-slate-200/80 bg-white/70 text-slate-900">
-                                <div class="border-b border-slate-200/80 px-5 py-4 sm:px-6">
-                                    <div class="flex items-center gap-4">
-                                        <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-slate-100 text-slate-700">
-                                            <i class="fas fa-graduation-cap text-xs"></i>
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <h2 class="!text-[1.65rem] !leading-[1.15] text-slate-900">Test your knowledge</h2>
-                                            <div class="mt-1 text-sm leading-6 text-slate-500">A short quiz while the key details are still top of mind.</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="p-5 sm:p-6 text-slate-900">
-                                    @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
-                                </div>
-
-                                <div class="border-t border-slate-200/80 px-5 py-4 sm:px-6">
-                                    <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
-                                        <span>Explore more quizzes</span>
-                                        <i class="fas fa-arrow-right shrink-0 text-xs"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </section>
-                    }
-
-                    <section id="seals-quiz-promo" class="content-divider">
+                    <section id="@Model.QuizPromoId" class="content-divider" data-nosnippet>
                         <div class="overflow-hidden rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 to-slate-50/60">
                             <div class="border-b border-indigo-100/80 px-5 py-4 sm:px-6">
                                 <div class="flex items-center gap-4">
                                     <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-indigo-100 text-indigo-700">
-                                        <i class="fa-solid fa-stamp text-xs"></i>
+                                        <i class="@Model.OverviewIconClass text-xs"></i>
                                     </div>
                                     <div class="min-w-0 flex-1">
-                                        <h2 class="content-h2 !text-[1.4rem] !leading-snug text-slate-900">Can You Identify All 50 State Seals?</h2>
-                                        <div class="mt-1 text-sm leading-6 text-slate-500">See a seal, pick the right state. Harder than it looks.</div>
+                                        <h2 class="content-h2 !text-[1.4rem] !leading-snug text-slate-900">@Model.QuizPromoTitle</h2>
+                                        <div class="mt-1 text-sm leading-6 text-slate-500">@Model.QuizPromoSubtitle</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="px-5 py-5 sm:px-6">
-                                <p class="content-p text-slate-700">Most state seals share similar imagery — eagles, shields, agriculture, and Latin mottos. Telling them apart requires spotting the small details: a specific figure, a founding year, an unusual animal. The State Seals Quiz covers all 50 and shuffles both the questions and answer positions every round.</p>
-                                <a href="/quizzes/state-seals-quiz" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors">
-                                    <span>Take the State Seals Quiz</span>
+                                <p class="content-p text-slate-700">@Model.QuizPromoBody</p>
+                                <a href="@Model.QuizPromoUrl" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors">
+                                    <span>@Model.QuizPromoCta</span>
                                     <i class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             </div>
                         </div>
                     </section>
+                    }
 
-                    <section id="faq" class="content-divider">
+                    <div class="content-divider">
                         @await Html.PartialAsync("_Faq", Model)
-                    </section>
+                    </div>
 
                     <section id="sources" class="content-divider">
                         @await Html.PartialAsync("_Sources", Model)
                     </section>
 
-                    <div class="mt-10 space-y-8 xl:hidden">
+                    <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
                         @await Html.PartialAsync("_RelatedSymbols", Model)
                         @await Html.PartialAsync("_RelatedStatesSidebar", Model)
                         @await Html.PartialAsync("_GuidesAndRankingsSidebar")
@@ -261,9 +219,8 @@
             </div>
         }
     </article>
-</main>
+</div>
 
 @await Html.PartialAsync("_TocMobileFab", Model)
 @await Html.PartialAsync("_StructuredData", Model)
 @await Html.PartialAsync("_Scripts")
-<script src="~/js/quizEngine.js" defer></script>

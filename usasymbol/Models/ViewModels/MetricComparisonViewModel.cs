@@ -16,10 +16,10 @@ namespace USASymbol.Models.ViewModels
         /// <summary>Links to other metrics for the same pair.</summary>
         public List<ComparisonMetricDefinition> OtherMetrics { get; set; } = new();
 
-        /// <summary>All 50 states ranked for this metric, used by the rank-context strip.</summary>
+        /// <summary>All 50 states ranked for this metric (best rank first). Empty for text metrics.</summary>
         public List<StateRankRow> AllStateRanks { get; set; } = new();
 
-        /// <summary>Convenience accessor — delegates to Metric.HigherIsBetter.</summary>
-        public bool HigherIsBetter => Metric?.HigherIsBetter ?? true;
+        /// <summary>Whether a higher numeric value is the better outcome for this metric.</summary>
+        public bool HigherIsBetter { get; set; } = true;
     }
 }

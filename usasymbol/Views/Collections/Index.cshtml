@@ -11,7 +11,7 @@
         ? (ViewData["Description"] as string ?? $"Browse curated U.S. state collections grouped by {groupCategory!.Title.ToLower()}.")
         : "Discover curated collections of U.S. state facts, symbols, records, and curiosities — beautifully organized and easy to explore.";
 
-    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    const string baseUrl = "https://usasymbol.com";
     ViewData["Canonical"] = isGroupPage ? $"/collections/{groupCategory!.Id}" : "/collections";
 }
 

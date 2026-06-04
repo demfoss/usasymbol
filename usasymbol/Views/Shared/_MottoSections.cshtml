@@ -11,6 +11,9 @@
     var quoteAfterSectionId = Model.MottoContent?.ExpertQuoteAfterSectionId ?? string.Empty;
     var timelineAfterSectionId = Model.MottoContent?.TimelineAfterSectionId ?? string.Empty;
     var statAfterSectionId = Model.MottoContent?.BigStatAfterSectionId ?? string.Empty;
+    var mottoWord = Model.MottoContent?.Title ?? "";
+    var translation = Model.MottoContent?.EnglishTranslation ?? "";
+    var language = Model.MottoContent?.Language ?? "";
     var orphanVisualAssets = Model.VisualAssets?
         .Where(v => v != null &&
                     !string.IsNullOrWhiteSpace(v.Src) &&
@@ -21,101 +24,289 @@
     var fullWidthVisualAsset = Model.VisualAssets?
         .FirstOrDefault(v => v != null &&
                              !string.IsNullOrWhiteSpace(v.Src) &&
-                             string.Equals(v.Layout, "full-width", StringComparison.OrdinalIgnoreCase));
+                             string.Equals(v.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                             string.IsNullOrWhiteSpace(v.Section));
 
     bool MatchesAnyId(string? id, params string[] candidates)
     {
-        if (string.IsNullOrWhiteSpace(id))
-        {
-            return false;
-        }
-
-        return candidates.Any(candidate => string.Equals(id, candidate, StringComparison.OrdinalIgnoreCase));
+        if (string.IsNullOrWhiteSpace(id)) return false;
+        return candidates.Any(c => string.Equals(id, c, StringComparison.OrdinalIgnoreCase));
     }
+
+    bool IsId(string? id, string target) =>
+        string.Equals(id, target, StringComparison.OrdinalIgnoreCase);
+
+    bool IsMeaningSection(string? id) =>
+        IsId(id, "meaning") || IsId(id, "translation-and-meaning");
+
+    bool IsWhereItAppearsSection(string? id) =>
+        IsId(id, "where-it-appears");
+
+    bool IsOverviewSection(string? id) =>
+        IsId(id, "overview");
+
+    bool IsFactsSection(string? id) =>
+        IsId(id, "facts");
 }
 
 @if (sections?.Any() == true)
 {
     foreach (var item in sections)
     {
-        <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
-            @await Html.PartialAsync("Components/Content/_SectionHeader", item)
+        var sectionAssets = Model.VisualAssets?
+            .Where(v => v != null &&
+                        !string.IsNullOrWhiteSpace(v.Src) &&
+                        string.Equals(v.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+            .ToList()
+            ?? new List<VisualAsset>();
 
-            @{
-                var sectionAssets = Model.VisualAssets?
-                    .Where(v => v != null &&
-                                !string.IsNullOrWhiteSpace(v.Src) &&
-                                string.Equals(v.Section, item.Id, StringComparison.OrdinalIgnoreCase))
-                    .ToList()
-                    ?? new List<VisualAsset>();
-            }
+        @if (IsOverviewSection(item.Id))
+        {
+            <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+                <header class="mb-5">
+                    <div class="flex items-center gap-2.5 mb-2">
+                        @if (!string.IsNullOrWhiteSpace(item.Icon))
+                        {
+                            <span class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-900 text-white text-xs">
+                                <i class="@item.Icon leading-none" aria-hidden="true"></i>
+                            </span>
+                        }
+                        <span class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">Overview</span>
+                    </div>
+                    <h2 class="text-[1.6rem] lg:text-[2rem] font-bold text-slate-900 leading-tight tracking-tight">
+                        @item.Title
+                    </h2>
+                </header>
 
-            @foreach (var asset in sectionAssets)
-            {
-                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
-            }
+                @if (item.Paragraphs?.Any() == true)
+                {
+                    <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                        @for (var i = 0; i < item.Paragraphs.Count; i++)
+                        {
+                            <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                                @item.Paragraphs[i].RenderAutoLinks()
+                            </p>
+                        }
+                    </div>
+                }
 
-            @if (item.Paragraphs?.Any() == true)
-            {
-                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
-                    @for (var i = 0; i < item.Paragraphs.Count; i++)
-                    {
-                        <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
-                            @item.Paragraphs[i].RenderAutoLinks()
-                        </p>
-                    }
-                </div>
-            }
+                <div class="clear-both"></div>
+            </section>
+        }
+        else if (IsMeaningSection(item.Id))
+        {
+            <section id="section-@item.Id" class="scroll-mt-28 content-divider">
+                @await Html.PartialAsync("Components/Content/_SectionHeader", item)
 
-            @if (item.Subsections?.Any() == true)
-            {
-                <div class="mt-8 space-y-8">
-                    @foreach (var sub in item.Subsections)
-                    {
-                        <article class="pt-8 border-t border-slate-100 first:border-t-0 first:pt-0">
-                            <h3 class="text-lg lg:text-xl font-semibold text-slate-900 mb-3">@sub.Subtitle</h3>
-
-                            @if (!string.IsNullOrWhiteSpace(sub.Text))
+                @if (!string.IsNullOrWhiteSpace(translation) || !string.IsNullOrWhiteSpace(mottoWord))
+                {
+                    <div class="mt-5 mb-7 overflow-hidden rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50/90 via-white/70 to-slate-50/60 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 px-6 py-5 sm:px-7 sm:py-6">
+                            <div class="min-w-0">
+                                @if (!string.IsNullOrWhiteSpace(mottoWord))
+                                {
+                                    <div class="text-[2rem] sm:text-[2.4rem] font-bold italic text-slate-900 tracking-tight leading-none" style="font-family:'Libre Baskerville',Georgia,serif">
+                                        @Html.Raw(mottoWord)
+                                    </div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(translation))
+                                {
+                                    <div class="mt-3.5 flex items-center gap-3">
+                                        <span class="text-amber-500 text-xl leading-none font-light">→</span>
+                                        <span class="text-[1.08rem] font-semibold text-slate-700 italic">@translation</span>
+                                    </div>
+                                }
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(language))
                             {
-                                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-700">
-                                    <p>@sub.Text.RenderAutoLinks()</p>
+                                <div class="shrink-0">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-4 py-1.5 text-[0.74rem] font-bold uppercase tracking-[0.18em] text-amber-800">
+                                        <i class="fa-solid fa-language text-[10px]"></i>
+                                        @language
+                                    </span>
                                 </div>
                             }
+                        </div>
+                    </div>
+                }
 
-                            @if (sub.ListItems?.Any() == true)
+                @if (item.Paragraphs?.Any() == true)
+                {
+                    <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                        @for (var i = 0; i < item.Paragraphs.Count; i++)
+                        {
+                            <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                                @item.Paragraphs[i].RenderAutoLinks()
+                            </p>
+                        }
+                    </div>
+                }
+
+                <div class="clear-both"></div>
+            </section>
+        }
+        else if (IsWhereItAppearsSection(item.Id))
+        {
+            <section id="section-@item.Id" class="scroll-mt-28 content-divider">
+                @await Html.PartialAsync("Components/Content/_SectionHeader", item)
+
+                @if (sectionAssets.Any())
+                {
+                    <div class="mt-5 grid grid-cols-1 sm:grid-cols-[156px_1fr] gap-5 lg:gap-7 items-start">
+                        <figure class="mx-auto sm:mx-0 w-[156px]">
+                            <img src="@sectionAssets[0].Src"
+                                 alt="@sectionAssets[0].Alt"
+                                 class="w-full h-auto rounded-lg"
+                                 loading="lazy" />
+                            @if (!string.IsNullOrWhiteSpace(sectionAssets[0].Caption))
                             {
-                                <ul class="mt-4 space-y-2 text-sm text-slate-700 max-w-prose">
-                                    @foreach (var listItem in sub.ListItems)
+                                <figcaption class="mt-2 text-[0.74rem] text-slate-500 text-center leading-5 px-1">
+                                    @sectionAssets[0].Caption
+                                </figcaption>
+                            }
+                        </figure>
+
+                        @if (item.Paragraphs?.Any() == true)
+                        {
+                            <div class="min-w-0 prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                                @for (var i = 0; i < item.Paragraphs.Count; i++)
+                                {
+                                    <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                                        @item.Paragraphs[i].RenderAutoLinks()
+                                    </p>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    @if (sectionAssets.Count > 1)
+                    {
+                        <div class="mt-7 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                            @foreach (var asset in sectionAssets.Skip(1))
+                            {
+                                <figure class="group">
+                                    <div class="overflow-hidden rounded-lg border border-slate-200/60 bg-slate-50 shadow-sm p-1">
+                                        <img src="@asset.Src"
+                                             alt="@asset.Alt"
+                                             class="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                                             loading="lazy" />
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(asset.Caption))
                                     {
-                                        <li class="pl-5 relative before:content-['-'] before:absolute before:left-0 before:text-slate-400">
-                                            @listItem.RenderListItem()
-                                        </li>
+                                        <figcaption class="mt-1.5 text-[0.72rem] text-slate-500 text-center leading-4 px-1">
+                                            @asset.Caption
+                                        </figcaption>
                                     }
-                                </ul>
+                                </figure>
                             }
-
-                            @if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
-                            {
-                                <div class="mt-4">
-                                    <a href="@sub.Link.Url"
-                                       class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
-                                        <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
-                                        <i class="fas fa-arrow-right text-xs"></i>
-                                    </a>
-                                </div>
-                            }
-                        </article>
+                        </div>
                     }
-                </div>
-            }
+                }
+                else if (item.Paragraphs?.Any() == true)
+                {
+                    <div class="mt-4 prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                        @for (var i = 0; i < item.Paragraphs.Count; i++)
+                        {
+                            <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                                @item.Paragraphs[i].RenderAutoLinks()
+                            </p>
+                        }
+                    </div>
+                }
 
-            @if (item.Facts?.Any() == true)
-            {
-                @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
-            }
+                <div class="clear-both"></div>
+            </section>
+        }
+        else if (IsFactsSection(item.Id) && item.Facts?.Any() == true)
+        {
+            <section id="section-@item.Id" class="scroll-mt-28 content-divider">
+                @await Html.PartialAsync("Components/Content/_SectionHeader", item)
 
-            <div class="clear-both"></div>
-        </section>
+                <ul class="mt-5">
+                    @foreach (var fact in item.Facts)
+                    {
+                        <li class="flex items-start gap-3 border-t border-slate-100 py-3 first:border-t-0 first:pt-0">
+                            <span class="shrink-0 mt-[5px] h-1.5 w-1.5 rounded-full bg-amber-500/70"></span>
+                            <span class="text-[0.94rem] leading-6 text-slate-700">@Html.Raw(fact)</span>
+                        </li>
+                    }
+                </ul>
+
+                <div class="clear-both"></div>
+            </section>
+        }
+        else
+        {
+            <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+                @await Html.PartialAsync("Components/Content/_SectionHeader", item)
+
+                @foreach (var asset in sectionAssets)
+                {
+                    @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+                }
+
+                @if (item.Paragraphs?.Any() == true)
+                {
+                    <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                        @for (var i = 0; i < item.Paragraphs.Count; i++)
+                        {
+                            <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                                @item.Paragraphs[i].RenderAutoLinks()
+                            </p>
+                        }
+                    </div>
+                }
+
+                @if (item.Subsections?.Any() == true)
+                {
+                    <div class="mt-8 space-y-8">
+                        @foreach (var sub in item.Subsections)
+                        {
+                            <article class="pt-8 border-t border-slate-100 first:border-t-0 first:pt-0">
+                                <h3 class="text-lg lg:text-xl font-semibold text-slate-900 mb-3">@sub.Subtitle</h3>
+
+                                @if (!string.IsNullOrWhiteSpace(sub.Text))
+                                {
+                                    <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-700">
+                                        <p>@sub.Text.RenderAutoLinks()</p>
+                                    </div>
+                                }
+
+                                @if (sub.ListItems?.Any() == true)
+                                {
+                                    <ul class="mt-4 space-y-2 text-sm text-slate-700">
+                                        @foreach (var listItem in sub.ListItems)
+                                        {
+                                            <li class="pl-5 relative before:content-['-'] before:absolute before:left-0 before:text-slate-400">
+                                                @listItem.RenderListItem()
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+
+                                @if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
+                                {
+                                    <div class="mt-4">
+                                        <a href="@sub.Link.Url"
+                                           class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                                            <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
+                                            <i class="fas fa-arrow-right text-xs"></i>
+                                        </a>
+                                    </div>
+                                }
+                            </article>
+                        }
+                    </div>
+                }
+
+                @if (item.Facts?.Any() == true)
+                {
+                    @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+                }
+
+                <div class="clear-both"></div>
+            </section>
+        }
 
         @if (!statDone &&
             !string.IsNullOrWhiteSpace(statAfterSectionId) &&
@@ -125,21 +316,11 @@
             @await Html.PartialAsync("Components/Story/_BigStat", Model.MottoContent.BigStat)
             statDone = true;
         }
-        else if (!statDone && MatchesAnyId(item.Id, "when-official", "meaning-translation") && Model.MottoContent?.BigStat != null)
-        {
-            @await Html.PartialAsync("Components/Story/_BigStat", Model.MottoContent.BigStat)
-            statDone = true;
-        }
 
         @if (!timelineDone &&
             !string.IsNullOrWhiteSpace(timelineAfterSectionId) &&
             string.Equals(item.Id, timelineAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
             Model.MottoContent?.Timeline?.Any() == true)
-        {
-            @await Html.PartialAsync("Components/Story/_Timeline", Model.MottoContent.Timeline)
-            timelineDone = true;
-        }
-        else if (!timelineDone && Model.MottoContent?.Timeline?.Any() == true && MatchesAnyId(item.Id, "when-official", "earlier-motto"))
         {
             @await Html.PartialAsync("Components/Story/_Timeline", Model.MottoContent.Timeline)
             timelineDone = true;

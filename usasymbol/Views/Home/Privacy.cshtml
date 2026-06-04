@@ -1,329 +1,338 @@
-﻿@{
+@{
     ViewData["Title"] = "Privacy Policy";
     ViewData["Description"] = "Learn how USA Symbol collects, uses, and protects your data when you visit usasymbol.com.";
 }
 
-<main class="max-w-4xl mx-auto px-4 py-12">
+@section Styles {
+<style>
+    .privacy-section { padding: 2rem 2.5rem; }
+    .privacy-section + .privacy-section { border-top: 1px solid #f3f4f6; }
+    .privacy-icon { flex-shrink: 0; width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; margin-top: 0.125rem; }
+    .privacy-h2 { font-size: 1.125rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem; }
+    .privacy-h3 { font-size: 0.9375rem; font-weight: 600; color: #1f2937; margin: 1rem 0 0.375rem; }
+    .privacy-p { color: #4b5563; line-height: 1.75; margin-bottom: 0.625rem; }
+    .privacy-ul { list-style: disc; padding-left: 1.375rem; color: #4b5563; line-height: 1.75; }
+    .privacy-ul li { margin-bottom: 0.25rem; }
+    .privacy-a { color: #7c3aed; text-decoration: underline; }
+    .privacy-a:hover { color: #6d28d9; }
 
-    <!-- PRIVACY POLICY CARD -->
-    <article class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 md:p-12 mb-8">
-        <div class="mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-            <p class="text-gray-600">Effective Date: January 15, 2025 | Last Updated: January 15, 2025</p>
+    /* Mediavine injected notice */
+    #mv-notice-wrapper { font-size: 0.85rem; line-height: 1.75; color: #4b5563; }
+    #mv-notice-wrapper h2 { font-size: 1rem; font-weight: 700; color: #111827; margin: 1.25rem 0 0.5rem; }
+    #mv-notice-wrapper h3 { font-size: 0.9rem; font-weight: 700; color: #374151; margin: 1rem 0 0.375rem; }
+    #mv-notice-wrapper h4 { font-size: 0.85rem; font-weight: 600; color: #374151; margin: 0.75rem 0 0.25rem; }
+    #mv-notice-wrapper p { margin: 0.4rem 0; }
+    #mv-notice-wrapper ul { list-style: disc; padding-left: 1.5rem; margin: 0.4rem 0; }
+    #mv-notice-wrapper a { color: #7c3aed; text-decoration: underline; word-break: break-all; }
+    #mv-notice-wrapper sup { font-size: 0.7em; }
+
+    @@media (max-width: 640px) {
+        .privacy-section { padding: 1.5rem; }
+    }
+</style>
+}
+
+<div class="max-w-4xl mx-auto px-4 py-12">
+
+    <!-- HERO -->
+    <div class="text-center mb-10">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-2xl mb-4">
+            <i class="fa-solid fa-shield-halved text-purple-600 text-2xl"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
+        <p class="text-gray-500 text-sm">Effective: January 15, 2025 &nbsp;·&nbsp; Last updated: May 9, 2026</p>
+    </div>
+
+    <!-- QUICK BADGES -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10">
+        <div class="bg-green-50 border border-green-100 rounded-xl p-4 flex items-center gap-3">
+            <i class="fa-solid fa-ban text-green-600 text-lg flex-shrink-0"></i>
+            <p class="text-sm font-semibold text-green-800 leading-tight">We don't sell or rent your personal data</p>
+        </div>
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-center gap-3">
+            <i class="fa-solid fa-cookie-bite text-blue-600 text-lg flex-shrink-0"></i>
+            <p class="text-sm font-semibold text-blue-800 leading-tight">Cookies used for ads &amp; analytics</p>
+        </div>
+        <div class="bg-purple-50 border border-purple-100 rounded-xl p-4 flex items-center gap-3">
+            <i class="fa-solid fa-user-shield text-purple-600 text-lg flex-shrink-0"></i>
+            <p class="text-sm font-semibold text-purple-800 leading-tight">GDPR &amp; CCPA rights supported</p>
+        </div>
+    </div>
+
+    <!-- MAIN ARTICLE -->
+    <article class="bg-white rounded-2xl shadow-sm border border-gray-200 mb-4">
+
+        <!-- Introduction -->
+        <div class="privacy-section">
+            <div class="flex items-start gap-4">
+                <div class="privacy-icon bg-purple-100">
+                    <i class="fa-solid fa-circle-info text-purple-600 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h2 class="privacy-h2">Introduction</h2>
+                    <p class="privacy-p">
+                        Welcome to USA Symbol ("we," "us," or "our"). We are committed to protecting your privacy and
+                        being transparent about how we collect, use, and share information. This Privacy Policy explains
+                        our practices when you visit usasymbol.com (the "Site").
+                    </p>
+                    <p class="privacy-p">
+                        USA Symbol is operated by Artsiom Dusau, based in Chicago, Illinois, USA.
+                        Contact us at <a href="/contact" data-email-user="contact" data-email-domain="usasymbol.com" class="privacy-a">contact@usasymbol.com</a>.
+                    </p>
+                </div>
+            </div>
         </div>
 
-        <div class="prose prose-lg max-w-none">
-
-            <!-- INTRO -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Introduction</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    Welcome to USA Symbol ("we," "us," or "our"). We are committed to protecting your privacy and
-                    being transparent about how we collect, use, and share information. This Privacy Policy explains
-                    our practices regarding data collection and use when you visit usasymbol.com (the "Site").
-                </p>
-                <p class="text-gray-700 leading-relaxed mt-4">
-                    USA Symbol is operated by Artsiom Dusau, based in Chicago, Illinois, USA. You can contact us at
-                    <a href="/contact" data-email-user="contact" data-email-domain="usasymbol.com" class="text-purple-600 hover:text-purple-800 underline">
-                        contact@usasymbol.com
-                    </a>.
-                </p>
-            </section>
-
-            <!-- INFORMATION WE COLLECT -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Information We Collect</h2>
-
-                <h3 class="text-xl font-bold text-gray-900 mb-3 mt-6">Information You Provide</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    We collect information that you voluntarily provide, for example when you:
-                </p>
-                <ul class="list-disc list-inside text-gray-700 space-y-2 mt-3">
-                    <li>Use our contact form (name and email address)</li>
-                    <li>Send us an email with questions, suggestions, or feedback</li>
-                </ul>
-
-                <h3 class="text-xl font-bold text-gray-900 mb-3 mt-6">Information Automatically Collected</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    When you visit our Site, we automatically collect certain technical and usage information, such as:
-                </p>
-                <ul class="list-disc list-inside text-gray-700 space-y-2 mt-3">
-                    <li><strong>Log Data:</strong> IP address, browser type, operating system, pages visited, time spent on pages, referring URL</li>
-                    <li><strong>Device Information:</strong> Device type, screen resolution, and approximate location (city / country level)</li>
-                    <li><strong>Usage Data:</strong> How you interact with our pages, including clicks, scrolls, and search queries on the Site</li>
-                </ul>
-            </section>
-
-            <!-- COOKIES -->
-            <section class="mb-8 bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Cookies and Tracking Technologies</h2>
-
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    We use cookies and similar technologies to improve your experience, analyze traffic, and support advertising.
-                </p>
-
-                <h3 class="text-xl font-bold text-gray-900 mb-3">What Are Cookies?</h3>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    Cookies are small text files that websites store on your device. They help remember your preferences and
-                    understand how you use the Site.
-                </p>
-
-                <h3 class="text-xl font-bold text-gray-900 mb-3">Types of Cookies We Use</h3>
-
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="font-bold text-gray-900">1. Essential Cookies</h4>
-                        <p class="text-gray-700 text-sm">
-                            Required for the basic functionality of the Site, such as navigation and access to secure areas.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h4 class="font-bold text-gray-900">2. Analytics Cookies (Google Analytics)</h4>
-                        <p class="text-gray-700 text-sm">
-                            We use Google Analytics to understand how visitors use the Site and to improve content and usability.
-                            Google Analytics collects information such as which pages are visited, how often, and for how long.
-                        </p>
-                        <p class="text-gray-700 text-sm mt-2">
-                            Learn more:
-                            <a href="https://policies.google.com/privacy" target="_blank" rel="nofollow noopener noreferrer"
-                               class="text-blue-600 hover:underline">Google Privacy Policy</a>
-                        </p>
-                    </div>
-
-                    <div>
-                        <h4 class="font-bold text-gray-900">3. Advertising Cookies (Google Adsense &amp; Ezoic)</h4>
-                        <p class="text-gray-700 text-sm">
-                            We may use Google Adsense and/or Ezoic to serve ads on the Site. These partners use cookies
-                            to show ads based on your visits to our Site and other websites (“personalized advertising”).
-                        </p>
-                        <p class="text-gray-700 text-sm mt-2">They may collect, for example:</p>
-                        <ul class="list-disc list-inside text-gray-700 text-sm mt-2 ml-4">
-                            <li>Pages and content you view on our Site</li>
-                            <li>Ads you see or click</li>
-                            <li>Approximate location based on IP</li>
-                            <li>Device and browser information</li>
-                        </ul>
-                        <p class="text-gray-700 text-sm mt-2">Learn more:</p>
-                        <ul class="text-sm mt-1 ml-4">
-                            <li>
-                                <a href="https://policies.google.com/technologies/ads" target="_blank" rel="nofollow noopener noreferrer"
-                                   class="text-blue-600 hover:underline">Google Advertising</a>
-                            </li>
-                            <li>
-                                <a href="https://www.ezoic.com/privacy-policy/" target="_blank" rel="nofollow noopener noreferrer"
-                                   class="text-blue-600 hover:underline">Ezoic Privacy Policy</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4 class="font-bold text-gray-900">4. Social Media Cookies</h4>
-                        <p class="text-gray-700 text-sm">
-                            If you use sharing buttons (for example, to share content on social networks),
-                            those platforms may set their own cookies.
-                        </p>
-                    </div>
+        <!-- Information We Collect -->
+        <div class="privacy-section">
+            <div class="flex items-start gap-4">
+                <div class="privacy-icon bg-blue-100">
+                    <i class="fa-solid fa-database text-blue-600 text-sm"></i>
                 </div>
+                <div class="flex-1 min-w-0">
+                    <h2 class="privacy-h2">Information We Collect</h2>
 
-                <h3 class="text-xl font-bold text-gray-900 mb-3 mt-6">Managing Cookies</h3>
-                <p class="text-gray-700 leading-relaxed mb-3">
-                    You can manage cookies in several ways:
-                </p>
-                <ul class="list-disc list-inside text-gray-700 space-y-2">
-                    <li><strong>Browser Settings:</strong> Block or delete cookies in your browser preferences.</li>
-                    <li>
-                        <strong>Opt-out of Personalized Ads:</strong>
-                        <a href="https://www.aboutads.info/choices/" target="_blank" rel="nofollow noopener noreferrer"
-                           class="text-blue-600 hover:underline">aboutads.info/choices</a> or
-                        <a href="https://www.youronlinechoices.eu/" target="_blank" rel="nofollow noopener noreferrer"
-                           class="text-blue-600 hover:underline">youronlinechoices.eu</a>
-                    </li>
-                    <li>
-                        <strong>Google Ads Settings:</strong>
-                        <a href="https://adssettings.google.com/" target="_blank" rel="nofollow noopener noreferrer"
-                           class="text-blue-600 hover:underline">adssettings.google.com</a>
-                    </li>
-                </ul>
-                <p class="text-gray-700 text-sm mt-3 italic">
-                    If you disable cookies, some parts of the Site may not function properly. Ads may still appear, but they
-                    may be less relevant.
-                </p>
-            </section>
+                    <h3 class="privacy-h3">Information You Provide</h3>
+                    <p class="privacy-p">We collect information that you voluntarily provide, for example when you:</p>
+                    <ul class="privacy-ul">
+                        <li>Use our contact form (name and email address)</li>
+                        <li>Send us an email with questions, suggestions, or feedback</li>
+                    </ul>
 
-            <!-- HOW WE USE INFO -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">How We Use Your Information</h2>
-                <p class="text-gray-700 leading-relaxed mb-3">
-                    We use collected information to:
-                </p>
-                <ul class="list-disc list-inside text-gray-700 space-y-2">
-                    <li>Operate, maintain, and improve the Site and its content</li>
-                    <li>Respond to your questions and support requests</li>
-                    <li>Analyze traffic and usage patterns</li>
-                    <li>Serve and optimize advertising (through partners like Google Adsense and Ezoic)</li>
-                    <li>Comply with legal obligations and enforce our Terms of Use</li>
-                </ul>
-            </section>
+                    <h3 class="privacy-h3">Information Automatically Collected</h3>
+                    <p class="privacy-p">When you visit our Site, we automatically collect:</p>
+                    <ul class="privacy-ul">
+                        <li><strong>Log Data:</strong> IP address, browser type, OS, pages visited, time on page, referring URL</li>
+                        <li><strong>Device Information:</strong> Device type, screen resolution, approximate location (city/country)</li>
+                        <li><strong>Usage Data:</strong> Clicks, scrolls, and search queries on the Site</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-            <!-- SHARING -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Information Sharing and Disclosure</h2>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    We do not sell, trade, or rent your personal information. We may share information in the
-                    following situations:
-                </p>
+        <!-- Cookies -->
+        <div class="privacy-section">
+            <div class="flex items-start gap-4">
+                <div class="privacy-icon bg-amber-100">
+                    <i class="fa-solid fa-cookie text-amber-600 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h2 class="privacy-h2">Cookies and Tracking Technologies</h2>
+                    <p class="privacy-p">We use cookies and similar technologies to improve your experience, analyze traffic, and support advertising.</p>
 
-                <h3 class="text-lg font-bold text-gray-900 mb-3">Third-Party Service Providers</h3>
-                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-4">
-                    <li>Google Analytics – traffic and usage analytics</li>
-                    <li>Google Adsense – advertising</li>
-                    <li>Ezoic – ad optimization and site performance</li>
-                    <li>YouTube – for embedded video content</li>
-                </ul>
-                <p class="text-gray-700 text-sm italic mb-4">
-                    These providers have their own privacy policies and may use data according to their terms.
-                </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 mb-4">
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Essential</p>
+                            <p class="text-sm text-gray-700">Required for basic site functionality and navigation.</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Analytics (Google)</p>
+                            <p class="text-sm text-gray-700">Track page visits and usage patterns to improve the site.</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Advertising</p>
+                            <p class="text-sm text-gray-700">Served by partners including Mediavine for personalized ads.</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Social Media</p>
+                            <p class="text-sm text-gray-700">Set by social platforms when you use sharing buttons.</p>
+                        </div>
+                    </div>
 
-                <h3 class="text-lg font-bold text-gray-900 mb-3">Legal Requirements</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    We may disclose information when required by law or when we believe it is necessary to protect our
-                    rights, your safety or the safety of others, investigate fraud, or respond to lawful government requests.
-                </p>
-            </section>
+                    <h3 class="privacy-h3">Managing Cookies</h3>
+                    <ul class="privacy-ul">
+                        <li><strong>Browser Settings:</strong> Block or delete cookies in your browser preferences.</li>
+                        <li><strong>Opt-out of Personalized Ads:</strong>
+                            <a href="https://www.aboutads.info/choices/" target="_blank" rel="nofollow noopener noreferrer" class="privacy-a">aboutads.info/choices</a> or
+                            <a href="https://www.youronlinechoices.eu/" target="_blank" rel="nofollow noopener noreferrer" class="privacy-a">youronlinechoices.eu</a>
+                        </li>
+                        <li><strong>Google Ads Settings:</strong>
+                            <a href="https://adssettings.google.com/" target="_blank" rel="nofollow noopener noreferrer" class="privacy-a">adssettings.google.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-            <!-- THIRD-PARTY LINKS -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Third-Party Links and Content</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    Our Site may include links to external websites or embedded content (for example, YouTube videos).
-                    We are not responsible for the privacy practices or content of third-party websites. We recommend
-                    reviewing their privacy policies before providing any information.
-                </p>
-            </section>
+        <!-- How We Use Info -->
+        <div class="privacy-section">
+            <div class="flex items-start gap-4">
+                <div class="privacy-icon bg-green-100">
+                    <i class="fa-solid fa-gears text-green-600 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h2 class="privacy-h2">How We Use Your Information</h2>
+                    <ul class="privacy-ul">
+                        <li>Operate, maintain, and improve the Site and its content</li>
+                        <li>Respond to your questions and support requests</li>
+                        <li>Analyze traffic and usage patterns</li>
+                        <li>Serve and optimize advertising through advertising partners</li>
+                        <li>Comply with legal obligations and enforce our Terms of Use</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-            <!-- CHILDREN -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Children's Privacy</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    The Site is intended for a general audience and is not directed to children under 13. We do not knowingly
-                    collect personal information from children under 13. If you believe that your child has provided us with
-                    personal information, please contact us at
-                    <a href="/contact" data-email-user="contact" data-email-domain="usasymbol.com" class="text-purple-600 hover:text-purple-800 underline">
-                        contact@usasymbol.com
-                    </a>
-                    and we will remove it.
-                </p>
-            </section>
+        <!-- Sharing -->
+        <div class="privacy-section">
+            <div class="flex items-start gap-4">
+                <div class="privacy-icon bg-red-100">
+                    <i class="fa-solid fa-share-nodes text-red-500 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h2 class="privacy-h2">Information Sharing and Disclosure</h2>
+                    <p class="privacy-p">We <strong>do not sell, trade, or rent</strong> your personal information. We may share data with:</p>
+                    <ul class="privacy-ul mb-3">
+                        <li>Google Analytics – traffic and usage analytics</li>
+                        <li>Mediavine and other advertising partners – ad delivery and optimization</li>
+                        <li>YouTube – embedded video content</li>
+                    </ul>
+                    <p class="privacy-p">We may also disclose information when required by law or to protect our rights or safety.</p>
+                </div>
+            </div>
+        </div>
 
-            <!-- SECURITY -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Data Security</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    We use reasonable technical and organizational measures to protect your data from unauthorized access,
-                    alteration, disclosure, or destruction. However, no method of transmission or storage is completely secure,
-                    so we cannot guarantee absolute protection.
-                </p>
-            </section>
+        <!-- Privacy Rights -->
+        <div class="privacy-section">
+            <div class="flex items-start gap-4">
+                <div class="privacy-icon bg-indigo-100">
+                    <i class="fa-solid fa-scale-balanced text-indigo-600 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h2 class="privacy-h2">Your Privacy Rights</h2>
 
-            <!-- RIGHTS -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Your Privacy Rights</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+                        <div class="border border-gray-200 rounded-xl p-3 text-center">
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">All Users</p>
+                            <p class="text-sm text-gray-700">Access, correct, or delete your information</p>
+                        </div>
+                        <div class="border border-blue-200 bg-blue-50 rounded-xl p-3 text-center">
+                            <p class="text-xs font-bold text-blue-500 uppercase tracking-wide mb-1">CCPA (California)</p>
+                            <p class="text-sm text-gray-700">Know, delete, opt-out &amp; non-discrimination</p>
+                        </div>
+                        <div class="border border-purple-200 bg-purple-50 rounded-xl p-3 text-center">
+                            <p class="text-xs font-bold text-purple-500 uppercase tracking-wide mb-1">GDPR (EU/UK)</p>
+                            <p class="text-sm text-gray-700">Access, erasure, portability &amp; objection</p>
+                        </div>
+                    </div>
 
-                <h3 class="text-lg font-bold text-gray-900 mb-3">For All Users</h3>
-                <p class="text-gray-700 leading-relaxed mb-3">You may have the right to:</p>
-                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-4">
-                    <li>Request access to information we hold about you</li>
-                    <li>Ask to correct inaccurate data</li>
-                    <li>Request deletion of your information (where legally possible)</li>
-                    <li>Opt-out of personalized advertising</li>
-                </ul>
+                    <p class="privacy-p">
+                        To exercise any of these rights, contact us at
+                        <a href="/contact" data-email-user="contact" data-email-domain="usasymbol.com" class="privacy-a font-semibold">contact@usasymbol.com</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
 
-                <h3 class="text-lg font-bold text-gray-900 mb-3">California Residents (CCPA)</h3>
-                <p class="text-gray-700 leading-relaxed mb-3">
-                    If you live in California, you may have additional rights under the California Consumer Privacy Act (CCPA),
-                    including the right to know what data we collect, the right to delete personal information, the right
-                    to opt-out of certain data sharing, and the right not to be discriminated against for exercising your rights.
-                </p>
+        <!-- Additional sections -->
+        <div class="privacy-section">
+            <div class="flex items-start gap-4">
+                <div class="privacy-icon bg-gray-100">
+                    <i class="fa-solid fa-ellipsis text-gray-500 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h2 class="privacy-h2">Additional Information</h2>
 
-                <h3 class="text-lg font-bold text-gray-900 mb-3">European Union Residents (GDPR)</h3>
-                <p class="text-gray-700 leading-relaxed mb-3">
-                    If you are located in the European Union, your rights under the GDPR may include:
-                </p>
-                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-4">
-                    <li>Access to your personal data</li>
-                    <li>Rectification of inaccurate data</li>
-                    <li>Erasure (“right to be forgotten”)</li>
-                    <li>Restriction of processing</li>
-                    <li>Data portability</li>
-                    <li>Objection to certain processing</li>
-                    <li>Withdrawal of consent at any time</li>
-                </ul>
+                    <h3 class="privacy-h3">Children's Privacy</h3>
+                    <p class="privacy-p">The Site is not directed to children under 13. We do not knowingly collect personal information from children under 13. If you believe your child has provided us with personal information, please <a href="/contact" class="privacy-a">contact us</a> and we will remove it.</p>
 
-                <p class="text-gray-700 leading-relaxed mt-4">
-                    To exercise any of these rights, please contact us at
-                    <a href="/contact" data-email-user="contact" data-email-domain="usasymbol.com"
-                       class="text-purple-600 hover:text-purple-800 underline font-semibold">
-                        contact@usasymbol.com
-                    </a>.
-                </p>
-            </section>
+                    <h3 class="privacy-h3">Third-Party Links and Content</h3>
+                    <p class="privacy-p">Our Site may include links to external websites or embedded content. We are not responsible for third-party privacy practices and recommend reviewing their policies.</p>
 
-            <!-- INTERNATIONAL TRANSFERS -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">International Data Transfers</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    Our servers are located in the United States. If you access the Site from outside the U.S., your data may
-                    be transferred to and processed in the United States. By using the Site, you consent to this transfer.
-                </p>
-            </section>
+                    <h3 class="privacy-h3">Data Security</h3>
+                    <p class="privacy-p">We use reasonable technical and organizational measures to protect your data. However, no internet transmission is 100% secure.</p>
 
-            <!-- CHANGES -->
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Changes to This Privacy Policy</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    We may update this Privacy Policy from time to time. When we make changes, we will update the “Last Updated”
-                    date at the top of this page. Your continued use of the Site after any changes means that you accept the
-                    revised Policy.
-                </p>
-            </section>
+                    <h3 class="privacy-h3">International Data Transfers</h3>
+                    <p class="privacy-p">Our servers are in the United States. By using the Site from outside the U.S., you consent to your data being processed in the United States.</p>
 
-            <!-- CONTACT US -->
-            <section class="mb-8 bg-purple-50 border-l-4 border-purple-600 p-6 rounded">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>
-                <p class="text-gray-700 leading-relaxed mb-3">
-                    If you have any questions or requests regarding this Privacy Policy or our data practices, please contact us:
-                </p>
-                <div class="text-gray-700">
-                    <p><strong>USA Symbol</strong></p>
-                    <p>Artsiom Dusau</p>
-                    <p>Chicago, Illinois, USA</p>
+                    <h3 class="privacy-h3">Changes to This Policy</h3>
+                    <p class="privacy-p">We may update this Privacy Policy from time to time and will update the "Last Updated" date at the top. Continued use of the Site means you accept the revised Policy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="privacy-section rounded-b-2xl bg-purple-50">
+            <div class="flex items-start gap-4">
+                <div class="privacy-icon bg-purple-200">
+                    <i class="fa-solid fa-envelope text-purple-700 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h2 class="privacy-h2">Contact Us</h2>
+                    <p class="privacy-p">If you have questions about this Privacy Policy or our data practices:</p>
+                    <p class="text-gray-700 font-semibold">USA Symbol &mdash; Artsiom Dusau</p>
+                    <p class="text-gray-600 text-sm">Chicago, Illinois, USA</p>
                     <p class="mt-2">
-                        Email:
                         <a href="/contact" data-email-user="contact" data-email-domain="usasymbol.com"
-                           class="text-purple-600 hover:text-purple-800 underline font-semibold">
+                           class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors">
+                            <i class="fa-solid fa-envelope"></i>
                             contact@usasymbol.com
                         </a>
                     </p>
                 </div>
-            </section>
-
-            <section class="border-t pt-6 mt-8">
-                <p class="text-sm text-gray-500">
-                    By using USA Symbol, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.
-                </p>
-            </section>
-
+            </div>
         </div>
+
     </article>
 
-    <!-- NAVIGATION LINKS -->
-    <div class="flex flex-wrap gap-4 justify-center">
-        <a href="/terms" class="text-purple-600 hover:text-purple-800 font-semibold">Terms of Use</a>
-        <span class="text-gray-400">|</span>
-        <a href="/editorial-policy" class="text-purple-600 hover:text-purple-800 font-semibold">Editorial Policy</a>
-        <span class="text-gray-400">|</span>
-        <a href="/contact" class="text-purple-600 hover:text-purple-800 font-semibold">Contact Us</a>
+    <p class="text-center text-xs text-gray-400 mb-8">By using USA Symbol, you acknowledge that you have read and understood this Privacy Policy and agree to its terms.</p>
+
+    <div class="bg-white rounded-2xl border border-gray-200 p-6 md:p-8 mb-8">
+        <h2 class="privacy-h2 mb-3">Privacy Controls</h2>
+        <p class="privacy-p">You can review or update your privacy choices at any time using the links below.</p>
+        <div class="flex flex-wrap gap-4">
+            <a href="?cmpscreen" class="privacy-a font-semibold">Update Privacy Settings</a>
+            <a href="?cmpscreencustom" class="privacy-a font-semibold">Do Not Sell or Share My Personal Information</a>
+        </div>
     </div>
 
-</main>
+    <!-- MEDIAVINE PARTNER NOTICE -->
+    <div id="mv-section" style="display:none">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="h-px bg-gray-200 flex-1"></div>
+            <div class="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full">
+                <i class="fa-solid fa-rectangle-ad text-gray-400 text-xs"></i>
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Advertising Partner Notice</span>
+            </div>
+            <div class="h-px bg-gray-200 flex-1"></div>
+        </div>
+        <div id="mv-notice-wrapper" class="bg-white rounded-2xl border border-gray-200 p-8 md:p-10 mb-8"></div>
+    </div>
+
+    <!-- NAV LINKS -->
+    <div class="flex flex-wrap gap-4 justify-center pb-4">
+        <a href="/terms" class="text-purple-600 hover:text-purple-800 font-semibold text-sm">Terms of Use</a>
+        <span class="text-gray-300">|</span>
+        <a href="/editorial-policy" class="text-purple-600 hover:text-purple-800 font-semibold text-sm">Editorial Policy</a>
+        <span class="text-gray-300">|</span>
+        <a href="/contact" class="text-purple-600 hover:text-purple-800 font-semibold text-sm">Contact Us</a>
+    </div>
+
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    function wrapMvContent() {
+        var outerMain = document.querySelector('main.site-main');
+        var wrapper = document.getElementById('mv-notice-wrapper');
+        var section = document.getElementById('mv-section');
+        if (!outerMain || !wrapper || !section) return;
+
+        var injected = Array.from(outerMain.children).filter(function (el) {
+            return !el.classList.contains('max-w-4xl') && el.tagName !== 'SCRIPT';
+        });
+        if (injected.length === 0) return;
+
+        injected.forEach(function (el) { wrapper.appendChild(el); });
+        section.style.display = '';
+    }
+
+    var outerMain = document.querySelector('main.site-main');
+    if (!outerMain) return;
+    var observer = new MutationObserver(wrapMvContent);
+    observer.observe(outerMain, { childList: true });
+    wrapMvContent();
+})();
+</script>
+}

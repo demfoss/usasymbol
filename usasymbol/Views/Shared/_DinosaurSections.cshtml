@@ -25,7 +25,8 @@
     var fullWidthVisualAsset = visualAssets
         .FirstOrDefault(asset => asset != null &&
                                  !string.IsNullOrWhiteSpace(asset.Src) &&
-                                 string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase));
+                                 string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                                 string.IsNullOrWhiteSpace(asset.Section));
 
     foreach (var item in sections)
     {
@@ -72,7 +73,7 @@
 
                             @if (sub.ListItems?.Any() == true)
                             {
-                                <ul class="mt-4 space-y-2 text-sm text-slate-700 max-w-prose">
+                        <ul class="mt-4 space-y-2 text-sm text-slate-700">
                                     @foreach (var li in sub.ListItems)
                                     {
                                         <li class="pl-5 relative before:content-['-'] before:absolute before:left-0 before:text-slate-400">

@@ -2,6 +2,10 @@
 
 @{
     var colors = Model.Colors;
+    var stateName = Model.State?.Name?.Trim();
+    var stateSlug = Model.State?.Slug?.Trim();
+    var allSymbolsUrl = string.IsNullOrWhiteSpace(stateSlug) ? "/states" : $"/states/{stateSlug}";
+    var allSymbolsLabel = string.IsNullOrWhiteSpace(stateName) ? "View all state symbols" : $"View all {stateName} state symbols";
 
     var items = new (string PluralSlug, string Title, string Subtitle)[]
     {
@@ -63,9 +67,9 @@
             </div>
 
             <div class="mt-4 pt-4">
-                <a href="/states/@Model.State.Slug"
+                <a href="@allSymbolsUrl"
                    class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
-                    <span>@Model.State.Name symbols</span>
+                    <span>@allSymbolsLabel</span>
                     <i class="fas fa-arrow-right text-xs"></i>
                 </a>
             </div>
@@ -105,9 +109,9 @@
     </div>
 
     <div class="mt-6">
-        <a href="/states/@Model.State.Slug"
+        <a href="@allSymbolsUrl"
            class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
-            <span>@Model.State.Name symbols</span>
+            <span>@allSymbolsLabel</span>
             <i class="fas fa-arrow-right text-xs"></i>
         </a>
     </div>

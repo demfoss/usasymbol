@@ -14,7 +14,9 @@ namespace USASymbol.Services
         private readonly ICollectionsContentService _collectionsService;
         private readonly IBorderService _borderService;
         private readonly ISurnamesService _surnamesService;
+        private readonly IParkService _parkService;
         private readonly QuizService _quizService;
+        private readonly IWebHostEnvironment _env;
 
         public SitemapBuilder(
             AppDbContext db,
@@ -23,7 +25,9 @@ namespace USASymbol.Services
             ICollectionsContentService collectionsService,
             IBorderService borderService,
             ISurnamesService surnamesService,
-            QuizService quizService)
+            IParkService parkService,
+            QuizService quizService,
+            IWebHostEnvironment env)
         {
             _db                 = db;
             _rankingsService    = rankingsService;
@@ -31,7 +35,9 @@ namespace USASymbol.Services
             _collectionsService = collectionsService;
             _borderService      = borderService;
             _surnamesService    = surnamesService;
+            _parkService        = parkService;
             _quizService        = quizService;
+            _env                = env;
         }
 
         public async Task<List<string>> BuildMainUrlsAsync()
@@ -46,10 +52,12 @@ namespace USASymbol.Services
             urls.Add("/symbols");
             urls.Add("/rankings");
             urls.Add("/guides");
+            urls.Add("/guides/state-abbreviations");
             urls.Add("/guides/state-borders");
             urls.Add("/guides/surnames");
             urls.Add("/collections");
             urls.Add("/quizzes");
+            urls.Add("/national-parks");
 
 
 
@@ -57,7 +65,11 @@ namespace USASymbol.Services
             var states = await _db.States.ToListAsync();
 
             foreach (var state in states)
+            {
                 urls.Add($"/states/{state.Slug}");
+                urls.Add($"/states/{state.Slug}/abbreviation");
+                urls.Add($"/states/{state.Slug}/map");
+            }
 
 
 
@@ -120,6 +132,37 @@ namespace USASymbol.Services
             foreach (var cat in listingCategories)
                 foreach (var item in cat.Items)
                     urls.Add(item.Url);
+
+
+
+
+            var parks = await _parkService.GetAllNationalParksAsync();
+
+            foreach (var park in parks)
+            {
+                if (!string.IsNullOrWhiteSpace(park.Slug))
+                    urls.Add($"/national-parks/{park.Slug}");
+            }
+
+
+
+
+            var parkCollectionsPath = Path.Combine(_env.ContentRootPath, "Content", "parks", "collections");
+            if (Directory.Exists(parkCollectionsPath))
+            {
+                foreach (var file in Directory.EnumerateFiles(parkCollectionsPath, "*.yml"))
+                    urls.Add($"/national-parks/{Path.GetFileNameWithoutExtension(file)}");
+            }
+
+
+
+
+            var parkStatesPath = Path.Combine(_env.ContentRootPath, "Content", "parks", "states");
+            if (Directory.Exists(parkStatesPath))
+            {
+                foreach (var file in Directory.EnumerateFiles(parkStatesPath, "*.yml"))
+                    urls.Add($"/national-parks/in/{Path.GetFileNameWithoutExtension(file)}");
+            }
 
 
 

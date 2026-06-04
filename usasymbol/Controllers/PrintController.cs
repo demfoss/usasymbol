@@ -118,7 +118,7 @@ namespace USASymbol.Controllers
                 _ => $"/symbols/{slug}"
             };
             var sourcePath = !string.IsNullOrWhiteSpace(relativePageUrl) ? relativePageUrl! : defaultPath;
-            var sourceUrl = $"{Request.Scheme}://{Request.Host}{sourcePath}";
+            var sourceUrl = $"https://usasymbol.com{sourcePath}";
 
             Response.Headers["X-Robots-Tag"] = "noindex, nofollow, noarchive";
 

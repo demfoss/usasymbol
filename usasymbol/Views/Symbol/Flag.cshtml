@@ -1,4 +1,4 @@
-@model USASymbol.Models.ViewModels.FlagDetailViewModel
+﻿@model USASymbol.Models.ViewModels.FlagDetailViewModel
 @using System.Globalization
 @using USASymbol.Extensions
 @using USASymbol.Models.ViewModels
@@ -15,10 +15,15 @@
     var designation = string.IsNullOrWhiteSpace(designationRaw)
         ? "State Flag"
         : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+    var overviewHeading = $"{designation} of {stateName}";
+    var baseTitle = string.IsNullOrWhiteSpace(stateName) ? designation : $"{stateName} {designation}";
 
-    var pageHeading = !string.IsNullOrWhiteSpace(Model.FlagContent?.Name)
-        ? Model.FlagContent!.Name
-        : $"{stateName} {designation}";
+    var flagName = SymbolDetailViewModel.FirstNonEmpty(Model.FlagContent?.Name, Model.Symbol?.Name);
+    var pageHeading = !string.IsNullOrWhiteSpace(flagName)
+        ? string.Equals(flagName.Trim(), baseTitle, StringComparison.OrdinalIgnoreCase)
+            ? baseTitle
+            : $"{baseTitle}: {flagName}"
+        : baseTitle;
 
     var descRaw = Model.FlagContent?.SeoDescription ?? "";
     ViewData["Title"] = Model.FlagContent?.SeoTitle ?? pageHeading;
@@ -34,14 +39,17 @@
         .ToList();
 
     var hasMeaning = !string.IsNullOrWhiteSpace(Model.Meaning);
-    var hasQuiz = Model.QuizQuestions?.Any() == true;
     var introText = Model.FlagContent?.IntroText ?? string.Empty;
     var overviewText = !string.IsNullOrWhiteSpace(introText)
         ? introText
         : adoptedYear > 0
             ? $"The official state flag of {stateName} was adopted in <strong>{adoptedYear}</strong>."
             : $"{stateName} recognizes {pageHeading} as its official state flag.";
-    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw)
+        ? descRaw
+        : !string.IsNullOrWhiteSpace(introText)
+            ? introText
+            : $"Learn about the official state flag of {stateName}.";
     var heroDescription = System.Net.WebUtility.HtmlDecode(
         System.Text.RegularExpressions.Regex.Replace(
             System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1"),
@@ -50,102 +58,8 @@
         .Trim();
 }
 
-<style>
-    .flag-editorial {
-        color: #161B26;
-    }
 
-    .flag-editorial .content-flow h2 {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        color: #161B26;
-        font-size: 41px;
-        font-weight: 700;
-        line-height: 50px;
-        letter-spacing: -0.02em;
-    }
-
-    .flag-editorial .content-flow h3 {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        color: #161B26;
-        font-size: 23px;
-        font-weight: 700;
-        line-height: 50px;
-        letter-spacing: 0;
-    }
-
-    .flag-editorial .site-content,
-    .flag-editorial .site-content p,
-    .flag-editorial .site-content li,
-    .flag-editorial .site-content dd,
-    .flag-editorial .site-content blockquote,
-    .flag-editorial .site-content .prose,
-    .flag-editorial .content-flow > section > div,
-    .flag-editorial .content-flow > div {
-        font-size: 19px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 34px;
-        letter-spacing: 0.19px;
-    }
-
-    .flag-editorial #overview h2,
-    .flag-editorial #symbolic-meaning h2,
-    .flag-editorial #flag-quiz h2,
-    .flag-editorial #faq h2,
-    .flag-editorial #sources h2 {
-        font-size: 41px;
-        line-height: 50px;
-        letter-spacing: -0.02em;
-        text-transform: none;
-    }
-
-    .flag-editorial #overview .site-content,
-    .flag-editorial #symbolic-meaning .site-content,
-    .flag-editorial #overview .site-content p,
-    .flag-editorial #symbolic-meaning .site-content p {
-        font-size: 19px;
-        line-height: 34px;
-        letter-spacing: 0.19px;
-    }
-
-    @@media (max-width: 767px) {
-        .flag-editorial .content-flow h2,
-        .flag-editorial #overview h2,
-        .flag-editorial #symbolic-meaning h2,
-        .flag-editorial #flag-quiz h2,
-        .flag-editorial #faq h2,
-        .flag-editorial #sources h2 {
-            font-size: 26px;
-            line-height: 37px;
-            letter-spacing: -0.405px;
-        }
-
-        .flag-editorial .content-flow h3 {
-            font-size: 19px;
-            line-height: 24px;
-            letter-spacing: 0.38px;
-        }
-
-        .flag-editorial .site-content,
-        .flag-editorial .site-content p,
-        .flag-editorial .site-content li,
-        .flag-editorial .site-content dd,
-        .flag-editorial .site-content blockquote,
-        .flag-editorial .site-content .prose,
-        .flag-editorial .content-flow > section > div,
-        .flag-editorial .content-flow > div,
-        .flag-editorial #overview .site-content,
-        .flag-editorial #symbolic-meaning .site-content,
-        .flag-editorial #overview .site-content p,
-        .flag-editorial #symbolic-meaning .site-content p {
-            font-size: 18px;
-            line-height: 29px;
-            letter-spacing: 0.18px;
-        }
-    }
-</style>
-
-<nav class="sticky top-16 z-30 bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+<nav class="bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
     <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
         @await Html.PartialAsync("_Breadcrumbs", Model)
     </div>
@@ -153,9 +67,9 @@
 
 <div id="top"></div>
 
-<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
-    <article class="flag-editorial w-full">
-        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[228px_minmax(0,760px)_320px] xl:gap-12 2xl:grid-cols-[240px_minmax(0,780px)_340px] 2xl:gap-14 relative">
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="symbol-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[228px_minmax(0,760px)_320px] xl:gap-12 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
 
             <header class="lg:col-span-2 xl:col-span-3 mb-10">
                 <div class="relative overflow-hidden rounded-none shadow-none bg-[linear-gradient(180deg,#2a171a_0%,#3a1f23_100%)] text-white">
@@ -198,7 +112,7 @@
 
                                     @if (!string.IsNullOrWhiteSpace(Model.Legislation))
                                     {
-                                        <div class="mt-7 hidden max-w-prose items-start gap-2 text-sm text-slate-300 lg:flex">
+                    <div class="mt-7 hidden items-start gap-2 text-sm text-slate-300 lg:flex">
                                             <i class="fa-solid fa-scale-balanced mt-0.5 shrink-0 text-slate-400"></i>
                                             <span><strong class="text-white">Legal Reference:</strong> @Model.Legislation</span>
                                         </div>
@@ -286,7 +200,8 @@
                                 </div>
                                 <div class="min-w-0">
                                     <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
-                                    <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                    <h2 class="content-h3 mt-2 mb-3">@overviewHeading</h2>
+                                    <div class="prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
                                         @overviewText.RenderAutoLinks()
                                     </div>
                                 </div>
@@ -322,45 +237,15 @@
 
                     @await Html.PartialAsync("_FlagSections", Model)
 
-                    @if (hasQuiz)
-                    {
-                        <section id="flag-quiz" class="content-divider">
-                            <div class="overflow-hidden border border-slate-200/80 bg-white/70 text-slate-900">
-                                <div class="border-b border-slate-200/80 px-5 py-4 sm:px-6">
-                                    <div class="flex items-center gap-4">
-                                        <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-slate-100 text-slate-700">
-                                            <i class="fas fa-graduation-cap text-xs"></i>
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <h2 class="!text-[1.65rem] !leading-[1.15] text-slate-900">Test your knowledge</h2>
-                                            <div class="mt-1 text-sm leading-6 text-slate-500">A short quiz while the key details are still top of mind.</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="p-5 sm:p-6 text-slate-900">
-                                    @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
-                                </div>
-
-                                <div class="border-t border-slate-200/80 px-5 py-4 sm:px-6">
-                                    <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
-                                        <span>Explore more quizzes</span>
-                                        <i class="fas fa-arrow-right shrink-0 text-xs"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </section>
-                    }
-
-                    <section id="faq" class="content-divider">
+                    <div class="content-divider">
                         @await Html.PartialAsync("_Faq", Model)
-                    </section>
+                    </div>
 
                     <section id="sources" class="content-divider">
                         @await Html.PartialAsync("_Sources", Model)
                     </section>
 
-                    <div class="mt-10 space-y-8 xl:hidden">
+                    <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
                         @await Html.PartialAsync("_RelatedSymbols", Model)
                         @await Html.PartialAsync("_RelatedStatesSidebar", Model)
                         @await Html.PartialAsync("_GuidesAndRankingsSidebar")
@@ -409,12 +294,11 @@
             </div>
         }
     </article>
-</main>
+</div>
 
 @await Html.PartialAsync("_TocMobileFab", Model)
 @await Html.PartialAsync("_StructuredData", Model)
 @await Html.PartialAsync("_Scripts")
-<script src="~/js/quizEngine.js" defer></script>
 
 <script>
     document.querySelectorAll('.js-flag-color-copy').forEach(button => {

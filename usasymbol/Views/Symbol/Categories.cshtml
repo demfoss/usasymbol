@@ -31,44 +31,40 @@
 
         @if (Model != null && Model.Any())
         {
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <div class="category-grid category-grid--listing">
 
                 @foreach (var category in Model)
                 {
+                    var stateLabel = category.StateCount == 1 ? "1 state" : $"{category.StateCount} states";
                     <a href="@category.Url"
-                       class="group rounded-xl bg-white border border-gray-100 p-6
-                                      hover:border-blue-300 hover:shadow-lg transition flex flex-col items-center text-center">
-
-                        <!-- SMALL ROUND ICON -->
-                        <div class="w-16 h-16 mb-4 rounded-full bg-gray-100
-                                            flex items-center justify-center overflow-hidden">
+                       class="category-card category-card--listing">
+                        <div class="category-card__media">
                             @if (!string.IsNullOrEmpty(category.ImageUrl))
                             {
                                 <img src="@Images.Card(category.ImageUrl)"
-                                     srcset="@(Images.Card(category.ImageUrl, 160)) 160w,
-                                             @(Images.Card(category.ImageUrl, 240)) 240w,
-                                             @(Images.Card(category.ImageUrl, 320)) 320w"
-                                     sizes="(max-width: 639px) 96px, 128px"
+                                     srcset="@(Images.Card(category.ImageUrl, 240)) 240w,
+                                             @(Images.Card(category.ImageUrl, 360)) 360w,
+                                             @(Images.Card(category.ImageUrl, 480)) 480w"
+                                     sizes="(max-width: 639px) 44vw, (max-width: 1023px) 30vw, 18vw"
                                      alt="@category.Name"
-                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                     loading="lazy" />
+                                     loading="lazy">
                             }
                             else
                             {
-                                <span class="text-3xl" aria-hidden="true">@category.Icon</span>
+                                <div class="category-card__icon" aria-hidden="true">
+                                    <i class="@category.Icon"></i>
+                                </div>
                             }
+                            <span class="category-card__pill">@stateLabel</span>
                         </div>
-
-                        <!-- TITLE -->
-                        <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition">
-                            @category.Name
-                        </h3>
-
-                        <!-- STATE COUNT -->
-@*                         <p class="text-xs text-gray-500 mt-1">
-                            @category.StateCount state@(category.StateCount == 1 ? "" : "s")
-                        </p> *@
-
+                        <div class="category-card__body">
+                            <div class="category-card__eyebrow">State Symbol Directory</div>
+                            <h3 class="category-card__title">@category.Name</h3>
+                            <div class="category-card__footer">
+                                <span class="category-card__count">@stateLabel</span>
+                                <span class="category-card__link">Open <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
                     </a>
                 }
             </div>

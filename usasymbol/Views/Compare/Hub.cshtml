@@ -192,6 +192,27 @@
                         <p class="text-sm text-slate-700">Selected states get a flag preview so the page feels more recognizable before compare.</p>
                     </div>
                 </div>
+
+                <div class="grid md:grid-cols-3 gap-4 mt-6">
+                    <a href="/guides/state-abbreviations"
+                       class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 hover:border-slate-300 transition">
+                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-700 mb-2">Reference</div>
+                        <div class="text-sm font-bold text-slate-900 mb-1">All State Abbreviations</div>
+                        <p class="text-sm text-slate-600">Open the full 50-state abbreviation hub if you need a quick code lookup while comparing.</p>
+                    </a>
+                    <a id="abbr-link-a" href="/guides/state-abbreviations"
+                       class="rounded-2xl border border-slate-200 bg-white px-5 py-4 hover:border-blue-300 transition">
+                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700 mb-2">First State Code</div>
+                        <div id="abbr-link-a-title" class="text-sm font-bold text-slate-900 mb-1">Pick a state</div>
+                        <p id="abbr-link-a-copy" class="text-sm text-slate-600">We will link you to that state's dedicated abbreviation guide.</p>
+                    </a>
+                    <a id="abbr-link-b" href="/guides/state-abbreviations"
+                       class="rounded-2xl border border-slate-200 bg-white px-5 py-4 hover:border-blue-300 transition">
+                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700 mb-2">Second State Code</div>
+                        <div id="abbr-link-b-title" class="text-sm font-bold text-slate-900 mb-1">Pick a state</div>
+                        <p id="abbr-link-b-copy" class="text-sm text-slate-600">This card updates as soon as you select the second state.</p>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -229,65 +250,51 @@
 
 <section class="bg-white py-12 border-t">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="mb-6">
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">What You Can Compare</h2>
-            <p class="mt-2 text-sm text-slate-500">Everything is grouped by category so the page stays easy to scan.</p>
+        <div class="mb-8 max-w-2xl">
+            <h2 class="text-2xl md:text-[2rem] font-bold leading-tight tracking-tight text-gray-900">What You Can Compare</h2>
+            <p class="mt-1.5 text-sm leading-6 text-slate-500">
+                @{
+                    var metrics = USASymbol.Services.ComparisonMetricsConfig.All
+                        .OrderBy(m => m.GroupOrder)
+                        .ThenBy(m => m.SortOrder)
+                        .ToList();
+                    var metricGroups = metrics
+                        .GroupBy(m => new { m.GroupSlug, m.GroupName, m.GroupOrder })
+                        .OrderBy(g => g.Key.GroupOrder)
+                        .ToList();
+                    string GroupIcon(string? groupSlug) => (groupSlug ?? "").ToLowerInvariant() switch
+                    {
+                        "demographics" => "fa-solid fa-users",
+                        "income" => "fa-solid fa-sack-dollar",
+                        "jobs" => "fa-solid fa-briefcase",
+                        "quality-of-life" => "fa-solid fa-heart-pulse",
+                        "climate" => "fa-solid fa-cloud-sun",
+                        "housing" => "fa-solid fa-house",
+                        "retirement" => "fa-solid fa-umbrella-beach",
+                        "taxes" => "fa-solid fa-file-invoice-dollar",
+                        "politics" => "fa-solid fa-landmark-dome",
+                        "laws" => "fa-solid fa-scale-balanced",
+                        "geography" => "fa-solid fa-mountain-sun",
+                        "health" => "fa-solid fa-stethoscope",
+                        "safety" => "fa-solid fa-shield-halved",
+                        _ => "fa-solid fa-layer-group"
+                    };
+                }
+                @metrics.Count metrics across @metricGroups.Count categories.
+            </p>
         </div>
-        @{
-            var metrics = USASymbol.Services.ComparisonMetricsConfig.All
-                .OrderBy(m => m.GroupOrder)
-                .ThenBy(m => m.SortOrder)
-                .ToList();
-            var metricGroups = metrics
-                .GroupBy(m => new { m.GroupSlug, m.GroupName, m.GroupOrder })
-                .OrderBy(g => g.Key.GroupOrder)
-                .ToList();
-            string GroupIcon(string? groupSlug) => (groupSlug ?? "").ToLowerInvariant() switch
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 items-start">
+            @foreach (var group in metricGroups)
             {
-                "demographics" => "fa-solid fa-users",
-                "income" => "fa-solid fa-sack-dollar",
-                "jobs" => "fa-solid fa-briefcase",
-                "quality-of-life" => "fa-solid fa-heart-pulse",
-                "housing" => "fa-solid fa-house",
-                "taxes" => "fa-solid fa-file-invoice-dollar",
-                "politics" => "fa-solid fa-landmark-dome",
-                "laws" => "fa-solid fa-scale-balanced",
-                "geography" => "fa-solid fa-mountain-sun",
-                _ => "fa-solid fa-layer-group"
-            };
-        }
-        <div class="grid gap-3 md:grid-cols-2">
-            @for (var groupIndex = 0; groupIndex < metricGroups.Count; groupIndex++)
-            {
-                var group = metricGroups[groupIndex];
-                <details class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50" @(groupIndex == 0 ? "open" : null)>
-                    <summary class="flex cursor-pointer list-none items-center gap-3 px-5 py-4">
-                        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-700 border border-blue-100 shrink-0">
-                            <i class="@GroupIcon(group.Key.GroupSlug) text-sm"></i>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                    <div class="flex items-center gap-2.5 mb-2.5">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-blue-100 text-blue-600 shrink-0">
+                            <i class="@GroupIcon(group.Key.GroupSlug) text-xs"></i>
                         </span>
-                        <div class="min-w-0 flex-1">
-                            <div class="text-sm font-semibold text-slate-900">@group.Key.GroupName</div>
-                            <div class="text-xs text-slate-500">@group.Count() metric@(group.Count() == 1 ? "" : "s")</div>
-                        </div>
-                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform group-open:rotate-180"></i>
-                    </summary>
-                    <div class="border-t border-slate-200 bg-white px-4 py-4">
-                        <div class="space-y-2">
-                            @foreach (var metric in group)
-                            {
-                                <div class="flex gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-3">
-                                    <div class="w-9 h-9 rounded-lg bg-white border border-blue-100 flex items-center justify-center shrink-0">
-                                        <i class="@metric.Icon text-blue-700 text-sm"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <div class="font-semibold text-slate-900 text-sm">@metric.Name</div>
-                                        <div class="text-xs text-slate-500">@metric.Description</div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
+                        <span class="text-sm font-bold text-slate-900">@group.Key.GroupName</span>
                     </div>
-                </details>
+                    <p class="text-xs text-slate-500 leading-relaxed">@string.Join(", ", group.Select(m => m.Name))</p>
+                </div>
             }
         </div>
     </div>
@@ -323,6 +330,28 @@
         } else {
             flag.classList.add('hidden');
         }
+    }
+
+    function updateAbbreviationLink(slot, slug) {
+        const link = document.getElementById(`abbr-link-${slot}`);
+        const title = document.getElementById(`abbr-link-${slot}-title`);
+        const copy = document.getElementById(`abbr-link-${slot}-copy`);
+        const state = findState(slug);
+
+        if (!link || !title || !copy) return;
+
+        if (!state) {
+            link.href = '/guides/state-abbreviations';
+            title.textContent = 'Pick a state';
+            copy.textContent = slot === 'a'
+                ? 'We will link you to that state\'s dedicated abbreviation guide.'
+                : 'This card updates as soon as you select the second state.';
+            return;
+        }
+
+        link.href = `/states/${state.slug}/abbreviation`;
+        title.textContent = `${state.name} (${state.abbreviation})`;
+        copy.textContent = `Open the dedicated ${state.name} abbreviation page and see why the postal code is ${state.abbreviation}.`;
     }
 
     function goCompare() {
@@ -384,6 +413,7 @@
             }
             closeDropdown();
             updatePreview(slot, slug);
+            updateAbbreviationLink(slot, slug);
         }
 
         trigger.addEventListener('click', () => {
@@ -413,4 +443,6 @@
 
     setupPicker('a');
     setupPicker('b');
+    updateAbbreviationLink('a', '');
+    updateAbbreviationLink('b', '');
 </script>

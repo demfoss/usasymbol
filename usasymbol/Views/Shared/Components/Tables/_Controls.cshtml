@@ -1,18 +1,24 @@
 @model USASymbol.Models.ViewModels.TableSectionViewModel
 
+@{
+    var browseLabel = ViewData["TableBrowseLabel"] as string ?? "Browse";
+    var heading = ViewData["TableHeading"] as string ?? "Filter and explore";
+    var description = ViewData["TableDescription"] as string ?? "Search by state name, switch views, and compare columns.";
+}
+
 <section class="mb-10" aria-label="Table controls">
-    <div class="rounded-[1.5rem] border border-slate-200 bg-white/90 p-5 md:p-6">
-        <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <div>
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Browse</p>
-                <h3 class="mt-2 text-lg md:text-xl font-semibold tracking-tight text-slate-900">Filter and explore</h3>
-                <p class="mt-1 text-sm text-slate-600">Search by state name, switch views, and compare columns.</p>
+    <div class="rounded-[1.5rem] border border-slate-200 bg-white/90 p-4 md:p-6">
+        <div class="flex min-w-0 flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div class="min-w-0">
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">@browseLabel</p>
+                <h3 class="mt-2 text-lg md:text-xl font-semibold tracking-tight text-slate-900">@heading</h3>
+                <p class="mt-1 text-sm text-slate-600">@description</p>
             </div>
 
-            <div class="md:pt-2">
-                <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
+            <div class="min-w-0 md:pt-2">
+                <span class="inline-flex max-w-full items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 sm:px-4">
                     <i class="fa-regular fa-eye text-slate-600" aria-hidden="true"></i>
-                    <span id="resultsCounter">Showing all @Model.TotalRowsCount entries</span>
+                    <span id="resultsCounter" class="min-w-0 truncate">Showing all @Model.TotalRowsCount entries</span>
                 </span>
             </div>
         </div>
@@ -32,17 +38,17 @@
                 </div>
             }
 
-            <div class="flex flex-wrap items-center gap-3">
+            <div class="flex min-w-0 flex-wrap items-center gap-3">
                 @if (Model.ShowMetricToggle)
                 {
                     var defaultKey = Model.DefaultColumnKey;
                     var toggleColumns = Model.ToggleableColumnsList;
 
-                    <div class="inline-flex rounded-lg border border-slate-200 p-1">
+                    <div class="ranking-metric-toggle flex max-w-full overflow-x-auto rounded-lg border border-slate-200 p-1">
                         @foreach (var col in toggleColumns)
                         {
                             var isDefault = col.Key == defaultKey;
-                            <button class="metricBtn inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition @(isDefault ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-50")"
+                            <button class="metricBtn inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition @(isDefault ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-50")"
                                     data-metric="@col.Key"
                                     type="button">
                                 @col.Label

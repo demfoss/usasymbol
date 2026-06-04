@@ -6,7 +6,7 @@ namespace USASymbol.Models.ViewModels
     {
         public BeverageContent? BeverageContent { get; set; }
 
-        public string? ContentTitle => BeverageContent?.Title ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(BeverageContent?.Title, Symbol?.Name);
         public string? ContentIntroText => BeverageContent?.IntroText;
         public override string? Author => BeverageContent?.Author;
         public override DateTime? DateModified => BeverageContent?.DateModified;

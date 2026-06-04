@@ -54,10 +54,10 @@
     @if (hasSvg)
     {
         @* ── SVG CHOROPLETH ── *@
-        <div class="relative" id="usmap-wrapper">
+        <div class="relative min-w-0 max-w-full" id="usmap-wrapper">
 
             <div id="usmap-container"
-                 class="relative overflow-hidden rounded border border-slate-200 bg-white select-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full"
+                 class="relative min-w-0 max-w-full overflow-hidden rounded border border-slate-200 bg-white select-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full [&_svg]:max-w-full"
                  style="aspect-ratio:959/593;min-height:260px"
                  role="img"
                  aria-label="@alt">
@@ -65,7 +65,7 @@
             </div>
 
             <div id="map-tooltip"
-                 class="pointer-events-none absolute z-20 hidden overflow-hidden rounded-[1rem] border shadow-2xl"
+                 class="pointer-events-none absolute z-20 hidden max-w-[calc(100vw-2rem)] overflow-hidden rounded-[1rem] border shadow-2xl"
                  style="min-width:212px;max-width:320px;border-color:rgba(15,23,42,.58);background:rgba(15,23,42,.96);font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
                  role="tooltip"
                  aria-live="polite">

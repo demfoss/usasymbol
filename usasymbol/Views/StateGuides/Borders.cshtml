@@ -5,7 +5,8 @@
 @inject IImageUrlService Images
 
 @{
-    var canonicalUrl = $"{Context.Request.Scheme}://{Context.Request.Host}/states/{Model.State.Slug}/borders";
+    const string baseUrl = "https://usasymbol.com";
+    var canonicalUrl = $"{baseUrl}/states/{Model.State.Slug}/borders";
     var borderContent = Model.BorderContent!;
     var ogImage = Images.Full(Model.BorderContent?.Map?.Image ?? Model.State.FlagImageUrl);
 
@@ -85,35 +86,14 @@
         </h1>
     </header>
 
-    <!-- AUTHOR BOX -->
-    @if (Model.BorderContent != null)
-    {
-        <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-600 mb-8 shadow-sm">
-            <div class="flex items-center justify-between flex-wrap gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-lg border border-blue-200 bg-gradient-to-br from-blue-900 to-blue-600 flex items-center justify-center text-white font-bold text-xl">
-                        US
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-sm font-semibold text-gray-800">
-                                Researched by @(Model.BorderContent.Author ?? "USA Symbol Team")
-                            </span>
-                            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <p class="text-xs text-gray-500">
-                            Fact-checked • Updated @(Model.BorderContent.DateModified?.ToString("MMMM d, yyyy") ?? DateTime.UtcNow.ToString("MMMM d, yyyy"))
-                        </p>
-                    </div>
-                </div>
-                <div>
-                    <a href="/about" class="text-blue-700 hover:text-blue-900 font-semibold text-sm transition">About Editor</a>
-                </div>
-            </div>
-        </div>
+    @{
+        var bordersAuthorBox = new USASymbol.Models.ViewModels.AuthorBox
+        {
+            DateModified = Model.BorderContent?.DateModified,
+            Author = Model.BorderContent?.Author
+        };
     }
+    @await Html.PartialAsync("_AuthorBox", bordersAuthorBox)
 <!-- SECTION 1: GEOGRAPHIC OVERVIEW (Hero) -->
 <section id="geographic-overview" class="mb-12 scroll-mt-20">
     <div class="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
@@ -133,7 +113,7 @@
                     @if (Model.HasIntro)
                     {
                         <p class="text-blue-100 text-base md:text-lg lg:text-xl leading-relaxed mb-8">
-                            @Model.BorderContent.IntroText.RenderMarkdown()
+                            @Model.BorderContent.IntroText.RenderAutoLinks()
                         </p>
                     }
 
@@ -767,48 +747,56 @@
         "creator": {
           "@@type": "Organization",
           "name": "USA Symbol and credited image licensors",
-          "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}")"
+          "url": "@baseUrl"
         },
         "creditText": "Image credits and license details belong to USA Symbol, Wikimedia Commons contributors, Creative Commons licensors, public-domain sources, or cited image providers as applicable.",
         "copyrightNotice": "Copyright belongs to the credited creator or licensor unless the image is in the public domain.",
-        "license": "@($"{Context.Request.Scheme}://{Context.Request.Host}/terms#image-rights")",
-        "acquireLicensePage": "@($"{Context.Request.Scheme}://{Context.Request.Host}/contact")"
+        "license": "@($"{baseUrl}/terms#image-rights")",
+        "acquireLicensePage": "@($"{baseUrl}/contact")"
       },
       "datePublished": "@(Model.BorderContent?.DatePublished?.ToString("yyyy-MM-dd") ?? "2024-01-15")",
       "dateModified": "@(Model.BorderContent?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"))",
       "author": {
         "@@type": "Person",
-        "name": "@(Model.BorderContent?.Author ?? "USA Symbol Team")",
-        "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}/about")"
+        "@@id": "@($"{baseUrl}/about/artsiom-dusau#person")",
+        "name": "Artsiom Dusau",
+        "url": "@($"{baseUrl}/about/artsiom-dusau")"
+      },
+      "reviewedBy": {
+        "@@type": "Person",
+        "@@id": "@($"{baseUrl}/about/artsiom-dusau#person")",
+        "name": "Artsiom Dusau",
+        "jobTitle": "Founder & Editor",
+        "url": "@($"{baseUrl}/about/artsiom-dusau")"
       },
       "publisher": {
         "@@type": "Organization",
         "name": "USA Symbol",
-        "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}")",
+        "url": "@baseUrl",
         "logo": {
           "@@type": "ImageObject",
-          "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")",
-          "contentUrl": "@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")",
+          "url": "@($"{baseUrl}/images/logo.png")",
+          "contentUrl": "@($"{baseUrl}/images/logo.png")",
           "creator": {
             "@@type": "Organization",
             "name": "USA Symbol",
-            "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}")"
+            "url": "@baseUrl"
           },
           "creditText": "USA Symbol",
           "copyrightNotice": "Copyright USA Symbol unless otherwise noted.",
-          "license": "@($"{Context.Request.Scheme}://{Context.Request.Host}/terms#image-rights")",
-          "acquireLicensePage": "@($"{Context.Request.Scheme}://{Context.Request.Host}/contact")"
+          "license": "@($"{baseUrl}/terms#image-rights")",
+          "acquireLicensePage": "@($"{baseUrl}/contact")"
         }
       },
-      "license": "@($"{Context.Request.Scheme}://{Context.Request.Host}/terms")",
+      "license": "@($"{baseUrl}/terms")",
       "creator": {
         "@@type": "Organization",
         "name": "USA Symbol",
-        "url": "@($"{Context.Request.Scheme}://{Context.Request.Host}")"
+        "url": "@baseUrl"
       },
       "mainEntityOfPage": {
         "@@type": "WebPage",
-        "@@id": "@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}")"
+        "@@id": "@($"{baseUrl}{Context.Request.Path}")"
       }
     }
 </script>
@@ -823,25 +811,25 @@
           "@@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "@($"{Context.Request.Scheme}://{Context.Request.Host}/")"
+          "item": "@($"{baseUrl}/")"
         },
         {
           "@@type": "ListItem",
           "position": 2,
           "name": "States",
-          "item": "@($"{Context.Request.Scheme}://{Context.Request.Host}/states")"
+          "item": "@($"{baseUrl}/states")"
         },
         {
           "@@type": "ListItem",
           "position": 3,
           "name": "@Model.State.Name",
-          "item": "@($"{Context.Request.Scheme}://{Context.Request.Host}/states/{Model.State.Slug}")"
+          "item": "@($"{baseUrl}/states/{Model.State.Slug}")"
         },
         {
           "@@type": "ListItem",
           "position": 4,
           "name": "Borders",
-          "item": "@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}")"
+          "item": "@($"{baseUrl}{Context.Request.Path}")"
         }
       ]
     }

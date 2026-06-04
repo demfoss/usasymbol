@@ -15,7 +15,7 @@
     ViewData["OgType"] = "article";
     ViewData["BodyClass"] = "symbols-surface";
 
-    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    const string baseUrl = "https://usasymbol.com";
     var canonicalPath = !string.IsNullOrWhiteSpace(content?.Url) ? content.Url : Context.Request.Path.Value ?? "/rankings";
     var canonicalUrl = canonicalPath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
         ? canonicalPath

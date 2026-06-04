@@ -73,21 +73,21 @@ public sealed class ImageUrlService : IImageUrlService
 
     public string Thumb(string? path) => Url(path, ImagePreset.Thumbnail);
 
-    public string Thumb(string? path, int width) => UrlWithWidth(path, width);
+    public string Thumb(string? path, int width) => UrlWithWidth(path, width, ImagePreset.Thumbnail);
 
     public string Card(string? path) => Url(path, ImagePreset.Card);
 
-    public string Card(string? path, int width) => UrlWithWidth(path, width);
+    public string Card(string? path, int width) => UrlWithWidth(path, width, ImagePreset.Card);
 
     public string Crop(string? path, int width, int height) => UrlWithCrop(path, width, height);
 
     public string Hero(string? path) => Url(path, ImagePreset.Hero);
 
-    public string Hero(string? path, int width) => UrlWithWidth(path, width);
+    public string Hero(string? path, int width) => UrlWithWidth(path, width, ImagePreset.Hero);
 
     public string Full(string? path) => Url(path, ImagePreset.Full);
 
-    private string UrlWithWidth(string? path, int width)
+    private string UrlWithWidth(string? path, int width, ImagePreset preset)
     {
         var normalizedPath = _pathNormalizer.Normalize(path);
 
@@ -123,7 +123,18 @@ public sealed class ImageUrlService : IImageUrlService
             return resolved;
         }
 
-        return AppendQueryString(resolved, "width", width.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var parameters = new Dictionary<string, string>
+        {
+            ["width"] = width.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        };
+
+        var optimizerClass = BunnyImageClassMap.GetClassName(preset);
+        if (!string.IsNullOrWhiteSpace(optimizerClass))
+        {
+            parameters["class"] = optimizerClass!;
+        }
+
+        return AppendQueryString(resolved, parameters);
     }
 
     private string UrlWithCrop(string? path, int width, int height)

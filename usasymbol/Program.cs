@@ -55,17 +55,21 @@ builder.Services.AddScoped<IDinosaurService, DinosaurService>();
 builder.Services.AddScoped<IBeverageService, BeverageService>();
 builder.Services.AddScoped<ILicensePlateService, LicensePlateService>();
 builder.Services.AddScoped<ISealService, SealService>();
+builder.Services.AddScoped<ISoilService, SoilService>();
+builder.Services.AddScoped<IFossilService, FossilService>();
 builder.Services.AddHostedService<IndexNowBackgroundService>();
 
 
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IBorderService, BorderService>();
+builder.Services.AddScoped<IStateAbbreviationContentService, StateAbbreviationContentService>();
 builder.Services.AddScoped<ISurnamesService, SurnamesService>();
 builder.Services.AddScoped<IRankingsContentService, RankingsContentService>();
 builder.Services.AddScoped<IListingsContentService, ListingsContentService>();
 builder.Services.AddScoped<ICollectionsContentService, CollectionsContentService>();
 builder.Services.AddScoped<ILatestContentRailService, LatestContentRailService>();
+builder.Services.AddScoped<USASymbol.Services.Interface.IParkService, USASymbol.Services.Content.ParkService>();
 
 
 
@@ -163,6 +167,14 @@ app.Use(async (context, next) =>
     var path = request.Path.ToString();
     var isFileRequest = Path.HasExtension(path);
     var forceHttps = !app.Environment.IsDevelopment();
+
+    if (request.Host.Host.EndsWith(".azurewebsites.net", StringComparison.OrdinalIgnoreCase))
+    {
+        var newUrl = $"https://usasymbol.com{request.Path}{request.QueryString}";
+        context.Response.Redirect(newUrl, permanent: true);
+        return;
+    }
+
     var normalizedHost = request.Host.Host.StartsWith("www.", StringComparison.OrdinalIgnoreCase)
         ? request.Host.Host[4..]
         : request.Host.Host;
@@ -324,6 +336,11 @@ app.MapControllerRoute(
     pattern: "rankings",
     defaults: new { controller = "Rankings", action = "Index" });
 
+
+app.MapControllerRoute(
+    name: "stateMap",
+    pattern: "states/{slug}/map",
+    defaults: new { controller = "State", action = "Map" });
 
 app.MapControllerRoute(
     name: "state",

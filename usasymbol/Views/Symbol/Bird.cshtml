@@ -1,4 +1,4 @@
-@model USASymbol.Models.ViewModels.BirdDetailViewModel
+﻿@model USASymbol.Models.ViewModels.BirdDetailViewModel
 @using System.Collections.Generic
 @using System.Globalization
 @using System.Linq
@@ -61,7 +61,7 @@
 @{
     ViewData["BodyClass"] = "bird-detail-page";
 
-    var birdName = Model.BirdContent?.Title ?? Model.Symbol.Name;
+    var birdName = SymbolDetailViewModel.FirstNonEmpty(Model.BirdContent?.Title, Model.Symbol?.Name) ?? "State Bird";
     var scientificName = Model.BirdContent?.ScientificName ?? Model.Symbol.ScientificName ?? "";
     var stateName = Model.State.Name;
     var adoptedYear = Model.BirdContent?.AdoptedYear ?? Model.Symbol.AdoptedYear ?? 0;
@@ -71,6 +71,7 @@
     var designation = string.IsNullOrWhiteSpace(designationRaw)
         ? "State Bird"
         : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+    var overviewHeading = $"{designation} of {stateName}";
 
     var h1 = $"{stateName} {designation}: {birdName}";
 
@@ -152,7 +153,6 @@
     var hasQuote = Model.BirdContent?.ExpertQuote != null && !string.IsNullOrWhiteSpace(Model.BirdContent.ExpertQuote.Text);
     var hasTimeline = Model.BirdContent?.Timeline?.Any() == true;
     var hasBigStat = Model.BirdContent?.BigStat != null && !string.IsNullOrWhiteSpace(Model.BirdContent.BigStat.Number);
-    var hasQuiz = Model.QuizQuestions?.Any() == true;
     var hasAudio = !string.IsNullOrWhiteSpace(birdAudioSrc);
     var hasMeaning = !string.IsNullOrWhiteSpace(Model.Meaning);
     var introText = Model.BirdContent?.IntroText ?? string.Empty;
@@ -161,7 +161,11 @@
         : adoptedYear > 0 && !string.IsNullOrWhiteSpace(scientificName)
             ? $"In <strong>{adoptedYear}</strong>, {stateName} designated the {birdName} (<span class=\"italic\">{scientificName}</span>) as its official state bird."
             : $"The {birdName} is recognized as the official {designation.ToLowerInvariant()} of {stateName}.";
-    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw)
+        ? descRaw
+        : !string.IsNullOrWhiteSpace(introText)
+            ? introText
+            : $"The {birdName} is recognized as the official {designation.ToLowerInvariant()} of {stateName}.";
     heroDescriptionSource = System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1");
     var heroDescription = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, "<.*?>", " ")).Trim();
     var heroModel = new SymbolHeroViewModel
@@ -179,7 +183,7 @@
         Description = heroDescription,
         LegalReference = Model.Legislation,
         ImageUrl = Model.Symbol.ImageUrl,
-        ImageAlt = $"{birdName} - {stateName} {designation}",
+        ImageAlt = birdName,
         FigureTitle = birdName,
         FigureSubtitle = $"Official {designation} of {stateName}",
         ImageLinkUrl = Model.Symbol.ImageUrl,
@@ -187,106 +191,8 @@
     };
 }
 
-<style>
-    .bird-editorial {
-        color: #161B26;
-    }
 
-    .bird-editorial .content-flow h2 {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        color: #161B26;
-        font-size: 41px;
-        font-weight: 700;
-        line-height: 50px;
-        letter-spacing: -0.02em;
-    }
-
-    .bird-editorial .content-flow h3 {
-        font-family: 'Libre Baskerville', Georgia, serif;
-        color: #161B26;
-        font-size: 23px;
-        font-weight: 700;
-        line-height: 50px;
-        letter-spacing: 0;
-    }
-
-    .bird-editorial .site-content,
-    .bird-editorial .site-content p,
-    .bird-editorial .site-content li,
-    .bird-editorial .site-content dd,
-    .bird-editorial .site-content blockquote,
-    .bird-editorial .site-content .prose,
-    .bird-editorial .content-flow > section > div,
-    .bird-editorial .content-flow > div {
-        font-size: 19px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 34px;
-        letter-spacing: 0.19px;
-    }
-
-    .bird-editorial #overview h2,
-    .bird-editorial #symbolic-meaning h2,
-    .bird-editorial #shared-states h2,
-    .bird-editorial #bird-quiz h2,
-    .bird-editorial #bird-songs h2,
-    .bird-editorial #faq h2,
-    .bird-editorial #sources h2 {
-        font-size: 41px;
-        line-height: 50px;
-        letter-spacing: -0.02em;
-        text-transform: none;
-    }
-
-    .bird-editorial #overview .site-content,
-    .bird-editorial #symbolic-meaning .site-content,
-    .bird-editorial #overview .site-content p,
-    .bird-editorial #symbolic-meaning .site-content p {
-        font-size: 19px;
-        line-height: 34px;
-        letter-spacing: 0.19px;
-    }
-
-    @@media (max-width: 767px) {
-        .bird-editorial .content-flow h2,
-        .bird-editorial #overview h2,
-        .bird-editorial #symbolic-meaning h2,
-        .bird-editorial #shared-states h2,
-        .bird-editorial #bird-quiz h2,
-        .bird-editorial #bird-songs h2,
-        .bird-editorial #faq h2,
-        .bird-editorial #sources h2 {
-            font-size: 26px;
-            line-height: 37px;
-            letter-spacing: -0.405px;
-        }
-
-        .bird-editorial .content-flow h3 {
-            font-size: 19px;
-            line-height: 24px;
-            letter-spacing: 0.38px;
-        }
-
-        .bird-editorial .site-content,
-        .bird-editorial .site-content p,
-        .bird-editorial .site-content li,
-        .bird-editorial .site-content dd,
-        .bird-editorial .site-content blockquote,
-        .bird-editorial .site-content .prose,
-        .bird-editorial .content-flow > section > div,
-        .bird-editorial .content-flow > div,
-        .bird-editorial #overview .site-content,
-        .bird-editorial #symbolic-meaning .site-content,
-        .bird-editorial #overview .site-content p,
-        .bird-editorial #symbolic-meaning .site-content p {
-            font-size: 18px;
-            line-height: 29px;
-            letter-spacing: 0.18px;
-        }
-    }
-</style>
-
-<nav class="sticky top-16 z-30 bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+<nav class="bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
     <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
         @await Html.PartialAsync("_Breadcrumbs", Model)
     </div>
@@ -294,9 +200,9 @@
 
 <div id="top"></div>
 
-<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
-    <article class="bird-editorial w-full">
-        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[228px_minmax(0,760px)_320px] xl:gap-12 2xl:grid-cols-[240px_minmax(0,780px)_340px] 2xl:gap-14 relative">
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="symbol-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[228px_minmax(0,760px)_320px] xl:gap-12 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
 
             @await Html.PartialAsync("_SymbolHero", heroModel)
 
@@ -317,7 +223,8 @@
                                 </div>
                                 <div class="min-w-0">
                                     <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
-                                    <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                    <h2 class="content-h3 mt-2 mb-3">@overviewHeading</h2>
+                                    <div class="prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
                                         @overviewText.RenderAutoLinks()
                                     </div>
                                 </div>
@@ -494,36 +401,6 @@
                         }
                     }
 
-                    @if (hasQuiz)
-                    {
-                        <section id="bird-quiz" class="content-divider">
-                            <div class="overflow-hidden border border-slate-200/80 bg-white/70 text-slate-900">
-                                <div class="border-b border-slate-200/80 px-5 py-4 sm:px-6">
-                                    <div class="flex items-center gap-4">
-                                        <div class="inline-flex h-10 w-10 shrink-0 min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-full bg-slate-100 text-slate-700">
-                                            <i class="fas fa-graduation-cap text-xs"></i>
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <h2 class="!text-[1.65rem] !leading-[1.15] text-slate-900">Test your knowledge</h2>
-                                            <div class="mt-1 text-sm leading-6 text-slate-500">A short quiz while the key details are still top of mind.</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="p-5 sm:p-6 text-slate-900">
-                                    @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
-                                </div>
-
-                                <div class="border-t border-slate-200/80 px-5 py-4 sm:px-6">
-                                    <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
-                                        <span>Explore more quizzes</span>
-                                        <i class="fas fa-arrow-right shrink-0 text-xs"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </section>
-                    }
-
                     @await Html.PartialAsync("_Sections", Model, finalSectionsViewData)
 
                     @if (hasQuote && hasPlacementStoryBlocks && quoteAfterRemainingSections)
@@ -565,7 +442,7 @@
                         </section>
                     }
 
-                    <section id="birds-quiz-promo" class="content-divider">
+                    <section id="birds-quiz-promo" class="content-divider" data-nosnippet>
                         <div class="overflow-hidden rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/80 to-slate-50/60">
                             <div class="border-b border-emerald-200/60 px-5 py-4 sm:px-6">
                                 <div class="flex items-center gap-4">
@@ -588,15 +465,15 @@
                         </div>
                     </section>
 
-                    <section id="faq" class="content-divider">
+                    <div class="content-divider">
                         @await Html.PartialAsync("_Faq", Model)
-                    </section>
+                    </div>
 
                     <section id="sources" class="content-divider">
                         @await Html.PartialAsync("_Sources", Model)
                     </section>
 
-                    <div class="mt-10 space-y-8 xl:hidden">
+                    <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
                         @await Html.PartialAsync("_RelatedSymbols", Model)
                         @await Html.PartialAsync("_RelatedStatesSidebar", Model)
                         @await Html.PartialAsync("_GuidesAndRankingsSidebar")
@@ -645,9 +522,8 @@
             </div>
         }
     </article>
-</main>
+</div>
 
 @await Html.PartialAsync("_TocMobileFab", Model)
 @await Html.PartialAsync("_StructuredData", Model)
 @await Html.PartialAsync("_Scripts")
-<script src="~/js/quizEngine.js" defer></script>

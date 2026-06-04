@@ -16,6 +16,8 @@ namespace USASymbol.Models.Content
         public string WikidataId { get; set; } = string.Empty;
         public string Legislation { get; set; } = string.Empty;
         public string Meaning { get; set; } = string.Empty;
+        public string MeaningAfterSectionId { get; set; } = string.Empty;
+        public string MeaningTitle { get; set; } = string.Empty;
 
         public DateTime? DatePublished { get; set; }
         public DateTime? DateModified { get; set; }

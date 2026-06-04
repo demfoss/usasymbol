@@ -6,7 +6,7 @@ namespace USASymbol.Models.ViewModels
     {
         public DinosaurContent? DinosaurContent { get; set; }
 
-        public string? ContentTitle => DinosaurContent?.Title ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(DinosaurContent?.Title, Symbol?.Name);
         public string? ContentIntroText => DinosaurContent?.IntroText;
         public override string? Author => DinosaurContent?.Author;
         public override DateTime? DateModified => DinosaurContent?.DateModified;

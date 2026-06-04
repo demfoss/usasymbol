@@ -46,7 +46,11 @@
                     }
 
                     <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
-                        US State @slugTitle Rankings
+                        @(!string.IsNullOrWhiteSpace(content?.Table?.Title)
+                            ? content.Table.Title
+                            : !string.IsNullOrWhiteSpace(content?.Page?.H1)
+                                ? content.Page.H1
+                                : $"US State {slugTitle} Rankings")
                     </h2>
 
                     <span class="hidden md:inline text-sm text-slate-500">Search, sort, and compare</span>

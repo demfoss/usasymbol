@@ -9,7 +9,7 @@ namespace USASymbol.Models.ViewModels
     {
         public BirdContent? BirdContent { get; set; }
 
-        public string? ContentTitle => BirdContent?.Title ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(BirdContent?.Title, Symbol?.Name);
         public string? ContentIntroText => BirdContent?.IntroText;
         public override string? Author => BirdContent?.Author;
         public override DateTime? DateModified => BirdContent?.DateModified;

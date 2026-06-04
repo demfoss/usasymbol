@@ -6,6 +6,9 @@
 
 @{
     var sections = Model.LicensePlateContent?.Sections;
+    var displaySections = sections?
+        .Where(section => !string.Equals(section.Style, "meaning-banner", StringComparison.OrdinalIgnoreCase))
+        .ToList();
     var quoteDone = false;
     var timelineDone = false;
     var statDone = false;
@@ -13,6 +16,10 @@
     var quoteAfterSectionId = (Model.ExpertQuoteAfterSectionId ?? string.Empty).Trim();
     var timelineAfterSectionId = (Model.TimelineAfterSectionId ?? string.Empty).Trim();
     var statAfterSectionId = (Model.BigStatAfterSectionId ?? string.Empty).Trim();
+    var meaningAfterSectionId = (Model.MeaningAfterSectionId ?? string.Empty).Trim();
+    var meaningDone = false;
+    var meaningTitle = Model.MeaningTitle ?? ("Meaning of " + (Model.LicensePlateContent?.Title ?? Model.Symbol?.Name ?? ""));
+    var meaningText = !string.IsNullOrEmpty(Model.LicensePlateContent?.Meaning) ? Model.LicensePlateContent.Meaning : (Model.Meaning ?? "");
     var visualAssets = Model.LicensePlateContent?.VisualAssets?.ToList() ?? new List<VisualAsset>();
     var orphanVisualAssets = visualAssets
         .Where(asset => asset != null &&
@@ -23,12 +30,15 @@
     var fullWidthVisualAsset = visualAssets
         .FirstOrDefault(asset => asset != null &&
                                  !string.IsNullOrWhiteSpace(asset.Src) &&
-                                 string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase));
+                                 string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
+                                 string.IsNullOrWhiteSpace(asset.Section));
 }
 
-@if (sections?.Any() == true)
+@if (displaySections?.Any() == true)
 {
-    foreach (var item in sections)
+    var fallbackMeaningSectionId = displaySections.LastOrDefault()?.Id ?? string.Empty;
+
+    foreach (var item in displaySections)
     {
         <section id="section-@item.Id" class="scroll-mt-24 py-10 lg:py-12 flow-root border-t border-slate-200/70 first:border-t-0 first:pt-0">
             <header class="mb-5 lg:mb-6">
@@ -73,7 +83,7 @@
 
             @if (item.Paragraphs?.Any() == true)
             {
-                <div class="prose prose-lg max-w-prose prose-headings:scroll-mt-24 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-p:leading-relaxed text-gray-800">
+                <div class="prose prose-lg prose-headings:scroll-mt-24 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-p:leading-relaxed text-gray-800">
                     @for (var i = 0; i < item.Paragraphs.Count; i++)
                     {
                         <p class="content-p @(i == 0 ? "text-gray-900" : "")">
@@ -93,14 +103,14 @@
 
                             @if (!string.IsNullOrWhiteSpace(sub.Text))
                             {
-                                <div class="prose prose-lg max-w-prose text-gray-800">
+                <div class="prose prose-lg text-gray-800">
                                     <p class="content-p">@sub.Text.RenderAutoLinks()</p>
                                 </div>
                             }
 
                             @if (sub.ListItems?.Any() == true)
                             {
-                                <ul class="mt-4 space-y-2 text-base text-gray-700 max-w-prose">
+                        <ul class="mt-4 space-y-2 text-base text-gray-700">
                                     @foreach (var listItem in sub.ListItems)
                                     {
                                         <li class="pl-6 relative before:content-['-'] before:absolute before:left-0 before:text-gray-400">
@@ -169,6 +179,14 @@
             @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.LicensePlateContent.ExpertQuote)
             quoteDone = true;
         }
+
+        @if (!meaningDone &&
+            string.Equals(item.Id, string.IsNullOrWhiteSpace(meaningAfterSectionId) ? fallbackMeaningSectionId : meaningAfterSectionId, StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(meaningText))
+        {
+            @await Html.PartialAsync("Components/Story/_MeaningBanner", (meaningTitle, meaningText))
+            meaningDone = true;
+        }
     }
 
     if (!statDone && Model.LicensePlateContent?.BigStat != null)
@@ -184,6 +202,11 @@
     if (!quoteDone && Model.LicensePlateContent?.ExpertQuote != null)
     {
         @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.LicensePlateContent.ExpertQuote)
+    }
+
+    if (!meaningDone && !string.IsNullOrWhiteSpace(meaningText))
+    {
+        @await Html.PartialAsync("Components/Story/_MeaningBanner", (meaningTitle, meaningText))
     }
 
     if (orphanVisualAssets.Any())
@@ -202,6 +225,13 @@
 else
 {
     <div class="text-sm text-slate-500">
-        No sections rendered yet for this license plate page.
+        @if (!string.IsNullOrWhiteSpace(meaningText))
+        {
+            @await Html.PartialAsync("Components/Story/_MeaningBanner", (meaningTitle, meaningText))
+        }
+        else
+        {
+            <text>No sections rendered yet for this license plate page.</text>
+        }
     </div>
 }

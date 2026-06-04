@@ -4,12 +4,17 @@
   "description": "USA State Symbols Website",
   "scripts": {
     "build:css": "tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/main.css --minify",
-    "watch:css": "tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/main.css --watch"
+    "watch:css": "tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/main.css --watch",
+    "seed:parks": "node scripts/seed-national-parks.mjs",
+    "enrich:parks": "node scripts/enrich-national-parks.mjs",
+    "photos:park": "node scripts/download-park-photos.mjs",
+    "compress:parks": "node scripts/compress-national-park-images.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.1"
   }
 }

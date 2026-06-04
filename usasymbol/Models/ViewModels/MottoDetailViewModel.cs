@@ -10,7 +10,7 @@ namespace USASymbol.Models.ViewModels
         public MottoContent MottoContent { get; set; } = null!;
 
 
-        public string? ContentTitle => MottoContent?.Title ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(MottoContent?.Title, Symbol?.Name);
         public string? ContentIntroText => MottoContent?.IntroText;
         public override string? Author => MottoContent?.Author;
         public override DateTime? DateModified => MottoContent?.DateModified;

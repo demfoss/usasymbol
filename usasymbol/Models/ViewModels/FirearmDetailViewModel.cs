@@ -7,7 +7,7 @@ namespace USASymbol.Models.ViewModels
     {
         public FirearmContent? FirearmContent { get; set; }
 
-        public string? ContentTitle => FirearmContent?.Title ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(FirearmContent?.Title, Symbol?.Name);
         public string? ContentIntroText => FirearmContent?.IntroText;
         public override string? Author => FirearmContent?.Author;
         public override DateTime? DateModified => FirearmContent?.DateModified;

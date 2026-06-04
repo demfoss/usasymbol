@@ -3,7 +3,7 @@
 @inject IImageUrlService Images
 
 @{
-    ViewData["Title"] = "U.S. State Symbols — Official 50-State Encyclopedia";
+    ViewData["Title"] = "U.S. State Symbols Encyclopedia | Official Guide to 50 States";
     ViewData["Description"] = "Official symbols of all 50 U.S. states — flags, birds, flowers, trees, mottos, seals, and 20+ categories. The most complete state symbols reference online.";
     ViewData["Keywords"] = "state symbols, US state symbols, official state symbols, state flags, state birds, state flowers, state trees, state mottos, state seals, state nicknames, american state symbols, state symbols list";
     ViewData["OgImage"] = "/images/usasymbol.png?v=20260429";
@@ -116,34 +116,53 @@
 
 <section class="hs hs-white">
     <div class="max-w-6xl mx-auto px-4">
-        <div class="hs-eyebrow">
-            <i class="fa-solid fa-bookmark"></i>
-            Symbol Types
+        <div class="flex items-end justify-between gap-4 flex-wrap mb-6">
+            <div>
+                <div class="hs-eyebrow">
+                    <i class="fa-solid fa-bookmark"></i>
+                    Symbol Types
+                </div>
+                <h2 class="content-h2 home-category-heading">Browse State Symbols by Category</h2>
+            </div>
+            <a href="/symbols" class="cta-btn cta-btn-outline cta-btn--compact">
+                View All Symbols <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
         </div>
-        <h2 class="content-h2 mb-6 home-category-heading">Browse State Symbols by Category</h2>
-        <div class="cat-grid">
-            @foreach (var category in Model.SymbolCategories)
+        <div class="category-grid">
+            @foreach (var category in Model.SymbolCategories.Take(8))
             {
-                <a href="@category.Url" class="cat-card">
-                    <div class="cat-card__thumb">
+                var stateLabel = category.StateCount == 1 ? "1 state" : $"{category.StateCount} states";
+                var shortDescription = string.IsNullOrWhiteSpace(category.Description)
+                    ? "Browse official state symbol listings and guides."
+                    : category.Description;
+                <a href="@category.Url" class="category-card category-card--home">
+                    <div class="category-card__media">
                         @if (!string.IsNullOrEmpty(category.ImageUrl))
                         {
                             <img src="@Images.Card(category.ImageUrl)"
                                  srcset="@(Images.Card(category.ImageUrl, 240)) 240w,
                                          @(Images.Card(category.ImageUrl, 360)) 360w,
                                          @(Images.Card(category.ImageUrl, 480)) 480w"
-                                 sizes="(max-width: 639px) 44vw, (max-width: 1023px) 30vw, 22vw"
+                                 sizes="(max-width: 639px) 44vw, (max-width: 1023px) 30vw, 23vw"
                                  alt="@category.Name"
                                  loading="lazy">
                         }
                         else
                         {
-                            <i class="fa-solid fa-leaf cat-icon"></i>
+                            <div class="category-card__icon" aria-hidden="true">
+                                <i class="@category.Icon"></i>
+                            </div>
                         }
+                        <span class="category-card__pill">@stateLabel</span>
                     </div>
-                    <div class="cat-card__body">
-                        <div class="cat-card__title">@category.Name</div>
-                        <div class="cat-card__count">50 states</div>
+                    <div class="category-card__body">
+                        <div class="category-card__eyebrow">Symbol Category</div>
+                        <div class="category-card__title">@category.Name</div>
+                        <p class="category-card__desc">@shortDescription</p>
+                        <div class="category-card__footer">
+                            <span class="category-card__count">@stateLabel</span>
+                            <span class="category-card__link">Explore <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
                     </div>
                 </a>
             }
@@ -201,6 +220,31 @@
         </div>
         <h2 class="content-h2 mb-8">Popular State Guides &amp; Collections</h2>
         <div class="disc-grid">
+            <a href="/national-parks" class="disc-card">
+                <div class="disc-card__banner" style="background:linear-gradient(135deg,#1a3a2a 0%,#2d6a4f 50%,#52b788 100%)">
+                    <i class="fa-solid fa-mountain-sun text-5xl disc-card__icon"></i>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">Nature &amp; Travel</div>
+                    <div class="disc-card__title">National Parks</div>
+                    <p class="disc-card__desc">All 62 U.S. national parks — maps, best hikes, entrance fees, when to visit, and how to get reservations.</p>
+                    <span class="disc-card__cta">Explore Parks <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
+            <a href="/guides/state-abbreviations" class="disc-card">
+                <div class="disc-card__banner disc-card__banner--collections" style="background:linear-gradient(135deg,#111827 0%,#334155 100%)">
+                    <div class="flex gap-2 items-center">
+                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl border border-white/20 bg-white/10 text-white text-lg font-black">CA</span>
+                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl border border-white/20 bg-white/10 text-white text-lg font-black">NY</span>
+                    </div>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">Reference</div>
+                    <div class="disc-card__title">State Abbreviations</div>
+                    <p class="disc-card__desc">All 50 U.S. state abbreviations in one table, plus capitals, regions, and common code mix-ups.</p>
+                    <span class="disc-card__cta">View Abbreviations <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
             <a asp-controller="StateGuides" asp-action="BordersListing" class="disc-card">
                 <div class="disc-card__banner disc-card__banner--borders">
                     <i class="fa-solid fa-map text-5xl disc-card__icon"></i>

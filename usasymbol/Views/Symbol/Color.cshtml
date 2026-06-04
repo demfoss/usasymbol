@@ -1,4 +1,4 @@
-@model USASymbol.Models.ViewModels.ColorDetailViewModel
+﻿@model USASymbol.Models.ViewModels.ColorDetailViewModel
 @using System.Globalization
 @using USASymbol.Extensions
 @using USASymbol.Models.ViewModels
@@ -7,7 +7,8 @@
 @{
     var stateName = Model.State.Name;
     var stateSlug = Model.State.Slug;
-    var colorTitle = Model.ColorContent?.Title ?? $"{stateName} State Colors";
+    var colorTitle = SymbolDetailViewModel.FirstNonEmpty(Model.ColorContent?.Title, Model.Symbol?.Name, $"{stateName} State Colors") ?? $"{stateName} State Colors";
+    var overviewHeading = $"State Colors of {stateName}";
     var adoptedYear = Model.ColorContent?.AdoptedYear ?? 0;
     var colors = Model.Colors;
     var descRaw = Model.ColorContent?.SeoDescription ?? "";
@@ -78,7 +79,7 @@
     };
 }
 
-<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+<nav class="border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
     <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
         @await Html.PartialAsync("_Breadcrumbs", Model)
     </div>
@@ -86,10 +87,10 @@
 
 <div id="top"></div>
 
-<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
-    <article class="w-full">
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="symbol-editorial w-full">
 
-        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)_304px] 2xl:gap-12 relative">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
 
             @await Html.PartialAsync("_SymbolHero", heroModel)
 
@@ -113,7 +114,8 @@
                                 </div>
                                 <div class="min-w-0">
                                     <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
-                                    <div class="site-content prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
+                                    <h2 class="content-h3 mt-2 mb-3">@overviewHeading</h2>
+                                    <div class="prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
                                         @introText.RenderAutoLinks()
                                     </div>
                                 </div>
@@ -376,41 +378,15 @@ module.exports = {
                     @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.ColorContent.ExpertQuote)
                 }
 
-                @if (Model.QuizQuestions != null && Model.QuizQuestions.Any())
-                {
-                    <section class="content-divider">
-                        <div class="bg-slate-900 rounded-2xl p-6 sm:p-8 text-white">
-                            <div class="flex items-center gap-4 mb-6">
-                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-white/10">
-                                    <i class="fas fa-graduation-cap text-xl"></i>
-                                </div>
-                                <div>
-                                    <h2 class="text-2xl font-bold m-0 text-white">Test your knowledge</h2>
-                                    <p class="text-slate-300 mt-1">A quick quiz based on this page.</p>
-                                </div>
-                            </div>
-                            <div class="bg-white rounded-xl text-slate-900 p-5">
-                                @await Html.PartialAsync("_QuizPartial", Model.QuizQuestions)
-                            </div>
-                            <div class="mt-6">
-                                <a href="/quizzes" class="inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-slate-300 transition">
-                                    <span>Explore more quizzes</span>
-                                    <i class="fas fa-arrow-right text-xs"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </section>
-                }
-
-                <section id="faq" class="content-divider">
+                <div class="content-divider">
                     @await Html.PartialAsync("_Faq", Model)
-                </section>
+                </div>
 
                 <section id="sources" class="content-divider">
                     @await Html.PartialAsync("_Sources", Model)
                 </section>
 
-                <div class="mt-10 space-y-8 xl:hidden">
+                <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
                     @await Html.PartialAsync("_RelatedSymbols", Model)
                     @await Html.PartialAsync("_RelatedStatesSidebar", Model)
                     @await Html.PartialAsync("_GuidesAndRankingsSidebar")
@@ -460,12 +436,11 @@ module.exports = {
             </div>
         }
     </article>
-</main>
+</div>
 
 @await Html.PartialAsync("_TocMobileFab", Model)
 @await Html.PartialAsync("_StructuredData", Model)
 @await Html.PartialAsync("_Scripts")
-<script src="~/js/quizEngine.js" defer></script>
 
 <script>
     // ===== COPY TO CLIPBOARD =====

@@ -330,6 +330,9 @@ namespace USASymbol.Services
             if (d.TryGetValue("toggleable_columns", out var tc) && tc is List<object> tcL)
                 table.ToggleableColumns = tcL.Select(x => x?.ToString() ?? "").Where(x => x != "").ToList();
 
+            if (d.TryGetValue("hidden_columns", out var hc) && hc is List<object> hcL)
+                table.HiddenColumns = hcL.Select(x => x?.ToString() ?? "").Where(x => x != "").ToList();
+
 
             if (d.TryGetValue("columns", out var colsObj) && colsObj is Dictionary<object, object> colsD)
                 foreach (var kvp in colsD)
@@ -519,7 +522,7 @@ namespace USASymbol.Services
                 "license-plate" => "slogan_slug",
                 "state-seal" => "seal_slug",
                 "coat-of-arms" => "coat_of_arms_slug",
-                "state-soil" => "soil_slug",
+                "soil" => "soil_slug",
                 _ => string.Empty
             };
 

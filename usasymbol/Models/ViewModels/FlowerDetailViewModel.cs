@@ -9,7 +9,7 @@ namespace USASymbol.Models.ViewModels
     {
         public FlowerContent? FlowerContent { get; set; }
 
-        public string? ContentTitle => FlowerContent?.Name ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(FlowerContent?.Name, Symbol?.Name);
         public string? ContentIntroText => FlowerContent?.IntroText;
         public override string? Author => FlowerContent?.Author;
         public override DateTime? DateModified => FlowerContent?.DateModified;

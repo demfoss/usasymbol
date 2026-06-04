@@ -147,6 +147,14 @@ namespace USASymbol.Data
             }
         }
 
+        private static string ResolveStateSoilImage(string stateSlug, string heroImage)
+        {
+            if (!string.IsNullOrWhiteSpace(heroImage))
+                return heroImage;
+
+            return $"/images/soils/{stateSlug}/{stateSlug}-state-soil-hero.webp";
+        }
+
 
         public static async Task SeedAsync(AppDbContext context)
         {
@@ -1877,7 +1885,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateSoils(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "state-soil").ToListAsync();
+            var old = await context.Symbols.Where(s => s.Type == "soil" || s.Type == "state-soil").ToListAsync();
             if (old.Count > 0)
             {
                 context.Symbols.RemoveRange(old);
@@ -1914,14 +1922,12 @@ namespace USASymbol.Data
                 if (string.IsNullOrWhiteSpace(name))
                     name = $"State Soil of {state.Name}";
 
-                var heroImage = GetYamlString(data, "hero_image");
-                if (string.IsNullOrWhiteSpace(heroImage))
-                    heroImage = $"/images/soils/{state.Slug}/soil.webp";
+                var heroImage = ResolveStateSoilImage(state.Slug, GetYamlString(data, "hero_image"));
 
                 symbols.Add(new Symbol
                 {
                     StateId = state.Id,
-                    Type = "state-soil",
+                    Type = "soil",
                     Name = name,
                     Slug = GenerateSlug(name),
                     ScientificName = null,

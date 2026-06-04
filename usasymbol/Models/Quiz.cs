@@ -40,9 +40,15 @@ namespace usasymbol.Models
         public string Id { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
 
-
         public List<string>? Paragraphs { get; set; }
         public List<string>? List { get; set; }
+        public List<QuizLink>? Links { get; set; }
+    }
+
+    public class QuizLink
+    {
+        public string Text { get; set; } = string.Empty;
+        public string Href { get; set; } = string.Empty;
     }
 
     public class QuizSeo

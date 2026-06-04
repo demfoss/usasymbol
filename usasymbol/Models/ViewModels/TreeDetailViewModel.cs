@@ -10,7 +10,7 @@ namespace USASymbol.Models.ViewModels
         public TreeContent? TreeContent { get; set; }
 
 
-        public string? ContentTitle => TreeContent?.Name ?? Symbol?.Name;
+        public string? ContentTitle => FirstNonEmpty(TreeContent?.Name, Symbol?.Name);
         public string? ContentIntroText => TreeContent?.IntroText;
         public override string? Author => TreeContent?.Author;
         public override DateTime? DateModified => TreeContent?.DateModified;

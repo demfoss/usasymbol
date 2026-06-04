@@ -13,7 +13,7 @@
     ViewData["Description"] = content?.Seo?.Description;
     ViewData["OgType"] = "article";
 
-    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    const string baseUrl = "https://usasymbol.com";
     var canonicalPath = !string.IsNullOrWhiteSpace(content?.Url) ? content.Url : Context.Request.Path.Value ?? "/symbols";
     var canonicalUrl = canonicalPath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
         ? canonicalPath
@@ -118,22 +118,18 @@
 
                             @if (!string.IsNullOrWhiteSpace(content?.Seo?.Description))
                             {
-                                <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-100 sm:text-xl">
+                                <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-100 sm:text-xl hidden lg:block">
                                     @content.Seo.Description
                                 </p>
                             }
 
-                            <div class="mt-7 flex flex-wrap items-center gap-3 text-sm text-slate-300">
-                                <a href="/about"
-                                   class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1.5 font-semibold text-slate-200 transition hover:bg-white/5 hover:text-white">
-                                    <i class="fa-regular fa-user text-[12px]" aria-hidden="true"></i>
-                                    <span>@(content?.Author ?? "USA Symbol Team")</span>
+                            <div class="mt-7 flex items-center gap-2 text-[11px] text-slate-300">
+                                <img src="/images/profile/artsiom-dusau.png"
+                                     alt="Artsiom Dusau"
+                                     class="h-5 w-5 rounded-full object-cover opacity-80">
+                                <a href="/about/artsiom-dusau" class="hover:text-white transition-colors">
+                                    Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong>
                                 </a>
-
-                                <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1.5 font-semibold text-slate-200">
-                                    <i class="fa-solid fa-circle-check text-emerald-300 text-[12px]" aria-hidden="true"></i>
-                                    <span>Fact-checked</span>
-                                </span>
                             </div>
                         </div>
                     </div>

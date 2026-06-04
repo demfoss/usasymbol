@@ -59,7 +59,8 @@ namespace USASymbol.Services
                         IntroText = GetString(data, "intro_text"),
                         BigStatAfterSectionId = GetString(data, "big_stat_after_section"),
                         TimelineAfterSectionId = GetString(data, "timeline_after_section"),
-                        ExpertQuoteAfterSectionId = GetString(data, "expert_quote_after_section")
+                        ExpertQuoteAfterSectionId = GetString(data, "expert_quote_after_section"),
+                        MeaningAfterSectionId = GetString(data, "meaning_after_section_id")
                     };
 
                     if (data.TryGetValue("sections", out var sectionsObj) && sectionsObj is List<object> sections)
@@ -78,7 +79,7 @@ namespace USASymbol.Services
                             };
 
                             if (secDict.TryGetValue("paragraphs", out var paragraphsObj) && paragraphsObj is List<object> paragraphs)
-                                section.Paragraphs = paragraphs.Select(p => p?.ToString() ?? "").ToList();
+                                section.Paragraphs = paragraphs.OfType<string>().ToList();
 
                             if (secDict.TryGetValue("subsections", out var subsectionsObj) && subsectionsObj is List<object> subsections)
                             {
@@ -201,6 +202,7 @@ namespace USASymbol.Services
                     }
 
                     content.VisualAssets = YamlParse.VisualAssets(data);
+                    PopulateMeaningContent(content);
 
                     return content;
                 }
@@ -246,7 +248,8 @@ namespace USASymbol.Services
                 SeoDescription = $"Learn about \"{title}\", the license plate slogan of {state.Name}, including its history, meaning, and how it represents the state.",
                 HeroImage = symbol.ImageUrl ?? "",
                 HeroImageAlt = $"{state.Name} license plate with {title} slogan",
-                IntroText = intro
+                IntroText = intro,
+                MeaningTitle = $"{title} Meaning"
             };
 
             AddFact(content, "Slogan", title);
@@ -401,6 +404,194 @@ namespace USASymbol.Services
 
         private static string GetString(Dictionary<object, object> dict, string key)
             => dict.ContainsKey(key) ? dict[key]?.ToString() ?? "" : "";
+
+        private static void PopulateMeaningContent(LicensePlateContent content)
+        {
+            var bestSection = FindBestMeaningSection(content.Sections, content.Title);
+            var currentTitleSection = FindCurrentTitleSection(content.Sections, content.Title);
+
+            if (string.IsNullOrWhiteSpace(content.Meaning))
+            {
+                if (TryResolveMeaningFromFaq(content, out var faqMeaning))
+                {
+                    content.Meaning = faqMeaning;
+                    content.MeaningTitle = BuildMeaningBannerTitle(content.Title);
+                }
+                else if (bestSection != null && TryResolveMeaningFromSection(bestSection, out var sectionMeaning))
+                {
+                    content.Meaning = sectionMeaning;
+                    content.MeaningTitle = BuildMeaningBannerTitle(content.Title);
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(content.MeaningTitle) && !string.IsNullOrWhiteSpace(content.Meaning))
+            {
+                content.MeaningTitle = BuildMeaningBannerTitle(content.Title);
+            }
+
+            if (string.IsNullOrWhiteSpace(content.MeaningAfterSectionId))
+            {
+                content.MeaningAfterSectionId =
+                    SelectMeaningPlacementSection(bestSection, currentTitleSection, content.Sections)?.Id
+                    ?? string.Empty;
+            }
+        }
+
+        private static LicensePlateSection? SelectMeaningPlacementSection(
+            LicensePlateSection? bestMeaningSection,
+            LicensePlateSection? currentTitleSection,
+            IReadOnlyList<LicensePlateSection> sections)
+        {
+            var displaySections = sections
+                .Where(section => !string.Equals(section.Style, "meaning-banner", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (bestMeaningSection != null)
+                return bestMeaningSection;
+
+            if (currentTitleSection != null)
+                return currentTitleSection;
+
+            if (displaySections.Count > 1 && LooksLikeCurrentOrSetupSection(displaySections[0]))
+                return displaySections[1];
+
+            return displaySections.LastOrDefault() ?? sections.LastOrDefault();
+        }
+
+        private static bool TryResolveMeaningFromFaq(LicensePlateContent content, out string meaning)
+        {
+            meaning = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(content.Title) || content.Faq.Count == 0)
+                return false;
+
+            var title = content.Title.Trim();
+            var exactMatch = content.Faq.FirstOrDefault(faq =>
+                !string.IsNullOrWhiteSpace(faq.Question) &&
+                !string.IsNullOrWhiteSpace(faq.Answer) &&
+                faq.Question.Contains(title, StringComparison.OrdinalIgnoreCase) &&
+                (faq.Question.StartsWith("What does", StringComparison.OrdinalIgnoreCase) ||
+                 faq.Question.StartsWith("Where does", StringComparison.OrdinalIgnoreCase) ||
+                 faq.Question.StartsWith("Why", StringComparison.OrdinalIgnoreCase)));
+
+            if (exactMatch != null)
+            {
+                meaning = exactMatch.Answer.Trim();
+                return true;
+            }
+
+            var phraseMatch = content.Faq.FirstOrDefault(faq =>
+                !string.IsNullOrWhiteSpace(faq.Question) &&
+                !string.IsNullOrWhiteSpace(faq.Answer) &&
+                (faq.Question.StartsWith("What does the phrase", StringComparison.OrdinalIgnoreCase) ||
+                 faq.Question.StartsWith("What is the", StringComparison.OrdinalIgnoreCase) ||
+                 faq.Question.StartsWith("What is ", StringComparison.OrdinalIgnoreCase)));
+
+            if (phraseMatch != null)
+            {
+                meaning = phraseMatch.Answer.Trim();
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryResolveMeaningFromSection(LicensePlateSection section, out string meaning)
+        {
+            meaning = section.Paragraphs?
+                .FirstOrDefault(paragraph => !string.IsNullOrWhiteSpace(paragraph))?
+                .Trim() ?? string.Empty;
+
+            return !string.IsNullOrWhiteSpace(meaning);
+        }
+
+        private static string BuildMeaningBannerTitle(string contentTitle)
+            => string.IsNullOrWhiteSpace(contentTitle) ? "Meaning" : $"Meaning of {contentTitle.Trim()}";
+
+        private static LicensePlateSection? FindCurrentTitleSection(
+            IReadOnlyList<LicensePlateSection> sections,
+            string contentTitle)
+        {
+            if (sections.Count == 0 || string.IsNullOrWhiteSpace(contentTitle))
+                return null;
+
+            return sections.FirstOrDefault(section =>
+                !string.IsNullOrWhiteSpace(section.Title) &&
+                section.Title.Contains(contentTitle, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static LicensePlateSection? FindBestMeaningSection(
+            IReadOnlyList<LicensePlateSection> sections,
+            string contentTitle)
+        {
+            LicensePlateSection? best = null;
+            var bestScore = int.MinValue;
+
+            foreach (var section in sections)
+            {
+                var score = ScoreMeaningSection(section, contentTitle);
+                if (score > bestScore)
+                {
+                    best = section;
+                    bestScore = score;
+                }
+            }
+
+            return bestScore >= 80 ? best : null;
+        }
+
+        private static int ScoreMeaningSection(LicensePlateSection section, string contentTitle)
+        {
+            var score = 0;
+            var title = section.Title ?? string.Empty;
+            var id = section.Id ?? string.Empty;
+
+            if (ContainsAny(title, "meaning", " means", " meant", " fits"))
+                score += 220;
+
+            if (ContainsAny(title, "comes from", "origin", "behind the slogan"))
+                score += 200;
+
+            if (title.StartsWith("Why ", StringComparison.OrdinalIgnoreCase) &&
+                ContainsAny(title, " say ", " says ", " called ", " can call ", " slogan", " matters"))
+                score += 180;
+
+            if (ContainsAny(id, "meaning", "origin"))
+                score += 180;
+
+            if (!string.IsNullOrWhiteSpace(contentTitle) &&
+                title.Contains(contentTitle, StringComparison.OrdinalIgnoreCase))
+                score += 90;
+
+            if (title.StartsWith("Current ", StringComparison.OrdinalIgnoreCase) ||
+                title.Contains("current", StringComparison.OrdinalIgnoreCase) ||
+                title.Contains("previous versions", StringComparison.OrdinalIgnoreCase) ||
+                title.Contains("by era", StringComparison.OrdinalIgnoreCase) ||
+                title.Contains("transition", StringComparison.OrdinalIgnoreCase) ||
+                title.Contains("status", StringComparison.OrdinalIgnoreCase))
+                score -= 80;
+
+            return score;
+        }
+
+        private static bool LooksLikeCurrentOrSetupSection(LicensePlateSection section)
+        {
+            var title = section.Title ?? string.Empty;
+            return title.Contains("current", StringComparison.OrdinalIgnoreCase) ||
+                   title.Contains("changing slogans", StringComparison.OrdinalIgnoreCase) ||
+                   title.Contains("standard plate", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool ContainsAny(string text, params string[] fragments)
+        {
+            foreach (var fragment in fragments)
+            {
+                if (text.Contains(fragment, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
+        }
 
         private static int? GetInt(Dictionary<object, object> dict, string key)
         {

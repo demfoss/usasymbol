@@ -6,9 +6,10 @@
     var titleA = Model.StateA.Name;
     var titleB = Model.StateB.Name;
     var isCostPage   = Model.Metric.Slug == "cost-of-living";
+    var isPurchasingPowerPage = Model.Metric.Slug == "purchasing-power";
     var isLifePage   = Model.Metric.Slug == "life-expectancy";
     var isSafetyPage = Model.Metric.Slug == "violent-crime";
-    var isIntentPage = isCostPage || isLifePage || isSafetyPage;
+    var isIntentPage = isCostPage || isPurchasingPowerPage || isLifePage || isSafetyPage;
     var groupedOtherMetrics = Model.OtherMetrics
         .GroupBy(m => new { m.GroupSlug, m.GroupName, m.GroupOrder })
         .OrderBy(g => g.Key.GroupOrder)
@@ -21,6 +22,65 @@
     string Percent(double? value, int decimals = 1) => value.HasValue ? $"{value.Value.ToString($"F{decimals}")}%" : "-";
     string Number(double? value, int decimals = 1) => value.HasValue ? value.Value.ToString($"F{decimals}") : "-";
     var directAnswer = Model.Result.SummaryText;
+    if (isPurchasingPowerPage)
+    {
+        if (Model.StatsA?.PurchasingPower100 != null && Model.StatsB?.PurchasingPower100 != null)
+        {
+            var stronger = Model.StatsA.PurchasingPower100 > Model.StatsB.PurchasingPower100 ? Model.StateA : Model.StateB;
+            var weaker = stronger == Model.StateA ? Model.StateB : Model.StateA;
+            var strongerStats = stronger == Model.StateA ? Model.StatsA : Model.StatsB;
+            var weakerStats = stronger == Model.StateA ? Model.StatsB : Model.StatsA;
+            var diff = Math.Abs(Model.StatsA.PurchasingPower100.Value - Model.StatsB.PurchasingPower100.Value);
+            directAnswer = $"$100 goes further in {stronger.Name}: about ${strongerStats!.PurchasingPower100:F2} in local buying power versus ${weakerStats!.PurchasingPower100:F2} in {weaker.Name}, a ${diff:F2} gap.";
+
+            intentCards.Add((
+                "fa-solid fa-money-bill-wave",
+                "Real Dollar Value",
+                $"{stronger.Name} stretches $100 further",
+                $"A national-average $100 buys about ${strongerStats.PurchasingPower100:F2} of local goods and services in {stronger.Name}, compared with ${weakerStats!.PurchasingPower100:F2} in {weaker.Name}.",
+                "from-lime-100 via-emerald-50 to-white",
+                null));
+        }
+
+        if (Model.StatsA?.RegionalPriceParity != null && Model.StatsB?.RegionalPriceParity != null)
+        {
+            var lower = Model.StatsA.RegionalPriceParity < Model.StatsB.RegionalPriceParity ? Model.StateA : Model.StateB;
+            var higher = lower == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-scale-balanced",
+                "BEA Price Index",
+                $"{lower.Name} has the lower official price level",
+                $"BEA Regional Price Parity is lower in {lower.Name} ({Math.Min(Model.StatsA.RegionalPriceParity.Value, Model.StatsB.RegionalPriceParity.Value):F1}) than in {higher.Name} ({Math.Max(Model.StatsA.RegionalPriceParity.Value, Model.StatsB.RegionalPriceParity.Value):F1}), which is why the same cash buys more there.",
+                "from-sky-100 via-cyan-50 to-white",
+                "/compare/" + Model.PairSlug + "/regional-price-parity"));
+        }
+
+        if (Model.StatsA?.MedianHouseholdIncome != null && Model.StatsB?.MedianHouseholdIncome != null)
+        {
+            var higher = Model.StatsA.MedianHouseholdIncome > Model.StatsB.MedianHouseholdIncome ? Model.StateA : Model.StateB;
+            var lower = higher == Model.StateA ? Model.StateB : Model.StateA;
+            intentCards.Add((
+                "fa-solid fa-sack-dollar",
+                "Income Check",
+                $"{higher.Name} has the higher median income",
+                $"Purchasing power does not replace income. {higher.Name} has a median household income of ${Math.Max(Model.StatsA.MedianHouseholdIncome.Value, Model.StatsB.MedianHouseholdIncome.Value):N0}, versus ${Math.Min(Model.StatsA.MedianHouseholdIncome.Value, Model.StatsB.MedianHouseholdIncome.Value):N0} in {lower.Name}.",
+                "from-emerald-100 via-green-50 to-white",
+                "/compare/" + Model.PairSlug + "/median-income"));
+        }
+
+        if (Model.StatsA?.CostOfLivingIndex != null && Model.StatsB?.CostOfLivingIndex != null)
+        {
+            var cheaper = Model.StatsA.CostOfLivingIndex < Model.StatsB.CostOfLivingIndex ? Model.StateA : Model.StateB;
+            intentCards.Add((
+                "fa-solid fa-cart-shopping",
+                "Living Costs",
+                $"{cheaper.Name} also looks cheaper on the cost index",
+                $"{cheaper.Name}'s cost-of-living index is {Math.Min(Model.StatsA.CostOfLivingIndex.Value, Model.StatsB.CostOfLivingIndex.Value):F1}, compared with {Math.Max(Model.StatsA.CostOfLivingIndex.Value, Model.StatsB.CostOfLivingIndex.Value):F1} in the other state.",
+                "from-amber-100 via-orange-50 to-white",
+                "/compare/" + Model.PairSlug + "/cost-of-living"));
+        }
+    }
+
     if (isCostPage)
     {
         var parts = new List<string>();
@@ -405,7 +465,7 @@
                              onerror="this.style.display='none'" />
                         <div class="flex-1">
                             <div class="text-xl font-bold text-gray-900">@state.Name</div>
-                            <div class="text-sm text-gray-500">@state.Abbreviation &bull; @(state.Region ?? "")</div>
+                            <div class="text-sm text-gray-500"><a href="/states/@state.Slug/abbreviation" class="hover:underline">@state.Abbreviation</a> &bull; @(state.Region ?? "")</div>
                         </div>
                         @if (isWinner)
                         {
@@ -468,6 +528,11 @@
         }
     </div>
 </section>
+
+@if (Model.AllStateRanks.Count >= 3)
+{
+    @await Html.PartialAsync("_CompactRankContext", Model)
+}
 
 @if (isIntentPage)
 {
@@ -772,6 +837,7 @@
         string CxMoMo(int? v) => v.HasValue ? $"${v.Value:N0}/mo" : "—";
         string CxPct(double? v, int d = 1) => v.HasValue ? $"{v.Value.ToString($"F{d}")}%" : "—";
         string CxNum(double? v, int d = 1) => v.HasValue ? v.Value.ToString($"F{d}") : "—";
+        string CxMoney2(double? v) => v.HasValue ? $"${v.Value:F2}" : "—";
         string CxTemp(double? v) => v.HasValue ? $"{v.Value:F1}°F" : "—";
         string CxSqMi(double? v) => v.HasValue ? $"{v.Value:N0} sq mi" : "—";
         string CxDens(double? v) => v.HasValue ? $"{v.Value:N1} / sq mi" : "—";
@@ -797,13 +863,13 @@
                 ctxTitle = "States at a Glance";
                 ctxNote  = "Key facts about each state alongside the capital comparison.";
                 ctxRows.Add(("Population",          CxD(Model.StateA.Population?.ToString("N0")), CxD(Model.StateB.Population?.ToString("N0")), $"/compare/{pair}/population"));
-                ctxRows.Add(("State Color",          CxD(Model.StatsA?.PoliticalLean),             CxD(Model.StatsB?.PoliticalLean),             $"/compare/{pair}/state-color"));
+                ctxRows.Add(("State Color",          CxD(Model.StatsA?.PoliticalLean),             CxD(Model.StatsB?.PoliticalLean),             $"/compare/{pair}/political-lean"));
                 ctxRows.Add(("Governor Party",       CxD(Model.StatsA?.GovernorParty),             CxD(Model.StatsB?.GovernorParty),             null));
                 ctxRows.Add(("Median Income",        CxMon(Model.StatsA?.MedianHouseholdIncome),   CxMon(Model.StatsB?.MedianHouseholdIncome),   $"/compare/{pair}/median-income"));
                 ctxRows.Add(("Cost of Living Index", CxNum(Model.StatsA?.CostOfLivingIndex),       CxNum(Model.StatsB?.CostOfLivingIndex),       $"/compare/{pair}/cost-of-living"));
                 break;
 
-            case "state-color":
+            case "political-lean":
                 ctxTitle = "Full Political Picture";
                 ctxNote  = "Presidential color is just one layer — here's the complete breakdown.";
                 ctxRows.Add(("Governor Party",           CxD(Model.StatsA?.GovernorParty),                          CxD(Model.StatsB?.GovernorParty),                          null));
@@ -853,6 +919,7 @@
             case "median-income":
                 ctxTitle = "Income in Context";
                 ctxNote  = "A paycheck only matters relative to what things cost — and how much stays after taxes.";
+                ctxRows.Add(("Purchasing Power of $100", CxMoney2(Model.StatsA?.PurchasingPower100), CxMoney2(Model.StatsB?.PurchasingPower100), $"/compare/{pair}/purchasing-power"));
                 ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),           CxNum(Model.StatsB?.CostOfLivingIndex),           $"/compare/{pair}/cost-of-living"));
                 ctxRows.Add(("State Income Tax",      CxMetric("income-tax", Model.StateA, Model.StatsA), CxMetric("income-tax", Model.StateB, Model.StatsB), $"/compare/{pair}/income-tax"));
                 ctxRows.Add(("Poverty Rate",          CxPct(Model.StatsA?.PovertyRatePct),              CxPct(Model.StatsB?.PovertyRatePct),              $"/compare/{pair}/poverty-rate"));
@@ -863,6 +930,7 @@
             case "regional-price-parity":
                 ctxTitle = "Price Parity in Context";
                 ctxNote  = "Regional price parity is the government's official measure of how expensive a state is relative to the US average.";
+                ctxRows.Add(("Purchasing Power of $100", CxMoney2(Model.StatsA?.PurchasingPower100),             CxMoney2(Model.StatsB?.PurchasingPower100),             $"/compare/{pair}/purchasing-power"));
                 ctxRows.Add(("Cost of Living Index",  CxNum(Model.StatsA?.CostOfLivingIndex),                         CxNum(Model.StatsB?.CostOfLivingIndex),                         $"/compare/{pair}/cost-of-living"));
                 ctxRows.Add(("Median Household Income", CxMon(Model.StatsA?.MedianHouseholdIncome),                   CxMon(Model.StatsB?.MedianHouseholdIncome),                     $"/compare/{pair}/median-income"));
                 ctxRows.Add(("Median Home Value",     CxMon(Model.StatsA?.MedianHomeValue),                           CxMon(Model.StatsB?.MedianHomeValue),                           $"/compare/{pair}/home-value"));
@@ -1101,7 +1169,7 @@
                 ctxRows.Add(("Capital",      CxD(Model.StateA.Capital),                        CxD(Model.StateB.Capital),                        $"/compare/{pair}/capital"));
                 ctxRows.Add(("Population",   CxD(Model.StateA.Population?.ToString("N0")),     CxD(Model.StateB.Population?.ToString("N0")),     $"/compare/{pair}/population"));
                 ctxRows.Add(("Land Area",    CxSqMi(Model.StatsA?.LandAreaSqMi),               CxSqMi(Model.StatsB?.LandAreaSqMi),               $"/compare/{pair}/land-area"));
-                ctxRows.Add(("State Color",  CxD(Model.StatsA?.PoliticalLean),                 CxD(Model.StatsB?.PoliticalLean),                 $"/compare/{pair}/state-color"));
+                ctxRows.Add(("State Color",  CxD(Model.StatsA?.PoliticalLean),                 CxD(Model.StatsB?.PoliticalLean),                 $"/compare/{pair}/political-lean"));
                 break;
 
             case "gun-laws-status":
@@ -1109,7 +1177,7 @@
                 ctxNote  = "Gun policy alongside the broader regulatory environment.";
                 ctxRows.Add(("Marijuana Status",     CxD(Model.StatsA?.MarijuanaLegalizationStatus), CxD(Model.StatsB?.MarijuanaLegalizationStatus), $"/compare/{pair}/marijuana-legalization"));
                 ctxRows.Add(("Alcohol System",       CxD(Model.StatsA?.AlcoholLawsStatus),           CxD(Model.StatsB?.AlcoholLawsStatus),           $"/compare/{pair}/alcohol-laws"));
-                ctxRows.Add(("State Color",          CxD(Model.StatsA?.PoliticalLean),               CxD(Model.StatsB?.PoliticalLean),               $"/compare/{pair}/state-color"));
+                ctxRows.Add(("State Color",          CxD(Model.StatsA?.PoliticalLean),               CxD(Model.StatsB?.PoliticalLean),               $"/compare/{pair}/political-lean"));
                 ctxRows.Add(("Violent Crime / 100k", CxNum(Model.StatsA?.ViolentCrimeRatePer100k),   CxNum(Model.StatsB?.ViolentCrimeRatePer100k),   $"/compare/{pair}/violent-crime"));
                 break;
 
@@ -1118,7 +1186,7 @@
                 ctxNote  = "Cannabis policy alongside the state's broader regulatory stance.";
                 ctxRows.Add(("Gun Laws",     CxD(Model.StatsA?.GunLawsStatus),           CxD(Model.StatsB?.GunLawsStatus),           $"/compare/{pair}/gun-laws-status"));
                 ctxRows.Add(("Alcohol System", CxD(Model.StatsA?.AlcoholLawsStatus),     CxD(Model.StatsB?.AlcoholLawsStatus),       $"/compare/{pair}/alcohol-laws"));
-                ctxRows.Add(("State Color",  CxD(Model.StatsA?.PoliticalLean),           CxD(Model.StatsB?.PoliticalLean),           $"/compare/{pair}/state-color"));
+                ctxRows.Add(("State Color",  CxD(Model.StatsA?.PoliticalLean),           CxD(Model.StatsB?.PoliticalLean),           $"/compare/{pair}/political-lean"));
                 break;
 
             case "alcohol-laws":
@@ -1126,7 +1194,7 @@
                 ctxNote  = "Alcohol system classification alongside the state's broader regulatory stance.";
                 ctxRows.Add(("Gun Laws",       CxD(Model.StatsA?.GunLawsStatus),             CxD(Model.StatsB?.GunLawsStatus),             $"/compare/{pair}/gun-laws-status"));
                 ctxRows.Add(("Marijuana Status", CxD(Model.StatsA?.MarijuanaLegalizationStatus), CxD(Model.StatsB?.MarijuanaLegalizationStatus), $"/compare/{pair}/marijuana-legalization"));
-                ctxRows.Add(("State Color",    CxD(Model.StatsA?.PoliticalLean),               CxD(Model.StatsB?.PoliticalLean),               $"/compare/{pair}/state-color"));
+                ctxRows.Add(("State Color",    CxD(Model.StatsA?.PoliticalLean),               CxD(Model.StatsB?.PoliticalLean),               $"/compare/{pair}/political-lean"));
                 break;
 
             case "uninsured-rate":
@@ -1338,20 +1406,20 @@
         <script type="application/ld+json">@Html.Raw(metFaqJson)</script>
     }
 
-    <section class="bg-white py-10 border-t" itemscope itemtype="https://schema.org/FAQPage">
+    <section class="bg-white py-10 border-t">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-700 mb-2">People Also Ask</p>
             <h2 class="text-xl font-bold text-slate-900 mb-5">@titleA vs @titleB @mName — Common Questions</h2>
             <div class="divide-y divide-slate-100 rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                 @foreach (var (q, a) in metFaq)
                 {
-                    <div class="px-5 py-4" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-                        <h3 class="text-sm font-semibold text-slate-900 mb-1.5 flex items-start gap-2.5" itemprop="name">
+                    <div class="px-5 py-4">
+                        <h3 class="text-sm font-semibold text-slate-900 mb-1.5 flex items-start gap-2.5">
                             <span class="mt-0.5 w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 text-[10px] font-bold">Q</span>
                             @q
                         </h3>
-                        <div class="ml-7" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                            <p class="text-sm leading-6 text-slate-600" itemprop="text">@a</p>
+                        <div class="ml-7">
+                            <p class="text-sm leading-6 text-slate-600">@a</p>
                         </div>
                     </div>
                 }
@@ -1468,8 +1536,8 @@
 {
   "@@context": "https://schema.org",
   "@@type": "WebPage",
-  "name": "@Html.Raw(System.Text.Json.JsonSerializer.Serialize($"{Model.StateA.Name} vs {Model.StateB.Name}: {Model.Metric.Name} Comparison"))",
-  "description": "@Html.Raw(System.Text.Json.JsonSerializer.Serialize(directAnswer ?? $"Compare {Model.Metric.Name.ToLower()} between {Model.StateA.Name} and {Model.StateB.Name}."))",
+  "name": @Html.Raw(System.Text.Json.JsonSerializer.Serialize($"{Model.StateA.Name} vs {Model.StateB.Name} | {Model.Metric.Name} Comparison")),
+  "description": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(directAnswer ?? $"Compare {Model.Metric.Name.ToLower()} between {Model.StateA.Name} and {Model.StateB.Name}.")),
   "url": "https://usasymbol.com/compare/@Model.PairSlug/@Model.Metric.Slug",
   "license": "https://usasymbol.com/terms",
   "creator": { "@@type": "Organization", "name": "USA Symbol", "url": "https://usasymbol.com" },
@@ -1491,6 +1559,6 @@
 
 <section class="bg-gray-50 py-8 border-t text-sm text-gray-500">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p><strong class="text-gray-700">Sources:</strong> Core demographic data comes from the 2020 U.S. Census, with land area from U.S. Census Bureau TIGER files. Income, housing, affordability, and tax fields are maintained in our comparison dataset, with minimum wage data from the U.S. Department of Labor, gas prices from AAA, and electricity rates from the U.S. Energy Information Administration. Political control and election fields use 2024 presidential results together with National Conference of State Legislatures data. Gun-law labels use the Giffords scorecard, alcohol system data comes from NABCA, and marijuana status uses NCSL's state cannabis laws tracker.</p>
+        <p><strong class="text-gray-700">Sources:</strong> Core demographic data comes from the 2020 U.S. Census, with land area from U.S. Census Bureau TIGER files. Income, housing, affordability, and tax fields are maintained in our comparison dataset; purchasing-power figures use BEA Regional Price Parities. Minimum wage data comes from the U.S. Department of Labor, gas prices from AAA, and electricity rates from the U.S. Energy Information Administration. Political control and election fields use 2024 presidential results together with National Conference of State Legislatures data. Gun-law labels use the Giffords scorecard, alcohol system data comes from NABCA, and marijuana status uses NCSL's state cannabis laws tracker.</p>
     </div>
 </section>

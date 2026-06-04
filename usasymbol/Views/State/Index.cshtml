@@ -158,6 +158,7 @@
 .state-symbol-table strong { color: var(--navy); font-weight: 700; }
 .table-symbol-thumb { width: 2.75rem; height: 2.75rem; border-radius: .375rem; overflow: hidden; background: var(--cream); border: 1px solid var(--cream-dark); display: flex; align-items: center; justify-content: center; }
 .table-symbol-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.table-symbol-thumb img.is-seal-thumb { object-fit: contain; padding: .18rem; }
 .table-symbol-thumb i { color: var(--navy); opacity: .4; font-size: .85rem; }
 .table-page-link { display: inline-flex; width: 1.75rem; height: 1.75rem; align-items: center; justify-content: center; border-radius: 999px; background: var(--cream); color: var(--navy) !important; text-decoration: none !important; font-size: .65rem; }
 
@@ -284,6 +285,7 @@
 .rs-flag { width: 2.75rem; height: 1.8rem; object-fit: cover; border-radius: .25rem; border: 1px solid var(--cream-dark); flex-shrink: 0; }
 .rs-name { font-family: var(--font-ui); font-size: .85rem; font-weight: 700; color: var(--navy); }
 .rs-capital { font-family: var(--font-ui); font-size: .72rem; color: var(--slate-ed); }
+.rs-abbr-link { font-family: var(--font-ui); font-size: .68rem; color: #2C5F9E; font-weight: 700; display: inline-flex; align-items: center; gap: .25rem; margin-top: .12rem; }
 
 
 /* ── Guide cards ────────────────────────────────────── */
@@ -367,8 +369,8 @@
 
                 <div class="facts-bar" style="max-width:500px">
                     <div class="facts-bar__cell">
-                        <div class="facts-bar__value">@Model.State.Abbreviation</div>
-                        <div class="facts-bar__label">Abbreviation</div>
+                        <div class="facts-bar__value"><a href="/states/@Model.State.Slug/abbreviation" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(27,42,74,.25)">@Model.State.Abbreviation</a></div>
+                        <div class="facts-bar__label">Abbreviation Guide</div>
                     </div>
                     <div class="facts-bar__cell">
                         <div class="facts-bar__value" style="font-size:.95rem">@Model.State.Capital</div>
@@ -448,7 +450,7 @@
                         <div class="widget-title"><i class="fa-solid fa-chart-bar"></i>Quick Facts</div>
                         <dl>
                             <div class="fact-row"><dt class="fact-label">Official Name</dt><dd class="fact-value">@Model.State.Name</dd></div>
-                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value">@Model.State.Abbreviation</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value"><a href="/states/@Model.State.Slug/abbreviation" style="color:inherit;text-decoration:none">@Model.State.Abbreviation</a></dd></div>
                             <div class="fact-row"><dt class="fact-label">Capital City</dt><dd class="fact-value">@Model.State.Capital</dd></div>
                             @if (Model.State.Population.HasValue) { <div class="fact-row"><dt class="fact-label">Population</dt><dd class="fact-value">@Model.State.Population.Value.ToString("N0")</dd></div> }
                             @if (Model.State.StateHoodDate.HasValue) { <div class="fact-row"><dt class="fact-label">Statehood</dt><dd class="fact-value">@Model.State.StateHoodDate.Value.ToString("MMMM d, yyyy")</dd></div> }
@@ -478,15 +480,22 @@
                                     @foreach (var symbol in Model.Symbols.OrderBy(s => GetSymbolSortRank(s)).ThenBy(s => GetSymbolTypeName(s)).ThenBy(s => s.Name))
                                     {
                                         var symbolUrl = symbol.ToSymbolUrl(Model.State.Slug);
+                                        var symbolThumb = ResolveStateSymbolThumb(symbol, Model.State.Slug);
+                                        var fallbackThumb = string.Equals(symbol.Type, "state-seal", StringComparison.OrdinalIgnoreCase)
+                                            ? $"/images/seals/{Model.State.Slug}/seal.webp"
+                                            : string.Equals(symbol.Type, "coat-of-arms", StringComparison.OrdinalIgnoreCase)
+                                                ? $"/images/coats-of-arms/{Model.State.Slug}/coat-of-arms.webp"
+                                            : $"/images/regions/{regionKey}.webp";
                                         <tr tabindex="0"
                                             onclick="window.location.href='@symbolUrl'"
                                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='@symbolUrl';}">
                                             <td>
                                                 <div class="table-symbol-thumb">
-                                                    @if (!string.IsNullOrEmpty(symbol.ImageUrl))
+                                                    @if (!string.IsNullOrEmpty(symbolThumb))
                                                     {
-                                                        <img src="@Images.Thumb(symbol.ImageUrl)" alt="@symbol.Name"
-                                                             onerror="this.onerror=null;this.src='/images/regions/@(regionKey).webp'" loading="lazy">
+                                                        <img src="@Images.Thumb(symbolThumb)" alt="@symbol.Name"
+                                                             class="@((string.Equals(symbol.Type, "state-seal", StringComparison.OrdinalIgnoreCase) || string.Equals(symbol.Type, "coat-of-arms", StringComparison.OrdinalIgnoreCase)) ? "is-seal-thumb" : "")"
+                                                             onerror="this.onerror=null;this.src='@fallbackThumb'" loading="lazy">
                                                     }
                                                     else
                                                     {
@@ -514,6 +523,18 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- Map of [State] -->
+                    @if (!string.IsNullOrWhiteSpace(Model.State.Abbreviation))
+                    {
+                        @await Component.InvokeAsync("StateHubMap", new {
+                            abbreviation = Model.State.Abbreviation,
+                            stateName    = Model.State.Name,
+                            capital      = Model.State.Capital,
+                            region       = Model.State.Region,
+                            slug         = Model.State.Slug
+                        })
+                    }
 
                     <!-- Name meaning -->
                     @if (Model.HubContent?.NameMeaning?.Paragraphs.Any() == true)
@@ -620,6 +641,20 @@
                 <div class="state-section">
                     <h2 class="content-h2 mb-5" style="font-size:1.45rem">Guides &amp; Collections</h2>
                     <div class="guide-carousel" aria-label="Guides and collections">
+                        <a href="/guides/state-abbreviations" class="guide-card">
+                            <div class="guide-card-banner" style="background:linear-gradient(135deg,#111827,#334155)">
+                                <div style="display:flex;gap:8px;align-items:center">
+                                    <span style="display:inline-flex;width:36px;height:36px;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;font-weight:900;font-size:.9rem;letter-spacing:.04em">CA</span>
+                                    <span style="display:inline-flex;width:36px;height:36px;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;font-weight:900;font-size:.9rem;letter-spacing:.04em">TX</span>
+                                </div>
+                            </div>
+                            <div class="guide-card-body">
+                                <div class="guide-card-eyebrow">Reference</div>
+                                <h3>State Abbreviations</h3>
+                                <p>Full list of all 50 postal abbreviations, with capitals, regions, and easy fixes for common code confusion.</p>
+                                <span class="guide-card-cta">View Abbreviations <i class="fa-solid fa-arrow-right" style="font-size:.7rem"></i></span>
+                            </div>
+                        </a>
                         <a asp-controller="StateGuides" asp-action="BordersListing" class="guide-card">
                             <div class="guide-card-banner" style="background:linear-gradient(135deg,#1B3A6B,#2C5F9E)">
                                 <i class="fa-solid fa-map"></i>
@@ -715,7 +750,7 @@
                                 {
                                     <a href="/states/@rs.Slug" class="related-state">
                                         @if (!string.IsNullOrEmpty(rs.FlagImageUrl)) { <img src="@Images.Thumb(rs.FlagImageUrl)" alt="@rs.Name flag" class="rs-flag"> }
-                                        <div><div class="rs-name">@rs.Name</div><div class="rs-capital">@rs.Capital</div></div>
+                                        <div><div class="rs-name">@rs.Name</div><div class="rs-capital">@rs.Capital</div><span class="rs-abbr-link">@rs.Abbreviation abbreviation</span></div>
                                     </a>
                                 }
                             </div>
@@ -735,7 +770,7 @@
                         <div class="widget-title"><i class="fa-solid fa-chart-bar"></i>Quick Facts</div>
                         <dl>
                             <div class="fact-row"><dt class="fact-label">Official Name</dt><dd class="fact-value">@Model.State.Name</dd></div>
-                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value">@Model.State.Abbreviation</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value"><a href="/states/@Model.State.Slug/abbreviation" style="color:inherit;text-decoration:none">@Model.State.Abbreviation</a></dd></div>
                             <div class="fact-row"><dt class="fact-label">Capital City</dt><dd class="fact-value">@Model.State.Capital</dd></div>
                             @if (Model.State.Population.HasValue) { <div class="fact-row"><dt class="fact-label">Population</dt><dd class="fact-value">@Model.State.Population.Value.ToString("N0")</dd></div> }
                             @if (Model.State.StateHoodDate.HasValue) { <div class="fact-row"><dt class="fact-label">Statehood</dt><dd class="fact-value">@Model.State.StateHoodDate.Value.ToString("MMMM d, yyyy")</dd></div> }
@@ -774,7 +809,7 @@
                                 {
                                     <a href="/states/@rs.Slug" class="related-state">
                                         @if (!string.IsNullOrEmpty(rs.FlagImageUrl)) { <img src="@Images.Thumb(rs.FlagImageUrl)" alt="@rs.Name flag" class="rs-flag"> }
-                                        <div><div class="rs-name">@rs.Name</div><div class="rs-capital">@rs.Capital</div></div>
+                                        <div><div class="rs-name">@rs.Name</div><div class="rs-capital">@rs.Capital</div><span class="rs-abbr-link">@rs.Abbreviation abbreviation</span></div>
                                     </a>
                                 }
                             </div>
@@ -939,7 +974,8 @@
         return symbol.Type switch
         {
             "flag" => 1, "bird" => 2, "flower" => 3, "tree" => 4, "motto" => 5,
-            "nickname" => 6, "mammal" => 7, "beverage" => 8, "color" => 9, "dinosaur" => 10,
+            "nickname" => 6, "state-seal" => 7, "coat-of-arms" => 8, "mammal" => 9, "beverage" => 10, "color" => 11, "dinosaur" => 12,
+            "fossil" => 13,
             _ => 50
         };
     }
@@ -1012,7 +1048,8 @@
         {
             "bird" => "State Bird", "flower" => "State Flower", "tree" => "State Tree",
             "motto" => "State Motto", "mammal" => "State Mammal", "beverage" => "State Beverage",
-            "dinosaur" => "State Dinosaur", "flag" => "State Flag",
+            "dinosaur" => "State Dinosaur", "flag" => "State Flag", "state-seal" => "State Seal",
+            "coat-of-arms" => "Coat of Arms",
             _ => $"State {char.ToUpper(symbol.Type[0]) + symbol.Type.Substring(1)}"
         };
     }
@@ -1024,9 +1061,31 @@
             "bird" => "fa-dove", "flower" => "fa-seedling", "tree" => "fa-tree",
             "motto" => "fa-scroll", "mammal" => "fa-paw", "beverage" => "fa-mug-hot",
             "dinosaur" => "fa-dragon", "flag" => "fa-flag", "color" => "fa-palette",
+            "state-seal" => "fa-stamp", "coat-of-arms" => "fa-shield-halved",
+            "fossil" => "fa-bone",
             "fish" => "fa-fish", "insect" => "fa-bug", "mineral" => "fa-gem",
             "rock" => "fa-mountain", "song" => "fa-music", "sport" => "fa-trophy",
             _ => "fa-star"
         };
+    }
+
+    string ResolveStateSymbolThumb(USASymbol.Models.Symbol symbol, string stateSlug)
+    {
+        if (!string.IsNullOrWhiteSpace(symbol.ImageUrl))
+        {
+            return symbol.ImageUrl;
+        }
+
+        if (string.Equals(symbol.Type, "state-seal", StringComparison.OrdinalIgnoreCase))
+        {
+            return $"/images/seals/{stateSlug}/seal.webp";
+        }
+
+        if (string.Equals(symbol.Type, "coat-of-arms", StringComparison.OrdinalIgnoreCase))
+        {
+            return $"/images/coats-of-arms/{stateSlug}/coat-of-arms.webp";
+        }
+
+        return string.Empty;
     }
 }

@@ -9,7 +9,7 @@
     ViewData["Title"] = pageTitle;
     ViewData["Description"] = pageDesc;
 
-    var origin = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    const string origin = "https://usasymbol.com";
     var url = $"{origin}{Context.Request.Path}";
     var imageRightsUrl = $"{origin}/terms#image-rights";
     var imageLicensePageUrl = $"{origin}/contact";
@@ -575,6 +575,20 @@
                                     <li>@li</li>
                                 }
                             </ul>
+                        }
+
+                        @if (sec.Links?.Any() == true)
+                        {
+                            <div class="mt-4 flex flex-wrap gap-3">
+                                @foreach (var link in sec.Links)
+                                {
+                                    <a href="@link.Href"
+                                       class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:border-slate-300 hover:bg-slate-50 transition">
+                                        @link.Text
+                                        <i class="fa-solid fa-arrow-right text-xs text-slate-400"></i>
+                                    </a>
+                                }
+                            </div>
                         }
                     </section>
                 }

@@ -2,27 +2,28 @@
 @{
     var currentPath = Context.Request.Path.Value?.ToLowerInvariant() ?? "/";
     var bodyClass = ViewData["BodyClass"] as string ?? string.Empty;
-    var requestBaseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    const string siteBaseUrl = "https://usasymbol.com";
     var rawCanonical = ViewData["Canonical"] as string;
     var canonicalHref = string.IsNullOrWhiteSpace(rawCanonical)
-        ? $"{requestBaseUrl}{(currentPath == "/" ? "/" : currentPath.TrimEnd('/'))}"
+        ? siteBaseUrl
         : (rawCanonical.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
             || rawCanonical.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
                 ? rawCanonical
-                : $"{requestBaseUrl}{(rawCanonical.StartsWith("/") ? rawCanonical : "/" + rawCanonical)}");
+                : $"{siteBaseUrl}{(rawCanonical.StartsWith("/") ? rawCanonical : "/" + rawCanonical)}");
 
     var rawOgImage = ViewData["OgImage"] as string ?? "/images/usasymbol.png";
     var resolvedOgImage = ImagesLayout.Full(rawOgImage);
     var ogImageUrl = resolvedOgImage.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
         || resolvedOgImage.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
         ? resolvedOgImage
-        : $"{requestBaseUrl}{resolvedOgImage}";
+        : $"{siteBaseUrl}{resolvedOgImage}";
 
     bool isHome = currentPath == "/";
     bool isStates = currentPath.StartsWith("/states");
     bool isSymbols = currentPath.StartsWith("/symbols");
     bool isAbout = currentPath.StartsWith("/about");
     bool isCompare = currentPath.StartsWith("/compare");
+    bool isParks = currentPath.StartsWith("/national-parks");
     bool isSymbolDetail = System.Text.RegularExpressions.Regex.IsMatch(
         currentPath,
         @"^/states/[^/]+/(bird|mammal|firearm|dinosaur|beverage|motto|nickname|flower|flag|tree|color|license-plate)(/[^/]+)?$");
@@ -57,12 +58,11 @@
     <meta property="og:title" content="@(ViewData["Title"] ?? "USA State Symbols")" />
     <meta property="og:description" content="@(ViewData["Description"] ?? "Explore official state symbols across all 50 U.S. states")" />
     <meta property="og:type" content="@(ViewData["OgType"] ?? "website")" />
-    <meta property="og:url" content="@(ViewData["OgUrl"] ?? $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path.Value?.ToLower().TrimEnd('/')}")" />
+    <meta property="og:url" content="@(ViewData["OgUrl"] ?? $"{siteBaseUrl}{(currentPath == "/" ? "/" : currentPath.TrimEnd('/'))}")" />
     <meta property="og:image" content="@ogImageUrl" />
     <meta property="og:image:width" content="@(ViewData["OgImageWidth"] ?? "1200")" />
     <meta property="og:image:height" content="@(ViewData["OgImageHeight"] ?? "630")" />
     <meta property="og:image:alt" content="@(ViewData["Title"] ?? "USA Symbol")" />
-    <meta property="og:site_name" content="USA Symbol" />
     <meta property="og:locale" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -104,6 +104,7 @@
         gtag('js', new Date());
         gtag('config', 'G-TBCLTSYXNQ');
     </script>
+    <script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/caff0b5b-639b-4c21-b511-f3a7f23a9f21.js"></script>
 </head>
 
 <body class="@computedBodyClass">
@@ -125,6 +126,7 @@
                         <a asp-controller="Home" asp-action="Index" class="@(isHome ? "nav-link is-active" : "nav-link")">Home</a>
                         <a asp-controller="State" asp-action="Listing" class="@(isStates ? "nav-link is-active" : "nav-link")">States</a>
                         <a asp-controller="Symbol" asp-action="Categories" class="@(isSymbols ? "nav-link is-active nav-cta" : "nav-link nav-cta")">Symbols</a>
+                        <a href="/national-parks" class="@(isParks ? "nav-link is-active" : "nav-link")">Parks</a>
                         <a href="/compare-states" class="@(isCompare ? "nav-link is-active" : "nav-link")">Compare</a>
                         <a asp-controller="Home" asp-action="About" class="@(isAbout ? "nav-link is-active" : "nav-link")">About</a>
                     </div>
@@ -148,6 +150,10 @@
                         </a>
                         <a asp-controller="Symbol" asp-action="Categories" class="@(isSymbols ? "mobile-menu-link is-active" : "mobile-menu-link")">
                             <span>Symbols</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                        <a href="/national-parks" class="@(isParks ? "mobile-menu-link is-active" : "mobile-menu-link")">
+                            <span>National Parks</span>
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
                         <a href="/compare-states" class="@(isCompare ? "mobile-menu-link is-active" : "mobile-menu-link")">
@@ -210,6 +216,8 @@
                             <li><a asp-controller="Home" asp-action="About">About Us</a></li>
                             <li><a href="/contact">Contact</a></li>
                             <li><a href="/privacy">Privacy Policy</a></li>
+                            <li><a href="?cmpscreen">Update Privacy Settings</a></li>
+                            <li><a href="?cmpscreencustom">Do Not Sell or Share My Personal Information</a></li>
                             <li><a href="/terms">Terms of Use</a></li>
                         </ul>
                     </div>
@@ -227,8 +235,6 @@
     </div>
 
    @*  <script defer src="https://analytics.ahrefs.com/analytics.js" data-key="Fke5D7QI+LEgLvX2J5ToQQ"></script> *@
-
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8767700486309651" crossorigin="anonymous"></script>
 
     <script defer src="~/js/site.js" asp-append-version="true"></script>
     <script>

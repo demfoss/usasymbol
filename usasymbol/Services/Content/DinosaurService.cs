@@ -81,7 +81,7 @@ namespace USASymbol.Services
                             };
 
                             if (secDict.TryGetValue("paragraphs", out var paragraphsObj) && paragraphsObj is List<object> paragraphs)
-                                section.Paragraphs = paragraphs.Select(p => p?.ToString() ?? "").ToList();
+                                section.Paragraphs = paragraphs.OfType<string>().ToList();
 
                             if (secDict.TryGetValue("subsections", out var subsectionsObj) && subsectionsObj is List<object> subsections)
                             {

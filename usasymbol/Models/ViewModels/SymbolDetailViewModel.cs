@@ -28,10 +28,16 @@ namespace USASymbol.Models.ViewModels
             Author = Author
         };
 
-        protected static string? FirstNonEmpty(params string?[] values)
+        public static string? FirstNonEmpty(params string?[] values)
         {
-            foreach (var v in values)
-                if (!string.IsNullOrWhiteSpace(v)) return v;
+            foreach (var value in values)
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    return value.Trim();
+                }
+            }
+
             return null;
         }
     }

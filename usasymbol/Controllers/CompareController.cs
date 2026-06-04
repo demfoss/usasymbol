@@ -39,7 +39,7 @@ namespace USASymbol.Controllers
             var model = await _comparison.GetPairComparisonAsync(slugA, slugB);
             if (model == null) return NotFound();
 
-            ViewData["Title"] = $"{model.StateA.Name} vs {model.StateB.Name} — State Comparison";
+            ViewData["Title"] = $"{model.StateA.Name} vs {model.StateB.Name} | State Comparison";
             ViewData["Description"] = $"Compare {model.StateA.Name} and {model.StateB.Name} by population, housing, taxes, laws, politics, income, land area, and more.";
             ViewData["Canonical"] = $"/compare/{canonical}";
 
@@ -61,7 +61,7 @@ namespace USASymbol.Controllers
             var model = await _comparison.GetMetricComparisonAsync(slugA, slugB, metric);
             if (model == null) return NotFound();
 
-            ViewData["Title"] = $"{model.StateA.Name} vs {model.StateB.Name}: {model.Metric.Name} Comparison";
+            ViewData["Title"] = $"{model.StateA.Name} vs {model.StateB.Name} | {model.Metric.Name} Comparison";
             ViewData["Description"] = $"{model.Result.SummaryText ?? $"Compare {model.Metric.Name.ToLower()} between {model.StateA.Name} and {model.StateB.Name}."}";
             ViewData["Canonical"] = $"/compare/{canonical}/{metric}";
 
