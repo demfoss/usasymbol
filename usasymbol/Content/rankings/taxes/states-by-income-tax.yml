@@ -2,8 +2,8 @@ type: ranking
 slug: states-by-income-tax
 category: taxes
 url: /rankings/taxes/states-by-income-tax
-hero_image: "/images/rankings/taxes/states-by-income-tax/states-by-income-tax.webp"
-hero_image_alt: "Map showing state income tax rates"
+hero_image: "/images/rankings/taxes/states-by-income-tax/states-by-income-tax-hero.jpg"
+hero_image_alt: "Capitol building with a large dome and formal grounds"
 extremes_mode: both
 extremes_title: "States with the Highest and Lowest Income Tax Rates"
 
@@ -12,13 +12,13 @@ date_published: "2026-05-31"
 date_modified: "2026-05-31"
 
 seo:
-  title: "State Income Tax Rates 2025 | Which States Have No Income Tax"
+  title: "State Income Tax Rates 2026 | 9 States Have None"
   description: "California has the highest state income tax at 13.3%. Nine states have no income tax. See how every state ranks from highest to lowest."
 
 page:
-  h1: "State Income Tax Rates 2025"
+  h1: "State Income Tax Rates 2026"
   quick_answer:
-    - "California has the highest top marginal state income tax rate at 13.3%, which applies to income above $1 million. Hawaii (11%), New Jersey (10.75%), Oregon (9.9%), and Minnesota (9.85%) round out the top five."
+    - "California has the highest top marginal state income tax rate at 13.3%, which applies to income above $1 million. Hawaii (11.0%), New York (10.9%), New Jersey (10.75%), and Oregon (9.9%) round out the top five."
     - "Nine states have no state income tax on wages: Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming. New Hampshire taxes interest and dividends but not earned wages."
     - "Most states use a graduated bracket structure where higher incomes face higher rates. A handful of states — including Colorado, Illinois, Indiana, and Pennsylvania — use a flat rate that applies equally to all income levels."
   methodology: "Rates reflect the top marginal state income tax rate on ordinary income (wages, salaries) as of January 2025. States with graduated brackets are shown at the highest bracket rate. States with flat rates show that single rate. 0.0% indicates no state income tax. Local income taxes are not included."
@@ -28,7 +28,7 @@ page:
       description: "Annual state income tax rates and brackets by state"
 
 map:
-  title: "State Income Tax Rate 2025"
+  title: "State Income Tax Rate 2026"
   image_alt: "U.S. map showing top state income tax rate by state, lightest for no-tax states and darkest blue for highest rates"
   caption: "Nine states show as lightest — no income tax. California's 13.3% is the darkest. The no-tax cluster spans from Texas and Florida through Alaska, Nevada, and Wyoming."
   metric_key: income_tax
@@ -50,11 +50,53 @@ compare:
   description: "Pick two states to see a full side-by-side breakdown of income tax, property tax, sales tax, and more."
   icon: "fa-solid fa-file-invoice-dollar"
 
+sections:
+  - id: "why_california_highest"
+    icon: "fa-solid fa-percent"
+    title: "Why California Has the Highest State Income Tax Rate"
+    paragraphs:
+      - "California's top marginal rate of 13.3% applies to income above $1 million and was established through a series of ballot measures, Proposition 30 (2012), Proposition 55 (2016), and Proposition 63 (2018). California uses a progressive income tax with 10 brackets, reaching 9.3% at $66,295 for single filers. The top rate is roughly double the rate in most other high-tax states."
+      - "Hawaii (11.0%), New York (10.9%), and New Jersey (10.75%) follow. Oregon (9.9%) rounds out the top five. All five states use progressive structures with multiple brackets. High rates reflect decisions to fund education, healthcare, and infrastructure primarily through income tax rather than through sales or property taxes."
+
+  - id: "nine_states_no_income_tax"
+    icon: "fa-solid fa-ban"
+    title: "Nine States Collect No State Income Tax on Wages"
+    paragraphs:
+      - "Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming do not tax wage income at the state level. These nine states represent about 30% of the U.S. population. They fund government through a combination of sales taxes, property taxes, severance taxes on natural resources, and, in Alaska's case, sovereign wealth fund distributions."
+      - "The no-income-tax group is economically diverse. Texas and Florida are large, high-growth states that substitute a sales tax burden. New Hampshire has neither income nor sales tax and instead relies on among the highest property tax rates in the country. Tennessee long taxed investment income but eliminated that levy in 2021. Washington state has no income tax but funds government partly through a 6.5% sales tax and business and occupation taxes."
+
+  - id: "no_tax_not_low_burden"
+    icon: "fa-solid fa-scale-balanced"
+    title: "No Income Tax Does Not Mean No Tax Burden"
+    paragraphs:
+      - "New Hampshire has no income tax and no sales tax, which sounds like a low-tax state. But its property tax rate of 1.66% is the fourth-highest in the country. Local governments in New Hampshire fund public schools almost entirely through property taxes, because no broad-based state revenues replace the income and sales tax streams that most states rely on."
+      - "A household owning a $400,000 home in New Hampshire pays roughly $6,600 per year in property taxes. The same household in Tennessee, which also has no income tax but a lower property tax rate of 0.48%, pays around $1,920. The absence of one tax type frequently shifts burden toward another. Total state and local tax burden gives a more accurate picture than any single rate. See [states by property tax](/rankings/taxes/states-by-property-tax) for the full comparison."
+
+  - id: "flat_vs_progressive"
+    icon: "fa-solid fa-chart-bar"
+    title: "Flat Rate vs. Progressive: Two Different Structures"
+    paragraphs:
+      - "Twelve states use a flat income tax, a single rate applied to all taxable income regardless of amount. Illinois (4.95%), Indiana (3.15%), and Michigan (4.05%) are examples. Flat-tax states are simpler to administer but apply the same percentage to a minimum-wage worker and a millionaire."
+      - "Progressive systems, used by most states, apply higher rates only to income above specific thresholds. California's 9.3% rate kicks in above $66,295 for single filers; income below that level is taxed at lower rates starting from 1%. Most residents in high-rate states pay effective rates far below the headline top marginal rate. The top marginal rate is relevant primarily for high earners and for comparing state policy choices."
+
+visual_assets:
+  - id: california-income-tax-placeholder
+    src: /images/rankings/taxes/states-by-income-tax/california-income-tax-placeholder.jpg
+    alt: "Government building with a dome rising above trees"
+    caption: "Income-tax policy is written in state capitols, where progressive brackets and rate changes are set by law."
+    section: why_california_highest
+    layout: right  - id: no-income-tax-placeholder
+    src: /images/rankings/taxes/states-by-income-tax/no-income-tax-placeholder.jpg
+    alt: "Modern business district with office towers and broad streets"
+    caption: "States without wage income taxes still rely on other large tax bases tied to property, tourism, energy, or consumption."
+    section: nine_states_no_income_tax
+    layout: left
+
 faq:
   - question: "Which states have no income tax"
     answer: "Nine states have no state income tax on wages: Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming. New Hampshire taxes interest and dividend income at 3% but not earned wages. Washington state has no personal income tax but does impose a capital gains tax on high earners."
   - question: "Which state has the highest income tax rate"
-    answer: "California has the highest top marginal state income tax rate at 13.3%, which applies to taxable income over $1 million. At more moderate income levels — say $100,000 — the applicable California rate is 9.3%. Hawaii, New Jersey, and Oregon round out the states with the highest top rates."
+    answer: "California has the highest top marginal state income tax rate at 13.3%, which applies to taxable income over $1 million. At more moderate income levels — say $100,000 — the applicable California rate is 9.3%. Hawaii, New York, New Jersey, and Oregon round out the states with the highest top rates."
   - question: "Does a lower income tax mean lower overall taxes"
     answer: "Not necessarily. States without an income tax often compensate with higher property taxes, higher sales taxes, or other levies. Texas and Florida have no income tax but impose some of the highest property taxes in the country. New Hampshire has no income tax or sales tax but has among the highest property tax rates."
   - question: "What is the difference between a flat tax and a graduated tax"

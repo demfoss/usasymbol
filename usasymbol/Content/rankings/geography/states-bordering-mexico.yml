@@ -1,0 +1,163 @@
+type: ranking
+slug: states-bordering-mexico
+category: geography
+url: /rankings/geography/states-bordering-mexico
+auto_link_phrases:
+  - "states that border Mexico"
+  - "US states bordering Mexico"
+  - "which states share a border with Mexico"
+  - "how many states border Mexico"
+  - "states on the Mexican border"
+extremes_mode: both
+extremes_title: "Longest and Shortest U.S. State Borders with Mexico"
+hero_image: "/images/rankings/geography/states-bordering-mexico/states-bordering-mexico-hero.jpg"
+hero_image_alt: "Map of the United States highlighting the 4 states that share a border with Mexico: California, Arizona, New Mexico, and Texas"
+
+author: "USA Symbol Team"
+date_published: "2026-06-03"
+date_modified: "2026-06-03"
+
+seo:
+  title: "States Bordering Mexico | 4 States by Border Length"
+  description: "4 U.S. states border Mexico. See the full list ranked by border length, plus which Mexican states each one touches."
+
+page:
+  h1: "States Bordering Mexico: Full List, Border Lengths, and Mexican States"
+
+  quick_answer:
+    - "4 U.S. states border Mexico: California, Arizona, New Mexico, and Texas. The total U.S.-Mexico border is approximately 1,954 miles. Texas has the longest section at 1,254 miles."
+    - "Texas's 1,254-mile border follows the Rio Grande, a river boundary that shifts with the river's course. The other three states have straight land borders drawn along surveyed parallels and meridians from the Gadsden Purchase of 1853."
+    - "California has the shortest border with Mexico at 140 miles. It is the only one of the four states where the border begins at an ocean, starting at the Pacific coast at Border Field State Park near San Diego."
+
+  methodology: "Border lengths are drawn from U.S. Census TIGER/Line boundary data and International Boundary and Water Commission (IBWC) surveys. The Texas border follows the centerline of the Rio Grande. The California, Arizona, and New Mexico borders follow surveyed straight lines. All figures are approximate and rounded to the nearest mile."
+
+  sources:
+    - name: "International Boundary and Water Commission"
+      url: "https://www.ibwc.gov/"
+      description: "Official U.S.-Mexico joint body managing the Rio Grande boundary and international water treaties"
+
+map:
+  title: "U.S. States Bordering Mexico: Border Length"
+  image: "/images/rankings/geography/states-bordering-mexico/states-bordering-mexico-map.webp"
+  image_alt: "Map of the U.S. highlighting California, Arizona, New Mexico, and Texas shaded by miles of border with Mexico"
+  caption: "Texas (1,254 mi) accounts for 64% of the 1,954-mile U.S.-Mexico border. California (140 mi) is the shortest. Arizona (373 mi) and New Mexico (180 mi) fall between."
+  metric_key: border_mi
+  metric_label: "Border (mi)"
+  color_scheme: orange
+  color_scale: linear
+  tooltip_fields:
+    - key: state
+      label: "State"
+    - key: border_mi
+      label: "Border with Mexico (mi)"
+    - key: border_type
+      label: "Border type"
+    - key: mexican_states
+      label: "Mexican states"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    border_mi: "Border (mi)"
+    border_type: "Type"
+    mexican_states: "Mexican States"
+
+  metric_default: border_mi
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Texas"
+      state_slug: "texas"
+      border_mi: 1254
+      border_type: "River (Rio Grande)"
+      mexican_states: "Chihuahua, Coahuila, Nuevo León, Tamaulipas"
+
+    - rank: 2
+      state: "Arizona"
+      state_slug: "arizona"
+      border_mi: 373
+      border_type: "Land"
+      mexican_states: "Sonora"
+
+    - rank: 3
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      border_mi: 180
+      border_type: "Land"
+      mexican_states: "Chihuahua"
+
+    - rank: 4
+      state: "California"
+      state_slug: "california"
+      border_mi: 140
+      border_type: "Land"
+      mexican_states: "Baja California"
+
+sections:
+  - id: "texas-longest-border"
+    icon: "fa-solid fa-trophy"
+    title: "Texas Has the Longest U.S.-Mexico Border"
+    paragraphs:
+      - "Texas's 1,254-mile border with Mexico accounts for approximately 64% of the total 1,954-mile U.S.-Mexico boundary. The entire Texas-Mexico border follows the Rio Grande from El Paso in the west to Brownsville and the Gulf of Mexico in the east. Texas borders four Mexican states along this stretch: Chihuahua, Coahuila, Nuevo León, and Tamaulipas."
+      - "Unlike the other three border states, Texas has no straight surveyed line with Mexico. The Rio Grande's natural course defines the boundary, and the river shifts over time. The International Boundary and Water Commission jointly monitors the river and adjusts boundary markers when the channel moves. The combined border lengths of Arizona (373 mi), New Mexico (180 mi), and California (140 mi) total 693 miles, just over half of Texas's 1,254-mile stretch."
+
+  - id: "california-shortest-border"
+    icon: "fa-solid fa-location-dot"
+    title: "California Has the Shortest Border with Mexico"
+    paragraphs:
+      - "California's 140-mile border with Mexico is the shortest of the four border states and the only one that starts at an ocean. The border runs east from the Pacific coast at Border Field State Park, passes through the San Diego area, and ends at the Colorado River where California, Arizona, and Baja California meet. California borders only one Mexican state: Baja California."
+
+  - id: "straight-line-borders"
+    icon: "fa-solid fa-ruler-horizontal"
+    title: "Arizona and New Mexico Have Straight Surveyed Borders with Mexico"
+    paragraphs:
+      - "Arizona (373 mi) and New Mexico (180 mi) share straight, surveyed land borders with Mexico running along the 31°20' parallel. Both borders were established by the Gadsden Purchase of 1853, in which the U.S. paid Mexico $10 million for the land strip that now forms their southern boundaries. Arizona borders only Sonora; New Mexico borders only Chihuahua."
+      - "Before the Gadsden Purchase, the border ran north of Tucson, Arizona, placing it inside Mexico. The purchase extended the U.S. boundary south to its current line. The straight borders of Arizona and New Mexico contrast with Texas's 1,254-mile winding Rio Grande boundary, which follows the river's natural course rather than any surveyed parallel."
+
+visual_assets:
+  - id: rio-grande-el-paso-texas
+    src: /images/rankings/geography/states-bordering-mexico/rio-grande-el-paso.jpg
+    alt: Rio Grande river at El Paso Texas forming the border with Ciudad Juárez Mexico
+    caption: The Rio Grande at El Paso marks the start of Texas's 1,254-mile river border with Mexico, the longest U.S. state border with a neighboring country.
+    section: texas-longest-border
+    layout: right
+
+  - id: border-field-state-park-pacific
+    src: /images/rankings/geography/states-bordering-mexico/border-field-state-park-pacific.jpg
+    alt: U.S.-Mexico border fence extending into the Pacific Ocean at Border Field State Park near San Diego California
+    caption: The U.S.-Mexico border meets the Pacific Ocean at Border Field State Park, the western terminus of California's 140-mile border, the shortest of the four U.S.-Mexico border states.
+    section: california-shortest-border
+    layout: left
+
+faq:
+  - question: "How many U.S. states border Mexico?"
+    answer: "4 U.S. states border Mexico: California, Arizona, New Mexico, and Texas. The total U.S.-Mexico border is approximately 1,954 miles. Texas has the longest section at 1,254 miles. California has the shortest at 140 miles."
+
+  - question: "Name one state that borders Mexico"
+    answer: "Any of the 4 qualifying states is a correct answer: California, Arizona, New Mexico, or Texas. This is a common U.S. civics study question. Texas (1,254 mi) has the longest border with Mexico, covering 64% of the total 1,954-mile boundary. California (140 mi) has the shortest."
+
+  - question: "Which state has the longest border with Mexico?"
+    answer: "Texas has the longest U.S. border with Mexico at approximately 1,254 miles, about 64% of the entire 1,954-mile U.S.-Mexico boundary. The Texas-Mexico border follows the Rio Grande from El Paso west to the Gulf of Mexico near Brownsville, running through four Mexican states: Chihuahua, Coahuila, Nuevo León, and Tamaulipas."
+
+  - question: "Which state has the shortest border with Mexico?"
+    answer: "California has the shortest border with Mexico at approximately 140 miles. The border runs from the Pacific Ocean east to the Colorado River, where California, Arizona, and Baja California meet. California borders only one Mexican state: Baja California."
+
+  - question: "Does Texas border Mexico by land or by river?"
+    answer: "Texas's entire 1,254-mile border with Mexico follows the Rio Grande, a river boundary rather than a surveyed straight line. The other three border states — California (140 mi), Arizona (373 mi), and New Mexico (180 mi) — all have straight surveyed land borders drawn along a parallel established by the Gadsden Purchase of 1853."
+
+  - question: "What Mexican states border the United States?"
+    answer: "Six Mexican states border the United States: Baja California (bordering California), Sonora (bordering Arizona), Chihuahua (bordering New Mexico and Texas), Coahuila (bordering Texas), Nuevo León (bordering Texas), and Tamaulipas (bordering Texas). Chihuahua is the only Mexican state that touches two U.S. states, sharing borders with both New Mexico (180 mi) and part of the Texas line."
+
+related:
+  - title: "U.S. States That Border Canada"
+    url: "/rankings/geography/states-bordering-canada"
+  - title: "U.S. States by Land Area"
+    url: "/rankings/geography/states-by-land-area"
+  - title: "States With the Most Neighboring States"
+    url: "/rankings/geography/states-neighboring-states"
+  - title: "U.S. States Ranked by Straight and Natural Borders"
+    url: "/rankings/geography/states-by-border-type"
+  - title: "Four Corners States"
+    url: "/rankings/geography/four-corners-states"

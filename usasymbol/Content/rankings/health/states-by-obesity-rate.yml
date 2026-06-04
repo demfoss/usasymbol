@@ -2,8 +2,8 @@ type: ranking
 slug: states-by-obesity-rate
 category: health
 url: /rankings/health/states-by-obesity-rate
-hero_image: "/images/rankings/health/states-by-obesity-rate/states-by-obesity-rate.webp"
-hero_image_alt: "Map showing adult obesity rate by state"
+hero_image: "/images/rankings/health/states-by-obesity-rate/states-by-obesity-rate-hero.jpg"
+hero_image_alt: "Hikers moving along a mountain trail under a clear sky"
 extremes_mode: both
 extremes_title: "States with the Highest and Lowest Adult Obesity Rates"
 
@@ -12,14 +12,14 @@ date_published: "2026-05-31"
 date_modified: "2026-05-31"
 
 seo:
-  title: "Obesity Rate by State 2025 | Adult Obesity Ranked by State"
-  description: "Mississippi and West Virginia have the highest adult obesity rates above 40%. Colorado and Hawaii are the lowest under 25%. See all 50 states ranked."
+  title: "Obesity Rate by State 2026 | Adult Obesity Ranked by State"
+  description: "Mississippi and West Virginia have the highest adult obesity rates above 40%. Colorado (25%) and Hawaii (27%) are the lowest. See all 50 states ranked."
 
 page:
-  h1: "Obesity Rate by State 2025"
+  h1: "Obesity Rate by State 2026"
   quick_answer:
-    - "Mississippi and West Virginia have the highest adult obesity rates in the U.S., both exceeding 40% of the adult population. The Deep South and Appalachian states dominate the top of this ranking, reflecting patterns of food access, physical activity, poverty, and health care that have persisted for decades."
-    - "Colorado has the lowest adult obesity rate at around 23%, followed closely by Hawaii and Massachusetts. These states combine active outdoor lifestyles, lower poverty rates, higher educational attainment, and better access to fresh food."
+    - "West Virginia has the highest adult obesity rate in the U.S. at 41.4%, followed by Mississippi (40.4%) and Louisiana (39.2%). The South and Appalachia dominate this ranking, reflecting poverty, limited food access, and low physical activity infrastructure."
+    - "Colorado has the lowest adult obesity rate at 25.0%, followed by Hawaii (27.0%) and Massachusetts (27.0%). These states combine active outdoor lifestyles, lower poverty rates, higher educational attainment, and better access to fresh food."
     - "The national adult obesity rate is approximately 36.2% (CDC Behavioral Risk Factor Surveillance System). Obesity is defined as a body mass index (BMI) of 30 or higher."
   methodology: "Adult obesity prevalence figures are from the CDC Behavioral Risk Factor Surveillance System (BRFSS), self-reported annual surveys. Obesity is defined as BMI ≥ 30, where BMI is calculated from self-reported height and weight. Self-reported measures may underestimate true prevalence due to systematic underreporting of weight."
   sources:
@@ -28,9 +28,9 @@ page:
       description: "Annual state-level adult obesity prevalence estimates"
 
 map:
-  title: "Adult Obesity Rate by State 2025"
+  title: "Adult Obesity Rate by State 2026"
   image_alt: "U.S. map showing adult obesity rate by state, darkest red for states with the highest obesity prevalence"
-  caption: "Mississippi and West Virginia top 40%. Colorado, Hawaii, and Massachusetts cluster at the light end under 25%. The South forms a distinct high-obesity belt across the entire region."
+  caption: "Mississippi and West Virginia top 40%. Colorado (25%), Hawaii (27%), and Massachusetts (27%) cluster at the light end. The South forms a distinct high-obesity belt across the entire region."
   metric_key: obesity_rate
   metric_label: "Obesity %"
   name_key: state
@@ -50,11 +50,53 @@ compare:
   description: "Pick two states to see a full side-by-side breakdown of health, income, education, and quality of life."
   icon: "fa-solid fa-heart-pulse"
 
+sections:
+  - id: "why_west_virginia_highest"
+    icon: "fa-solid fa-arrow-trend-up"
+    title: "Why West Virginia Has the Highest Obesity Rate"
+    paragraphs:
+      - "West Virginia's 41.4% obesity rate, the highest of any state, reflects overlapping structural barriers to healthy living. The state has a poverty rate of 16.7%, and low-income households face higher food costs relative to income, fewer grocery stores in rural areas, and less access to fresh produce. Many West Virginia counties qualify as food deserts under USDA definitions."
+      - "The state's geography and economic history compound the problem. Coal and manufacturing employment, the dominant industries for generations, involved physically demanding but not aerobically active work. As those industries declined, unemployment and economic anxiety increased, both associated with higher obesity rates in public health research. Mississippi (40.4%) and Louisiana (39.2%) follow West Virginia for similar combinations of poverty, rural food access gaps, and limited physical activity infrastructure."
+
+  - id: "why_colorado_lowest"
+    icon: "fa-solid fa-person-hiking"
+    title: "Why Colorado Has the Lowest Obesity Rate"
+    paragraphs:
+      - "Colorado's 25.0% obesity rate, the lowest in the country, is shaped by a culture of outdoor recreation built into the state's geography and population. With 53 peaks above 14,000 feet and access to skiing, hiking, climbing, and cycling throughout the year, Colorado attracts and retains residents who prioritize physical activity. The state has the highest rate of residents meeting federal physical activity guidelines."
+      - "Demographics reinforce the pattern. Colorado has the highest share of college-educated adults at 46.4%. College education correlates with lower obesity rates nationally, driven by both income access enabling healthier food choices and higher health literacy. The state is also relatively young, with a median age below the national average, and obesity rates rise with age in every state."
+
+  - id: "southern_obesity_cluster"
+    icon: "fa-solid fa-map"
+    title: "The Southern States Cluster at the Top of the Obesity Rankings"
+    paragraphs:
+      - "Eight of the ten states with the highest obesity rates are in the South: West Virginia, Mississippi, Louisiana, Alabama, Arkansas, Oklahoma, Tennessee, and Kentucky. The concentration tracks closely with the poverty map, all eight are also among the twenty highest-poverty states. Limited access to fresh food, fewer recreational facilities, lower rates of health insurance, and food assistance programs that don't always provide access to nutritious options all contribute."
+      - "The pattern has persisted for decades. In 1990, no state had an obesity rate above 15%. By 2023, no state was below 20%, and the Southern cluster had pulled furthest from the national trajectory. States that expanded Medicaid and invested in community health programs have seen some improvement, but the geographic concentration remains."
+
+  - id: "how_obesity_is_measured"
+    icon: "fa-solid fa-clipboard-list"
+    title: "How Obesity Rates Are Measured"
+    paragraphs:
+      - "State obesity rates come from the CDC's Behavioral Risk Factor Surveillance System (BRFSS), an annual telephone survey of more than 400,000 adults. Respondents self-report their height and weight, which are used to calculate BMI. Adults with a BMI of 30 or higher are classified as obese. Self-reported data tends to understate obesity because people typically underreport weight and overreport height."
+      - "Clinical measurements from electronic health records consistently show higher obesity rates than self-reported surveys, suggesting all state figures may understate the true prevalence. Response rates also vary by state and demographic group. Rural, lower-income, and older adults respond at lower rates in some states, potentially affecting the accuracy of state-level estimates."
+
+visual_assets:
+  - id: colorado-obesity-placeholder
+    src: /images/rankings/health/states-by-obesity-rate/colorado-obesity-placeholder.jpg
+    alt: "Hiking path winding through a mountain landscape"
+    caption: "Easy access to outdoor recreation is one of the lifestyle factors often mentioned in low-obesity states."
+    section: why_colorado_lowest
+    layout: right  - id: southern-obesity-placeholder
+    src: /images/rankings/health/states-by-obesity-rate/southern-obesity-placeholder.jpg
+    alt: "Wide road running through a small Southern town with scattered businesses"
+    caption: "Built environments with long driving distances and fewer recreation options can shape everyday activity patterns."
+    section: southern_obesity_cluster
+    layout: left
+
 faq:
   - question: "Which state has the highest obesity rate"
-    answer: "Mississippi has the highest adult obesity rate in the U.S. at over 40%. The state consistently ranks last on health metrics including obesity, diabetes, and physical inactivity. Factors include high poverty rates, limited access to fresh food, few safe spaces for physical activity in rural areas, and a food culture heavy in calorie-dense traditional dishes."
+    answer: "West Virginia has the highest adult obesity rate in the U.S. at 41.4%. The state's high poverty rate, rural food access gaps, and legacy of extractive industries that left limited physical activity infrastructure all contribute. Mississippi (40.4%) follows closely."
   - question: "Which state has the lowest obesity rate"
-    answer: "Colorado has the lowest adult obesity rate in the U.S. at around 23%. The state's active outdoor recreation culture — skiing, hiking, cycling — paired with a younger, highly educated population and strong public health infrastructure contribute to lower obesity rates."
+    answer: "Colorado has the lowest adult obesity rate in the U.S. at 25.0%. The state's active outdoor recreation culture — skiing, hiking, cycling — paired with a younger, highly educated population and strong public health infrastructure contribute to lower obesity rates."
   - question: "Why do Southern states have higher obesity rates"
     answer: "Obesity rates in Southern states reflect a combination of higher poverty, lower educational attainment, greater food insecurity, fewer recreational facilities, a hotter climate that limits outdoor activity, and weaker public health investment. These are structural and systemic factors, not individual choices alone."
   - question: "What health risks are associated with obesity"

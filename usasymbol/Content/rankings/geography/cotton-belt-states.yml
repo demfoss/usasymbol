@@ -1,0 +1,202 @@
+type: ranking
+slug: cotton-belt-states
+category: geography
+url: /rankings/geography/cotton-belt-states
+auto_link_phrases:
+  - "cotton belt states"
+  - "what states are in the cotton belt"
+  - "cotton belt map"
+  - "cotton belt region"
+hero_image: "/images/rankings/geography/cotton-belt-states/cotton-field-mississippi-delta.jpg"
+hero_image_alt: "Cotton field in full bloom in the Mississippi Delta, with white bolls ready for harvest against a flat horizon"
+hero_image_caption: "Mississippi is at the geographic center of the historic Cotton Belt. The Delta counties of northwestern Mississippi were among the most intensively cotton-farmed land in the world during the 19th and early 20th centuries."
+
+author: "USA Symbol Team"
+date_published: "2026-06-03"
+date_modified: "2026-06-03"
+
+seo:
+  title: "Cotton Belt States | Historic Region and Map"
+  description: "Mississippi and Alabama anchor the historic Cotton Belt. See the core states, the wider list, and how Texas fits the region today."
+
+page:
+  h1: "Cotton Belt States: Core States, Full List, and Historic Map"
+
+  quick_answer:
+    - "The Cotton Belt is the historic cotton-growing region of the American South, centered on Mississippi, Alabama, and Georgia. Its core includes 6 states — Alabama, Arkansas, Georgia, Louisiana, Mississippi, and South Carolina — where cotton was the dominant crop in the antebellum economy."
+    - "Texas now ranks 1st in U.S. cotton production at approximately 7,000,000 planted acres but is classified as Extended Cotton Belt because its dominant production area — the irrigated High Plains near Lubbock — is a 20th-century development, not the historic belt. Louisiana ranks last among the 10 states at approximately 75,000 acres."
+    - "Note: 'Cotton Belt' also refers to the St. Louis Southwestern Railway, a freight railroad that ran through Texas, Arkansas, and Tennessee. The railroad and the agricultural region share the name but are unrelated — this page covers the geographic region."
+
+  methodology: "Cotton Belt classification (Core / Extended) reflects the historic geographic consensus — states where short-staple cotton was the primary cash crop in the antebellum South and through the early 20th century, per USDA historical records and academic literature. Planted acreage figures are approximate 2022 values from USDA NASS and reflect whole-state modern production, not only the Cotton Belt portion of each state."
+
+  sources:
+    - name: "USDA NASS — Cotton Planted Area"
+      url: "https://www.nass.usda.gov/Statistics_by_Subject/index.php?sector=CROPS"
+      description: "Annual state-level cotton planted acreage from USDA National Agricultural Statistics Service"
+    - name: "USDA Economic Research Service — Cotton"
+      url: "https://www.ers.usda.gov/topics/crops/cotton-wool/"
+      description: "USDA historical and current cotton production data including the geographic shift from the historic Cotton Belt to modern production areas"
+
+map:
+  title: "Cotton Belt States Map"
+  image: "/images/rankings/geography/cotton-belt-states/cotton-belt-states-map.webp"
+  image_alt: "Map of the southeastern United States showing Cotton Belt core states in dark orange and extended states in light orange"
+  caption: "The 6 core Cotton Belt states form a contiguous block from South Carolina through the Mississippi Delta to Arkansas. Eastern Texas, west Tennessee, and southeastern North Carolina mark the region's edges."
+  metric_key: cotton_belt_score
+  metric_label: "Belt"
+  tooltip_label: cotton_belt
+  color_scheme: orange
+  color_scale: linear
+  tooltip_fields:
+    - key: state
+      label: "State"
+    - key: cotton_belt
+      label: "Classification"
+    - key: planted_acres_k
+      label: "Cotton acres (000s, 2022)"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    cotton_belt: "Classification"
+    planted_acres_k: "Cotton Acres (000s, 2022)"
+    notes: "Notes"
+
+  metric_default: planted_acres_k
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      cotton_belt: "Extended"
+      cotton_belt_score: 2
+      planted_acres_k: 7000
+      notes: "Eastern TX is historic Cotton Belt; the irrigated High Plains near Lubbock dominate modern U.S. production."
+
+    - rank: 2
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      cotton_belt: "Core"
+      cotton_belt_score: 3
+      planted_acres_k: 1100
+      notes: "Eli Whitney invented the cotton gin at a Georgia plantation in 1793, making short-staple cotton commercially viable across the South."
+
+    - rank: 3
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      cotton_belt: "Core"
+      cotton_belt_score: 3
+      planted_acres_k: 480
+      notes: "The Black Belt counties (Dallas, Lowndes, Wilcox) are named for the dark calcareous soil ideal for cotton."
+
+    - rank: 4
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      cotton_belt: "Core"
+      cotton_belt_score: 3
+      planted_acres_k: 390
+      notes: "Delta counties (Bolivar, Coahoma, Sunflower) were the antebellum Cotton Belt's geographic and economic core."
+
+    - rank: 5
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      cotton_belt: "Core"
+      cotton_belt_score: 3
+      planted_acres_k: 375
+      notes: "The Arkansas Delta (Phillips, Crittenden, Mississippi counties) along the Mississippi River is the state's Cotton Belt core."
+
+    - rank: 6
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      cotton_belt: "Extended"
+      cotton_belt_score: 2
+      planted_acres_k: 310
+      notes: "Southeastern counties (Bladen, Columbus, Robeson) mark the Cotton Belt's northeastern edge; tobacco dominated the Piedmont."
+
+    - rank: 7
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      cotton_belt: "Core"
+      cotton_belt_score: 3
+      planted_acres_k: 230
+      notes: "Coastal counties also produced Sea Island cotton, a premium long-staple variety, before the Civil War."
+
+    - rank: 8
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      cotton_belt: "Extended"
+      cotton_belt_score: 2
+      planted_acres_k: 155
+      notes: "Southeastern counties (LeFlore, Choctaw, McCurtain) extend the Arkansas Cotton Belt; the boll weevil collapsed production by the 1930s."
+
+    - rank: 9
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      cotton_belt: "Extended"
+      cotton_belt_score: 2
+      planted_acres_k: 135
+      notes: "Only west Tennessee (Shelby, Haywood, Fayette counties) is Cotton Belt; Memphis was the world's largest cotton market in the 1880s."
+
+    - rank: 10
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      cotton_belt: "Core"
+      cotton_belt_score: 3
+      planted_acres_k: 75
+      notes: "Northern parishes (Madison, East Carroll, Tensas) were core Cotton Belt; New Orleans was the antebellum South's primary cotton export port."
+
+sections:
+  - id: "what-states-are-in-the-cotton-belt"
+    icon: "fa-solid fa-map-location-dot"
+    title: "What States Are in the Cotton Belt?"
+    paragraphs:
+      - "Six states form the Cotton Belt core: Alabama, Arkansas, Georgia, Louisiana, Mississippi, and South Carolina. Cotton was the dominant cash crop in all six during the antebellum period. Eli Whitney's cotton gin, invented at a Georgia plantation in 1793, made short-staple cotton viable across the region and triggered the plantation economy that defined the antebellum South."
+      - "Four states form the extended Cotton Belt: North Carolina (southeastern counties), Oklahoma (southeastern counties), Tennessee (western counties only), and Texas (eastern counties). Texas now ranks 1st in the U.S. at approximately 7,000,000 planted acres, but its dominant production area — the irrigated High Plains near Lubbock — is a 20th-century development unrelated to the historic belt."
+
+  - id: "cotton-belt-railroad-disambiguation"
+    icon: "fa-solid fa-train"
+    title: "Cotton Belt the Railroad: Not the Same Thing"
+    paragraphs:
+      - "The St. Louis Southwestern Railway was known as the Cotton Belt Route, a freight railroad founded in 1877. It ran from Dallas and Houston through Texarkana and Little Rock to Memphis and St. Louis, built specifically to haul cotton from Texas and Arkansas to Mississippi River ports. Southern Pacific absorbed it in 1932; Union Pacific acquired it in 1992."
+      - "Searches for 'Cotton Belt' frequently return railroad results alongside geographic results. They share a name because the railroad was built to serve the agricultural region, but are distinct: the Cotton Belt region covers 10 states; the Cotton Belt railway route covered a single corridor through 4."
+
+visual_assets:
+  - id: cotton-field-mississippi-delta
+    src: /images/rankings/geography/cotton-belt-states/cotton-field-mississippi-delta.jpg
+    alt: Cotton field in the Mississippi Delta with white bolls ready for harvest
+    caption: The Mississippi Delta's flat, alluvial plain is the geographic center of the Cotton Belt. Despite ranking 4th in modern cotton acreage at approximately 390,000 planted acres, Mississippi's Delta counties were the antebellum Belt's economic core.
+    section: what-states-are-in-the-cotton-belt
+    layout: right
+
+faq:
+  - question: "What states are in the Cotton Belt?"
+    answer: "Six states form the Cotton Belt core: Alabama, Arkansas, Georgia, Louisiana, Mississippi, and South Carolina. Four states are in the extended Cotton Belt: North Carolina (southeast), Oklahoma (southeast), Tennessee (west), and Texas (east). The region centers on the Mississippi Delta and the Deep South states most economically dependent on cotton before the Civil War."
+
+  - question: "What is the Cotton Belt region?"
+    answer: "The Cotton Belt is the historic geographic region of the American South where short-staple cotton was the dominant cash crop from the late 18th century through the early 20th century. It centers on Mississippi, Alabama, and Georgia. Today, Texas leads U.S. cotton production at approximately 7,000,000 planted acres, but Georgia (1,100,000 acres) is the leading Core Belt state in modern output."
+
+  - question: "Is the Cotton Belt the same as the Deep South?"
+    answer: "They strongly overlap but are not identical. The five core Deep South states — Alabama, Georgia, Louisiana, Mississippi, and South Carolina — are all core Cotton Belt states. Arkansas is in the Cotton Belt but debated as Deep South. North Carolina, Tennessee, Texas, and Oklahoma have Cotton Belt regions but are not typically called Deep South."
+
+  - question: "What is the Cotton Belt railroad?"
+    answer: "The Cotton Belt Route is the nickname for the St. Louis Southwestern Railway, a freight railroad founded in 1877. Its route ran from Dallas and Houston through Little Rock and Memphis to St. Louis. Southern Pacific absorbed it in 1932; Union Pacific acquired it in 1992. It is unrelated to the geographic Cotton Belt region beyond sharing the name."
+
+related:
+  - title: "Deep South States"
+    url: "/rankings/geography/deep-south-states"
+  - title: "Black Belt States"
+    url: "/rankings/geography/black-belt-states"
+  - title: "Bible Belt States"
+    url: "/rankings/geography/bible-belt-states"
