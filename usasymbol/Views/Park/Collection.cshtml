@@ -536,7 +536,7 @@
                                     <div class="flex flex-col">
                                         @if (!string.IsNullOrWhiteSpace(overview))
                                         {
-                                            <p class="text-[15px] leading-[26px] text-slate-700 flex-1">@overview</p>
+                                            <p class="text-[15px] leading-[26px] text-slate-700 flex-1">@overview.RenderAutoLinks()</p>
                                         }
                                         <a href="/national-parks/@park.Slug"
                                            class="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold text-emerald-700 hover:text-emerald-900 transition">
