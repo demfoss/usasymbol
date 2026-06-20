@@ -125,8 +125,19 @@ namespace USASymbol.Models.ViewModels
     {
         public List<PageCategory> Categories { get; set; } = new();
         public bool HasCategories => Categories?.Any() == true;
+    }
 
+    public class SubcategoryFilterOption
+    {
+        public string Value { get; set; } = "";
+        public string Label { get; set; } = "";
+        public int Count { get; set; }
+    }
 
-        public bool IsGroupPage { get; set; }
+    public class PageCategoryViewModel
+    {
+        public PageCategory Category { get; set; } = new();
+        public List<PageCategoryItem> MostPopular { get; set; } = new();
+        public List<SubcategoryFilterOption> SubcategoryFilters { get; set; } = new();
     }
 }

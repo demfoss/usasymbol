@@ -96,7 +96,7 @@
 
         if (symbolModel.HasFaq)
         {
-            Add("faq", "Quick Answers", "fa-regular fa-circle-question");
+            Add("faq", "FAQ", "fa-regular fa-circle-question");
         }
 
         if (symbolModel.HasSources)
@@ -122,7 +122,7 @@
 
         if (pageModel.HasRows)
         {
-            Add(pageModel.IsCollection ? "collection-table" : pageModel.IsRanking ? "ranking-table" : "listing-table", "Browse The List", "fa-regular fa-rectangle-list");
+            Add(pageModel.IsCollection ? "collection-table" : pageModel.IsRanking ? "ranking-table" : "listing-table", "Table", "fa-regular fa-rectangle-list");
         }
 
         if (pageModel.HasInsights)
@@ -137,7 +137,7 @@
 
         if (pageModel.HasFaq)
         {
-            Add("faq", "Quick Answers", "fa-regular fa-circle-question");
+            Add("faq", "FAQ", "fa-regular fa-circle-question");
         }
 
         Add("sources", "Sources", "fa-solid fa-book");
@@ -175,7 +175,7 @@
 
         if (surnamesModel.Content?.Faq?.Any() == true)
         {
-            Add("faq", "Quick Answers", "fa-regular fa-circle-question");
+            Add("faq", "FAQ", "fa-regular fa-circle-question");
         }
 
         if (surnamesModel.Content?.Sources?.Any() == true)
@@ -246,7 +246,7 @@
                     <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center text-slate-900">
                         <i class="fa-solid fa-chevron-up text-xs"></i>
                     </span>
-                    <span>Back to Top</span>
+                    <span>Top</span>
                 </button>
             </div>
         </div>

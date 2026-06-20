@@ -3,6 +3,7 @@ using USASymbol.Models.Content;
 using USASymbol.Models.ViewModels;
 using USASymbol.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace USASymbol.Controllers
@@ -52,7 +53,7 @@ namespace USASymbol.Controllers
                 ViewData["Title"]       = $"{cat.Title} Collections";
                 ViewData["Description"] = $"Browse U.S. state collections related to {cat.Title.ToLower()}";
 
-                return View("Index", new PageHubViewModel { Categories = new List<PageCategory> { cat }, IsGroupPage = true });
+                return View("Category", BuildCategoryViewModel(cat));
             }
             catch (System.Exception ex)
             {
@@ -87,6 +88,28 @@ namespace USASymbol.Controllers
                 _logger.LogError(ex, "Error loading collection: {Group}/{Slug}", group, slug);
                 throw;
             }
+        }
+
+        private static PageCategoryViewModel BuildCategoryViewModel(PageCategory cat)
+        {
+            var mostPopular = cat.Items
+                .OrderByDescending(i => i.DateModified ?? i.DatePublished ?? System.DateTime.MinValue)
+                .Take(2)
+                .ToList();
+
+            var subcategoryFilters = cat.Items
+                .GroupBy(i => string.IsNullOrWhiteSpace(i.Subcategory) ? "Not set" : i.Subcategory!)
+                .Select(g => new SubcategoryFilterOption { Value = g.Key, Label = g.Key, Count = g.Count() })
+                .OrderBy(f => f.Value == "Not set" ? 1 : 0)
+                .ThenByDescending(f => f.Count)
+                .ToList();
+
+            return new PageCategoryViewModel
+            {
+                Category = cat,
+                MostPopular = mostPopular,
+                SubcategoryFilters = subcategoryFilters,
+            };
         }
     }
 }

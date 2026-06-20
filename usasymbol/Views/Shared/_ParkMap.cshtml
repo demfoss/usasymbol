@@ -25,7 +25,7 @@
             @if (!string.IsNullOrWhiteSpace(Model.Map.GoogleSearchUrl))
             {
                 <a href="@Model.Map.GoogleSearchUrl"
-                   target="_blank" rel="noopener noreferrer"
+                   target="_blank" rel="nofollow noopener noreferrer"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-800 text-white text-sm font-semibold rounded-lg transition active:scale-95">
                     <i class="fa-solid fa-location-dot text-xs"></i>
                     Open in Google Maps
@@ -34,7 +34,7 @@
             @if (!string.IsNullOrWhiteSpace(Model.Map.GoogleDirectionsUrl))
             {
                 <a href="@Model.Map.GoogleDirectionsUrl"
-                   target="_blank" rel="noopener noreferrer"
+                   target="_blank" rel="nofollow noopener noreferrer"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-800 text-sm font-semibold rounded-lg border border-slate-300 transition active:scale-95">
                     <i class="fa-solid fa-route text-xs text-green-700"></i>
                     Get Directions
@@ -60,7 +60,7 @@
     var map = L.map('@mapId', { zoomControl: true, scrollWheelZoom: false }).setView([@lat, @lng], @zoom);
 
     var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="nofollow noopener noreferrer">OpenStreetMap</a> contributors',
         maxZoom: 18
     });
 

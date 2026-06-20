@@ -18,6 +18,9 @@ namespace USASymbol.Extensions
             if (string.IsNullOrWhiteSpace(normalizedType))
                 return $"/states/{normalizedStateSlug}";
 
+            if (normalizedType == "sports")
+                normalizedType = "sport";
+
             if (string.IsNullOrWhiteSpace(normalizedSymbolSlug))
                 return $"/states/{normalizedStateSlug}/{normalizedType}";
 

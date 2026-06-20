@@ -216,8 +216,8 @@
                             <li><a asp-controller="Home" asp-action="About">About Us</a></li>
                             <li><a href="/contact">Contact</a></li>
                             <li><a href="/privacy">Privacy Policy</a></li>
-                            <li><a href="?cmpscreen">Update Privacy Settings</a></li>
-                            <li><a href="?cmpscreencustom">Do Not Sell or Share My Personal Information</a></li>
+                            <li><button type="button" class="cmpfooterlink" data-cmp-action="screen">Update Privacy Settings</button></li>
+                            <li><button type="button" class="cmpoptoutfooterlink" data-cmp-action="custom">Do Not Sell or Share My Personal Information</button></li>
                             <li><a href="/terms">Terms of Use</a></li>
                         </ul>
                     </div>
@@ -238,6 +238,15 @@
 
     <script defer src="~/js/site.js" asp-append-version="true"></script>
     <script>
+        function openCmpScreen(mode) {
+            var currentUrl = new URL(window.location.href);
+            var paramName = mode === 'custom' ? 'cmpscreencustom' : 'cmpscreen';
+
+            currentUrl.search = '';
+            currentUrl.searchParams.set(paramName, '');
+            window.location.assign(currentUrl.toString());
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('a[data-email-user][data-email-domain]').forEach(function (link) {
                 var user = link.dataset.emailUser;
@@ -253,6 +262,24 @@
                     ? 'mailto:' + email + '?subject=' + encodeURIComponent(subject)
                     : 'mailto:' + email;
             });
+
+            document.querySelectorAll('[data-cmp-action]').forEach(function (trigger) {
+                trigger.addEventListener('click', function () {
+                    openCmpScreen(trigger.dataset.cmpAction);
+                });
+            });
+
+            var url = new URL(window.location.href);
+            var hasCmpParam = url.searchParams.has('cmpscreen') || url.searchParams.has('cmpscreencustom');
+
+            if (hasCmpParam) {
+                url.searchParams.delete('cmpscreen');
+                url.searchParams.delete('cmpscreencustom');
+                var cleanedUrl = url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : '') + url.hash;
+                window.setTimeout(function () {
+                    window.history.replaceState({}, document.title, cleanedUrl);
+                }, 1500);
+            }
         });
     </script>
 

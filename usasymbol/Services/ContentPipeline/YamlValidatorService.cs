@@ -60,6 +60,7 @@ public sealed class YamlValidatorService
             var faqItems = CountFaqItems(root);
             var linkCount = Regex.Matches(yamlText, @"\[[^\]]+\]\([^)]+\)").Count;
             ValidateSurnamesFields(root, issues);
+            ValidateColorData(root, issues);
 
             if (string.IsNullOrWhiteSpace(titleField.Value))
             {
@@ -194,6 +195,46 @@ public sealed class YamlValidatorService
         ValidateOrigins(root, "unique_surnames", issues);
         ValidateEtymologyIcons(root, issues);
         ValidateSurnamesStructure(root, issues);
+    }
+
+    private static void ValidateColorData(YamlMappingNode root, List<PipelineCheckIssueModel> issues)
+    {
+        if (!root.Children.TryGetValue(new YamlScalarNode("color_data"), out var node))
+        {
+            return;
+        }
+
+        if (node is not YamlSequenceNode sequence || sequence.Children.Count == 0)
+        {
+            issues.Add(Issue("color_data.invalid", "error", "`color_data` must contain at least one color.", "color_data"));
+            return;
+        }
+
+        var requiredFields = new[] { "name", "hex", "rgb", "cmyk", "pantone" };
+        var index = 0;
+        foreach (var child in sequence.Children)
+        {
+            index++;
+            if (child is not YamlMappingNode color)
+            {
+                issues.Add(Issue("color_data.invalid", "error", $"Color #{index} must be a mapping.", $"color_data[{index}]"));
+                continue;
+            }
+
+            foreach (var field in requiredFields)
+            {
+                if (!color.Children.TryGetValue(new YamlScalarNode(field), out var value) ||
+                    string.IsNullOrWhiteSpace((value as YamlScalarNode)?.Value))
+                {
+                    issues.Add(Issue("color_data.invalid", "error", $"Color #{index} is missing `{field}`.", $"color_data[{index}].{field}"));
+                }
+            }
+
+            if (color.Children.ContainsKey(new YamlScalarNode("url")))
+            {
+                issues.Add(Issue("color_data.source_misplaced", "error", $"Color #{index} contains `url`; source entries belong under `sources`.", $"color_data[{index}].url"));
+            }
+        }
     }
 
     private static void ValidateSurnamesStructure(YamlMappingNode root, List<PipelineCheckIssueModel> issues)

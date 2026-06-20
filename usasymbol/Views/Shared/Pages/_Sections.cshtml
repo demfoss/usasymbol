@@ -1,118 +1,33 @@
 @model USASymbol.Models.ViewModels.PageDetailViewModel
-@using System.Text.RegularExpressions
 @using USASymbol.Models.ViewModels
 @using USASymbol.Models.Content
 @using USASymbol.Extensions
 @inject IImageUrlService Images
 
 @functions {
-    private sealed class SectionMetaItem
+    private static bool IsLawCardsSection(PageSection section)
     {
-        public string Label { get; set; } = string.Empty;
-        public string Value { get; set; } = string.Empty;
-    }
-
-    private static List<SectionMetaItem> ExtractLeadingMeta(string? markdown, out string remaining)
-    {
-        var items = new List<SectionMetaItem>();
-        if (string.IsNullOrWhiteSpace(markdown))
+        if (string.Equals(section.Style, "law-cards", StringComparison.OrdinalIgnoreCase))
         {
-            remaining = string.Empty;
-            return items;
+            return true;
         }
 
-        var text = markdown.Replace("\r\n", "\n").Trim();
-        var lines = text.Split('\n').ToList();
-        var index = 0;
-
-        while (index < lines.Count)
+        if (section.Highlights?.Any() == true)
         {
-            var line = lines[index].Trim();
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                index++;
-                continue;
-            }
-
-            var match = Regex.Match(
-                line,
-                @"^\*\*(?<label>[^*\n]+?)\*\*(?:\s*(?<value>.+))?$",
-                RegexOptions.CultureInvariant);
-
-            if (!match.Success)
-            {
-                break;
-            }
-
-            var labelRaw = (match.Groups["label"].Value ?? string.Empty).Trim();
-            var valueRaw = (match.Groups["value"].Value ?? string.Empty).Trim();
-
-            if (labelRaw.EndsWith(":", StringComparison.Ordinal))
-            {
-                labelRaw = labelRaw[..^1].Trim();
-            }
-            else if (string.IsNullOrWhiteSpace(valueRaw))
-            {
-                var colonIndex = labelRaw.IndexOf(':');
-                if (colonIndex > 0 && colonIndex < labelRaw.Length - 1)
-                {
-                    valueRaw = labelRaw[(colonIndex + 1)..].Trim();
-                    labelRaw = labelRaw[..colonIndex].Trim();
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(labelRaw) || string.IsNullOrWhiteSpace(valueRaw))
-            {
-                break;
-            }
-
-            items.Add(new SectionMetaItem
-            {
-                Label = labelRaw,
-                Value = valueRaw
-            });
-
-            index++;
+            return true;
         }
 
-        remaining = string.Join("\n", lines.Skip(index)).Trim();
-        return items;
-    }
-
-    private static List<string> SplitParagraphs(string? markdown)
-    {
-        if (string.IsNullOrWhiteSpace(markdown))
+        if (section.Subsections?.Any() == true && section.Subsections.Any(sub => !string.IsNullOrWhiteSpace(sub.Status)))
         {
-            return new List<string>();
+            return true;
         }
 
-        return Regex
-            .Split(markdown.Replace("\r\n", "\n").Trim(), @"\n\s*\n")
-            .Select(block => block.Trim())
-            .Where(block => !string.IsNullOrWhiteSpace(block))
-            .ToList();
-    }
-
-    private static string SlugifyKey(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return string.Empty;
-        }
-
-        var normalized = value.ToLowerInvariant();
-        normalized = Regex.Replace(normalized, @"[^a-z0-9]+", "-");
-        return normalized.Trim('-');
+        return false;
     }
 }
 
 @{
     var visuals = Model as IHasVisualAssets;
-
-    var visualLookup = visuals?.VisualAssets?
-        .Where(v => !string.IsNullOrEmpty(v.Id))
-        .ToDictionary(v => v.Id, v => v, StringComparer.OrdinalIgnoreCase)
-        ?? new Dictionary<string, VisualAsset>(StringComparer.OrdinalIgnoreCase);
 
     var fullWidthImg = visuals?.VisualAssets?.FirstOrDefault(v =>
         (v.Layout == "full-width" || v.Layout == "full-width-tall") &&
@@ -149,20 +64,13 @@
                  aria-label="@sect.Title">
 
             <header class="mb-5 lg:mb-6">
-                <div class="flex items-center gap-3 mb-2">
-                    <span class="text-[11px] font-semibold tracking-widest uppercase text-gray-500">
-                        Section
-                    </span>
-                    <span class="h-px flex-1 bg-gray-200/70"></span>
-                </div>
-
                 @if (!string.IsNullOrWhiteSpace(sect.Icon))
                 {
-                    <div class="flex items-center gap-4">
-                        <span class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+                    <div class="flex items-center gap-3 md:gap-4">
+                        <span class="inline-flex h-9 w-9 shrink-0 min-h-[2.25rem] min-w-[2.25rem] items-center justify-center rounded-xl bg-slate-900 text-white">
                             <i class="@sect.Icon text-sm" aria-hidden="true"></i>
                         </span>
-                        <h2 class="content-h2">
+                        <h2 class="content-h2 !leading-[1.12]">
                             @sect.Title
                         </h2>
                     </div>
@@ -283,6 +191,10 @@
                         }
                     </div>
                 }
+                else if (IsLawCardsSection(sect))
+                {
+                    @await Html.PartialAsync("Components/Cards/_LawCardsSection", (sect, (IReadOnlyList<VisualAsset>)(visuals?.VisualAssets ?? Array.Empty<VisualAsset>())))
+                }
                 else if (style == "gradient")
                 {
                 }
@@ -291,61 +203,65 @@
                     <div class="mt-6 space-y-6">
                         @foreach (var sub in sect.Subsections)
                         {
-                            var metaItems = ExtractLeadingMeta(sub.Text, out var subsectionBody);
-                            var bodyParagraphs = SplitParagraphs(subsectionBody);
-                            var subsectionAssetKey = $"{sect.Id}::{SlugifyKey(sub.Subtitle)}";
-                            var subsectionAssets = visuals?.VisualAssets?
-                                .Where(v => !string.IsNullOrWhiteSpace(v.Section) &&
-                                            string.Equals(v.Section, subsectionAssetKey, StringComparison.OrdinalIgnoreCase))
-                                .ToList() ?? new List<VisualAsset>();
-
-                            <article class="border-l-2 border-slate-200 pl-4 md:pl-5">
+                            <article>
                                 <h3 class="content-h3 text-slate-900">@sub.Subtitle</h3>
 
-                                <div class="mt-4">
-                                    @foreach (var asset in subsectionAssets)
-                                    {
-                                        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
-                                    }
+                                @if (!string.IsNullOrEmpty(sub.Text))
+                                {
+                                    <div class="mt-4 prose prose-lg text-gray-800">
+                                        <p>@sub.Text.RenderAutoLinks()</p>
+                                    </div>
+                                }
 
-                                    @if (metaItems.Any())
-                                    {
-                                        <dl class="mb-4 flex flex-wrap gap-2.5">
-                                            @foreach (var item in metaItems)
-                                            {
-                                                <div class="rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2">
-                                                    <dt class="inline text-[11px] font-bold tracking-widest text-slate-500 uppercase">@item.Label:</dt>
-                                                    <dd class="ml-1 inline text-[14px] leading-6 text-slate-900">@item.Value</dd>
-                                                </div>
-                                            }
-                                        </dl>
-                                    }
-
-                                    @if (bodyParagraphs.Any())
-                                    {
-                                        <div class="prose prose-lg text-gray-800">
-                                            @for (int p = 0; p < bodyParagraphs.Count; p++)
-                                            {
-                                                <p class="content-p @(p == 0 && !metaItems.Any() ? "text-gray-900" : "text-gray-800")">
-                                                    @bodyParagraphs[p].RenderAutoLinks()
-                                                </p>
-                                            }
-                                        </div>
-                                    }
-
-                                    @if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
-                                    {
-                                        <div class="mt-4">
-                                            <a href="@sub.Link.Url"
-                                               class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
-                                                <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
-                                                <i class="fas fa-arrow-right text-xs"></i>
-                                            </a>
-                                        </div>
-                                    }
-                                </div>
+                                @if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
+                                {
+                                    <div class="mt-4">
+                                        <a href="@sub.Link.Url"
+                                           target="@(sub.Link.Url.IsExternalUrl() ? "_blank" : null)"
+                                           rel="@(sub.Link.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
+                                           class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
+                                            <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
+                                            <i class="fas fa-arrow-right text-xs"></i>
+                                        </a>
+                                    </div>
+                                }
 
                                 <div class="clear-both"></div>
+                            </article>
+                        }
+                    </div>
+                }
+            }
+
+            @if (sect.Highlights?.Any() == true)
+            {
+                @if (sect.Subsections?.Any() != true)
+                {
+                    @await Html.PartialAsync("Components/Cards/_LawCardsSection", (sect, (IReadOnlyList<VisualAsset>)(visuals?.VisualAssets ?? Array.Empty<VisualAsset>())))
+                }
+                else if (!IsLawCardsSection(sect))
+                {
+                    <div class="mt-6 space-y-4">
+                        @foreach (var h in sect.Highlights)
+                        {
+                            <article class="overflow-hidden border border-slate-200 bg-white">
+                                <div class="grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)]">
+                                    @if (!string.IsNullOrEmpty(h.Image))
+                                    {
+                                        <div class="relative aspect-square sm:aspect-auto bg-slate-100 sm:min-h-[180px] lg:min-h-[220px]">
+                                            <img src="@Images.Card(h.Image)"
+                                                 alt="@h.Name"
+                                                 class="absolute inset-0 h-full w-full object-cover"
+                                                 loading="lazy" decoding="async" />
+                                        </div>
+                                    }
+                                    <div class="flex min-w-0 flex-col justify-center px-5 py-5 lg:px-6 lg:py-6">
+                                        <h3 class="text-[18px] font-bold leading-snug text-black">@h.Name</h3>
+                                        <div class="mt-2 text-[16px] leading-7 text-slate-700 [&_p]:m-0 [&_p]:text-[16px] [&_p]:leading-7 [&_p]:text-slate-700">
+                                            @h.Description.RenderMarkdown()
+                                        </div>
+                                    </div>
+                                </div>
                             </article>
                         }
                     </div>
@@ -388,32 +304,6 @@
                 }
             }
 
-            @if (sect.Highlights?.Any() == true)
-            {
-                <div class="mt-6 space-y-4">
-                    @foreach (var h in sect.Highlights)
-                    {
-                        <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                            <div class="grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)]">
-                                @if (!string.IsNullOrEmpty(h.Image))
-                                {
-                                    <div class="relative aspect-square sm:aspect-auto bg-slate-50 sm:min-h-[180px]">
-                                        <img src="@Images.Card(h.Image)"
-                                             alt="@h.Name"
-                                             class="absolute inset-0 h-full w-full object-contain p-4"
-                                             loading="lazy" decoding="async" />
-                                    </div>
-                                }
-                                <div class="p-5 lg:p-6 flex flex-col justify-center min-w-0">
-                                    <h3 class="text-[16px] font-semibold leading-snug text-slate-900">@h.Name</h3>
-                                    <p class="mt-2 text-[14px] leading-[1.7] text-slate-600">@h.Description.RenderMarkdown()</p>
-                                </div>
-                            </div>
-                        </article>
-                    }
-                </div>
-            }
-
             <div class="clear-both"></div>
         </section>
 
@@ -429,7 +319,7 @@
             timelineDone = true;
         }
 
-        @if (i == 2 && !statDone && pageContent?.BigStat != null)
+        @if (i == 1 && !statDone && pageContent?.BigStat != null)
         {
             @await Html.PartialAsync("Components/Story/_BigStat", pageContent.BigStat)
             statDone = true;

@@ -8,6 +8,7 @@ using USASymbol.Models.ViewModels;
 using USASymbol.Services;
 using USASymbol.Services.Interface;
 using usasymbol.Services.Interface;
+using Usasymbol.Helpers;
 
 namespace USASymbol.Controllers
 {
@@ -17,6 +18,7 @@ namespace USASymbol.Controllers
         private readonly ILatestContentRailService _latestContentRailService;
         private readonly IComparisonStatsService _statsService;
         private readonly IStateService _stateService;
+        private readonly IMapPngService _mapPngService;
         private readonly ILogger<RankingsController> _logger;
 
         public RankingsController(
@@ -24,12 +26,14 @@ namespace USASymbol.Controllers
             ILatestContentRailService latestContentRailService,
             IComparisonStatsService statsService,
             IStateService stateService,
+            IMapPngService mapPngService,
             ILogger<RankingsController> logger)
         {
             _service = service;
             _latestContentRailService = latestContentRailService;
             _statsService = statsService;
             _stateService = stateService;
+            _mapPngService = mapPngService;
             _logger  = logger;
         }
 
@@ -62,7 +66,7 @@ namespace USASymbol.Controllers
                 ViewData["Title"]       = $"{cat.Title} Rankings";
                 ViewData["Description"] = $"Compare U.S. states by {cat.Title.ToLower()}";
 
-                return View("Index", new PageHubViewModel { Categories = new List<PageCategory> { cat } });
+                return View("Category", BuildCategoryViewModel(cat));
             }
             catch (System.Exception ex)
             {
@@ -86,6 +90,18 @@ namespace USASymbol.Controllers
                 if (content.ComputedData != null && content.Tables.Count == 0)
                     await BuildComputedTableAsync(content);
 
+                // Pre-generate map PNG so OG image and hero fallback are available immediately
+                if (content.Map != null && content.Table?.Rows?.Count > 0)
+                {
+                    var choropleth = string.IsNullOrWhiteSpace(content.Map.MetricKey)
+                        ? ChoroplethBuilder.BuildFlat(content.Table.Rows)
+                        : ChoroplethBuilder.Build(content.Map, content.Table.Rows);
+
+                    var mapPngPath = await _mapPngService.EnsureMapPngAsync(slug, choropleth.Entries);
+                    if (mapPngPath != null)
+                        ViewData["MapPngPath"] = mapPngPath;
+                }
+
                 ViewData["LatestContentRail"] = await _latestContentRailService.GetLatestItemsAsync(8);
                 return View("Ranking", new PageDetailViewModel { Content = content });
             }
@@ -94,6 +110,28 @@ namespace USASymbol.Controllers
                 _logger.LogError(ex, "Error loading ranking: {Category}/{Slug}", category, slug);
                 throw;
             }
+        }
+
+        private static PageCategoryViewModel BuildCategoryViewModel(PageCategory cat)
+        {
+            var mostPopular = cat.Items
+                .OrderByDescending(i => i.DateModified ?? i.DatePublished ?? System.DateTime.MinValue)
+                .Take(2)
+                .ToList();
+
+            var subcategoryFilters = cat.Items
+                .GroupBy(i => string.IsNullOrWhiteSpace(i.Subcategory) ? "Not set" : i.Subcategory!)
+                .Select(g => new SubcategoryFilterOption { Value = g.Key, Label = g.Key, Count = g.Count() })
+                .OrderBy(f => f.Value == "Not set" ? 1 : 0)
+                .ThenByDescending(f => f.Count)
+                .ToList();
+
+            return new PageCategoryViewModel
+            {
+                Category = cat,
+                MostPopular = mostPopular,
+                SubcategoryFilters = subcategoryFilters,
+            };
         }
 
         private async Task BuildComputedTableAsync(PageContent content)

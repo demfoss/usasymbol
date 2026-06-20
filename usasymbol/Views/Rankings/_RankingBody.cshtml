@@ -33,7 +33,7 @@
             @if (content?.Map != null)
             {
                 <section class="content-divider">
-                    @await Html.RenderMapBlockAsync(content.Map, content?.Table)
+                    @await Html.RenderMapBlockAsync(content.Map, content?.Table, content?.Slug)
                 </section>
             }
 
@@ -43,21 +43,21 @@
                         var slugRaw = (content?.Slug ?? "").Trim();
                         var slugWords = Regex.Replace(slugRaw, @"[-_]+", " ");
                         var slugTitle = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(slugWords.ToLowerInvariant());
+                        var pageHeading = !string.IsNullOrWhiteSpace(content?.Page?.H1) ? content.Page.H1.Trim() : slugTitle;
+                        var tableSectionHeading = !string.IsNullOrWhiteSpace(content?.Table?.Title)
+                            ? content.Table.Title
+                            : $"{pageHeading} Table";
+                        var tableVM = Model.ToTableSection();
                     }
 
                     <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
-                        @(!string.IsNullOrWhiteSpace(content?.Table?.Title)
-                            ? content.Table.Title
-                            : !string.IsNullOrWhiteSpace(content?.Page?.H1)
-                                ? content.Page.H1
-                                : $"US State {slugTitle} Rankings")
+                        @tableSectionHeading
                     </h2>
 
-                    <span class="hidden md:inline text-sm text-slate-500">Search, sort, and compare</span>
+                    <span id="resultsCounter" class="hidden md:inline shrink-0 text-sm text-slate-500">@tableVM.TotalRowsCount entries</span>
                 </div>
 
-                <div class="mt-5">
-                    @{ var tableVM = Model.ToTableSection(); }
+                <div class="mt-5 overflow-hidden border border-slate-200/80 bg-white/40">
                     @await Html.PartialAsync("Components/Tables/_Controls", tableVM)
                     @await Html.PartialAsync("Components/Tables/_Cards", tableVM)
                     @await Html.PartialAsync("Components/Tables/_Table", tableVM)
@@ -90,6 +90,34 @@
                 <section id="@methodologySectionId" class="scroll-mt-24 content-divider">
                     @await Html.PartialAsync("Pages/_MethodologySources", Model, ViewData)
                 </section>
+            }
+
+            @if (content?.QuizPromo != null)
+            {
+                var qp = content.QuizPromo;
+                var quizUrl = !string.IsNullOrWhiteSpace(qp.Slug) ? $"/quizzes/{qp.Slug}" : "/quizzes";
+                var quizIcon = !string.IsNullOrWhiteSpace(qp.Icon) ? qp.Icon : "fa-solid fa-graduation-cap";
+                var quizBtn  = !string.IsNullOrWhiteSpace(qp.ButtonText) ? qp.ButtonText : "Take the quiz";
+                var quizTitle = !string.IsNullOrWhiteSpace(qp.Title) ? qp.Title : "Test Your Knowledge";
+                var quizDesc  = !string.IsNullOrWhiteSpace(qp.Description) ? qp.Description : "Put what you've read to the test.";
+                <div class="content-divider">
+                    <a href="@quizUrl"
+                       class="group flex items-center justify-between gap-6 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-5 shadow-sm transition hover:border-blue-300 hover:shadow-md no-underline">
+                        <div class="flex items-center gap-4 min-w-0">
+                            <span class="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white text-lg shadow-sm">
+                                <i class="@quizIcon"></i>
+                            </span>
+                            <div class="min-w-0">
+                                <div class="text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">Quiz</div>
+                                <div class="mt-0.5 font-bold text-slate-900 text-base leading-snug">@quizTitle</div>
+                                <p class="mt-1 text-sm text-slate-600 leading-relaxed line-clamp-2">@quizDesc</p>
+                            </div>
+                        </div>
+                        <span class="flex-shrink-0 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition group-hover:bg-blue-700">
+                            @quizBtn <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </span>
+                    </a>
+                </div>
             }
 
             @if (content?.Compare != null)

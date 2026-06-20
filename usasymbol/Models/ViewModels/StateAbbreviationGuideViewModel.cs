@@ -10,6 +10,9 @@ namespace USASymbol.Models.ViewModels
         public string FormationDetail { get; set; } = string.Empty;
         public string SearchIntentSummary { get; set; } = string.Empty;
         public string SimilarCodesSummary { get; set; } = string.Empty;
+        public string CapitalZip { get; set; } = string.Empty;
+        public string ApStyleNote { get; set; } = string.Empty;
+        public string ConfusionWarning { get; set; } = string.Empty;
         public string? StateSpecificTitle { get; set; }
         public List<string> StateSpecificParagraphs { get; set; } = new();
         public List<State> SimilarStates { get; set; } = new();

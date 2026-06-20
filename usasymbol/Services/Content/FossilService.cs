@@ -2,6 +2,7 @@ using Microsoft.Extensions.Caching.Memory;
 using USASymbol.Models.Content;
 using USASymbol.Models.ViewModels;
 using USASymbol.Services.Interface;
+using USASymbol.Services.Yaml;
 
 namespace USASymbol.Services
 {
@@ -19,10 +20,19 @@ namespace USASymbol.Services
         public async Task<FossilContent?> GetFossilContentAsync(string stateSlug, string contentFileName = "fossil.yaml")
         {
             var normalizedFileName = string.IsNullOrWhiteSpace(contentFileName) ? "fossil.yaml" : contentFileName.Trim();
-            var path = Path.Combine(_env.ContentRootPath, "Content", "states", stateSlug, normalizedFileName);
+            var stateDir = Path.Combine(_env.ContentRootPath, "Content", "states", stateSlug);
+            var path = Path.Combine(stateDir, normalizedFileName);
 
             if (!File.Exists(path))
-                return null;
+            {
+                var discovered = Directory.Exists(stateDir)
+                    ? Directory.GetFiles(stateDir, "fossil*.yaml").OrderBy(f => f).FirstOrDefault()
+                    : null;
+                if (discovered == null)
+                    return null;
+                path = discovered;
+                normalizedFileName = Path.GetFileName(discovered);
+            }
 
             var cacheKey = $"fossil-content-{stateSlug}-{normalizedFileName}-{File.GetLastWriteTimeUtc(path).Ticks}";
 
@@ -57,7 +67,7 @@ namespace USASymbol.Services
                         LastModified = File.GetLastWriteTime(path),
                         SeoTitle = GetString(data, "seo_title"),
                         SeoDescription = GetString(data, "seo_description"),
-                        HeroImage = GetString(data, "hero_image"),
+                        HeroImage = ResolveHeroImage(GetString(data, "hero_image"), _env.WebRootPath),
                         HeroImageAlt = GetString(data, "hero_image_alt"),
                         HeroImageCaption = GetString(data, "hero_image_caption"),
                         IntroText = GetString(data, "intro_text")
@@ -160,6 +170,8 @@ namespace USASymbol.Services
                     if (content.QuickFacts.Count == 0)
                         content.QuickFacts = BuildQuickFacts(content);
 
+                    content.VisualAssets = YamlParse.VisualAssets(data);
+
                     return content;
                 }
                 catch (Exception ex)
@@ -169,6 +181,13 @@ namespace USASymbol.Services
                     return null;
                 }
             });
+        }
+
+        private static string? ResolveHeroImage(string? path, string webRootPath)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return null;
+            var filePath = System.IO.Path.Combine(webRootPath, path.TrimStart('/').Replace('/', System.IO.Path.DirectorySeparatorChar));
+            return File.Exists(filePath) ? path : null;
         }
 
         private static string GetString(Dictionary<object, object> dict, string key)

@@ -42,7 +42,7 @@ Fill only what is verified for this species. A trilobite genus has no body weigh
 
 Section guidance:
 Overview — title "[State] State Fossil": what it is and what kind of creature (animal, dinosaur, plant, shell, track). Two to three sentences. Do not restate the intro.
-About — title "What the [Common Name] Was": the most concrete section. Size, diet, when it lived, when it went extinct. Lead with the visual. Numbers must be verified.
+About — title "What the [Common Name] Looked Like": the most concrete section. Size, diet, when it lived, when it went extinct. Lead with the visual. Numbers must be verified.
 History — title "How the [Common Name] Became [State]'s State Fossil": who proposed it, who evaluated it, when it became official. Use the human story when verified (students, scientists, letter campaigns). No bill numbers in prose.
 Location — title "Where [Common Name] Fossils Are Found in [State]": lead with the famous specimen or type locality if one exists — the discovery story is the strongest beat. Then where else it occurs. Use the sites key for map points; each site needs name, lat, lng, note (short phrase), type (primary or secondary). The sites key is optional — omit it if the fossil is found broadly with no iconic site. Keep prose under three short paragraphs.
 Facts — title "[Common Name] Facts": three to five specific verified facts. Good: adoption year, who pushed for it, where first found, max size, what makes it unusual.
@@ -98,7 +98,7 @@ sections:
 
 - id: about
   icon: fa-solid fa-paw
-  title: What the [Common Name] Was
+  title: What the [Common Name] Looked Like
   paragraphs:
   - "[paragraph]"
 

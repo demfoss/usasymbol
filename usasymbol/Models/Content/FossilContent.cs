@@ -36,6 +36,7 @@ namespace USASymbol.Models.Content
         public List<FossilFaq> Faq { get; set; } = new();
         public List<FossilSource> Sources { get; set; } = new();
         public List<QuickFactItem> QuickFacts { get; set; } = new();
+        public List<VisualAsset> VisualAssets { get; set; } = new();
     }
 
     public class FossilSection : IContentSection

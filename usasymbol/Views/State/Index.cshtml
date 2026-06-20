@@ -430,7 +430,10 @@
                                         <span>@fact.Label</span>
                                         @if (!string.IsNullOrWhiteSpace(fact.Url))
                                         {
-                                            <a href="@fact.Url" style="text-decoration:none"><strong>@fact.Value</strong></a>
+                                            <a href="@fact.Url"
+                                               target="@(fact.Url.IsExternalUrl() ? "_blank" : null)"
+                                               rel="@(fact.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
+                                               style="text-decoration:none"><strong>@fact.Value</strong></a>
                                         }
                                         else
                                         {
@@ -609,7 +612,7 @@
                                 <h2 style="font-size:1.8rem;font-weight:600;line-height:1;color:#0f172a">Sources</h2>
                             </div>
                             <ul style="display:flex;flex-direction:column;gap:.625rem;list-style:none;padding:0;margin:0">
-                                @foreach (var source in Model.HubContent.Sources)
+                                @foreach (var source in Model.HubContent.Sources.Where(source => !source.Url.IsSuppressedSourceUrl()))
                                 {
                                     <li>
                                         <a href="@source.Url" target="_blank" rel="nofollow noopener noreferrer"

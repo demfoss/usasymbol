@@ -97,6 +97,12 @@ namespace USASymbol.Extensions
 
             var url = rawUrl.Trim();
 
+            if (url.StartsWith("#", StringComparison.Ordinal))
+            {
+                safeUrl = url;
+                return true;
+            }
+
             if (url.StartsWith("/", StringComparison.Ordinal))
             {
                 safeUrl = url;
@@ -387,6 +393,7 @@ namespace USASymbol.Extensions
                 "motto" => new[] { "official state motto", "official state mottos", "state motto", "state mottos" },
                 "nickname" => new[] { "official state nickname", "official state nicknames", "state nickname", "state nicknames" },
                 "mammal" => new[] { "official state mammal", "official state mammals", "state mammal", "state mammals" },
+                "sport" => new[] { "official state sport", "official state sports", "state sport", "state sports" },
                 "beverage" => new[] { "official state beverage", "official state beverages", "state beverage", "state beverages" },
                 "dinosaur" => new[] { "official state dinosaur", "official state dinosaurs", "state dinosaur", "state dinosaurs" },
                 "firearm" => new[] { "official state firearm", "official state firearms", "state firearm", "state firearms" },
@@ -413,6 +420,7 @@ namespace USASymbol.Extensions
                 ["motto"] = new[] { "state motto" },
                 ["nickname"] = new[] { "state nickname" },
                 ["mammal"] = new[] { "state mammal" },
+                ["sport"] = new[] { "state sport" },
                 ["seal"] = new[] { "state seal", "great seal" },
             };
 

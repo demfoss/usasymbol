@@ -20,6 +20,7 @@ public sealed class InternalLinksService
         ["mammal"] = "/symbols/mammals",
         ["motto"] = "/symbols/mottos",
         ["nickname"] = "/symbols/nicknames",
+        ["sport"] = "/symbols/sports",
         ["beverage"] = "/symbols/beverages",
         ["color"] = "/symbols/colors",
         ["dinosaur"] = "/symbols/dinosaurs",

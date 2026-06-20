@@ -49,16 +49,16 @@
             Add($"section-{sec.Id}", LabelFromSectionId(sec.Id));
         }
 
-        if (symbolModel.HasFaq) Add("faq", "Quick Answers");
+        if (symbolModel.HasFaq) Add("faq", "FAQ");
         if (symbolModel.HasSources) Add("sources", "Sources");
     }
     else if (Model is PageDetailViewModel pageModel)
     {
         if (pageModel.HasQuickAnswer) Add("quick-answer", "Quick Answer");
-        if (pageModel.HasRows) Add(pageModel.IsCollection ? "collection-table" : pageModel.IsRanking ? "ranking-table" : "listing-table", "Browse The List");
+        if (pageModel.HasRows) Add(pageModel.IsCollection ? "collection-table" : pageModel.IsRanking ? "ranking-table" : "listing-table", "Table");
         if (pageModel.HasInsights) Add("insights", "Key Insights");
         if (pageModel.HasSections) Add("sections", "Details");
-        if (pageModel.HasFaq) Add("faq", "Quick Answers");
+        if (pageModel.HasFaq) Add("faq", "FAQ");
         Add("sources", "Sources");
     }
     else if (Model is SurnamesViewModel surnamesModel)
@@ -68,7 +68,7 @@
         if (!string.IsNullOrWhiteSpace(surnamesModel.Content?.HeritageBody)) Add("heritage", "Heritage");
         if (surnamesModel.Content?.UniqueSurnames?.Any() == true) Add("unique", "Local Insight");
         if (surnamesModel.Content?.EtymologyGroups?.Any() == true) Add("etymology", "Etymology");
-        if (surnamesModel.Content?.Faq?.Any() == true) Add("faq", "Quick Answers");
+        if (surnamesModel.Content?.Faq?.Any() == true) Add("faq", "FAQ");
         if (surnamesModel.Content?.Sources?.Any() == true) Add("sources", "Sources");
     }
 
@@ -152,7 +152,7 @@
                     <button type="button"
                             id="tocBackToTopMobile"
                             class="@mobileLinkClass">
-                        <span class="@mobileLinkLabelClass">Back to top</span>
+                        <span class="@mobileLinkLabelClass">Top</span>
                         <i class="fa-solid fa-arrow-up text-[10px] text-slate-400 transition group-hover:-translate-y-0.5"></i>
                     </button>
                 </div>

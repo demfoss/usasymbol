@@ -52,6 +52,7 @@ namespace USASymbol.Services
             "flower" => true,
             "motto" => true,
             "nickname" => true,
+            "sport" => true,
             "tree" => true,
             _ => false
         };
@@ -71,6 +72,7 @@ namespace USASymbol.Services
                 "mammals" => "mammal",
                 "mottos" => "motto",
                 "nicknames" => "nickname",
+                "sports" => "sport",
                 "trees" => "tree",
                 "beverages" => "beverage",
                 "license-plates" => "license-plate",

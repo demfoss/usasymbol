@@ -109,23 +109,10 @@
 
             <div class="min-w-0">
                 <div class="site-content">
-                    <section id="overview" class="mt-10">
-                        <div class="relative overflow-hidden bg-[linear-gradient(90deg,rgba(255,255,255,0.24),rgba(240,242,255,0.04))] px-5 py-6 sm:px-6 lg:px-8 lg:py-7">
-                            <div class="absolute left-0 top-7 bottom-7 w-[3px] bg-[linear-gradient(180deg,#6366f1_0%,#4338ca_100%)]"></div>
-                            <div class="flex items-start gap-4 lg:gap-5">
-                                <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/75 text-slate-600">
-                                    <i class="@Model.OverviewIconClass text-sm"></i>
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Overview</div>
-                                    <h2 class="content-h3 mt-2 mb-3">@overviewHeading</h2>
-                                    <div class="prose prose-slate prose-lg mt-3 max-w-none text-slate-700">
-                                        @overviewText.RenderAutoLinks()
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    @await Html.PartialAsync("_Overview", null, new ViewDataDictionary(ViewData) {
+                        { "Heading", overviewHeading },
+                        { "Body", overviewText.RenderAutoLinks() }
+                    })
 
                     @if (quickFacts.Any())
                     {

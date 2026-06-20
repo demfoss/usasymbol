@@ -32,10 +32,10 @@
     }
 }
 
-<div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+<div class="overflow-hidden border border-slate-200 bg-white">
     @if (!string.IsNullOrWhiteSpace(Model.Caption))
     {
-        <div class="border-b border-slate-200 bg-slate-50/80 px-4 py-3 sm:px-5">
+        <div class="border-b border-slate-200 bg-slate-50 px-4 py-3 sm:px-5">
             <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Comparison Table</p>
             <p class="mt-1 text-sm leading-6 text-slate-700">@Model.Caption.RenderMarkdown()</p>
         </div>
@@ -43,8 +43,8 @@
 
     <div class="hidden md:block overflow-x-auto">
         <table class="min-w-full border-collapse text-left">
-            <thead class="bg-slate-50/80">
-                <tr class="border-b border-slate-200">
+            <thead class="bg-slate-50/95">
+                <tr class="border-b border-slate-200/80">
                     @for (var i = 0; i < headers.Count; i++)
                     {
                         var isFirst = i == 0;
@@ -56,7 +56,7 @@
                 </tr>
             </thead>
 
-            <tbody class="divide-y divide-slate-200">
+            <tbody class="divide-y divide-slate-100">
                 @for (var rowIndex = 0; rowIndex < Model.Rows.Count; rowIndex++)
                 {
                     var row = Model.Rows[rowIndex];
@@ -94,7 +94,7 @@
             var rowTitle = Model.FirstColumnIsHeader ? GetCell(row, 0) : string.Empty;
             var startIndex = Model.FirstColumnIsHeader ? 1 : 0;
 
-            <article class="rounded-2xl border border-slate-200 bg-slate-50/50 p-4">
+            <article class="border border-slate-200 bg-slate-50/40 p-4">
                 @if (!string.IsNullOrWhiteSpace(rowTitle))
                 {
                     <div class="mb-3 border-b border-slate-200 pb-3">

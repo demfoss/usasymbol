@@ -4,22 +4,21 @@
 @if (Model.HasInsights)
 {
     <section id="insights" class="scroll-mt-24" aria-label="Key facts">
-        <div class="rounded-[1.7rem] border border-slate-200/80 bg-white p-6 sm:p-7">
-            <div class="flex items-start gap-4">
-                <div class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700">
+        <div class="border-y border-slate-200/80 bg-white/40 px-4 py-5 sm:px-5 sm:py-6">
+            <div class="flex items-start gap-3">
+                <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-700">
                     <i class="fa-regular fa-lightbulb text-sm" aria-hidden="true"></i>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Key Insights</p>
-                    <h2 class="mt-1 content-h2">What stands out</h2>
+                    <h2 class="content-h2 !text-[2rem] !leading-[1.08] sm:!text-[2.2rem] md:!text-[2.35rem]">Key Insights</h2>
                 </div>
             </div>
 
-            <ul class="mt-6 space-y-2.5">
+            <ul class="mt-5 space-y-3 border-t border-slate-200/80 pt-5">
                 @foreach (var insight in Model.Content.Page.Insights)
                 {
-                    <li class="content-p flex items-start gap-3 text-slate-700">
-                        <i class="fa-solid fa-circle-check text-slate-400 text-xs mt-[5px] shrink-0" aria-hidden="true"></i>
+                    <li class="content-p !text-[17px] !leading-[1.65] md:!text-[18px] md:!leading-[1.75] flex items-start gap-3 text-slate-700">
+                        <i class="fa-solid fa-circle-check text-slate-400 text-xs mt-[6px] shrink-0" aria-hidden="true"></i>
                         <span>@insight.RenderMarkdown()</span>
                     </li>
                 }

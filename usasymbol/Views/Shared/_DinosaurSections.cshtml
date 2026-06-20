@@ -86,7 +86,10 @@
                             @if (sub.Link != null && !string.IsNullOrWhiteSpace(sub.Link.Url))
                             {
                                 <div class="mt-4">
-                                    <a href="@sub.Link.Url" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
+                                    <a href="@sub.Link.Url"
+                                       target="@(sub.Link.Url.IsExternalUrl() ? "_blank" : null)"
+                                       rel="@(sub.Link.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
+                                       class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
                                         <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
                                         <i class="fas fa-arrow-right text-xs"></i>
                                     </a>

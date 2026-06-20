@@ -42,9 +42,7 @@
                             @if (!string.IsNullOrEmpty(category.ImageUrl))
                             {
                                 <img src="@Images.Card(category.ImageUrl)"
-                                     srcset="@(Images.Card(category.ImageUrl, 240)) 240w,
-                                             @(Images.Card(category.ImageUrl, 360)) 360w,
-                                             @(Images.Card(category.ImageUrl, 480)) 480w"
+                                     srcset="@Images.CardSrcSet(category.ImageUrl, 240, 360, 480)"
                                      sizes="(max-width: 639px) 44vw, (max-width: 1023px) 30vw, 18vw"
                                      alt="@category.Name"
                                      loading="lazy">

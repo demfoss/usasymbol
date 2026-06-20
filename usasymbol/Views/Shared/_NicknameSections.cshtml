@@ -134,6 +134,8 @@
                                 {
                                     <div class="border-t border-slate-200/70 bg-white/55 px-5 py-4 sm:px-6">
                                         <a href="@sub.Link.Url"
+                                           target="@(sub.Link.Url.IsExternalUrl() ? "_blank" : null)"
+                                           rel="@(sub.Link.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
                                            class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition group-hover:text-slate-700 hover:text-slate-700">
                                             <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
                                             <i class="fas fa-arrow-right shrink-0 text-xs"></i>
@@ -175,6 +177,8 @@
                                 {
                                     <div class="mt-4">
                                         <a href="@sub.Link.Url"
+                                           target="@(sub.Link.Url.IsExternalUrl() ? "_blank" : null)"
+                                           rel="@(sub.Link.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
                                            class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
                                             <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
                                             <i class="fas fa-arrow-right text-xs"></i>

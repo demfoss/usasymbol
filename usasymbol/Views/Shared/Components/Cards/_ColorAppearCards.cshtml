@@ -1,0 +1,30 @@
+@using USASymbol.Models.Content
+@using USASymbol.Extensions
+@model List<ColorAppearCard>
+@inject IImageUrlService Images
+
+<div class="mt-4 space-y-3">
+    @foreach (var card in Model)
+    {
+        <article class="flex overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div class="shrink-0 w-28 sm:w-36 bg-white border-r border-slate-100 flex items-center justify-center min-h-[7rem] p-2">
+                @if (!string.IsNullOrWhiteSpace(card.Image))
+                {
+                    <img src="@Images.Card(card.Image)"
+                         alt="@card.Alt"
+                         class="max-w-full max-h-[6rem] w-auto h-auto object-contain"
+                         loading="lazy"
+                         decoding="async" />
+                }
+                else
+                {
+                    <i class="fa-solid fa-image text-slate-300 text-2xl" aria-hidden="true"></i>
+                }
+            </div>
+            <div class="flex-1 min-w-0 px-4 py-4 flex flex-col justify-center">
+                <h3 class="mb-1 text-[15px] font-bold text-slate-900 leading-snug">@card.Heading</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">@card.Description.RenderAutoLinks()</p>
+            </div>
+        </article>
+    }
+</div>

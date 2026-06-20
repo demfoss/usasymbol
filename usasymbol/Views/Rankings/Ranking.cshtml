@@ -51,6 +51,14 @@
         }.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
     }
 
+    // Use pre-generated map PNG as hero/OG image when no photo is set
+    if (string.IsNullOrWhiteSpace(heroImage) && ViewData["MapPngPath"] is string mapPngPath)
+    {
+        heroImage = $"{baseUrl}{mapPngPath}";
+        ViewData["OgImageWidth"] = "1200";
+        ViewData["OgImageHeight"] = "742";
+    }
+
     var heroImageResolved = string.IsNullOrWhiteSpace(heroImage) ? "/images/og-default.webp" : heroImage!;
     var heroImageUrl = Images.Full(heroImageResolved);
     ViewData["OgImage"] = heroImageUrl;

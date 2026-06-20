@@ -111,9 +111,11 @@ namespace USASymbol.Services
                     var categoryName = Path.GetFileName(categoryDir);
                     var category     = new PageCategory
                     {
-                        Id    = categoryName,
-                        Title = FormatCategoryTitle(categoryName),
-                        Icon  = GetCategoryIcon(categoryName),
+                        Id          = categoryName,
+                        Title       = FormatCategoryTitle(categoryName),
+                        Icon        = GetCategoryIcon(categoryName),
+                        Description = GetCategoryDescription(categoryName),
+                        Image       = GetCategoryImage(categoryName),
                     };
 
                     foreach (var file in Directory.GetFiles(categoryDir, "*.yml").Concat(Directory.GetFiles(categoryDir, "*.yaml")))
@@ -123,11 +125,14 @@ namespace USASymbol.Services
                         {
                             category.Items.Add(new PageCategoryItem
                             {
-                                Title       = content.Page.H1,
-                                Url         = content.Url,
-                                Description = content.Seo.Description,
-                                Image       = content.HeroImage,
-                                ImageAlt    = content.HeroImageAlt,
+                                Title         = content.Page.H1,
+                                Url           = content.Url,
+                                Description   = content.Seo.Description,
+                                Image         = content.HeroImage,
+                                ImageAlt      = content.HeroImageAlt,
+                                Subcategory   = content.Subcategory,
+                                DatePublished = content.DatePublished,
+                                DateModified  = content.DateModified,
                             });
                         }
                     }
@@ -161,6 +166,7 @@ namespace USASymbol.Services
                 DatePublished = Date(raw, "date_published"),
                 DateModified  = Date(raw, "date_modified"),
                 DetailType    = Str(raw, "detail_type"),
+                Subcategory   = Str(raw, "subcategory"),
             };
 
 
@@ -175,6 +181,7 @@ namespace USASymbol.Services
                     H1          = Str(pageD, "h1"),
                     Methodology = Str(pageD, "methodology"),
                     IntroTitle  = pageD.ContainsKey("intro_title") ? Str(pageD, "intro_title") : null,
+                    QuickAnswerTitle = pageD.ContainsKey("quick_answer_title") ? Str(pageD, "quick_answer_title") : null,
                 };
 
                 if (pageD.TryGetValue("quick_answer",     out var qa)      && qa      is List<object> qaL)
@@ -236,6 +243,16 @@ namespace USASymbol.Services
                     Icon          = compareD.ContainsKey("icon") ? Str(compareD, "icon") : null,
                     DefaultStateA = compareD.ContainsKey("default_state_a") ? Str(compareD, "default_state_a") : null,
                     DefaultStateB = compareD.ContainsKey("default_state_b") ? Str(compareD, "default_state_b") : null,
+                };
+
+            if (raw.TryGetValue("quiz_promo", out var qpObj) && qpObj is Dictionary<object, object> qpD)
+                content.QuizPromo = new QuizPromoData
+                {
+                    Slug        = Str(qpD, "slug"),
+                    Title       = qpD.ContainsKey("title")       ? Str(qpD, "title")       : null,
+                    Description = qpD.ContainsKey("description") ? Str(qpD, "description") : null,
+                    Icon        = qpD.ContainsKey("icon")        ? Str(qpD, "icon")        : null,
+                    ButtonText  = qpD.ContainsKey("button_text") ? Str(qpD, "button_text") : null,
                 };
 
             if (raw.TryGetValue("computed_data", out var cdObj) && cdObj is Dictionary<object, object> cdD)
@@ -315,6 +332,9 @@ namespace USASymbol.Services
         private PageTable ParseTable(Dictionary<object, object> d)
         {
             var table = new PageTable();
+
+            if (d.TryGetValue("title", out var titleObj))
+                table.Title = titleObj?.ToString();
 
             if (d.TryGetValue("searchable",   out var s)) table.Searchable    = s?.ToString()?.ToLower() == "true";
             if (d.TryGetValue("sortable",     out var o)) table.Sortable      = o?.ToString()?.ToLower() == "true";
@@ -539,6 +559,8 @@ namespace USASymbol.Services
                         row.Data["symbol_slug"] = explicitSlug;
                     else if (row.Data.ContainsKey(nameKey))
                         row.Data["symbol_slug"] = GenerateSlug(row.GetString(nameKey));
+                    else if (row.Data.ContainsKey($"{nameKey}_name"))
+                        row.Data["symbol_slug"] = GenerateSlug(row.GetString($"{nameKey}_name"));
                     else if (row.Data.ContainsKey("symbol"))
                         row.Data["symbol_slug"] = GenerateSlug(row.GetString("symbol"));
                 }
@@ -632,6 +654,9 @@ namespace USASymbol.Services
             if (k.Contains("url") || k.Contains("link") || k.Contains("website"))
                 return "link";
 
+            if (k.Contains("hex") || k == "color_codes" || k == "palette")
+                return "color-swatches";
+
             return "text";
         }
 
@@ -664,29 +689,92 @@ namespace USASymbol.Services
 
         private static string FormatCategoryTitle(string id) => id switch
         {
-            "geography"    => "Geography",
-            "demographics" => "Demographics",
-            "government"   => "Government & Politics",
-            "history"      => "History",
-            "economy"      => "Economy",
-            "symbols"      => "Symbols & Culture",
-            "culture"      => "Culture",
-            "laws"         => "Laws & Statutes",
+            "geography"     => "Geography",
+            "demographics"  => "Demographics",
+            "government"    => "Government & Politics",
+            "history"       => "History",
+            "economy"       => "Economy",
+            "symbols"       => "Symbols & Culture",
+            "culture"       => "Culture",
+            "laws"          => "Laws & Statutes",
+            "education"     => "Education",
+            "food"          => "Food & Agriculture",
+            "health"        => "Health",
+            "infrastructure"=> "Infrastructure",
+            "law"           => "Law & Crime",
+            "religion"      => "Religion",
+            "sports"        => "Sports",
+            "taxes"         => "Taxes",
+            "capitals"      => "State Capitals",
+            "flags"         => "State Flags",
             _ => CultureInfo.CurrentCulture.TextInfo
                      .ToTitleCase(id.Replace("-", " ").Replace("_", " "))
         };
 
         private static string GetCategoryIcon(string id) => id switch
         {
-            "geography"    => "fa-solid fa-globe",
-            "demographics" => "fa-solid fa-users",
-            "government"   => "fa-solid fa-landmark",
-            "history"      => "fa-solid fa-clock-rotate-left",
-            "economy"      => "fa-solid fa-chart-line",
-            "symbols"      => "fa-solid fa-star",
-            "culture"      => "fa-solid fa-masks-theater",
-            "laws"         => "fa-solid fa-scale-balanced",
-            _              => "fa-solid fa-list",
+            "geography"     => "fa-solid fa-globe",
+            "demographics"  => "fa-solid fa-users",
+            "government"    => "fa-solid fa-landmark",
+            "history"       => "fa-solid fa-clock-rotate-left",
+            "economy"       => "fa-solid fa-chart-line",
+            "symbols"       => "fa-solid fa-star",
+            "culture"       => "fa-solid fa-masks-theater",
+            "laws"          => "fa-solid fa-scale-balanced",
+            "education"     => "fa-solid fa-graduation-cap",
+            "food"          => "fa-solid fa-wheat-awn",
+            "health"        => "fa-solid fa-heart-pulse",
+            "infrastructure"=> "fa-solid fa-road",
+            "law"           => "fa-solid fa-gavel",
+            "religion"      => "fa-solid fa-place-of-worship",
+            "sports"        => "fa-solid fa-football",
+            "taxes"         => "fa-solid fa-receipt",
+            "capitals"      => "fa-solid fa-building-columns",
+            "flags"         => "fa-solid fa-flag",
+            _               => "fa-solid fa-list",
+        };
+
+        private static string GetCategoryDescription(string id) => id switch
+        {
+            "geography"      => "Land area, climate, terrain, and natural features compared across all 50 states.",
+            "demographics"   => "Population, age, race, language, and household trends by state.",
+            "government"     => "Elections, political makeup, public policy, and civic structure by state.",
+            "history"        => "Founding dates, statehood order, and historical milestones by state.",
+            "economy"        => "Income, cost of living, jobs, and economic indicators compared by state.",
+            "symbols"        => "Official state symbols, from flags and seals to birds and flowers.",
+            "culture"        => "Traditions, cuisine, and cultural identity across U.S. states.",
+            "laws"           => "Unusual and noteworthy state laws and statutes.",
+            "education"      => "School performance, literacy, graduation rates, and education spending by state.",
+            "food"           => "Agriculture, crop production, and food industry rankings by state.",
+            "health"         => "Health outcomes, insurance coverage, and healthcare access by state.",
+            "infrastructure" => "Roads, transit, broadband, and public infrastructure by state.",
+            "law"            => "Crime rates, incarceration, and public safety statistics by state.",
+            "religion"       => "Religious affiliation and practice across U.S. states.",
+            "sports"         => "Sports participation, teams, and fan culture by state.",
+            "taxes"          => "Income, sales, property, and gas tax rates compared by state.",
+            "capitals"       => "Facts and history behind every U.S. state capital.",
+            "flags"          => "Design, symbolism, and history behind every U.S. state flag.",
+            _ => "",
+        };
+
+        private static string? GetCategoryImage(string id) => id switch
+        {
+            "demographics"   => "/images/rankings/demographics/states-by-population-map.webp",
+            "economy"        => "/images/rankings/economy/states-by-cost-of-living/states-by-cost-of-living-hero.jpg",
+            "education"      => "/images/rankings/education/states-by-k12-education/states-by-k12-education-hero.jpg",
+            "food"           => "/images/rankings/food/beer-consumption-by-state/beer-consumption-by-state.webp",
+            "geography"      => "/images/rankings/geography/appalachian-states/appalachian-mountains-west-virginia.jpg",
+            "government"     => "/images/rankings/government/original-13-colonies/original-13-colonies-hero.jpg",
+            "health"         => "/images/rankings/health/states-by-life-expectancy/states-by-life-expectancy-hero.jpg",
+            "infrastructure" => "/images/rankings/infrastructure/largest-airport-by-state/largest-airport-by-state.png",
+            "law"            => "/images/rankings/law/weird-laws-by-state/weird-laws-by-state.webp",
+            "religion"       => "/images/rankings/religion/biggest-church-by-state/life-church-oklahoma.jpg",
+            "sports"         => "/images/rankings/sports/most-popular-sport-by-state/most-popular-sport-by-state.webp",
+            "taxes"          => "/images/rankings/taxes/states-by-income-tax/states-by-income-tax-hero.jpg",
+            "capitals"       => "/images/collections/capitals/state-capitals-named-after-presidents.webp",
+            "flags"          => "/images/collections/flags/flag-of-the-united-states.webp",
+            "laws"           => "/images/collections/laws/texas-state-capitol.webp",
+            _ => null,
         };
 
 

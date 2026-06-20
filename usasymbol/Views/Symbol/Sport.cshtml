@@ -1,0 +1,203 @@
+@model USASymbol.Models.ViewModels.SportDetailViewModel
+@using System.Globalization
+@using USASymbol.Extensions
+@using USASymbol.Models.ViewModels
+@inject IImageUrlService Images
+
+@{
+    ViewData["BodyClass"] = "sport-detail-page";
+
+    var stateName = Model.State?.Name ?? "";
+    var adoptedYear = Model.SportContent?.AdoptedYear ?? Model.Symbol?.AdoptedYear ?? 0;
+
+    var designationRaw = (Model.Symbol?.Designation ?? Model.DefaultDesignation).Trim();
+    var designation = string.IsNullOrWhiteSpace(designationRaw)
+        ? Model.DefaultDesignation
+        : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+
+    var pageHeading = !string.IsNullOrWhiteSpace(Model.SportContent?.Name)
+        ? Model.SportContent!.Name
+        : $"{stateName} {designation}";
+
+    var descRaw = Model.SportContent?.SeoDescription ?? "";
+    ViewData["Title"] = Model.SportContent?.SeoTitle ?? pageHeading;
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {stateName}'s official {designation.ToLowerInvariant()} and why it became part of the state's identity."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+
+    var heroImage = Model.SportContent?.HeroImage;
+    if (string.IsNullOrWhiteSpace(heroImage)) heroImage = Model.Symbol?.ImageUrl;
+    if (string.IsNullOrWhiteSpace(heroImage))
+        heroImage = Model.SportContent?.VisualAssets?.FirstOrDefault()?.Src;
+
+    ViewData["OgImage"] = Images.Full(heroImage ?? Model.State?.FlagImageUrl);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+
+    var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+
+    var introText = Model.SportContent?.IntroText ?? string.Empty;
+    var overviewText = !string.IsNullOrWhiteSpace(introText)
+        ? introText
+        : adoptedYear > 0
+            ? $"The official {designation.ToLowerInvariant()} of {stateName} was adopted in <strong>{adoptedYear}</strong>."
+            : $"{stateName} recognizes {pageHeading} as its official {designation.ToLowerInvariant()}.";
+
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    var heroDescription = System.Net.WebUtility.HtmlDecode(
+        System.Text.RegularExpressions.Regex.Replace(
+            System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1"),
+            "<.*?>",
+            " "))
+        .Trim();
+
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#172033_0%,#111827_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-amber-200/0 via-amber-300/70 to-sky-200/0",
+        PrimaryGlowClass = "bg-amber-300/10",
+        SecondaryGlowClass = "bg-white/10",
+        AccentDotClass = "bg-amber-300",
+        MediaBackgroundClass = "bg-slate-100/10",
+        FallbackIconClass = Model.HeroFallbackIconClass,
+        Title = pageHeading,
+        Description = heroDescription,
+        LegalReference = Model.Legislation,
+        ImageUrl = heroImage,
+        ImageAlt = !string.IsNullOrWhiteSpace(Model.SportContent?.HeroImageAlt)
+            ? Model.SportContent.HeroImageAlt
+            : pageHeading,
+        ImageClass = "absolute inset-0 h-full w-full object-cover",
+        FigureTitle = pageHeading,
+        FigureSubtitle = $"Official {designation} of {stateName}",
+        ImageLinkUrl = heroImage,
+        EyebrowItems = new List<string>
+        {
+            stateName,
+            designation,
+            adoptedYear > 0 ? $"Adopted {adoptedYear}" : string.Empty
+        }
+    };
+}
+
+@section Styles {
+    <style>
+        .sport-detail-page [class*="rounded"],
+        .sport-detail-page [class*="rounded-"] {
+            border-radius: 0 !important;
+        }
+
+        .sport-detail-page [style*="border-radius"] {
+            border-radius: 0 !important;
+        }
+
+        .sport-detail-page .js-visual-lightbox,
+        .sport-detail-page .toc-link,
+        .sport-detail-page .toc-mobile-link,
+        .sport-detail-page button,
+        .sport-detail-page a {
+            border-radius: 0;
+        }
+    </style>
+}
+
+<nav class="bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="symbol-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <aside class="hidden lg:block relative h-full">
+                <div class="sticky top-24 pb-10">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                </div>
+            </aside>
+
+            <div class="min-w-0">
+                <div class="site-content">
+                    @await Html.PartialAsync("_Overview", null, new ViewDataDictionary(ViewData) {
+                        { "Heading", $"{designation} of {stateName}" },
+                        { "Body", overviewText.RenderAutoLinks() }
+                    })
+
+                    @if (quickFacts.Any())
+                    {
+                        <div class="xl:hidden">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    }
+
+                    @await Html.PartialAsync("_SportSections", Model)
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_Faq", Model)
+                    </div>
+
+                    <section id="sources" class="content-divider">
+                        @await Html.PartialAsync("_Sources", Model)
+                    </section>
+
+                    <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+                </div>
+            </div>
+
+            <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+                @if (quickFacts.Any())
+                {
+                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
+                        <div class="sticky top-32 pr-2">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    </section>
+                }
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                    </div>
+                </section>
+
+                <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
+                    <div class="sticky top-32 pr-2">
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+        {
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+            </div>
+        }
+    </article>
+</div>
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")

@@ -77,6 +77,26 @@ namespace USASymbol.Models.Content
         public List<IContentSubsection> Subsections { get; set; } = new();
         public List<string> Facts { get; set; } = new();
         public List<string> ListItems { get; set; } = new();
+
+        public string Intro { get; set; } = "";
+        public List<ColorMeaningCard> ColorCards { get; set; } = new();
+        public List<ColorAppearCard> AppearCards { get; set; } = new();
+    }
+
+    public class ColorMeaningCard
+    {
+        public string ColorName { get; set; } = "";
+        public string Hex { get; set; } = "";
+        public string Heading { get; set; } = "";
+        public string Meaning { get; set; } = "";
+    }
+
+    public class ColorAppearCard
+    {
+        public string Image { get; set; } = "";
+        public string Alt { get; set; } = "";
+        public string Heading { get; set; } = "";
+        public string Description { get; set; } = "";
     }
 
     public class ColorSubsection : IContentSubsection

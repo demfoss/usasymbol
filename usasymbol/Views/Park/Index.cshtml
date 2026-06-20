@@ -589,9 +589,7 @@
                         @if (!string.IsNullOrWhiteSpace(park.Media.HeroImage))
                         {
                             <img src="@Images.Crop(park.Media.HeroImage, 640, 360)"
-                                 srcset="@(Images.Crop(park.Media.HeroImage, 320, 180)) 320w,
-                                         @(Images.Crop(park.Media.HeroImage, 640, 360)) 640w,
-                                         @(Images.Crop(park.Media.HeroImage, 960, 540)) 960w"
+                                 srcset="@Images.CropSrcSet(park.Media.HeroImage, (320, 180), (640, 360), (960, 540))"
                                  sizes="(min-width: 1280px) 30vw, (min-width: 640px) 50vw, 100vw"
                                  alt="@park.Media.HeroAlt"
                                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
@@ -973,7 +971,7 @@
         // ── Tile layer ───────────────────────────────────────────────────
         const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         const tileOpts = {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="nofollow noopener noreferrer">OpenStreetMap</a>',
             maxZoom: 18
         };
 

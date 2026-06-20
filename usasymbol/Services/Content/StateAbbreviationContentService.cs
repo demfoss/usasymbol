@@ -25,7 +25,13 @@ namespace USASymbol.Services
         {
             try
             {
-                var filePath = Path.Combine(_contentBasePath, "states", $"{stateSlug}.yml");
+                if (string.IsNullOrWhiteSpace(stateSlug))
+                {
+                    return null;
+                }
+
+                var normalizedSlug = stateSlug.Trim().ToLowerInvariant();
+                var filePath = Path.Combine(_contentBasePath, "states", $"{normalizedSlug}.yml");
                 if (!File.Exists(filePath))
                 {
                     return null;

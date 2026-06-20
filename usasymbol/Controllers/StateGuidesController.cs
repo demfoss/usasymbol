@@ -165,6 +165,9 @@ namespace USASymbol.Controllers
                 FormationDetail = content.FormationDetail,
                 SearchIntentSummary = content.SearchIntentSummary,
                 SimilarCodesSummary = content.SimilarCodesSummary,
+                CapitalZip = content.CapitalZip,
+                ApStyleNote = content.ApStyleNote,
+                ConfusionWarning = content.ConfusionWarning,
                 StateSpecificTitle = string.IsNullOrWhiteSpace(content.StateSpecificTitle) ? null : content.StateSpecificTitle,
                 StateSpecificParagraphs = content.StateSpecificParagraphs ?? new List<string>(),
                 SimilarStates = GetSimilarStates(state, alphabetical),
@@ -178,9 +181,9 @@ namespace USASymbol.Controllers
                     .ToList()
             };
 
-            ViewData["Title"] = $"{state.Abbreviation} — {state.Name} State Abbreviation";
+            ViewData["Title"] = $"{state.Name} Abbreviation";
             ViewData["H1"] = $"What Is the Abbreviation for {state.Name}?";
-            ViewData["Description"] = $"{state.Abbreviation} is the postal abbreviation for {state.Name}. Learn why {state.Name} uses {state.Abbreviation}, what the old abbreviation was, and how it compares with similar state codes.";
+            ViewData["Description"] = $"The standard 2-letter abbreviation for {state.Name} is {state.Abbreviation}. Learn the USPS state code, older short form {content.TraditionalAbbreviation}, and how {state.Abbreviation} is used in addresses and forms.";
             ViewData["Canonical"] = $"/states/{state.Slug}/abbreviation";
             ViewData["OgImage"] = state.FlagImageUrl;
             ViewData["LatestContentRail"] = await _latestContentRailService.GetLatestItemsAsync(8);

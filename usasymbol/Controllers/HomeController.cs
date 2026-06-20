@@ -34,7 +34,8 @@ namespace USASymbol.Controllers
             ["firearms"] = "fa-solid fa-bullseye",
             ["license-plate-slogans"] = "fa-solid fa-car-side",
             ["state-seals"] = "fa-solid fa-stamp",
-            ["coats-of-arms"] = "fa-solid fa-shield-halved"
+            ["coats-of-arms"] = "fa-solid fa-shield-halved",
+            ["sports"] = "fa-solid fa-medal"
         };
 
         public HomeController(IStateService stateService, AppDbContext dbContext, IWebHostEnvironment env)
@@ -171,7 +172,7 @@ namespace USASymbol.Controllers
             var licensePlatePreviewImages = GetLicensePlatePreviewImages();
             var sealImages = GetSealImages();
 
-            var order = new[] { "birds", "flowers", "trees", "flags", "mottos", "state-seals", "coats-of-arms", "license-plate-slogans", "mammals", "beverages", "nicknames", "colors", "dogs", "horses", "marine-mammals", "firearms", "dinosaurs", "cats" };
+            var order = new[] { "birds", "flowers", "trees", "flags", "mottos", "state-seals", "coats-of-arms", "sports", "license-plate-slogans", "mammals", "beverages", "nicknames", "colors", "dogs", "horses", "marine-mammals", "firearms", "dinosaurs", "cats" };
 
             return order
                 .Select(slug => dbCats.FirstOrDefault(c => c.Type == slug))
@@ -253,6 +254,7 @@ namespace USASymbol.Controllers
                 "license-plate-slogans" => symbol.Type == "license-plate",
                 "state-seals" => symbol.Type == "state-seal",
                 "coats-of-arms" => symbol.Type == "coat-of-arms",
+                "sports" => symbol.Type == "sport",
                 _ => false
             };
         }

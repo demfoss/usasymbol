@@ -1,0 +1,278 @@
+@model USASymbol.Models.ViewModels.PageCategoryViewModel
+@inject IImageUrlService Images
+
+@{
+    var category = Model.Category;
+
+    ViewData["Title"]       = (ViewData["Title"] as string) ?? $"{category.Title} Collections";
+    ViewData["Description"] = (ViewData["Description"] as string) ?? $"Browse U.S. state collections related to {category.Title.ToLower()}.";
+
+    const string baseUrl = "https://usasymbol.com";
+    ViewData["Canonical"] = $"/collections/{category.Id}";
+}
+
+<div id="top"></div>
+
+<!-- Sticky breadcrumb bar -->
+<div class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-3">
+        <nav aria-label="Breadcrumb">
+            <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
+                <li class="text-slate-300">/</li>
+                <li><a href="/collections" class="hover:text-slate-900 transition">Collections</a></li>
+                <li class="text-slate-300">/</li>
+                <li class="text-slate-900 font-semibold truncate max-w-[60vw]">@category.Title</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-8 lg:py-12">
+
+    <!-- TITLE / DESCRIPTION BOX -->
+    <section class="mb-8">
+        <div class="border border-slate-200/80 bg-white/55 px-5 py-6 sm:px-8 sm:py-8 text-center">
+            <span class="inline-flex items-center justify-center w-10 h-10 bg-slate-900 text-white mb-4">
+                <i class="@category.Icon" aria-hidden="true"></i>
+            </span>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">@category.Title</h1>
+            @if (!string.IsNullOrEmpty(category.Description))
+            {
+                <p class="mt-3 max-w-2xl mx-auto text-[15px] leading-7 text-slate-600">@category.Description</p>
+            }
+        </div>
+    </section>
+
+    @if (Model.MostPopular.Any())
+    {
+        <!-- MOST POPULAR (square corners) -->
+        <section class="mb-10">
+            <div class="border border-slate-200/80 bg-white/55 p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Most Popular</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    @foreach (var item in Model.MostPopular)
+                    {
+                        <a href="@item.Url" class="group flex gap-4 border border-slate-200/80 bg-white p-3 hover:border-slate-400 transition">
+                            <div class="relative w-28 h-20 shrink-0 bg-slate-100 overflow-hidden">
+                                @if (!string.IsNullOrEmpty(item.Image))
+                                {
+                                    <img src="@Images.Card(item.Image)" alt="@(item.ImageAlt ?? item.Title)" loading="lazy"
+                                         class="w-full h-full object-cover" />
+                                }
+                                else
+                                {
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <i class="@category.Icon text-xl text-slate-400" aria-hidden="true"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="flex flex-col min-w-0">
+                                <h3 class="text-sm font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-slate-700 transition">
+                                    @item.Title
+                                </h3>
+                                <span class="mt-auto pt-2 inline-flex items-center gap-1 text-xs font-semibold text-slate-700 group-hover:text-slate-900">
+                                    Read Now <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- FILTER + GRID -->
+    <div class="flex flex-col lg:flex-row gap-8">
+
+        <!-- SIDEBAR (only when there's something real to filter by) -->
+        @if (Model.SubcategoryFilters.Count > 1)
+        {
+            <aside class="lg:w-72 shrink-0">
+                <div class="lg:sticky lg:top-32 border border-slate-200 bg-white overflow-hidden">
+                    <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100">
+                        <span class="text-sm font-bold text-slate-900">Filters</span>
+                        <button type="button" id="resetFilters" class="shrink-0 whitespace-nowrap text-xs font-semibold text-slate-500 hover:text-slate-900 transition">Reset</button>
+                    </div>
+
+                    <div data-filter-group="subcategory">
+                        <button type="button" class="filter-group-toggle w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition"
+                                aria-expanded="true">
+                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Subcategory</span>
+                            <i class="fa-solid fa-chevron-up text-[10px] text-slate-400 transition-transform"></i>
+                        </button>
+                        <div class="filter-group-body px-4 pb-3">
+                            @foreach (var sub in Model.SubcategoryFilters)
+                            {
+                                <label class="flex items-center justify-between gap-2.5 py-1 cursor-pointer group">
+                                    <span class="flex items-center gap-2.5">
+                                        <input type="checkbox" class="filter-subcategory accent-slate-700 w-4 h-4" value="@sub.Value" />
+                                        <span class="text-sm text-slate-700 group-hover:text-slate-900">@sub.Label</span>
+                                    </span>
+                                    <span class="text-xs text-slate-400">(@sub.Count)</span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        }
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                <h2 id="resultCount" class="text-xs font-medium text-slate-400">@category.Items.Count Articles</h2>
+                <div class="relative w-full sm:w-72">
+                    <input id="hubSearch"
+                           type="text"
+                           placeholder="Search…"
+                           autocomplete="off"
+                           class="w-full border border-slate-200 bg-white px-4 py-2 pr-9 text-sm text-slate-900 placeholder-slate-400
+                                  shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 transition" />
+                    <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div id="itemGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach (var item in category.Items)
+                {
+                    <a href="@item.Url"
+                       class="collection-card group flex flex-col border border-slate-200 bg-white overflow-hidden shadow-sm
+                              hover:border-slate-300 hover:shadow-md transition-all duration-200"
+                       data-title="@item.Title.ToLower()"
+                       data-description="@(item.Description?.ToLower() ?? "")"
+                       data-subcategory="@(string.IsNullOrWhiteSpace(item.Subcategory) ? "Not set" : item.Subcategory)">
+
+                        <div class="relative h-40 bg-slate-100 overflow-hidden shrink-0">
+                            @if (!string.IsNullOrEmpty(item.Image))
+                            {
+                                <img src="@Images.Card(item.Image)"
+                                     srcset="@Images.CardSrcSet(item.Image, 320, 480, 640)"
+                                     sizes="(max-width: 639px) 100vw, 50vw"
+                                     alt="@(item.ImageAlt ?? item.Title)"
+                                     loading="lazy"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                     onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')" />
+                                <div class="hidden w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+                                    <i class="@category.Icon text-3xl text-slate-400" aria-hidden="true"></i>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+                                    <i class="@category.Icon text-3xl text-slate-400" aria-hidden="true"></i>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="flex flex-col flex-1 p-4">
+                            <h3 class="text-sm font-bold text-slate-900 group-hover:text-slate-700 transition leading-snug mb-1.5">
+                                @item.Title
+                            </h3>
+                            @if (!string.IsNullOrEmpty(item.Description))
+                            {
+                                <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 flex-1">
+                                    @item.Description
+                                </p>
+                            }
+                            <div class="mt-3 flex items-center justify-between">
+                                <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
+                                    <i class="fa-solid fa-layer-group text-[9px]"></i>
+                                    Collection
+                                </span>
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-slate-100
+                                             group-hover:bg-slate-900 transition-colors">
+                                    <i class="fa-solid fa-arrow-right text-slate-400 text-[10px] group-hover:text-white transition-colors"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+
+            <!-- No results state -->
+            <div id="noResults" class="hidden text-center py-20">
+                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-slate-100">
+                    <i class="fa-solid fa-magnifying-glass text-2xl text-slate-400"></i>
+                </div>
+                <h2 class="text-xl font-bold text-slate-900 mb-1">No collections found</h2>
+                <p class="text-sm text-slate-500">Try a different search term or filter</p>
+            </div>
+        </main>
+    </div>
+
+</div>
+
+<!-- SCHEMA.ORG -->
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "CollectionPage",
+  "name": "@(category.Title) Collections",
+  "description": "@ViewData["Description"]",
+  "url": "@($"{baseUrl}{ViewData["Canonical"]}")",
+  "license": "@($"{baseUrl}/terms")",
+  "creator": { "@@type": "Organization", "name": "USA Symbol", "url": "@baseUrl" },
+  "publisher": {
+    "@@type": "Organization",
+    "name": "USA Symbol",
+    "url": "@baseUrl"
+  }
+}
+</script>
+
+<script>
+    (() => {
+        const input        = document.getElementById('hubSearch');
+        const cards         = document.querySelectorAll('.collection-card');
+        const subChecks      = document.querySelectorAll('.filter-subcategory');
+        const noResults      = document.getElementById('noResults');
+        const resultCount    = document.getElementById('resultCount');
+        const resetBtn       = document.getElementById('resetFilters');
+
+        function applyFilters() {
+            const q = (input?.value || '').trim().toLowerCase();
+            const checkedSubs = Array.from(subChecks).filter(c => c.checked).map(c => c.value);
+            let visible = 0;
+
+            cards.forEach(card => {
+                const matchesText = !q ||
+                    (card.dataset.title || '').includes(q) ||
+                    (card.dataset.description || '').includes(q);
+                const matchesSub = checkedSubs.length === 0 || checkedSubs.includes(card.dataset.subcategory);
+                const show = matchesText && matchesSub;
+                card.classList.toggle('hidden', !show);
+                if (show) visible++;
+            });
+
+            if (resultCount) resultCount.textContent = `${visible} Article${visible === 1 ? '' : 's'}`;
+            noResults?.classList.toggle('hidden', visible > 0);
+        }
+
+        input?.addEventListener('input', applyFilters);
+        subChecks.forEach(c => c.addEventListener('change', applyFilters));
+
+        resetBtn?.addEventListener('click', () => {
+            if (input) input.value = '';
+            subChecks.forEach(c => c.checked = false);
+            applyFilters();
+        });
+
+        // Collapsible filter groups (same pattern as Park page)
+        document.querySelectorAll('.filter-group-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const body = btn.nextElementSibling;
+                const icon = btn.querySelector('i');
+                const expanded = btn.getAttribute('aria-expanded') === 'true';
+                btn.setAttribute('aria-expanded', (!expanded).toString());
+                body?.classList.toggle('hidden', expanded);
+                icon?.classList.toggle('fa-chevron-up', !expanded);
+                icon?.classList.toggle('fa-chevron-down', expanded);
+            });
+        });
+    })();
+</script>

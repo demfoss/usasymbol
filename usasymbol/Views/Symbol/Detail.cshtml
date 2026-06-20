@@ -99,9 +99,7 @@
                     @if (!string.IsNullOrEmpty(Model.Symbol.ImageUrl))
                     {
                         <img src="@Images.Hero(Model.Symbol.ImageUrl)"
-                             srcset="@(Images.Hero(Model.Symbol.ImageUrl, 480)) 480w,
-                                     @(Images.Hero(Model.Symbol.ImageUrl, 768)) 768w,
-                                     @(Images.Hero(Model.Symbol.ImageUrl, 1200)) 1200w"
+                             srcset="@Images.HeroSrcSet(Model.Symbol.ImageUrl, 480, 768, 1200)"
                              sizes="(max-width: 767px) 100vw, 50vw"
                              alt="@Model.Symbol.Name"
                              class="w-full h-full object-cover">

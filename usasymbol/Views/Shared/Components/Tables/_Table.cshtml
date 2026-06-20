@@ -1,6 +1,11 @@
 @model USASymbol.Models.ViewModels.TableSectionViewModel
 @inject IImageUrlService Images
-@using System.Text.RegularExpressions
+@using Usasymbol.Helpers
+
+@{
+    var firstTable = Model.Tables.FirstOrDefault();
+    var quickFilter = TableFilterHelper.GetQuickFilterColumn(firstTable);
+}
 
 @if (Model.Tables.Any())
 {
@@ -14,6 +19,7 @@
             var columns   = table.Columns.Where(col => !hiddenColumns.Contains(col.Key)).ToList();
             var toggleable = table.ToggleableColumns;
             var defaultCol = table.DefaultColumn ?? toggleable.FirstOrDefault();
+            var tableQuickFilter = table == firstTable ? quickFilter : null;
 
             if (!columns.Any()) { continue; }
 
@@ -25,12 +31,12 @@
                 </h3>
             }
 
-            <div class="ranking-table-scroll overflow-x-auto rounded-[1.25rem] border border-slate-200 bg-white/90 @(Model.Tables.Count > 1 ? "mb-6" : "")">
+            <div class="ranking-table-scroll overflow-x-auto @(Model.Tables.Count > 1 ? "mb-6" : "")">
                 <table class="rankingTable min-w-full text-left text-sm">
 
                     <!-- HEADER -->
-                    <thead class="sticky top-0 z-10 bg-white">
-                        <tr class="border-b border-slate-200">
+                    <thead class="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm">
+                        <tr class="border-b border-slate-200/80">
                             @foreach (var col in columns)
                             {
                                 if (col.Key == "state_slug") { continue; }
@@ -40,10 +46,11 @@
                                 var hiddenClass  = isHidden ? "hidden" : "";
                                 var sortable     = col.Sortable && table.Sortable;
 
-                                <th class="px-4 py-3 text-[12px] font-extrabold uppercase tracking-[0.12em] text-slate-600
-                                           @(sortable ? "cursor-pointer hover:bg-slate-50" : "")
+                                <th class="px-4 py-3 text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-600
+                                           @(sortable ? "cursor-pointer hover:bg-slate-100/80" : "")
                                            transition select-none @hiddenClass"
                                     data-column="@col.Key"
+                                    data-coltype="@col.Type"
                                     @if (isToggleable) { <text>data-toggleable="true"</text> }
                                     @if (sortable)     { <text>data-sort="@col.Key"</text> }>
                                     <div class="flex items-center gap-2">
@@ -63,7 +70,7 @@
                         @for (int i = 0; i < table.Rows.Count; i++)
                         {
                             var row        = table.Rows[i];
-                            var rowBg      = i % 2 == 0 ? "bg-white" : "bg-slate-50/20";
+                            var rowBg      = i % 2 == 0 ? "bg-white" : "bg-slate-50/35";
                             var stateSlug  = row.GetString("state_slug");
                             var stateName  = row.GetString("state");
                             var postalCode = row.GetString("postal_code") ?? row.GetString("state_code") ?? row.GetString("abbr") ?? row.GetString("abbreviation");
@@ -99,21 +106,22 @@
                             var rowRankRaw = row.GetString("rank");
                             var rowRank = int.TryParse((rowRankRaw ?? string.Empty).Replace(",", ""), out var parsedRank) ? parsedRank : 0;
                             var topRankRowClass = rowRank == 1
-                                ? "ring-1 ring-amber-200/70 bg-gradient-to-r from-amber-50 via-white to-white"
+                                ? "bg-amber-50/50"
                                 : rowRank == 2
-                                    ? "ring-1 ring-slate-200/80 bg-gradient-to-r from-slate-100/70 via-white to-white"
+                                    ? "bg-slate-50/70"
                                     : rowRank == 3
-                                        ? "ring-1 ring-orange-200/80 bg-gradient-to-r from-orange-50 via-white to-white"
+                                        ? "bg-orange-50/50"
                                         : "";
 
-                            <tr class="tableRow group @rowBg @topRankRowClass cursor-pointer hover:bg-slate-50 transition-colors"
+                            <tr class="tableRow group @rowBg @topRankRowClass cursor-pointer transition-colors hover:bg-slate-50/90"
                                 data-state="@(stateName?.ToLower())"
                                 data-search="@rowSearchText"
                                 data-state-slug="@stateSlug"
                                 data-state-code="@postalCode"
                                 data-rank="@rowRank"
                                 data-state-url="@stateUrl"
-                                data-symbol-url="@(row.GetString("symbol_url") is { Length: > 0 } explicitSymbolUrl ? explicitSymbolUrl : symbolUrl)">
+                                data-symbol-url="@(row.GetString("symbol_url") is { Length: > 0 } explicitSymbolUrl ? explicitSymbolUrl : symbolUrl)"
+                                @if (tableQuickFilter != null) { <text>data-chip-value="@TableFilterHelper.GetQuickFilterValue(tableQuickFilter, row)"</text> }>
 
                                 @foreach (var col in columns)
                                 {
@@ -124,7 +132,7 @@
                                     var hiddenClass  = isHidden ? "hidden" : "";
                                     var cellValue    = !string.IsNullOrWhiteSpace(col.Key) && row.Data.TryGetValue(col.Key, out var val) ? val : null;
 
-                                    <td class="px-4 py-3 align-middle @hiddenClass"
+                                    <td class="px-4 py-3.5 align-middle @hiddenClass"
                                         data-column="@col.Key"
                                         @if (isToggleable) { <text>data-toggleable="true"</text> }>
 
@@ -155,7 +163,7 @@
                                                              class="h-5 w-auto object-contain rounded-sm flex-shrink-0"
                                                              loading="lazy" decoding="async" />
                                                     }
-                                                    <span class="group-hover:underline underline-offset-2">@(cellValue?.ToString() ?? stateName ?? "—")</span>
+                                                    <span class="leading-6 group-hover:underline underline-offset-2">@(cellValue?.ToString() ?? stateName ?? "—")</span>
                                                 </span>
                                                 break;
                                             }
@@ -176,6 +184,33 @@
                                                     <span class="text-slate-300">—</span>
                                                 }
                                                 break;
+
+                                            case "color-swatches":
+                                            {
+                                                var hexText = cellValue?.ToString() ?? "";
+                                                var hexCodes = hexText
+                                                    .Split(new[] { " / ", "/" }, StringSplitOptions.RemoveEmptyEntries)
+                                                    .Select(h => h.Trim())
+                                                    .Where(h => h.StartsWith("#") && h.Length >= 4)
+                                                    .ToList();
+                                                if (hexCodes.Any())
+                                                {
+                                                    <div class="flex items-center gap-1">
+                                                        @foreach (var hex in hexCodes)
+                                                        {
+                                                            <span title="@hex"
+                                                                  style="background-color: @hex;"
+                                                                  class="inline-block h-6 w-8 flex-shrink-0 border border-slate-200/80"
+                                                                  aria-label="@hex"></span>
+                                                        }
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-slate-400 text-xs">—</span>
+                                                }
+                                                break;
+                                            }
 
                                             case "link":
                                                 var linkUrl = cellValue?.ToString() ?? "";
@@ -219,8 +254,30 @@
                                                 }
                                                 else if (key == "notes")
                                                 {
-                                                    var shortText = SummarizeTableNote(text);
-                                                    <span class="text-slate-700" title="@text">@shortText</span>
+                                                    if (text == "—")
+                                                    {
+                                                        <span class="text-slate-300">—</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button type="button"
+                                                                class="noteTrigger inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-500 transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+                                                                data-note="@text"
+                                                                aria-haspopup="dialog">
+                                                            <i class="fa-regular fa-note-sticky text-[11px]" aria-hidden="true"></i>
+                                                            <span>Note</span>
+                                                        </button>
+                                                    }
+                                                }
+                                                else if (key == "status" && row.GetString("status_url") is { Length: > 0 } statusUrl)
+                                                {
+                                                    <a href="@statusUrl"
+                                                       target="_blank"
+                                                       rel="nofollow noopener noreferrer"
+                                                       class="row-link inline-flex items-center gap-1.5 font-semibold text-blue-700 underline decoration-blue-300 underline-offset-2 hover:text-blue-900">
+                                                        @text
+                                                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                                    </a>
                                                 }
                                                 else
                                                 {
@@ -238,7 +295,7 @@
             </div>
         }
 
-        <div id="tableEmptyState" class="hidden text-center py-12" aria-live="polite">
+        <div id="tableEmptyState" class="hidden px-4 py-12 text-center" aria-live="polite">
             <div class="text-6xl mb-4">🔍</div>
             <h3 class="text-xl font-black text-slate-900 mb-2">No matching entries</h3>
             <p class="text-slate-600">Adjust the filter to show more entries.</p>
@@ -293,30 +350,4 @@
         }
     }
 
-    string SummarizeTableNote(string? text)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            return "—";
-        }
-
-        var cleaned = Regex.Replace(text.Trim(), @"\s+", " ");
-        var firstSentence = Regex.Match(cleaned, @"^.*?[.!?](?:\s|$)");
-        var summary = firstSentence.Success ? firstSentence.Value.Trim() : cleaned;
-
-        const int maxLength = 110;
-        if (summary.Length <= maxLength)
-        {
-            return summary;
-        }
-
-        var clipped = summary[..maxLength].TrimEnd();
-        var lastSpace = clipped.LastIndexOf(' ');
-        if (lastSpace > 60)
-        {
-            clipped = clipped[..lastSpace];
-        }
-
-        return clipped.TrimEnd(',', ';', ':', '-') + "...";
-    }
 }

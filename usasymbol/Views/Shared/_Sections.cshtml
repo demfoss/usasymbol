@@ -122,6 +122,31 @@
                 </div>
             }
 
+            @* Color meaning cards (style: color-meaning-cards) *@
+            @if (item.Style == "color-meaning-cards" && item is USASymbol.Models.Content.ColorSection colorMeaningSection)
+            {
+                @if (!string.IsNullOrWhiteSpace(colorMeaningSection.Intro))
+                {
+                    <p class="content-p mb-5 text-slate-700">@colorMeaningSection.Intro.RenderAutoLinks()</p>
+                }
+                @if (colorMeaningSection.ColorCards.Any())
+                {
+                    @await Html.PartialAsync("Components/Cards/_ColorMeaningCards", colorMeaningSection.ColorCards)
+                }
+            }
+            @* Color appear cards (style: color-appear-cards) *@
+            else if (item.Style == "color-appear-cards" && item is USASymbol.Models.Content.ColorSection colorAppearSection)
+            {
+                @if (!string.IsNullOrWhiteSpace(colorAppearSection.Intro))
+                {
+                    <p class="content-p mb-5 text-slate-700">@colorAppearSection.Intro.RenderAutoLinks()</p>
+                }
+                @if (colorAppearSection.AppearCards.Any())
+                {
+                    @await Html.PartialAsync("Components/Cards/_ColorAppearCards", colorAppearSection.AppearCards)
+                }
+            }
+
             <!-- Subsections -->
             @if (item.Subsections != null && item.Subsections.Any())
             {
@@ -152,6 +177,8 @@
                                     {
                                         <div class="mt-4">
                                             <a href="@sub.Link.Url"
+                                               target="@(sub.Link.Url.IsExternalUrl() ? "_blank" : null)"
+                                               rel="@(sub.Link.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
                                                class="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-gray-700 transition">
                                                 <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
                                                 <i class="fas fa-arrow-right text-xs"></i>
@@ -205,6 +232,8 @@
                                             {
                                                 <div class="mt-4">
                                                     <a href="@sub.Link.Url"
+                                                       target="@(sub.Link.Url.IsExternalUrl() ? "_blank" : null)"
+                                                       rel="@(sub.Link.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
                                                        class="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-gray-700 transition">
                                                         <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
                                                         <i class="fas fa-arrow-right text-xs"></i>
@@ -244,6 +273,8 @@
                                     var label = string.IsNullOrWhiteSpace(relatedLink.Label) ? "Learn more" : relatedLink.Label;
 
                                     <a href="@relatedLink.Url"
+                                       target="@(relatedLink.Url.IsExternalUrl() ? "_blank" : null)"
+                                       rel="@(relatedLink.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
                             class="mt-5 group flex items-center justify-between gap-4 rounded-lg border border-slate-200 bg-white p-4 transition hover:border-slate-300">
                                         <div class="flex items-center gap-4 min-w-0">
                                             @if (!string.IsNullOrEmpty(thumb))
@@ -317,6 +348,8 @@
                                 {
                                     <div class="mt-4">
                                         <a href="@sub.Link.Url"
+                                           target="@(sub.Link.Url.IsExternalUrl() ? "_blank" : null)"
+                                           rel="@(sub.Link.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
                                            class="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-gray-700 transition">
                                             <span>@(string.IsNullOrWhiteSpace(sub.Link.Label) ? "Learn more" : sub.Link.Label)</span>
                                             <i class="fas fa-arrow-right text-xs"></i>

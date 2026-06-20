@@ -1,37 +1,153 @@
 @model USASymbol.Models.ViewModels.PageDetailViewModel
+@using System.Text.RegularExpressions
+@using USASymbol.Models.Content
 
 @{
     var sectionId = (ViewData["QuickAnswerSectionId"] as string ?? "quick-answer").Trim();
+    var title = string.IsNullOrWhiteSpace(Model.Content.Page.QuickAnswerTitle)
+        ? Model.Content.Page.H1
+        : Model.Content.Page.QuickAnswerTitle;
+}
+
+@functions {
+    private sealed class QuickAnswerAnchor
+    {
+        public string Phrase { get; set; } = string.Empty;
+        public string AnchorId { get; set; } = string.Empty;
+    }
+
+    private static string SlugifyKey(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalized = value.ToLowerInvariant();
+        normalized = Regex.Replace(normalized, @"[^a-z0-9]+", "-");
+        return normalized.Trim('-');
+    }
+
+    private static List<QuickAnswerAnchor> BuildAnchors(PageContent? content)
+    {
+        var anchors = new List<QuickAnswerAnchor>();
+        if (content?.Sections == null)
+        {
+            return anchors;
+        }
+
+        foreach (var section in content.Sections)
+        {
+            if (section.Highlights?.Any() == true)
+            {
+                foreach (var highlight in section.Highlights)
+                {
+                    var anchorId = $"{section.Id}-{SlugifyKey(highlight.Name)}";
+                    var phrases = new List<string> { highlight.Name };
+                    if (highlight.AnchorPhrases?.Any() == true)
+                    {
+                        phrases.AddRange(highlight.AnchorPhrases);
+                    }
+
+                    foreach (var phrase in phrases.Where(p => !string.IsNullOrWhiteSpace(p)).Distinct(StringComparer.OrdinalIgnoreCase))
+                    {
+                        anchors.Add(new QuickAnswerAnchor
+                        {
+                            Phrase = phrase,
+                            AnchorId = anchorId
+                        });
+                    }
+                }
+            }
+
+            if (section.Subsections?.Any() == true)
+            {
+                foreach (var subsection in section.Subsections)
+                {
+                    var anchorId = $"{section.Id}-{SlugifyKey(subsection.Subtitle)}";
+                    var phrases = new List<string> { subsection.Subtitle };
+                    if (subsection.AnchorPhrases?.Any() == true)
+                    {
+                        phrases.AddRange(subsection.AnchorPhrases);
+                    }
+
+                    foreach (var phrase in phrases.Where(p => !string.IsNullOrWhiteSpace(p)).Distinct(StringComparer.OrdinalIgnoreCase))
+                    {
+                        anchors.Add(new QuickAnswerAnchor
+                        {
+                            Phrase = phrase,
+                            AnchorId = anchorId
+                        });
+                    }
+                }
+            }
+        }
+
+        return anchors
+            .OrderByDescending(a => a.Phrase.Length)
+            .ToList();
+    }
+
+    private static string LinkQuickAnswerText(string? text, IReadOnlyList<QuickAnswerAnchor> anchors)
+    {
+        if (string.IsNullOrWhiteSpace(text) || anchors.Count == 0)
+        {
+            return text ?? string.Empty;
+        }
+
+        var result = text ?? string.Empty;
+        var usedAnchors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var anchor in anchors)
+        {
+            if (usedAnchors.Contains(anchor.AnchorId))
+            {
+                continue;
+            }
+
+            var pattern = $@"(?<!\[)\b{Regex.Escape(anchor.Phrase)}\b(?!\]\()";
+            var replaced = false;
+            result = Regex.Replace(result, pattern, match =>
+            {
+                if (replaced)
+                {
+                    return match.Value;
+                }
+
+                replaced = true;
+                usedAnchors.Add(anchor.AnchorId);
+                return $"[{match.Value}](#{anchor.AnchorId})";
+            }, RegexOptions.IgnoreCase);
+        }
+
+        return result;
+    }
 }
 
 @if (Model.HasQuickAnswer)
 {
+    var quickAnswerAnchors = BuildAnchors(Model.Content);
     <section id="@sectionId" class="scroll-mt-24" aria-label="Quick answer">
-        <div class="overflow-hidden rounded-[1.55rem] border border-slate-200/80 bg-white/50">
-            <div class="border-b border-slate-200/80 px-5 py-4">
-                <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="border-y border-slate-200/80 bg-white/40">
+            <div class="border-b border-slate-200/80 px-4 py-4 sm:px-5">
+                <div class="flex flex-wrap items-center gap-3">
                     <div class="flex items-center gap-3">
-                        <div class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-50 text-slate-700">
+                        <div class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-50 text-slate-700">
                             <i class="fa-solid fa-bolt text-sm" aria-hidden="true"></i>
                         </div>
                         <div class="min-w-0">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Quick Answer</p>
-                            <h2 class="mt-1 content-h2">What matters most</h2>
+                            <h2 class="mt-1 content-h2 !text-[2rem] !leading-[1.08] sm:!text-[2.2rem] md:!text-[2.35rem]">@title</h2>
                         </div>
                     </div>
-
-                    <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-white/80 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
-                        <i class="fa-solid fa-shield-check text-[10px]"></i>
-                        Editorial Summary
-                    </span>
                 </div>
             </div>
 
-            <div class="p-5 sm:p-6">
+            <div class="px-4 py-5 sm:px-5 sm:py-6">
             <ol class="space-y-5">
                 @for (int i = 0; i < Model.Content.Page.QuickAnswer.Count; i++)
                 {
-                    var answer = Model.Content.Page.QuickAnswer[i];
+                    var answer = LinkQuickAnswerText(Model.Content.Page.QuickAnswer[i], quickAnswerAnchors);
                     var isLead = i == 0;
 
                     <li class="flex gap-4 border-t border-slate-200 pt-5 first:border-t-0 first:pt-0">
@@ -39,26 +155,12 @@
                             @(i + 1)
                         </span>
 
-                        <p class="content-p @(isLead ? "font-semibold text-slate-900" : "text-slate-700")">
+                        <p class="content-p !text-[17px] !leading-[1.65] md:!text-[18px] md:!leading-[1.75] @(isLead ? "font-semibold text-slate-900" : "text-slate-700")">
                             @answer.RenderAutoLinks()
                         </p>
                     </li>
                 }
             </ol>
-
-            <div class="mt-7 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-5">
-                <button id="shareButton"
-                        class="inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
-                    <i class="fa-solid fa-share-nodes text-xs" aria-hidden="true"></i>
-                    Share
-                </button>
-
-                <button id="copyLinkBtn"
-                        class="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50">
-                    <i class="fa-regular fa-copy text-xs" aria-hidden="true"></i>
-                    Copy link
-                </button>
-            </div>
             </div>
         </div>
     </section>

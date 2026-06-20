@@ -5,11 +5,20 @@
 document.addEventListener('DOMContentLoaded', function () {
     initViewToggle();
     initSearch();
+    initFilterChips();
     initSort();
+    initSortBySelect();
     initMetricToggle();
     initRowClick();
     initRowHoverSync();
+    initNotePopover();
 });
+
+// Active quick-filter chip value, shared between search and chip filtering
+let activeChipValue = '';
+
+// Sort state per table, shared between header clicks and the Sort-by select
+const sortStateByTable = new WeakMap();
 
 // ============================================
 // VIEW TOGGLE (Cards / Table)
@@ -130,156 +139,201 @@ function initViewToggle() {
 }
 
 // ============================================
-// SEARCH (across ALL ranking tables)
+// SEARCH + QUICK FILTER CHIPS (across ALL ranking tables)
+// Combined: a row/card must match both the free-text query AND the
+// active chip (if any) to stay visible.
 // ============================================
-function initSearch() {
+function applyFilters() {
     const searchInput = document.getElementById('tableSearch');
-    if (!searchInput) return;
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
     const tableEmptyState = document.getElementById('tableEmptyState');
     const cardsEmptyState = document.getElementById('cardsEmptyState');
     const resultsCounter = document.getElementById('resultsCounter');
 
-    // All rows in all tbodies
     const allRows = document.querySelectorAll('.rankingTbody .tableRow');
     const cards = document.querySelectorAll('.rankingCard');
 
-    searchInput.addEventListener('input', function () {
-        const query = this.value.toLowerCase().trim();
-        let visibleCount = 0;
+    function matches(el) {
+        const searchText = (el.dataset.search || el.dataset.state || '').toLowerCase();
+        const searchOk = searchText.includes(query);
+        const chipOk = !activeChipValue || el.dataset.chipValue === undefined || el.dataset.chipValue === activeChipValue;
+        return searchOk && chipOk;
+    }
 
-        // Filter ALL table rows (all tables)
-        allRows.forEach(row => {
-            const searchText = (row.dataset.search || row.dataset.state || '').toLowerCase();
-            const matches = searchText.includes(query);
+    let visibleCount = 0;
 
-            // keep existing pattern: hidden class
-            row.classList.toggle('hidden', !matches);
+    allRows.forEach(row => {
+        const ok = matches(row);
+        row.classList.toggle('hidden', !ok);
+        if (ok) visibleCount++;
+    });
 
-            if (matches) visibleCount++;
+    cards.forEach(card => {
+        card.classList.toggle('hidden', !matches(card));
+    });
+
+    if (tableEmptyState) tableEmptyState.classList.toggle('hidden', visibleCount > 0);
+    if (cardsEmptyState) cardsEmptyState.classList.toggle('hidden', visibleCount > 0);
+
+    if (resultsCounter) {
+        const total = allRows.length || cards.length;
+        resultsCounter.textContent =
+            (query === '' && !activeChipValue) ? `Showing all ${total} entries` : `Found ${visibleCount} of ${total} entries`;
+    }
+}
+
+function initSearch() {
+    const searchInput = document.getElementById('tableSearch');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', applyFilters);
+}
+
+function initFilterChips() {
+    const chips = document.querySelectorAll('#quickFilterChips .filterChip');
+    if (!chips.length) return;
+
+    chips.forEach(chip => {
+        chip.addEventListener('click', function () {
+            activeChipValue = this.dataset.chipValue || '';
+
+            chips.forEach(c => {
+                const isActive = c === this;
+                c.setAttribute('aria-pressed', String(isActive));
+                c.classList.toggle('border-slate-900', isActive);
+                c.classList.toggle('bg-slate-900', isActive);
+                c.classList.toggle('text-white', isActive);
+                c.classList.toggle('border-slate-200', !isActive);
+                c.classList.toggle('bg-white', !isActive);
+                c.classList.toggle('text-slate-600', !isActive);
+            });
+
+            applyFilters();
         });
-
-        // Filter cards
-        cards.forEach(card => {
-            const searchText = (card.dataset.search || card.dataset.state || '').toLowerCase();
-            const matches = searchText.includes(query);
-            card.classList.toggle('hidden', !matches);
-        });
-
-        // Empty states
-        if (tableEmptyState) tableEmptyState.classList.toggle('hidden', visibleCount > 0);
-        if (cardsEmptyState) cardsEmptyState.classList.toggle('hidden', visibleCount > 0);
-
-        // Counter (counts table rows or cards)
-        if (resultsCounter) {
-            const total = allRows.length || cards.length;
-            resultsCounter.textContent =
-                query === '' ? `Showing all ${total} entries` : `Found ${visibleCount} of ${total} entries`;
-        }
     });
 }
 
 // ============================================
 // SORT (per-table: sort rows inside the closest tbody)
+// Shared by header clicks and the desktop "Sort by" select.
 // ============================================
+function getCellValue(row, column, table) {
+    // data attribute first
+    if (row.dataset[column]) return row.dataset[column];
+
+    // cell by data-column
+    const cell = row.querySelector(`td[data-column="${column}"]`);
+    if (cell) return cell.textContent.trim();
+
+    // fallback: index by headers within this table
+    const tableHeaders = table.querySelectorAll('th[data-sort]');
+    let colIndex = -1;
+    tableHeaders.forEach((h, i) => {
+        if (h.dataset.sort === column) colIndex = i;
+    });
+
+    if (colIndex >= 0) {
+        const cells = row.querySelectorAll('td');
+        if (cells[colIndex]) return cells[colIndex].textContent.trim();
+    }
+
+    return '';
+}
+
+function applySort(table, th, direction) {
+    const tbody = table.querySelector('.rankingTbody');
+    if (!tbody) return;
+
+    const column = th.dataset.sort;
+    sortStateByTable.set(table, { column, direction });
+
+    // Update header icons ONLY within this table
+    table.querySelectorAll('th[data-sort]').forEach(h => {
+        const icon = h.querySelector('i');
+        if (icon) icon.className = 'fas fa-sort text-slate-400 text-xs';
+    });
+
+    const activeIcon = th.querySelector('i');
+    if (activeIcon) {
+        activeIcon.className =
+            direction === 'asc'
+                ? 'fas fa-sort-up text-blue-600 text-xs'
+                : 'fas fa-sort-down text-blue-600 text-xs';
+    }
+
+    // Sort rows inside this tbody only
+    const rows = Array.from(tbody.querySelectorAll('tr.tableRow'));
+
+    rows.sort((a, b) => {
+        const aVal = getCellValue(a, column, table);
+        const bVal = getCellValue(b, column, table);
+
+        // Try numeric sort
+        const aNum = parseFloat(String(aVal).replace(/[^0-9.-]/g, ''));
+        const bNum = parseFloat(String(bVal).replace(/[^0-9.-]/g, ''));
+
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+            return direction === 'asc' ? aNum - bNum : bNum - aNum;
+        }
+
+        // String sort
+        return direction === 'asc'
+            ? String(aVal).localeCompare(String(bVal))
+            : String(bVal).localeCompare(String(aVal));
+    });
+
+    // Re-append sorted rows
+    rows.forEach(row => tbody.appendChild(row));
+
+    // Update zebra striping (within this tbody)
+    rows.forEach((row, index) => {
+        row.classList.remove('bg-white', 'bg-slate-50/35');
+        row.classList.add(index % 2 === 0 ? 'bg-white' : 'bg-slate-50/35');
+    });
+
+    // Keep the "Sort by" select in sync when sorting comes from a header click
+    const sortBySelect = document.getElementById('sortBySelect');
+    const firstTable = document.querySelector('.rankingTable');
+    if (sortBySelect && table === firstTable) {
+        sortBySelect.value = column;
+    }
+}
+
 function initSort() {
-    // now potentially multiple tables / header sets
     const headers = document.querySelectorAll('th[data-sort]');
     if (!headers.length) return;
-
-    // Track sort state per table
-    const sortStateByTable = new WeakMap(); // tableEl -> { column, direction }
 
     headers.forEach(th => {
         th.addEventListener('click', function () {
             const table = th.closest('table');
             if (!table) return;
 
-            const tbody = table.querySelector('.rankingTbody');
-            if (!tbody) return;
-
             const column = th.dataset.sort;
-
             const currentSort = sortStateByTable.get(table) || { column: null, direction: 'asc' };
+            const direction = currentSort.column === column
+                ? (currentSort.direction === 'asc' ? 'desc' : 'asc')
+                : 'asc';
 
-            // Toggle direction
-            if (currentSort.column === column) {
-                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-            } else {
-                currentSort.column = column;
-                currentSort.direction = 'asc';
-            }
-
-            sortStateByTable.set(table, currentSort);
-
-            // Update header icons ONLY within this table
-            table.querySelectorAll('th[data-sort]').forEach(h => {
-                const icon = h.querySelector('i');
-                if (icon) icon.className = 'fas fa-sort text-slate-400 text-xs';
-            });
-
-            const activeIcon = th.querySelector('i');
-            if (activeIcon) {
-                activeIcon.className =
-                    currentSort.direction === 'asc'
-                        ? 'fas fa-sort-up text-blue-600 text-xs'
-                        : 'fas fa-sort-down text-blue-600 text-xs';
-            }
-
-            // Sort rows inside this tbody only
-            const rows = Array.from(tbody.querySelectorAll('tr.tableRow'));
-
-            rows.sort((a, b) => {
-                const aVal = getCellValue(a, column, table);
-                const bVal = getCellValue(b, column, table);
-
-                // Try numeric sort
-                const aNum = parseFloat(String(aVal).replace(/[^0-9.-]/g, ''));
-                const bNum = parseFloat(String(bVal).replace(/[^0-9.-]/g, ''));
-
-                if (!isNaN(aNum) && !isNaN(bNum)) {
-                    return currentSort.direction === 'asc' ? aNum - bNum : bNum - aNum;
-                }
-
-                // String sort
-                return currentSort.direction === 'asc'
-                    ? String(aVal).localeCompare(String(bVal))
-                    : String(bVal).localeCompare(String(aVal));
-            });
-
-            // Re-append sorted rows
-            rows.forEach(row => tbody.appendChild(row));
-
-            // Update zebra striping (within this tbody)
-            rows.forEach((row, index) => {
-                row.classList.remove('bg-white', 'bg-slate-50/50');
-                row.classList.add(index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50');
-            });
+            applySort(table, th, direction);
         });
     });
+}
 
-    function getCellValue(row, column, table) {
-        // data attribute first
-        if (row.dataset[column]) return row.dataset[column];
+// ============================================
+// SORT BY (desktop select, targets the first table on the page)
+// ============================================
+function initSortBySelect() {
+    const select = document.getElementById('sortBySelect');
+    if (!select) return;
 
-        // cell by data-column
-        const cell = row.querySelector(`td[data-column="${column}"]`);
-        if (cell) return cell.textContent.trim();
+    const table = document.querySelector('.rankingTable');
+    if (!table) return;
 
-        // fallback: index by headers within this table
-        const tableHeaders = table.querySelectorAll('th[data-sort]');
-        let colIndex = -1;
-        tableHeaders.forEach((h, i) => {
-            if (h.dataset.sort === column) colIndex = i;
-        });
-
-        if (colIndex >= 0) {
-            const cells = row.querySelectorAll('td');
-            if (cells[colIndex]) return cells[colIndex].textContent.trim();
-        }
-
-        return '';
-    }
+    select.addEventListener('change', function () {
+        const th = table.querySelector(`th[data-sort="${this.value}"]`);
+        if (th) applySort(table, th, 'asc');
+    });
 }
 
 function initMetricToggle() {
@@ -367,4 +421,80 @@ function initRowHoverSync() {
             }
         });
     });
+}
+
+// ============================================
+// NOTE POPOVER (Table): click-to-reveal full note text
+// ============================================
+function initNotePopover() {
+    const triggers = document.querySelectorAll('.noteTrigger');
+    if (!triggers.length) return;
+
+    let popover = null;
+    let activeTrigger = null;
+
+    function closePopover() {
+        if (popover) {
+            popover.remove();
+            popover = null;
+        }
+        if (activeTrigger) {
+            activeTrigger.setAttribute('aria-expanded', 'false');
+            activeTrigger = null;
+        }
+    }
+
+    function openPopover(trigger) {
+        closePopover();
+
+        popover = document.createElement('div');
+        popover.className = 'noteTriggerPopover fixed z-50 max-w-xs rounded-lg border border-slate-200 bg-white p-3 text-[13px] leading-5 text-slate-700 shadow-lg';
+        popover.setAttribute('role', 'dialog');
+        popover.textContent = trigger.dataset.note || '';
+        document.body.appendChild(popover);
+
+        const triggerRect = trigger.getBoundingClientRect();
+        const popoverRect = popover.getBoundingClientRect();
+
+        let top = triggerRect.bottom + 8;
+        if (top + popoverRect.height > window.innerHeight - 8) {
+            top = triggerRect.top - popoverRect.height - 8;
+        }
+
+        let left = triggerRect.left;
+        if (left + popoverRect.width > window.innerWidth - 8) {
+            left = window.innerWidth - popoverRect.width - 8;
+        }
+
+        popover.style.top = `${Math.max(8, top)}px`;
+        popover.style.left = `${Math.max(8, left)}px`;
+
+        trigger.setAttribute('aria-expanded', 'true');
+        activeTrigger = trigger;
+    }
+
+    triggers.forEach(trigger => {
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (activeTrigger === trigger) {
+                closePopover();
+            } else {
+                openPopover(trigger);
+            }
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (popover && !popover.contains(e.target) && e.target !== activeTrigger) {
+            closePopover();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closePopover();
+    });
+
+    window.addEventListener('scroll', closePopover, true);
+    window.addEventListener('resize', closePopover);
 }

@@ -5,6 +5,7 @@ namespace Usasymbol.ViewModels
 {
     public class MapBlockViewModel
     {
+        public string Slug { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public string ImageAlt { get; set; } = string.Empty;
@@ -18,7 +19,11 @@ namespace Usasymbol.ViewModels
         public string MaxDisplayValue { get; set; } = string.Empty;
         public string SvgContent { get; set; } = string.Empty;
 
+        // Set by MapBlockViewComponent after PNG is generated/cached on disk
+        public string? GeneratedImagePath { get; set; }
+
         public List<(string Color, string Label)> LegendSteps { get; set; } = new();
+        public bool IsCategorical { get; set; }
 
         public bool HasChoropleth => Entries.Count > 0;
         public bool IsNumeric => Entries.Any(e => e.NumericValue.HasValue);

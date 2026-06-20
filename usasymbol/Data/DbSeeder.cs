@@ -252,6 +252,7 @@ namespace USASymbol.Data
             await SeedStateCoatsOfArms(context, states);
             await SeedStateSoils(context, states);
             await SeedStateFossils(context, states);
+            await SeedStateSports(context, states);
 
 
             {
@@ -396,6 +397,13 @@ namespace USASymbol.Data
                         Name = "State Fossils",
                         Description = "Discover the official state fossils of U.S. states — from ancient whales and mammoths to trilobites, dinosaurs, and prehistoric plants.",
                         ImageUrl = "/images/symbol-categories/fossils.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "sports",
+                        Name = "State Sports",
+                        Description = "Explore official state sports and heritage sporting traditions recognized by U.S. states.",
+                        ImageUrl = "/images/rankings/sports/most-popular-sport-by-state/most-popular-sport-by-state.webp"
                     },
 
                 };
@@ -1960,80 +1968,152 @@ namespace USASymbol.Data
                 await context.SaveChangesAsync();
             }
 
-            var fossilData = new Dictionary<string, (string Name, string ScientificName, string Age, int? Year, string Legislation, string Meaning)>
+            var fossilEntries = new (string StateSlug, string Name, string ScientificName, string Age, int? Year, string Legislation, string Meaning, string YamlFile)[]
             {
-                { "alabama",      ("Basilosaurus Whale",       "Basilosaurus cetoides",              "Eocene",                    1984, "Act 84-108",                     "An ancient whale up to 60 feet long that lived 40–34 million years ago. Fossils cannot be removed from Alabama without the governor's written approval.") },
-                { "alaska",       ("Woolly Mammoth",           "Mammuthus primigenius",              "Pleistocene",               1986, "Alaska Statutes § 44.09.063",    "Frequently unearthed by gold miners as stream banks erode — one of the most commonly found Pleistocene mammals in Alaska.") },
-                { "arizona",      ("Petrified Wood",           "Araucarioxylon arizonicum",          "Triassic",                  1988, "A.R.S. § 41-859",                "The most abundant fossil tree in Arizona's Petrified Forest National Park, deposited approximately 225 million years ago.") },
-                { "california",   ("Saber-Toothed Cat",        "Smilodon fatalis",                   "Pleistocene",               1974, "California Government Code § 425","Thousands of specimens recovered from the La Brea Tar Pits — the richest single source of Pleistocene mammals in the world.") },
-                { "colorado",     ("Stegosaurus",              "Stegosaurus armatus",                "Jurassic",                  1982, "C.R.S. § 24-80-914",             "One of the most recognizable dinosaurs, found in Colorado's Jurassic Morrison Formation. Despite weighing up to 10 tons, its brain was roughly the size of a walnut.") },
-                { "connecticut",  ("Dinosaur Tracks",          "Eubrontes giganteus",                "Jurassic",                  1991, "Conn. Gen. Stat. § 3-110e",      "Three-toed tracks in the Connecticut Valley's sandstone were the first dinosaur fossils discovered in North America. No skeleton of the trackmaker has ever been found.") },
-                { "delaware",     ("Belemnite",                "Belemnitella americana",             "Cretaceous",                1996, "29 Del. C. § 304",               "Extinct squid-like cephalopods found in abundance along the Chesapeake and Delaware Canal in the Late Cretaceous Mount Laurel Formation.") },
-                { "georgia",      ("Shark Tooth",              "Carcharocles megalodon",             "Cretaceous–Miocene",        1976, "O.C.G.A. § 50-3-61",            "Fossil shark teeth up to 7 inches long, found in Georgia's Cretaceous through Miocene deposits. Sharks shed thousands of teeth per lifetime, making shark teeth the most common Georgia fossil.") },
-                { "idaho",        ("Hagerman Horse",           "Equus simplicidens",                 "Pliocene",                  1988, "Idaho Code § 67-4508",           "One of the oldest Equus species, resembling the modern African zebra. Nearly 200 skeletons recovered from Hagerman Fossil Beds National Monument.") },
-                { "illinois",     ("Tully Monster",            "Tullimonstrum gregarium",            "Pennsylvanian",             1989, "5 ILCS 460/20",                  "The most enigmatic state fossil — a 300-million-year-old creature that does not fit any known animal phylum. Found only in Illinois's Mazon Creek fossil beds.") },
-                { "indiana",      ("American Mastodon",        "Mammut americanum",                  "Holocene",                  2022, "IC 1-2-10",                      "Designated in 2022 after a campaign by elementary school students in Greensburg. Mastodon remains are found throughout Indiana in glacial lake deposits.") },
-                { "kansas",       ("Pteranodon & Tylosaurus",  "Pteranodon longiceps / Tylosaurus kansasensis", "Cretaceous",    2014, "K.S.A. 73-2003",                "Kansas named two state fossils at once — a flying reptile and a marine reptile — both from the Western Interior Seaway that covered Kansas 85 million years ago.") },
-                { "kentucky",     ("Brachiopod",               "Undetermined species",               "Ordovician–Pennsylvanian",  1986, "KRS 2.095",                      "Kentucky designated the entire brachiopod group rather than any single species — their shells are so common in Kentucky's Paleozoic rocks that picking one would exclude hundreds of others.") },
-                { "louisiana",    ("Petrified Palmwood",       "Palmoxylon sp.",                     "Oligocene",                 1976, "La. R.S. 49:173",                "Found in Louisiana's Catahoula Formation — coastal plain deposits from about 30 million years ago. Distinguished by distinctive rod-like structures visible in cross-section.") },
-                { "maine",        ("Pertica Plant",            "Pertica quadrifaria",                "Devonian",                  1976, "1 M.R.S.A. § 209",               "An extinct vascular plant from around 390 million years ago, first described from compression fossils found in northern Maine's Trout Valley Formation in 1972.") },
-                { "maryland",     ("Ecphora Shell",            "Ecphora gardnerae gardnerae",        "Miocene",                   1984, "Md. Code, State Gov't § 13-316", "An extinct carnivorous sea snail, one of the first New World fossils illustrated in a European scientific publication, in 1687. Adopted 1984; species name revised in 1994. Named after paleontologist Julia Gardner.") },
-                { "massachusetts",("Dinosaur Tracks",          "Eubrontes giganteus",                "Jurassic",                  1980, "M.G.L. c. 2 § 28",              "The Connecticut River Valley of western Massachusetts is one of the world's richest dinosaur track sites. First discovered in the early 1800s, the prints were initially thought to be ancient bird tracks.") },
-                { "michigan",     ("American Mastodon",        "Mammut americanum",                  "Holocene",                  2002, "M.C.L. § 2.55",                  "Mastodon remains are found across Michigan in glacial lake beds and peat deposits. Michigan's Petoskey Stone (state stone) is also a fossil — polished Devonian coral fragments.") },
-                { "minnesota",    ("Giant Beaver",             "Castoroides ohioensis",              "Pleistocene",               2025, "Minn. Stat. § 1.1495",           "The largest rodent in North American history, up to 8 feet long — the size of a black bear. Designated as state fossil in 2025 after a student-led campaign.") },
-                { "mississippi",  ("Prehistoric Whale",        "Zygorhiza kochii",                   "Eocene",                    1981, "Miss. Code § 3-3-37",            "An ancient basilosaurid whale from 40–34 million years ago, from the warm shallow sea that covered the Gulf Coast during the Eocene.") },
-                { "missouri",     ("Sea Lily",                 "Delocrinus missouriensis",           "Pennsylvanian",             1989, "Mo. Rev. Stat. § 10.070",        "Crinoids — called sea lilies — are animals, not plants. Related to starfish and sea urchins, their fossils are common in Missouri's Pennsylvanian limestone formations.") },
-                { "montana",      ("Maiasaura",                "Maiasaura peeblesorum",              "Cretaceous",                1985, "Mont. Code § 1-1-514",           "Montana chose Maiasaura because paleontologists Jack Horner and Bob Makela discovered the first known dinosaur nesting colony there in 1978. Maiasaura means 'good mother lizard.'") },
-                { "nebraska",     ("Mammoth",                  "Mammuthus primigenius / columbi / imperator", "Pleistocene",    1967, "Neb. Rev. Stat. § 90-106",       "Nebraska was the first state to designate a state fossil in 1967, naming three mammoth species. 'Archie,' discovered in Lincoln County, is the largest mammoth skeleton ever found — 15 feet tall and estimated at 7 tons.") },
-                { "nevada",       ("Ichthyosaur",              "Shonisaurus popularis",              "Triassic",                  1977, "NRS 235.070",                    "A marine reptile up to 50 feet long. A bone bed of 37 Shonisaurus individuals was discovered near Berlin, Nevada — now preserved at Berlin-Ichthyosaur State Park.") },
-                { "new-jersey",   ("Hadrosaurus",              "Hadrosaurus foulkii",                "Cretaceous",                1991, "N.J.S.A. 52:9P-1",               "Found in Haddonfield, NJ in 1858, Hadrosaurus foulkii was the first nearly complete dinosaur skeleton in North America. When mounted in 1868, it became the first mounted dinosaur skeleton in the world.") },
-                { "new-mexico",   ("Coelophysis",              "Coelophysis bauri",                  "Triassic",                  1981, "N.M. Stat. § 12-3-5",            "Hundreds of Coelophysis skeletons were found at Ghost Ranch in the 1940s, making it perhaps the best-known Triassic dinosaur in the world. A small carnivore — about 6 feet long and 50 lbs.") },
-                { "new-york",     ("Sea Scorpion",             "Eurypterus remipes",                 "Silurian",                  1984, "N.Y. State Law § 75",            "An extinct arthropod from 432–418 million years ago with large paddles for swimming. Found in 1818 and initially misidentified as a catfish. It lived in the shallow sea that covered upstate New York during the Silurian.") },
-                { "north-carolina",("Megalodon Tooth",         "Otodus megalodon",                   "Miocene–Pliocene",          2013, "N.C. Gen. Stat. § 145-40",       "Fossilized teeth from the largest predatory shark ever known, estimated at up to 60 feet long with 7.5-inch serrated teeth. Teeth erode from the Hawthorn Formation and are popular with divers.") },
-                { "north-dakota", ("Petrified Wood (Teredo)",  "Teredo petrified wood",              "Paleocene",                 1967, "N.D. Cent. Code § 54-02-21",     "Wood bored into by marine shipworm mollusks while drifting as sea flotsam 60 million years ago, then fossilized. Found in the Cannonball Formation of south-central North Dakota.") },
-                { "ohio",         ("Trilobite & Dunkleosteus", "Isotelus maximus / Dunkleosteus terrelli", "Ordovician/Devonian", 1985, "ORC Ann. 5.039",                "Ohio has two state fossils: the trilobite Isotelus (1985), proposed by Dayton schoolchildren, and the armored fish Dunkleosteus (2021) — a 20-foot apex predator with the strongest fish bite force ever measured.") },
-                { "oklahoma",     ("Saurophaganax",            "Saurophaganax maximus",              "Jurassic",                  2000, "Okla. Stat. § 25-98.7",          "A massive allosaurid predator estimated at 34–43 feet in length, from the Late Jurassic Morrison Formation of Oklahoma. First found near Kenton, Oklahoma in the early 1930s.") },
-                { "oregon",       ("Dawn Redwood",             "Metasequoia sp.",                    "Eocene",                    2005, "ORS 186.060",                    "Designated in 2005 after a fossil enthusiast gave every Oregon legislator a Metasequoia fossil. The dawn redwood is a deciduous conifer that flourished 34–5 million years ago.") },
-                { "pennsylvania", ("Trilobite",                "Phacops rana",                       "Devonian",                  1988, "71 Pa. C.S. § 1001",             "Phacops may be the world's most recognizable trilobite. Proposed by an elementary school science class and designated in 1988. Found in Pennsylvania's Devonian-age rocks.") },
-                { "rhode-island", ("Trilobite",                "Genus and species not specified",    "Paleozoic",                 2023, "R.I. Gen. Laws § 42-4-18",       "Rhode Island designated the trilobite in 2023 without naming a specific genus or species — the least specific state fossil designation. One of the most recently adopted.") },
-                { "south-carolina",("Columbian Mammoth",       "Mammuthus columbi",                  "Pleistocene",               2014, "S.C. Code § 1-1-710",            "The bill nearly included Genesis language from creationist legislators before passing without it. Columbian mammoths were larger than woolly mammoths and roamed the southern U.S.") },
-                { "south-dakota", ("Triceratops",              "Triceratops horridus",               "Cretaceous",                1988, "S.D.C.L. § 1-6-18",              "The Hell Creek Formation across South Dakota is one of the world's richest sources of Triceratops fossils. South Dakota replaced a cycad (fossil plant) with Triceratops in 1988.") },
-                { "tennessee",    ("Pterotrigonia Bivalve",    "Pterotrigonia thoracica",            "Cretaceous",                1998, "T.C.A. § 4-1-329",               "An extinct bivalve mollusk from when much of western Tennessee was covered by a shallow sea about 70 million years ago. Common in the Coon Creek Formation of McNairy County.") },
-                { "utah",         ("Allosaurus",               "Allosaurus fragilis",                "Jurassic",                  1988, "Utah Code § 63G-1-601",          "The most common large predatory dinosaur in Utah's Jurassic Morrison Formation. Over 60 Allosaurus skeletons were found in a single Utah quarry. It may have used its upper jaw like a hatchet.") },
-                { "vermont",      ("Beluga Whale & Woolly Mammoth", "Delphinapterus leucas / Mammuthus primigenius", "Pleistocene", 1993, "1 V.S.A. § 498",            "Vermont has both a state marine fossil (beluga whale skeleton, 1993) and a state terrestrial fossil (woolly mammoth, 2014). The beluga designation is unique — it is the only state fossil from a species still living today.") },
-                { "virginia",     ("Chesapecten Scallop",      "Chesapecten jeffersonius",           "Pliocene",                  1993, "Code of Va. § 7.1-40",           "The first fossil from the New World illustrated in a European scientific publication — in 1687. Named after Thomas Jefferson for his interest in natural history. Common in streams of southeastern Virginia.") },
-                { "washington",   ("Columbian Mammoth",        "Mammuthus columbi",                  "Pleistocene",               1998, "RCW 1.20.110",                   "Fossilized remains found on the Olympic Peninsula. Washington also designates petrified wood as its state stone, making it one of several states with two fossil-related official symbols.") },
-                { "west-virginia",("Jefferson's Ground Sloth", "Megalonyx jeffersonii",              "Pleistocene",               2008, "W. Va. Code § 2-2-9",            "Named after Thomas Jefferson, who described Megalonyx to the American Philosophical Society in 1797 — the paper that launched vertebrate paleontology in North America. Stood nearly 10 feet tall.") },
-                { "wisconsin",    ("Trilobite",                "Calymene celebra",                   "Silurian",                  1985, "Wis. Stat. § 1.10(6)",           "Calymene celebra lived when warm shallow seas covered Wisconsin during the Silurian. Found in the Niagara dolomite outcroppings across the state.") },
-                { "wyoming",      ("Knightia",                 "Knightia spp.",                      "Eocene",                    1987, "Wyo. Stat. § 8-3-112",           "A genus of fossil herring preserved in massive numbers in Wyoming's Green River Formation — ancient lakes where mass die-offs created extraordinary fish preservation. Knightia is the most commonly found vertebrate fossil in the world.") },
+                ("alabama",       "Basilosaurus Whale",       "Basilosaurus cetoides",                        "Eocene",                   1984, "Act 84-108",                     "An ancient whale up to 60 feet long that lived 40–34 million years ago. Fossils cannot be removed from Alabama without the governor's written approval.",                                                                    "fossil.yaml"),
+                ("alaska",        "Woolly Mammoth",           "Mammuthus primigenius",                        "Pleistocene",              1986, "Alaska Statutes § 44.09.063",    "Frequently unearthed by gold miners as stream banks erode — one of the most commonly found Pleistocene mammals in Alaska.",                                                                                                 "fossil.yaml"),
+                ("arizona",       "Petrified Wood",           "Araucarioxylon arizonicum",                    "Triassic",                 1988, "A.R.S. § 41-859",                "The most abundant fossil tree in Arizona's Petrified Forest National Park, deposited approximately 225 million years ago.",                                                                                                   "fossil.yaml"),
+                ("california",    "Saber-Toothed Cat",        "Smilodon fatalis",                             "Pleistocene",              1974, "California Government Code § 425","Thousands of specimens recovered from the La Brea Tar Pits — the richest single source of Pleistocene mammals in the world.",                                                                                                   "fossil.yaml"),
+                ("colorado",      "Stegosaurus",              "Stegosaurus armatus",                          "Jurassic",                 1982, "C.R.S. § 24-80-914",             "One of the most recognizable dinosaurs, found in Colorado's Jurassic Morrison Formation. Despite weighing up to 10 tons, its brain was roughly the size of a walnut.",                                                        "fossil.yaml"),
+                ("connecticut",   "Dinosaur Tracks",          "Eubrontes giganteus",                          "Jurassic",                 1991, "Conn. Gen. Stat. § 3-110e",      "Three-toed tracks in the Connecticut Valley's sandstone were the first dinosaur fossils discovered in North America. No skeleton of the trackmaker has ever been found.",                                                        "fossil.yaml"),
+                ("delaware",      "Belemnite",                "Belemnitella americana",                       "Cretaceous",               1996, "29 Del. C. § 304",               "Extinct squid-like cephalopods found in abundance along the Chesapeake and Delaware Canal in the Late Cretaceous Mount Laurel Formation.",                                                                                   "fossil.yaml"),
+                ("georgia",       "Shark Tooth",              "Carcharocles megalodon",                       "Cretaceous–Miocene",       1976, "O.C.G.A. § 50-3-61",            "Fossil shark teeth up to 7 inches long, found in Georgia's Cretaceous through Miocene deposits. Sharks shed thousands of teeth per lifetime, making shark teeth the most common Georgia fossil.",                             "fossil.yaml"),
+                ("idaho",         "Hagerman Horse",           "Equus simplicidens",                           "Pliocene",                 1988, "Idaho Code § 67-4508",           "One of the oldest Equus species, resembling the modern African zebra. Nearly 200 skeletons recovered from Hagerman Fossil Beds National Monument.",                                                                            "fossil.yaml"),
+                ("illinois",      "Tully Monster",            "Tullimonstrum gregarium",                      "Pennsylvanian",            1989, "5 ILCS 460/20",                  "The most enigmatic state fossil — a 300-million-year-old creature that does not fit any known animal phylum. Found only in Illinois's Mazon Creek fossil beds.",                                                              "fossil.yaml"),
+                ("indiana",       "American Mastodon",        "Mammut americanum",                            "Holocene",                 2022, "IC 1-2-10",                      "Designated in 2022 after a campaign by elementary school students in Greensburg. Mastodon remains are found throughout Indiana in glacial lake deposits.",                                                                        "fossil.yaml"),
+                ("kansas",        "Pteranodon",               "Pteranodon longiceps",                         "Cretaceous",               2014, "K.S.A. 73-2003",                 "Kansas's state flying fossil — a large pterosaur from the Western Interior Seaway that covered Kansas 85 million years ago. Designated in 2014 alongside Tylosaurus.",                                                        "fossil-flying.yaml"),
+                ("kansas",        "Tylosaurus",               "Tylosaurus kansasensis",                       "Cretaceous",               2014, "K.S.A. 73-2003",                 "Kansas's state marine fossil — a mosasaur up to 45 feet long that hunted in the shallow sea covering Kansas 85 million years ago. Designated in 2014 alongside Pteranodon.",                                                "fossil-marine.yaml"),
+                ("kentucky",      "Brachiopod",               "Undetermined species",                         "Ordovician–Pennsylvanian", 1986, "KRS 2.095",                      "Kentucky designated the entire brachiopod group rather than any single species — their shells are so common in Kentucky's Paleozoic rocks that picking one would exclude hundreds of others.",                                   "fossil.yaml"),
+                ("louisiana",     "Petrified Palmwood",       "Palmoxylon sp.",                               "Oligocene",                1976, "La. R.S. 49:173",                "Found in Louisiana's Catahoula Formation — coastal plain deposits from about 30 million years ago. Distinguished by distinctive rod-like structures visible in cross-section.",                                                "fossil.yaml"),
+                ("maine",         "Pertica Plant",            "Pertica quadrifaria",                          "Devonian",                 1976, "1 M.R.S.A. § 209",               "An extinct vascular plant from around 390 million years ago, first described from compression fossils found in northern Maine's Trout Valley Formation in 1972.",                                                              "fossil.yaml"),
+                ("maryland",      "Ecphora Shell",            "Ecphora gardnerae gardnerae",                  "Miocene",                  1984, "Md. Code, State Gov't § 13-316", "An extinct carnivorous sea snail, one of the first New World fossils illustrated in a European scientific publication, in 1687. Adopted 1984; species name revised in 1994. Named after paleontologist Julia Gardner.",       "fossil.yaml"),
+                ("massachusetts", "Dinosaur Tracks",          "Eubrontes giganteus",                          "Jurassic",                 1980, "M.G.L. c. 2 § 28",              "The Connecticut River Valley of western Massachusetts is one of the world's richest dinosaur track sites. First discovered in the early 1800s, the prints were initially thought to be ancient bird tracks.",               "fossil.yaml"),
+                ("michigan",      "American Mastodon",        "Mammut americanum",                            "Holocene",                 2002, "M.C.L. § 2.55",                  "Mastodon remains are found across Michigan in glacial lake beds and peat deposits. Michigan's Petoskey Stone (state stone) is also a fossil — polished Devonian coral fragments.",                                             "fossil.yaml"),
+                ("minnesota",     "Giant Beaver",             "Castoroides ohioensis",                        "Pleistocene",              2025, "Minn. Stat. § 1.1495",           "The largest rodent in North American history, up to 8 feet long — the size of a black bear. Designated as state fossil in 2025 after a student-led campaign.",                                                              "fossil.yaml"),
+                ("mississippi",   "Prehistoric Whale",        "Zygorhiza kochii",                             "Eocene",                   1981, "Miss. Code § 3-3-37",            "An ancient basilosaurid whale from 40–34 million years ago, from the warm shallow sea that covered the Gulf Coast during the Eocene.",                                                                                       "fossil.yaml"),
+                ("missouri",      "Sea Lily",                 "Delocrinus missouriensis",                     "Pennsylvanian",            1989, "Mo. Rev. Stat. § 10.070",        "Crinoids — called sea lilies — are animals, not plants. Related to starfish and sea urchins, their fossils are common in Missouri's Pennsylvanian limestone formations.",                                                        "fossil.yaml"),
+                ("montana",       "Maiasaura",                "Maiasaura peeblesorum",                        "Cretaceous",               1985, "Mont. Code § 1-1-514",           "Montana chose Maiasaura because paleontologists Jack Horner and Bob Makela discovered the first known dinosaur nesting colony there in 1978. Maiasaura means 'good mother lizard.'",                                          "fossil.yaml"),
+                ("nebraska",      "Mammoth",                  "Mammuthus primigenius / columbi / imperator",  "Pleistocene",              1967, "Neb. Rev. Stat. § 90-106",       "Nebraska was the first state to designate a state fossil in 1967, naming three mammoth species. 'Archie,' discovered in Lincoln County, is the largest mammoth skeleton ever found — 15 feet tall and estimated at 7 tons.", "fossil.yaml"),
+                ("nevada",        "Ichthyosaur",              "Shonisaurus popularis",                        "Triassic",                 1977, "NRS 235.070",                    "A marine reptile up to 50 feet long. A bone bed of 37 Shonisaurus individuals was discovered near Berlin, Nevada — now preserved at Berlin-Ichthyosaur State Park.",                                                          "fossil.yaml"),
+                ("new-jersey",    "Hadrosaurus",              "Hadrosaurus foulkii",                          "Cretaceous",               1991, "N.J.S.A. 52:9P-1",               "Found in Haddonfield, NJ in 1858, Hadrosaurus foulkii was the first nearly complete dinosaur skeleton in North America. When mounted in 1868, it became the first mounted dinosaur skeleton in the world.",                   "fossil.yaml"),
+                ("new-mexico",    "Coelophysis",              "Coelophysis bauri",                            "Triassic",                 1981, "N.M. Stat. § 12-3-5",            "Hundreds of Coelophysis skeletons were found at Ghost Ranch in the 1940s, making it perhaps the best-known Triassic dinosaur in the world. A small carnivore — about 6 feet long and 50 lbs.",                             "fossil.yaml"),
+                ("new-york",      "Sea Scorpion",             "Eurypterus remipes",                           "Silurian",                 1984, "N.Y. State Law § 75",            "An extinct arthropod from 432–418 million years ago with large paddles for swimming. Found in 1818 and initially misidentified as a catfish. It lived in the shallow sea that covered upstate New York during the Silurian.",  "fossil.yaml"),
+                ("north-carolina","Megalodon Tooth",          "Otodus megalodon",                             "Miocene–Pliocene",         2013, "N.C. Gen. Stat. § 145-40",       "Fossilized teeth from the largest predatory shark ever known, estimated at up to 60 feet long with 7.5-inch serrated teeth. Teeth erode from the Hawthorn Formation and are popular with divers.",                         "fossil.yaml"),
+                ("north-dakota",  "Petrified Wood (Teredo)",  "Teredo petrified wood",                        "Paleocene",                1967, "N.D. Cent. Code § 54-02-21",     "Wood bored into by marine shipworm mollusks while drifting as sea flotsam 60 million years ago, then fossilized. Found in the Cannonball Formation of south-central North Dakota.",                                          "fossil.yaml"),
+                ("ohio",          "Trilobite",                "Isotelus maximus",                             "Ordovician",               1985, "Ohio Rev. Code § 5.039",         "Ohio's state fossil invertebrate, proposed by Dayton schoolchildren in 1985. Isotelus maximus is the largest trilobite ever found in North America, some specimens over 18 inches long.",                                    "fossil-invertebrate.yaml"),
+                ("ohio",          "Dunkleosteus",             "Dunkleosteus terrelli",                        "Devonian",                 2021, "Ohio Rev. Code § 5.039.1",       "Ohio's state fossil fish, designated in 2021. A 20-foot armored apex predator with bony shearing plates instead of teeth and the strongest bite force of any fish ever measured. Found in the Cleveland Shale.",             "fossil-fish.yaml"),
+                ("oklahoma",      "Saurophaganax",            "Saurophaganax maximus",                        "Jurassic",                 2000, "Okla. Stat. § 25-98.7",          "A massive allosaurid predator estimated at 34–43 feet in length, from the Late Jurassic Morrison Formation of Oklahoma. First found near Kenton, Oklahoma in the early 1930s.",                                              "fossil.yaml"),
+                ("oregon",        "Dawn Redwood",             "Metasequoia sp.",                              "Eocene",                   2005, "ORS 186.060",                    "Designated in 2005 after a fossil enthusiast gave every Oregon legislator a Metasequoia fossil. The dawn redwood is a deciduous conifer that flourished 34–5 million years ago.",                                                 "fossil.yaml"),
+                ("pennsylvania",  "Trilobite",                "Phacops rana",                                 "Devonian",                 1988, "71 Pa. C.S. § 1001",             "Phacops may be the world's most recognizable trilobite. Proposed by an elementary school science class and designated in 1988. Found in Pennsylvania's Devonian-age rocks.",                                                 "fossil.yaml"),
+                ("rhode-island",  "Trilobite",                "Genus and species not specified",              "Paleozoic",                2023, "R.I. Gen. Laws § 42-4-18",       "Rhode Island designated the trilobite in 2023 without naming a specific genus or species — the least specific state fossil designation. One of the most recently adopted.",                                                  "fossil.yaml"),
+                ("south-carolina","Columbian Mammoth",        "Mammuthus columbi",                            "Pleistocene",              2014, "S.C. Code § 1-1-710",            "The bill nearly included Genesis language from creationist legislators before passing without it. Columbian mammoths were larger than woolly mammoths and roamed the southern U.S.",                                             "fossil.yaml"),
+                ("south-dakota",  "Triceratops",              "Triceratops horridus",                         "Cretaceous",               1988, "S.D.C.L. § 1-6-18",              "The Hell Creek Formation across South Dakota is one of the world's richest sources of Triceratops fossils. South Dakota replaced a cycad (fossil plant) with Triceratops in 1988.",                                          "fossil.yaml"),
+                ("tennessee",     "Pterotrigonia Bivalve",    "Pterotrigonia thoracica",                      "Cretaceous",               1998, "T.C.A. § 4-1-329",               "An extinct bivalve mollusk from when much of western Tennessee was covered by a shallow sea about 70 million years ago. Common in the Coon Creek Formation of McNairy County.",                                               "fossil.yaml"),
+                ("utah",          "Allosaurus",               "Allosaurus fragilis",                          "Jurassic",                 1988, "Utah Code § 63G-1-601",          "The most common large predatory dinosaur in Utah's Jurassic Morrison Formation. Over 60 Allosaurus skeletons were found in a single Utah quarry. It may have used its upper jaw like a hatchet.",                            "fossil.yaml"),
+                ("vermont",       "Beluga Whale",             "Delphinapterus leucas",                        "Pleistocene",              1993, "1 V.S.A. § 498",                 "Vermont's state marine fossil — the only state fossil from a species still living today. A beluga skeleton was found in 1849 near Charlotte in glacial lake sediments laid down when the Champlain Sea covered the valley.",   "fossil-marine.yaml"),
+                ("vermont",       "Woolly Mammoth",           "Mammuthus primigenius",                        "Pleistocene",              2014, "1 V.S.A. § 498",                 "Vermont's state terrestrial fossil, designated in 2014. Woolly mammoth bones have been found at several sites in the Champlain Valley, deposited when glaciers retreated about 12,000 years ago.",                           "fossil-terrestrial.yaml"),
+                ("virginia",      "Chesapecten Scallop",      "Chesapecten jeffersonius",                     "Pliocene",                 1993, "Code of Va. § 7.1-40",           "The first fossil from the New World illustrated in a European scientific publication — in 1687. Named after Thomas Jefferson for his interest in natural history. Common in streams of southeastern Virginia.",                 "fossil.yaml"),
+                ("washington",    "Columbian Mammoth",        "Mammuthus columbi",                            "Pleistocene",              1998, "RCW 1.20.110",                   "Fossilized remains found on the Olympic Peninsula. Washington also designates petrified wood as its state stone, making it one of several states with two fossil-related official symbols.",                                      "fossil.yaml"),
+                ("west-virginia", "Jefferson's Ground Sloth", "Megalonyx jeffersonii",                        "Pleistocene",              2008, "W. Va. Code § 2-2-9",            "Named after Thomas Jefferson, who described Megalonyx to the American Philosophical Society in 1797 — the paper that launched vertebrate paleontology in North America. Stood nearly 10 feet tall.",                         "fossil.yaml"),
+                ("wisconsin",     "Trilobite",                "Calymene celebra",                             "Silurian",                 1985, "Wis. Stat. § 1.10(6)",           "Calymene celebra lived when warm shallow seas covered Wisconsin during the Silurian. Found in the Niagara dolomite outcroppings across the state.",                                                                          "fossil.yaml"),
+                ("wyoming",       "Knightia",                 "Knightia spp.",                                "Eocene",                   1987, "Wyo. Stat. § 8-3-112",           "A genus of fossil herring preserved in massive numbers in Wyoming's Green River Formation — ancient lakes where mass die-offs created extraordinary fish preservation. Knightia is the most commonly found vertebrate fossil in the world.", "fossil.yaml"),
             };
 
+            var stateIndex = states.ToDictionary(s => s.Slug, s => s);
             var fossils = new List<Symbol>();
 
-            foreach (var state in states)
+            foreach (var entry in fossilEntries)
             {
-                if (fossilData.TryGetValue(state.Slug, out var data))
+                if (!stateIndex.TryGetValue(entry.StateSlug, out var state)) continue;
+                fossils.Add(new Symbol
                 {
-                    fossils.Add(new Symbol
-                    {
-                        StateId = state.Id,
-                        Type = "fossil",
-                        Name = data.Name,
-                        Slug = GenerateSlug(data.Name),
-                        ScientificName = data.ScientificName,
-                        AdoptedYear = data.Year,
-                        Status = "Official",
-                        Designation = "State fossil",
-                        Legislation = data.Legislation,
-                        WikidataId = null,
-                        Meaning = data.Meaning,
-                        ImageUrl = $"/images/fossils/{state.Slug}.webp",
-                        YamlPath = $"Content/states/{state.Slug}/fossil.yaml"
-                    });
-                }
+                    StateId = state.Id,
+                    Type = "fossil",
+                    Name = entry.Name,
+                    Slug = GenerateSlug(entry.Name),
+                    ScientificName = entry.ScientificName,
+                    AdoptedYear = entry.Year,
+                    Status = "Official",
+                    Designation = "State fossil",
+                    Legislation = entry.Legislation,
+                    WikidataId = null,
+                    Meaning = entry.Meaning,
+                    ImageUrl = $"/images/fossils/{entry.StateSlug}.webp",
+                    YamlPath = $"Content/states/{entry.StateSlug}/{entry.YamlFile}"
+                });
             }
 
             context.Symbols.AddRange(fossils);
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedStateSports(AppDbContext context, List<State> states)
+        {
+            var old = await context.Symbols.Where(s => s.Type == "sport").ToListAsync();
+            if (old.Count > 0)
+            {
+                context.Symbols.RemoveRange(old);
+                await context.SaveChangesAsync();
+            }
+
+            var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
+            if (!Directory.Exists(contentRoot))
+                return;
+
+            var deserializer = new DeserializerBuilder().Build();
+            var symbols = new List<Symbol>();
+
+            foreach (var file in Directory.EnumerateFiles(contentRoot, "sport.yaml", SearchOption.AllDirectories))
+            {
+                var stateSlug = new DirectoryInfo(Path.GetDirectoryName(file) ?? string.Empty).Name;
+                if (string.IsNullOrWhiteSpace(stateSlug))
+                    continue;
+
+                var state = states.FirstOrDefault(s => string.Equals(s.Slug, stateSlug, StringComparison.OrdinalIgnoreCase));
+                if (state == null)
+                    continue;
+
+                Dictionary<object, object>? data;
+                try
+                {
+                    data = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(file));
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (data == null)
+                    continue;
+
+                var name = GetYamlString(data, "name");
+                if (string.IsNullOrWhiteSpace(name))
+                    name = GetYamlString(data, "title");
+                if (string.IsNullOrWhiteSpace(name))
+                    name = $"State Sport of {state.Name}";
+
+                symbols.Add(new Symbol
+                {
+                    StateId = state.Id,
+                    Type = "sport",
+                    Name = name,
+                    Slug = GenerateSlug(name),
+                    ScientificName = null,
+                    AdoptedYear = GetYamlInt(data, "adopted_year"),
+                    Status = GetYamlBool(data, "is_official") ? "Official" : null,
+                    Designation = "State sport",
+                    Legislation = GetYamlString(data, "legislation"),
+                    WikidataId = null,
+                    Meaning = GetYamlString(data, "meaning"),
+                    ImageUrl = GetYamlString(data, "hero_image"),
+                    YamlPath = $"Content/states/{state.Slug}/sport.yaml"
+                });
+            }
+
+            if (symbols.Count == 0)
+                return;
+
+            context.Symbols.AddRange(symbols);
             await context.SaveChangesAsync();
         }
 

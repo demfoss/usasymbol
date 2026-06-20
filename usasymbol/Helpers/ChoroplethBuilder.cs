@@ -83,7 +83,7 @@ namespace Usasymbol.Helpers
             var values = parsed.Where(x => x.NumericValue.HasValue).Select(x => x.NumericValue!.Value).ToList();
             if (!values.Any())
             {
-                if (IsCategorical(map))
+                if (IsCategoricalMap(map))
                     return BuildCategorical(parsed, map);
 
                 return BuildFlat(rows, key, map);
@@ -173,15 +173,19 @@ namespace Usasymbol.Helpers
             var categories = rows
                 .Select(r => r.DisplayValue)
                 .Where(v => !string.IsNullOrWhiteSpace(v))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .OrderBy(v => v, StringComparer.OrdinalIgnoreCase)
+                .GroupBy(v => v, StringComparer.OrdinalIgnoreCase)
+                .OrderByDescending(g => g.Count())
+                .ThenBy(g => g.Key, StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.Key)
                 .ToList();
 
             var colorByCategory = categories
                 .Select((category, index) => new
                 {
                     Category = category,
-                    Color = CategoricalPalette[index % CategoricalPalette.Length]
+                    Color = index < CategoricalPalette.Length
+                        ? CategoricalPalette[index]
+                        : HslToHex((index - CategoricalPalette.Length) * 360.0 / Math.Max(1, categories.Count - CategoricalPalette.Length), 0.62, 0.50)
                 })
                 .ToDictionary(x => x.Category, x => x.Color, StringComparer.OrdinalIgnoreCase);
 
@@ -190,11 +194,10 @@ namespace Usasymbol.Helpers
                 {
                     var display = r.DisplayValue;
                     var fill = GetExplicitFill(r.FillColor)
-                        ?? GetExplicitFill(map.FillColor)
                         ?? GetSemanticFill(map.MetricKey, display)
                         ?? (!string.IsNullOrWhiteSpace(display) && colorByCategory.TryGetValue(display, out var color)
                             ? color
-                            : NoDataColor);
+                            : GetExplicitFill(map.FillColor) ?? NoDataColor);
 
                     return new StateMapEntry(
                         r.PostalCode,
@@ -212,11 +215,41 @@ namespace Usasymbol.Helpers
                 .Select(CombineEntries)
                 .ToList();
 
-            return new ChoroplethResult { Entries = entries };
+            return new ChoroplethResult { Entries = entries, LegendSteps = BuildCategoricalLegend(entries) };
         }
 
-        private static bool IsCategorical(PageMap map) =>
-            string.Equals(map.ColorScale, "categorical", StringComparison.OrdinalIgnoreCase);
+        // A swatch legend only helps when colors mark real, named groups shared by
+        // more than one state (e.g. "Football" vs "Basketball"). When nearly every
+        // state has its own distinct value (e.g. each state's own unique slogan or
+        // seal name), listing all of them just repeats the table below, so the
+        // legend is left empty and the map shows a hover/tap hint instead.
+        private const int MaxMeaningfulLegendGroups = 14;
+
+        private static List<(string Color, string Label)> BuildCategoricalLegend(List<StateMapEntry> entries)
+        {
+            var groups = entries
+                .Where(e => !string.IsNullOrWhiteSpace(e.DisplayValue) && e.DisplayValue != "No value")
+                .GroupBy(e => e.FillColor, StringComparer.OrdinalIgnoreCase)
+                .OrderByDescending(g => g.Count())
+                .ThenBy(g => g.Key, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (groups.Count == 0 || groups.Count > MaxMeaningfulLegendGroups)
+                return new List<(string Color, string Label)>();
+
+            return groups
+                .Select(g =>
+                {
+                    var labels = g.Select(e => e.DisplayValue).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+                    var label = labels.Count == 1 ? labels[0] : $"{labels[0]} +{labels.Count - 1} more";
+                    return (g.Key, label);
+                })
+                .ToList();
+        }
+
+        public static bool IsCategoricalMap(PageMap map) =>
+            string.Equals(map.ColorScale, "categorical", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(map.ColorScheme, "categorical", StringComparison.OrdinalIgnoreCase);
 
         private static string? GetExplicitFill(string? color)
         {
@@ -441,6 +474,32 @@ namespace Usasymbol.Helpers
         {
             double sv = Math.Max(value, 1), sn = Math.Max(min, 1), sx = Math.Max(max, 1);
             return (Math.Log(sv) - Math.Log(sn)) / (Math.Log(sx) - Math.Log(sn));
+        }
+
+        // Used to extend the categorical palette beyond its 15 curated colors so
+        // large category counts (e.g. 27+ candy types) never reuse a color.
+        private static string HslToHex(double hue, double saturation, double lightness)
+        {
+            hue = ((hue % 360) + 360) % 360;
+            double c = (1 - Math.Abs(2 * lightness - 1)) * saturation;
+            double x = c * (1 - Math.Abs((hue / 60 % 2) - 1));
+            double m = lightness - c / 2;
+
+            (double r, double g, double b) = hue switch
+            {
+                < 60 => (c, x, 0.0),
+                < 120 => (x, c, 0.0),
+                < 180 => (0.0, c, x),
+                < 240 => (0.0, x, c),
+                < 300 => (x, 0.0, c),
+                _ => (c, 0.0, x),
+            };
+
+            return ToHex((
+                (int)Math.Round((r + m) * 255),
+                (int)Math.Round((g + m) * 255),
+                (int)Math.Round((b + m) * 255)
+            ));
         }
 
         private static string Lerp(double t, (int r, int g, int b) light, (int r, int g, int b) dark)

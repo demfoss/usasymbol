@@ -4,10 +4,20 @@
 @inject IImageUrlService Images
 
 @{
+    const string baseUrl = "https://usasymbol.com";
     var title   = string.IsNullOrWhiteSpace(Model?.Title) ? "Map" : Model.Title;
     var alt     = string.IsNullOrWhiteSpace(Model?.ImageAlt) ? title : Model.ImageAlt;
-    var hasSvg  = Model?.HasChoropleth == true && !string.IsNullOrEmpty(Model.SvgContent);
-    var hasImg  = !string.IsNullOrWhiteSpace(Model?.Image);
+    var hasSvg      = Model?.HasChoropleth == true && !string.IsNullOrEmpty(Model.SvgContent);
+    var hasImg      = !string.IsNullOrWhiteSpace(Model?.Image);
+    var hasGenImg   = !string.IsNullOrWhiteSpace(Model?.GeneratedImagePath);
+    var generatedImageUrl = hasGenImg
+        ? (Model!.GeneratedImagePath!.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+            ? Model.GeneratedImagePath
+            : $"{baseUrl}{Model.GeneratedImagePath}")
+        : null;
+    var seoImageUrl = hasImg      ? Images.Full(Model!.Image)
+                    : hasGenImg   ? generatedImageUrl
+                    : null;
 
     string choroplethJson = "{}";
     if (hasSvg && Model?.Entries?.Count > 0)
@@ -57,8 +67,8 @@
         <div class="relative min-w-0 max-w-full" id="usmap-wrapper">
 
             <div id="usmap-container"
-                 class="relative min-w-0 max-w-full overflow-hidden rounded border border-slate-200 bg-white select-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full [&_svg]:max-w-full"
-                 style="aspect-ratio:959/593;min-height:260px"
+                 class="relative min-w-0 max-w-full overflow-hidden bg-white select-none shadow-[0_1px_28px_-10px_rgba(15,23,42,0.18)] [&_svg]:block [&_svg]:h-full [&_svg]:w-full [&_svg]:max-w-full"
+                 style="aspect-ratio:959/593;min-height:320px"
                  role="img"
                  aria-label="@alt">
                 @Html.Raw(Model!.SvgContent)
@@ -129,24 +139,54 @@
                 </div>
             </div>
         }
+        else if (!Model.IsNumeric && Model.LegendSteps.Count > 0)
+        {
+            @* Categorical legend: only rendered when colors mark real groups
+               shared by more than one state, so it stays a handful of items
+               instead of a 50-line wall of text. *@
+            <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2" aria-label="Map legend">
+                @if (!string.IsNullOrEmpty(Model.MetricLabel))
+                {
+                    <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400">@Model.MetricLabel</span>
+                }
+                @foreach (var step in Model.LegendSteps)
+                {
+                    <div class="flex items-center gap-1.5">
+                        <span class="inline-block h-2.5 w-2.5 rounded-full flex-shrink-0"
+                              style="background:@step.Color" aria-hidden="true"></span>
+                        <span class="text-[12px] font-medium text-slate-600">@step.Label</span>
+                    </div>
+                }
+            </div>
+        }
+        else if (Model.IsCategorical)
+        {
+            @* Every state has its own distinct value here, so a per-state swatch
+               list would just repeat the table below. Point users at the
+               tooltip instead, which works on both hover (desktop) and tap (mobile). *@
+            <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-1.5 text-[12px] text-slate-600">
+                <i class="fa-solid fa-hand-pointer text-[11px] text-slate-400" aria-hidden="true"></i>
+                <span>Tap or hover any state to see its @(string.IsNullOrEmpty(Model.MetricLabel) ? "value" : Model.MetricLabel.ToLowerInvariant()).</span>
+            </div>
+        }
 
         @* ── JSON for tooltip JS (embedded in HTML, server-rendered) ── *@
         <script type="application/json"
                 id="choropleth-data"
                 data-metric-label="@Model.MetricLabel">@Html.Raw(choroplethJson)</script>
 
-        @* ── SEO layer: visually hidden table (Google + screen readers) ── *@
+        @* ── SEO layer: visually hidden table + static image for Google crawler ── *@
         <div class="sr-only">
-            @if (hasImg)
+            @if (seoImageUrl != null)
             {
                 <figure itemscope itemtype="https://schema.org/ImageObject">
-                    <img src="@Images.Full(Model!.Image)"
+                    <img src="@seoImageUrl"
                          alt="@alt"
                          loading="eager"
                          decoding="async"
                          itemprop="url" />
-                    <meta itemprop="contentUrl" content="@Images.Full(Model.Image)" />
-                    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+                    <meta itemprop="contentUrl" content="@seoImageUrl" />
+                    @if (!string.IsNullOrWhiteSpace(Model!.Caption))
                     {
                         <figcaption itemprop="caption">@Model.Caption</figcaption>
                     }
@@ -177,7 +217,7 @@
         @* Caption *@
         @if (!string.IsNullOrWhiteSpace(Model.Caption))
         {
-            <p class="mt-3 border-l-2 border-slate-300 pl-4 text-sm leading-6 text-slate-700">@Model.Caption</p>
+            <p class="mt-3 max-w-3xl text-xs leading-6 text-slate-600 md:text-sm">@Model.Caption</p>
         }
     }
     else if (hasImg)
@@ -191,9 +231,7 @@
                itemprop="contentUrl"
                aria-label="Open full size map: @title">
                 <img src="@Images.Hero(Model.Image)"
-                     srcset="@(Images.Hero(Model.Image, 480)) 480w,
-                             @(Images.Hero(Model.Image, 768)) 768w,
-                             @(Images.Hero(Model.Image, 1200)) 1200w"
+                     srcset="@Images.HeroSrcSet(Model.Image, 480, 768, 1200)"
                      sizes="(max-width: 1023px) 100vw, 960px"
                      alt="@alt"
                      class="w-full h-auto object-contain"
@@ -203,9 +241,8 @@
             </a>
             @if (!string.IsNullOrWhiteSpace(Model.Caption))
             {
-                <figcaption class="border-l-2 border-slate-300 pl-4 py-1" itemprop="caption">
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Interpretation</p>
-                    <p class="mt-1 text-sm leading-6 text-slate-700">@Model.Caption</p>
+                <figcaption class="max-w-3xl text-xs leading-6 text-slate-600 md:text-sm" itemprop="caption">
+                    @Model.Caption
                 </figcaption>
             }
         </figure>

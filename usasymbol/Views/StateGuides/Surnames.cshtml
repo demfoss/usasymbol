@@ -749,7 +749,7 @@
                         <h2 class="text-[1.8rem] font-semibold leading-none text-slate-900">Sources</h2>
                     </div>
                     <ul class="space-y-2.5">
-                        @foreach (var src in content.Sources)
+                        @foreach (var src in content.Sources.Where(src => !src.Url.IsSuppressedSourceUrl()))
                         {
                             <li>
                                 @if (!string.IsNullOrWhiteSpace(src.Url))

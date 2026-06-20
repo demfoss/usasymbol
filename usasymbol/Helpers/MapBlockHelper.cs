@@ -13,16 +13,19 @@ namespace Usasymbol.Helpers
         public static async Task<IHtmlContent> RenderMapBlockAsync(
             this IHtmlHelper html,
             PageMap? map,
-            PageTable? table = null)
+            PageTable? table = null,
+            string? slug = null)
         {
             if (map == null) return HtmlString.Empty;
 
             var model = new MapBlockViewModel
             {
-                Title    = map.Title,
-                Image    = map.Image,
-                ImageAlt = map.ImageAlt,
-                Caption  = map.Caption ?? string.Empty,
+                Slug          = slug ?? string.Empty,
+                Title         = map.Title,
+                Image         = map.Image,
+                ImageAlt      = map.ImageAlt,
+                Caption       = map.Caption ?? string.Empty,
+                IsCategorical = ChoroplethBuilder.IsCategoricalMap(map),
             };
 
             if (table?.Rows?.Count > 0)

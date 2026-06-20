@@ -5,16 +5,42 @@
 
 @{
     var sections = Model.FossilContent?.Sections;
+    var visualAssets = Model.FossilContent?.VisualAssets ?? new List<VisualAsset>();
+    var inlineFactsSection = sections?.FirstOrDefault(item =>
+        item.Facts?.Any() == true &&
+        (string.Equals(item.Id, "facts", StringComparison.OrdinalIgnoreCase) ||
+         item.Title.Contains("Facts", StringComparison.OrdinalIgnoreCase)));
+    var hasAboutSection = sections?.Any(item => string.Equals(item.Id, "about", StringComparison.OrdinalIgnoreCase)) == true;
+    var renderedInlineFacts = false;
 }
 
 @if (sections?.Any() == true)
 {
     foreach (var item in sections)
     {
+        var isInlineFactsSection = inlineFactsSection != null &&
+            string.Equals(item.Id, inlineFactsSection.Id, StringComparison.OrdinalIgnoreCase);
+
+        if (isInlineFactsSection)
+        {
+            continue;
+        }
+
         var hasSites = item.Sites?.Any() == true;
 
         <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
             @await Html.PartialAsync("Components/Content/_SectionHeader", (IContentSection)item)
+
+            @{
+                var sectionAssets = visualAssets
+                    .Where(v => !string.IsNullOrEmpty(v.Section) &&
+                                string.Equals(v.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            @foreach (var asset in sectionAssets)
+            {
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+            }
 
             @if (item.Paragraphs?.Any() == true)
             {
@@ -31,6 +57,23 @@
             @if (item.Facts?.Any() == true)
             {
                 @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+            }
+
+            @if (!renderedInlineFacts &&
+                inlineFactsSection?.Facts?.Any() == true &&
+                string.Equals(item.Id, "about", StringComparison.OrdinalIgnoreCase))
+            {
+                renderedInlineFacts = true;
+
+                @await Html.PartialAsync(
+                    "Components/Widgets/_FactsCarousel",
+                    (IEnumerable<string>)inlineFactsSection.Facts,
+                    new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(ViewData)
+                    {
+                        ["FactsTitle"] = inlineFactsSection.Title,
+                        ["FactsEyebrow"] = "State fossil",
+                        ["FactsAccent"] = "amber"
+                    })
             }
 
             @* ── Fossil Sites Leaflet Map (location section) ─────────────────── *@
@@ -71,7 +114,7 @@
                         .setView([@lat, @lng], 7);
 
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="nofollow noopener noreferrer">OpenStreetMap</a> contributors',
                         maxZoom: 18
                     }).addTo(map);
 
@@ -107,6 +150,19 @@
 
             <div class="clear-both"></div>
         </section>
+    }
+
+    @if (!renderedInlineFacts && inlineFactsSection?.Facts?.Any() == true && !hasAboutSection)
+    {
+        @await Html.PartialAsync(
+            "Components/Widgets/_FactsCarousel",
+            (IEnumerable<string>)inlineFactsSection.Facts,
+            new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(ViewData)
+            {
+                ["FactsTitle"] = inlineFactsSection.Title,
+                ["FactsEyebrow"] = "State fossil",
+                ["FactsAccent"] = "amber"
+            })
     }
 }
 else

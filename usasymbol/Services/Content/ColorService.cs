@@ -161,6 +161,42 @@ namespace USASymbol.Services
                                     section.Paragraphs = paragraphs.OfType<string>().ToList();
                                 }
 
+                                section.Intro = GetString(secDict, "intro");
+
+                                if (secDict.ContainsKey("color_cards") && secDict["color_cards"] is List<object> colorCards)
+                                {
+                                    foreach (var cc in colorCards)
+                                    {
+                                        if (cc is Dictionary<object, object> ccDict)
+                                        {
+                                            section.ColorCards.Add(new ColorMeaningCard
+                                            {
+                                                ColorName = GetString(ccDict, "color_name"),
+                                                Hex      = GetString(ccDict, "hex"),
+                                                Heading  = GetString(ccDict, "heading"),
+                                                Meaning  = GetString(ccDict, "meaning")
+                                            });
+                                        }
+                                    }
+                                }
+
+                                if (secDict.ContainsKey("appear_cards") && secDict["appear_cards"] is List<object> appearCards)
+                                {
+                                    foreach (var ac in appearCards)
+                                    {
+                                        if (ac is Dictionary<object, object> acDict)
+                                        {
+                                            section.AppearCards.Add(new ColorAppearCard
+                                            {
+                                                Image       = GetString(acDict, "image"),
+                                                Alt         = GetString(acDict, "alt"),
+                                                Heading     = GetString(acDict, "heading"),
+                                                Description = GetString(acDict, "description")
+                                            });
+                                        }
+                                    }
+                                }
+
                                 if (secDict.ContainsKey("subsections") && secDict["subsections"] is List<object> subsections)
                                 {
                                     foreach (var sub in subsections)
@@ -238,9 +274,21 @@ namespace USASymbol.Services
                     }
 
                     AddFact("Official colors", colorContent.OfficialColors);
-                    AddFact("Official since", colorContent.OfficialSince);
-                    AddFact("Primary use", colorContent.PrimaryUse);
-                    AddFact("Known for", colorContent.KnownFor);
+
+                    // Strip parenthetical "(based on …)" from OfficialSince for the sidebar
+                    var officialSinceShort = colorContent.OfficialSince ?? "";
+                    var parenIdx = officialSinceShort.IndexOf(" (", StringComparison.Ordinal);
+                    if (parenIdx > 0) officialSinceShort = officialSinceShort[..parenIdx];
+                    AddFact("Official since", officialSinceShort);
+
+                    // Max 3 comma-separated items for Primary use
+                    var primaryUseParts = (colorContent.PrimaryUse ?? "")
+                        .Split(',')
+                        .Select(p => p.Trim())
+                        .Where(p => !string.IsNullOrWhiteSpace(p))
+                        .Take(3)
+                        .ToArray();
+                    AddFact("Primary use", string.Join(", ", primaryUseParts));
 
                     colorContent.VisualAssets = YamlParse.VisualAssets(data);
 

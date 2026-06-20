@@ -35,6 +35,7 @@ namespace USASymbol.Controllers
         private readonly ISealService _sealService;
         private readonly ISoilService _soilService;
         private readonly IFossilService _fossilService;
+        private readonly ISportService _sportService;
         private readonly ILatestContentRailService _latestContentRailService;
         private readonly QuizService _quizService;
         private readonly ILogger<SymbolController> _logger;
@@ -61,7 +62,8 @@ namespace USASymbol.Controllers
             ["state-seals"] = "fa-solid fa-stamp",
             ["coats-of-arms"] = "fa-solid fa-shield-halved",
             ["soils"] = "fa-solid fa-mountain",
-            ["fossils"] = "fa-solid fa-bone"
+            ["fossils"] = "fa-solid fa-bone",
+            ["sports"] = "fa-solid fa-medal"
         };
 
         public SymbolController(
@@ -83,6 +85,7 @@ namespace USASymbol.Controllers
             ISealService sealService,
             ISoilService soilService,
             IFossilService fossilService,
+            ISportService sportService,
             ILatestContentRailService latestContentRailService,
             QuizService quizService,
             ILogger<SymbolController> logger,
@@ -107,6 +110,7 @@ namespace USASymbol.Controllers
             _sealService = sealService;
             _soilService = soilService;
             _fossilService = fossilService;
+            _sportService = sportService;
             _latestContentRailService = latestContentRailService;
             _quizService = quizService;
             _logger = logger;
@@ -234,6 +238,7 @@ namespace USASymbol.Controllers
                 "license-plate-slogans" => symbol.Type == "license-plate",
                 "state-seals" => symbol.Type == "state-seal",
                 "coats-of-arms" => symbol.Type == "coat-of-arms",
+                "sports" => symbol.Type == "sport",
                 _ => false
             };
         }
@@ -1277,7 +1282,9 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolAsync(state.Id, "fossil");
+            // Try by slug first to correctly handle multi-fossil states (Ohio, Kansas, Vermont)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, fossilSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "fossil");
             if (symbol == null)
             {
                 _logger.LogWarning("State fossil symbol not found for state: {StateSlug}", stateSlug);
@@ -1288,7 +1295,10 @@ namespace USASymbol.Controllers
             if (redirect != null)
                 return redirect;
 
-            var content = await _fossilService.GetFossilContentAsync(stateSlug);
+            var yamlFileName = string.IsNullOrWhiteSpace(symbol.YamlPath)
+                ? "fossil.yaml"
+                : Path.GetFileName(symbol.YamlPath);
+            var content = await _fossilService.GetFossilContentAsync(stateSlug, yamlFileName);
             if (content == null)
                 _logger.LogInformation("State fossil YAML not found for state: {StateSlug}", stateSlug);
             else
@@ -1307,6 +1317,48 @@ namespace USASymbol.Controllers
             };
 
             return View("Fossil", model);
+        }
+
+        [Route("states/{stateSlug}/sport/{sportSlug}")]
+        public async Task<IActionResult> StateSport(string stateSlug, string sportSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var symbol = await _symbolService.GetSymbolAsync(state.Id, "sport");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State sport symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(sportSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var content = await _sportService.GetSportContentAsync(stateSlug);
+            if (content == null)
+                _logger.LogInformation("State sport YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State sport content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new SportDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                SportContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions
+            };
+
+            return View("Sport", model);
         }
 
         [Route("states/{stateSlug}/{symbolType}")]

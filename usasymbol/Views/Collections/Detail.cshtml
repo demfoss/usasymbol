@@ -219,6 +219,7 @@
         <aside class="hidden lg:block relative h-full">
             <div class="sticky top-24 pb-10">
                 @await Html.PartialAsync("_TocSidebar", Model)
+                @await Html.PartialAsync("_RelatedCollectionsSidebar", Model)
             </div>
         </aside>
 
@@ -241,21 +242,20 @@
                 @if (Model.HasRows)
                 {
                     <section id="collection-table" class="scroll-mt-24 content-divider">
+                        @{ var tableVM = Model.ToTableSection(); }
                         <div class="flex items-baseline justify-between gap-4">
                             <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
                                 @content?.Page?.H1
                             </h2>
-                            <span class="hidden md:inline text-sm text-slate-500">Search, sort, and compare</span>
+                            <span id="resultsCounter" class="hidden md:inline shrink-0 text-sm text-slate-500">@tableVM.TotalRowsCount entries</span>
                         </div>
 
-                        <div class="mt-5">
-                            @{ var tableVM = Model.ToTableSection(); }
+                        <div class="mt-5 overflow-hidden border border-slate-200/80 bg-white/40">
                             @await Html.PartialAsync("Components/Tables/_Controls", tableVM)
                             @await Html.PartialAsync("Components/Tables/_Cards", tableVM)
                             @await Html.PartialAsync("Components/Tables/_Table", tableVM)
                         </div>
 
-                        @await Html.PartialAsync("_PrintableWidget", Model)
                     </section>
                 }
 
@@ -283,6 +283,27 @@
                 <div class="content-divider">
                     @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
                 </div>
+
+                @if (Model.HasRelated)
+                {
+                    <div class="lg:hidden mt-8 pt-6 border-t border-slate-200/80 content-divider" data-nosnippet>
+                        <h2 class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400 mb-4">Related Guides</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            @foreach (var item in Model.Content?.Related ?? new List<USASymbol.Models.Content.PageRelated>())
+                            {
+                                <a href="@item.Url"
+                                   target="@(item.Url.IsExternalUrl() ? "_blank" : null)"
+                                   rel="@(item.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
+                                   class="group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/60 px-4 py-3 text-sm font-semibold text-slate-800 hover:border-slate-400 hover:bg-white transition-all">
+                                    <span class="line-clamp-2 leading-5">@item.Title</span>
+                                    <span class="shrink-0 text-slate-400 group-hover:text-slate-700 transition-colors">
+                                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                                    </span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
                 </div>
             </div>
         </div>

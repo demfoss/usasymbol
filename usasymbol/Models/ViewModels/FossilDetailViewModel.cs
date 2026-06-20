@@ -2,7 +2,7 @@ using USASymbol.Models.Content;
 
 namespace USASymbol.Models.ViewModels
 {
-    public class FossilDetailViewModel : SymbolDetailViewModel, ISymbolDetailViewModel
+    public class FossilDetailViewModel : SymbolDetailViewModel, ISymbolDetailViewModel, IHasVisualAssets
     {
         public FossilContent? FossilContent { get; set; }
 
@@ -40,5 +40,7 @@ namespace USASymbol.Models.ViewModels
             get => FossilContent?.QuickFacts;
             set { }
         }
+
+        public IReadOnlyList<VisualAsset>? VisualAssets => FossilContent?.VisualAssets;
     }
 }

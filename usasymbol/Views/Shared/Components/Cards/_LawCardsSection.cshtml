@@ -1,0 +1,294 @@
+@using System.Text.RegularExpressions
+@using USASymbol.Extensions
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@model (PageSection Section, IReadOnlyList<VisualAsset> VisualAssets)
+@inject IImageUrlService Images
+
+@functions {
+    private sealed class SectionMetaItem
+    {
+        public string Label { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+    }
+
+    private sealed class LawCardItem
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string Body { get; set; } = string.Empty;
+        public string Image { get; set; } = string.Empty;
+        public string ImageAlt { get; set; } = string.Empty;
+        public LinkData? Link { get; set; }
+    }
+
+    private static (string BadgeClass, string IconClass, string Label) GetStatusBadge(string? rawStatus)
+    {
+        var status = (rawStatus ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(status))
+        {
+            return (string.Empty, string.Empty, string.Empty);
+        }
+
+        if (status.Equals("verified", StringComparison.OrdinalIgnoreCase))
+        {
+            return ("border-emerald-200 bg-emerald-50 text-emerald-800", "fa-solid fa-circle-check", "Verified");
+        }
+
+        if (status.Equals("not verified", StringComparison.OrdinalIgnoreCase) ||
+            status.Equals("unverified", StringComparison.OrdinalIgnoreCase))
+        {
+            return ("border-amber-200 bg-amber-50 text-amber-800", "fa-solid fa-triangle-exclamation", "Not Verified");
+        }
+
+        if (status.Equals("myth", StringComparison.OrdinalIgnoreCase))
+        {
+            return ("border-rose-200 bg-rose-50 text-rose-800", "fa-solid fa-ban", "Myth");
+        }
+
+        return ("border-slate-200 bg-slate-50 text-slate-700", "fa-solid fa-bookmark", status);
+    }
+
+    private static List<SectionMetaItem> ExtractLeadingMeta(string? markdown, out string remaining)
+    {
+        var items = new List<SectionMetaItem>();
+        if (string.IsNullOrWhiteSpace(markdown))
+        {
+            remaining = string.Empty;
+            return items;
+        }
+
+        var text = markdown.Replace("\r\n", "\n").Trim();
+        var lines = text.Split('\n').ToList();
+        var index = 0;
+
+        while (index < lines.Count)
+        {
+            var line = lines[index].Trim();
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                index++;
+                continue;
+            }
+
+            var match = Regex.Match(
+                line,
+                @"^\*\*(?<label>[^*\n]+?)\*\*(?:\s*(?<value>.+))?$",
+                RegexOptions.CultureInvariant);
+
+            if (!match.Success)
+            {
+                break;
+            }
+
+            var labelRaw = (match.Groups["label"].Value ?? string.Empty).Trim();
+            var valueRaw = (match.Groups["value"].Value ?? string.Empty).Trim();
+
+            if (labelRaw.EndsWith(":", StringComparison.Ordinal))
+            {
+                labelRaw = labelRaw[..^1].Trim();
+            }
+            else if (string.IsNullOrWhiteSpace(valueRaw))
+            {
+                var colonIndex = labelRaw.IndexOf(':');
+                if (colonIndex > 0 && colonIndex < labelRaw.Length - 1)
+                {
+                    valueRaw = labelRaw[(colonIndex + 1)..].Trim();
+                    labelRaw = labelRaw[..colonIndex].Trim();
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(labelRaw) || string.IsNullOrWhiteSpace(valueRaw))
+            {
+                break;
+            }
+
+            items.Add(new SectionMetaItem
+            {
+                Label = labelRaw,
+                Value = valueRaw
+            });
+
+            index++;
+        }
+
+        remaining = string.Join("\n", lines.Skip(index)).Trim();
+        return items;
+    }
+
+    private static List<string> SplitParagraphs(string? markdown)
+    {
+        if (string.IsNullOrWhiteSpace(markdown))
+        {
+            return new List<string>();
+        }
+
+        return Regex
+            .Split(markdown.Replace("\r\n", "\n").Trim(), @"\n\s*\n")
+            .Select(block => block.Trim())
+            .Where(block => !string.IsNullOrWhiteSpace(block))
+            .ToList();
+    }
+
+    private static string SlugifyKey(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalized = value.ToLowerInvariant();
+        normalized = Regex.Replace(normalized, @"[^a-z0-9]+", "-");
+        return normalized.Trim('-');
+    }
+}
+
+@{
+    var section = Model.Section;
+    var visualAssets = Model.VisualAssets ?? Array.Empty<VisualAsset>();
+    var cards = new List<LawCardItem>();
+
+    if (section.Highlights?.Any() == true)
+    {
+        cards.AddRange(section.Highlights.Select(h => new LawCardItem
+        {
+            Title = h.Name,
+            Status = h.Status,
+            Body = h.Description,
+            Image = h.Image,
+            ImageAlt = h.Name
+        }));
+    }
+
+    if (section.Subsections?.Any() == true)
+    {
+        foreach (var sub in section.Subsections)
+        {
+            var subsectionAssetKey = $"{section.Id}::{SlugifyKey(sub.Subtitle)}";
+            var subsectionImage = visualAssets.FirstOrDefault(v =>
+                !string.IsNullOrWhiteSpace(v.Section) &&
+                string.Equals(v.Section, subsectionAssetKey, StringComparison.OrdinalIgnoreCase));
+
+            cards.Add(new LawCardItem
+            {
+                Title = sub.Subtitle,
+                Status = sub.Status,
+                Body = sub.Text,
+                Image = subsectionImage?.Src ?? string.Empty,
+                ImageAlt = subsectionImage?.Alt ?? sub.Subtitle,
+                Link = sub.Link
+            });
+        }
+    }
+}
+
+@if (cards.Any())
+{
+    <div class="law-cards mt-6">
+        @foreach (var card in cards)
+        {
+            var badge = GetStatusBadge(card.Status);
+            var metaItems = ExtractLeadingMeta(card.Body, out var cardBody);
+            var bodyParagraphs = SplitParagraphs(cardBody);
+            var cardId = $"{section.Id}-{SlugifyKey(card.Title)}";
+            var fallbackIcon = "fa-solid fa-file-circle-question";
+
+            if (string.Equals(badge.Label, "Verified", StringComparison.OrdinalIgnoreCase))
+            {
+                fallbackIcon = "fa-solid fa-scale-balanced";
+            }
+            else if (string.Equals(badge.Label, "Not Verified", StringComparison.OrdinalIgnoreCase))
+            {
+                fallbackIcon = "fa-solid fa-triangle-exclamation";
+            }
+            else if (string.Equals(badge.Label, "Myth", StringComparison.OrdinalIgnoreCase))
+            {
+                fallbackIcon = "fa-solid fa-ban";
+            }
+
+            <article id="@cardId" class="law-card scroll-mt-24">
+                <div class="law-card__layout">
+                    @if (!string.IsNullOrWhiteSpace(card.Image))
+                    {
+                        <div class="law-card__media">
+                            <img src="@Images.Card(card.Image)"
+                                 alt="@card.ImageAlt"
+                                 class="law-card__image"
+                                 loading="lazy"
+                                 decoding="async" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="law-card__media law-card__media--fallback">
+                            <div class="law-card__fallback">
+                                <span class="law-card__fallback-icon">
+                                    <i class="@fallbackIcon text-lg" aria-hidden="true"></i>
+                                </span>
+                                @if (!string.IsNullOrWhiteSpace(badge.Label))
+                                {
+                                    <span class="law-card__badge inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] @badge.BadgeClass">
+                                        <i class="@badge.IconClass text-[10px]" aria-hidden="true"></i>
+                                        @badge.Label
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="law-card__content">
+                        @if (!string.IsNullOrWhiteSpace(badge.Label))
+                        {
+                            <div class="law-card__badge-row">
+                                <span class="law-card__badge inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] @badge.BadgeClass">
+                                    <i class="@badge.IconClass text-[10px]" aria-hidden="true"></i>
+                                    @badge.Label
+                                </span>
+                            </div>
+                        }
+
+                        <h3 class="law-card__title">@card.Title</h3>
+
+                        @if (metaItems.Any())
+                        {
+                            <dl class="law-card__facts">
+                                @foreach (var item in metaItems)
+                                {
+                                    <div class="law-card__fact">
+                                        <dt class="law-card__fact-label">@item.Label</dt>
+                                        <dd class="law-card__fact-value">@item.Value.RenderAutoLinks()</dd>
+                                    </div>
+                                }
+                            </dl>
+                        }
+
+                        @if (bodyParagraphs.Any())
+                        {
+                            <div class="law-card__body">
+                                @for (int p = 0; p < bodyParagraphs.Count; p++)
+                                {
+                                    <p class="@(p > 0 ? "mt-3" : string.Empty)">
+                                        @bodyParagraphs[p].RenderAutoLinks()
+                                    </p>
+                                }
+                            </div>
+                        }
+
+                        @if (card.Link != null && !string.IsNullOrWhiteSpace(card.Link.Url))
+                        {
+                            <div class="law-card__link-row">
+                                <a href="@card.Link.Url"
+                                   target="@(card.Link.Url.IsExternalUrl() ? "_blank" : null)"
+                                   rel="@(card.Link.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
+                                   class="law-card__link">
+                                    <span>@(string.IsNullOrWhiteSpace(card.Link.Label) ? "Learn more" : card.Link.Label)</span>
+                                    <i class="fas fa-arrow-right text-xs"></i>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+}

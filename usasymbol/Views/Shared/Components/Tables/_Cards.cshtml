@@ -1,5 +1,6 @@
 @model USASymbol.Models.ViewModels.TableSectionViewModel
 @inject IImageUrlService Images
+@using Usasymbol.Helpers
 
 @{
     // System columns: never rendered as data chips / description rows
@@ -7,11 +8,14 @@
         { "state", "state_slug", "rank", "order", "symbol_slug", "custom_url" };
     if (!string.IsNullOrEmpty(Model.DetailType))
         systemKeys.Add($"{Model.DetailType}_slug");
+
+    var cardsFirstTable = Model.Tables.FirstOrDefault();
+    var cardsQuickFilter = TableFilterHelper.GetQuickFilterColumn(cardsFirstTable);
 }
 
 @if (Model.Tables.Any())
 {
-    <div id="cardsView" class="hidden">
+    <div id="cardsView" class="hidden px-4 py-4 md:px-5 md:py-5">
         <div class="grid gap-3 md:gap-4">
 
             @foreach (var table in Model.Tables)
@@ -24,6 +28,8 @@
                 var displayColumns = columns
                     .Where(c => c.Type != "image" && !systemKeys.Contains(c.Key))
                     .ToList();
+
+                var tableQuickFilter = table == cardsFirstTable ? cardsQuickFilter : null;
 
                 @* Title — only for multi-table layouts *@
                 @if (Model.Tables.Count > 1 && !string.IsNullOrWhiteSpace(table.Title))
@@ -126,10 +132,11 @@
                     var cardSearchText = string.Join(" ", searchParts.Where(s => !string.IsNullOrEmpty(s))).ToLowerInvariant();
 
     <a href="@primaryUrl"
-       class="rankingCard group block border border-slate-200/80 bg-white
-              hover:border-slate-300 transition-all duration-200 overflow-hidden"
+       class="rankingCard group block rounded-2xl border border-slate-200/80 bg-white
+              hover:border-slate-300 hover:shadow-md transition-all duration-200 overflow-hidden"
        data-state="@stateName.ToLowerInvariant()"
-       data-search="@cardSearchText">
+       data-search="@cardSearchText"
+       @if (tableQuickFilter != null) { <text>data-chip-value="@TableFilterHelper.GetQuickFilterValue(tableQuickFilter, row)"</text> }>
 
         <!-- ── Top section ──────────────────────────────────── -->
         <div class="p-4 md:p-5">
@@ -259,7 +266,7 @@
             }
         </div>
 
-        <div id="cardsEmptyState" class="hidden text-center py-12" aria-live="polite">
+        <div id="cardsEmptyState" class="hidden py-12 text-center" aria-live="polite">
             <div class="text-6xl mb-4">🔍</div>
             <h3 class="text-xl font-black text-slate-900 mb-2">No matching entries</h3>
             <p class="text-slate-600">Adjust the filter to show more entries.</p>

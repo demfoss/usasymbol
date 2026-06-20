@@ -33,6 +33,17 @@
             2 => $"In older writing you might see {Model.TraditionalAbbreviation}, but today's mailing, form, and database standard is {state.Abbreviation}.",
             _ => $"{Model.TraditionalAbbreviation} still appears in older print sources, but {state.Abbreviation} is the standard code used in addresses, forms, databases, and current style guides."
         };
+    var indefiniteArticle = "aeiou".Contains(char.ToLowerInvariant(state.Name[0])) ? "an" : "a";
+    var stateCodeAnswer = $"{state.Name}'s two-letter USPS code is {state.Abbreviation}. In practice, people use \"state code,\" \"state abbreviation,\" and \"postal abbreviation\" to mean the same thing here.";
+    var shortFormAnswer = Model.TraditionalAbbreviation.Equals(state.Name, StringComparison.OrdinalIgnoreCase)
+        ? $"{state.Abbreviation} is the short form used in modern addresses, forms, and databases."
+        : $"{state.Abbreviation} is the modern short form for {state.Name}. In older print sources, you may also see {Model.TraditionalAbbreviation}.";
+    var addressExample = $"{state.Capital}, {state.Abbreviation}";
+    var zip = !string.IsNullOrWhiteSpace(Model.CapitalZip) ? Model.CapitalZip : "ZIP";
+    var addressBlock = $"John Smith\n123 Main St\n{state.Capital}, {state.Abbreviation} {zip}";
+    var traditionalTitle = Model.TraditionalAbbreviation.Equals(state.Name, StringComparison.OrdinalIgnoreCase)
+        ? $"When Should You Use {state.Abbreviation}?"
+        : $"{state.Abbreviation} vs. {Model.TraditionalAbbreviation}";
 
     var faq = new[]
     {
@@ -53,6 +64,16 @@
         },
         new
         {
+            Question = $"What is the two-letter abbreviation for {state.Name}?",
+            Answer = $"{state.Abbreviation} is the official two-letter abbreviation for {state.Name}."
+        },
+        new
+        {
+            Question = $"What is the {state.Name} state code?",
+            Answer = $"{state.Abbreviation} is the two-letter state code used for {state.Name} in mailing addresses, forms, spreadsheets, and databases."
+        },
+        new
+        {
             Question = $"Why is {state.Name} abbreviated {state.Abbreviation}?",
             Answer = Model.FormationSummary
         },
@@ -68,7 +89,7 @@
         },
         new
         {
-            Question = $"How do you write a {state.Name} mailing address?",
+            Question = $"How do you write {indefiniteArticle} {state.Name} mailing address?",
             Answer = $"Use the city name, then the two-letter postal code {state.Abbreviation}, then the ZIP Code. For example: {state.Capital}, {state.Abbreviation} 00000."
         },
         new
@@ -110,45 +131,572 @@
 
 @section Styles {
 <style>
-.sab-shell { max-width: 1180px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
-.sab-hero { display: grid; grid-template-columns: minmax(0, 1.25fr) 280px; gap: 1.2rem; align-items: stretch; }
-.sab-card { border: 1px solid #e2e8f0; border-radius: 1.5rem; background: #fff; }
-.sab-hero-main { padding: 1.6rem; background: linear-gradient(135deg, #fff 0%, #f8fafc 52%, #eef2ff 100%); }
-.sab-kicker { display: inline-flex; align-items: center; gap: .5rem; margin-bottom: .9rem; padding: .45rem .75rem; border-radius: 999px; background: #0f172a; color: #fff; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-.sab-hero-main h1 { margin: 0 0 .7rem; font-size: clamp(2rem, 4vw, 3.15rem); line-height: 1.02; font-weight: 900; letter-spacing: -.03em; color: #0f172a; }
-.sab-hero-main p { margin: 0; color: #475569; line-height: 1.78; font-size: 1rem; max-width: 46rem; }
-.sab-codebox { display: grid; place-items: center; padding: 1.5rem; background: linear-gradient(180deg, #111827 0%, #334155 100%); color: #fff; text-align: center; }
-.sab-codebox strong { display: inline-flex; align-items: center; justify-content: center; width: 8rem; height: 8rem; border-radius: 2rem; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); font-size: 3rem; font-weight: 900; letter-spacing: .08em; }
-.sab-codebox span { display: block; margin-top: .9rem; color: rgba(255,255,255,.8); line-height: 1.6; font-size: .95rem; }
-.sab-statgrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .9rem; margin-top: 1rem; }
-.sab-stat { padding: 1rem; border: 1px solid #e2e8f0; border-radius: 1rem; background: #fff; }
-.sab-stat-label { display: block; margin-bottom: .35rem; color: #64748b; font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-.sab-stat-value { color: #0f172a; font-size: 1.05rem; font-weight: 800; }
-.sab-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.2rem; margin-top: 1.4rem; }
-.sab-section { padding: 1.25rem 1.3rem; border: 1px solid #e2e8f0; border-radius: 1.25rem; background: #fff; margin-bottom: 1rem; }
-.sab-section h2 { margin: 0 0 .7rem; color: #0f172a; font-size: 1.45rem; font-weight: 800; letter-spacing: -.02em; }
-.sab-section p { margin: 0 0 .85rem; color: #475569; line-height: 1.78; }
-.sab-pillrow { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .8rem; }
-.sab-pill { display: inline-flex; align-items: center; gap: .45rem; padding: .55rem .8rem; border-radius: 999px; border: 1px solid #e2e8f0; background: #f8fafc; color: #334155; font-size: .84rem; text-decoration: none; }
-.sab-address { margin-top: .9rem; padding: 1rem; border-radius: 1rem; background: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; font-weight: 700; }
-.sab-list { display: grid; gap: .75rem; }
-.sab-list a { display: block; padding: .95rem 1rem; border: 1px solid #e2e8f0; border-radius: 1rem; text-decoration: none; background: #fff; }
-.sab-list a:hover { border-color: #94a3b8; }
-.sab-list strong { display: block; color: #0f172a; font-size: .98rem; }
-.sab-list span { display: block; margin-top: .2rem; color: #64748b; font-size: .9rem; line-height: 1.6; }
-.sab-sidebar .sab-section { position: sticky; top: 5.5rem; }
-.sab-faq { display: grid; gap: .8rem; }
-.sab-faq details { padding: .9rem 1rem; border: 1px solid #e2e8f0; border-radius: 1rem; background: #fff; }
-.sab-faq summary { cursor: pointer; color: #0f172a; font-weight: 700; }
-.sab-faq p { margin: .65rem 0 0; }
-.sab-related-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:.85rem; margin-top:.85rem; }
-.sab-related-card { display:block; padding:1rem; border:1px solid #e2e8f0; border-radius:1rem; background:#fff; text-decoration:none; }
-.sab-related-card:hover { border-color:#94a3b8; }
-.sab-related-card strong { display:block; color:#0f172a; font-size:.96rem; }
-.sab-related-card span { display:block; margin-top:.25rem; color:#64748b; font-size:.9rem; line-height:1.6; }
+/* ── Shell ──────────────────────────────────────────── */
+.sab-shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+}
+
+/* ── Hero ───────────────────────────────────────────── */
+.sab-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    grid-template-rows: auto auto;
+    border: 1px solid #dbe3ef;
+    overflow: hidden;
+}
+
+.sab-hero-main {
+    padding: 1.75rem 2rem 1.5rem;
+    background: #fff;
+    border-left: 3px solid #C09B4F;
+}
+
+.sab-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    margin-bottom: 1rem;
+    padding: .35rem .85rem;
+    border-radius: 9999px;
+    background: #1B2A4A;
+    color: #fff;
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.sab-hero-main h1 {
+    margin: 0 0 .6rem;
+    font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -.03em;
+    color: #0f172a;
+}
+
+.sab-hero-desc {
+    margin: 0 0 1.1rem;
+    color: #475569;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.sab-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: .55rem;
+}
+
+.sab-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    height: 2.5rem;
+    padding: 0 1rem;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    color: #0f172a;
+    font-size: .86rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .12s, background .12s;
+}
+
+.sab-action-btn--primary {
+    background: #1B2A4A;
+    color: #fff;
+    border-color: #1B2A4A;
+}
+
+.sab-action-btn:hover          { border-color: #64748b; background: #f8fafc; }
+.sab-action-btn--primary:hover { background: #2C3E6B; border-color: #2C3E6B; }
+
+.sab-copy-note {
+    font-size: .82rem;
+    color: #64748b;
+    min-height: 1.1rem;
+}
+
+/* AK display panel */
+.sab-codebox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #1B2A4A;
+    border-left: 1px solid rgba(255,255,255,.06);
+    padding: 2rem 1.25rem;
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    transition: background .15s;
+}
+
+.sab-codebox:hover { background: #2C3E6B; }
+
+.sab-code-letters {
+    font-size: 5.5rem;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: .06em;
+    color: #fff;
+}
+
+.sab-code-name {
+    margin-top: .45rem;
+    font-size: .75rem;
+    color: rgba(255,255,255,.45);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
+
+.sab-code-hint {
+    margin-top: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .35rem .7rem;
+    border: 1px solid rgba(255,255,255,.15);
+    color: rgba(255,255,255,.55);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+}
+
+/* Stats bar */
+.sab-statbar {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    background: #f8fafc;
+    border-top: 1px solid #dbe3ef;
+}
+
+.sab-statbar-cell {
+    padding: .8rem 1.25rem;
+    border-right: 1px solid #dbe3ef;
+}
+
+.sab-statbar-cell:last-child { border-right: none; }
+
+.sab-stat-label {
+    display: block;
+    margin-bottom: .2rem;
+    color: #94a3b8;
+    font-size: .58rem;
+    font-weight: 700;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+}
+
+.sab-stat-value {
+    color: #0f172a;
+    font-size: .96rem;
+    font-weight: 700;
+}
+
+/* ── Page layout ─────────────────────────────────────── */
+.sab-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+}
+
+/* ── Content sections ────────────────────────────────── */
+.sab-section {
+    border: 1px solid #dbe3ef;
+    background: #fff;
+    margin-bottom: .75rem;
+    padding: 1.35rem 1.6rem 1.5rem;
+    overflow: hidden;
+}
+
+.sab-section h2 {
+    margin: 0 0 .6rem;
+    color: #0f172a;
+    font-size: 1.18rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.3;
+}
+
+.sab-section p {
+    margin: .7rem 0 0;
+    color: #475569;
+    line-height: 1.73;
+    font-size: .97rem;
+}
+
+.sab-section h2 + p { margin-top: 0; }
+
+/* Verify grid — gap technique: no inner borders, gap acts as divider */
+.sab-verify {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: #dbe3ef;
+    margin: 1rem -1.6rem -1.5rem;
+    border-top: 1px solid #dbe3ef;
+}
+
+.sab-verify-cell {
+    padding: .75rem 1rem;
+    background: #f8fafc;
+}
+
+.sab-verify-label {
+    display: block;
+    margin-bottom: .2rem;
+    color: #94a3b8;
+    font-size: .58rem;
+    font-weight: 700;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+}
+
+.sab-verify-value {
+    color: #0f172a;
+    font-size: .96rem;
+    font-weight: 700;
+}
+
+/* Address block — left accent, no outer border */
+.sab-address-block {
+    margin: .85rem 0 .6rem;
+    padding: .9rem 1rem .9rem 1.1rem;
+    border-left: 3px solid #dbe3ef;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: .9rem;
+    font-weight: 700;
+    white-space: pre-line;
+    font-family: ui-monospace, 'Courier New', monospace;
+    line-height: 1.8;
+}
+
+/* Link lists — no outer border, items separated by border-bottom */
+.sab-list {
+    display: grid;
+    margin-top: .85rem;
+    border-top: 1px solid #dbe3ef;
+}
+
+.sab-list a {
+    display: block;
+    padding: .78rem 1rem;
+    border-bottom: 1px solid #dbe3ef;
+    text-decoration: none;
+    background: #fff;
+    transition: background .1s;
+}
+
+.sab-list a:last-child { border-bottom: none; }
+.sab-list a:hover      { background: #f8fafc; }
+
+.sab-list strong {
+    display: block;
+    color: #0f172a;
+    font-size: .94rem;
+}
+
+.sab-list span {
+    display: block;
+    margin-top: .12rem;
+    color: #64748b;
+    font-size: .86rem;
+    line-height: 1.5;
+}
+
+/* Related questions grid — gap technique */
+.sab-related-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: #dbe3ef;
+    margin: .85rem -1.6rem -1.5rem;
+    border-top: 1px solid #dbe3ef;
+}
+
+.sab-related-card {
+    display: block;
+    padding: .88rem 1rem;
+    background: #fff;
+    text-decoration: none;
+    transition: background .1s;
+}
+
+.sab-related-card:hover { background: #f8fafc; }
+
+.sab-related-card strong {
+    display: block;
+    color: #0f172a;
+    font-size: .9rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.sab-related-card span {
+    display: block;
+    margin-top: .2rem;
+    color: #64748b;
+    font-size: .84rem;
+}
+
+/* FAQ — no outer container border, items separated by border-top */
+.sab-faq {
+    margin: .75rem -1.6rem -1.5rem;
+    border-top: 1px solid #dbe3ef;
+}
+
+.sab-faq details {
+    border-bottom: 1px solid #dbe3ef;
+    background: #fff;
+}
+
+.sab-faq details:last-child { border-bottom: none; }
+
+.sab-faq summary {
+    padding: .88rem 1.6rem;
+    cursor: pointer;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: .92rem;
+    list-style: none;
+    display: flex;
+    align-items: flex-start;
+    gap: .55rem;
+    line-height: 1.4;
+}
+
+.sab-faq summary::-webkit-details-marker { display: none; }
+
+.sab-faq summary::before {
+    content: '▸';
+    flex-shrink: 0;
+    margin-top: .1em;
+    color: #C09B4F;
+    font-size: .8em;
+}
+
+.sab-faq details[open] summary::before { content: '▾'; }
+
+.sab-faq details[open] summary {
+    border-bottom: 1px solid #dbe3ef;
+}
+
+.sab-faq .faq-answer {
+    padding: .8rem 1.6rem .88rem 2.75rem;
+    margin: 0;
+    color: #475569;
+    line-height: 1.7;
+    font-size: .93rem;
+}
+
+/* ── Sidebar ─────────────────────────────────────────── */
+.sab-sidebar-sticky {
+    position: sticky;
+    top: 5.5rem;
+}
+
+.sab-sidebar-block {
+    border: 1px solid #dbe3ef;
+    background: #fff;
+    margin-bottom: 1rem;
+}
+
+.sab-sidebar-head {
+    padding: .55rem 1rem;
+    border-bottom: 1px solid #dbe3ef;
+    font-size: .57rem;
+    font-weight: 800;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    background: #f8fafc;
+}
+
+.sab-sidebar-list { display: grid; }
+
+.sab-sidebar-list a {
+    display: block;
+    padding: .6rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    text-decoration: none;
+    transition: background .1s;
+}
+
+.sab-sidebar-list a:last-child { border-bottom: none; }
+.sab-sidebar-list a:hover      { background: #f8fafc; }
+
+.sab-sidebar-list strong {
+    display: block;
+    color: #0f172a;
+    font-size: .88rem;
+    font-weight: 700;
+}
+
+.sab-sidebar-list span {
+    display: block;
+    margin-top: .08rem;
+    color: #94a3b8;
+    font-size: .79rem;
+}
+
+.sab-explore {
+    padding: .85rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.sab-explore-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .4rem .75rem;
+    border: 1px solid #dbe3ef;
+    background: #f8fafc;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: .8rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color .1s, background .1s;
+}
+
+.sab-explore-btn--dark {
+    background: #1B2A4A;
+    color: #fff;
+    border-color: #1B2A4A;
+}
+
+.sab-explore-btn:hover       { border-color: #94a3b8; }
+.sab-explore-btn--dark:hover { background: #2C3E6B; border-color: #2C3E6B; }
+
+/* Use-case checklist — gap technique */
+.sab-usecases {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: #dbe3ef;
+    margin: 1rem -1.6rem 0;
+    border-top: 1px solid #dbe3ef;
+}
+
+.sab-usecase {
+    padding: .65rem 1rem;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .87rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.sab-usecase-check { color: #16a34a; flex-shrink: 0; }
+
+/* AP Style compare — gap technique */
+.sab-apstyle {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: #dbe3ef;
+    margin: 1rem -1.6rem -1.5rem;
+    border-top: 1px solid #dbe3ef;
+}
+
+.sab-apstyle-col {
+    padding: .85rem 1.6rem 1.1rem;
+    background: #fff;
+}
+
+.sab-apstyle-head {
+    display: block;
+    font-size: .57rem;
+    font-weight: 800;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    margin-bottom: .45rem;
+}
+
+.sab-apstyle-head--postal { color: #16a34a; }
+.sab-apstyle-head--style  { color: #7c3aed; }
+
+.sab-apstyle-code {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.1;
+    display: block;
+    margin-bottom: .3rem;
+    letter-spacing: .02em;
+}
+
+.sab-apstyle-desc {
+    font-size: .84rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* Confusion warning callout */
+.sab-callout {
+    display: flex;
+    gap: .65rem;
+    align-items: flex-start;
+    margin-top: 1rem;
+    padding: .85rem 1rem;
+    border: 1px solid #fde68a;
+    background: #fffbeb;
+}
+
+.sab-callout-icon {
+    color: #d97706;
+    flex-shrink: 0;
+    margin-top: .15rem;
+    font-size: .95rem;
+}
+
+.sab-callout-text {
+    font-size: .9rem;
+    color: #78350f;
+    line-height: 1.62;
+    margin: 0;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
 @@media (max-width: 980px) {
-    .sab-hero, .sab-layout, .sab-statgrid, .sab-related-grid { grid-template-columns: 1fr; }
-    .sab-sidebar .sab-section { position: static; }
+    .sab-hero    { grid-template-columns: 1fr; }
+    .sab-layout  { grid-template-columns: 1fr; }
+    .sab-statbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .sab-statbar-cell:nth-child(2) { border-right: none; }
+    .sab-statbar-cell:nth-child(3) { border-top: 1px solid #dbe3ef; }
+
+    .sab-codebox {
+        min-height: 140px;
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    .sab-related-grid { grid-template-columns: 1fr; }
+    .sab-usecases     { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sab-apstyle      { grid-template-columns: 1fr; }
+
+    .sab-sidebar-sticky { position: static; }
+}
+
+@@media (max-width: 640px) {
+    .sab-hero-main { padding: 1.2rem 1.2rem 1.2rem; }
+    .sab-verify    { grid-template-columns: 1fr; }
+    .sab-usecases  { grid-template-columns: 1fr; }
 }
 </style>
 }
@@ -170,62 +718,157 @@
 </div>
 
 <main class="sab-shell">
+
     <section class="sab-hero">
-        <div class="sab-card sab-hero-main">
+
+        <div class="sab-hero-main">
             <div class="sab-kicker">
                 <i class="fa-solid fa-location-dot"></i>
-                Postal Code Guide
+                State Abbreviation Guide
             </div>
             <h1>@h1</h1>
-            <p>
-                The standard abbreviation for @state.Name is <strong>@state.Abbreviation</strong>. This page explains why @state.Name uses @state.Abbreviation, how the code fits into the modern USPS system, what older printed abbreviations looked like, and which nearby or similar state codes people commonly confuse with it.
+            <p class="sab-hero-desc">
+                The standard 2-letter abbreviation for <strong>@state.Name</strong> is <strong>@state.Abbreviation</strong>.
             </p>
+            <div class="sab-actions">
+                <button type="button" class="sab-action-btn sab-action-btn--primary"
+                        data-copy-value="@state.Abbreviation" data-copy-label="@state.Abbreviation">
+                    <i class="fa-regular fa-copy"></i>
+                    Copy @state.Abbreviation
+                </button>
+                <button type="button" class="sab-action-btn"
+                        data-copy-value="@addressBlock" data-copy-label="address format">
+                    <i class="fa-regular fa-copy"></i>
+                    Copy Address Format
+                </button>
+                @if (!string.Equals(Model.TraditionalAbbreviation, state.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    <button type="button" class="sab-action-btn"
+                            data-copy-value="@Model.TraditionalAbbreviation" data-copy-label="traditional form">
+                        <i class="fa-regular fa-copy"></i>
+                        Copy @Model.TraditionalAbbreviation
+                    </button>
+                }
+            </div>
+            <div class="sab-copy-note" id="sabCopyFeedback" aria-live="polite"></div>
+        </div>
 
-            <div class="sab-statgrid">
-                <div class="sab-stat">
-                    <span class="sab-stat-label">Postal Code</span>
-                    <div class="sab-stat-value">@state.Abbreviation</div>
-                </div>
-                <div class="sab-stat">
-                    <span class="sab-stat-label">Traditional Form</span>
-                    <div class="sab-stat-value">@Model.TraditionalAbbreviation</div>
-                </div>
-                <div class="sab-stat">
-                    <span class="sab-stat-label">Capital</span>
-                    <div class="sab-stat-value">@state.Capital</div>
-                </div>
-                <div class="sab-stat">
-                    <span class="sab-stat-label">Region</span>
-                    <div class="sab-stat-value">@(state.Region ?? "United States")</div>
-                </div>
+        <button type="button" class="sab-codebox"
+                data-copy-value="@state.Abbreviation" data-copy-label="@state.Abbreviation">
+            <span class="sab-code-letters">@state.Abbreviation</span>
+            <span class="sab-code-name">@state.Name</span>
+            <span class="sab-code-hint">
+                <i class="fa-regular fa-copy"></i>
+                Tap to copy
+            </span>
+        </button>
+
+        <div class="sab-statbar">
+            <div class="sab-statbar-cell">
+                <span class="sab-stat-label">State Abbreviation</span>
+                <div class="sab-stat-value">@state.Abbreviation</div>
+            </div>
+            <div class="sab-statbar-cell">
+                <span class="sab-stat-label">Traditional Form</span>
+                <div class="sab-stat-value">@Model.TraditionalAbbreviation</div>
+            </div>
+            <div class="sab-statbar-cell">
+                <span class="sab-stat-label">Capital</span>
+                <div class="sab-stat-value">@state.Capital</div>
+            </div>
+            <div class="sab-statbar-cell">
+                <span class="sab-stat-label">Region</span>
+                <div class="sab-stat-value">@(state.Region ?? "United States")</div>
             </div>
         </div>
 
-        <div class="sab-card sab-codebox">
-            <strong>@state.Abbreviation</strong>
-            <span>@state.Name's modern two-letter state abbreviation.</span>
-        </div>
     </section>
 
     <div class="sab-layout">
         <div>
-            <section class="sab-section">
-                <h2>What Is the Abbreviation for @state.Name?</h2>
-                <p>
-                    @abbreviationAnswer @traditionalAnswer
-                </p>
-                <p>@Model.SearchIntentSummary.RenderAutoLinks()</p>
-            </section>
+
 
             <section class="sab-section">
-                <h2>Why @state.Name Uses @state.Abbreviation</h2>
-                <p>@Model.FormationSummary.RenderAutoLinks()</p>
-                <p>@Model.FormationDetail.RenderAutoLinks()</p>
-                <div class="sab-pillrow">
-                    <a href="/guides/state-abbreviations" class="sab-pill"><i class="fa-solid fa-table"></i> All 50 abbreviations</a>
-                    <a href="/states/@state.Slug" class="sab-pill"><i class="fa-solid fa-flag-usa"></i> @state.Name state page</a>
+                <h2>@state.Name Abbreviation</h2>
+                <p>@abbreviationAnswer @traditionalAnswer</p>
+                <div class="sab-verify">
+                    <div class="sab-verify-cell">
+                        <span class="sab-verify-label">2-letter postal code</span>
+                        <div class="sab-verify-value">@state.Abbreviation</div>
+                    </div>
+                    <div class="sab-verify-cell">
+                        <span class="sab-verify-label">Traditional / AP style</span>
+                        <div class="sab-verify-value">@Model.TraditionalAbbreviation</div>
+                    </div>
+                    <div class="sab-verify-cell">
+                        <span class="sab-verify-label">Address format</span>
+                        <div class="sab-verify-value">@addressExample</div>
+                    </div>
+                    <div class="sab-verify-cell">
+                        <span class="sab-verify-label">Takes periods?</span>
+                        <div class="sab-verify-value">No — write @state.Abbreviation, not @(state.Abbreviation).</div>
+                    </div>
                 </div>
             </section>
+
+
+            <section class="sab-section">
+                <h2>@state.Name Abbreviation for Mailing and Forms</h2>
+                <p>@Model.SearchIntentSummary</p>
+                <div class="sab-usecases">
+                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Mailing addresses</div>
+                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Shipping labels</div>
+                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Online checkout forms</div>
+                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Tax documents</div>
+                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Spreadsheets &amp; databases</div>
+                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Government &amp; school records</div>
+                </div>
+                <p>In all of these contexts write <strong>@state.Abbreviation</strong> in uppercase. The form @(state.Abbreviation). with a period is incorrect for postal use.</p>
+            </section>
+
+
+            @{
+                var hasTraditional = !string.Equals(Model.TraditionalAbbreviation, state.Name, StringComparison.OrdinalIgnoreCase);
+                var hasApNote = !string.IsNullOrWhiteSpace(Model.ApStyleNote);
+            }
+            @if (hasTraditional || hasApNote)
+            {
+                <section class="sab-section">
+                    <h2>AP Style and Traditional @state.Name Abbreviation</h2>
+                    <div class="sab-apstyle">
+                        <div class="sab-apstyle-col">
+                            <span class="sab-apstyle-head sab-apstyle-head--postal">Postal &amp; forms</span>
+                            <span class="sab-apstyle-code">@state.Abbreviation</span>
+                            <span class="sab-apstyle-desc">Mailing addresses, shipping labels, online forms, and all data entry.</span>
+                        </div>
+                        <div class="sab-apstyle-col">
+                            <span class="sab-apstyle-head sab-apstyle-head--style">AP Style &amp; editorial</span>
+                            <span class="sab-apstyle-code">@Model.TraditionalAbbreviation</span>
+                            <span class="sab-apstyle-desc">Newspapers, news releases, and most editorial style guides when a city name comes first.</span>
+                        </div>
+                    </div>
+                    @if (hasApNote)
+                    {
+                        <p style="margin-top:.85rem;">@Model.ApStyleNote.RenderAutoLinks()</p>
+                    }
+                </section>
+            }
+
+
+            <section class="sab-section">
+                <h2>What Does @state.Abbreviation Stand For?</h2>
+                <p>@Model.FormationSummary.RenderAutoLinks()</p>
+                <p>@Model.FormationDetail.RenderAutoLinks()</p>
+            </section>
+
+
+            <section class="sab-section">
+                <h2>How to Write @indefiniteArticle @state.Name Address</h2>
+                <p>In a U.S. mailing address, write the city name, then <strong>@state.Abbreviation</strong> in uppercase, then the five-digit ZIP Code. Never put a period after the abbreviation.</p>
+                <div class="sab-address-block">@addressBlock</div>
+                <p>The same format applies in checkout forms, school worksheets, CRM systems, spreadsheets, shipping labels, and government databases — anywhere a two-letter state code is required.</p>
+            </section>
+
 
             @if (!string.IsNullOrWhiteSpace(Model.StateSpecificTitle) && (Model.StateSpecificParagraphs?.Any() ?? false))
             {
@@ -238,77 +881,31 @@
                 </section>
             }
 
-            <section class="sab-section">
-                <h2>Old Abbreviation for @state.Name</h2>
-                <p>
-                    Before the USPS two-letter system became the mailing standard in 1963, printed reference books and newspapers often used longer abbreviations with punctuation. For @state.Name, that older style was usually <strong>@Model.TraditionalAbbreviation</strong>.
-                </p>
-                <p>
-                    That older form still appears in historical texts, archival material, and some legacy style guides, but the modern postal and database standard is <strong>@state.Abbreviation</strong>. If someone searches for <em>old abbreviation for @state.Name</em>, the practical answer is to recognize <strong>@Model.TraditionalAbbreviation</strong> and use <strong>@state.Abbreviation</strong> in current writing and addresses.
-                </p>
-            </section>
-
-            <section class="sab-section">
-                <h2>How to Write @state.Name in an Address</h2>
-                <p>
-                    In standard American addressing, the state line uses the city name followed by the two-letter code and ZIP Code. The abbreviation stays uppercase and does not take periods.
-                </p>
-                <div class="sab-address">
-                    @state.Capital, @state.Abbreviation 00000
-                </div>
-                <p>
-                    That same format applies in checkout forms, school worksheets, CRM exports, spreadsheets, shipping labels, and government databases — anywhere a two-letter state code is required.
-                </p>
-            </section>
-
-            <section class="sab-section">
-                <h2>@state.Abbreviation Compared With Similar State Codes</h2>
-                <p>@Model.SimilarCodesSummary.RenderAutoLinks()</p>
-                @if (Model.SimilarStates.Any())
-                {
-                    <div class="sab-list">
-                        @foreach (var similar in Model.SimilarStates)
-                        {
-                            <a href="/states/@similar.Slug/abbreviation">
-                                <strong>@similar.Name (@similar.Abbreviation)</strong>
-                                <span>@similar.Name uses @similar.Abbreviation, while @state.Name uses @state.Abbreviation.</span>
-                            </a>
-                        }
-                    </div>
-                }
-            </section>
 
             @if (relatedQuestionStates.Any())
             {
                 <section class="sab-section">
                     <h2>Related Abbreviation Questions</h2>
-                    <p>
-                        These states share a first letter, region, or alphabetical position with @state.Name and are commonly checked alongside it.
-                    </p>
+                    <p>These states share a first letter, region, or alphabetical position with @state.Name and are commonly looked up alongside it.</p>
+                    @if (!string.IsNullOrWhiteSpace(Model.ConfusionWarning))
+                    {
+                        <div class="sab-callout">
+                            <i class="fa-solid fa-triangle-exclamation sab-callout-icon"></i>
+                            <p class="sab-callout-text">@Model.ConfusionWarning.RenderAutoLinks()</p>
+                        </div>
+                    }
                     <div class="sab-related-grid">
                         @foreach (var relatedState in relatedQuestionStates)
                         {
                             <a href="/states/@relatedState.Slug/abbreviation" class="sab-related-card">
                                 <strong>What is the abbreviation for @relatedState.Name?</strong>
-                                <span>@relatedState.Name uses the postal code @relatedState.Abbreviation. Open the dedicated state guide.</span>
+                                <span>@relatedState.Name's abbreviation is @relatedState.Abbreviation.</span>
                             </a>
                         }
                     </div>
                 </section>
             }
 
-            <section class="sab-section">
-                <h2>Capital, Region, and Context</h2>
-                <p>
-                    @state.Name belongs to the <strong>@(state.Region ?? "United States")</strong> region. Its capital is <strong>@state.Capital</strong>, and its postal code <strong>@state.Abbreviation</strong> is used in addresses, forms, and databases throughout the country.
-                </p>
-                @if (state.StateHoodDate.HasValue)
-                {
-                    <p>
-                        @state.Name entered the Union on <strong>@state.StateHoodDate.Value.ToString("MMMM d, yyyy")</strong>.
-                    </p>
-                }
-            </section>
 
             <section class="sab-section">
                 <h2>FAQ</h2>
@@ -317,125 +914,117 @@
                     {
                         <details>
                             <summary>@item.Question</summary>
-                            <p>@item.Answer</p>
+                            <p class="faq-answer">@item.Answer</p>
                         </details>
                     }
                 </div>
             </section>
 
-            <section class="sab-section" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); border-color: #1e293b;">
-                <div style="display:flex; flex-wrap:wrap; gap:1.25rem; align-items:center; justify-content:space-between;">
-                    <div>
-                        <div style="display:inline-flex; align-items:center; gap:.45rem; margin-bottom:.65rem; padding:.35rem .65rem; border-radius:999px; background:rgba(250,204,21,.15); border:1px solid rgba(250,204,21,.25); color:#fde68a; font-size:.7rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;">
-                            Free Quiz
-                        </div>
-                        <h2 style="color:#f8fafc; margin-bottom:.5rem; font-size:1.35rem;">Test All 50 State Abbreviations</h2>
-                        <p style="color:#94a3b8; font-size:.93rem; max-width:32rem;">
-                            Now that you know <strong style="color:#e2e8f0;">@state.Abbreviation</strong> stands for @state.Name, see how many of the other 49 you can get right. The M-states and I-states trip up most people.
-                        </p>
-                    </div>
-                    <a href="/quizzes/state-abbreviations-quiz"
-                       style="display:inline-flex; align-items:center; gap:.45rem; padding:.8rem 1.25rem; border-radius:.9rem; background:#fbbf24; color:#0f172a; font-weight:800; font-size:.93rem; text-decoration:none; white-space:nowrap; flex-shrink:0; box-shadow:0 10px 24px rgba(251,191,36,.3);">
-                        Take the Quiz
-                        <i class="fa-solid fa-arrow-right" style="font-size:.8rem;"></i>
-                    </a>
-                </div>
-            </section>
         </div>
 
-        <aside class="sab-sidebar">
-            <section class="sab-section">
+        <aside>
+            <div class="sab-sidebar-sticky">
+
                 @if (Model.SimilarStates.Any())
                 {
-                    <h2>Similar Codes</h2>
-                    <div class="sab-list">
-                        @foreach (var similar in Model.SimilarStates)
-                        {
-                            <a href="/states/@similar.Slug/abbreviation">
-                                <strong>@similar.Name (@similar.Abbreviation)</strong>
-                                <span>See how @similar.Abbreviation compares with @state.Abbreviation.</span>
-                            </a>
-                        }
+                    <div class="sab-sidebar-block">
+                        <div class="sab-sidebar-head">Similar Codes</div>
+                        <div class="sab-sidebar-list">
+                            @foreach (var similar in Model.SimilarStates)
+                            {
+                                <a href="/states/@similar.Slug/abbreviation">
+                                    <strong>@similar.Name (@similar.Abbreviation)</strong>
+                                    <span>@similar.Name's abbreviation is @similar.Abbreviation.</span>
+                                </a>
+                            }
+                        </div>
                     </div>
                 }
 
                 @if (Model.RegionalStates.Any())
                 {
-                    <h2 style="margin-top:1rem">Same Region</h2>
-                    <div class="sab-list">
-                        @foreach (var regional in Model.RegionalStates)
-                        {
-                            <a href="/states/@regional.Slug/abbreviation">
-                                <strong>@regional.Name (@regional.Abbreviation)</strong>
-                                <span>@regional.Capital · @(regional.Region ?? "United States")</span>
-                            </a>
-                        }
+                    <div class="sab-sidebar-block">
+                        <div class="sab-sidebar-head">Nearby States</div>
+                        <div class="sab-sidebar-list">
+                            @foreach (var regional in Model.RegionalStates)
+                            {
+                                <a href="/states/@regional.Slug/abbreviation">
+                                    <strong>@regional.Name (@regional.Abbreviation)</strong>
+                                    <span>@regional.Name's abbreviation is @regional.Abbreviation.</span>
+                                </a>
+                            }
+                        </div>
                     </div>
                 }
 
-                @if (Model.AlphabeticalNeighbors.Any())
-                {
-                    <h2 style="margin-top:1rem">Nearby In The A-Z List</h2>
-                    <div class="sab-list">
-                        @foreach (var neighbor in Model.AlphabeticalNeighbors)
-                        {
-                            <a href="/states/@neighbor.Slug/abbreviation">
-                                <strong>@neighbor.Name (@neighbor.Abbreviation)</strong>
-                                <span>Adjacent to @state.Name in an alphabetical state list.</span>
-                            </a>
-                        }
-                    </div>
-                }
-
-                <div style="margin-top:1.25rem; padding-top:1rem; border-top:1px solid #e2e8f0;">
-                    <div style="display:flex; flex-wrap:wrap; gap:.6rem;">
-                        <button id="sabShareBtn"
-                                style="display:inline-flex; align-items:center; gap:.4rem; padding:.55rem .9rem; border-radius:.75rem; background:#0f172a; color:#fff; font-weight:700; font-size:.83rem; border:none; cursor:pointer;">
-                            <i class="fa-solid fa-share-nodes" style="font-size:.8rem;"></i>
+                <div class="sab-sidebar-block">
+                    <div class="sab-sidebar-head">Explore</div>
+                    <div class="sab-explore">
+                        <button id="sabShareBtn" class="sab-explore-btn sab-explore-btn--dark">
+                            <i class="fa-solid fa-share-nodes"></i>
                             Share
                         </button>
-                        <a href="/guides/state-abbreviations"
-                           style="display:inline-flex; align-items:center; gap:.4rem; padding:.55rem .9rem; border-radius:.75rem; background:#f8fafc; color:#0f172a; font-weight:700; font-size:.83rem; border:1px solid #e2e8f0; text-decoration:none;">
-                            <i class="fa-solid fa-table" style="font-size:.78rem;"></i>
+                        <a href="/guides/state-abbreviations" class="sab-explore-btn">
+                            <i class="fa-solid fa-table"></i>
                             All 50 Codes
+                        </a>
+                        <a href="/states/@state.Slug" class="sab-explore-btn">
+                            <i class="fa-solid fa-flag-usa"></i>
+                            @state.Name Symbols
                         </a>
                     </div>
                 </div>
-            </section>
 
-            <section class="sab-section" style="margin-top:1rem;">
-                @await Html.PartialAsync("_RelatedStatesSidebar", Model)
-            </section>
-
-            <section class="sab-section" style="margin-top:1rem;">
-                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
-            </section>
+            </div>
         </aside>
     </div>
 
     <div style="margin-top:1.5rem; max-width:860px;">
         @await Html.PartialAsync("_AuthorBox", new USASymbol.Models.ViewModels.AuthorBox { DateModified = new DateTime(2026, 5, 28) })
     </div>
+
 </main>
 
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(breadcrumbSchema, jsonOptions))</script>
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(faqSchema, jsonOptions))</script>
 
 <script>
-    (function () {
-        var btn = document.getElementById('sabShareBtn');
-        if (!btn) return;
-        btn.addEventListener('click', function () {
+(function () {
+    function setCopyFeedback(message) {
+        var el = document.getElementById('sabCopyFeedback');
+        if (!el) return;
+        el.textContent = message;
+        window.clearTimeout(setCopyFeedback._t);
+        setCopyFeedback._t = window.setTimeout(function () { el.textContent = ''; }, 1800);
+    }
+
+    function copyText(value, label) {
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(value).then(function () {
+            setCopyFeedback('Copied ' + label + ' ✓');
+        });
+    }
+
+    document.querySelectorAll('[data-copy-value]').forEach(function (el) {
+        el.addEventListener('click', function () {
+            copyText(el.getAttribute('data-copy-value') || '', el.getAttribute('data-copy-label') || 'value');
+        });
+    });
+
+    var shareBtn = document.getElementById('sabShareBtn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', function () {
             if (navigator.share) {
                 navigator.share({ title: document.title, url: window.location.href }).catch(function () {});
             } else {
                 navigator.clipboard.writeText(window.location.href).then(function () {
-                    btn.textContent = 'Copied!';
+                    shareBtn.textContent = 'Copied!';
                     setTimeout(function () {
-                        btn.innerHTML = '<i class="fa-solid fa-share-nodes" style="font-size:.8rem;"></i> Share';
+                        shareBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Share';
                     }, 2000);
                 });
             }
         });
-    })();
+    }
+}());
 </script>

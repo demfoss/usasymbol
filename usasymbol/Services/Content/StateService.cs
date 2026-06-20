@@ -23,9 +23,16 @@ namespace USASymbol.Services
 
         public async Task<State?> GetStateBySlugAsync(string slug)
         {
+            if (string.IsNullOrWhiteSpace(slug))
+            {
+                return null;
+            }
+
+            var normalizedSlug = slug.Trim().ToLowerInvariant();
+
             return await _context.States
                 .Include(s => s.Symbols)
-                .FirstOrDefaultAsync(s => s.Slug == slug);
+                .FirstOrDefaultAsync(s => s.Slug != null && s.Slug.Trim().ToLower() == normalizedSlug);
         }
 
         public async Task<List<State>> GetStatesByRegionAsync(string region)

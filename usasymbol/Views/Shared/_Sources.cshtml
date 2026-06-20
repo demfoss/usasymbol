@@ -16,7 +16,7 @@
 
             <div class="pt-5">
                 <ul class="space-y-2.5">
-                    @foreach (var source in Model.Sources!)
+                    @foreach (var source in Model.Sources!.Where(source => !source.Url.IsSuppressedSourceUrl()))
                     {
                         <li>
                             <a href="@source.Url"

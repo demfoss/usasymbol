@@ -101,9 +101,7 @@
     @if (!string.IsNullOrWhiteSpace(heroImage))
     {
         <img src="@Images.Hero(heroImage)"
-             srcset="@(Images.Hero(heroImage, 800)) 800w,
-                     @(Images.Hero(heroImage, 1200)) 1200w,
-                     @(Images.Hero(heroImage, 1800)) 1800w"
+             srcset="@Images.HeroSrcSet(heroImage, 800, 1200, 1800)"
              sizes="100vw"
              alt="@heroAlt"
              class="absolute inset-0 h-full w-full object-cover"
@@ -463,9 +461,7 @@
                                     @if (!string.IsNullOrWhiteSpace(park.Media.HeroImage))
                                     {
                                         <img src="@Images.Crop(park.Media.HeroImage, 900, 540)"
-                                             srcset="@(Images.Crop(park.Media.HeroImage, 600, 360)) 600w,
-                                                     @(Images.Crop(park.Media.HeroImage, 900, 540)) 900w,
-                                                     @(Images.Crop(park.Media.HeroImage, 1200, 720)) 1200w"
+                                             srcset="@Images.CropSrcSet(park.Media.HeroImage, (600, 360), (900, 540), (1200, 720))"
                                              sizes="(min-width: 1024px) 780px, 100vw"
                                              alt="@park.Media.HeroAlt"
                                              class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"

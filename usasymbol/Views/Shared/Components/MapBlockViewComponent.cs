@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using USASymbol.Services.Interface;
 using Usasymbol.ViewModels;
 
 namespace Usasymbol.Views.Shared.Components
@@ -10,6 +11,7 @@ namespace Usasymbol.Views.Shared.Components
     public class MapBlockViewComponent : ViewComponent
     {
         private readonly IWebHostEnvironment _env;
+        private readonly IMapPngService _mapPngService;
         private static string? _cachedBaseSvg;
         private static readonly object _lock = new();
 
@@ -47,12 +49,13 @@ namespace Usasymbol.Views.Shared.Components
             ["MD"] = ((948, 284), (855, 287)),
         };
 
-        public MapBlockViewComponent(IWebHostEnvironment env)
+        public MapBlockViewComponent(IWebHostEnvironment env, IMapPngService mapPngService)
         {
             _env = env;
+            _mapPngService = mapPngService;
         }
 
-        public IViewComponentResult Invoke(MapBlockViewModel model)
+        public async Task<IViewComponentResult> InvokeAsync(MapBlockViewModel model)
         {
             if (model == null) return Content(string.Empty);
 
@@ -62,6 +65,12 @@ namespace Usasymbol.Views.Shared.Components
                 if (!string.IsNullOrEmpty(baseSvg))
                 {
                     model.SvgContent = InjectColors(baseSvg, model);
+                }
+
+                // Generate and cache a PNG of this map for Google Images and OG fallback
+                if (!string.IsNullOrWhiteSpace(model.Slug) && model.Entries.Count > 0)
+                {
+                    model.GeneratedImagePath = await _mapPngService.EnsureMapPngAsync(model.Slug, model.Entries);
                 }
             }
 

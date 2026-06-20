@@ -138,6 +138,18 @@
                                      loading="eager"
                                      fetchpriority="high"
                                      onerror="this.style.display='none';var f=this.parentNode.querySelector('.hero-img-fallback');if(f)f.classList.remove('hidden');" />
+                                @if (!string.IsNullOrWhiteSpace(Model.ImageLinkUrl))
+                                {
+                                    <button type="button"
+                                            class="js-visual-lightbox absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-[0.8rem] bg-slate-900/88 text-white transition hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-white/70"
+                                            data-lightbox-src="@Images.Full(Model.ImageLinkUrl)"
+                                            data-lightbox-alt="@(string.IsNullOrWhiteSpace(Model.ImageAlt) ? Model.Title : Model.ImageAlt)"
+                                            data-lightbox-caption="@(string.IsNullOrWhiteSpace(Model.FigureCaption) ? (string.IsNullOrWhiteSpace(Model.ImageAlt) ? Model.Title : Model.ImageAlt) : Model.FigureCaption)"
+                                            onclick="window.__openVisualLightboxFromButton && window.__openVisualLightboxFromButton(this)"
+                                            aria-label="Open image in popup">
+                                        <i class="fa-solid fa-expand text-sm"></i>
+                                    </button>
+                                }
                                 <div class="hero-img-fallback hidden absolute inset-0 flex items-center justify-center">
                                     <i class="@(string.IsNullOrWhiteSpace(Model.FallbackIconClass) ? "fa-solid fa-star" : Model.FallbackIconClass) text-7xl text-slate-300"></i>
                                 </div>
@@ -169,19 +181,12 @@
                                 {
                                     <p class="text-xs uppercase tracking-[0.14em]">@Model.FigureSubtitle</p>
                                 }
+                                @if (!string.IsNullOrWhiteSpace(Model.FigureCaption))
+                                {
+                                    <p class="mt-2 text-sm leading-6 @(Model.UseLightFigureCaption ? "text-slate-600" : "text-slate-300")">@Model.FigureCaption</p>
+                                }
                             </div>
 
-                            @if (!string.IsNullOrWhiteSpace(Model.ImageLinkUrl))
-                            {
-                                <a href="@Images.Full(Model.ImageLinkUrl)"
-                                   target="_blank"
-                                   rel="nofollow noopener noreferrer"
-                                   data-nosnippet
-                                   class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] @(Model.UseLightFigureCaption ? "text-slate-500 hover:text-slate-900" : "text-slate-300 hover:text-white") transition">
-                                    <i class="fas fa-up-right-from-square shrink-0 text-[10px]"></i>
-                                    View original
-                                </a>
-                            }
                         </figcaption>
                     </figure>
 

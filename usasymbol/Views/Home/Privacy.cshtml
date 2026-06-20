@@ -15,6 +15,7 @@
     .privacy-ul li { margin-bottom: 0.25rem; }
     .privacy-a { color: #7c3aed; text-decoration: underline; }
     .privacy-a:hover { color: #6d28d9; }
+    .privacy-a-button { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
 
     /* Mediavine injected notice */
     #mv-notice-wrapper { font-size: 0.85rem; line-height: 1.75; color: #4b5563; }
@@ -281,8 +282,8 @@
         <h2 class="privacy-h2 mb-3">Privacy Controls</h2>
         <p class="privacy-p">You can review or update your privacy choices at any time using the links below.</p>
         <div class="flex flex-wrap gap-4">
-            <a href="?cmpscreen" class="privacy-a font-semibold">Update Privacy Settings</a>
-            <a href="?cmpscreencustom" class="privacy-a font-semibold">Do Not Sell or Share My Personal Information</a>
+            <button type="button" class="privacy-a privacy-a-button font-semibold" data-cmp-action="screen">Update Privacy Settings</button>
+            <button type="button" class="privacy-a privacy-a-button font-semibold" data-cmp-action="custom">Do Not Sell or Share My Personal Information</button>
         </div>
     </div>
 

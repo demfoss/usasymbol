@@ -22,9 +22,7 @@
     @if (!string.IsNullOrWhiteSpace(park.Media.HeroImage))
     {
         <img src="@Images.Hero(park.Media.HeroImage)"
-             srcset="@(Images.Hero(park.Media.HeroImage, 800)) 800w,
-                     @(Images.Hero(park.Media.HeroImage, 1200)) 1200w,
-                     @(Images.Hero(park.Media.HeroImage, 1800)) 1800w"
+             srcset="@Images.HeroSrcSet(park.Media.HeroImage, 800, 1200, 1800)"
              sizes="100vw"
              alt="@park.Media.HeroAlt"
              class="absolute inset-0 h-full w-full object-cover"
@@ -261,9 +259,7 @@
                     {
                         <figure class="overflow-hidden rounded-lg border border-slate-200">
                             <img src="@Images.Crop(hl.Image, 640, 480)"
-                                 srcset="@(Images.Crop(hl.Image, 320, 240)) 320w,
-                                         @(Images.Crop(hl.Image, 640, 480)) 640w,
-                                         @(Images.Crop(hl.Image, 960, 720)) 960w"
+                                 srcset="@Images.CropSrcSet(hl.Image, (320, 240), (640, 480), (960, 720))"
                                  sizes="(min-width: 640px) 33vw, 50vw"
                                  alt="@hl.Alt"
                                  class="w-full object-cover aspect-[4/3]"
@@ -292,9 +288,7 @@
                                 {
                                     <div class="shrink-0 bg-slate-100">
                                         <img src="@Images.Crop(item.Image, 360, 270)"
-                                             srcset="@(Images.Crop(item.Image, 240, 180)) 240w,
-                                                     @(Images.Crop(item.Image, 360, 270)) 360w,
-                                                     @(Images.Crop(item.Image, 540, 405)) 540w"
+                                             srcset="@Images.CropSrcSet(item.Image, (240, 180), (360, 270), (540, 405))"
                                              sizes="180px"
                                              alt="@(item.Alt ?? item.Name)"
                                              class="h-full w-full object-cover aspect-[4/3] sm:aspect-auto"
@@ -384,9 +378,7 @@
                     {
                         <figure class="mb-4 overflow-hidden">
                             <img src="@Images.Crop(park.SectionImageHiking, 1200, 560)"
-                                 srcset="@(Images.Crop(park.SectionImageHiking, 640, 299)) 640w,
-                                         @(Images.Crop(park.SectionImageHiking, 900, 420)) 900w,
-                                         @(Images.Crop(park.SectionImageHiking, 1200, 560)) 1200w"
+                                 srcset="@Images.CropSrcSet(park.SectionImageHiking, (640, 299), (900, 420), (1200, 560))"
                                  sizes="(min-width: 1024px) 900px, 100vw"
                                  alt="Hiking trail at @park.Name"
                                  class="w-full object-cover max-h-[280px]"
@@ -421,9 +413,7 @@
                     {
                         <figure class="mb-4 overflow-hidden">
                             <img src="@Images.Crop(park.SectionImageCamping, 1200, 560)"
-                                 srcset="@(Images.Crop(park.SectionImageCamping, 640, 299)) 640w,
-                                         @(Images.Crop(park.SectionImageCamping, 900, 420)) 900w,
-                                         @(Images.Crop(park.SectionImageCamping, 1200, 560)) 1200w"
+                                 srcset="@Images.CropSrcSet(park.SectionImageCamping, (640, 299), (900, 420), (1200, 560))"
                                  sizes="(min-width: 1024px) 900px, 100vw"
                                  alt="Camping at @park.Name"
                                  class="w-full object-cover max-h-[280px]"
@@ -492,9 +482,7 @@
                     {
                         <figure class="overflow-hidden rounded-lg border border-slate-200">
                             <img src="@Images.Crop(hl.Image, 320, 320)"
-                                 srcset="@(Images.Crop(hl.Image, 160, 160)) 160w,
-                                         @(Images.Crop(hl.Image, 320, 320)) 320w,
-                                         @(Images.Crop(hl.Image, 480, 480)) 480w"
+                                 srcset="@Images.CropSrcSet(hl.Image, (160, 160), (320, 320), (480, 480))"
                                  sizes="(min-width: 640px) 25vw, 50vw"
                                  alt="@hl.Alt"
                                  class="w-full object-cover aspect-square"
@@ -529,9 +517,7 @@
                     {
                         <figure class="mb-4 overflow-hidden">
                             <img src="@Images.Crop(park.SectionImageWildlife, 1200, 560)"
-                                 srcset="@(Images.Crop(park.SectionImageWildlife, 640, 299)) 640w,
-                                         @(Images.Crop(park.SectionImageWildlife, 900, 420)) 900w,
-                                         @(Images.Crop(park.SectionImageWildlife, 1200, 560)) 1200w"
+                                 srcset="@Images.CropSrcSet(park.SectionImageWildlife, (640, 299), (900, 420), (1200, 560))"
                                  sizes="(min-width: 1024px) 900px, 100vw"
                                  alt="Wildlife at @park.Name"
                                  class="w-full object-cover max-h-[280px]"
@@ -553,9 +539,7 @@
                     {
                         <figure class="mb-4 overflow-hidden">
                             <img src="@Images.Crop(park.SectionImageHistory, 1200, 560)"
-                                 srcset="@(Images.Crop(park.SectionImageHistory, 640, 299)) 640w,
-                                         @(Images.Crop(park.SectionImageHistory, 900, 420)) 900w,
-                                         @(Images.Crop(park.SectionImageHistory, 1200, 560)) 1200w"
+                                 srcset="@Images.CropSrcSet(park.SectionImageHistory, (640, 299), (900, 420), (1200, 560))"
                                  sizes="(min-width: 1024px) 900px, 100vw"
                                  alt="Historical landmark at @park.Name"
                                  class="w-full object-cover max-h-[280px]"
@@ -590,10 +574,10 @@
                     <div class="border border-slate-200/80 bg-white/55 px-5 py-5 sm:px-6">
                         <h2 class="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Sources</h2>
                         <ul class="space-y-2">
-                            @foreach (var src in park.Sources)
+                            @foreach (var src in park.Sources.Where(src => !src.Url.IsSuppressedSourceUrl()))
                             {
                                 <li class="text-[13px] text-slate-600">
-                                    <a href="@src.Url" target="_blank" rel="noopener noreferrer"
+                                    <a href="@src.Url" target="_blank" rel="nofollow noopener noreferrer"
                                        class="font-medium text-green-700 hover:text-green-900 underline decoration-green-300 transition">@src.Name</a>
                                     @if (!string.IsNullOrWhiteSpace(src.Description))
                                     {
@@ -658,7 +642,7 @@
                 <div class="border border-slate-200/80 bg-white/55 px-5 py-4">
                     <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Official Resources</h3>
                     <a href="https://www.nps.gov/@park.NpsCode.ToLower()/"
-                       target="_blank" rel="noopener noreferrer"
+                       target="_blank" rel="nofollow noopener noreferrer"
                        class="inline-flex items-center gap-2 text-[13px] font-medium text-green-700 hover:text-green-900 transition">
                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                         NPS.gov — @park.Name

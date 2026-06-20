@@ -21,6 +21,7 @@ namespace USASymbol.Models.ViewModels
         public string ImageClass { get; set; } = "absolute inset-0 h-full w-full object-cover";
         public string? FigureTitle { get; set; }
         public string? FigureSubtitle { get; set; }
+        public string? FigureCaption { get; set; }
         public string? ImageLinkUrl { get; set; }
         public string? HeroLabel { get; set; } = "Official state symbol";
         public List<string> EyebrowItems { get; set; } = new();

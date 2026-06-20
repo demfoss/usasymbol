@@ -10,55 +10,40 @@
 
     var sourceValue = isRanking ? "rankings" : isCollection ? "collections" : "";
 
-    var noun = isRanking ? "ranking" : isCollection ? "collection" : "list";
-    var audience = isRanking ? "researchers, teachers, and students" : "teachers, students, and collectors";
-
     <section class="mt-8 mb-6">
-        <div class="w-full max-w-4xl overflow-hidden rounded-[1.55rem] border border-slate-200/80 bg-white/50">
-            <div class="border-b border-slate-200/80 px-5 py-4">
-                <div class="flex items-center gap-3">
-                    <div class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-50 text-slate-700">
-                        <i class="fa-regular fa-file-pdf text-sm" aria-hidden="true"></i>
-                    </div>
+        <div class="w-full max-w-4xl border border-slate-200 bg-slate-50/60">
+            <div class="flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex min-w-0 items-center gap-3">
+                    <i class="fa-regular fa-file-pdf shrink-0 text-lg text-slate-400" aria-hidden="true"></i>
                     <div class="min-w-0">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Printable Version</p>
-                        <h2 class="mt-0.5 text-base font-semibold tracking-tight text-slate-900">
-                            Free Printable @pageTitle — PDF Download
-                        </h2>
+                        <p class="text-[15px] font-semibold leading-tight text-slate-900">
+                            Download this table as a PDF
+                        </p>
+                        <p class="mt-0.5 text-[13px] leading-snug text-slate-500">
+                            Clean, print-ready version of @pageTitle.
+                        </p>
                     </div>
                 </div>
-            </div>
 
-            <div class="p-5">
-                <p class="text-sm leading-6 text-slate-600">
-                    Download a printable PDF for @pageTitle. Optimized for quick reference and printing, useful for @audience.
-                </p>
-
-                <div class="mt-4 flex flex-wrap items-center gap-2.5">
-                    <form asp-controller="Print" asp-action="Download" method="post">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="slug" value="@slug" />
-                        @if (!string.IsNullOrWhiteSpace(sourceValue))
-                        {
-                            <input type="hidden" name="source" value="@sourceValue" />
-                        }
-                        @if (!string.IsNullOrWhiteSpace(category))
-                        {
-                            <input type="hidden" name="category" value="@category" />
-                        }
-                        <button type="submit"
-                                class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition"
-                                aria-label="Download PDF for @pageTitle @noun"
-                                title="Download PDF for @pageTitle @noun">
-                            <i class="fa-solid fa-download text-xs" aria-hidden="true"></i>
-                            <span>Download PDF</span>
-                        </button>
-                    </form>
-                </div>
-
-                <p class="mt-4 border-t border-slate-200/80 pt-3.5 text-xs leading-5 text-slate-400">
-                    Generated on demand — may take a few seconds.
-                </p>
+                <form asp-controller="Print" asp-action="Download" method="post" class="shrink-0">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="slug" value="@slug" />
+                    @if (!string.IsNullOrWhiteSpace(sourceValue))
+                    {
+                        <input type="hidden" name="source" value="@sourceValue" />
+                    }
+                    @if (!string.IsNullOrWhiteSpace(category))
+                    {
+                        <input type="hidden" name="category" value="@category" />
+                    }
+                    <button type="submit"
+                            class="inline-flex min-h-[44px] w-full items-center justify-center gap-2 border border-slate-900 bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 sm:w-auto"
+                            aria-label="Download PDF for @pageTitle"
+                            title="Download PDF for @pageTitle">
+                        <i class="fa-solid fa-download text-xs" aria-hidden="true"></i>
+                        <span>Download PDF</span>
+                    </button>
+                </form>
             </div>
         </div>
     </section>

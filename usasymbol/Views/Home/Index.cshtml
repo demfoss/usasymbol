@@ -140,9 +140,7 @@
                         @if (!string.IsNullOrEmpty(category.ImageUrl))
                         {
                             <img src="@Images.Card(category.ImageUrl)"
-                                 srcset="@(Images.Card(category.ImageUrl, 240)) 240w,
-                                         @(Images.Card(category.ImageUrl, 360)) 360w,
-                                         @(Images.Card(category.ImageUrl, 480)) 480w"
+                                 srcset="@Images.CardSrcSet(category.ImageUrl, 240, 360, 480)"
                                  sizes="(max-width: 639px) 44vw, (max-width: 1023px) 30vw, 23vw"
                                  alt="@category.Name"
                                  loading="lazy">
@@ -193,9 +191,7 @@
                     <a href="/states/@state.Slug" class="st-card">
                         <div class="st-card__flag">
                             <img src="@Images.Card(flagPath)"
-                                 srcset="@(Images.Card(flagPath, 320)) 320w,
-                                         @(Images.Card(flagPath, 480)) 480w,
-                                         @(Images.Card(flagPath, 640)) 640w"
+                                 srcset="@Images.CardSrcSet(flagPath, 320, 480, 640)"
                                  sizes="(max-width: 639px) 48vw, (max-width: 1023px) 31vw, (max-width: 1279px) 18vw, 220px"
                                  alt="@state.Name flag"
                                  loading="lazy"

@@ -82,6 +82,7 @@ namespace USASymbol.Models.Content
 
 
         public string? DetailType { get; set; }
+        public string? Subcategory { get; set; }
 
         public PageSeo Seo { get; set; } = new();
         public PageBody Page { get; set; } = new();
@@ -98,6 +99,7 @@ namespace USASymbol.Models.Content
         public PageMap? Map { get; set; }
         public List<VisualAsset> VisualAssets { get; set; } = new();
         public RankingCompareData? Compare { get; set; }
+        public QuizPromoData? QuizPromo { get; set; }
         public ComputedRankingConfig? ComputedData { get; set; }
 
 
@@ -139,6 +141,7 @@ namespace USASymbol.Models.Content
         public string H1 { get; set; } = "";
 
         public string? IntroTitle { get; set; }
+        public string? QuickAnswerTitle { get; set; }
         public List<string> QuickAnswer { get; set; } = new();
         public List<string> IntroParagraphs { get; set; } = new();
         public List<string> Insights { get; set; } = new();
@@ -165,8 +168,10 @@ namespace USASymbol.Models.Content
     {
         public string Name { get; set; } = "";
         public string State { get; set; } = "";
+        public string Status { get; set; } = "";
         public string Image { get; set; } = "";
         public string Description { get; set; } = "";
+        public List<string>? AnchorPhrases { get; set; }
     }
 
     public class PageSectionTable
@@ -186,8 +191,10 @@ namespace USASymbol.Models.Content
     public class PageSubsection
     {
         public string Subtitle { get; set; } = "";
+        public string Status { get; set; } = "";
         public string Text { get; set; } = "";
         public LinkData? Link { get; set; }
+        public List<string>? AnchorPhrases { get; set; }
     }
 
     public class PageSource
@@ -224,6 +231,15 @@ namespace USASymbol.Models.Content
         public string ColorScheme { get; set; } = "blue";
         public string ColorScale { get; set; } = "linear";
         public bool ShowLabels { get; set; } = false;
+    }
+
+    public class QuizPromoData
+    {
+        public string Slug { get; set; } = "";
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public string? Icon { get; set; }
+        public string? ButtonText { get; set; }
     }
 
     public class RankingCompareData
@@ -266,6 +282,7 @@ namespace USASymbol.Models.Content
         public string Title { get; set; } = "";
         public string Description { get; set; } = "";
         public string Icon { get; set; } = "";
+        public string? Image { get; set; }
         public List<PageCategoryItem> Items { get; set; } = new();
     }
 
@@ -276,5 +293,8 @@ namespace USASymbol.Models.Content
         public string? Description { get; set; }
         public string? Image { get; set; }
         public string? ImageAlt { get; set; }
+        public string? Subcategory { get; set; }
+        public DateTime? DatePublished { get; set; }
+        public DateTime? DateModified { get; set; }
     }
 }

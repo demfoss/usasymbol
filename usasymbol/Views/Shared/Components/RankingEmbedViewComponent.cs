@@ -67,7 +67,7 @@ namespace USASymbol.Views.Shared.Components
                     Description = content.Seo?.Description,
                     ImageUrl = string.IsNullOrWhiteSpace(heroImage) ? "/images/og-default.webp" : heroImage,
                     ImageAlt = heroAlt,
-                    FigureTitle = content.Page?.H1,
+                    FigureTitle = null,
                     FigureSubtitle = $"Ranking - {pageModel.CategoryTitle}",
                     FigureCaption = heroCaption,
                     ImageLinkUrl = heroImage,

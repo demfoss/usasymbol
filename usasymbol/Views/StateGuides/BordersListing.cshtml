@@ -182,9 +182,7 @@
                             @if (!string.IsNullOrEmpty(item.MapImage))
                             {
                                 <img src="@Images.Card(item.MapImage)"
-                                     srcset="@(Images.Card(item.MapImage, 320)) 320w,
-                                             @(Images.Card(item.MapImage, 480)) 480w,
-                                             @(Images.Card(item.MapImage, 640)) 640w"
+                                     srcset="@Images.CardSrcSet(item.MapImage, 320, 480, 640)"
                                      sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw"
                                      alt="@item.State.Name border map"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

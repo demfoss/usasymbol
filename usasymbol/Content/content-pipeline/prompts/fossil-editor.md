@@ -25,7 +25,7 @@ Overview
 Title must be "[State] State Fossil". Must not repeat intro_text. Must answer a different angle: what kind of creature it was, or how it is known today.
 
 About section
-Title must be "What the [Common Name] Was".
+Title must be "What the [Common Name] Looked Like".
 Must include verified concrete detail: size, diet, when it lived, when it went extinct.
 If a size or age looks copied from a popular blog and conflicts with the genus, leave it unchanged but do not amplify it. Do not invent.
 

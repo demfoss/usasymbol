@@ -44,6 +44,13 @@
 
     var heroImageResolved = string.IsNullOrWhiteSpace(heroImage) ? "/images/og-default.webp" : heroImage!;
     var heroImageUrl = Images.Full(heroImageResolved);
+    var heroImageSrc = Images.Hero(heroImageResolved);
+    var heroImageSrcSet = string.Join(", ", new[]
+    {
+        $"{Images.Hero(heroImageResolved, 480)} 480w",
+        $"{Images.Hero(heroImageResolved, 768)} 768w",
+        $"{Images.Hero(heroImageResolved, 1200)} 1200w"
+    });
     ViewData["OgImage"] = heroImageUrl;
 
     var categoryUrl = "/symbols";
@@ -116,19 +123,29 @@
                                 @content?.Page?.H1
                             </h1>
 
+                            @if (!string.IsNullOrWhiteSpace(content?.Page?.IntroTitle))
+                            {
+                                <p class="mt-4 max-w-2xl text-[1.05rem] sm:text-xl leading-snug text-white/75 font-medium">
+                                    @content.Page.IntroTitle
+                                </p>
+                            }
+
                             @if (!string.IsNullOrWhiteSpace(content?.Seo?.Description))
                             {
-                                <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-100 sm:text-xl hidden lg:block">
+                                <p class="mt-4 max-w-2xl text-[15px] leading-7 text-slate-300 hidden lg:block">
                                     @content.Seo.Description
                                 </p>
                             }
 
-                            <div class="mt-7 flex items-center gap-2 text-[11px] text-slate-300">
-                                <img src="/images/profile/artsiom-dusau.png"
-                                     alt="Artsiom Dusau"
-                                     class="h-5 w-5 rounded-full object-cover opacity-80">
-                                <a href="/about/artsiom-dusau" class="hover:text-white transition-colors">
-                                    Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong>
+                            <div class="mt-7 hidden border-t border-white/12 pt-5 lg:flex lg:items-center lg:gap-3 lg:flex-wrap">
+                                @await Html.PartialAsync("_ShareButtons", Model)
+
+                                <a href="/about/artsiom-dusau"
+                                   class="ml-auto flex items-center gap-2 text-[11px] text-slate-300 hover:text-white transition-colors">
+                                    <img src="/images/profile/artsiom-dusau.png"
+                                         alt="Artsiom Dusau"
+                                         class="h-5 w-5 rounded-full object-cover opacity-80">
+                                    <span>Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong></span>
                                 </a>
                             </div>
                         </div>
@@ -137,10 +154,8 @@
                     <div class="order-2 lg:pt-5">
                         <figure>
                             <div class="relative aspect-[16/9] overflow-hidden bg-slate-100/10">
-                                <img src="@Images.Hero(heroImageResolved)"
-                                     srcset="@(Images.Hero(heroImageResolved, 480)) 480w,
-                                             @(Images.Hero(heroImageResolved, 768)) 768w,
-                                             @(Images.Hero(heroImageResolved, 1200)) 1200w"
+                                <img src="@heroImageSrc"
+                                     srcset="@heroImageSrcSet"
                                      sizes="(max-width: 1023px) 100vw, 460px"
                                      alt="@heroAlt"
                                      class="absolute inset-0 h-full w-full object-cover"
@@ -156,6 +171,18 @@
                                 </figcaption>
                             }
                         </figure>
+
+                        <div class="mt-5 border-t border-white/12 pt-4 lg:hidden">
+                            @await Html.PartialAsync("_ShareButtons", Model)
+
+                            <a href="/about/artsiom-dusau"
+                               class="mt-3 flex items-center gap-2 text-[11px] text-slate-300">
+                                <img src="/images/profile/artsiom-dusau.png"
+                                     alt="Artsiom Dusau"
+                                     class="h-5 w-5 rounded-full object-cover opacity-80">
+                                <span>Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -192,17 +219,20 @@
                         var slugRaw = (content?.Slug ?? "").Trim();
                         var slugWords = Regex.Replace(slugRaw, @"[-_]+", " ");
                         var slugTitle = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(slugWords.ToLowerInvariant());
+                        var tableHeadingTitle = !string.IsNullOrWhiteSpace(content?.Table?.Title)
+                            ? content.Table.Title
+                            : $"List of US State {slugTitle}";
+                        var tableVM = Model.ToTableSection();
                     }
 
                     <h2 class="content-h2">
-                        List of US State @slugTitle
+                        @tableHeadingTitle
                     </h2>
 
-                    <span class="hidden md:inline text-sm text-slate-500">Search, filter, and compare</span>
+                    <span id="resultsCounter" class="hidden md:inline shrink-0 text-sm text-slate-500">@tableVM.TotalRowsCount entries</span>
                 </div>
 
-                <div class="mt-5">
-                    @{ var tableVM = Model.ToTableSection(); }
+                <div class="mt-5 overflow-hidden border border-slate-200/80 bg-white/40">
                     @await Html.PartialAsync("Components/Tables/_Controls", tableVM)
                     @await Html.PartialAsync("Components/Tables/_Cards", tableVM)
                     @await Html.PartialAsync("Components/Tables/_Table", tableVM)
@@ -294,45 +324,3 @@
     });
 </script>
 
-<script>
-    const shareButton = document.getElementById("shareButton");
-    const copyBtn = document.getElementById("copyLinkBtn");
-
-    if (shareButton) {
-        shareButton.addEventListener("click", async () => {
-            const shareData = { title: document.title, text: "Check out this list!", url: window.location.href };
-
-            if (navigator.share) {
-                try { await navigator.share(shareData); return; } catch (err) { }
-            }
-
-            try {
-                await navigator.clipboard.writeText(window.location.href);
-                shareButton.innerHTML = `<i class="fas fa-check"></i> Copied!`;
-                shareButton.classList.add("bg-green-600");
-                setTimeout(() => {
-                    shareButton.innerHTML = `<i class="fas fa-share-nodes"></i> Share`;
-                    shareButton.classList.remove("bg-green-600");
-                }, 1500);
-            } catch (err) {
-                alert("Your browser does not support copying.");
-            }
-        });
-    }
-
-    if (copyBtn) {
-        copyBtn.addEventListener("click", async () => {
-            try {
-                await navigator.clipboard.writeText(window.location.href);
-                copyBtn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
-                copyBtn.classList.add("bg-green-600");
-                setTimeout(() => {
-                    copyBtn.innerHTML = `<i class="fas fa-copy"></i> Copy Link`;
-                    copyBtn.classList.remove("bg-green-600");
-                }, 1500);
-            } catch (err) {
-                alert("Copy failed.");
-            }
-        });
-    }
-</script>

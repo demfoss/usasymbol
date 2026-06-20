@@ -195,9 +195,7 @@
                 <figure class="px-3 pb-3 md:px-4 md:pb-4 lg:px-5 lg:pb-5">
                     <div class="border-map-frame overflow-hidden rounded-[1.5rem] bg-white">
                         <img src="@Images.Hero(map.Image)"
-                             srcset="@(Images.Hero(map.Image, 480)) 480w,
-                                     @(Images.Hero(map.Image, 768)) 768w,
-                                     @(Images.Hero(map.Image, 1200)) 1200w"
+                             srcset="@Images.HeroSrcSet(map.Image, 480, 768, 1200)"
                              sizes="100vw"
                              alt="@map.ImageAlt"
                              class="block w-full h-auto"
@@ -676,15 +674,18 @@
                                 @sourceIndex
                             </div>
                             <div class="flex-1 min-w-0">
-                                <div class="font-bold text-gray-900 mb-1">@source.Name</div>
-                                @if (!string.IsNullOrEmpty(source.Url))
+                                @if (!source.Url.IsSuppressedSourceUrl())
                                 {
-                                    <a href="@source.Url" target="_blank" rel="nofollow noopener noreferrer"
-                                       class="text-blue-700 hover:underline text-sm break-all">@source.Url</a>
-                                }
-                                @if (!string.IsNullOrEmpty(source.Description))
-                                {
-                                    <p class="text-sm text-gray-600 mt-1">@source.Description</p>
+                                    <div class="font-bold text-gray-900 mb-1">@source.Name</div>
+                                    @if (!string.IsNullOrEmpty(source.Url))
+                                    {
+                                        <a href="@source.Url" target="_blank" rel="nofollow noopener noreferrer"
+                                           class="text-blue-700 hover:underline text-sm break-all">@source.Url</a>
+                                    }
+                                    @if (!string.IsNullOrEmpty(source.Description))
+                                    {
+                                        <p class="text-sm text-gray-600 mt-1">@source.Description</p>
+                                    }
                                 }
                             </div>
                         </div>

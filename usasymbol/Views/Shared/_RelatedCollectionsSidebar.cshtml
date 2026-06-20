@@ -1,0 +1,28 @@
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+
+@if (Model.HasRelated)
+{
+    var related = Model.Content?.Related ?? new List<USASymbol.Models.Content.PageRelated>();
+    if (related.Any())
+    {
+        <div class="mt-8 pt-6 border-t border-slate-200/80">
+            <h2 class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400 mb-4">
+                Related Guides
+            </h2>
+            <nav aria-label="Related guides" class="space-y-1">
+                @foreach (var item in related)
+                {
+                    <a href="@item.Url"
+                       target="@(item.Url.IsExternalUrl() ? "_blank" : null)"
+                       rel="@(item.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
+                       class="group flex items-center gap-2.5 rounded-xl px-3 py-2 text-[0.78rem] font-semibold text-slate-700 transition-all duration-150 hover:bg-white/70 hover:text-slate-900">
+                        <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center text-slate-400 group-hover:text-slate-700 transition-colors">
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </span>
+                        <span class="min-w-0 line-clamp-2 leading-5">@item.Title</span>
+                    </a>
+                }
+            </nav>
+        </div>
+    }
+}

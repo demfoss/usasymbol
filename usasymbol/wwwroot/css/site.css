@@ -1360,26 +1360,3 @@ body {
     min-height: 300px;
 }
 
-/* =====================================================
-   Journey / Grow.me ad containers
-   ===================================================== */
-.mv-ad-box {
-    position: relative;
-    overflow: visible !important; /* override Journey's inline overflow:clip so ::before shows */
-    margin: 3.5rem auto 2.5rem !important;
-    border-top: 1px solid #e2e8f0;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-/* Journey's inner frame still clips its own content via clip-path — safe to leave */
-.mv-rail-frame-350,
-.mv-rail-frame-600 {
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-@media (max-width: 767px) {
-    .mv-ad-box {
-        margin: 2.5rem 0 2rem !important;
-    }
-}

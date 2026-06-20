@@ -32,6 +32,7 @@ builder.Services.AddContentPipeline(builder.Configuration, builder.Environment);
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IImagePathNormalizer, ImagePathNormalizer>();
 builder.Services.AddSingleton<IImageUrlService, ImageUrlService>();
+builder.Services.AddSingleton<IMapPngService, MapPngService>();
 builder.Services.AddHttpClient<BunnyImageSyncService>();
 builder.Services.AddTransient<BunnyImageSyncRunner>();
 
@@ -57,6 +58,7 @@ builder.Services.AddScoped<ILicensePlateService, LicensePlateService>();
 builder.Services.AddScoped<ISealService, SealService>();
 builder.Services.AddScoped<ISoilService, SoilService>();
 builder.Services.AddScoped<IFossilService, FossilService>();
+builder.Services.AddScoped<ISportService, SportService>();
 builder.Services.AddHostedService<IndexNowBackgroundService>();
 
 
@@ -82,6 +84,7 @@ builder.Services.AddSingleton<QuizService>();
 builder.Services.AddScoped<IParkService, ParkService>();
 builder.Services.AddScoped<ISoilService, SoilService>();
 builder.Services.AddScoped<IFossilService, FossilService>();
+builder.Services.AddScoped<ISportService, SportService>();
 builder.Services.AddScoped<IStateAbbreviationContentService, StateAbbreviationContentService>();
 
 
@@ -109,6 +112,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var isImageSyncCommand = args.Any(x =>
     string.Equals(x, "--sync-bunny-images", StringComparison.OrdinalIgnoreCase));
+var forceSeedCommand = args.Any(x =>
+    string.Equals(x, "--seed", StringComparison.OrdinalIgnoreCase));
 
 var app = builder.Build();
 
@@ -218,7 +223,26 @@ app.Use(async (context, next) =>
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await DbSeeder.SeedAsync(context);
+    var logger = scope.ServiceProvider
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("Startup");
+
+    await context.Database.EnsureCreatedAsync();
+
+    var requiresInitialSeed = !await context.States.AnyAsync();
+    if (forceSeedCommand || requiresInitialSeed)
+    {
+        logger.LogInformation(
+            "Running database seed. ForceSeed: {ForceSeed}, InitialSeed: {InitialSeed}",
+            forceSeedCommand,
+            requiresInitialSeed);
+
+        await DbSeeder.SeedAsync(context);
+    }
+    else
+    {
+        logger.LogInformation("Skipping startup seed because the database is already initialized.");
+    }
 }
 
 
@@ -384,3 +408,4 @@ app.MapControllerRoute(
     defaults: new { controller = "StateGuides", action = "Borders" });
 
 app.Run();
+
