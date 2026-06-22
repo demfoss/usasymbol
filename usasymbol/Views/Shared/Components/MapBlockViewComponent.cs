@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using USASymbol.Services.Interface;
 using Usasymbol.ViewModels;
 
@@ -10,12 +8,7 @@ namespace Usasymbol.Views.Shared.Components
 {
     public class MapBlockViewComponent : ViewComponent
     {
-        private readonly IWebHostEnvironment _env;
         private readonly IMapPngService _mapPngService;
-        private static string? _cachedBaseSvg;
-        private static readonly object _lock = new();
-
-        private const string SvgInjectionMarker = "Place this code in the empty space below. */";
 
         // Approximate centroids in 959×593 SVG coordinate space
         private static readonly Dictionary<string, (double X, double Y)> StateCentroids = new()
@@ -49,9 +42,8 @@ namespace Usasymbol.Views.Shared.Components
             ["MD"] = ((948, 284), (855, 287)),
         };
 
-        public MapBlockViewComponent(IWebHostEnvironment env, IMapPngService mapPngService)
+        public MapBlockViewComponent(IMapPngService mapPngService)
         {
-            _env = env;
             _mapPngService = mapPngService;
         }
 
@@ -61,11 +53,7 @@ namespace Usasymbol.Views.Shared.Components
 
             if (model.HasChoropleth)
             {
-                var baseSvg = GetBaseSvg();
-                if (!string.IsNullOrEmpty(baseSvg))
-                {
-                    model.SvgContent = InjectColors(baseSvg, model);
-                }
+                model.ColorCss = BuildColorCss(model);
 
                 // Generate and cache a PNG of this map for Google Images and OG fallback
                 if (!string.IsNullOrWhiteSpace(model.Slug) && model.Entries.Count > 0)
@@ -80,60 +68,15 @@ namespace Usasymbol.Views.Shared.Components
             return View("~/Views/Shared/Components/MapBlock.cshtml", model);
         }
 
-        private string GetBaseSvg()
-        {
-            if (_cachedBaseSvg != null) return _cachedBaseSvg;
-            lock (_lock)
-            {
-                if (_cachedBaseSvg != null) return _cachedBaseSvg;
-                var path = Path.Combine(_env.WebRootPath, "maps", "us-states.svg");
-                if (!File.Exists(path)) return string.Empty;
-                var svg = File.ReadAllText(path);
-                svg = MakeResponsive(svg);
-                _cachedBaseSvg = svg;
-            }
-            return _cachedBaseSvg!;
-        }
-
-        private static string MakeResponsive(string svg)
-        {
-            svg = Regex.Replace(svg, @"<title>.*?</title>", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-
-            svg = Regex.Replace(svg,
-                @"<svg([^>]*)>",
-                m =>
-                {
-                    var attrs = m.Groups[1].Value;
-                    attrs = Regex.Replace(attrs, @"\s+width=""[^""]*""", "");
-                    attrs = Regex.Replace(attrs, @"\s+height=""[^""]*""", "");
-                    if (!attrs.Contains("viewBox"))
-                        attrs += " viewBox=\"0 0 959 593\"";
-                    attrs += " width=\"100%\" preserveAspectRatio=\"xMidYMid meet\" aria-hidden=\"true\"";
-                    return $"<svg{attrs}>";
-                });
-            return svg;
-        }
-
-        private static string InjectColors(string baseSvg, MapBlockViewModel model)
+        private static string BuildColorCss(MapBlockViewModel model)
         {
             var css = new StringBuilder();
-            css.AppendLine("g.state path { cursor: pointer; transition: opacity .12s ease; }");
-            css.AppendLine("g.state path:hover, g.state path:focus { opacity: .80; outline: none; }");
-            css.AppendLine(".state { fill: #e2e8f0; }");
-
+            css.Append("g.state path{cursor:pointer;transition:opacity .12s ease}");
+            css.Append("g.state path:hover,g.state path:focus{opacity:.80;outline:none}");
+            css.Append(".state{fill:#e2e8f0}");
             foreach (var e in model.Entries)
-                css.AppendLine($".{e.PostalCode.ToLower()} {{ fill: {e.FillColor}; }}");
-
-            var idx = baseSvg.IndexOf(SvgInjectionMarker, StringComparison.Ordinal);
-            if (idx < 0) return baseSvg;
-
-            var closeStyle = baseSvg.IndexOf("</style>", idx, StringComparison.Ordinal);
-            if (closeStyle < 0) return baseSvg;
-
-            return baseSvg[..(idx + SvgInjectionMarker.Length)]
-                 + "\n"
-                 + css
-                 + baseSvg[closeStyle..];
+                css.Append($".{e.PostalCode.ToLower()}{{fill:{e.FillColor}}}");
+            return css.ToString();
         }
 
         private static string InjectLabels(string svg, MapBlockViewModel model)

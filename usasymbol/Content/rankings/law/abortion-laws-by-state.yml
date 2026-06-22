@@ -1,0 +1,630 @@
+type: ranking
+slug: abortion-laws-by-state
+category: law
+url: /rankings/law/abortion-laws-by-state
+auto_link_phrases:
+  - "abortion laws by state"
+  - "where is abortion legal"
+  - "abortion limits by state"
+  - "abortion gestational limit map"
+  - "states with abortion bans"
+  - "abortion travel laws"
+extremes_mode: topOnly
+extremes_title: "States Where Abortion Has No Gestational Limit"
+hero_image: "/images/rankings/law/abortion-laws-by-state/abortion-laws-by-state-hero.jpg"
+hero_image_alt: "United States Supreme Court building in Washington D.C., site of the June 2022 Dobbs v. Jackson Women's Health Organization decision"
+hero_image_caption: "The Supreme Court's June 2022 Dobbs decision returned abortion regulation to the states. Within two years the legal landscape split sharply: 13 states enacted total bans, while 8 others placed no gestational limit on access."
+
+author: "USA Symbol Team"
+date_published: "2026-06-20"
+date_modified: "2026-06-20"
+
+seo:
+  title: "Abortion Laws by State 2026 | Gestational Limit Map"
+  description: "13 states have total abortion bans after Dobbs. Gestational limits, waiting periods, and provider access for all 50 states."
+
+page:
+  h1: "Abortion Laws by State"
+
+  quick_answer:
+    - "13 states ban abortion at fertilization in 2026: Alabama, Arkansas, Idaho, Indiana, Kentucky, Louisiana, Mississippi, North Dakota, Oklahoma, South Dakota, Tennessee, Texas, and West Virginia. All activated their bans after the Supreme Court's Dobbs v. Jackson ruling in June 2022."
+    - "8 states place no gestational limit on abortion: Alaska, Colorado, Maryland, Minnesota, New Jersey, New Mexico, Oregon, and Vermont. Several added state constitutional protections after Dobbs, including Maryland and Vermont."
+    - "15 states allow abortion up to viability, typically 22 to 24 weeks. Missouri and Ohio moved from bans or near-total restrictions to viability access after ballot measures passed in 2024 and 2023 respectively."
+
+  methodology: "Gestational limits reflect state law as of June 2026 via Guttmacher Institute and KFF; provider data (counties without a provider) is from 2017 Guttmacher data and predates post-Dobbs clinic changes. Laws in several states remain subject to active litigation, and this page is for informational purposes only and does not constitute legal advice."
+
+  sources:
+    - name: "Guttmacher Institute — State Abortion Policy"
+      url: "https://www.guttmacher.org/state-policy/explore/overview-abortion-laws"
+      description: "State-by-state abortion law tracker including gestational limits, waiting periods, and provider counts"
+    - name: "KFF — Abortion in the United States"
+      url: "https://www.kff.org/womens-health-policy/issue-brief/abortion-in-the-united-states/"
+      description: "State abortion policy tracker and law summaries"
+    - name: "Center for Reproductive Rights — After Roe Fell"
+      url: "https://reproductiverights.org/maps/abortion-laws-by-state/"
+      description: "State-by-state abortion legal status map with legislative and court updates"
+
+map:
+  title: "Abortion Laws by State 2026 — Gestational Limit Map"
+  image: "/images/rankings/law/abortion-laws-by-state/abortion-laws-by-state-map.webp"
+  image_alt: "U.S. map showing abortion legal status by state in 2026, from dark blue for no-limit states to dark burgundy for 13 total-ban states"
+  caption: "13 states shown in dark burgundy have total abortion bans from fertilization. 8 states in dark blue allow abortion with no gestational limit. The remaining states range from viability access to 6-week restrictions."
+  disclaimer: "This map is for informational purposes only and does not constitute legal advice."
+  metric_key: status_summary
+  metric_label: "Legal Status"
+  name_key: state
+  summary_key: note
+  color_scheme: categorical
+  color_scale: categorical
+  color_map:
+    "Legal - No Limit": "blue-dark"
+    "Legal - Viability": "blue"
+    "Limited to 24-25 Weeks": "yellow"
+    "Limited to 18-22 Weeks": "orange-light"
+    "Banned at 6-12 Weeks": "orange"
+    "Total Ban": "red-dark"
+  detail_keys:
+    - gestational_limit_weeks
+    - waiting_period
+    - counties_without_provider
+  filters:
+    - key: status_summary
+      label: "Filter by Legal Status"
+      use_colors: true
+    - key: waiting_period
+      label: "Filter by Waiting Period"
+      accent_color: "#ff7a45"
+    - key: mandatory_ultrasound
+      label: "Filter by Ultrasound Rule"
+      accent_color: "#b1135b"
+
+table:
+  caption: "2026 Abortion Laws by State"
+  note: "Gestational limits shown are on-demand limits; exceptions for medical emergencies, fetal anomaly, rape, or incest may permit abortion later under specific state laws. Laws are subject to ongoing litigation. Provider data (counties without a provider) reflects 2017 Guttmacher Institute data and does not account for post-Dobbs clinic closures or openings."
+  columns:
+    state: "State"
+    status_summary: "Legal Status"
+    gestational_limit_weeks: "Gestational Limit"
+    waiting_period: "Waiting Period"
+    mandatory_ultrasound: "Mandatory Ultrasound"
+    counties_without_provider: "Counties Without Provider"
+
+  metric_default: status_summary
+  sort_default: asc
+
+  rows:
+    # ── LEGAL — NO GESTATIONAL LIMIT (rank 1) ─────────────────────────────────
+    - state: "Alaska"
+      state_slug: "alaska"
+      status_summary: "Legal - No Limit"
+      gestational_limit_weeks: "No limit"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "37%"
+      note: "No gestational limit. No waiting period or mandatory counseling. No parental involvement required for minors."
+
+    - state: "Colorado"
+      state_slug: "colorado"
+      status_summary: "Legal - No Limit"
+      gestational_limit_weeks: "No limit"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "27%"
+      note: "No gestational limit. Proposition 115 (2020), which would have banned abortion after 22 weeks, was rejected by voters. Parental notification required for minors."
+
+    - state: "Maryland"
+      state_slug: "maryland"
+      status_summary: "Legal - No Limit"
+      gestational_limit_weeks: "No limit"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "24%"
+      note: "No gestational limit. The Right to Contraception and Abortion Amendment (2024) added abortion rights to the Maryland Constitution. No parental involvement required."
+
+    - state: "Minnesota"
+      state_slug: "minnesota"
+      status_summary: "Legal - No Limit"
+      gestational_limit_weeks: "No limit"
+      waiting_period: "No"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "59%"
+      note: "No gestational limit. Minnesota Supreme Court recognized abortion as a fundamental state constitutional right in 1995 (Women of the State of Minnesota v. Gomez). No waiting period or mandatory counseling."
+
+    - state: "New Jersey"
+      state_slug: "new-jersey"
+      status_summary: "Legal - No Limit"
+      gestational_limit_weeks: "No limit"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "23%"
+      note: "No gestational limit. The Reproductive Freedom Act (2022) codified protections. No parental involvement required for minors."
+
+    - state: "New Mexico"
+      state_slug: "new-mexico"
+      status_summary: "Legal - No Limit"
+      gestational_limit_weeks: "No limit"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "48%"
+      note: "No gestational limit. New Mexico has become a destination for patients traveling from neighboring ban states including Texas and Oklahoma. No parental involvement required."
+
+    - state: "Oregon"
+      state_slug: "oregon"
+      status_summary: "Legal - No Limit"
+      gestational_limit_weeks: "No limit"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "30%"
+      note: "No gestational limit. Measure 111 (2022) added a state constitutional right to abortion. No parental involvement required for minors."
+
+    - state: "Vermont"
+      state_slug: "vermont"
+      status_summary: "Legal - No Limit"
+      gestational_limit_weeks: "No limit"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "38%"
+      note: "No gestational limit. Article 22 (Proposal 5, 2022) added personal reproductive autonomy to the Vermont Constitution. No parental involvement required."
+
+    # ── LEGAL — TO VIABILITY (rank 2) ─────────────────────────────────────────
+    - state: "Arizona"
+      state_slug: "arizona"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "Yes"
+      mandatory_ultrasound: "Yes"
+      counties_without_provider: "80%"
+      note: "Abortion legal to viability. An Arizona Supreme Court ruling in April 2024 briefly reinstated an 1864 near-total ban; the state legislature repealed that law the same month, restoring viability access. Mandatory waiting period and ultrasound. Parental consent and notification required for minors."
+
+    - state: "California"
+      state_slug: "california"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "5%"
+      note: "Abortion legal to viability. Proposition 1 (2022) added reproductive freedom to the California Constitution. Among the lowest percentage of counties without a provider at 5%. No parental involvement required."
+
+    - state: "Connecticut"
+      state_slug: "connecticut"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "5%"
+      note: "Abortion legal to viability. The Reproductive Freedom Defense Act (2022) added protections for in-state patients and out-of-state providers. No parental involvement required."
+
+    - state: "Delaware"
+      state_slug: "delaware"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "33%"
+      note: "Abortion legal to viability. No waiting period or mandatory counseling. Parental notification required for minors."
+
+    - state: "Hawaii"
+      state_slug: "hawaii"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "5%"
+      note: "Abortion legal to viability under HB 1411 (2023). Hawaii was among the first states to decriminalize abortion in 1970. No parental involvement required."
+
+    - state: "Illinois"
+      state_slug: "illinois"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "40%"
+      note: "Abortion legal to viability under the Reproductive Health Act (2019). Illinois has served as an access hub for patients from neighboring ban states including Missouri and Indiana. No parental involvement required."
+
+    - state: "Maine"
+      state_slug: "maine"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "55%"
+      note: "Abortion legal to viability under the Maine Reproductive Privacy Act (2019). No parental involvement required."
+
+    - state: "Michigan"
+      state_slug: "michigan"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "No"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "40%"
+      note: "Proposal 3 (2022) added abortion rights to the Michigan Constitution up to viability. The amendment superseded a 1931 state abortion ban that had been previously blocked by courts. No waiting period."
+
+    - state: "Missouri"
+      state_slug: "missouri"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "No"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "~97%"
+      note: "Amendment 3 (November 2024) added abortion rights to the Missouri Constitution up to viability, reversing a near-total ban that had been in effect since Dobbs. Provider infrastructure remains extremely limited; 97% of counties had no provider as of 2017."
+
+    - state: "Montana"
+      state_slug: "montana"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "55%"
+      note: "Abortion legal to viability under Montana Supreme Court precedent (Armstrong v. State, 1999). CI-128 (2024) further codified abortion rights in the state constitution. No parental involvement required."
+
+    - state: "New Hampshire"
+      state_slug: "new-hampshire"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "30%"
+      note: "Abortion legal to viability. New Hampshire enacted a 24-week ban in 2021 but the legislature allowed it to expire; the state reverted to a viability standard. Parental notification required for minors."
+
+    - state: "Ohio"
+      state_slug: "ohio"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "No"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "56%"
+      note: "Issue 1 (November 2023) added abortion rights to the Ohio Constitution up to viability. Ohio had enforced a 6-week ban after Dobbs; the ballot measure restored broader access. No waiting period after the constitutional amendment passed."
+
+    - state: "Rhode Island"
+      state_slug: "rhode-island"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "36%"
+      note: "Abortion legal to viability under the Reproductive Privacy Act (2019). One-parent consent required for minors."
+
+    - state: "Washington"
+      state_slug: "washington"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "15%"
+      note: "Abortion legal to viability under the Reproductive Privacy Act (1991). The Keep Washington Safe Act (2023) added protections for out-of-state patients and shield provisions for providers."
+
+    - state: "Wyoming"
+      state_slug: "wyoming"
+      status_summary: "Legal - Viability"
+      gestational_limit_weeks: "~24 weeks (viability)"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "96%"
+      note: "Wyoming's abortion bans were struck down by the state district court in August 2024, leaving abortion legal to viability under court injunction. Wyoming has the highest percentage of counties without a provider (96%) among non-ban states. Parental consent and notification required for minors."
+
+    # ── LIMITED TO 24-25 WEEKS (rank 3) ───────────────────────────────────────
+    - state: "Massachusetts"
+      state_slug: "massachusetts"
+      status_summary: "Limited to 24-25 Weeks"
+      gestational_limit_weeks: "24 weeks"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "14%"
+      note: "Abortion legal to 24 weeks under the ROE Act (2020). After 24 weeks, allowed for fetal anomaly incompatible with sustained life or to protect the patient's physical or mental health. No waiting period. One-parent consent required for minors."
+
+    - state: "Nevada"
+      state_slug: "nevada"
+      status_summary: "Limited to 24-25 Weeks"
+      gestational_limit_weeks: "24 weeks"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "9%"
+      note: "Abortion legal to 24 weeks under NRS 442.250. After 24 weeks, permitted only to preserve the life or health of the patient. No waiting period. No parental involvement required."
+
+    - state: "New York"
+      state_slug: "new-york"
+      status_summary: "Limited to 24-25 Weeks"
+      gestational_limit_weeks: "24 weeks"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "10%"
+      note: "Abortion legal to 24 weeks under the Reproductive Health Act (2019). After 24 weeks, allowed when the fetus is not viable or to protect the patient's life or health. No waiting period or parental involvement requirement."
+
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      status_summary: "Limited to 24-25 Weeks"
+      gestational_limit_weeks: "24 weeks"
+      waiting_period: "Yes"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "48%"
+      note: "Abortion legal to 24 weeks under the Abortion Control Act. Mandatory waiting period and state-directed counseling required. One-parent consent required for minors."
+
+    - state: "Virginia"
+      state_slug: "virginia"
+      status_summary: "Limited to 24-25 Weeks"
+      gestational_limit_weeks: "25 weeks"
+      waiting_period: "24 hours"
+      mandatory_ultrasound: "Yes"
+      counties_without_provider: "78%"
+      note: "Abortion legal to 25 weeks. Mandatory 24-hour waiting period and ultrasound required. One-parent consent required for minors. 78% of Virginia counties lack a provider, the highest among states with a 24-25 week limit."
+
+    # ── LIMITED TO 18-22 WEEKS (rank 4) ───────────────────────────────────────
+    - state: "Kansas"
+      state_slug: "kansas"
+      status_summary: "Limited to 18-22 Weeks"
+      gestational_limit_weeks: "22 weeks"
+      waiting_period: "Yes"
+      mandatory_ultrasound: "Yes"
+      counties_without_provider: "56%"
+      note: "Abortion legal to 22 weeks. Kansas voters rejected the Value Them Both Amendment in August 2022 (59% against), which would have removed state constitutional abortion protections recognized by the Kansas Supreme Court in 2019 (Hodes & Nauser v. Schmidt). Mandatory waiting period and ultrasound. One-parent consent required for minors."
+
+    - state: "Utah"
+      state_slug: "utah"
+      status_summary: "Limited to 18-22 Weeks"
+      gestational_limit_weeks: "18 weeks"
+      waiting_period: "Yes"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "62%"
+      note: "HB 467 (2023) set the gestational limit at 18 weeks with exceptions for rape, incest, life of the patient, and lethal fetal conditions. Mandatory waiting period and state-directed counseling. Parental consent and notification required for minors."
+
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      status_summary: "Limited to 18-22 Weeks"
+      gestational_limit_weeks: "22 weeks"
+      waiting_period: "24 hours"
+      mandatory_ultrasound: "Yes"
+      counties_without_provider: "67%"
+      note: "Abortion legal to 22 weeks under current court interpretation. Wisconsin's 1849 near-total abortion ban was the subject of extended litigation; courts ruled the law does not apply to consensual abortions. Mandatory 24-hour waiting period and ultrasound. One-parent consent required for minors."
+
+    # ── BANNED AT 6-12 WEEKS (rank 5) ─────────────────────────────────────────
+    - state: "Florida"
+      state_slug: "florida"
+      status_summary: "Banned at 6-12 Weeks"
+      gestational_limit_weeks: "6 weeks"
+      waiting_period: "None"
+      mandatory_ultrasound: "Yes"
+      counties_without_provider: "20%"
+      note: "SB 300 (2023) banned abortion at 6 weeks, taking effect May 1, 2024 after courts allowed the law to proceed. A prior 15-week ban (HB 5, 2022) had been in effect from July 2022 to May 2024. Mandatory ultrasound. Parental consent and notification required for minors."
+
+    - state: "Georgia"
+      state_slug: "georgia"
+      status_summary: "Banned at 6-12 Weeks"
+      gestational_limit_weeks: "6 weeks"
+      waiting_period: "Yes"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "58%"
+      note: "LIFE Act (HB 481, 2019) bans abortion after detection of cardiac activity, typically at 6 weeks. The law took effect July 20, 2022 after the Dobbs ruling cleared the way. Mandatory waiting period. Parental consent and notification required for minors."
+
+    - state: "Iowa"
+      state_slug: "iowa"
+      status_summary: "Banned at 6-12 Weeks"
+      gestational_limit_weeks: "6 weeks"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "42%"
+      note: "SF 2340 (2023) bans abortion after detection of cardiac activity, typically at 6 weeks. The Iowa Supreme Court allowed the law to take effect in June 2023. Parental consent and notification required for minors."
+
+    - state: "Nebraska"
+      state_slug: "nebraska"
+      status_summary: "Banned at 6-12 Weeks"
+      gestational_limit_weeks: "12 weeks"
+      waiting_period: "Yes"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "41%"
+      note: "LB 574 (2023) set a 12-week gestational limit. Nebraska voters simultaneously rejected both a 12-week ban initiative and a viability-protection initiative in November 2024, leaving the existing 12-week law in effect. One-parent consent required for minors."
+
+    - state: "North Carolina"
+      state_slug: "north-carolina"
+      status_summary: "Banned at 6-12 Weeks"
+      gestational_limit_weeks: "12 weeks"
+      waiting_period: "None"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "53%"
+      note: "SB 20 (2023) reduced the gestational limit from 20 weeks to 12 weeks, effective July 1, 2023. Exceptions apply for rape, incest, life of the patient, and fetal anomaly at later gestational ages. One-parent consent required for minors."
+
+    - state: "South Carolina"
+      state_slug: "south-carolina"
+      status_summary: "Banned at 6-12 Weeks"
+      gestational_limit_weeks: "6 weeks"
+      waiting_period: "Yes"
+      mandatory_ultrasound: "No"
+      counties_without_provider: "71%"
+      note: "S-474 (2023) bans abortion after 6 weeks. The South Carolina Supreme Court upheld the law in August 2023. Mandatory waiting period. One-parent consent required for minors."
+
+    # ── TOTAL BAN — effective from fertilization (rank 6) ─────────────────────
+    - state: "Alabama"
+      state_slug: "alabama"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "Human Life Protection Act (HB 314, 2019) took effect after Dobbs (June 2022). Abortion banned at fertilization. 100% of Alabama counties have no in-state provider."
+
+    - state: "Arkansas"
+      state_slug: "arkansas"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "Human Life Protection Act (SB 6, 2021) took effect after Dobbs. Abortion banned at fertilization with exceptions for the life of the mother."
+
+    - state: "Idaho"
+      state_slug: "idaho"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "Idaho's Defense of Life Act (trigger law, 2021) activated after Dobbs. Abortion banned at fertilization. An additional total ban (HB 8, 2023) reinforced the prohibition."
+
+    - state: "Indiana"
+      state_slug: "indiana"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "SEA 1 (2022) took effect September 15, 2022 after an initial injunction was lifted. The Indiana Supreme Court upheld the ban in June 2023. Abortion banned at fertilization with limited exceptions."
+
+    - state: "Kentucky"
+      state_slug: "kentucky"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "HB 3 (2019 trigger law) activated after Dobbs. Abortion banned at fertilization. Kentucky voters rejected Amendment 2 in November 2022 (52% against), which would have removed state constitutional abortion protections, but the statutory ban remains in effect."
+
+    - state: "Louisiana"
+      state_slug: "louisiana"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "Louisiana's Human Life Protection Act (trigger law, 2022) activated after Dobbs. Abortion banned at fertilization with exceptions for life of the mother, ectopic pregnancy, and medically futile pregnancy."
+
+    - state: "Mississippi"
+      state_slug: "mississippi"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "Mississippi's 15-week ban (Gestational Age Act) was the subject of Dobbs v. Jackson Women's Health Organization. After the ruling, Mississippi's trigger law (SB 2116, 2007) activated, banning abortion at fertilization."
+
+    - state: "North Dakota"
+      state_slug: "north-dakota"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "North Dakota's trigger law (HB 1466, 2007) activated after Dobbs. A state court initially blocked it; the North Dakota Supreme Court upheld the ban in September 2023. Abortion banned at fertilization."
+
+    - state: "Oklahoma"
+      state_slug: "oklahoma"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "HB 4327 (2022) bans abortion at fertilization. Oklahoma enacted its near-total ban before the Dobbs ruling, becoming one of the first states to do so in 2022."
+
+    - state: "South Dakota"
+      state_slug: "south-dakota"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "South Dakota's trigger law (HB 1217, 2005) activated after Dobbs. Abortion banned at fertilization. Amendment G, a state constitutional measure to protect abortion rights, was rejected by voters in November 2024."
+
+    - state: "Tennessee"
+      state_slug: "tennessee"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "Human Life Protection Act (trigger law, 2019) activated after Dobbs. Abortion banned at fertilization. Amendment 1 (2014) had already removed the state's constitutional right to abortion prior to Dobbs."
+
+    - state: "Texas"
+      state_slug: "texas"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "Texas Human Life Protection Act (trigger law) activated after Dobbs. Texas also enacted SB 8 (2021), which allows private civil enforcement against providers and took effect before Dobbs. 100% of Texas counties have no in-state provider."
+
+    - state: "West Virginia"
+      state_slug: "west-virginia"
+      status_summary: "Total Ban"
+      gestational_limit_weeks: "Banned"
+      waiting_period: "N/A"
+      mandatory_ultrasound: "N/A"
+      counties_without_provider: "100%"
+      note: "SB 4 (2022) banned abortion in West Virginia, signed September 16, 2022. Abortion banned at fertilization with limited medical exceptions."
+
+compare:
+  metric_slug: abortion-laws
+  title: "Compare Abortion Laws Between States"
+  description: "Choose two states and compare their gestational limits, waiting periods, and provider access."
+  button_text: "Compare abortion laws"
+  icon: "fa-solid fa-scale-balanced"
+  default_state_a: new-york
+  default_state_b: texas
+
+sections:
+  - id: "states-with-total-abortion-bans-2026"
+    icon: "fa-solid fa-ban"
+    title: "States with Total Abortion Bans in 2026"
+    paragraphs:
+      - "13 states ban abortion at fertilization as of 2026: Alabama, Arkansas, Idaho, Indiana, Kentucky, Louisiana, Mississippi, North Dakota, Oklahoma, South Dakota, Tennessee, Texas, and West Virginia. All enacted or activated their bans following the Supreme Court's Dobbs v. Jackson Women's Health Organization ruling in June 2022."
+      - "100% of counties in each ban state have no in-state abortion provider, based on 2017 Guttmacher Institute data. Missouri had enforced a near-total ban after Dobbs; voters approved Amendment 3 in November 2024, establishing a state constitutional right to abortion up to viability and reversing the ban."
+
+  - id: "states-where-abortion-is-legal-after-dobbs"
+    icon: "fa-solid fa-check-circle"
+    title: "States Where Abortion Is Legal After Dobbs"
+    paragraphs:
+      - "8 states place no gestational limit on abortion in 2026: Alaska, Colorado, Maryland, Minnesota, New Jersey, New Mexico, Oregon, and Vermont. Maryland and Vermont added state constitutional abortion protections after Dobbs; Montana added constitutional protection via CI-128 in 2024."
+      - "15 states allow abortion to viability, typically 22 to 24 weeks: Arizona, California, Connecticut, Delaware, Hawaii, Illinois, Maine, Michigan, Missouri, Montana, New Hampshire, Ohio, Rhode Island, Washington, and Wyoming. Arizona's viability standard was restored in 2024 after the legislature repealed an 1864 ban that the state Supreme Court had briefly reinstated."
+
+  - id: "states-with-early-gestational-limits"
+    icon: "fa-solid fa-clock"
+    title: "States with Gestational Limits of 6 to 22 Weeks"
+    paragraphs:
+      - "Six states restrict abortion before viability without total bans: Florida and Georgia at 6 weeks, Nebraska and North Carolina at 12 weeks, Utah at 18 weeks, and Kansas and Wisconsin at 22 weeks. Florida's 6-week restriction took effect May 1, 2024. North Carolina reduced its limit from 20 weeks to 12 weeks in July 2023."
+      - "Kansas voters rejected the Value Them Both Amendment in August 2022 with 59% voting against. The Kansas Supreme Court had recognized abortion as a fundamental state right in 2019. The legislature operates within that framework, holding the gestational limit at 22 weeks."
+
+visual_assets:
+  - id: us-supreme-court-dobbs
+    src: /images/rankings/law/abortion-laws-by-state/us-supreme-court.jpg
+    alt: United States Supreme Court building in Washington D.C., where the June 2022 Dobbs v. Jackson Women's Health Organization decision was issued
+    caption: The Supreme Court's Dobbs decision in June 2022 overturned Roe v. Wade, returning abortion regulation to individual states. Within two months, 13 states had activated trigger laws banning abortion.
+    section: states-with-total-abortion-bans-2026
+    layout: full-width-tall
+
+  - id: state-capitol-dome
+    src: /images/rankings/law/abortion-laws-by-state/state-capitol-dome.jpg
+    alt: State capitol dome and facade under a clear sky
+    caption: After Dobbs, abortion policy shifted almost entirely to state legislatures, courts, and ballot measures. That produced the current divide between no-limit states, viability states, and states that adopted near-total bans or early-week restrictions.
+    section: states-where-abortion-is-legal-after-dobbs
+    layout: full-width-tall
+
+  - id: kansas-state-capitol
+    src: /images/rankings/law/abortion-laws-by-state/kansas-state-capitol.jpg
+    alt: Kansas State Capitol building in Topeka, Kansas
+    caption: Kansas voters rejected the Value Them Both Amendment in August 2022, preserving state constitutional abortion protections first recognized by the Kansas Supreme Court in 2019.
+    section: states-with-early-gestational-limits
+    layout: full-width-tall
+
+faq:
+  - question: "Which states have banned abortion in 2026"
+    answer: "13 states ban abortion at fertilization in 2026: Alabama, Arkansas, Idaho, Indiana, Kentucky, Louisiana, Mississippi, North Dakota, Oklahoma, South Dakota, Tennessee, Texas, and West Virginia. All activated their bans after the Supreme Court's Dobbs v. Jackson decision in June 2022."
+
+  - question: "Is abortion legal in Texas in 2026"
+    answer: "No. Texas bans abortion at fertilization under the Human Life Protection Act, which activated after Dobbs in June 2022. Texas also passed SB 8 (2021), which allows private civil lawsuits against providers. 100% of Texas counties have no in-state abortion provider."
+
+  - question: "What states have no gestational limit on abortion"
+    answer: "8 states place no gestational limit on abortion in 2026: Alaska, Colorado, Maryland, Minnesota, New Jersey, New Mexico, Oregon, and Vermont. Maryland and Vermont have added state constitutional abortion protections since Dobbs."
+
+  - question: "How many weeks is abortion legal in Florida"
+    answer: "Florida restricts abortion at 6 weeks under SB 300 (2023), which took effect May 1, 2024. The 6-week limit is measured from detection of cardiac activity. A prior 15-week restriction (HB 5, 2022) had been in effect from July 2022 through April 2024."
+
+  - question: "What is the abortion limit in New York"
+    answer: "New York allows abortion up to 24 weeks under the Reproductive Health Act (2019). After 24 weeks, abortion is permitted when the fetus is not viable or to protect the patient's life or health. No mandatory waiting period applies."
+
+  - question: "What does legal to viability mean for abortion limits"
+    answer: "Viability is the point at which a fetus can survive outside the womb with medical support, typically between 22 and 24 weeks of pregnancy. 15 states use viability as their on-demand gestational limit: Arizona, California, Connecticut, Delaware, Hawaii, Illinois, Maine, Michigan, Missouri, Montana, New Hampshire, Ohio, Rhode Island, Washington, and Wyoming."
+
+related:
+  - title: "Marijuana Laws by State"
+    url: "/rankings/law/marijuana-legality-by-state"
+  - title: "Gun Laws by State — Concealed Carry"
+    url: "/rankings/law/gun-laws-concealed-carry"
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"

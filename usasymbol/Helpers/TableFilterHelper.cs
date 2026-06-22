@@ -20,6 +20,7 @@ namespace Usasymbol.Helpers
                 if (string.IsNullOrWhiteSpace(col.Key)) continue;
                 if (StructuralTypes.Contains(col.Type)) continue;
                 if (string.Equals(col.Key, "notes", StringComparison.OrdinalIgnoreCase)) continue;
+                if (string.Equals(col.Key, "note", StringComparison.OrdinalIgnoreCase)) continue;
                 if (string.Equals(col.Key, "state", StringComparison.OrdinalIgnoreCase)) continue;
                 if (col.Key.EndsWith("_slug", StringComparison.OrdinalIgnoreCase)) continue;
 

@@ -76,6 +76,7 @@ namespace USASymbol.Controllers
         }
 
         [Route("/rankings/{category}/{slug}")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept-Encoding")]
         public async Task<IActionResult> Detail(string category, string slug)
         {
             try

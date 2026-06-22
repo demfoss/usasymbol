@@ -55,7 +55,20 @@ namespace USASymbol.Models.Content
             return default;
         }
 
-        public string GetString(string key) => Get<string>(key) ?? "";
+        public string GetString(string key)
+        {
+            var direct = Get<string>(key);
+            if (!string.IsNullOrWhiteSpace(direct))
+                return direct;
+
+            if (string.Equals(key, "note", StringComparison.OrdinalIgnoreCase))
+                return Get<string>("notes") ?? "";
+
+            if (string.Equals(key, "notes", StringComparison.OrdinalIgnoreCase))
+                return Get<string>("note") ?? "";
+
+            return "";
+        }
         public long GetNumber(string key) => Get<long>(key);
 
         public bool Has(string key) =>
@@ -97,6 +110,7 @@ namespace USASymbol.Models.Content
         public string? HeroImageAlt { get; set; }
         public string? HeroImageCaption { get; set; }
         public PageMap? Map { get; set; }
+        public PageHeatmap? Heatmap { get; set; }
         public List<VisualAsset> VisualAssets { get; set; } = new();
         public RankingCompareData? Compare { get; set; }
         public QuizPromoData? QuizPromo { get; set; }
@@ -231,6 +245,29 @@ namespace USASymbol.Models.Content
         public string ColorScheme { get; set; } = "blue";
         public string ColorScale { get; set; } = "linear";
         public bool ShowLabels { get; set; } = false;
+        public string? SummaryKey { get; set; }
+        public List<PageMapFilter> Filters { get; set; } = new();
+        public Dictionary<string, string> ColorMap { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+
+    public class PageMapFilter
+    {
+        public string Key { get; set; } = "";
+        public string Label { get; set; } = "";
+        public string Style { get; set; } = "chips";
+        public string? AccentColor { get; set; }
+        public bool UseColors { get; set; } = false;
+    }
+
+    public class PageHeatmap
+    {
+        public string Title { get; set; } = "";
+        public string? Caption { get; set; }
+        public string DataUrl { get; set; } = "";
+        public string Gradient { get; set; } = "hot";
+        public int Radius { get; set; } = 18;
+        public int Blur { get; set; } = 22;
+        public int PointsPerCluster { get; set; } = 1;
     }
 
     public class QuizPromoData

@@ -1,0 +1,444 @@
+type: ranking
+slug: voter-turnout-by-state
+category: government
+url: /rankings/government/voter-turnout-by-state
+auto_link_phrases:
+  - "voter turnout by state"
+  - "voter turnout 2024"
+  - "election turnout by state"
+  - "states with highest voter turnout"
+  - "VEP turnout"
+extremes_mode: both
+extremes_title: "Highest and Lowest Voter Turnout by State"
+hero_image: "/images/rankings/government/voter-turnout-by-state/voter-turnout-by-state-hero.jpg"
+hero_image_alt: "Voters waiting in line outside a polling location on Election Day"
+hero_image_caption: "Turnout is measured here as the share of the voting-eligible population that actually cast a ballot in 2024. Minnesota led the nation at 77.4%, while Hawaii ranked last at 47.5%."
+
+author: "USA Symbol Team"
+date_published: "2026-06-20"
+date_modified: "2026-06-20"
+
+seo:
+  title: "Voter Turnout by State 2024 | Map & VEP Rates"
+  description: "Minnesota had the highest voter turnout in 2024 at 77.4% of eligible voters, while Hawaii had the lowest at 47.5%."
+
+page:
+  h1: "Voter Turnout by State"
+
+  quick_answer:
+    - "Minnesota has the highest voter turnout of any state at 77.4% of the voting-eligible population in 2024, ahead of Wisconsin (74.2%) and Colorado (73.8%). Five states top 70%: Minnesota, Wisconsin, Colorado, Maine, and New Hampshire."
+    - "Hawaii ranks last at 47.5% VEP turnout, the only state below 50% and 4.7 points below West Virginia (52.2%), the second-lowest state. The gap between Minnesota and Hawaii is 29.9 points."
+    - "The national VEP turnout in 2024 is approximately 63.7%. Twenty-six states fall below that threshold, including California (56.7%), New York (57.1%), and Texas (56.0%)."
+
+  methodology: "Turnout figures measure the voting-eligible population (VEP) rate: total votes cast divided by all U.S. citizens aged 18 or older who are not disqualified by felony status, excluding non-citizens, which produces a more accurate measure than registered-voter turnout. Source: United States Elections Project (Dr. Michael McDonald, University of Florida), 2024 presidential election data."
+
+  sources:
+    - name: "United States Elections Project — 2024 Turnout Data"
+      url: "https://electproject.github.io/Early-Vote-2024G/index.html"
+      description: "VEP turnout estimates by state for the 2024 general election, compiled by Dr. Michael McDonald"
+    - name: "Federal Election Commission — 2024 Federal Elections"
+      url: "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/"
+      description: "Official certified vote totals by state"
+
+map:
+  title: "Voter Turnout by State 2024 Map"
+  image: "/images/rankings/government/voter-turnout-by-state/voter-turnout-by-state-map.webp"
+  image_alt: "U.S. map showing 2024 voter turnout by state using a green gradient; Minnesota, Wisconsin, and Colorado are darkest and Hawaii appears lightest"
+  caption: "Minnesota (77.4%), Wisconsin (74.2%), and Colorado (73.8%) anchor the top of the map in deep green. Hawaii (47.5%) is the only state below 50% and appears near-white at the opposite end of the scale."
+  metric_key: turnout_2024_pct
+  metric_label: "2024 VEP Turnout"
+  color_scheme: green
+  color_scale: linear
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    turnout_2024_pct: "2024 VEP Turnout"
+
+  metric_default: turnout_2024_pct
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      turnout_2024_pct: 77.4
+
+    - rank: 2
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      turnout_2024_pct: 74.2
+
+    - rank: 3
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      turnout_2024_pct: 73.8
+
+    - rank: 4
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      turnout_2024_pct: 73.0
+
+    - rank: 5
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      turnout_2024_pct: 71.8
+
+    - rank: 6
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      turnout_2024_pct: 69.5
+
+    - rank: 7
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      turnout_2024_pct: 68.9
+
+    - rank: 8
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      turnout_2024_pct: 68.4
+
+    - rank: 9
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      turnout_2024_pct: 68.2
+
+    - rank: 10
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      turnout_2024_pct: 67.9
+
+    - rank: 11
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      turnout_2024_pct: 67.4
+
+    - rank: 12
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      turnout_2024_pct: 67.0
+
+    - rank: 13
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      turnout_2024_pct: 65.9
+
+    - rank: 14
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      turnout_2024_pct: 65.5
+
+    - rank: 15
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      turnout_2024_pct: 65.2
+
+    - rank: 16
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      turnout_2024_pct: 64.9
+
+    - rank: 17
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      turnout_2024_pct: 64.6
+
+    - rank: 18
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      turnout_2024_pct: 64.4
+
+    - rank: 19
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      turnout_2024_pct: 64.0
+
+    - rank: 20
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      turnout_2024_pct: 63.8
+
+    - rank: 21
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      turnout_2024_pct: 63.6
+
+    - rank: 22
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      turnout_2024_pct: 63.3
+
+    - rank: 23
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      turnout_2024_pct: 63.1
+
+    - rank: 24
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      turnout_2024_pct: 62.9
+
+    - rank: 25
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      turnout_2024_pct: 62.8
+
+    - rank: 26
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      turnout_2024_pct: 62.6
+
+    - rank: 27
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      turnout_2024_pct: 62.4
+
+    - rank: 28
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      turnout_2024_pct: 62.2
+
+    - rank: 29
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      turnout_2024_pct: 62.0
+
+    - rank: 30
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      turnout_2024_pct: 61.8
+
+    - rank: 31
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      turnout_2024_pct: 61.6
+
+    - rank: 32
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      turnout_2024_pct: 61.4
+
+    - rank: 33
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      turnout_2024_pct: 61.1
+
+    - rank: 34
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      turnout_2024_pct: 60.9
+
+    - rank: 35
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      turnout_2024_pct: 60.5
+
+    - rank: 36
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      turnout_2024_pct: 60.3
+
+    - rank: 37
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      turnout_2024_pct: 60.0
+
+    - rank: 38
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      turnout_2024_pct: 59.4
+
+    - rank: 39
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      turnout_2024_pct: 59.1
+
+    - rank: 40
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      turnout_2024_pct: 58.7
+
+    - rank: 41
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      turnout_2024_pct: 58.3
+
+    - rank: 42
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      turnout_2024_pct: 57.7
+
+    - rank: 43
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      turnout_2024_pct: 57.4
+
+    - rank: 44
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      turnout_2024_pct: 57.1
+
+    - rank: 45
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      turnout_2024_pct: 56.7
+
+    - rank: 46
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      turnout_2024_pct: 56.0
+
+    - rank: 47
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      turnout_2024_pct: 55.5
+
+    - rank: 48
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      turnout_2024_pct: 55.0
+
+    - rank: 49
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      turnout_2024_pct: 52.2
+
+    - rank: 50
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      turnout_2024_pct: 47.5
+
+compare:
+  metric_slug: government
+  title: "Compare Voter Turnout Between Two States"
+  description: "Pick any two states to see a side-by-side breakdown of election participation, electoral votes, and related civic data."
+  button_text: "Compare turnout"
+  icon: "fa-solid fa-person-booth"
+  default_state_a: minnesota
+  default_state_b: hawaii
+
+sections:
+  - id: "highest-voter-turnout-states"
+    icon: "fa-solid fa-arrow-trend-up"
+    title: "States with the Highest Voter Turnout"
+    paragraphs:
+      - "Minnesota leads the country at 77.4%, a figure 3.2 points ahead of second-place Wisconsin (74.2%) and the only state consistently above 75% across recent presidential elections. Colorado (73.8%), Maine (73.0%), and New Hampshire (71.8%) complete the five states above 70% in 2024."
+      - "Minnesota's margin over the national average of 63.7% is 13.7 points, larger than the gap between the national average and the bottom five states combined. Wisconsin and Colorado also exceed the national average by more than 10 points each."
+
+  - id: "lowest-voter-turnout-states"
+    icon: "fa-solid fa-arrow-trend-down"
+    title: "States with the Lowest Voter Turnout"
+    paragraphs:
+      - "Hawaii ranks last at 47.5%, the only state below 50% in 2024. West Virginia follows at 52.2%, a gap of 4.7 points between the two bottom states, larger than the gap separating ranks 2 through 12 at the top of the table."
+      - "Arkansas (55.0%), New Mexico (55.5%), and Texas (56.0%) complete the five lowest states. Three of the five are in the South. California (56.7%) and New York (57.1%), the two most populous states in the country, also fall 6 to 7 points below the national average of 63.7%."
+
+  - id: "large-states-below-average"
+    icon: "fa-solid fa-city"
+    title: "Voter Turnout in the Most Populous States"
+    paragraphs:
+      - "California (56.7%, rank 45), New York (57.1%, rank 44), and Texas (56.0%, rank 46) are three of the four most populous states in the country. All three rank in the bottom seven by turnout. Together they hold 122 electoral votes but produce well below-average participation rates."
+      - "Florida, the third-most-populous state with 30 electoral votes, ranks 31st at 61.6%, closer to the national average of 63.7%. Pennsylvania (68.4%, rank 8) and Michigan (68.2%, rank 9) are the two large states that exceed the average by a substantial margin."
+
+visual_assets:
+  - id: high-turnout-voters
+    src: /images/rankings/government/voter-turnout-by-state/high-turnout-voters.jpg
+    alt: Group of voters participating inside a polling place on election day
+    caption: High-turnout states tend to combine strong civic habits, easier voting procedures, and competitive political cultures. Minnesota, Wisconsin, and Colorado all finished more than 10 points above the national turnout average in 2024.
+    section: highest-voter-turnout-states
+    layout: full-width-tall
+
+  - id: ballot-casting
+    src: /images/rankings/government/voter-turnout-by-state/ballot-casting.jpg
+    alt: Voter placing a ballot into a ballot box during the election process
+    caption: Hawaii was the only state below 50% turnout in 2024, with West Virginia, Arkansas, New Mexico, and Texas rounding out the bottom five. The spread between top and bottom turnout states was nearly 30 percentage points.
+    section: lowest-voter-turnout-states
+    layout: full-width-tall
+
+  - id: voting-booths-flag
+    src: /images/rankings/government/voter-turnout-by-state/voting-booths-flag.jpg
+    alt: Voting booths arranged beside an American flag in a polling-place setting
+    caption: Large population does not guarantee high participation. California, New York, and Texas hold enormous electoral weight, yet each ranked near the bottom of the states by turnout in 2024.
+    section: large-states-below-average
+    layout: full-width-tall
+
+faq:
+  - question: "What state has the highest voter turnout in 2024?"
+    answer: "Minnesota has the highest voter turnout in 2024 at 77.4% of the voting-eligible population. Wisconsin (74.2%) and Colorado (73.8%) rank second and third. Minnesota has ranked first or second in VEP turnout in every presidential election since 2000."
+
+  - question: "What state has the lowest voter turnout in 2024?"
+    answer: "Hawaii has the lowest voter turnout at 47.5%, the only state below 50% in 2024. West Virginia is next at 52.2%, a gap of 4.7 points. Hawaii's low participation has persisted across multiple recent presidential elections."
+
+  - question: "What is the national voter turnout in 2024?"
+    answer: "National VEP turnout in 2024 is approximately 63.7%. Twenty-six of the 50 states fall below that figure. The 2024 rate is somewhat lower than the 2020 record of 66.9%."
+
+  - question: "What is VEP voter turnout and how does it differ from registered-voter turnout?"
+    answer: "VEP (Voting Eligible Population) turnout divides total votes cast by all U.S. citizens aged 18 or older who are legally eligible to vote, excluding non-citizens and people disqualified by felony conviction. Registered-voter turnout uses a smaller denominator, making it appear higher. VEP is the standard measure used by researchers because registration rates vary widely by state."
+
+  - question: "What is the voter turnout in Texas?"
+    answer: "Texas ranked 46th in voter turnout in 2024 at 56.0% of the voting-eligible population, 7.7 points below the national average of 63.7%."
+
+  - question: "What is the voter turnout in California?"
+    answer: "California ranked 45th in voter turnout in 2024 at 56.7% of the voting-eligible population, 7 points below the national average of 63.7%. Despite being the most populous state with 54 electoral votes, California ranks near the bottom alongside New York (57.1%, rank 44) and Texas (56.0%, rank 46)."
+
+  - question: "Which states have the lowest voter turnout?"
+    answer: "The five lowest states by 2024 VEP turnout are Hawaii (47.5%), West Virginia (52.2%), Arkansas (55.0%), New Mexico (55.5%), and Texas (56.0%). California (56.7%) and New York (57.1%) are 6th and 7th lowest despite being the two largest states in the country."
+
+related:
+  - title: "Red and Blue States 2024"
+    url: "/rankings/government/red-and-blue-states"
+  - title: "Electoral Votes by State"
+    url: "/rankings/government/electoral-votes-by-state"
+  - title: "U.S. States by Population"
+    url: "/rankings/demographics/states-by-population"

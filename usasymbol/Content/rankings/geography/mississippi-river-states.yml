@@ -1,0 +1,295 @@
+type: ranking
+slug: mississippi-river-states
+category: geography
+url: /rankings/geography/mississippi-river-states
+auto_link_phrases:
+  - "mississippi river states"
+  - "what states does the mississippi river flow through"
+  - "which states border the mississippi river"
+  - "how many states does the mississippi river run through"
+  - "states the mississippi river passes through"
+hero_image: "/images/rankings/geography/mississippi-river-states/mississippi-river-aerial.jpg"
+hero_image_alt: "Aerial view of the Mississippi River winding through a flat floodplain with forested banks and farmland on both sides"
+
+author: "USA Symbol Team"
+date_published: "2026-06-20"
+date_modified: "2026-06-20"
+
+seo:
+  title: "Mississippi River States | Map, Length & History "
+  description: "The Mississippi River flows through or borders 10 states from Minnesota to Louisiana. Full list with river miles per state and major cities."
+
+page:
+  h1: "Mississippi River States"
+
+  quick_answer:
+    - "Illinois borders the most Mississippi River miles of any state at approximately 581 miles, with the river forming its entire western edge. The Mississippi touches 10 states in total, from Minnesota at the source to Louisiana at the Gulf."
+    - "Minnesota (575 mi) contains the river's source at Lake Itasca and has the longest through-state section. Louisiana (220 mi) holds the final miles before the river empties into the Gulf of Mexico."
+    - "Kentucky has just 51 miles of Mississippi River border, the shortest of any state on the river. Tennessee's 112 miles include Memphis — more than Kentucky — yet Tennessee still ranks as the second-shortest."
+
+  methodology: "River miles are approximate estimates from U.S. Army Corps of Engineers and USGS records, with border sections counted for both flanking states, so state totals exceed the river's full length of 2,340 miles. The upper Mississippi runs from Lake Itasca, Minnesota to Cairo, Illinois; the lower section from Cairo to the Gulf of Mexico in Louisiana."
+
+  sources:
+    - name: "U.S. Army Corps of Engineers — Mississippi River"
+      url: "https://www.mvd.usace.army.mil/About/Mississippi-River-Commission/"
+      description: "Primary source for Mississippi River mileage data and navigation surveys by state"
+    - name: "USGS — Mississippi River Facts"
+      url: "https://www.usgs.gov/special-topics/water-science-school/science/rivers-and-streams"
+      description: "USGS data on river length, drainage basin, and state-by-state geography"
+
+table:
+  columns:
+    rank: "Order (N→S)"
+    state: "State"
+    river_miles: "River Miles"
+    river_position: "River Position"
+    section: "Section"
+    major_city: "Major City on River"
+    region: "Region"
+
+  metric_default: river_miles
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Minnesota"
+      state_slug: "minnesota"
+      river_miles: 575
+      river_position: "Through-state (source)"
+      section: "Upper"
+      major_city: "Minneapolis"
+      region: "Midwest"
+
+    - rank: 2
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      river_miles: 195
+      river_position: "East bank"
+      section: "Upper"
+      major_city: "La Crosse"
+      region: "Midwest"
+
+    - rank: 3
+      state: "Iowa"
+      state_slug: "iowa"
+      river_miles: 315
+      river_position: "West bank"
+      section: "Upper"
+      major_city: "Davenport"
+      region: "Midwest"
+
+    - rank: 4
+      state: "Illinois"
+      state_slug: "illinois"
+      river_miles: 581
+      river_position: "East bank"
+      section: "Upper"
+      major_city: "Rock Island"
+      region: "Midwest"
+
+    - rank: 5
+      state: "Missouri"
+      state_slug: "missouri"
+      river_miles: 480
+      river_position: "West bank"
+      section: "Upper"
+      major_city: "St. Louis"
+      region: "South"
+
+    - rank: 6
+      state: "Kentucky"
+      state_slug: "kentucky"
+      river_miles: 51
+      river_position: "East bank"
+      section: "Lower"
+      major_city: "Wickliffe"
+      region: "South"
+
+    - rank: 7
+      state: "Tennessee"
+      state_slug: "tennessee"
+      river_miles: 112
+      river_position: "East bank"
+      section: "Lower"
+      major_city: "Memphis"
+      region: "South"
+
+    - rank: 8
+      state: "Arkansas"
+      state_slug: "arkansas"
+      river_miles: 320
+      river_position: "West bank"
+      section: "Lower"
+      major_city: "Helena"
+      region: "South"
+
+    - rank: 9
+      state: "Mississippi"
+      state_slug: "mississippi"
+      river_miles: 340
+      river_position: "East bank"
+      section: "Lower"
+      major_city: "Vicksburg"
+      region: "South"
+
+    - rank: 10
+      state: "Louisiana"
+      state_slug: "louisiana"
+      river_miles: 220
+      river_position: "Through-state (mouth)"
+      section: "Lower"
+      major_city: "New Orleans"
+      region: "South"
+
+map:
+  title: "Mississippi River States Map"
+  image: "/images/rankings/geography/mississippi-river-states/mississippi-river-states-map.webp"
+  image_alt: "Map of the United States with the 10 Mississippi River states highlighted along the river's path from Minnesota to Louisiana"
+  caption: "The Mississippi runs 2,340 miles from Lake Itasca in Minnesota to the Gulf of Mexico. Illinois (581 mi) and Missouri (480 mi) have the longest river borders; Kentucky (51 mi) and Tennessee (112 mi) the shortest."
+  metric_key: river_miles
+  metric_label: "river miles"
+  color_scheme: blue
+  color_scale: linear
+  tooltip_fields:
+    - "State"
+    - "River Miles"
+    - "River Position"
+    - "Section"
+    - "Major City on River"
+
+sections:
+  - id: "upper-mississippi"
+    icon: "fa-solid fa-arrow-down"
+    title: "Upper Mississippi River States"
+    table:
+      columns:
+        rank: "Order (N→S)"
+        state: "State"
+        river_miles: "River Miles"
+        river_position: "River Position"
+        major_city: "Major City on River"
+      rows:
+        - rank: 1
+          state: "Minnesota"
+          state_slug: "minnesota"
+          river_miles: 575
+          river_position: "Through-state (source)"
+          major_city: "Minneapolis"
+        - rank: 2
+          state: "Wisconsin"
+          state_slug: "wisconsin"
+          river_miles: 195
+          river_position: "East bank"
+          major_city: "La Crosse"
+        - rank: 3
+          state: "Iowa"
+          state_slug: "iowa"
+          river_miles: 315
+          river_position: "West bank"
+          major_city: "Davenport"
+        - rank: 4
+          state: "Illinois"
+          state_slug: "illinois"
+          river_miles: 581
+          river_position: "East bank"
+          major_city: "Rock Island"
+        - rank: 5
+          state: "Missouri"
+          state_slug: "missouri"
+          river_miles: 480
+          river_position: "West bank"
+          major_city: "St. Louis"
+    paragraphs:
+      - "Five states border the upper Mississippi: Minnesota (575 mi), Wisconsin (195 mi), Iowa (315 mi), Illinois (581 mi), and Missouri (480 mi). Illinois has the most river miles of any of the 10 states, with the river forming its entire western border from the Wisconsin line to Cairo."
+      - "Minnesota (575 mi) is the only upper-section state where the river flows through the interior rather than forming a state line, with its source at Lake Itasca in the northwest. Missouri (480 mi) borders the upper section along its eastern edge, with St. Louis at the midpoint."
+
+  - id: "lower-mississippi"
+    icon: "fa-solid fa-water"
+    title: "Lower Mississippi River States"
+    table:
+      columns:
+        rank: "Order (N→S)"
+        state: "State"
+        river_miles: "River Miles"
+        river_position: "River Position"
+        major_city: "Major City on River"
+      rows:
+        - rank: 6
+          state: "Kentucky"
+          state_slug: "kentucky"
+          river_miles: 51
+          river_position: "East bank"
+          major_city: "Wickliffe"
+        - rank: 7
+          state: "Tennessee"
+          state_slug: "tennessee"
+          river_miles: 112
+          river_position: "East bank"
+          major_city: "Memphis"
+        - rank: 8
+          state: "Arkansas"
+          state_slug: "arkansas"
+          river_miles: 320
+          river_position: "West bank"
+          major_city: "Helena"
+        - rank: 9
+          state: "Mississippi"
+          state_slug: "mississippi"
+          river_miles: 340
+          river_position: "East bank"
+          major_city: "Vicksburg"
+        - rank: 10
+          state: "Louisiana"
+          state_slug: "louisiana"
+          river_miles: 220
+          river_position: "Through-state (mouth)"
+          major_city: "New Orleans"
+    paragraphs:
+      - "Five states border the lower Mississippi, south of Cairo, Illinois: Kentucky (51 mi), Tennessee (112 mi), Arkansas (320 mi), Mississippi (340 mi), and Louisiana (220 mi). Arkansas and Mississippi state face each other across the river with the two longest lower-section borders."
+      - "Kentucky has the shortest river frontage of any Mississippi state at 51 miles, limited to its far western tip. Tennessee's 112 miles include Memphis, the largest city on the lower section. Louisiana (220 mi) contains the river's final miles before it reaches the Gulf of Mexico."
+
+visual_assets:
+  - id: upper-mississippi-wabasha-bridge
+    src: /images/rankings/geography/mississippi-river-states/upper-mississippi-wabasha-bridge.jpg
+    alt: Aerial view of the Mississippi River near Wabasha, Minnesota with bridge crossings, wooded islands, and broad river channels
+    caption: The upper Mississippi in Minnesota and Wisconsin spreads into a broad, island-filled corridor with navigation pools, side channels, and bridge crossings. This northern reach includes the river's longest through-state segment in Minnesota.
+    section: upper-mississippi
+    layout: right
+
+  - id: lower-mississippi-barge
+    src: /images/rankings/geography/mississippi-river-states/lower-mississippi-barge.jpg
+    alt: Towboat pushing barges along the Mississippi River through a wide channel bordered by green banks
+    caption: On the lower Mississippi, the river becomes a major freight corridor for barges carrying grain, fuel, and bulk commodities. This section includes Memphis, Vicksburg, Baton Rouge, and the approach to the Gulf of Mexico.
+    section: lower-mississippi
+    layout: left
+
+faq:
+  - question: "What states does the Mississippi River flow through?"
+    answer: "Ten states: Minnesota (source), Wisconsin, Iowa, Illinois, Missouri, Kentucky, Tennessee, Arkansas, Mississippi, and Louisiana (Gulf mouth). Minnesota and Louisiana are the only two through-states; the other eight are border states where the river forms a state line."
+
+  - question: "How many states does the Mississippi River border?"
+    answer: "The Mississippi River flows through or borders 10 states. Eight of the 10 serve as border states where the river forms the state line between neighbors. Minnesota contains the source at Lake Itasca and Louisiana contains the Gulf mouth — both are through-states."
+
+  - question: "Which state has the most miles of the Mississippi River?"
+    answer: "Illinois has the most Mississippi River miles of any state at approximately 581 miles, with the river forming its entire western border from Wisconsin to Cairo. Missouri ranks second with approximately 480 miles."
+
+  - question: "Which state has the fewest miles of the Mississippi River?"
+    answer: "Kentucky has the shortest Mississippi River border at approximately 51 miles, confined to its far western tip known as the Jackson Purchase. Tennessee ranks second-shortest at 112 miles."
+
+  - question: "Does the Mississippi River flow through Tennessee?"
+    answer: "The Mississippi River forms Tennessee's western border for approximately 112 miles, from the Missouri line south to the Mississippi state line. Memphis, Tennessee's largest city, sits on the east bank of the river at this stretch."
+
+  - question: "Where does the Mississippi River start and end?"
+    answer: "The Mississippi River starts at Lake Itasca in Minnesota (rank 1, source state) and ends at the Gulf of Mexico in Louisiana (rank 10, mouth state). Its total length is approximately 2,340 miles."
+
+related:
+  - title: "Landlocked States"
+    url: "/rankings/geography/landlocked-states"
+  - title: "States Bordering Canada"
+    url: "/rankings/geography/states-bordering-canada"
+  - title: "States Bordering Mexico"
+    url: "/rankings/geography/states-bordering-mexico"
+  - title: "Great Lakes States"
+    url: "/rankings/geography/great-lakes-states"
+  - title: "States by Land Area"
+    url: "/rankings/geography/states-by-land-area"

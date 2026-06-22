@@ -189,6 +189,10 @@
     };
 }
 
+@section LcpPreload {
+    <link rel="preload" as="image" href="@heroImageUrl" fetchpriority="high" />
+}
+
 <div id="top"></div>
 
 <div id="progressBar"
@@ -215,16 +219,15 @@
     <article class="w-full">
         @await Html.PartialAsync("_PageHero", heroModel)
 
-        <div class="lg:grid lg:grid-cols-[232px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[244px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[256px_minmax(0,912px)] 2xl:gap-12 relative">
-        <aside class="hidden lg:block relative h-full">
-            <div class="sticky top-24 pb-10">
-                @await Html.PartialAsync("_TocSidebar", Model)
-                @await Html.PartialAsync("_RelatedCollectionsSidebar", Model)
-            </div>
-        </aside>
+        <div class="page-flow-shell lg:grid lg:grid-cols-[232px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[244px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[256px_minmax(0,912px)] 2xl:gap-12 relative">
+            <aside class="hidden lg:block relative h-full">
+                <div class="sticky top-24 pb-10">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                    @await Html.PartialAsync("_RelatedCollectionsSidebar", Model)
+                </div>
+            </aside>
 
             <div class="min-w-0">
-                <div class="relative content-flow site-content">
                 @if (Model.HasQuickAnswer)
                 {
                     <section id="quick-answer" class="scroll-mt-24">
@@ -234,10 +237,12 @@
 
                 @if (content?.Map != null)
                 {
-                    <section class="content-divider">
+                    <section class="page-map-stage @(Model.HasQuickAnswer ? "page-map-stage--after-qa" : "")">
                         @await Html.RenderMapBlockAsync(content.Map, content?.Table)
                     </section>
                 }
+
+                <div class="relative content-flow site-content page-flow-content">
 
                 @if (Model.HasRows)
                 {

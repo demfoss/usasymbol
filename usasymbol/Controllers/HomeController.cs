@@ -445,10 +445,10 @@ namespace USASymbol.Controllers
 
             var css = string.Join(Environment.NewLine, new[]
             {
-                "g.state path { fill: #d7b69b; cursor: pointer; transition: fill .18s ease, opacity .18s ease, transform .18s ease; }",
-                "g.state path:hover, g.state path:focus { fill: #c38e63; opacity: 1; outline: none; }",
+                "g.state path { fill: #cfd9e8; cursor: pointer; transition: fill .18s ease, opacity .18s ease; }",
+                "g.state path:hover, g.state path:focus { fill: #5f7faa; opacity: 1; outline: none; }",
                 ".borders { stroke: #ffffff; stroke-width: 1.1; }",
-                ".separator1 { stroke: #9ca3af; stroke-width: 1.6; }"
+                ".separator1 { stroke: #94a3b8; stroke-width: 1.6; }"
             });
 
             var marker = "Place this code in the empty space below. */";

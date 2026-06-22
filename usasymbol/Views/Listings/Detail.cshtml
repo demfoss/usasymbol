@@ -73,6 +73,10 @@
     var hasMethodology = !string.IsNullOrWhiteSpace(Model.Content?.Page?.Methodology) || Model.HasSources;
 }
 
+@section LcpPreload {
+    <link rel="preload" as="image" href="@heroImageSrc" fetchpriority="high" />
+}
+
 <div id="top"></div>
 
 <!-- Slim progress bar (new style, no ISymbolDetail dependency) -->
@@ -189,7 +193,7 @@
         </div>
     </section>
 
-    <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)] 2xl:gap-12">
+    <div class="page-flow-shell lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)] xl:gap-10 2xl:grid-cols-[256px_minmax(0,1fr)] 2xl:gap-12">
         <aside class="hidden lg:block relative h-full">
             <div class="sticky top-24 pb-10">
                 @await Html.PartialAsync("_TocSidebar", Model)
@@ -200,20 +204,21 @@
             @if (Model.HasQuickAnswer)
             {
                 @await Html.PartialAsync("Pages/_QuickAnswer", Model)
-                @if (content?.Map == null)
-                {
-                    <div class="my-8 md:my-10 h-px bg-slate-200"></div>
-                }
             }
 
             @if (content?.Map != null)
             {
-                <section class="content-divider">
+                <section class="page-map-stage @(Model.HasQuickAnswer ? "page-map-stage--after-qa" : "")">
                     @await Html.RenderMapBlockAsync(content.Map, content?.Table)
                 </section>
             }
 
-            <section id="listing-table" class="scroll-mt-24">
+            @if (Model.HasQuickAnswer && content?.Map == null)
+            {
+                <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+            }
+
+            <section id="listing-table" class="scroll-mt-24 page-flow-content">
                 <div class="flex items-baseline justify-between gap-4">
                     @{
                         var slugRaw = (content?.Slug ?? "").Trim();

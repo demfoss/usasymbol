@@ -28,7 +28,9 @@ namespace Usasymbol.Helpers
             string DisplayValue,
             IReadOnlyList<MapEntryDetail> Details,
             string? ImageUrl,
-            string? FillColor
+            string? FillColor,
+            string? Summary,
+            IReadOnlyDictionary<string, IReadOnlyList<string>> Filters
         );
 
         private static readonly Dictionary<string, ((int r, int g, int b) light, (int r, int g, int b) dark)> Schemes = new()
@@ -49,6 +51,24 @@ namespace Usasymbol.Helpers
             "#2563eb", "#dc2626", "#16a34a", "#9333ea", "#ea580c",
             "#0891b2", "#ca8a04", "#db2777", "#4f46e5", "#0f766e",
             "#65a30d", "#b45309", "#7c3aed", "#be123c", "#0369a1"
+        };
+
+        private static readonly Dictionary<string, string> NamedColors = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["blue-dark"] = "#0b7a5c",
+            ["blue"] = "#0f766e",
+            ["yellow"] = "#f6c64d",
+            ["orange-light"] = "#ffb64c",
+            ["orange"] = "#ff7a45",
+            ["red"] = "#b1135b",
+            ["red-dark"] = "#4d183e",
+            ["green-dark"] = "#0b7a5c",
+            ["green"] = "#169873",
+            ["slate"] = "#475569",
+            ["gray"] = "#94a3b8",
+            ["grey"] = "#94a3b8",
+            ["white"] = "#ffffff",
+            ["black"] = "#111827",
         };
 
         private static readonly HashSet<string> SkipKeys = new(StringComparer.OrdinalIgnoreCase)
@@ -102,7 +122,20 @@ namespace Usasymbol.Helpers
                     double t = useLog ? LogScale(x.NumericValue.Value, min, max) : LinearScale(x.NumericValue.Value, min, max);
                     fill = Lerp(t, scheme.light, scheme.dark);
                 }
-                return new StateMapEntry(x.PostalCode, x.StateName, x.StateSlug, x.NumericValue, x.Rank, x.DisplayValue, fill, x.Details, x.ImageUrl);
+                return new StateMapEntry(
+                    x.PostalCode,
+                    x.StateName,
+                    x.StateSlug,
+                    x.NumericValue,
+                    x.Rank,
+                    x.DisplayValue,
+                    fill,
+                    x.Details,
+                    x.ImageUrl,
+                    null,
+                    null,
+                    x.Summary,
+                    x.Filters);
             })
             .GroupBy(e => e.PostalCode, StringComparer.OrdinalIgnoreCase)
             .Select(CombineEntries)
@@ -154,9 +187,13 @@ namespace Usasymbol.Helpers
                         null,
                         TryInt(r, "rank") ?? TryInt(r, "order"),
                         display,
-                        GetExplicitFill(r.GetString("fill_color")) ?? GetExplicitFill(map?.FillColor) ?? FlatColor,
+                        ResolveColorToken(r.GetString("fill_color")) ?? ResolveColorToken(map?.FillColor) ?? FlatColor,
                         map != null ? BuildDetails(r, map) : Array.Empty<MapEntryDetail>(),
-                        map != null ? GetImageUrl(r, map) : null
+                        map != null ? GetImageUrl(r, map) : null,
+                        null,
+                        null,
+                        map != null ? GetSummary(r, map) : null,
+                        map != null ? BuildFilterValues(r, map, display) : new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase)
                     );
                 })
                 .Where(e => e != null)
@@ -193,11 +230,12 @@ namespace Usasymbol.Helpers
                 .Select(r =>
                 {
                     var display = r.DisplayValue;
-                    var fill = GetExplicitFill(r.FillColor)
+                    var fill = ResolveColorToken(r.FillColor)
+                        ?? (map.ColorMap.Count > 0 && map.ColorMap.TryGetValue(display, out var cmColor) ? ResolveColorToken(cmColor) : null)
                         ?? GetSemanticFill(map.MetricKey, display)
                         ?? (!string.IsNullOrWhiteSpace(display) && colorByCategory.TryGetValue(display, out var color)
                             ? color
-                            : GetExplicitFill(map.FillColor) ?? NoDataColor);
+                            : ResolveColorToken(map.FillColor) ?? NoDataColor);
 
                     return new StateMapEntry(
                         r.PostalCode,
@@ -208,14 +246,18 @@ namespace Usasymbol.Helpers
                         string.IsNullOrWhiteSpace(display) ? "No value" : display,
                         fill,
                         r.Details,
-                        r.ImageUrl
+                        r.ImageUrl,
+                        null,
+                        null,
+                        r.Summary,
+                        r.Filters
                     );
                 })
                 .GroupBy(e => e.PostalCode, StringComparer.OrdinalIgnoreCase)
                 .Select(CombineEntries)
                 .ToList();
 
-            return new ChoroplethResult { Entries = entries, LegendSteps = BuildCategoricalLegend(entries) };
+            return new ChoroplethResult { Entries = entries, LegendSteps = BuildCategoricalLegend(entries, map) };
         }
 
         // A swatch legend only helps when colors mark real, named groups shared by
@@ -225,8 +267,13 @@ namespace Usasymbol.Helpers
         // legend is left empty and the map shows a hover/tap hint instead.
         private const int MaxMeaningfulLegendGroups = 14;
 
-        private static List<(string Color, string Label)> BuildCategoricalLegend(List<StateMapEntry> entries)
+        private static List<(string Color, string Label)> BuildCategoricalLegend(List<StateMapEntry> entries, PageMap? map = null)
         {
+            if (map?.ColorMap.Count > 0)
+                return map.ColorMap
+                    .Select(kv => (Color: ResolveColorToken(kv.Value) ?? kv.Value, Label: kv.Key))
+                    .ToList();
+
             var groups = entries
                 .Where(e => !string.IsNullOrWhiteSpace(e.DisplayValue) && e.DisplayValue != "No value")
                 .GroupBy(e => e.FillColor, StringComparer.OrdinalIgnoreCase)
@@ -249,15 +296,18 @@ namespace Usasymbol.Helpers
 
         public static bool IsCategoricalMap(PageMap map) =>
             string.Equals(map.ColorScale, "categorical", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(map.ColorScheme, "categorical", StringComparison.OrdinalIgnoreCase);
+            string.Equals(map.ColorScheme, "categorical", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(map.ColorScheme, "diverging", StringComparison.OrdinalIgnoreCase) ||
+            map.ColorMap.Count > 0;
 
-        private static string? GetExplicitFill(string? color)
+        private static string? ResolveColorToken(string? color)
         {
             if (string.IsNullOrWhiteSpace(color)) return null;
             var trimmed = color.Trim();
-            return trimmed.StartsWith('#') && (trimmed.Length == 7 || trimmed.Length == 4)
-                ? trimmed
-                : null;
+            if (trimmed.StartsWith('#') && (trimmed.Length == 7 || trimmed.Length == 4))
+                return trimmed;
+
+            return NamedColors.TryGetValue(trimmed, out var named) ? named : null;
         }
 
         private static string? GetSemanticFill(string? metricKey, string value)
@@ -379,6 +429,18 @@ namespace Usasymbol.Helpers
                 .ToList();
 
             var imageUrl = entries.Select(e => e.ImageUrl).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
+            var summary = entries.Select(e => e.Summary).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
+            var filters = entries
+                .SelectMany(e => e.Filters ?? new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase))
+                .GroupBy(kv => kv.Key, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(
+                    group => group.Key,
+                    group => (IReadOnlyList<string>)group
+                        .SelectMany(kv => kv.Value)
+                        .Where(v => !string.IsNullOrWhiteSpace(v))
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .ToList(),
+                    StringComparer.OrdinalIgnoreCase);
             var items = entries.Count > 1
                 ? entries
                     .Where(e => !string.IsNullOrWhiteSpace(e.DisplayValue) && e.DisplayValue != "No value")
@@ -391,7 +453,9 @@ namespace Usasymbol.Helpers
                 DisplayValue = string.IsNullOrWhiteSpace(display) ? first.DisplayValue : display,
                 Details = details,
                 ImageUrl = imageUrl ?? first.ImageUrl,
-                Items = items
+                Items = items,
+                Summary = summary ?? first.Summary,
+                Filters = filters
             };
         }
 
@@ -411,7 +475,9 @@ namespace Usasymbol.Helpers
                     displaySelector(r),
                     BuildDetails(r, map),
                     GetImageUrl(r, map),
-                    r.GetString("fill_color")
+                    r.GetString("fill_color"),
+                    GetSummary(r, map),
+                    BuildFilterValues(r, map, displaySelector(r))
                 ))
                 .Where(r => !string.IsNullOrEmpty(r.PostalCode))
                 .ToList();
@@ -424,9 +490,59 @@ namespace Usasymbol.Helpers
             return string.IsNullOrWhiteSpace(value) ? null : value;
         }
 
+        private static string? GetSummary(TableRow row, PageMap map)
+        {
+            if (!string.IsNullOrWhiteSpace(map.SummaryKey))
+            {
+                var explicitSummary = row.GetString(map.SummaryKey);
+                if (!string.IsNullOrWhiteSpace(explicitSummary))
+                    return explicitSummary;
+            }
+
+            foreach (var key in new[] { "note", "notes", "summary", "description" })
+            {
+                var value = row.GetString(key);
+                if (!string.IsNullOrWhiteSpace(value))
+                    return value;
+            }
+
+            return null;
+        }
+
+        private static IReadOnlyDictionary<string, IReadOnlyList<string>> BuildFilterValues(TableRow row, PageMap map, string displayValue)
+        {
+            var filters = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+
+            if (!string.IsNullOrWhiteSpace(displayValue))
+                filters["_category"] = new[] { displayValue };
+
+            foreach (var filter in map.Filters)
+            {
+                if (string.IsNullOrWhiteSpace(filter.Key)) continue;
+
+                var values = SplitFilterValues(row.GetString(filter.Key));
+                if (values.Count > 0)
+                    filters[filter.Key] = values;
+            }
+
+            return filters;
+        }
+
+        private static IReadOnlyList<string> SplitFilterValues(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+                return Array.Empty<string>();
+
+            return raw
+                .Split(new[] { ";", "|", "," }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
         private static IReadOnlyList<MapEntryDetail> BuildDetails(TableRow row, PageMap map)
         {
-            var keys = GetDetailKeys(map);
+            var keys = GetDetailKeys(row, map);
 
             return keys
                 .Select(key => (Key: key, Value: row.GetString(key)))
@@ -435,14 +551,31 @@ namespace Usasymbol.Helpers
                 .ToList();
         }
 
-        private static IReadOnlyList<string> GetDetailKeys(PageMap map)
+        private static IReadOnlyList<string> GetDetailKeys(TableRow row, PageMap map)
         {
             if (map.DetailKeys.Count > 0)
                 return map.DetailKeys;
 
-            return string.IsNullOrWhiteSpace(map.NameKey)
-                ? Array.Empty<string>()
-                : new[] { map.NameKey };
+            var skipKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "state", "state_slug", "postal_code", "postal", "rank", "order",
+                "custom_url", "symbol_url", "symbol_slug", "image", "hero_image",
+                "classification",
+                "note", "notes",
+                map.NameKey ?? string.Empty,
+                map.MetricKey ?? string.Empty,
+                map.SummaryKey ?? string.Empty
+            };
+
+            return row.Data.Keys
+                .Where(key => !string.IsNullOrWhiteSpace(key))
+                .Where(key => !skipKeys.Contains(key))
+                .Where(key => key.IndexOf("image", StringComparison.OrdinalIgnoreCase) < 0)
+                .Where(key => key.IndexOf("icon", StringComparison.OrdinalIgnoreCase) < 0)
+                .Where(key => key.IndexOf("logo", StringComparison.OrdinalIgnoreCase) < 0)
+                .Where(key => !key.EndsWith("_slug", StringComparison.OrdinalIgnoreCase))
+                .Where(key => !string.IsNullOrWhiteSpace(row.GetString(key)))
+                .ToList();
         }
 
         private static string JoinDistinct(IEnumerable<string?> values, bool skipNoValue = false)

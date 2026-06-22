@@ -7,7 +7,7 @@
     const string baseUrl = "https://usasymbol.com";
     var title   = string.IsNullOrWhiteSpace(Model?.Title) ? "Map" : Model.Title;
     var alt     = string.IsNullOrWhiteSpace(Model?.ImageAlt) ? title : Model.ImageAlt;
-    var hasSvg      = Model?.HasChoropleth == true && !string.IsNullOrEmpty(Model.SvgContent);
+    var hasSvg      = Model?.HasChoropleth == true;
     var hasImg      = !string.IsNullOrWhiteSpace(Model?.Image);
     var hasGenImg   = !string.IsNullOrWhiteSpace(Model?.GeneratedImagePath);
     var generatedImageUrl = hasGenImg
@@ -20,6 +20,9 @@
                     : null;
 
     string choroplethJson = "{}";
+    string filterGroupsJson = "[]";
+    var smallStateRight = new[] { "VT", "NH", "MA", "RI", "CT", "NJ", "DE", "MD", "DC" };
+    var smallStateLeft = new[] { "HI" };
     if (hasSvg && Model?.Entries?.Count > 0)
     {
         var opts = new JsonSerializerOptions
@@ -36,22 +39,27 @@
                 v = e.DisplayValue,
                 r = e.Rank,
                 f = e.FillColor,
-                details = e.Details.Select(d => new { l = d.Label, v = d.Value }),
-                img = string.IsNullOrWhiteSpace(e.ImageUrl) ? null : Images.Card(e.ImageUrl, 320),
+                nv = e.NumericValue,
+                summary = e.Summary,
+                details = e.Details.Select(d => new { l = d.Label, v = d.Value, g = d.Group }),
+                filters = e.Filters,
+                img = string.IsNullOrWhiteSpace(e.ImageUrl) ? null : Images.Card(e.ImageUrl, 160),
+                flag = string.IsNullOrWhiteSpace(e.FlagImageUrl) ? null : Images.Thumb(e.FlagImageUrl),
                 items = e.Items?.Select(item => new
                 {
                     v = item.DisplayValue,
                     details = item.Details.Select(d => new { l = d.Label, v = d.Value }),
-                    img = string.IsNullOrWhiteSpace(item.ImageUrl) ? null : Images.Card(item.ImageUrl, 320)
+                    img = string.IsNullOrWhiteSpace(item.ImageUrl) ? null : Images.Card(item.ImageUrl, 160)
                 })
             }
         );
         choroplethJson = JsonSerializer.Serialize(dict, opts);
+        filterGroupsJson = JsonSerializer.Serialize(Model.FilterGroups, opts);
     }
 }
 
 <section id="choropleth-map"
-         class="scroll-mt-24"
+         class="map-block map-block--fullbleed scroll-mt-24"
          aria-labelledby="map-block-title">
 
     <header class="mb-5 sm:mb-6">
@@ -63,78 +71,130 @@
 
     @if (hasSvg)
     {
-        @* ── SVG CHOROPLETH ── *@
-        <div class="relative min-w-0 max-w-full" id="usmap-wrapper">
+        @if (!string.IsNullOrEmpty(Model!.ColorCss))
+        {
+            <style>@Html.Raw(Model.ColorCss)</style>
+        }
+        <div class="map-block__shell">
+            <div id="map-filter-groups" class="map-filters" aria-label="Map filters"></div>
 
-            <div id="usmap-container"
-                 class="relative min-w-0 max-w-full overflow-hidden bg-white select-none shadow-[0_1px_28px_-10px_rgba(15,23,42,0.18)] [&_svg]:block [&_svg]:h-full [&_svg]:w-full [&_svg]:max-w-full"
-                 style="aspect-ratio:959/593;min-height:320px"
-                 role="img"
-                 aria-label="@alt">
-                @Html.Raw(Model!.SvgContent)
-            </div>
+            <div class="relative min-w-0 max-w-full" id="usmap-wrapper">
+                <div class="map-small-states map-small-states--left" id="map-small-states-left">
+                    @foreach (var code in smallStateLeft.Where(code => Model.Entries.Any(entry => entry.PostalCode == code)))
+                    {
+                        var entry = Model.Entries.First(e => e.PostalCode == code);
+                        <button type="button"
+                                class="map-small-state"
+                                data-state-key="@entry.PostalCode"
+                                style="--state-fill:@entry.FillColor">
+                            @entry.PostalCode
+                        </button>
+                    }
+                </div>
 
-            <div id="map-tooltip"
-                 class="pointer-events-none absolute z-20 hidden max-w-[calc(100vw-2rem)] overflow-hidden rounded-[1rem] border shadow-2xl"
-                 style="min-width:212px;max-width:320px;border-color:rgba(15,23,42,.58);background:rgba(15,23,42,.96);font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
-                 role="tooltip"
-                 aria-live="polite">
-                <div class="px-[16px] py-[14px]">
-                    <img id="tt-image"
-                         class="mb-[10px] hidden h-[92px] w-full rounded border border-white/10 bg-white/95 object-contain p-2"
-                         alt=""
-                         loading="lazy"
-                         decoding="async"
-                         onerror="this.removeAttribute('src');this.classList.add('hidden')" />
-                    <p class="text-[12px] font-semibold leading-tight tracking-[0.01em] text-white"
-                       style="margin:0;font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;line-height:1.25;font-weight:800;letter-spacing:.01em;color:#fff"
-                       id="tt-state"></p>
-                    <div id="tt-details"
-                         class="hidden mt-[6px] grid gap-[3px]"
-                         style="font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"></div>
-                    <div class="mt-[8px] grid gap-[6px]">
-                        <div id="tt-rank-row" class="hidden">
-                            <p class="text-[10px] font-extrabold uppercase tracking-[0.12em] text-slate-400"
-                               style="margin:0 0 1px 0;font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:10px;line-height:1.15;font-weight:800;letter-spacing:.12em;color:#94a3b8">
-                                Rank
-                            </p>
-                            <p id="tt-rank"
-                               class="text-[11px] font-semibold text-slate-50"
-                               style="margin:0;font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;line-height:1.3;font-weight:700;letter-spacing:0;color:#f8fafc"></p>
-                        </div>
-                        <div>
-                            <p id="tt-value-label"
-                               class="text-[10px] font-extrabold uppercase tracking-[0.12em] text-slate-400"
-                               style="margin:0 0 1px 0;font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:10px;line-height:1.15;font-weight:800;letter-spacing:.12em;color:#94a3b8">
-                                Value
-                            </p>
-                            <p id="tt-value"
-                               class="text-[11px] font-medium leading-5 text-slate-100 break-words"
-                               style="margin:0;font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;line-height:1.4;font-weight:600;letter-spacing:0;color:#f8fafc"></p>
+                <div id="usmap-container"
+                     class="relative min-w-0 max-w-full overflow-hidden select-none bg-slate-100 shadow-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full [&_svg]:max-w-full"
+                     style="aspect-ratio:959/593;min-height:320px"
+                     data-svg-src="/maps/us-states.svg"
+                     role="img"
+                     aria-label="@alt">
+                </div>
+
+                <div class="map-small-states map-small-states--right" id="map-small-states-right">
+                    @foreach (var code in smallStateRight.Where(code => Model.Entries.Any(entry => entry.PostalCode == code)))
+                    {
+                        var entry = Model.Entries.First(e => e.PostalCode == code);
+                        <button type="button"
+                                class="map-small-state"
+                                data-state-key="@entry.PostalCode"
+                                style="--state-fill:@entry.FillColor">
+                            @entry.PostalCode
+                        </button>
+                    }
+                </div>
+
+                <div id="map-tooltip" class="pointer-events-none absolute z-20 hidden" role="tooltip" aria-live="polite">
+                    <div class="map-tooltip-card">
+                        <p id="tt-state" class="map-tooltip__state"></p>
+                        <div class="map-tooltip__status-row">
+                            <span id="tt-status-dot" class="map-tooltip__dot" aria-hidden="true"></span>
+                            <span id="tt-value" class="map-tooltip__status"></span>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="map-search" id="map-search">
+                <div class="map-search__field">
+                    <i class="fa-solid fa-magnifying-glass map-search__icon" aria-hidden="true"></i>
+                    <input id="map-search-input"
+                           class="map-search__input"
+                           type="text"
+                           placeholder="Search State or Territory"
+                           autocomplete="off"
+                           aria-label="Search state or territory"
+                           aria-expanded="false"
+                           aria-controls="map-search-results" />
+                </div>
+                <div id="map-search-results" class="map-search__results hidden" role="listbox" aria-label="States"></div>
+            </div>
+
+            <button type="button" id="map-clear-filters" class="map-clear-btn hidden" aria-label="Clear all map filters">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                Clear Filters
+            </button>
+
+            <div id="map-drawer-backdrop" class="map-drawer-backdrop hidden"></div>
+            <aside id="map-drawer" class="map-drawer" aria-hidden="true" aria-labelledby="map-drawer-state">
+                <div class="map-drawer__inner">
+                    <button type="button" id="map-drawer-close" class="map-drawer__close" aria-label="Close state details">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                    <div class="map-drawer__body">
+                        <div class="map-drawer__hero">
+                            <div id="drawer-rank" class="map-drawer__rank hidden"></div>
+                            <img id="drawer-flag" class="map-drawer__flag hidden" alt="" loading="lazy" decoding="async" />
+                            <h3 id="map-drawer-state" class="map-drawer__title"></h3>
+                            <div class="map-drawer__status-row">
+                                <span id="drawer-status-dot" class="map-tooltip__dot" aria-hidden="true"></span>
+                                <span id="drawer-value" class="map-drawer__status"></span>
+                            </div>
+                        </div>
+                        <p id="drawer-summary" class="map-drawer__summary hidden"></p>
+                        <div id="drawer-details" class="map-drawer__details hidden"></div>
+                        <div id="drawer-items" class="map-drawer__items hidden"></div>
+                        <div id="drawer-state-info" class="map-drawer__state-info hidden"></div>
+                    </div>
+                    <div class="map-drawer__footer">
+                        <a id="drawer-view-link" href="#" class="map-drawer__link">View State</a>
+                    </div>
+                </div>
+            </aside>
         </div>
 
         @* ── LEGEND ── *@
         @if (Model.IsNumeric && Model.LegendSteps.Count > 0)
         {
-            <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2" aria-label="Map legend">
+            <div class="mt-4 flex flex-wrap items-center gap-x-1 gap-y-2"
+                 id="map-legend"
+                 aria-label="Map legend">
                 @if (!string.IsNullOrEmpty(Model.MetricLabel))
                 {
-                    <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400 mr-1">@Model.MetricLabel</span>
+                    <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400 mr-2 self-end pb-0.5">@Model.MetricLabel</span>
                 }
-                @foreach (var step in Model.LegendSteps)
+                @for (int si = 0; si < Model.LegendSteps.Count; si++)
                 {
-                    <div class="flex flex-col items-center gap-0.5">
-                        <span class="inline-block h-3 w-8 rounded-sm border border-slate-200/80 flex-shrink-0"
-                              style="background:@step.Color" aria-hidden="true"></span>
-                        <span class="text-[10px] font-medium tabular-nums text-slate-500">@step.Label</span>
-                    </div>
+                    var step = Model.LegendSteps[si];
+                    <button type="button"
+                            class="map-legend-step"
+                            data-step-index="@si"
+                            aria-pressed="false">
+                        <span class="map-legend-step__swatch" style="background:@step.Color"></span>
+                        <span class="map-legend-step__label tabular-nums">@step.Label</span>
+                    </button>
                 }
                 <div class="flex flex-col items-center gap-0.5 ml-2">
-                    <span class="inline-block h-3 w-8 rounded-sm border border-slate-300 bg-[#e2e8f0] flex-shrink-0" aria-hidden="true"></span>
+                    <span class="inline-block h-3 w-8 border border-slate-300 bg-[#e2e8f0] flex-shrink-0" aria-hidden="true"></span>
                     <span class="text-[10px] text-slate-400">No data</span>
                 </div>
             </div>
@@ -159,21 +219,11 @@
                 }
             </div>
         }
-        else if (Model.IsCategorical)
-        {
-            @* Every state has its own distinct value here, so a per-state swatch
-               list would just repeat the table below. Point users at the
-               tooltip instead, which works on both hover (desktop) and tap (mobile). *@
-            <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-1.5 text-[12px] text-slate-600">
-                <i class="fa-solid fa-hand-pointer text-[11px] text-slate-400" aria-hidden="true"></i>
-                <span>Tap or hover any state to see its @(string.IsNullOrEmpty(Model.MetricLabel) ? "value" : Model.MetricLabel.ToLowerInvariant()).</span>
-            </div>
-        }
-
         @* ── JSON for tooltip JS (embedded in HTML, server-rendered) ── *@
         <script type="application/json"
                 id="choropleth-data"
                 data-metric-label="@Model.MetricLabel">@Html.Raw(choroplethJson)</script>
+        <script type="application/json" id="map-filter-groups-data">@Html.Raw(filterGroupsJson)</script>
 
         @* ── SEO layer: visually hidden table + static image for Google crawler ── *@
         <div class="sr-only">
@@ -217,7 +267,7 @@
         @* Caption *@
         @if (!string.IsNullOrWhiteSpace(Model.Caption))
         {
-            <p class="mt-3 max-w-3xl text-xs leading-6 text-slate-600 md:text-sm">@Model.Caption</p>
+            <p class="map-block__caption">@Model.Caption</p>
         }
     }
     else if (hasImg)
@@ -241,7 +291,7 @@
             </a>
             @if (!string.IsNullOrWhiteSpace(Model.Caption))
             {
-                <figcaption class="max-w-3xl text-xs leading-6 text-slate-600 md:text-sm" itemprop="caption">
+                <figcaption class="map-block__caption" itemprop="caption">
                     @Model.Caption
                 </figcaption>
             }
@@ -252,5 +302,7 @@
 
 @if (hasSvg)
 {
-    <script src="~/js/map-choropleth.js" asp-append-version="true"></script>
+    <script src="~/js/map-svg-loader.js" asp-append-version="true" defer></script>
+    <script src="~/js/map-choropleth.js" asp-append-version="true" defer></script>
+    <script src="~/js/map-icon-overlay.js" asp-append-version="true" defer></script>
 }

@@ -225,6 +225,37 @@ namespace USASymbol.Services
                     ColorScheme = mapD.ContainsKey("color_scheme") ? Str(mapD, "color_scheme") : "blue",
                     ColorScale  = mapD.ContainsKey("color_scale")  ? Str(mapD, "color_scale")  : "linear",
                     ShowLabels  = mapD.ContainsKey("show_labels")  && Str(mapD, "show_labels") == "true",
+                    SummaryKey  = mapD.ContainsKey("summary_key")  ? Str(mapD, "summary_key")  : null,
+                    Filters     = mapD.TryGetValue("filters", out var filtersObj) && filtersObj is List<object> filtersList
+                        ? filtersList
+                            .OfType<Dictionary<object, object>>()
+                            .Select(filterD => new PageMapFilter
+                            {
+                                Key         = Str(filterD, "key"),
+                                Label       = filterD.ContainsKey("label") ? Str(filterD, "label") : Str(filterD, "key"),
+                                Style       = filterD.ContainsKey("style") ? Str(filterD, "style") : "chips",
+                                AccentColor = filterD.ContainsKey("accent_color") ? Str(filterD, "accent_color") : null,
+                                UseColors   = filterD.ContainsKey("use_colors") && Str(filterD, "use_colors") == "true",
+                            })
+                            .Where(filter => !string.IsNullOrWhiteSpace(filter.Key))
+                            .ToList()
+                        : new List<PageMapFilter>(),
+                    ColorMap    = mapD.TryGetValue("color_map", out var cmObj) && cmObj is Dictionary<object, object> cmD
+                        ? cmD.Where(kv => kv.Key != null && kv.Value != null)
+                             .ToDictionary(kv => kv.Key.ToString()!, kv => kv.Value.ToString()!, StringComparer.OrdinalIgnoreCase)
+                        : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
+                };
+
+            if (raw.TryGetValue("heatmap", out var hmObj) && hmObj is Dictionary<object, object> hmD)
+                content.Heatmap = new PageHeatmap
+                {
+                    Title    = Str(hmD, "title"),
+                    Caption  = hmD.ContainsKey("caption")  ? Str(hmD, "caption")  : null,
+                    DataUrl  = Str(hmD, "data_url"),
+                    Gradient = hmD.ContainsKey("gradient") ? Str(hmD, "gradient") : "hot",
+                    Radius   = hmD.ContainsKey("radius")   ? int.Parse(Str(hmD, "radius")) : 18,
+                    Blur     = hmD.ContainsKey("blur")     ? int.Parse(Str(hmD, "blur"))   : 22,
+                    PointsPerCluster = hmD.ContainsKey("points_per_cluster") ? int.Parse(Str(hmD, "points_per_cluster")) : 1,
                 };
 
             if (raw.TryGetValue("extremes_mode", out var emObj))

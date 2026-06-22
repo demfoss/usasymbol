@@ -14,6 +14,7 @@ namespace USASymbol.Controllers
         }
 
         [Route("symbols/{slug}")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept-Encoding")]
         public async Task<IActionResult> SymbolListing(string slug)
         {
             if (string.IsNullOrWhiteSpace(slug))

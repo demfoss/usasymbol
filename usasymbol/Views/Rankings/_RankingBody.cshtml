@@ -17,7 +17,7 @@
     var hasMethodology = !string.IsNullOrWhiteSpace(content?.Page?.Methodology) || Model.HasSources;
 }
 
-<div class="lg:grid lg:grid-cols-[232px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[244px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[256px_minmax(0,912px)] 2xl:gap-12 relative">
+<div class="page-flow-shell lg:grid lg:grid-cols-[232px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[244px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[256px_minmax(0,912px)] 2xl:gap-12 relative">
     <aside class="hidden lg:block relative h-full">
         <div class="sticky top-24 pb-10">
             @await Html.PartialAsync("_TocSidebar", Model)
@@ -25,15 +25,25 @@
     </aside>
 
     <div class="min-w-0">
-        <div class="relative content-flow site-content">
+        @if (Model.HasQuickAnswer)
+        {
             <section id="@quickAnswerSectionId" class="scroll-mt-24">
                 @await Html.PartialAsync("Pages/_QuickAnswer", Model, ViewData)
             </section>
+        }
 
-            @if (content?.Map != null)
+        @if (content?.Map != null)
+        {
+            <section class="page-map-stage @(Model.HasQuickAnswer ? "page-map-stage--after-qa" : "")">
+                @await Html.RenderMapBlockAsync(content.Map, content?.Table, content?.Slug)
+            </section>
+        }
+
+        <div class="relative content-flow site-content page-flow-content">
+            @if (content?.Heatmap != null)
             {
                 <section class="content-divider">
-                    @await Html.RenderMapBlockAsync(content.Map, content?.Table, content?.Slug)
+                    @await Component.InvokeAsync("HeatmapBlock", content.Heatmap)
                 </section>
             }
 
