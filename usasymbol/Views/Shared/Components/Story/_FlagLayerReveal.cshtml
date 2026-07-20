@@ -1,0 +1,197 @@
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@* Model: (IReadOnlyList<FlagSymbol> Symbols, string ImageBasePath, string? FlagImageUrl, string? BackgroundColor) *@
+@model (IReadOnlyList<FlagSymbol> Symbols, string ImageBasePath, string? FlagImageUrl, string? BackgroundColor)
+@inject IImageUrlService Images
+
+@{
+    var flagUrl  = Model.FlagImageUrl;
+    var bgColor  = string.IsNullOrWhiteSpace(Model.BackgroundColor) ? "#1e3a5f" : Model.BackgroundColor;
+    var layers   = (Model.Symbols ?? Array.Empty<FlagSymbol>())
+        .Where(s => !string.IsNullOrWhiteSpace(s.ClipRegion))
+        .ToList();
+    var hasSteps = layers.Any(); // false = fallback mode: bg color → full flag
+
+    if (string.IsNullOrWhiteSpace(flagUrl)) { return; }
+
+    var uid   = "flr-" + Guid.NewGuid().ToString("N")[..8];
+    var n     = layers.Count;
+    var total = hasSteps ? n + 1 : 1; // with clips: n steps + final; fallback: just 1 step
+
+    var dataJson = System.Text.Json.JsonSerializer.Serialize(layers.Select(s => new {
+        name = s.Name,
+        clip = s.ClipRegion,
+        text = s.Paragraphs?.FirstOrDefault() ?? ""
+    }).ToArray());
+}
+
+<div class="mb-8 overflow-hidden border border-slate-200" id="@uid">
+
+    @* Header *@
+    <div class="flex items-center justify-between gap-4 border-b border-slate-200 bg-slate-50 px-4 py-3">
+        <div class="min-w-0">
+            <div class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Build the flag</div>
+            <div id="@uid-lbl" class="mt-0.5 truncate text-sm font-semibold text-slate-700">What makes up this flag?</div>
+        </div>
+        <div class="flex shrink-0 items-center gap-2">
+            <span id="@uid-cnt" class="text-[10px] font-bold tabular-nums text-slate-400">0 / @total</span>
+            <div class="flex gap-1">
+                @for (var d = 0; d < total; d++)
+                {
+                    <div class="flr-dot h-2 w-2 rounded-full border border-slate-300 transition-all duration-300"></div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* Canvas *@
+    <div class="relative overflow-hidden" style="aspect-ratio:3/2">
+
+        @if (hasSteps)
+        {
+            @* STEP MODE: grey base + clipped colour layers *@
+            <img id="@uid-grey"
+                 src="@flagUrl"
+                 alt="Flag"
+                 class="absolute inset-0 h-full w-full object-fill transition-opacity duration-700"
+                 style="filter:grayscale(1) brightness(0.45)"
+                 loading="eager">
+
+            @foreach (var sym in layers)
+            {
+                <img src="@flagUrl"
+                     alt="@sym.Name"
+                     class="flr-clip absolute inset-0 h-full w-full object-fill transition-opacity duration-500"
+                     style="clip-path:@sym.ClipRegion;opacity:0"
+                     loading="eager">
+            }
+        }
+        else
+        {
+            @* FALLBACK MODE: solid bg color as the starting "canvas" *@
+            <div class="absolute inset-0" style="background-color:@bgColor"></div>
+        }
+
+        @* Final full-color flag — shown on last step in both modes *@
+        <img id="@uid-final"
+             src="@flagUrl"
+             alt="Complete flag"
+             class="absolute inset-0 h-full w-full object-fill transition-opacity duration-700"
+             style="opacity:0"
+             loading="eager">
+
+    </div>
+
+    @* Description *@
+    <div id="@uid-desc" class="border-t border-slate-200 bg-white px-5 py-4" style="display:none">
+        <div id="@uid-name" class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400"></div>
+        <div id="@uid-text" class="mt-1 text-sm leading-relaxed text-slate-700"></div>
+    </div>
+
+    @* Controls *@
+    <div class="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-4 py-3">
+        <button id="@uid-prev" type="button" disabled
+                class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 disabled:pointer-events-none disabled:opacity-30">
+            <i class="fa-solid fa-chevron-left text-[10px]"></i> Back
+        </button>
+        <button id="@uid-next" type="button"
+                class="inline-flex items-center gap-2 border border-slate-900 bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">
+            @if (hasSteps)
+            {
+                <i class="fa-solid fa-plus text-[10px]"></i>
+                <text>Add @layers[0].Name</text>
+            }
+            else
+            {
+                <i class="fa-solid fa-flag text-[10px]"></i>
+                <text>Reveal Flag</text>
+            }
+        </button>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    var uid      = '@uid';
+    var data     = @Html.Raw(dataJson);
+    var hasSteps = @Html.Raw(hasSteps ? "true" : "false");
+    var n        = data.length;
+    var total    = hasSteps ? n + 1 : 1;
+    var step  = 0;
+
+    var root   = document.getElementById(uid);
+    var grey   = document.getElementById(uid + '-grey');
+    var final  = document.getElementById(uid + '-final');
+    var lbl    = document.getElementById(uid + '-lbl');
+    var cnt    = document.getElementById(uid + '-cnt');
+    var desc   = document.getElementById(uid + '-desc');
+    var dname  = document.getElementById(uid + '-name');
+    var dtext  = document.getElementById(uid + '-text');
+    var prev   = document.getElementById(uid + '-prev');
+    var next   = document.getElementById(uid + '-next');
+    var dots   = root ? Array.from(root.querySelectorAll('.flr-dot')) : [];
+    var clips  = root ? Array.from(root.querySelectorAll('.flr-clip')) : [];
+
+    function render() {
+        var done = step >= total;
+        var isFinal = step > n;
+
+        // Grey base: hide when final full-color is shown
+        if (grey) grey.style.opacity = isFinal ? '0' : '1';
+
+        // Clip layers: reveal cumulatively, hide all when final shown
+        clips.forEach(function (el, i) {
+            el.style.opacity = (!isFinal && i < step) ? '1' : '0';
+        });
+
+        // Final full-color
+        if (final) final.style.opacity = isFinal ? '1' : '0';
+
+        // Description
+        var showDesc = step > 0 && step <= n;
+        if (desc) desc.style.display = showDesc ? '' : 'none';
+        if (showDesc) {
+            var sym = data[step - 1];
+            if (dname) dname.textContent = sym.name;
+            if (dtext) dtext.textContent = sym.text;
+        }
+
+        // Header label
+        if (lbl) {
+            if (isFinal)          lbl.textContent = 'The complete flag ✓';
+            else if (step === 0)  lbl.textContent = hasSteps ? 'What makes up this flag?' : 'Tap to reveal the flag';
+            else                  lbl.textContent = 'Added: ' + data[step - 1].name;
+        }
+
+        // Counter
+        if (cnt) cnt.textContent = step + ' / ' + total;
+
+        // Dots
+        dots.forEach(function (d, i) {
+            var on = i < step;
+            d.style.background  = on ? '#0f172a' : '';
+            d.style.borderColor = on ? '#0f172a' : '';
+        });
+
+        // Buttons
+        if (prev) prev.disabled = step === 0;
+        if (next) {
+            next.disabled = done;
+            if (done) {
+                next.innerHTML = '<i class="fa-solid fa-check text-[10px]"></i> Complete';
+            } else if (!hasSteps || step === n) {
+                next.innerHTML = '<i class="fa-solid fa-flag text-[10px]"></i> Reveal Complete Flag';
+            } else {
+                var s = data[step];
+                next.innerHTML = '<i class="fa-solid fa-plus text-[10px]"></i> Add ' + (s ? s.name : '');
+            }
+        }
+    }
+
+    if (prev) prev.addEventListener('click', function () { if (step > 0) { step--; render(); } });
+    if (next) next.addEventListener('click', function () { if (step < total) { step++; render(); } });
+
+    render();
+})();
+</script>

@@ -1,0 +1,72 @@
+@using USASymbol.Models.ViewModels
+@model FlagDetailViewModel
+
+@{
+    var stateSlug = Model.State?.Slug ?? "unknown";
+    var uid       = "frat-" + Guid.NewGuid().ToString("N")[..6];
+
+    var navaFact = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
+        .FirstOrDefault(f =>
+            (f.Label ?? "").IndexOf("nava", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            (f.Label ?? "").IndexOf("rank", StringComparison.OrdinalIgnoreCase) >= 0);
+    var hasNava = !string.IsNullOrWhiteSpace(navaFact?.Value);
+}
+
+<div id="@uid" class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 border border-slate-100 bg-slate-50 px-5 py-4">
+
+    <div class="shrink-0">
+        <div class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Rate this flag design</div>
+        <div class="mt-2 flex gap-0.5" role="group" aria-label="Rate this flag 1 to 5 stars">
+            @for (var s = 1; s <= 5; s++)
+            {
+                <button type="button"
+                        class="js-star cursor-pointer text-[1.85rem] leading-none text-slate-200 transition-colors duration-75"
+                        data-val="@s"
+                        aria-label="@s star@(s > 1 ? "s" : "")">★</button>
+            }
+        </div>
+    </div>
+
+    @if (hasNava)
+    {
+        <div class="min-w-0 border-l border-slate-200 pl-5">
+            <div class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Expert ranking</div>
+            <div class="mt-1 text-sm text-slate-700">@navaFact!.Value</div>
+        </div>
+    }
+
+    <div class="js-msg ml-auto hidden text-sm font-semibold text-amber-600"></div>
+</div>
+
+<script>
+(function () {
+    var w = document.getElementById('@uid');
+    if (!w) return;
+
+    var stars  = w.querySelectorAll('.js-star');
+    var msg    = w.querySelector('.js-msg');
+    var KEY    = 'fr-@stateSlug';
+    var saved  = parseInt(localStorage.getItem(KEY) || '0', 10);
+    var labels = ['', 'Poor design', 'Below average', 'Average', 'Good design', 'Excellent!'];
+
+    function paint(n) {
+        stars.forEach(function (s) {
+            s.style.color = parseInt(s.dataset.val, 10) <= n ? '#f59e0b' : '';
+        });
+    }
+
+    paint(saved);
+    if (saved && msg) { msg.textContent = labels[saved]; msg.classList.remove('hidden'); }
+
+    stars.forEach(function (s) {
+        s.addEventListener('mouseenter', function () { paint(parseInt(s.dataset.val, 10)); });
+        s.addEventListener('mouseleave', function () { paint(saved); });
+        s.addEventListener('click', function () {
+            saved = parseInt(s.dataset.val, 10);
+            localStorage.setItem(KEY, saved);
+            paint(saved);
+            if (msg) { msg.textContent = labels[saved]; msg.classList.remove('hidden'); }
+        });
+    });
+})();
+</script>

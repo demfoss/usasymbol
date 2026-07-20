@@ -93,7 +93,6 @@ namespace USASymbol.Services
                                 if (secDict.ContainsKey("subsections") && secDict["subsections"] is List<object> subsections)
                                 {
                                     var flagSubsections = new List<FlagSubsection>();
-                                    section.Subsections = flagSubsections.Cast<IContentSubsection>().ToList();
 
                                     foreach (var sub in subsections)
                                     {
@@ -102,7 +101,9 @@ namespace USASymbol.Services
                                             var subsection = new FlagSubsection
                                             {
                                                 Subtitle = GetString(subDict, "subtitle"),
-                                                Text = GetString(subDict, "text")
+                                                Text = GetString(subDict, "text"),
+                                                Image = subDict.ContainsKey("image") ? GetString(subDict, "image") : null,
+                                                ImageCaption = subDict.ContainsKey("image_caption") ? GetString(subDict, "image_caption") : null,
                                             };
 
                                             if (subDict.ContainsKey("list") && subDict["list"] is List<object> list)
@@ -113,6 +114,8 @@ namespace USASymbol.Services
                                             flagSubsections.Add(subsection);
                                         }
                                     }
+
+                                    section.Subsections = flagSubsections.Cast<IContentSubsection>().ToList();
                                 }
 
 
@@ -144,7 +147,8 @@ namespace USASymbol.Services
                                             {
                                                 Id = GetString(symDict, "id"),
                                                 Name = GetString(symDict, "name"),
-                                                Image = GetString(symDict, "image")
+                                                Image = GetString(symDict, "image"),
+                                                ClipRegion = GetString(symDict, "clip_region")
                                             };
 
                                             if (symDict.ContainsKey("paragraphs") && symDict["paragraphs"] is List<object> symParagraphs)

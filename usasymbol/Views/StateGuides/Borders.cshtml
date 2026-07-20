@@ -9,6 +9,179 @@
     var canonicalUrl = $"{baseUrl}/states/{Model.State.Slug}/borders";
     var borderContent = Model.BorderContent!;
     var ogImage = Images.Full(Model.BorderContent?.Map?.Image ?? Model.State.FlagImageUrl);
+    var stateCodes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Alabama"] = "AL", ["Alaska"] = "AK", ["Arizona"] = "AZ", ["Arkansas"] = "AR",
+        ["California"] = "CA", ["Colorado"] = "CO", ["Connecticut"] = "CT", ["Delaware"] = "DE",
+        ["Florida"] = "FL", ["Georgia"] = "GA", ["Hawaii"] = "HI", ["Idaho"] = "ID",
+        ["Illinois"] = "IL", ["Indiana"] = "IN", ["Iowa"] = "IA", ["Kansas"] = "KS",
+        ["Kentucky"] = "KY", ["Louisiana"] = "LA", ["Maine"] = "ME", ["Maryland"] = "MD",
+        ["Massachusetts"] = "MA", ["Michigan"] = "MI", ["Minnesota"] = "MN", ["Mississippi"] = "MS",
+        ["Missouri"] = "MO", ["Montana"] = "MT", ["Nebraska"] = "NE", ["Nevada"] = "NV",
+        ["New Hampshire"] = "NH", ["New Jersey"] = "NJ", ["New Mexico"] = "NM", ["New York"] = "NY",
+        ["North Carolina"] = "NC", ["North Dakota"] = "ND", ["Ohio"] = "OH", ["Oklahoma"] = "OK",
+        ["Oregon"] = "OR", ["Pennsylvania"] = "PA", ["Rhode Island"] = "RI", ["South Carolina"] = "SC",
+        ["South Dakota"] = "SD", ["Tennessee"] = "TN", ["Texas"] = "TX", ["Utah"] = "UT",
+        ["Vermont"] = "VT", ["Virginia"] = "VA", ["Washington"] = "WA", ["West Virginia"] = "WV",
+        ["Wisconsin"] = "WI", ["Wyoming"] = "WY"
+    };
+    var currentStateCode = !string.IsNullOrWhiteSpace(Model.State.Abbreviation)
+        ? Model.State.Abbreviation.ToUpperInvariant()
+        : stateCodes.TryGetValue(Model.State.Name, out var mappedCurrentCode) ? mappedCurrentCode : string.Empty;
+    var borderingStateCodes = new List<string>();
+    var borderingStateNames = (borderContent.BorderSummary?.BorderingStatesList ?? string.Empty)
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    foreach (var stateName in borderingStateNames)
+    {
+        if (stateCodes.TryGetValue(stateName, out var neighborCode) && !borderingStateCodes.Contains(neighborCode, StringComparer.OrdinalIgnoreCase))
+        {
+            borderingStateCodes.Add(neighborCode.ToLowerInvariant());
+        }
+    }
+    var borderingStateCodesJson = JsonSerializer.Serialize(borderingStateCodes);
+
+    // Each US state gets its own unique national park image (no two states share a park).
+    // International/water use 2-3 universal options — they never appear together on the same page.
+    var stateParkImageMap = new Dictionary<string, (string Image, string ParkName)>(StringComparer.OrdinalIgnoreCase)
+    {
+        // ── US States — 50 unique parks, verified to have 01-hero-image.jpg ─────────────
+        ["Alabama"]        = ("/images/parks/national/black-canyon-of-the-gunnison-national-park/01-hero-image.jpg","Black Canyon of the Gunnison"),
+        ["Alaska"]         = ("/images/parks/national/denali-national-park-preserve/01-hero-image.jpg",             "Denali National Park"),
+        ["Arizona"]        = ("/images/parks/national/saguaro-national-park/01-hero-image.jpg",                     "Saguaro National Park"),
+        ["Arkansas"]       = ("/images/parks/national/hot-springs-national-park/01-hero-image.jpg",                 "Hot Springs National Park"),
+        ["California"]     = ("/images/parks/national/sequoia-national-park/01-hero-image.jpg",                     "Sequoia National Park"),
+        ["Colorado"]       = ("/images/parks/national/rocky-mountain-national-park/01-hero-image.jpg",              "Rocky Mountain National Park"),
+        ["Connecticut"]    = ("/images/parks/national/north-cascades-national-park/01-hero-image.jpg",              "North Cascades National Park"),
+        ["Delaware"]       = ("/images/parks/national/pinnacles-national-park/01-hero-image.jpg",                   "Pinnacles National Park"),
+        ["Florida"]        = ("/images/parks/national/everglades-national-park/01-hero-image.jpg",                  "Everglades National Park"),
+        ["Georgia"]        = ("/images/parks/national/bryce-canyon-national-park/01-hero-image.jpg",                "Bryce Canyon National Park"),
+        ["Hawaii"]         = ("/images/parks/national/hawai-i-volcanoes-national-park/01-hero-image.jpg",           "Hawaiʻi Volcanoes National Park"),
+        ["Idaho"]          = ("/images/parks/national/lassen-volcanic-national-park/01-hero-image.jpg",             "Lassen Volcanic National Park"),
+        ["Illinois"]       = ("/images/parks/national/mesa-verde-national-park/01-hero-image.jpg",                  "Mesa Verde National Park"),
+        ["Indiana"]        = ("/images/parks/national/indiana-dunes-national-park/01-hero-image.jpg",               "Indiana Dunes National Park"),
+        ["Iowa"]           = ("/images/parks/national/capitol-reef-national-park/01-hero-image.jpg",                "Capitol Reef National Park"),
+        ["Kansas"]         = ("/images/parks/national/great-sand-dunes-national-park-preserve/01-hero-image.jpg",   "Great Sand Dunes National Park"),
+        ["Kentucky"]       = ("/images/parks/national/mammoth-cave-national-park/01-hero-image.jpg",                "Mammoth Cave National Park"),
+        ["Louisiana"]      = ("/images/parks/national/guadalupe-mountains-national-park/01-hero-image.jpg",         "Guadalupe Mountains National Park"),
+        ["Maine"]          = ("/images/parks/national/acadia-national-park/01-hero-image.jpg",                      "Acadia National Park"),
+        ["Maryland"]       = ("/images/parks/national/shenandoah-national-park/03-big-meadows.jpg",              "Shenandoah National Park"),
+        ["Massachusetts"]  = ("/images/parks/national/redwood-national-and-state-parks/01-hero-image.jpg",          "Redwood National Park"),
+        ["Michigan"]       = ("/images/parks/national/isle-royale-national-park/01-hero-image.jpg",                 "Isle Royale National Park"),
+        ["Minnesota"]      = ("/images/parks/national/voyageurs-national-park/01-hero-image.jpg",                   "Voyageurs National Park"),
+        ["Mississippi"]    = ("/images/parks/national/congaree-national-park/01-hero-image.jpg",                    "Congaree National Park"),
+        ["Missouri"]       = ("/images/parks/national/gateway-arch-national-park/01-hero-image.jpg",                "Gateway Arch National Park"),
+        ["Montana"]        = ("/images/parks/national/glacier-national-park/01-hero-image.jpg",                     "Glacier National Park"),
+        ["Nebraska"]       = ("/images/parks/national/petrified-forest-national-park/01-hero-image.jpg",            "Petrified Forest National Park"),
+        ["Nevada"]         = ("/images/parks/national/great-basin-national-park/01-hero-image.jpg",                 "Great Basin National Park"),
+        ["New Hampshire"]  = ("/images/parks/national/death-valley-national-park/01-hero-image.jpg",                "Death Valley National Park"),
+        ["New Jersey"]     = ("/images/parks/national/canyonlands-national-park/01-hero-image.jpg",                 "Canyonlands National Park"),
+        ["New Mexico"]     = ("/images/parks/national/white-sands-national-park/01-hero-image.jpg",                 "White Sands National Park"),
+        ["New York"]       = ("/images/parks/national/grand-teton-national-park/01-hero-image.jpg",                 "Grand Teton National Park"),
+        ["North Carolina"] = ("/images/parks/national/great-smoky-mountains-national-park/09-overview.jpg",        "Great Smoky Mountains National Park"),
+        ["North Dakota"]   = ("/images/parks/national/theodore-roosevelt-national-park/01-hero-image.jpg",          "Theodore Roosevelt National Park"),
+        ["Ohio"]           = ("/images/parks/national/cuyahoga-valley-national-park/01-hero-image.jpg",             "Cuyahoga Valley National Park"),
+        ["Oklahoma"]       = ("/images/parks/national/carlsbad-caverns-national-park/01-hero-image.jpg",            "Carlsbad Caverns National Park"),
+        ["Oregon"]         = ("/images/parks/national/crater-lake-national-park/01-hero-image.jpg",                 "Crater Lake National Park"),
+        ["Pennsylvania"]   = ("/images/parks/national/shenandoah-national-park/05-whiteoak-canyon.jpg",           "Shenandoah National Park"),
+        ["Rhode Island"]   = ("/images/parks/national/biscayne-national-park/01-hero-image.jpg",                    "Biscayne National Park"),
+        ["South Carolina"] = ("/images/parks/national/arches-national-park/01-hero-image.jpg",                      "Arches National Park"),
+        ["South Dakota"]   = ("/images/parks/national/badlands-national-park/01-hero-image.jpg",                    "Badlands National Park"),
+        ["Tennessee"]      = ("/images/parks/national/great-smoky-mountains-national-park/01-hero-image.jpg",       "Great Smoky Mountains National Park"),
+        ["Texas"]          = ("/images/parks/national/big-bend-national-park/01-hero-image.jpg",                    "Big Bend National Park"),
+        ["Utah"]           = ("/images/parks/national/zion-national-park/01-hero-image.jpg",                        "Zion National Park"),
+        ["Vermont"]        = ("/images/parks/national/kobuk-valley-national-park/01-hero-image.jpg",                "Kobuk Valley National Park"),
+        ["Virginia"]       = ("/images/parks/national/shenandoah-national-park/01-hero-image.jpg",                  "Shenandoah National Park"),
+        ["Washington"]     = ("/images/parks/national/mount-rainier-national-park/01-hero-image.jpg",               "Mount Rainier National Park"),
+        ["West Virginia"]  = ("/images/parks/national/new-river-gorge-national-park-preserve/01-hero-image.jpg",    "New River Gorge National Park"),
+        ["Wisconsin"]      = ("/images/parks/national/glacier-bay-national-park-preserve/01-hero-image.jpg",        "Glacier Bay National Park"),
+        ["Wyoming"]        = ("/images/parks/national/yellowstone-national-park/01-hero-image.jpg",                 "Yellowstone National Park"),
+        // ── International — 2 universal options ────────────────────────────────────────
+        ["Mexico"]         = ("/images/parks/national/dry-tortugas-national-park/01-hero-image.jpg",                "Dry Tortugas National Park"),
+        ["Canada"]         = ("/images/parks/national/glacier-national-park/01-hero-image.jpg",                     "Glacier National Park"),
+        // ── Canadian provinces — North Cascades for Pacific, Acadia for Atlantic ────────
+        ["British Columbia"]   = ("/images/parks/national/north-cascades-national-park/01-hero-image.jpg",          "North Cascades National Park"),
+        ["Alberta"]            = ("/images/parks/national/glacier-national-park/01-hero-image.jpg",                 "Glacier National Park"),
+        ["Saskatchewan"]       = ("/images/parks/national/theodore-roosevelt-national-park/01-hero-image.jpg",      "Theodore Roosevelt National Park"),
+        ["Manitoba"]           = ("/images/parks/national/voyageurs-national-park/01-hero-image.jpg",               "Voyageurs National Park"),
+        ["Ontario"]            = ("/images/parks/national/isle-royale-national-park/01-hero-image.jpg",             "Isle Royale National Park"),
+        ["Quebec"]             = ("/images/parks/national/acadia-national-park/01-hero-image.jpg",                  "Acadia National Park"),
+        ["New Brunswick"]      = ("/images/parks/national/acadia-national-park/01-hero-image.jpg",                  "Acadia National Park"),
+        ["Nova Scotia"]        = ("/images/parks/national/acadia-national-park/01-hero-image.jpg",                  "Acadia National Park"),
+        // ── Water bodies — 3 options: ocean / Gulf / Great Lakes ────────────────────────
+        ["Atlantic Ocean"]     = ("/images/parks/national/acadia-national-park/01-hero-image.jpg",                  "Acadia National Park"),
+        ["Pacific Ocean"]      = ("/images/parks/national/olympic-national-park/01-hero-image.jpg",                 "Olympic National Park"),
+        ["Gulf of Mexico"]     = ("/images/parks/national/biscayne-national-park/01-hero-image.jpg",                "Biscayne National Park"),
+        ["Long Island Sound"]  = ("/images/parks/national/glacier-bay-national-park-preserve/01-hero-image.jpg",    "Glacier Bay National Park"),
+        ["Chesapeake Bay"]     = ("/images/parks/national/dry-tortugas-national-park/01-hero-image.jpg",            "Dry Tortugas National Park"),
+        ["Lake Superior"]      = ("/images/parks/national/kenai-fjords-national-park/01-hero-image.jpg",            "Kenai Fjords National Park"),
+        ["Lake Michigan"]      = ("/images/parks/national/wrangell-st-elias-national-park-preserve/01-hero-image.jpg","Wrangell–St. Elias National Park"),
+        ["Lake Erie"]          = ("/images/parks/national/katmai-national-park-preserve/01-hero-image.jpg",         "Katmai National Park"),
+        ["Lake Huron"]         = ("/images/parks/national/lake-clark-national-park-preserve/01-hero-image.jpg",     "Lake Clark National Park"),
+        ["Lake Ontario"]       = ("/images/parks/national/gates-of-the-arctic-national-park-preserve/01-hero-image.jpg","Gates of the Arctic National Park"),
+        ["Ohio River"]         = ("/images/parks/national/new-river-gorge-national-park-preserve/01-hero-image.jpg","New River Gorge National Park"),
+        ["Mississippi River"]  = ("/images/parks/national/gateway-arch-national-park/01-hero-image.jpg",            "Gateway Arch National Park"),
+        ["Colorado River"]     = ("/images/parks/national/canyonlands-national-park/01-hero-image.jpg",             "Canyonlands National Park"),
+    };
+
+    // Build subsection paragraph lookup: anchor-id → paragraphs (for the drawer)
+    var subsectionParas = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+    foreach (var sec in borderContent.Sections)
+    {
+        if (sec.Subsections == null) continue;
+        foreach (var sub in sec.Subsections)
+        {
+            if (!string.IsNullOrEmpty(sub.Id) && sub.Paragraphs?.Any() == true)
+                subsectionParas[sub.Id] = sub.Paragraphs;
+        }
+    }
+    // Strip markdown link syntax [text](url) → text for plain-text JSON
+    string StripMd(string s) =>
+        System.Text.RegularExpressions.Regex.Replace(s ?? "", @"\[([^\]]+)\]\([^)]+\)", "$1");
+
+    // Helper: resolve image for any card (YAML takes priority; falls back to stateParkImageMap)
+    string? ResolveCardImage(string name, string? yamlImage) =>
+        !string.IsNullOrEmpty(yamlImage) ? yamlImage :
+        stateParkImageMap.TryGetValue(name, out var p) ? p.Image : null;
+    string? ResolveCardPark(string name, string? yamlPark, string? yamlImage) =>
+        !string.IsNullOrEmpty(yamlPark) ? yamlPark :
+        string.IsNullOrEmpty(yamlImage) && stateParkImageMap.TryGetValue(name, out var p) ? p.ParkName : null;
+
+    // Build JSON for interactive border maps and drawer
+    var borderDataDict = new Dictionary<string, object>();
+    if (Model.HasCards)
+    {
+        foreach (var bc in borderContent.Cards)
+        {
+            if (bc.NeighborKind.Equals("Water", StringComparison.OrdinalIgnoreCase)) continue;
+            if (!stateCodes.TryGetValue(bc.Name, out var bcCode)) continue;
+            var bcSlug = bc.Name.ToLower().Replace(" ", "-");
+            var bcParas = subsectionParas.TryGetValue(bc.Anchor ?? "", out var sp)
+                ? sp.Select(StripMd).ToList()
+                : new List<string>();
+            borderDataDict[bcCode.ToUpperInvariant()] = new
+            {
+                name       = bc.Name,
+                badge      = bc.Badge,
+                type       = bc.NeighborKind,
+                borderType = bc.BorderType,
+                features   = StripMd(bc.Features),
+                paragraphs = bcParas,
+                image      = ResolveCardImage(bc.Name, bc.Image),
+                parkName   = ResolveCardPark(bc.Name, bc.ParkName, bc.Image),
+                slug       = bcSlug
+            };
+        }
+    }
+    var borderCardDataJson = JsonSerializer.Serialize(borderDataDict);
+
+    // Lookup: card anchor → (image, parkName) for subsection images — auto-resolved
+    var cardImageByAnchor = borderContent.Cards
+        .Where(c => !string.IsNullOrEmpty(c.Anchor))
+        .ToDictionary(c => c.Anchor!, c => new
+        {
+            image    = ResolveCardImage(c.Name, c.Image),
+            parkName = ResolveCardPark(c.Name, c.ParkName, c.Image)
+        });
 
     ViewData["Title"] = Model.BorderContent?.SeoTitle ?? $"{Model.State.Name} Borders";
     ViewData["Description"] = Model.BorderContent?.SeoDescription ?? $"What borders {Model.State.Name}?";
@@ -20,6 +193,10 @@
 <style>
     h2[id], h3[id], section[id], div[id] {
         scroll-margin-top: 100px;
+    }
+
+    .borders-page {
+        color: #0f172a;
     }
 
     .subsection-anchor {
@@ -35,13 +212,20 @@
     .border-card-link {
         text-decoration: none;
         color: inherit;
-        display: block;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
-        .border-card-link:hover .border-card {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
+    .border-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .border-card .bd-card-body {
+        flex: 1 1 auto;
+    }
 
     .border-map-shell {
         background:
@@ -54,37 +238,204 @@
             inset 0 1px 0 rgba(255, 255, 255, 0.8),
             0 24px 48px -30px rgba(15, 23, 42, 0.4);
     }
+
+    .borders-page .rounded-sm,
+    .borders-page .rounded,
+    .borders-page .rounded-md,
+    .borders-page .rounded-lg,
+    .borders-page .rounded-xl,
+    .borders-page .rounded-2xl,
+    .borders-page .rounded-3xl,
+    .borders-page .rounded-full,
+    .borders-page .rounded-\[1\.5rem\],
+    .borders-page .rounded-\[2rem\] {
+        border-radius: 0 !important;
+    }
+
+    .borders-page .shadow-md,
+    .borders-page .shadow-lg,
+    .borders-page .shadow-xl,
+    .borders-page .shadow-2xl {
+        box-shadow: none !important;
+    }
+
+    .borders-page .border-card-link:hover .border-card {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .borders-hero-map {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .borders-hero-map svg {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .borders-hero-map .map-state {
+        transition: fill .18s ease, opacity .18s ease;
+    }
+
+    .borders-hero-map .map-state--base {
+        fill: #dbe4f0;
+    }
+
+    .borders-hero-map .map-state--neighbor {
+        fill: #15803d;
+    }
+
+    .borders-hero-map .map-state--current {
+        fill: #b91c1c;
+    }
+
+    .borders-page .toc-link,
+    .borders-page .toc-mobile-link,
+    .borders-page .border-card,
+    .borders-page details,
+    .borders-page #sources > div,
+    .borders-page #faq > div,
+    .borders-page .border-map-shell,
+    .borders-page .border-map-frame {
+        border-radius: 0 !important;
+    }
+
+    .borders-page #faq > div,
+    .borders-page #sources > div,
+    .borders-page details,
+    .borders-page .toc-mobile-link {
+        background: #fff !important;
+        border-color: #e2e8f0 !important;
+    }
+
+    .borders-page #tocOverlay #tocDrawer,
+    .borders-page #tocOverlay .sticky {
+        border-radius: 0 !important;
+    }
+
+    /* ── Border State Drawer ────────────────────────────────── */
+    .bd-drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1500;
+        background: rgba(15, 23, 42, 0.32);
+    }
+    .bd-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 1600;
+        width: min(400px, 100vw);
+        height: 100dvh;
+        transform: translateX(100%);
+        transition: transform 0.28s ease;
+        overflow: hidden;
+    }
+    .bd-drawer.bd-drawer--open { transform: translateX(0); }
+    .bd-drawer__inner {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: #fff;
+        box-shadow: -18px 0 44px rgba(15, 23, 42, 0.18);
+    }
+    .bd-drawer__close {
+        align-self: flex-end;
+        margin: 0.875rem 0.875rem 0 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        color: #475569;
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .bd-drawer__close:hover { background: #f1f5f9; }
+    .bd-drawer__body { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; }
+    .bd-drawer__park-img-wrap { position: relative; overflow: hidden; aspect-ratio: 16/9; }
+    .bd-drawer__park-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .bd-drawer__park-overlay {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        padding: 0.5rem 0.9rem 0.6rem;
+        background: linear-gradient(to top, rgba(15,23,42,.75), transparent);
+    }
+    .bd-drawer__park-overlay p { margin: 0; color: #fff; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em; }
+    .bd-drawer__hero { padding: 1.1rem 1.25rem 1rem; border-bottom: 1px solid #e2e8f0; }
+    .bd-drawer__badge {
+        display: inline-block; padding: 0.2rem 0.55rem; border: 1px solid #cbd5e1;
+        background: #f8fafc; color: #475569; font-size: 0.65rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 0.16em; margin-bottom: 0.45rem;
+    }
+    .bd-drawer__title { font-size: clamp(1.2rem, 4vw, 1.55rem); font-weight: 700; color: #0f172a; line-height: 1.1; margin: 0; }
+    .bd-drawer__meta { display: grid; gap: 0.55rem; padding: 0.9rem 1.25rem; border-bottom: 1px solid #e2e8f0; }
+    .bd-drawer__meta-row { display: flex; align-items: center; gap: 0.65rem; }
+    .bd-drawer__meta-label { flex-shrink: 0; width: 52px; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; }
+    .bd-drawer__meta-value { display: inline-flex; align-items: center; padding: 0.18rem 0.5rem; min-height: 1.6rem; background: #f1f5f9; color: #334155; font-size: 0.78rem; font-weight: 600; }
+    .bd-drawer__desc { padding: 0.9rem 1.25rem 0; font-size: 0.875rem; color: #334155; line-height: 1.7; margin: 0; }
+    .bd-drawer__paras { padding: 0 1.25rem 1.5rem; }
+    .bd-drawer__paras p { font-size: 0.85rem; color: #475569; line-height: 1.7; margin: 0 0 0.75rem; }
+    .bd-drawer__paras p:last-child { margin-bottom: 0; }
+    .bd-drawer__footer { position: sticky; bottom: 0; padding: 0.875rem 1.25rem 1rem; border-top: 1px solid #e2e8f0; background: #f8fafc; }
+    .bd-drawer__link {
+        display: flex; justify-content: center; align-items: center; width: 100%;
+        min-height: 2.75rem; padding: 0 1rem; background: #0b7a5c; color: #fff;
+        font-size: 0.85rem; font-weight: 700; text-decoration: none; letter-spacing: 0.02em;
+    }
+    .bd-drawer__link:hover { background: #0a6b50; }
+
+    /* ── Border Tooltip ─────────────────────────────────────── */
+    #bd-tooltip {
+        position: fixed; z-index: 9999; pointer-events: none;
+        min-width: 140px; max-width: 240px;
+        padding: 0.6rem 0.8rem 0.55rem;
+        background: #fff; border: 1px solid #d9e3ea;
+        box-shadow: 0 10px 24px rgba(15,23,42,.14);
+    }
+    #bd-tt-name { margin: 0; font-size: 0.88rem; font-weight: 700; color: #111827; }
+    #bd-tt-badge { margin-top: 0.2rem; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; color: #64748b; }
+
+    /* ── Interactive card ───────────────────────────────────── */
+    [data-border-card] { cursor: pointer; }
+    .bd-card--active .border-card { outline: 2px solid #0b7a5c; outline-offset: 0; }
+    .bd-card--active .border-card .bd-hint { display: none; }
+
+    /* ── Map hover states ───────────────────────────────────── */
+    .borders-hero-map .map-state--neighbor { cursor: pointer; }
+    .borders-hero-map .map-state--neighbor:hover { fill-opacity: 0.78; }
+    [data-border-map] .map-state--neighbor { cursor: pointer; }
+    [data-border-map] .map-state--neighbor:hover { fill-opacity: 0.78; }
 </style>
 
 <!-- Progress Bar -->
 <div id="progressBar"
-     class="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-600
+     class="fixed top-0 left-0 h-1 bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900
             z-50 transition-all duration-150"
      style="width: 0%">
 </div>
 
 <!-- BREADCRUMBS -->
-<nav class="max-w-6xl mx-auto px-4 py-4 text-sm text-gray-600" aria-label="Breadcrumb">
-    <ol class="flex flex-wrap items-center gap-1">
-        <li><a href="/" class="hover:text-blue-900 transition">Home</a></li>
-        <li class="text-gray-400">/</li>
-        <li><a href="/states" class="hover:text-blue-900 transition">States</a></li>
-        <li class="text-gray-400">/</li>
-        <li><a href="/states/@Model.State.Slug" class="hover:text-blue-900 transition">@Model.State.Name</a></li>
-        <li class="text-gray-400">/</li>
-        <li class="text-gray-900 font-semibold">Borders</li>
-    </ol>
+<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 lg:px-6 xl:px-8">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+            <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
+            <li class="text-slate-300">/</li>
+            <li><a href="/states" class="hover:text-slate-900 transition">States</a></li>
+            <li class="text-slate-300">/</li>
+            <li><a href="/states/@Model.State.Slug" class="hover:text-slate-900 transition">@Model.State.Name</a></li>
+            <li class="text-slate-300">/</li>
+            <li class="text-slate-900 font-semibold">Borders</li>
+        </ol>
+    </div>
 </nav>
 
 <!-- MAIN CONTENT -->
-<main class="max-w-6xl mx-auto px-4 pb-12">
-
-    <!-- H1: PAGE TITLE - Above the fold -->
-    <header class="mb-6">
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            @Model.State.Name Borders: States, Map & Complete Guide
-        </h1>
-    </header>
+<main class="journey-content borders-page max-w-[1440px] mx-auto px-4 pb-16 pt-6 lg:px-6 xl:px-8">
 
     @{
         var bordersAuthorBox = new USASymbol.Models.ViewModels.AuthorBox
@@ -93,74 +444,74 @@
             Author = Model.BorderContent?.Author
         };
     }
-    @await Html.PartialAsync("_AuthorBox", bordersAuthorBox)
 <!-- SECTION 1: GEOGRAPHIC OVERVIEW (Hero) -->
 <section id="geographic-overview" class="mb-12 scroll-mt-20">
-    <div class="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
-        <div class="p-6 md:p-10 lg:p-12">
-            <div class="max-w-4xl mx-auto text-white">
+    <div class="border border-slate-200 bg-white shadow-sm">
+        <div class="p-6 sm:p-8 lg:p-10">
+            <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                State Borders Guide
+            </div>
 
-                @if (Model.BorderContent?.BorderSummary != null)
-                {
-                    var summary = Model.BorderContent.BorderSummary;
-                    
-                    <!-- Header Badge -->
-                    <div class="text-amber-400/80 text-sm font-semibold mb-3 uppercase tracking-widest">
-                        Geographic Overview
+            <h1 class="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+                What States Border @Model.State.Name
+            </h1>
+
+            @if (Model.HasIntro)
+            {
+                <p class="mt-4 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
+                    @Model.BorderContent.IntroText.RenderAutoLinks()
+                </p>
+            }
+
+            @if (Model.BorderContent?.BorderSummary != null)
+            {
+                var summary = Model.BorderContent.BorderSummary;
+
+                <dl class="mt-8 grid grid-cols-2 border border-slate-200 sm:grid-cols-4">
+                    <div class="border-b border-r border-slate-200 px-4 py-4 sm:px-5">
+                        <dt class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Bordering States</dt>
+                        <dd class="mt-2 text-2xl font-semibold text-slate-900">@summary.BorderingStatesCount</dd>
                     </div>
 
-                    <!-- Intro Text -->
-                    @if (Model.HasIntro)
-                    {
-                        <p class="text-blue-100 text-base md:text-lg lg:text-xl leading-relaxed mb-8">
-                            @Model.BorderContent.IntroText.RenderAutoLinks()
-                        </p>
-                    }
-
-                    <!-- Quick Stats Grid -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
-                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                            <div class="text-3xl md:text-4xl font-bold text-white mb-1">@summary.BorderingStatesCount</div>
-                            <div class="text-xs text-blue-200 uppercase tracking-wide">Bordering States</div>
-                        </div>
-
-                        @if (!string.IsNullOrEmpty(summary.CountryBorders) && summary.CountryBorders != "None")
-                        {
-                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                                <div class="text-2xl md:text-3xl font-bold text-white mb-1">@summary.CountryBorders</div>
-                                <div class="text-xs text-blue-200 uppercase tracking-wide">International</div>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(summary.OceanBorders) && summary.OceanBorders != "None")
-                        {
-                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 col-span-2 md:col-span-1">
-                                <div class="text-xl md:text-2xl font-bold text-white mb-1">@summary.OceanBorders</div>
-                                <div class="text-xs text-blue-200 uppercase tracking-wide">Ocean Border</div>
-                            </div>
-                        }
-
-                        @if (summary.Landlocked)
-                        {
-                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                                <div class="text-xl md:text-2xl font-bold text-white mb-1">Landlocked</div>
-                                <div class="text-xs text-blue-200 uppercase tracking-wide">No Ocean Access</div>
-                            </div>
-                        }
+                    <div class="border-b border-slate-200 px-4 py-4 sm:border-r sm:px-5">
+                        <dt class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">International</dt>
+                        <dd class="mt-2 text-base font-semibold text-slate-900">@(!string.IsNullOrWhiteSpace(summary.CountryBorders) ? summary.CountryBorders : "None")</dd>
                     </div>
-                }
 
-                <!-- Share Buttons -->
-                <div class="flex flex-wrap items-center gap-3">
-                    <button id="shareButton" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-lg border border-white/20 transition text-white font-semibold text-sm min-h-[44px]">
-                        <i class="fas fa-share-nodes" aria-hidden="true"></i>
-                        Share
-                    </button>
-                    <button id="copyLinkBtn" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-lg border border-white/20 transition text-white font-semibold text-sm min-h-[44px]">
-                        <i class="fas fa-copy" aria-hidden="true"></i>
-                        Copy Link
-                    </button>
-                </div>
+                    <div class="border-r border-slate-200 px-4 py-4 sm:px-5">
+                        <dt class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Water Border</dt>
+                        <dd class="mt-2 text-base font-semibold text-slate-900">
+                            @if (!string.IsNullOrWhiteSpace(summary.OceanBorders) && summary.OceanBorders != "None")
+                            {
+                                @summary.OceanBorders
+                            }
+                            else if (!string.IsNullOrWhiteSpace(summary.GreatLakeBorders))
+                            {
+                                @summary.GreatLakeBorders
+                            }
+                            else
+                            {
+                                @:None
+                            }
+                        </dd>
+                    </div>
+
+                    <div class="px-4 py-4 sm:px-5">
+                        <dt class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Access</dt>
+                        <dd class="mt-2 text-base font-semibold text-slate-900">@(summary.Landlocked ? "Landlocked" : "Coast or water access")</dd>
+                    </div>
+                </dl>
+            }
+
+            <div class="mt-6 flex flex-wrap items-center gap-3">
+                <button id="shareButton" class="inline-flex min-h-[44px] items-center gap-2 border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50">
+                    <i class="fas fa-share-nodes" aria-hidden="true"></i>
+                    Share
+                </button>
+                <button id="copyLinkBtn" class="inline-flex min-h-[44px] items-center gap-2 border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50">
+                    <i class="fas fa-copy" aria-hidden="true"></i>
+                    Copy Link
+                </button>
             </div>
         </div>
     </div>
@@ -172,12 +523,12 @@
         var map = borderContent.Map!;
 
         <section id="border-map" class="mb-12 scroll-mt-20">
-            <div class="border-map-shell rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden">
-                <div class="px-6 pt-6 pb-4 md:px-8 md:pt-8 lg:px-10">
+            <div>
+                <div class="mb-3">
                     <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                         <div>
-                            <div class="text-xs font-semibold uppercase tracking-[0.28em] text-blue-700/80 mb-2">Border Map</div>
-                            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 flex items-center gap-3">
+                            <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 mb-2">Border Map</div>
+                            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900 flex items-center gap-3">
                                 <i class="fas fa-map text-blue-700" aria-hidden="true"></i>
                                 @map.Title
                             </h2>
@@ -192,24 +543,36 @@
                     </div>
                 </div>
 
-                <figure class="px-3 pb-3 md:px-4 md:pb-4 lg:px-5 lg:pb-5">
-                    <div class="border-map-frame overflow-hidden rounded-[1.5rem] bg-white">
-                        <img src="@Images.Hero(map.Image)"
-                             srcset="@Images.HeroSrcSet(map.Image, 480, 768, 1200)"
-                             sizes="100vw"
-                             alt="@map.ImageAlt"
-                             class="block w-full h-auto"
-                             loading="lazy"
-                             onerror="this.onerror=null; this.src='/images/maps/placeholder-map.svg'; this.alt='Map temporarily unavailable';">
-                    </div>
+                <!-- Legend -->
+                <div class="flex flex-wrap items-center gap-4 mb-2 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500">
+                    <span class="inline-flex items-center gap-2">
+                        <span class="h-3 w-3 border border-slate-300 bg-[#b91c1c]"></span>
+                        @Model.State.Name
+                    </span>
+                    <span class="inline-flex items-center gap-2">
+                        <span class="h-3 w-3 border border-slate-300 bg-[#15803d]"></span>
+                        Bordering states
+                    </span>
+                    <span class="inline-flex items-center gap-2">
+                        <span class="h-3 w-3 border border-slate-300 bg-[#dbeafe]"></span>
+                        Water
+                    </span>
+                    <span class="ml-auto text-slate-400 normal-case font-normal tracking-normal">Click a state for details</span>
+                </div>
 
-                    @if (!string.IsNullOrEmpty(map.Caption))
-                    {
-                        <figcaption class="map-caption text-sm md:text-base mt-4 px-3 lg:hidden">
-                            @map.Caption
-                        </figcaption>
-                    }
-                </figure>
+                <!-- Interactive SVG map — no outer card border, fills naturally -->
+                <div class="borders-hero-map"
+                     data-border-map
+                     style="aspect-ratio:959/593;min-height:380px"
+                     data-current-state="@currentStateCode.ToLowerInvariant()"
+                     data-bordering-states='@Html.Raw(borderingStateCodesJson)'
+                     role="img"
+                     aria-label="@map.ImageAlt">
+                </div>
+                @if (!string.IsNullOrEmpty(map.Caption))
+                {
+                    <p class="map-caption text-sm mt-3">@map.Caption</p>
+                }
             </div>
         </section>
     }
@@ -218,28 +581,28 @@
     @if (Model.HasSections)
     {
         <section class="mb-8 md:mb-12">
-            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-md border border-blue-200 overflow-hidden">
-                <button id="tocToggle" class="w-full px-5 py-4 flex items-center justify-between hover:bg-blue-100/50 transition min-h-[60px]" aria-expanded="false" aria-controls="tocContent">
+            <div class="border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <button id="tocToggle" class="w-full px-5 py-4 flex items-center justify-between border-b border-slate-200 hover:bg-slate-50 transition min-h-[60px]" aria-expanded="false" aria-controls="tocContent">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-list text-blue-700 text-lg" aria-hidden="true"></i>
-                        <span class="font-bold text-gray-900 text-base md:text-lg">Table of Contents</span>
+                        <i class="fas fa-list text-slate-700 text-lg" aria-hidden="true"></i>
+                        <span class="font-semibold text-slate-900 text-base md:text-lg">Table of Contents</span>
                     </div>
-                    <i id="tocToggleIcon" class="fas fa-chevron-down text-blue-700 transition-transform" aria-hidden="true"></i>
+                    <i id="tocToggleIcon" class="fas fa-chevron-down text-slate-500 transition-transform" aria-hidden="true"></i>
                 </button>
                 <div id="tocContent" class="hidden px-5 pb-5">
                     <nav class="space-y-2 pt-2" aria-label="Table of contents">
                         @if (Model.HasCards)
                         {
-                            <a href="#border-cards" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
-                                <i class="fas fa-map-marked-alt text-blue-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">Border Overview</span>
+                            <a href="#border-cards" class="toc-link flex items-center gap-3 border border-slate-200 p-3 hover:bg-slate-50 transition group min-h-[48px]">
+                                <i class="fas fa-map-marked-alt text-slate-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+                                <span class="text-slate-800 font-medium text-sm md:text-base group-hover:text-slate-900">Border Overview</span>
                             </a>
                         }
                         @if (Model.HasMap)
                         {
-                            <a href="#border-map" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
-                                <i class="fas fa-map text-blue-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">Border Map</span>
+                            <a href="#border-map" class="toc-link flex items-center gap-3 border border-slate-200 p-3 hover:bg-slate-50 transition group min-h-[48px]">
+                                <i class="fas fa-map text-slate-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+                                <span class="text-slate-800 font-medium text-sm md:text-base group-hover:text-slate-900">Border Map</span>
                             </a>
                         }
                         @{
@@ -248,23 +611,23 @@
                         @foreach (var contentSection in contentSections)
                         {
                             var sectionId = $"section-{contentSection.Id}";
-                            <a href="#@sectionId" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
-                                <i class="@($"{contentSection.Icon} text-blue-600 text-sm group-hover:scale-110 transition-transform")" aria-hidden="true"></i>
-                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">@contentSection.Title</span>
+                            <a href="#@sectionId" class="toc-link flex items-center gap-3 border border-slate-200 p-3 hover:bg-slate-50 transition group min-h-[48px]">
+                                <i class="@($"{contentSection.Icon} text-slate-600 text-sm group-hover:scale-110 transition-transform")" aria-hidden="true"></i>
+                                <span class="text-slate-800 font-medium text-sm md:text-base group-hover:text-slate-900">@contentSection.Title</span>
                             </a>
                         }
                         @if (Model.HasFaq)
                         {
-                            <a href="#faq" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
-                                <i class="fas fa-question-circle text-blue-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">Frequently Asked Questions</span>
+                            <a href="#faq" class="toc-link flex items-center gap-3 border border-slate-200 p-3 hover:bg-slate-50 transition group min-h-[48px]">
+                                <i class="fas fa-question-circle text-slate-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+                                <span class="text-slate-800 font-medium text-sm md:text-base group-hover:text-slate-900">Frequently Asked Questions</span>
                             </a>
                         }
                         @if (Model.HasSources)
                         {
-                            <a href="#sources" class="toc-link flex items-center gap-3 p-3 rounded-lg hover:bg-white transition group min-h-[48px]">
-                                <i class="fas fa-book text-blue-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-                                <span class="text-gray-800 font-medium text-sm md:text-base group-hover:text-blue-700">Sources & References</span>
+                            <a href="#sources" class="toc-link flex items-center gap-3 border border-slate-200 p-3 hover:bg-slate-50 transition group min-h-[48px]">
+                                <i class="fas fa-book text-slate-600 text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+                                <span class="text-slate-800 font-medium text-sm md:text-base group-hover:text-slate-900">Sources & References</span>
                             </a>
                         }
                     </nav>
@@ -273,49 +636,49 @@
         </section>
 
         <!-- Floating TOC Button (Mobile Only) -->
-        <button id="floatingTocBtn" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-2xl flex items-center justify-center z-40 lg:hidden transition-all duration-300 hover:scale-110 active:scale-95" aria-label="Open table of contents">
+        <button id="floatingTocBtn" class="fixed bottom-6 right-6 h-14 w-14 border border-slate-900 bg-slate-900 text-white flex items-center justify-center z-40 lg:hidden transition-all duration-300 hover:bg-slate-800 active:scale-95" aria-label="Open table of contents">
             <i class="fas fa-list text-lg" aria-hidden="true"></i>
         </button>
 
         <!-- TOC Overlay (Mobile) -->
         <div id="tocOverlay" class="fixed inset-0 bg-black/50 z-50 hidden lg:hidden transition-opacity" aria-hidden="true">
-            <div id="tocDrawer" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transform translate-y-full transition-transform duration-300 max-h-[80vh] overflow-y-auto" role="dialog" aria-label="Table of contents">
-                <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex items-center justify-between rounded-t-3xl z-10">
-                    <h3 class="text-white font-bold text-lg flex items-center gap-2">
+            <div id="tocDrawer" class="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 transform translate-y-full transition-transform duration-300 max-h-[80vh] overflow-y-auto" role="dialog" aria-label="Table of contents">
+                <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
+                    <h3 class="text-slate-900 font-semibold text-lg flex items-center gap-2">
                         <i class="fas fa-list" aria-hidden="true"></i>
                         <span>Jump to Section</span>
                     </h3>
-                    <button id="closeTocDrawer" class="text-white hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center transition min-h-[44px]" aria-label="Close menu">
+                    <button id="closeTocDrawer" class="text-slate-700 hover:bg-slate-100 w-10 h-10 flex items-center justify-center transition min-h-[44px]" aria-label="Close menu">
                         <i class="fas fa-times text-xl" aria-hidden="true"></i>
                     </button>
                 </div>
                 <nav class="p-5 space-y-2 pb-8" aria-label="Table of contents mobile">
                     @if (Model.HasCards)
                     {
-                        <a href="#border-cards" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:bg-blue-50 active:bg-blue-100 transition border border-gray-100 min-h-[64px]">
-                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-map-marked-alt text-blue-600" aria-hidden="true"></i>
+                        <a href="#border-cards" class="toc-mobile-link flex items-center gap-3 p-4 hover:bg-slate-50 transition border border-slate-200 min-h-[64px]">
+                            <div class="w-10 h-10 border border-slate-200 bg-slate-50 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-map-marked-alt text-slate-700" aria-hidden="true"></i>
                             </div>
-                            <span class="text-gray-800 font-semibold text-base">Border Overview</span>
+                            <span class="text-slate-800 font-semibold text-base">Border Overview</span>
                         </a>
                     }
                     @foreach (var contentSection in contentSections)
                     {
                         var sectionId = $"section-{contentSection.Id}";
-                        <a href="#@sectionId" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:bg-blue-50 active:bg-blue-100 transition border border-gray-100 min-h-[64px]">
-                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <i class="@($"{contentSection.Icon} text-blue-600")" aria-hidden="true"></i>
+                        <a href="#@sectionId" class="toc-mobile-link flex items-center gap-3 p-4 hover:bg-slate-50 transition border border-slate-200 min-h-[64px]">
+                            <div class="w-10 h-10 border border-slate-200 bg-slate-50 flex items-center justify-center flex-shrink-0">
+                                <i class="@($"{contentSection.Icon} text-slate-700")" aria-hidden="true"></i>
                             </div>
-                            <span class="text-gray-800 font-semibold text-base">@contentSection.Title</span>
+                            <span class="text-slate-800 font-semibold text-base">@contentSection.Title</span>
                         </a>
                     }
                     @if (Model.HasFaq)
                     {
-                        <a href="#faq" class="toc-mobile-link flex items-center gap-3 p-4 rounded-xl hover:bg-blue-50 active:bg-blue-100 transition border border-gray-100 min-h-[64px]">
-                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-question-circle text-blue-600" aria-hidden="true"></i>
+                        <a href="#faq" class="toc-mobile-link flex items-center gap-3 p-4 hover:bg-slate-50 transition border border-slate-200 min-h-[64px]">
+                            <div class="w-10 h-10 border border-slate-200 bg-slate-50 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-question-circle text-slate-700" aria-hidden="true"></i>
                             </div>
-                            <span class="text-gray-800 font-semibold text-base">Frequently Asked Questions</span>
+                            <span class="text-slate-800 font-semibold text-base">Frequently Asked Questions</span>
                         </a>
                     }
                 </nav>
@@ -341,63 +704,144 @@
                 }
                 @foreach (var card in borderCards)
                 {
-                    var badgeClass = card.NeighborKind.ToLower() switch
-                    {
-                        "country" => "bg-gradient-to-r from-red-500 to-red-600",
-                        "water" => "bg-gradient-to-r from-blue-500 to-blue-600",
-                        "great lake" => "bg-gradient-to-r from-cyan-500 to-cyan-600",
-                        _ => "bg-gradient-to-r from-green-500 to-green-600"
-                    };
                     var borderColorClass = card.NeighborKind.ToLower() switch
                     {
-                        "country" => "border-red-400 bg-red-50",
-                        "water" => "border-blue-400 bg-blue-50",
-                        "great lake" => "border-cyan-400 bg-cyan-50",
-                        _ => "border-green-400 bg-green-50"
+                        "country"    => "border-l-4 border-red-400 bg-red-50",
+                        "water"      => "border-l-4 border-blue-400 bg-blue-50",
+                        "great lake" => "border-l-4 border-cyan-400 bg-cyan-50",
+                        _            => "border-l-4 border-green-400 bg-green-50"
+                    };
+                    var badgeColorClass = card.NeighborKind.ToLower() switch
+                    {
+                        "country"    => "border border-red-300 bg-red-100 text-red-800",
+                        "water"      => "border border-blue-300 bg-blue-100 text-blue-800",
+                        "great lake" => "border border-cyan-300 bg-cyan-100 text-cyan-800",
+                        _            => "border border-green-300 bg-green-100 text-green-800"
                     };
                     var iconClass = card.NeighborKind.ToLower() switch
                     {
-                        "country" => "fas fa-flag",
-                        "water" => "fas fa-water",
+                        "country"    => "fas fa-flag",
+                        "water"      => "fas fa-water",
                         "great lake" => "fas fa-water",
-                        _ => "fas fa-map-pin"
+                        _            => "fas fa-map-pin"
                     };
 
                     var cardAnchor = !string.IsNullOrEmpty(card.Anchor) ? $"#{card.Anchor}" : "#";
 
-                    <a href="@cardAnchor" class="border-card-link">
-                        <div class="border-card bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 @borderColorClass overflow-hidden">
-                            <!-- Card Header -->
-                            <div class="@badgeClass p-4 text-white">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
-                                        <i class="@iconClass text-xl" aria-hidden="true"></i>
-                                        <h3 class="text-lg md:text-xl font-bold">@card.Name</h3>
-                                    </div>
-                                    <span class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold uppercase">
-                                        @card.Badge
-                                    </span>
-                                </div>
-                            </div>
+                    // Resolve image: YAML takes priority, fallback to global stateParkImageMap
+                    var cardImage    = ResolveCardImage(card.Name, card.Image);
+                    var cardParkName = ResolveCardPark(card.Name, card.ParkName, card.Image);
 
-                            <!-- Card Body -->
-                            <div class="p-4 md:p-5">
-                                <div class="space-y-2 mb-3">
-                                    <div class="flex items-center gap-2">
-                                        <i class="fas fa-tag text-gray-400 text-sm" aria-hidden="true"></i>
-                                        <span class="text-sm text-gray-500">Type:</span>
-                                        <span class="font-semibold text-gray-900">@card.NeighborKind</span>
+                    string? cardStateCode = null;
+                    if (card.NeighborKind.Equals("State", StringComparison.OrdinalIgnoreCase)
+                        && stateCodes.TryGetValue(card.Name, out var resolvedCode))
+                    {
+                        cardStateCode = resolvedCode?.ToUpperInvariant();
+                    }
+                    var isStateCard = cardStateCode != null;
+
+                    if (isStateCard && cardStateCode != null)
+                    {
+                        <!-- Interactive state card: opens drawer on click -->
+                        <div data-border-card data-state-code="@cardStateCode" class="border-card-link">
+                            <div class="border-card @borderColorClass border-t border-r border-b overflow-hidden">
+                                @if (!string.IsNullOrEmpty(cardImage))
+                                {
+                                    <div class="relative overflow-hidden" style="aspect-ratio:16/9">
+                                        <img src="@cardImage"
+                                             alt="@(cardParkName ?? card.Name)"
+                                             class="w-full h-full object-cover"
+                                             loading="lazy">
+                                        @if (!string.IsNullOrEmpty(cardParkName))
+                                        {
+                                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent px-3 py-2.5">
+                                                <p class="text-white text-[10px] font-semibold tracking-wide">@cardParkName</p>
+                                            </div>
+                                        }
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <i class="fas fa-border-style text-gray-400 text-sm" aria-hidden="true"></i>
-                                        <span class="text-sm text-gray-500">Border:</span>
-                                        <span class="font-semibold text-gray-900">@card.BorderType</span>
+                                }
+                                <div class="border-b border-slate-200/60 px-4 py-4 text-slate-900">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <i class="@iconClass text-lg text-slate-700" aria-hidden="true"></i>
+                                            <h3 class="text-lg md:text-xl font-bold">@card.Name</h3>
+                                        </div>
+                                        <span class="@badgeColorClass px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em]">
+                                            @card.Badge
+                                        </span>
                                     </div>
                                 </div>
-                                <p class="text-gray-700 leading-relaxed text-sm">@card.Features</p>
+                                <div class="bd-card-body p-4 md:p-5">
+                                    <div class="space-y-2 mb-3">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-tag text-gray-400 text-sm" aria-hidden="true"></i>
+                                            <span class="text-sm text-gray-500">Type:</span>
+                                            <span class="font-semibold text-gray-900">@card.NeighborKind</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-border-style text-gray-400 text-sm" aria-hidden="true"></i>
+                                            <span class="text-sm text-gray-500">Border:</span>
+                                            <span class="font-semibold text-gray-900">@card.BorderType</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 leading-relaxed text-sm">@card.Features</p>
+                                    <div class="bd-hint mt-3 pt-3 border-t border-slate-100 flex items-center gap-1.5 text-xs text-teal-700 font-semibold">
+                                        <i class="fas fa-info-circle text-xs" aria-hidden="true"></i>
+                                        Click for details
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </a>
+                    }
+                    else
+                    {
+                        <!-- Water / country card: scroll to anchor section -->
+                        <a href="@cardAnchor" class="border-card-link">
+                            <div class="border-card transition-all duration-300 @borderColorClass border-t border-r border-b overflow-hidden">
+                                @if (!string.IsNullOrEmpty(cardImage))
+                                {
+                                    <div class="relative overflow-hidden" style="aspect-ratio:16/9">
+                                        <img src="@cardImage"
+                                             alt="@(cardParkName ?? card.Name)"
+                                             class="w-full h-full object-cover"
+                                             loading="lazy">
+                                        @if (!string.IsNullOrEmpty(cardParkName))
+                                        {
+                                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent px-3 py-2.5">
+                                                <p class="text-white text-[10px] font-semibold tracking-wide">@cardParkName</p>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                <div class="border-b border-slate-200/60 px-4 py-4 text-slate-900">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <i class="@iconClass text-lg text-slate-700" aria-hidden="true"></i>
+                                            <h3 class="text-lg md:text-xl font-bold">@card.Name</h3>
+                                        </div>
+                                        <span class="@badgeColorClass px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em]">
+                                            @card.Badge
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="bd-card-body p-4 md:p-5">
+                                    <div class="space-y-2 mb-3">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-tag text-gray-400 text-sm" aria-hidden="true"></i>
+                                            <span class="text-sm text-gray-500">Type:</span>
+                                            <span class="font-semibold text-gray-900">@card.NeighborKind</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-border-style text-gray-400 text-sm" aria-hidden="true"></i>
+                                            <span class="text-sm text-gray-500">Border:</span>
+                                            <span class="font-semibold text-gray-900">@card.BorderType</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 leading-relaxed text-sm">@card.Features</p>
+                                </div>
+                            </div>
+                        </a>
+                    }
                 }
             </div>
         </section>
@@ -413,7 +857,8 @@
                 var sectionId = $"section-{contentSection.Id}";
 
                 <section id="@sectionId" class="scroll-mt-20">
-                    <div class="bg-white rounded-2xl p-6 md:p-8 border border-gray-200 shadow-md">
+                    @{ var isKeyFacts = contentSection.Id == "key-facts"; }
+                    <div class="@(isKeyFacts ? "" : "bg-white p-6 md:p-8 border border-slate-200 shadow-sm")">
                         <!-- H2 Section Title -->
                         <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                             @if (!string.IsNullOrEmpty(contentSection.Icon))
@@ -459,6 +904,26 @@
                                             @subsection.Subtitle
                                         </h3>
 
+                                        @{
+                                            var subImgKey = subsection.Id ?? "";
+                                            var hasSubImg = cardImageByAnchor.TryGetValue(subImgKey, out var subImgData);
+                                        }
+                                        @if (hasSubImg && subImgData != null)
+                                        {
+                                            <div class="relative overflow-hidden mb-5" style="aspect-ratio:16/9;max-height:320px">
+                                                <img src="@subImgData.image"
+                                                     alt="@(subImgData.parkName ?? subsection.Subtitle)"
+                                                     class="w-full h-full object-cover"
+                                                     loading="lazy">
+                                                @if (!string.IsNullOrEmpty(subImgData.parkName))
+                                                {
+                                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent px-4 py-3">
+                                                        <p class="text-white text-[11px] font-semibold tracking-wide">@subImgData.parkName</p>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+
                                         @if (!string.IsNullOrEmpty(subsection.Text))
                                         {
                                             <p class="text-gray-700 leading-relaxed text-base md:text-lg mb-4">
@@ -501,7 +966,7 @@
                             <div class="mt-6 md:hidden space-y-4">
                                 @foreach (var row in contentSection.Table.Rows)
                                 {
-                                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border-2 border-blue-200 shadow-md">
+                                    <div class="bg-slate-50 p-5 border border-slate-200">
                                         @foreach (var column in contentSection.Table.Columns)
                                         {
                                             var key = column.ToLower().Replace(" ", "_");
@@ -520,25 +985,25 @@
                             </div>
 
                             <!-- DESKTOP: Table (hidden on small screens) -->
-                            <div class="mt-6 hidden md:block overflow-x-auto rounded-xl border border-blue-200 shadow-md">
+                            <div class="mt-6 hidden md:block border border-slate-200 overflow-x-auto">
                                 <table class="min-w-full bg-white">
-                                    <thead class="bg-gradient-to-r from-blue-600 to-indigo-600">
+                                    <thead class="bg-slate-50 border-b border-slate-200">
                                         <tr>
                                             @foreach (var column in contentSection.Table.Columns)
                                             {
-                                                <th scope="col" class="px-4 lg:px-6 py-4 text-left text-sm font-bold text-white uppercase tracking-wider">
+                                                <th scope="col" class="px-4 lg:px-6 py-4 text-left text-sm font-semibold text-slate-700 uppercase tracking-[0.16em]">
                                                     @column
                                                 </th>
                                             }
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-blue-100">
+                                    <tbody class="divide-y divide-slate-100">
                                         @for (int i = 0; i < contentSection.Table.Rows.Count; i++)
                                         {
                                             var row = contentSection.Table.Rows[i];
-                                            var rowBgClass = i % 2 == 0 ? "bg-blue-50/30" : "bg-white";
+                                            var rowBgClass = i % 2 == 0 ? "bg-slate-50/40" : "bg-white";
 
-                                            <tr class="@rowBgClass hover:bg-blue-100 transition-colors">
+                                            <tr class="@rowBgClass hover:bg-slate-50 transition-colors">
                                                 @foreach (var column in contentSection.Table.Columns)
                                                 {
                                                     var key = column.ToLower().Replace(" ", "_");
@@ -554,15 +1019,14 @@
 
                         @if (contentSection.Facts != null && contentSection.Facts.Any())
                         {
-                            <div class="mt-8">
-                                <div class="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-xl shadow-md overflow-hidden">
+                            <div class="overflow-hidden border border-slate-200 mt-8">
                                     <!-- Header -->
-                                    <div class="bg-gradient-to-r from-yellow-500 to-orange-500 px-5 py-3 flex items-center justify-between">
-                                        <div class="flex items-center gap-2 text-white">
-                                            <i class="fas fa-lightbulb text-xl" aria-hidden="true"></i>
-                                            <span class="font-bold text-sm uppercase tracking-wide">@Model.State.Name Border Facts</span>
+                                    <div class="border-b border-slate-200 px-5 py-3 flex items-center justify-between">
+                                        <div class="flex items-center gap-2 text-slate-900">
+                                            <i class="fas fa-lightbulb text-lg text-amber-500" aria-hidden="true"></i>
+                                            <span class="font-semibold text-sm uppercase tracking-[0.16em] text-slate-600">@Model.State.Name Border Facts</span>
                                         </div>
-                                        <span id="factCounter-@contentSection.Id" class="text-white/90 text-sm font-medium">
+                                        <span id="factCounter-@contentSection.Id" class="text-slate-500 text-sm font-medium">
                                             1 of @contentSection.Facts.Count
                                         </span>
                                     </div>
@@ -575,10 +1039,10 @@
                                     </div>
 
                                     <!-- Button -->
-                                    <div class="px-5 py-4 bg-white/50 border-t border-yellow-200 flex justify-end">
+                                    <div class="px-5 py-4 bg-slate-50 border-t border-slate-200 flex justify-end">
                                         <button id="nextFactBtn-@contentSection.Id"
                                                 type="button"
-                                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold hover:from-blue-700 hover:to-indigo-700 active:scale-95 transition-all shadow-md text-sm min-h-[44px]"
+                                                class="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-900 bg-slate-900 text-white font-semibold hover:bg-slate-800 active:scale-95 transition-all text-sm min-h-[44px]"
                                                 aria-label="Show next fact">
                                             <span>Next Fact</span>
                                             <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
@@ -610,7 +1074,6 @@
                                         }
                                     })();
                                 </script>
-                            </div>
                         }
                     </div>
                 </section>
@@ -622,8 +1085,8 @@
     @if (Model.HasFaq)
     {
         <section id="faq" class="mt-12 mb-12 scroll-mt-20">
-            <div class="bg-white rounded-2xl p-6 md:p-8 border border-gray-200 shadow-md">
-                <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mb-6 text-gray-900 flex items-center gap-3">
+            <div>
+                <h2 class="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight mb-6 text-slate-900 flex items-center gap-3">
                     <i class="fas fa-question-circle text-blue-700" aria-hidden="true"></i>
                     Frequently Asked Questions
                 </h2>
@@ -633,14 +1096,14 @@
                     }
                     @foreach (var faq in faqItems)
                     {
-                        <details class="group bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-all">
+                        <details class="group border border-slate-200 hover:border-slate-300 transition-all">
                             <summary class="flex justify-between items-center cursor-pointer p-4 md:p-5 font-semibold text-gray-900 text-base md:text-lg list-none">
                                 <span class="flex items-start gap-3 pr-4">
-                                    <i class="fas fa-chevron-circle-right text-blue-600 mt-0.5 group-open:rotate-90 transition-transform flex-shrink-0" aria-hidden="true"></i>
+                                    <i class="fas fa-chevron-circle-right text-slate-500 mt-0.5 group-open:rotate-90 transition-transform flex-shrink-0" aria-hidden="true"></i>
                                     <span>@faq.Question</span>
                                 </span>
                             </summary>
-                            <div class="px-4 md:px-5 pb-4 md:pb-5 pt-2 text-gray-700 leading-relaxed border-t border-blue-200 text-base md:text-lg ml-8">
+                            <div class="px-4 md:px-5 pb-4 md:pb-5 pt-2 text-gray-700 leading-relaxed border-t border-slate-200 text-base md:text-lg ml-8">
                                 @faq.Answer.RenderMarkdown()
                             </div>
                         </details>
@@ -650,12 +1113,17 @@
         </section>
     }
 
+    <!-- AUTHOR BOX -->
+    <div class="mb-8">
+        @await Html.PartialAsync("_AuthorBox", bordersAuthorBox)
+    </div>
+
     <!-- SECTION: SOURCES & REFERENCES -->
     @if (Model.HasSources)
     {
         <section id="sources" class="mb-12 scroll-mt-20">
-            <div class="bg-gray-50 rounded-2xl p-6 md:p-8 border border-gray-200 shadow-md">
-                <h2 class="text-xl md:text-2xl font-bold mb-2 text-gray-900 flex items-center gap-2">
+            <div class="bg-white p-6 md:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-xl md:text-2xl font-semibold mb-2 text-gray-900 flex items-center gap-2">
                     <i class="fas fa-book text-blue-700" aria-hidden="true"></i>
                     Sources & References
                 </h2>
@@ -669,8 +1137,8 @@
                     }
                     @foreach (var source in sources)
                     {
-                        <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                        <div class="flex items-start gap-4 border-t border-slate-200 pt-4 first:border-t-0 first:pt-0">
+                            <div class="flex-shrink-0 w-8 h-8 border border-slate-200 bg-slate-50 text-slate-900 flex items-center justify-center font-semibold text-sm">
                                 @sourceIndex
                             </div>
                             <div class="flex-1 min-w-0">
@@ -700,13 +1168,13 @@
     @if (Model.RelatedSymbols?.Any() == true)
     {
         <section class="mb-12">
-            <h2 class="text-xl md:text-2xl font-bold mb-6 text-gray-900">Other @Model.State.Name Symbols</h2>
+            <h2 class="text-xl md:text-2xl font-semibold mb-6 text-gray-900">Other @Model.State.Name Symbols</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach (var symbol in Model.RelatedSymbols.Take(4))
                 {
                     var symbolUrl = symbol.ToSymbolUrl(Model.State.Slug);
-                    <a href="@symbolUrl" class="bg-white rounded-xl p-4 md:p-5 shadow-md hover:shadow-lg transition border border-gray-200 hover:border-blue-500 text-center">
-                        <div class="text-xs text-blue-700 font-bold uppercase mb-2">@GetSymbolTypeName(symbol.Type)</div>
+                    <a href="@symbolUrl" class="bg-white p-4 md:p-5 transition border border-slate-200 hover:border-slate-400 text-center">
+                        <div class="text-xs text-slate-500 font-semibold uppercase tracking-[0.16em] mb-2">@GetSymbolTypeName(symbol.Type)</div>
                         <h3 class="text-sm md:text-base font-bold text-gray-800">@symbol.Name</h3>
                     </a>
                 }
@@ -719,25 +1187,266 @@
         </section>
     }
 
+    <!-- GLOBAL BORDER TOOLTIP -->
+    <div id="bd-tooltip" class="hidden" role="tooltip">
+        <p id="bd-tt-name"></p>
+        <p id="bd-tt-badge"></p>
+    </div>
+
+    <!-- BORDER STATE DRAWER -->
+    <div id="bd-backdrop" class="bd-drawer-backdrop hidden"></div>
+    <aside id="bd-drawer" class="bd-drawer" aria-hidden="true" aria-label="Border state details">
+        <div class="bd-drawer__inner">
+            <button type="button" id="bd-close" class="bd-drawer__close" aria-label="Close border details">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <div class="bd-drawer__body">
+                <div id="bd-img-wrap" class="bd-drawer__park-img-wrap hidden">
+                    <img id="bd-img" alt="" loading="lazy">
+                    <div class="bd-drawer__park-overlay">
+                        <p id="bd-park-name"></p>
+                    </div>
+                </div>
+                <div class="bd-drawer__hero">
+                    <div id="bd-badge" class="bd-drawer__badge"></div>
+                    <h3 id="bd-name" class="bd-drawer__title"></h3>
+                </div>
+                <div class="bd-drawer__meta">
+                    <div class="bd-drawer__meta-row">
+                        <span class="bd-drawer__meta-label">Type</span>
+                        <span id="bd-type" class="bd-drawer__meta-value"></span>
+                    </div>
+                    <div class="bd-drawer__meta-row">
+                        <span class="bd-drawer__meta-label">Border</span>
+                        <span id="bd-btype" class="bd-drawer__meta-value"></span>
+                    </div>
+                </div>
+                <p id="bd-features" class="bd-drawer__desc"></p>
+                <div id="bd-paras" class="bd-drawer__paras"></div>
+            </div>
+            <div class="bd-drawer__footer">
+                <a id="bd-link" href="#" class="bd-drawer__link">
+                    View @Model.State.Name → State Details
+                </a>
+            </div>
+        </div>
+    </aside>
+
     <!-- NAVIGATION BUTTONS -->
     <div class="flex flex-wrap gap-4 justify-center">
         <a href="/states"
-           class="px-6 md:px-8 py-3 rounded-lg bg-white border-2 border-blue-600 text-blue-600 font-bold hover:bg-blue-50 transition shadow-md text-sm md:text-base min-h-[48px] flex items-center">
+           class="px-6 md:px-8 py-3 border border-slate-300 bg-white text-slate-800 font-semibold hover:bg-slate-50 transition text-sm md:text-base min-h-[48px] flex items-center">
             ← Back to All States
         </a>
         <a href="/states/@Model.State.Slug"
-           class="px-6 md:px-8 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition shadow-md text-sm md:text-base min-h-[48px] flex items-center">
+           class="px-6 md:px-8 py-3 border border-slate-900 bg-slate-900 text-white font-semibold hover:bg-slate-800 transition text-sm md:text-base min-h-[48px] flex items-center">
             See All @Model.State.Name Symbols →
         </a>
     </div>
 
 </main>
+
+<script>
+// ================================================================
+// BORDER PAGE: Interactive maps, tooltip, and state detail drawer
+// ================================================================
+(function () {
+    'use strict';
+
+    var BORDER_DATA  = @Html.Raw(borderCardDataJson);
+    var CURRENT_CODE = '@currentStateCode.ToLowerInvariant()';
+    var CURRENT_NAME = '@Model.State.Name';
+
+    // ── Drawer ────────────────────────────────────────────────
+    var drawer   = document.getElementById('bd-drawer');
+    var backdrop = document.getElementById('bd-backdrop');
+    var bdClose  = document.getElementById('bd-close');
+
+    function openDrawer(code) {
+        var key  = code.toUpperCase();
+        var data = BORDER_DATA[key];
+        if (!data) return;
+
+        var imgWrap = document.getElementById('bd-img-wrap');
+        if (data.image) {
+            var img = document.getElementById('bd-img');
+            img.src = data.image;
+            img.alt = data.parkName || data.name;
+            document.getElementById('bd-park-name').textContent = data.parkName || '';
+            imgWrap.classList.remove('hidden');
+        } else {
+            imgWrap.classList.add('hidden');
+        }
+
+        document.getElementById('bd-badge').textContent    = data.badge;
+        document.getElementById('bd-name').textContent     = data.name;
+        document.getElementById('bd-type').textContent     = data.type;
+        document.getElementById('bd-btype').textContent    = data.borderType;
+        document.getElementById('bd-features').textContent = data.features;
+
+        var parasEl = document.getElementById('bd-paras');
+        if (parasEl) {
+            parasEl.innerHTML = '';
+            if (data.paragraphs && data.paragraphs.length) {
+                data.paragraphs.forEach(function (txt) {
+                    var p = document.createElement('p');
+                    p.textContent = txt;
+                    parasEl.appendChild(p);
+                });
+            }
+        }
+
+        var link = document.getElementById('bd-link');
+        link.href = '/states/' + data.slug + '/borders';
+        link.textContent = 'View ' + data.name + ' Borders →';
+
+        document.querySelectorAll('[data-border-card]').forEach(function (c) {
+            c.classList.remove('bd-card--active');
+        });
+        var match = document.querySelector('[data-border-card][data-state-code="' + key + '"]');
+        if (match) match.classList.add('bd-card--active');
+
+        drawer.classList.add('bd-drawer--open');
+        drawer.setAttribute('aria-hidden', 'false');
+        backdrop.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+        if (!drawer.classList.contains('bd-drawer--open')) return;
+        drawer.classList.remove('bd-drawer--open');
+        drawer.setAttribute('aria-hidden', 'true');
+        backdrop.classList.add('hidden');
+        document.body.style.overflow = '';
+        document.querySelectorAll('[data-border-card]').forEach(function (c) {
+            c.classList.remove('bd-card--active');
+        });
+    }
+
+    if (bdClose)  bdClose.addEventListener('click', closeDrawer);
+    if (backdrop) backdrop.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDrawer(); });
+
+    // ── Tooltip ───────────────────────────────────────────────
+    var tooltip = document.getElementById('bd-tooltip');
+
+    function showTooltip(cx, cy, name, badge) {
+        if (!tooltip) return;
+        document.getElementById('bd-tt-name').textContent  = name  || '';
+        document.getElementById('bd-tt-badge').textContent = badge || '';
+        var left = cx + 14;
+        var top  = cy - 80;
+        if (left + 240 > window.innerWidth)  left = cx - 248;
+        if (top < 8) top = cy + 16;
+        tooltip.style.left = left + 'px';
+        tooltip.style.top  = top  + 'px';
+        tooltip.classList.remove('hidden');
+    }
+
+    function hideTooltip() {
+        if (tooltip) tooltip.classList.add('hidden');
+    }
+
+    // ── Map helpers ───────────────────────────────────────────
+    function getStateCode(el) {
+        if (!el || el.tagName !== 'path') return null;
+        return Array.from(el.classList).find(function (c) { return /^[a-z]{2}$/.test(c); }) || null;
+    }
+
+    function colorSvg(mapEl, svg) {
+        var cur = (mapEl.dataset.currentState || '').toLowerCase();
+        var nbr;
+        try { nbr = JSON.parse(mapEl.dataset.borderingStates || '[]'); } catch (e) { nbr = []; }
+
+        svg.removeAttribute('width');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+
+        svg.querySelectorAll('g.state path').forEach(function (path) {
+            var code = getStateCode(path);
+            if (!code) return;
+            path.classList.add('map-state');
+            path.classList.remove('map-state--base', 'map-state--neighbor', 'map-state--current');
+            if (code === cur)           path.classList.add('map-state--current');
+            else if (nbr.includes(code)) path.classList.add('map-state--neighbor');
+            else                         path.classList.add('map-state--base');
+        });
+
+        svg.querySelectorAll('.borders').forEach(function (b) {
+            b.style.stroke = '#ffffff';
+            b.style.strokeWidth = '1.1';
+        });
+    }
+
+    function attachHandlers(mapEl) {
+        mapEl.addEventListener('mousemove', function (e) {
+            var code = getStateCode(e.target);
+            if (!code) { hideTooltip(); return; }
+            var up   = code.toUpperCase();
+            var data = BORDER_DATA[up];
+            var isCur = code === CURRENT_CODE;
+            if (!data && !isCur) { hideTooltip(); return; }
+            showTooltip(e.clientX, e.clientY,
+                isCur ? CURRENT_NAME : data.name,
+                isCur ? ''           : data.badge
+            );
+        });
+
+        mapEl.addEventListener('mouseleave', hideTooltip);
+
+        mapEl.addEventListener('click', function (e) {
+            var code = getStateCode(e.target);
+            if (!code) return;
+            var up = code.toUpperCase();
+            if (BORDER_DATA[up]) { hideTooltip(); openDrawer(up); }
+        });
+
+        mapEl.addEventListener('touchstart', function (e) {
+            var code = getStateCode(e.target);
+            if (!code) return;
+            var up = code.toUpperCase();
+            if (BORDER_DATA[up]) { e.preventDefault(); openDrawer(up); }
+        }, { passive: false });
+    }
+
+    // ── SVG load & init ──────────────────────────────────────
+    var cachedSvg = null;
+
+    function initMap(mapEl) {
+        function apply(text) {
+            mapEl.innerHTML = text;
+            var svg = mapEl.querySelector('svg');
+            if (svg) { colorSvg(mapEl, svg); attachHandlers(mapEl); }
+        }
+
+        if (cachedSvg) { apply(cachedSvg); return; }
+
+        fetch('/maps/us-states.svg')
+            .then(function (r) { return r.ok ? r.text() : Promise.reject(new Error('SVG load failed')); })
+            .then(function (t) { cachedSvg = t; apply(t); })
+            .catch(function () {
+                mapEl.innerHTML = '<div class="flex items-center justify-center h-full min-h-[280px] p-6 text-center text-sm text-slate-500">Map preview unavailable.</div>';
+            });
+    }
+
+    document.querySelectorAll('[data-border-map]').forEach(initMap);
+
+    // ── Card clicks ───────────────────────────────────────────
+    document.querySelectorAll('[data-border-card]').forEach(function (card) {
+        card.addEventListener('click', function (e) {
+            var code = card.dataset.stateCode;
+            if (code && BORDER_DATA[code]) { e.preventDefault(); openDrawer(code); }
+        });
+    });
+
+})();
+</script>
 <!-- SCHEMA.ORG - ARTICLE -->
 <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
       "@@type": "Article",
-      "headline": "@Model.State.Name Borders: States, Map & Complete Guide",
+      "headline": "What States Border @Model.State.Name",
       "description": "@Html.Raw(ViewData["Description"]?.ToString())",
       "image": {
         "@@type": "ImageObject",

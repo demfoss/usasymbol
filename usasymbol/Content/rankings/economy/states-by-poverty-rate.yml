@@ -45,7 +45,7 @@ computed_data:
   metric_key: poverty_rate
 
 compare:
-  metric_slug: economy
+  metric_slug: poverty-rate
   title: "Compare Poverty Rates Between Two States"
   description: "Pick two states to see a full side-by-side breakdown of income, poverty, employment, and economic data."
   icon: "fa-solid fa-chart-line"
@@ -74,7 +74,7 @@ sections:
 
   - id: "poverty_line_caveat"
     icon: "fa-solid fa-circle-exclamation"
-    title: "The Federal Poverty Line Doesn't Adjust for Cost of Living"
+    title: "Why the Poverty Line Ignores Cost of Living"
     paragraphs:
       - "The federal poverty line is the same in every state: $15,060 for a single adult and $30,900 for a family of four in 2024. That means Mississippi's poverty rate and Massachusetts' poverty rate are measured against identical income thresholds, even though a dollar buys very different amounts in each state. A household just above the poverty line in San Francisco is not comparable to one just above it in rural Alabama."
       - "The Census Bureau's Supplemental Poverty Measure adjusts for geographic cost differences and government assistance. Under that measure, California's poverty rate rises significantly, high housing costs push more households below the adjusted threshold, while Southern states' rates drop modestly due to lower cost of living. Looking at both measures together gives a more accurate picture of economic hardship by state."
@@ -94,13 +94,13 @@ visual_assets:
     layout: left
 
 faq:
-  - question: "Which state has the highest poverty rate"
+  - question: "Which state has the highest poverty rate?"
     answer: "Louisiana has the highest poverty rate in the U.S. at 18.9%. The state has ranked last or near last on this measure due to oil-cycle volatility, repeated hurricane disruptions, and low college attainment that limits access to professional-sector employment."
-  - question: "Which state has the lowest poverty rate"
+  - question: "Which state has the lowest poverty rate?"
     answer: "New Hampshire consistently records the lowest poverty rate of any U.S. state, typically below 7–8%. The state has a highly educated workforce, low unemployment, no state income tax on wages, and a strong technology and manufacturing economy."
-  - question: "What is the federal poverty level"
+  - question: "What is the federal poverty level?"
     answer: "The federal poverty level (FPL) is a set of income thresholds published annually by the Department of Health and Human Services. In 2023, the poverty line was $14,580 for one person and $30,000 for a family of four. It does not vary by geographic location, which critics argue understates poverty in high-cost states."
-  - question: "Does the poverty rate capture all forms of economic hardship"
+  - question: "Does the poverty rate capture all forms of economic hardship?"
     answer: "No. The official poverty measure counts only pre-tax cash income and does not include non-cash benefits like SNAP, Medicaid, or housing assistance. The Supplemental Poverty Measure (SPM), which does account for these factors, produces somewhat different state rankings and generally shows a lower poverty rate nationwide."
 
 related:

@@ -20,15 +20,14 @@ namespace USASymbol.Services.Content
             _yamlDeserializer = new DeserializerBuilder().Build();
         }
 
-        public async Task<SportContent?> GetSportContentAsync(string stateSlug, string contentFileName = "sport.yaml")
+        public async Task<SportContent?> GetSportContentAsync(string stateSlug, string symbolSlug)
         {
-            var normalizedFileName = string.IsNullOrWhiteSpace(contentFileName) ? "sport.yaml" : contentFileName.Trim();
-            var path = Path.Combine(_env.ContentRootPath, "Content", "states", stateSlug, normalizedFileName);
+            var path = Path.Combine(_env.ContentRootPath, "Content", "states", stateSlug, "sport", $"{symbolSlug}.yaml");
 
             if (!File.Exists(path))
                 return null;
 
-            var cacheKey = $"sport-content-{stateSlug}-{normalizedFileName}-{File.GetLastWriteTimeUtc(path).Ticks}";
+            var cacheKey = $"sport-content-{stateSlug}-{symbolSlug}-{File.GetLastWriteTimeUtc(path).Ticks}";
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
@@ -148,7 +147,7 @@ namespace USASymbol.Services.Content
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error parsing {normalizedFileName} for {stateSlug}: {ex.Message}");
+                    Console.WriteLine($"Error parsing {symbolSlug}.yaml for {stateSlug}: {ex.Message}");
                     Console.WriteLine(ex.StackTrace);
                     return null;
                 }

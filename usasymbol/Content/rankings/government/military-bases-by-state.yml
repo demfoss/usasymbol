@@ -1,0 +1,705 @@
+type: ranking
+slug: military-bases-by-state
+category: government
+url: /rankings/government/military-bases-by-state
+auto_link_phrases:
+  - "military bases by state"
+  - "army bases by state"
+  - "most military bases"
+extremes_mode: both
+extremes_title: "States with the Most and Fewest Military Bases"
+hero_image: "/images/rankings/government/military-bases-by-state/military-bases-by-state-hero.jpg"
+hero_image_alt: "Military transport aircraft parked on a base airfield at dawn"
+hero_image_caption: "California hosts 40 major military installations, more than any other state. Virginia follows with 27, and Minnesota and Vermont are the only states without a major active-duty base."
+
+author: "USA Symbol Team"
+date_published: "2026-07-10"
+date_modified: "2026-07-10"
+
+seo:
+  title: "Military Bases by State | Map, Branches & Largest Bases"
+  description: "California has 40 military bases, the most of any state. Virginia follows with 27 and Florida with 21. Minnesota and Vermont have no major bases."
+
+page:
+  h1: "Military Bases by State"
+
+  quick_answer:
+    - "Military bases by state range from 40 in California down to zero in Minnesota and Vermont. Virginia hosts 27 major installations, Florida 21, and Texas 19."
+    - "California's 16 Navy bases are the largest single-branch count in any state. Virginia counts installations from all five branches, including 7 Coast Guard bases, the most in the country."
+    - "Fort Bragg in North Carolina is the largest U.S. base by population, supporting about 260,000 people. White Sands Missile Range in New Mexico is the largest by area at roughly 3,200 square miles."
+
+  methodology: "Base counts are major active-duty installations cataloged by MilBases.com, excluding National Guard and reserve sites. Personnel and spending figures come from DoD data for 2024 and fiscal year 2023."
+
+  sources:
+    - name: "MilBases.com — US Military Bases by State"
+      url: "https://www.milbases.com/"
+      description: "Major active-duty installations by state and branch"
+    - name: "Visual Capitalist — Active-Duty Troops by State (2024)"
+      url: "https://www.visualcapitalist.com/mapped-the-number-of-active-duty-troops-in-each-u-s-state-2024/"
+      description: "Active-duty personnel stationed in each state, DoD data"
+    - name: "Office of Local Defense Community Cooperation — Defense Spending by State FY2023"
+      url: "https://oldcc.gov/defense-spending-state-fiscal-year-2023"
+      description: "DoD contract, payroll, and grant spending by state"
+
+map:
+  title: "Military Bases by State Map"
+  image_alt: "U.S. map showing the number of major military bases in each state, shaded from light for none to dark blue for the most"
+  caption: "California leads with 40 major installations, ahead of Virginia's 27 and Florida's 21. Minnesota and Vermont are the only states without a major active-duty base."
+  metric_key: bases
+  metric_label: "Military Bases"
+  name_key: state
+  color_scheme: blue
+  color_scale: linear
+
+table:
+  searchable: true
+  sortable: true
+  metric_default: bases
+  sort_default: desc
+  toggleable_columns:
+    - army
+    - navy
+    - air_force
+    - marines
+    - coast_guard
+
+  columns:
+    rank: "Rank"
+    state: "State"
+    bases: "Total Bases"
+    army: "Army"
+    navy: "Navy"
+    air_force: "Air Force"
+    marines: "Marines"
+    coast_guard: "Coast Guard"
+
+  rows:
+    - rank: 1
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      bases: 40
+      army: 9
+      navy: 16
+      air_force: 7
+      marines: 6
+      coast_guard: 2
+
+    - rank: 2
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      bases: 27
+      army: 8
+      navy: 10
+      air_force: 1
+      marines: 1
+      coast_guard: 7
+
+    - rank: 3
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      bases: 21
+      army: 1
+      navy: 11
+      air_force: 5
+      marines: 1
+      coast_guard: 3
+
+    - rank: 4
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      bases: 19
+      army: 9
+      navy: 4
+      air_force: 6
+      marines: 0
+      coast_guard: 0
+
+    - rank: 5
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      bases: 13
+      army: 6
+      navy: 3
+      air_force: 1
+      marines: 1
+      coast_guard: 2
+
+    - rank: 6
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      bases: 12
+      army: 7
+      navy: 2
+      air_force: 2
+      marines: 1
+      coast_guard: 0
+
+    - rank: 7
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      bases: 10
+      army: 3
+      navy: 5
+      air_force: 0
+      marines: 0
+      coast_guard: 2
+
+    - rank: 8
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      bases: 10
+      army: 2
+      navy: 1
+      air_force: 2
+      marines: 3
+      coast_guard: 2
+
+    - rank: 9
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      bases: 8
+      army: 2
+      navy: 0
+      air_force: 3
+      marines: 0
+      coast_guard: 3
+
+    - rank: 10
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      bases: 8
+      army: 4
+      navy: 2
+      air_force: 0
+      marines: 1
+      coast_guard: 1
+
+    - rank: 11
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      bases: 7
+      army: 3
+      navy: 0
+      air_force: 3
+      marines: 1
+      coast_guard: 0
+
+    - rank: 12
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      bases: 7
+      army: 2
+      navy: 0
+      air_force: 5
+      marines: 0
+      coast_guard: 0
+
+    - rank: 13
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      bases: 7
+      army: 2
+      navy: 3
+      air_force: 2
+      marines: 0
+      coast_guard: 0
+
+    - rank: 14
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      bases: 7
+      army: 2
+      navy: 0
+      air_force: 3
+      marines: 0
+      coast_guard: 2
+
+    - rank: 15
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      bases: 7
+      army: 1
+      navy: 2
+      air_force: 2
+      marines: 2
+      coast_guard: 0
+
+    - rank: 16
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      bases: 7
+      army: 2
+      navy: 4
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 17
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      bases: 6
+      army: 2
+      navy: 0
+      air_force: 2
+      marines: 0
+      coast_guard: 2
+
+    - rank: 18
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      bases: 6
+      army: 2
+      navy: 1
+      air_force: 1
+      marines: 0
+      coast_guard: 2
+
+    - rank: 19
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      bases: 6
+      army: 4
+      navy: 2
+      air_force: 0
+      marines: 0
+      coast_guard: 0
+
+    - rank: 20
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      bases: 5
+      army: 3
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 1
+
+    - rank: 21
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      bases: 5
+      army: 2
+      navy: 2
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 22
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      bases: 5
+      army: 2
+      navy: 0
+      air_force: 3
+      marines: 0
+      coast_guard: 0
+
+    - rank: 23
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      bases: 4
+      army: 3
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 24
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      bases: 4
+      army: 0
+      navy: 1
+      air_force: 0
+      marines: 0
+      coast_guard: 3
+
+    - rank: 25
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      bases: 4
+      army: 2
+      navy: 1
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 26
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      bases: 4
+      army: 2
+      navy: 0
+      air_force: 1
+      marines: 1
+      coast_guard: 0
+
+    - rank: 27
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      bases: 4
+      army: 1
+      navy: 1
+      air_force: 2
+      marines: 0
+      coast_guard: 0
+
+    - rank: 28
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      bases: 4
+      army: 2
+      navy: 1
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 29
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      bases: 3
+      army: 1
+      navy: 1
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 30
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      bases: 3
+      army: 3
+      navy: 0
+      air_force: 0
+      marines: 0
+      coast_guard: 0
+
+    - rank: 31
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      bases: 3
+      army: 2
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 32
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      bases: 3
+      army: 3
+      navy: 0
+      air_force: 0
+      marines: 0
+      coast_guard: 0
+
+    - rank: 33
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      bases: 3
+      army: 0
+      navy: 1
+      air_force: 0
+      marines: 0
+      coast_guard: 2
+
+    - rank: 34
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      bases: 3
+      army: 2
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 35
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      bases: 2
+      army: 0
+      navy: 2
+      air_force: 0
+      marines: 0
+      coast_guard: 0
+
+    - rank: 36
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      bases: 2
+      army: 1
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 37
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      bases: 2
+      army: 0
+      navy: 0
+      air_force: 2
+      marines: 0
+      coast_guard: 0
+
+    - rank: 38
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      bases: 2
+      army: 0
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 1
+
+    - rank: 39
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      bases: 2
+      army: 0
+      navy: 0
+      air_force: 0
+      marines: 0
+      coast_guard: 2
+
+    - rank: 40
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      bases: 1
+      army: 0
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 41
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      bases: 1
+      army: 0
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 42
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      bases: 1
+      army: 0
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 43
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      bases: 1
+      army: 0
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 44
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      bases: 1
+      army: 0
+      navy: 1
+      air_force: 0
+      marines: 0
+      coast_guard: 0
+
+    - rank: 45
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      bases: 1
+      army: 1
+      navy: 0
+      air_force: 0
+      marines: 0
+      coast_guard: 0
+
+    - rank: 46
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      bases: 1
+      army: 0
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 47
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      bases: 1
+      army: 1
+      navy: 0
+      air_force: 0
+      marines: 0
+      coast_guard: 0
+
+    - rank: 48
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      bases: 1
+      army: 0
+      navy: 0
+      air_force: 1
+      marines: 0
+      coast_guard: 0
+
+    - rank: 49
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      bases: 0
+      army: 0
+      navy: 0
+      air_force: 0
+      marines: 0
+      coast_guard: 0
+
+    - rank: 50
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      bases: 0
+      army: 0
+      navy: 0
+      air_force: 0
+      marines: 0
+      coast_guard: 0
+
+sections:
+  - id: "most-military-bases"
+    icon: "fa-solid fa-flag-usa"
+    title: "States with the Most Military Bases"
+    paragraphs:
+      - "California hosts 40 major military installations, more than any other state. Virginia follows with 27, Florida has 21, and Texas rounds out the leaders with 19."
+      - "Hawaii places fifth with 13 bases and counts installations from all five branches. Georgia's 12 include seven Army posts, trailing only Texas and California, which have nine each."
+
+  - id: "bases-by-branch"
+    icon: "fa-solid fa-anchor"
+    title: "Military Bases by Branch"
+    paragraphs:
+      - "Navy bases concentrate on the coasts. California has 16, the largest single-branch count in any state, followed by Florida with 11 and Virginia with 10."
+      - "Marine Corps installations appear in only ten states, led by California with 6 and North Carolina with 3. Virginia's 7 Coast Guard bases are the most in the country."
+
+  - id: "largest-military-base"
+    icon: "fa-solid fa-ranking-star"
+    title: "Largest Military Base in the US"
+    paragraphs:
+      - "Fort Bragg in North Carolina is the largest U.S. military installation by population, supporting about 260,000 people, including some 54,000 troops. The post accounts for more than half of the state's active-duty personnel."
+      - "White Sands Missile Range in New Mexico is the largest base by area, covering roughly 3,200 square miles. That footprint is about the size of Rhode Island and Delaware combined."
+
+  - id: "personnel-by-state"
+    icon: "fa-solid fa-users"
+    title: "Active-Duty Military Personnel by State"
+    paragraphs:
+      - "California stations 162,362 active-duty troops, the most in the country. Virginia follows at 130,857, anchored by Naval Station Norfolk, the world's largest naval base, and Texas hosts 118,691."
+      - "North Carolina's 100,673 troops rank fourth, with more than half stationed at Fort Bragg. Georgia completes the top five."
+
+  - id: "defense-spending"
+    icon: "fa-solid fa-sack-dollar"
+    title: "Defense Spending by State"
+    paragraphs:
+      - "Defense contracts, payroll, and grants delivered $609.2 billion to the states in fiscal 2023, about 2.2% of U.S. GDP. Texas received the most at $71.6 billion, ahead of Virginia's $68.5 billion and California's $60.8 billion."
+      - "Virginia, Hawaii, and Connecticut rank highest when spending is measured against state GDP. Florida at $32.3 billion and Maryland at $27.8 billion complete the top five for total dollars."
+
+visual_assets:
+  - id: most-military-bases
+    src: /images/rankings/government/military-bases-by-state/most-military-bases.jpg
+    alt: "Navy warships docked side by side at a large naval station"
+    caption: "California hosts 40 major installations, including 16 Navy bases, the largest single-branch count in any state. Virginia and Florida follow with 27 and 21 bases."
+    section: most-military-bases
+    layout: right
+
+  - id: largest-military-base
+    src: /images/rankings/government/military-bases-by-state/largest-military-base.jpg
+    alt: "Soldiers boarding a transport aircraft on a wide military airfield"
+    caption: "Fort Bragg in North Carolina supports about 260,000 people, the largest base population in the country. White Sands Missile Range in New Mexico covers the largest area at roughly 3,200 square miles."
+    section: largest-military-base
+    layout: left
+
+faq:
+  - question: "Which state has the most military bases?"
+    answer: "California, with 40 major installations. The total breaks down to 16 Navy, 9 Army, 7 Air Force, 6 Marine Corps, and 2 Coast Guard bases."
+
+  - question: "How many military bases are in the US?"
+    answer: "MilBases.com catalogs 304 major active-duty installations across the 50 states. The count excludes National Guard, reserve, and overseas facilities, so broader Pentagon tallies run higher."
+
+  - question: "Which states have no military bases?"
+    answer: "Minnesota and Vermont. Neither state hosts a major active-duty installation from any branch, though the count does not include National Guard facilities."
+
+  - question: "What is the largest military base in the US?"
+    answer: "Fort Bragg in North Carolina is the largest by population, home to about 260,000 people. White Sands Missile Range in New Mexico covers the most area at roughly 3,200 square miles, comparable to Rhode Island and Delaware combined."
+
+  - question: "Which state has the most Army bases?"
+    answer: "Texas and California share the lead with nine Army installations each. Virginia has 8 and Georgia has 7."
+
+  - question: "Which state has the most active-duty military personnel?"
+    answer: "California, with 162,362 active-duty troops stationed in the state as of 2024. Virginia is second at 130,857, and Texas third at 118,691."
+
+related:
+  - title: "Electoral Votes by State"
+    url: "/rankings/government/electoral-votes-by-state"
+  - title: "Police Officers per Capita"
+    url: "/rankings/government/police-officers-per-capita"
+  - title: "Gun Ownership by State"
+    url: "/rankings/government/gun-ownership-by-state"
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"

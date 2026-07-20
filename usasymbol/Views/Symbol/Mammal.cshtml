@@ -79,7 +79,7 @@
 
 <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-6 lg:py-10">
 
-    <div class="symbol-editorial lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12">
+    <div class="symbol-editorial lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_300px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12">
 
         @await Html.PartialAsync("_SymbolHero", heroModel)
 
@@ -90,7 +90,7 @@
         </aside>
 
         <div class="min-w-0">
-            <div class="content-flow site-content">
+            <div class="journey-content content-flow site-content">
                 @{
                     IHtmlContent mammalOverviewBody = !string.IsNullOrEmpty(introText)
                         ? introText.RenderAutoLinks()
@@ -141,7 +141,7 @@
             <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
                 @await Html.PartialAsync("_RelatedSymbols", Model)
                 @await Html.PartialAsync("_RelatedStatesSidebar", Model)
-                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
             </div>
 
             <div class="content-divider">
@@ -149,7 +149,7 @@
             </div>
         </div>
 
-        <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+        <aside class="journey-sidebar mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start" aria-label="Article sidebar">
             @if (quickFacts.Any())
             {
                 <section class="relative min-h-[calc(100vh-5rem)] pb-16">
@@ -173,7 +173,7 @@
 
             <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
                 <div class="sticky top-32 pr-2">
-                    @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
                 </div>
             </section>
         </aside>

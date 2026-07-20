@@ -19,7 +19,7 @@ page:
   h1: "Uninsured Rate by State"
   quick_answer:
     - "Texas has the highest uninsured rate at 16.4%, a position it has held for years by not expanding Medicaid. Low-income adults earn too little for ACA marketplace subsidies but too much for traditional Medicaid, leaving them uninsured."
-    - "Massachusetts (2.6%) has the lowest uninsured rate, with Hawaii (3.2%) close behind. Massachusetts has had near-universal coverage since enacting its own health reform law in 2006 — the model for the ACA. Hawaii has a long-standing employer mandate that predates the ACA."
+    - "Massachusetts (2.6%) has the lowest uninsured rate, with Hawaii (3.2%) close behind. Massachusetts has had near-universal coverage since enacting its own health reform law in 2006, the model for the ACA. Hawaii's employer mandate predates the ACA by decades."
     - "The national uninsured rate is approximately 8% as of 2023, down significantly from 16% in 2010. States that expanded Medicaid have consistently lower uninsured rates than non-expansion states."
   methodology: "Uninsured rates represent the percentage of the civilian noninstitutionalized population with no health insurance coverage. Figures are 2023 one-year estimates from the U.S. Census Bureau American Community Survey (ACS), Table B27010."
   sources:
@@ -48,7 +48,7 @@ computed_data:
   metric_key: uninsured_rate
 
 compare:
-  metric_slug: health
+  metric_slug: uninsured-rate
   title: "Compare Health Insurance Coverage Between Two States"
   description: "Pick two states to see a full side-by-side breakdown of health coverage, income, taxes, and more."
   icon: "fa-solid fa-notes-medical"
@@ -70,7 +70,7 @@ sections:
 
   - id: "medicaid_expansion_key"
     icon: "fa-solid fa-file-medical"
-    title: "Medicaid Expansion Is the Single Biggest Policy Variable"
+    title: "How Medicaid Expansion Affects Uninsured Rates"
     paragraphs:
       - "The ACA's Medicaid expansion, made available to states in 2014, extended coverage to adults with incomes up to 138% of the federal poverty line. States that adopted expansion generally saw uninsured rates fall by 30% to 50% over the following five years. States that did not expand, including Texas, Florida, Georgia, and several Southern states, kept uninsured rates significantly higher."
       - "The staggered adoption creates a visible policy experiment in the data: states that expanded earlier consistently outperform states that expanded later or not at all. Michigan (4.5%), which expanded Medicaid in 2014, now has one of the lowest uninsured rates of any non-coastal state despite being a Rust Belt economy with average household income near the national median."
@@ -97,13 +97,13 @@ visual_assets:
     layout: right
 
 faq:
-  - question: "Which state has the most people without health insurance"
+  - question: "Which state has the most people without health insurance?"
     answer: "Texas has the highest uninsured rate in the U.S. at approximately 16–17%. The state has not expanded Medicaid under the Affordable Care Act, which leaves roughly 1–2 million low-income adults in a coverage gap. Texas also has a large undocumented immigrant population ineligible for most public coverage programs."
-  - question: "Which states have near-universal health coverage"
+  - question: "Which states have near-universal health coverage?"
     answer: "Massachusetts (2.6%) and Hawaii (3.2%) have the lowest uninsured rates. Massachusetts enacted the Health Connector reform in 2006 with an individual mandate, employer requirement, and Medicaid expansion — the template for the ACA. Hawaii has required employers to provide insurance to employees working more than 20 hours per week since 1974."
-  - question: "How does Medicaid expansion affect uninsured rates"
-    answer: "States that expanded Medicaid under the ACA (38 states plus D.C. as of 2025) cover adults earning up to 138% of the federal poverty level. Non-expansion states leave a gap for adults above traditional Medicaid eligibility but below income thresholds for marketplace subsidies. Non-expansion states consistently have higher uninsured rates."
-  - question: "Why does having health insurance matter for state comparisons"
+  - question: "How does Medicaid expansion affect uninsured rates?"
+    answer: "States that expanded Medicaid under the ACA (38 states as of 2025) cover adults earning up to 138% of the federal poverty level. Non-expansion states leave a gap for adults above traditional Medicaid eligibility but below income thresholds for marketplace subsidies. Non-expansion states consistently have higher uninsured rates."
+  - question: "Why does having health insurance matter for state comparisons?"
     answer: "Uninsured individuals delay or forgo preventive care, leading to worse health outcomes and higher emergency department use. States with higher uninsured rates tend to have lower life expectancy, higher rates of undetected chronic disease, and higher uncompensated care costs shifted to hospitals and insured patients."
 
 related:

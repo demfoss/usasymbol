@@ -20,7 +20,7 @@ page:
   quick_answer:
     - "California has the highest unemployment rate at 5.5%, followed by New Jersey (5.4%) and Nevada (5.2%). All three states have large service and hospitality sectors sensitive to economic cycles."
     - "Hawaii and South Dakota both record the lowest unemployment rates at 2.2%, followed by North Dakota and Vermont at 2.6%. These states have small, tight labor markets with limited seasonal volatility."
-    - "The national unemployment rate has ranged from 3.4% to 4.1% throughout 2024–2025 (BLS). Most states fall within two percentage points of that range; outliers on both ends reflect structural rather than cyclical factors."
+    - "The national unemployment rate has ranged from 3.4% to 4.1% throughout 2024–2025 (BLS). Most states fall within two percentage points of that range, and outliers on both ends reflect structural rather than cyclical factors."
   methodology: "Unemployment rates are seasonally adjusted annual averages from the Bureau of Labor Statistics (BLS) Local Area Unemployment Statistics (LAUS) program. The rate measures the percentage of the civilian labor force that is unemployed and actively seeking work."
   sources:
     - name: "Bureau of Labor Statistics — Local Area Unemployment Statistics (LAUS)"
@@ -45,7 +45,7 @@ computed_data:
   metric_key: unemployment
 
 compare:
-  metric_slug: economy
+  metric_slug: unemployment-rate
   title: "Compare Unemployment Between Two States"
   description: "Pick two states to see a side-by-side breakdown of employment, income, and economic data."
   icon: "fa-solid fa-briefcase"
@@ -56,7 +56,7 @@ sections:
     title: "Why the Dakotas and Hawaii Have the Lowest Unemployment"
     paragraphs:
       - "South Dakota and Hawaii both record unemployment rates of 2.2%, the lowest in the country. North Dakota is close at 2.6%. Both states have small, tight labor markets where agriculture, energy, and financial services provide stable year-round employment. North Dakota's oil patch in the Williston Basin generates demand for workers across drilling, logistics, and support industries."
-      - "Hawaii (2.2%) matches the Dakotas through a different mechanism: near-full employment in tourism and hospitality during the post-pandemic travel recovery. Vermont (2.6%) and Alabama (2.7%) follow. Population size plays a role, with fewer than 800,000 residents each, the Dakotas see measurable rate changes from relatively small shifts in hiring."
+      - "Hawaii matches the Dakotas through a different mechanism, near-full employment in tourism and hospitality during the post-pandemic travel recovery. Vermont (2.6%) and Alabama (2.7%) follow close behind. Population size plays a role too. With fewer than 800,000 residents each, the Dakotas can see measurable rate changes from relatively small shifts in hiring."
 
   - id: "why_california_high"
     icon: "fa-solid fa-city"
@@ -70,7 +70,7 @@ sections:
     title: "What the Unemployment Rate Does Not Measure"
     paragraphs:
       - "The official unemployment rate counts only people who are actively looking for work. It excludes discouraged workers, people who want jobs but have stopped applying, as well as part-time workers who want full-time positions. States with high rates of labor force non-participation can show low unemployment figures despite widespread joblessness."
-      - "West Virginia illustrates this. Its unemployment rate is 4.6%, near the national average, but its employment-population ratio is only 55.8%, fewer than 56% of working-age adults are employed. Many West Virginians are neither employed nor classified as unemployed because they are not actively searching. The broader U-6 measure, which includes discouraged and underemployed workers, typically runs 3 to 4 points above the headline rate in states with high non-participation."
+      - "West Virginia illustrates this. Its unemployment rate is 4.6%, near the national average, but its employment-population ratio is only 55.8%. Fewer than 56% of working-age adults are employed, since many West Virginians are neither employed nor classified as unemployed because they are not actively searching. The broader U-6 measure, which includes discouraged and underemployed workers, typically runs 3 to 4 points above the headline rate in states with high non-participation."
 
 visual_assets:
   - id: dakotas-unemployment-placeholder
@@ -87,13 +87,13 @@ visual_assets:
     layout: right
 
 faq:
-  - question: "Which state has the highest unemployment rate"
-    answer: "Nevada and California consistently rank among the states with the highest unemployment rates. Nevada's economy depends heavily on tourism and hospitality — industries that are especially sensitive to recessions and travel slowdowns. California's large size and diverse economy produces both high-wage tech jobs and high unemployment in lower-wage service sectors."
-  - question: "Which state has the lowest unemployment rate"
+  - question: "Which state has the highest unemployment rate?"
+    answer: "Nevada and California consistently rank among the states with the highest unemployment rates. Nevada's economy depends heavily on tourism and hospitality, industries that are especially sensitive to recessions and travel slowdowns. California's large size and diverse economy produces both high-wage tech jobs and high unemployment in lower-wage service sectors."
+  - question: "Which state has the lowest unemployment rate?"
     answer: "Hawaii and South Dakota record the lowest unemployment rates at 2.2%, followed by North Dakota and Vermont at 2.6%. These states have small, tight labor markets and economies anchored by agriculture, tourism, and energy that offer stable year-round employment."
-  - question: "What counts as unemployed in the BLS data"
+  - question: "What counts as unemployed in the BLS data?"
     answer: "The BLS counts someone as unemployed only if they are without a job, available to work, and have actively looked for work in the past four weeks. People who have stopped looking (discouraged workers) are not counted in the official unemployment rate, which is why some economists also track U-6, a broader measure."
-  - question: "Does a low unemployment rate mean the economy is strong"
+  - question: "Does a low unemployment rate mean the economy is strong?"
     answer: "A low unemployment rate is a positive indicator, but context matters. A state can have low unemployment because it has a thriving economy or because people have left the labor force entirely. The employment-to-population ratio captures a fuller picture of how many working-age residents are actually employed."
 
 related:

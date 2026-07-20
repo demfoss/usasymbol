@@ -21,6 +21,12 @@ FACTS — hard rules
 - Every sentence must cite a specific value from the table (number, rank, state, name). Cut any sentence that doesn't.
 - If the payload does not contain a fact, do not write about it.
 
+WHY IT RANKS THAT WAY (optional, payload-only)
+- If the payload's notes or sources give an actual reason behind a #1 or last-place result (geographic, geological, climate, historical, legal), add ONE short clause or sentence surfacing it. This is the most interesting part of the page when it exists, so do not bury it or cut it for space.
+- Example shape: "Hawaii logs the most X, a result tied to [reason from payload]." Never write the reason if it is not explicitly in the payload; a plausible-sounding guess is an invented fact and is banned.
+- Best home for this: the relevant top-10 section paragraph, under its own H2 (e.g. "Why [State] Has the Most/Least [Topic]"). Prefer this over a FAQ entry — the section reads more naturally as the page's editorial payoff, and the H2 itself absorbs the same "why does [state] have the most/least [topic]" search phrasing. Only fall back to a FAQ entry if no section paragraph can naturally carry it.
+- One reason per page is enough. Do not stretch it across multiple sections, and never repeat it in both a section and the FAQ.
+
 SECTIONS
 - H2 length: there's no strict rule, but typically 4-8 words is considered optimal for section headings ≤45 symbols
 - Write only sections derivable from the table rows: outliers, clusters, ties, reversals, state-line anomalies.
@@ -71,7 +77,23 @@ MAP CAPTION
 - 1–2 sentences. Cite actual table values (top, bottom, outlier). No invented patterns.
 
 METHODOLOGY
-- 1–2 sentences max. Source name, metric definition, date/version, known exclusions only.
+- 1–2 sentences max, ~250 characters. Source name, metric definition, date/version, known exclusions only. NEVER a paragraph.
+- Source names (ARLHS, NGF, EIA, Census, etc.) appear ONLY in methodology and sources — never in quick_answer, captions, section paragraphs, or FAQ. Use "on record" / "listed" instead.
+
+TABLE & MAP — hard rules
+- Main table: max 6 display columns (rank + state + 3–4 data columns). Extra per-row facts go into a "notes" row key (renders as a hover chip), NOT into more columns.
+- Never mix "None"/"N/A"/0 placeholders into name or height columns — omit the key entirely for states without data.
+- Every ranking MUST have a map block: metric_key pointing at the main numeric column, a metric_label, and a non-blue color_scheme (green, teal, orange, amber, purple, red, red-green). Use color_scale: log when the top value is 20x+ the bottom.
+- Each key data angle (per capita, largest X, oldest X, prices) gets its own section with a small top-10 table under a searchable H2 — never extra columns in the main table.
+
+NUMBER FORMATS — hard rules (get this wrong and $ / % silently disappear on the live page)
+- The main table (`table:`) and every section table (`sections[].table:`) render through two DIFFERENT, incompatible engines. Follow the right rule for each or values render blank or unformatted.
+- Main table: keep every numeric cell a raw, unquoted number (10240, not "$10,240"; 13.30, not "13.30%") — sorting and the map's metric_key depend on real numbers. Then add a `column_formats:` block under `table:` mapping each dollar or percent column key to a .NET format string:
+  - Currency: "C0" (whole dollars) or "C2" (cents).
+  - Percent that is already stored as a percent value (13.30 meaning 13.30%, NOT 0.1330): use an escaped literal like "0.00'%'", "0.0'%'", or "0'%'". NEVER use the bare "P" format on a value already multiplied by 100 — "P" multiplies by 100 again and produces a garbage number.
+  - Plain counts (population, years, weeks, ranks) need no entry; leave them as raw numbers.
+- Section tables (the small top-10/bottom-10 tables inside `sections[].table.rows`) have NO format engine at all — they print each cell exactly as given, no conversion. Any dollar or percent value there MUST already be written as a formatted string in the YAML itself ("$10,240", "13.30%", "+189%"), not a raw number, or it renders as a bare, unformatted digit.
+- Never cross the two: don't quote main-table numeric values as strings (breaks sort and the map), and don't leave section-table dollar/percent values as bare numbers (breaks the display).
 
 KEYWORDS
 - Primary keyword: use naturally in seo.title, page.h1, and the first sentence of quick_answer[0].
@@ -84,7 +106,7 @@ KEYWORDS
 FAQ
 - FAQ is the primary text block on ranking pages — it carries most of the keyword surface and most of the readable content. Treat it as the editorial core, not a footnote.
 - 4–6 questions answerable directly from the table data. No questions requiring outside knowledge.
-- Phrase as real Google searches: "What is the [topic] in [State]?", "Which state has the most/least [topic]?"
+- Phrase as real Google searches: "What is the [topic] in [State]?", "Which state has the most/least [topic]?", and "Why does [state] have the most/least [topic]?" when the payload supplies a real reason (see WHY IT RANKS THAT WAY above).
 - Answers: state the number or name first, add one supporting data point if needed, stop. 1–3 sentences per answer. Vary length across answers — not all the same.
 - Bad: "That's a great question. Many states have varying levels of X, and it is worth noting that the data shows some interesting contrasts. Utah, for example, ranks first with a notable figure."
 - Good: "Utah ranks first with 74.3%. The next closest state, Colorado, is 8 points lower at 66.1%."

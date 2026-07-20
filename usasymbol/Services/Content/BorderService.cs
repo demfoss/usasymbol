@@ -123,7 +123,9 @@ namespace USASymbol.Services
                             NeighborKind = GetString(cardDict, "neighbor_kind"),
                             BorderType = GetString(cardDict, "border_type"),
                             Features = GetString(cardDict, "features"),
-                            Anchor = GetString(cardDict, "anchor")
+                            Anchor = GetString(cardDict, "anchor"),
+                            Image = string.IsNullOrEmpty(GetString(cardDict, "image")) ? null : GetString(cardDict, "image"),
+                            ParkName = string.IsNullOrEmpty(GetString(cardDict, "park_name")) ? null : GetString(cardDict, "park_name")
                         });
                     }
                 }

@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using USASymbol.Models.Content;
 using USASymbol.Models.ViewModels;
 using USASymbol.Services;
+using USASymbol.Services.Interface;
+using Usasymbol.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,15 +14,18 @@ namespace USASymbol.Controllers
     {
         private readonly ICollectionsContentService _service;
         private readonly ILatestContentRailService _latestContentRailService;
+        private readonly IMapPngService _mapPngService;
         private readonly ILogger<CollectionsController> _logger;
 
         public CollectionsController(
             ICollectionsContentService service,
             ILatestContentRailService latestContentRailService,
+            IMapPngService mapPngService,
             ILogger<CollectionsController> logger)
         {
             _service = service;
             _latestContentRailService = latestContentRailService;
+            _mapPngService = mapPngService;
             _logger  = logger;
         }
 
@@ -81,6 +86,17 @@ namespace USASymbol.Controllers
                 ViewData["Description"] = content.Seo?.Description;
                 ViewData["Canonical"]   = content.Url;
                 ViewData["LatestContentRail"] = await _latestContentRailService.GetLatestItemsAsync(8);
+
+                if (string.IsNullOrWhiteSpace(content.HeroImage) && content.Map != null && content.Table?.Rows?.Count > 0)
+                {
+                    var choropleth = string.IsNullOrWhiteSpace(content.Map.MetricKey)
+                        ? ChoroplethBuilder.BuildFlat(content.Table.Rows)
+                        : ChoroplethBuilder.Build(content.Map, content.Table.Rows);
+
+                    var mapPngPath = await _mapPngService.EnsureMapPngAsync(slug, choropleth.Entries);
+                    if (mapPngPath != null)
+                        ViewData["MapPngPath"] = mapPngPath;
+                }
 
                 return View("Detail", vm);
             }

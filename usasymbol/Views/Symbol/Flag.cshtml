@@ -19,11 +19,7 @@
     var baseTitle = string.IsNullOrWhiteSpace(stateName) ? designation : $"{stateName} {designation}";
 
     var flagName = SymbolDetailViewModel.FirstNonEmpty(Model.FlagContent?.Name, Model.Symbol?.Name);
-    var pageHeading = !string.IsNullOrWhiteSpace(flagName)
-        ? string.Equals(flagName.Trim(), baseTitle, StringComparison.OrdinalIgnoreCase)
-            ? baseTitle
-            : $"{baseTitle}: {flagName}"
-        : baseTitle;
+    var pageHeading = !string.IsNullOrWhiteSpace(flagName) ? flagName : baseTitle;
 
     var descRaw = Model.FlagContent?.SeoDescription ?? "";
     ViewData["Title"] = Model.FlagContent?.SeoTitle ?? pageHeading;
@@ -39,6 +35,9 @@
         .ToList();
 
     var hasMeaning = !string.IsNullOrWhiteSpace(Model.Meaning);
+    var navaRankFact = quickFacts.FirstOrDefault(f =>
+        (f.Label ?? "").IndexOf("rank", StringComparison.OrdinalIgnoreCase) >= 0 ||
+        (f.Label ?? "").IndexOf("nava", StringComparison.OrdinalIgnoreCase) >= 0);
     var introText = Model.FlagContent?.IntroText ?? string.Empty;
     var overviewText = !string.IsNullOrWhiteSpace(introText)
         ? introText
@@ -188,37 +187,11 @@
             </aside>
 
             <div class="min-w-0">
-                <div class="content-flow site-content">
+                <div class="journey-content content-flow site-content">
                     @await Html.PartialAsync("_Overview", null, new ViewDataDictionary(ViewData) {
                         { "Heading", overviewHeading },
                         { "Body", overviewText.RenderAutoLinks() }
                     })
-
-                    @if (quickFacts.Any())
-                    {
-                        <div class="xl:hidden">
-                            @await Html.PartialAsync("_QuickFacts", quickFacts)
-                        </div>
-                    }
-
-                    @if (hasMeaning)
-                    {
-                        <section id="symbolic-meaning" class="content-divider">
-                            <div class="rounded-[1.6rem] border border-slate-200/80 bg-white/40 p-6 sm:p-7">
-                                <div class="flex items-start gap-4 lg:gap-5">
-                                    <div class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full bg-white/70 text-slate-600">
-                                        <i class="fa-solid fa-book-open text-sm"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Symbolic Meaning</div>
-                                        <div class="mt-3 max-w-3xl text-slate-700">
-                                            @Model.Meaning.RenderAutoLinks()
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    }
 
                     @await Html.PartialAsync("_FlagSections", Model)
 
@@ -233,7 +206,7 @@
                     <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
                         @await Html.PartialAsync("_RelatedSymbols", Model)
                         @await Html.PartialAsync("_RelatedStatesSidebar", Model)
-                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                        @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
                     </div>
 
                     <div class="content-divider">
@@ -242,7 +215,7 @@
                 </div>
             </div>
 
-            <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+            <aside class="journey-sidebar mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start" aria-label="Article sidebar">
                 @if (quickFacts.Any())
                 {
                     <section class="relative min-h-[calc(100vh-5rem)] pb-16">
@@ -266,7 +239,7 @@
 
                 <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
                     <div class="sticky top-32 pr-2">
-                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                        @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
                     </div>
                 </section>
             </aside>

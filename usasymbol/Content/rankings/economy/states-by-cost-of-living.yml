@@ -20,7 +20,7 @@ page:
   quick_answer:
     - "Hawaii is the most expensive state to live in, with a cost-of-living index of 187, placing everyday expenses 87% above the national average. Housing, groceries, and utilities cost more due to its island location and dependence on imports."
     - "West Virginia is the cheapest state with an index of 83.6, followed by Mississippi (85.5) and Arkansas (87.6). In these states, the same dollar buys significantly more than it would in a high-cost state like Hawaii or California."
-    - "The national average is set at 100 by the MERIC/C2ER index. States above 100 are more expensive than average; states below 100 are cheaper. Thirty states fall below the national average."
+    - "The national average is set at 100 by the MERIC/C2ER index. States above 100 are more expensive than average, and states below 100 are cheaper. Thirty states fall below the national average."
   methodology: "Cost of living index values are composite MERIC/C2ER (Missouri Economic Research and Information Center / Council for Community and Economic Research) scores using data from the most recent quarterly Cost of Living Index report. The index covers grocery items, housing, utilities, transportation, health care, and miscellaneous goods and services. 100 = national average."
   sources:
     - name: "Missouri Economic Research and Information Center (MERIC) — Cost of Living Index"
@@ -45,7 +45,7 @@ computed_data:
   metric_key: col_index
 
 compare:
-  metric_slug: economy
+  metric_slug: cost-of-living
   title: "Compare Cost of Living Between Two States"
   description: "Pick two states to see a full side-by-side breakdown of cost of living, income, taxes, and more."
   icon: "fa-solid fa-cart-shopping"
@@ -67,7 +67,7 @@ sections:
 
   - id: "coast_vs_interior"
     icon: "fa-solid fa-arrows-left-right"
-    title: "Coastal vs. Interior: The Clearest Geographic Split in Cost of Living"
+    title: "Coastal States Have the Highest Cost of Living"
     paragraphs:
       - "Thirty-three states have a cost-of-living index below the national average of 100. Almost all are in the South, Midwest, or Great Plains. The most expensive states, Hawaii, Massachusetts, California, New York, and Alaska, are coastal or geographically isolated. Coastal labor markets pay higher wages, which drives up housing prices, service costs, and retail prices in a reinforcing cycle."
       - "The inland Mountain West is a partial exception. Colorado (110.2) and Montana (105.2) have risen above the national average as remote-work migration brings high-earning households from coastal cities. Idaho (103.3) crossed above 100 in recent years for the same reason. States that were inexpensive a decade ago are seeing cost structures change as migration reshapes their housing markets."
@@ -94,13 +94,13 @@ visual_assets:
     layout: right
 
 faq:
-  - question: "Which state has the highest cost of living"
+  - question: "Which state has the highest cost of living?"
     answer: "Hawaii has the highest cost of living in the U.S. with a composite index of around 187, meaning expenses run 87% above the national average. The state's remote location in the Pacific Ocean means most goods must be shipped or flown in, which drives up prices for groceries, fuel, and building materials."
-  - question: "Which state has the lowest cost of living"
+  - question: "Which state has the lowest cost of living?"
     answer: "West Virginia consistently ranks as the least expensive state in the U.S. with a cost of living index of 83.6. Housing costs are the lowest of any state — median home value around $125,000 — and everyday expenses like groceries and utilities are well below the national average."
-  - question: "What does a cost of living index of 100 mean"
+  - question: "What does a cost of living index of 100 mean?"
     answer: "An index of 100 represents the national average. A state with an index of 120 costs 20% more than average to live in; a state with an index of 85 costs 15% less. The C2ER index covers six categories: groceries, housing, utilities, transportation, health care, and miscellaneous goods and services."
-  - question: "Does a high cost of living mean a lower standard of living"
+  - question: "Does a high cost of living mean a lower standard of living?"
     answer: "Not necessarily. High-cost states often have higher wages that partially offset expenses. Purchasing power — income adjusted for cost of living — is a better measure of real living standards. Some low-income, low-cost states offer less purchasing power than high-income, high-cost states."
 
 related:

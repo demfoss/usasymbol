@@ -18,14 +18,14 @@ date_modified: "2026-05-24"
 
 seo:
   title: "Average Dinner Time by State | Map & Peak Hours"
-  description: "Pennsylvania has the earliest peak dinner time, while Washington, D.C. has the latest, based on American Time Use Survey data."
+  description: "Pennsylvania has the earliest peak dinner time, while Texas and Mississippi tie for the latest, based on American Time Use Survey data."
 
 page:
   h1: "Average Dinner Time by State"
 
   quick_answer:
-    - "Pennsylvania has the earliest peak dinner time in the United States at 5:37 p.m.; Washington D.C. is the latest at 7:10 p.m. The national peak is 6:19 p.m., with most states clustering between 6:00 and 6:30 p.m."
-    - "Peak dinner time is the moment when the highest share of residents in a state are eating their evening meal, based on American Time Use Survey data. It is not a fixed schedule; most Americans eat somewhere between 5:00 p.m. and 8:30 p.m."
+    - "Pennsylvania has the earliest peak dinner time in the United States at 5:37 p.m., while Texas and Mississippi are the latest at 7:02 p.m. The national peak is 6:19 p.m., with most states clustering between 6:00 and 6:30 p.m."
+    - "Peak dinner time is the moment when the highest share of residents in a state are eating their evening meal, based on American Time Use Survey data. It is not a fixed schedule, and most Americans eat somewhere between 5:00 p.m. and 8:30 p.m."
 
   methodology: "Peak dinner time represents the time of day when the highest share of residents in a state are eating their evening meal, based on American Time Use Survey (ATUS) data from 2018–2019 and 2021–2022. The 2020 survey year was excluded due to pandemic disruptions to normal eating schedules. Data compiled and ranked by World Population Review from ATUS analysis."
 
@@ -391,18 +391,11 @@ table:
       dinner_time: "7:02 pm"
       dinner_minutes: 422
 
-    - rank: 51
-      state: "District of Columbia"
-      state_slug: "district-of-columbia"
-      postal_code: "DC"
-      dinner_time: "7:10 pm"
-      dinner_minutes: 430
-
 map:
   title: "Average Dinner Time by State 2026 Map"
   image: "/images/rankings/food/dinner-time-by-state/dinner-time-by-state-map.webp"
-  image_alt: "Choropleth map of the United States color-coded by peak dinner time, with Pennsylvania and Maine the lightest (earliest) and Texas and Washington D.C. the darkest (latest)"
-  caption: "Lighter shading indicates earlier dinner. Pennsylvania (5:37 pm) and Maine (5:40 pm) eat the earliest. Washington D.C. (7:10 pm), Texas (7:02 pm), and Mississippi (7:02 pm) eat the latest. The national peak is 6:19 pm."
+  image_alt: "Choropleth map of the United States color-coded by peak dinner time, with Pennsylvania and Maine the lightest and Texas and Mississippi the darkest"
+  caption: "Lighter shading indicates earlier dinner. Pennsylvania (5:37 pm) and Maine (5:40 pm) eat the earliest. Texas (7:02 pm), Mississippi (7:02 pm), Arkansas (7:00 pm), and Tennessee (7:00 pm) eat the latest. The national peak is 6:19 pm."
   metric_key: dinner_minutes
   metric_label: "peak dinner time"
   tooltip_label: dinner_time
@@ -422,8 +415,8 @@ sections:
     icon: "fa-solid fa-moon"
     title: "States That Eat Dinner the Latest"
     paragraphs:
-      - "Washington D.C. has the latest peak dinner time at 7:10 p.m., eight minutes later than the next group. Mississippi and Texas both peak at 7:02 p.m., followed by Arkansas and Tennessee at 7:00 p.m. The gap between the earliest state (Pennsylvania, 5:37 p.m.) and the latest (D.C., 7:10 p.m.) is 1 hour and 33 minutes."
-      - "D.C.'s late dinner time reflects its urban professional population. Long workdays, longer commutes, and a restaurant-heavy food culture all push the evening meal later. It is one of the few places in the country where dining out at 8:00 p.m. is unremarkable."
+      - "Texas and Mississippi have the latest peak dinner time among states at 7:02 p.m. Arkansas and Tennessee follow at 7:00 p.m. The gap between the earliest state (Pennsylvania, 5:37 p.m.) and the latest states (Texas and Mississippi, 7:02 p.m.) is 1 hour and 25 minutes."
+      - "Later-dinner states tend to have active restaurant cultures and larger working households where dinner often begins after 6:30 p.m. Texas and Mississippi sit at the far end of that pattern, with Arkansas and Tennessee close behind."
       - "Mississippi, Texas, Tennessee, and Arkansas all peak at or after 7:00 p.m. These states have active restaurant cultures and large working households where dinner typically begins after 6:30 p.m. Nebraska (6:51 p.m.) and Missouri (6:45 p.m.) are the late outliers among Midwestern states."
 
   - id: "what-time-do-americans-usually-eat-dinner"
@@ -431,7 +424,7 @@ sections:
     title: "What Time Do Americans Usually Eat Dinner?"
     paragraphs:
       - "The national peak dinner time is 6:19 p.m., the moment when the largest share of Americans are eating their evening meal. California's 6:19 p.m. exactly matches this national figure. Most Americans eat dinner somewhere between 5:07 p.m. and 8:19 p.m., with the sharpest concentration between 6:00 p.m. and 7:00 p.m."
-      - "Only seven states have a peak dinner time outside the 6:00–6:30 p.m. range: Pennsylvania (5:37 p.m.) and Maine (5:40 p.m.) eat before 6:00 p.m., while D.C. (7:10 p.m.), Mississippi (7:02 p.m.), Texas (7:02 p.m.), Arkansas (7:00 p.m.), and Tennessee (7:00 p.m.) peak at or after 7:00 p.m. The large middle cluster, from Louisiana and Michigan at 6:10 p.m. to Iowa, Hawaii, and Idaho at 6:30 p.m., eats within a tight 20-minute band around the national average."
+      - "Only six states have a peak dinner time outside the 6:00–6:30 p.m. range: Pennsylvania (5:37 p.m.) and Maine (5:40 p.m.) eat before 6:00 p.m., while Mississippi (7:02 p.m.), Texas (7:02 p.m.), Arkansas (7:00 p.m.), and Tennessee (7:00 p.m.) peak at or after 7:00 p.m. The large middle cluster, from Louisiana and Michigan at 6:10 p.m. to Iowa, Hawaii, and Idaho at 6:30 p.m., eats within a tight 20-minute band around the national average."
 
 visual_assets:
   - id: outdoor-dining-at-night
@@ -449,13 +442,10 @@ faq:
     answer: "Pennsylvania has the earliest peak dinner time at 5:37 p.m., followed by Maine at 5:40 p.m. Six states share a 6:00 p.m. peak: Alaska, New Hampshire, New Mexico, North Dakota, Vermont, and Wyoming."
 
   - question: "What state eats dinner the latest?"
-    answer: "Washington D.C. has the latest peak dinner time at 7:10 p.m. Among the 50 states, Texas and Mississippi tie for latest at 7:02 p.m., followed by Arkansas and Tennessee at 7:00 p.m."
+    answer: "Texas and Mississippi tie for the latest peak dinner time at 7:02 p.m., followed by Arkansas and Tennessee at 7:00 p.m."
 
   - question: "Why does Pennsylvania eat dinner so early?"
     answer: "Pennsylvania's early peak dinner time of 5:37 p.m. is linked to its large rural and industrial population. Early work shifts in agriculture, manufacturing, and trades push mealtimes earlier. Maine shows the same pattern, with a predominantly rural population and fishing and forestry industries that start and end the workday early."
-
-  - question: "Why does Washington D.C. eat dinner so late?"
-    answer: "Washington D.C.'s 7:10 p.m. peak reflects its dense professional population, long workdays, long commutes from Maryland and Virginia suburbs, and a strong restaurant culture where dining at 8:00 p.m. is unremarkable. Similar dynamics push Texas (7:02 p.m.) and Mississippi (7:02 p.m.) to the late end: active restaurant economies and larger households where dinner typically starts after 6:30 p.m."
 
 related:
   - title: "Beer Consumption by State Per Capita"

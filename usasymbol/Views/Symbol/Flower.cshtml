@@ -97,7 +97,7 @@
             </aside>
 
             <div class="min-w-0">
-                <div class="content-flow site-content">
+                <div class="journey-content content-flow site-content">
                     @await Html.PartialAsync("_Overview", null, new ViewDataDictionary(ViewData) {
                         { "Heading", overviewHeading },
                         { "Body", overviewText.RenderAutoLinks() }
@@ -142,7 +142,7 @@
                     <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
                         @await Html.PartialAsync("_RelatedSymbols", Model)
                         @await Html.PartialAsync("_RelatedStatesSidebar", Model)
-                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                        @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
                     </div>
 
                     <div class="content-divider">
@@ -151,7 +151,7 @@
                 </div>
             </div>
 
-            <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+            <aside class="journey-sidebar mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start" aria-label="Article sidebar">
                 @if (quickFacts.Any())
                 {
                     <section class="relative min-h-[calc(100vh-5rem)] pb-16">
@@ -175,7 +175,7 @@
 
                 <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
                     <div class="sticky top-32 pr-2">
-                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                        @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
                     </div>
                 </section>
             </aside>

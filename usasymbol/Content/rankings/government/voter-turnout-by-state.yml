@@ -30,7 +30,7 @@ page:
     - "Hawaii ranks last at 47.5% VEP turnout, the only state below 50% and 4.7 points below West Virginia (52.2%), the second-lowest state. The gap between Minnesota and Hawaii is 29.9 points."
     - "The national VEP turnout in 2024 is approximately 63.7%. Twenty-six states fall below that threshold, including California (56.7%), New York (57.1%), and Texas (56.0%)."
 
-  methodology: "Turnout figures measure the voting-eligible population (VEP) rate: total votes cast divided by all U.S. citizens aged 18 or older who are not disqualified by felony status, excluding non-citizens, which produces a more accurate measure than registered-voter turnout. Source: United States Elections Project (Dr. Michael McDonald, University of Florida), 2024 presidential election data."
+  methodology: "Turnout figures measure the voting-eligible population (VEP) rate, total votes cast divided by all U.S. citizens aged 18 or older who are not disqualified by felony status and excluding non-citizens, a more accurate measure than registered-voter turnout. Figures are from the United States Elections Project (Dr. Michael McDonald, University of Florida), 2024 presidential election data."
 
   sources:
     - name: "United States Elections Project — 2024 Turnout Data"
@@ -360,15 +360,6 @@ table:
       postal_code: "HI"
       turnout_2024_pct: 47.5
 
-compare:
-  metric_slug: government
-  title: "Compare Voter Turnout Between Two States"
-  description: "Pick any two states to see a side-by-side breakdown of election participation, electoral votes, and related civic data."
-  button_text: "Compare turnout"
-  icon: "fa-solid fa-person-booth"
-  default_state_a: minnesota
-  default_state_b: hawaii
-
 sections:
   - id: "highest-voter-turnout-states"
     icon: "fa-solid fa-arrow-trend-up"
@@ -425,9 +416,6 @@ faq:
 
   - question: "What is VEP voter turnout and how does it differ from registered-voter turnout?"
     answer: "VEP (Voting Eligible Population) turnout divides total votes cast by all U.S. citizens aged 18 or older who are legally eligible to vote, excluding non-citizens and people disqualified by felony conviction. Registered-voter turnout uses a smaller denominator, making it appear higher. VEP is the standard measure used by researchers because registration rates vary widely by state."
-
-  - question: "What is the voter turnout in Texas?"
-    answer: "Texas ranked 46th in voter turnout in 2024 at 56.0% of the voting-eligible population, 7.7 points below the national average of 63.7%."
 
   - question: "What is the voter turnout in California?"
     answer: "California ranked 45th in voter turnout in 2024 at 56.7% of the voting-eligible population, 7 points below the national average of 63.7%. Despite being the most populous state with 54 electoral votes, California ranks near the bottom alongside New York (57.1%, rank 44) and Texas (56.0%, rank 46)."

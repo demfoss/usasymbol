@@ -23,11 +23,11 @@ page:
   h1: "Mid-Atlantic States"
 
   quick_answer:
-    - "The U.S. Census Bureau defines the Mid-Atlantic as 3 states: New York, New Jersey, and Pennsylvania. Common usage adds Delaware, Maryland, and Virginia — giving 6 states — and sometimes West Virginia, for 7. No single federal authority uses all 7."
-    - "The Census definition follows a strict geographic division called the 'Middle Atlantic' — one of nine Census divisions. The common-usage definition roughly matches the colonial-era Middle Colonies (NY, NJ, PA, DE, MD), which were the five original colonies between New England and the South."
-    - "New York, New Jersey, and Pennsylvania are simultaneously classified as both Mid-Atlantic and Northeast by the Census Bureau — the Bureau places all three in the Middle Atlantic division within its broader Northeast region. This overlap is the primary source of confusion between 'Mid-Atlantic' and 'Northeast' in everyday use."
+    - "The U.S. Census Bureau defines the Mid-Atlantic as 3 states, New York, New Jersey, and Pennsylvania. Common usage adds Delaware, Maryland, and Virginia for 6 states, and sometimes West Virginia, for 7."
+    - "The Census definition follows a strict geographic division called the 'Middle Atlantic', one of nine Census divisions. The common-usage definition roughly matches the colonial-era Middle Colonies (NY, NJ, PA, DE, MD), which were the five original colonies between New England and the South."
+    - "New York, New Jersey, and Pennsylvania are simultaneously classified as both Mid-Atlantic and Northeast by the Census Bureau, the Bureau places all three in the Middle Atlantic division within its broader Northeast region. This overlap is the primary source of confusion between 'Mid-Atlantic' and 'Northeast' in everyday use."
 
-  methodology: "Mid-Atlantic classification uses two explicit tiers: the U.S. Census Bureau's official Middle Atlantic division (NY, NJ, PA), and the broader common-usage definition that adds DE, MD, VA, and sometimes WV. Sources for common usage include the National Geographic Style Guide, federal agency regional offices, and major media style guides. DC is included in broader definitions as a federal district, not a state."
+  methodology: "Mid-Atlantic classification uses two explicit tiers, the U.S. Census Bureau's official Middle Atlantic division (NY, NJ, PA) and the broader common-usage definition that adds DE, MD, VA, and sometimes WV. Sources for common usage include the National Geographic Style Guide and federal agency regional offices, and DC is included in broader definitions as a federal district, not a state."
 
   sources:
     - name: "U.S. Census Bureau — Census Divisions and Regions"
@@ -45,8 +45,8 @@ table:
     area_sq_mi: "Area (sq mi)"
     notes: "Notes"
 
-  metric_default: area_sq_mi
-  sort_default: desc
+  metric_default: state
+  sort_default: asc
 
   rows:
     - rank: 1
@@ -117,35 +117,118 @@ map:
   image: "/images/rankings/geography/mid-atlantic-states/mid-atlantic-states-map.webp"
   image_alt: "Map of the eastern United States showing Mid-Atlantic states: New York, New Jersey, and Pennsylvania in dark teal (Census definition), Delaware, Maryland, and Virginia in medium teal (common usage), and West Virginia in light teal"
   caption: "New York, New Jersey, and Pennsylvania (darkest) are the only 3 states in the Census Bureau's official Middle Atlantic division. Delaware, Maryland, and Virginia (medium) are in nearly all common-usage definitions. West Virginia (lightest) is the most debated."
-  metric_key: mid_atlantic_score
+  metric_key: mid_atlantic
   metric_label: "Mid-Atlantic"
   tooltip_label: mid_atlantic
   color_scheme: teal
-  color_scale: linear
+  color_scale: categorical
 
 sections:
+  - id: "mid-atlantic-states-at-a-glance"
+    icon: "fa-solid fa-map"
+    style: "law-cards"
+    title: "Mid-Atlantic States at a Glance"
+    paragraphs:
+      - "The Mid-Atlantic is less about a fixed border than about overlapping definitions. These cards work best when they explain the stable core first, then move outward to the more debated edge."
+    subsections:
+      - subtitle: "New York"
+        status: "Census + Common"
+        text: |
+          **Area:** 54,555 sq mi
+          **Status:** Census + Common
+
+          New York appears in both the Census definition and every common-usage definition on this page. The table notes also identify New York City as the region's largest city.
+
+          That makes New York one of the safest Mid-Atlantic labels in circulation. It is also one of the main reasons people confuse the Mid-Atlantic with the broader Northeast.
+      - subtitle: "Pennsylvania"
+        status: "Census + Common"
+        text: |
+          **Area:** 46,054 sq mi
+          **Status:** Census + Common
+
+          Pennsylvania is also in both the official and common definitions. The notes frame Philadelphia as a southern Mid-Atlantic anchor while Pittsburgh trends more toward the Midwest culturally.
+
+          That split inside one state explains a lot about the region. Pennsylvania feels like a bridge state rather than a single clean bloc.
+      - subtitle: "Maryland"
+        status: "Common Usage"
+        text: |
+          **Area:** 12,407 sq mi
+          **Status:** Common Usage
+
+          Maryland is in virtually every common-usage Mid-Atlantic definition even though the Census places it in the South Atlantic division. Baltimore and the Washington suburbs are the anchors named in the table notes.
+
+          That makes Maryland one of the clearest examples of why common usage and Census geography diverge. On the ground, many people treat it as Mid-Atlantic first.
+      - subtitle: "Virginia"
+        status: "Common Usage"
+        text: |
+          **Area:** 42,775 sq mi
+          **Status:** Common Usage
+
+          Virginia enters the Mid-Atlantic mainly through northern Virginia and its ties to Washington. The same notes say southern Virginia is more often grouped with the South.
+
+          That gives Virginia a real split personality on this page. It belongs in many practical Mid-Atlantic discussions, but not without qualification.
+      - subtitle: "West Virginia"
+        status: "Sometimes"
+        text: |
+          **Area:** 24,230 sq mi
+          **Status:** Sometimes
+
+          West Virginia is the most debated state on the list. The notes say its Appalachian character differs sharply from the rest of the common-usage Mid-Atlantic.
+
+          That is why it works as the outer-edge card here. West Virginia shows where the Mid-Atlantic definition starts to loosen and overlap with another strong region.
+
   - id: "what-states-are-in-the-mid-atlantic"
     icon: "fa-solid fa-map-location-dot"
     title: "What States Are in the Mid-Atlantic?"
     paragraphs:
-      - "The answer depends on the source. The U.S. Census Bureau's official definition is 3 states: New York, New Jersey, and Pennsylvania — grouped as the 'Middle Atlantic' division. The common-usage definition adds Delaware, Maryland, and Virginia, giving 6 states. West Virginia appears in some definitions and not others. Washington D.C. is frequently included in practical discussions of the region despite being a federal district, not a state."
-      - "The 3-state Census definition is the most authoritative but the least intuitive — it excludes Maryland and Delaware, which geographically and culturally sit between Pennsylvania and the South. The 6-state definition (NY, NJ, PA, DE, MD, VA) matches the colonial-era Middle Colonies most closely and is used by National Geographic, most travel organizations, and major media style guides."
+      - "The answer depends on the source. The U.S. Census Bureau's official definition is 3 states: New York, New Jersey, and Pennsylvania, grouped as the 'Middle Atlantic' division. The common-usage definition adds Delaware, Maryland, and Virginia, giving 6 states. West Virginia appears in some definitions and not others. Washington D.C. is frequently included in practical discussions of the region despite being a federal district, not a state."
+      - "The 3-state Census definition is the most authoritative but the least intuitive, it excludes Maryland and Delaware, which geographically and culturally sit between Pennsylvania and the South. The 6-state definition (NY, NJ, PA, DE, MD, VA) matches the colonial-era Middle Colonies most closely and is used by National Geographic, most travel organizations, and major media style guides."
 
   - id: "census-definition-vs-common-usage"
     icon: "fa-solid fa-scale-balanced"
     title: "Census Definition vs Common Usage"
     paragraphs:
-      - "The U.S. Census Bureau divides the country into 4 regions and 9 divisions. Its 'Middle Atlantic' division contains exactly 3 states — New York, New Jersey, and Pennsylvania. Delaware, Maryland, and Virginia are in the Census 'South Atlantic' division, alongside Georgia, Florida, the Carolinas, and West Virginia. This places Baltimore and Philadelphia in different Census divisions despite their cities being 96 miles apart."
-      - "The historical basis for a broader definition is the colonial Middle Colonies: New York, New Jersey, Pennsylvania, Delaware, and Maryland — the five colonies between New England and the South. This 5-state colonial grouping is the oldest geographic anchor for 'Mid-Atlantic.' Virginia and West Virginia were Southern Colonies, which is why their inclusion in the Mid-Atlantic is contested. Most non-Census federal agencies with Mid-Atlantic regional offices — including the EPA Region 3 and FEMA Region 3 — use a broader definition that includes Pennsylvania, Delaware, Maryland, Virginia, and West Virginia."
+      - "The U.S. Census Bureau divides the country into 4 regions and 9 divisions. Its 'Middle Atlantic' division contains exactly 3 states, New York, New Jersey, and Pennsylvania. Delaware, Maryland, and Virginia are in the Census 'South Atlantic' division, alongside Georgia, Florida, the Carolinas, and West Virginia. This places Baltimore and Philadelphia in different Census divisions despite their cities being 96 miles apart."
+      - "The historical basis for a broader definition is the colonial Middle Colonies: New York, New Jersey, Pennsylvania, Delaware, and Maryland, the five colonies between New England and the South. This 5-state colonial grouping is the oldest geographic anchor for 'Mid-Atlantic.' Virginia and West Virginia were Southern Colonies, which is why their inclusion in the Mid-Atlantic is contested. Most non-Census federal agencies with Mid-Atlantic regional offices, including the EPA Region 3 and FEMA Region 3, use a broader definition that includes Pennsylvania, Delaware, Maryland, Virginia, and West Virginia."
 
   - id: "mid-atlantic-vs-northeast"
     icon: "fa-solid fa-arrows-left-right"
     title: "Mid-Atlantic vs Northeast"
     paragraphs:
-      - "The Census Bureau places New York, New Jersey, and Pennsylvania in both the Mid-Atlantic and the Northeast simultaneously — the three states are the 'Middle Atlantic' division within the larger 'Northeast' Census region. This means New York City is officially in the Northeast at the regional level and the Mid-Atlantic at the division level. Neither label is wrong; they operate at different geographic scales."
-      - "In common usage, 'Northeast' typically means New England (the 6 states: CT, ME, MA, NH, RI, VT) plus New York, while 'Mid-Atlantic' typically means New York south through Virginia. The overlap is New York — claimed by both terms. New England states are almost never called Mid-Atlantic. Virginia and Maryland are almost never called Northeast. The ambiguity is concentrated in New York, New Jersey, and Pennsylvania, which credibly fit either label."
+      - "The Census Bureau places New York, New Jersey, and Pennsylvania in both the Mid-Atlantic and the Northeast simultaneously, the three states are the 'Middle Atlantic' division within the larger 'Northeast' Census region. This means New York City is officially in the Northeast at the regional level and the Mid-Atlantic at the division level. Neither label is wrong, they simply operate at different geographic scales."
+      - "In common usage, 'Northeast' typically means New England (the 6 states: CT, ME, MA, NH, RI, VT) plus New York, while 'Mid-Atlantic' typically means New York south through Virginia. The overlap is New York, claimed by both terms. New England states are almost never called Mid-Atlantic. Virginia and Maryland are almost never called Northeast. The ambiguity is concentrated in New York, New Jersey, and Pennsylvania, which credibly fit either label."
 
 visual_assets:
+  - id: mid-atlantic-new-york-card
+    src: /images/rankings/geography/northeast-states/new-york-city-manhattan-skyline-hudson.jpg
+    alt: Manhattan skyline in New York viewed from the Hudson
+    section: mid-atlantic-states-at-a-glance::new-york
+    layout: left
+
+  - id: mid-atlantic-pennsylvania-card
+    src: /images/rankings/geography/mid-atlantic-states/philadelphia-skyline.jpg
+    alt: Philadelphia skyline in Pennsylvania
+    section: mid-atlantic-states-at-a-glance::pennsylvania
+    layout: left
+
+  - id: mid-atlantic-maryland-card
+    src: /images/rankings/geography/mid-atlantic-states/chesapeake-bay-aerial.jpg
+    alt: Chesapeake Bay shoreline in Maryland
+    section: mid-atlantic-states-at-a-glance::maryland
+    layout: left
+
+  - id: mid-atlantic-virginia-card
+    src: /images/parks/national/shenandoah-national-park/01-skyline-drive.jpg
+    alt: Skyline Drive in Virginia
+    section: mid-atlantic-states-at-a-glance::virginia
+    layout: left
+
+  - id: mid-atlantic-west-virginia-card
+    src: /images/rankings/geography/south-states/harpers-ferry-west-virginia-potomac-shenandoah.jpg
+    alt: Harpers Ferry at the Potomac and Shenandoah rivers in West Virginia
+    section: mid-atlantic-states-at-a-glance::west-virginia
+    layout: left
+
   - id: chesapeake-bay-aerial
     src: /images/rankings/geography/mid-atlantic-states/chesapeake-bay-aerial.jpg
     alt: Aerial view of the Chesapeake Bay with tidal marshes and Maryland's eastern shore

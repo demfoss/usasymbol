@@ -1340,7 +1340,7 @@ namespace USASymbol.Controllers
             if (redirect != null)
                 return redirect;
 
-            var content = await _sportService.GetSportContentAsync(stateSlug);
+            var content = await _sportService.GetSportContentAsync(stateSlug, sportSlug);
             if (content == null)
                 _logger.LogInformation("State sport YAML not found for state: {StateSlug}", stateSlug);
             else

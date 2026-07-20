@@ -404,7 +404,7 @@
     @await Html.PartialAsync("_PageHero", heroModel)
 
     <article class="w-full">
-    <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_288px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_280px] 2xl:justify-center 2xl:gap-12 relative pb-12">
+    <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_300px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative pb-12">
 
         <aside class="hidden lg:block relative h-full">
             <div class="sticky top-24 pb-10">
@@ -412,7 +412,7 @@
             </div>
         </aside>
 
-        <div class="min-w-0">
+        <div class="journey-content min-w-0">
 
             <!-- TOP 3 PODIUM ─────────────────────────────── -->
             @if (top1 != null)
@@ -785,7 +785,7 @@
 
         </div><!-- /main col -->
 
-        <aside class="mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start">
+        <aside class="journey-sidebar mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start" aria-label="Article sidebar">
             <section class="relative min-h-[calc(100vh-5rem)] pb-16">
                 <div class="sticky top-32 pr-2">
 

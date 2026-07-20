@@ -12,7 +12,7 @@ auto_link_phrases:
 extremes_mode: topOnly
 extremes_title: "States with the Shortest Adverse Possession Periods"
 hero_image: "/images/rankings/law/squatters-rights-by-state/squatters-rights-by-state-hero.jpg"
-hero_image_alt: "Abandoned residential property with overgrown yard representing adverse possession risk for property owners"
+hero_image_alt: "Exterior of a multi-unit apartment building representing residential property ownership and occupancy disputes"
 hero_image_caption: "Adverse possession allows a squatter who occupies a property openly and continuously for a state-defined period to claim legal ownership. The required period ranges from 3 years in Arizona to 30 years in New Jersey and Texas."
 
 author: "USA Symbol Team"
@@ -53,10 +53,9 @@ map:
   metric_key: adverse_possession_years
   metric_label: "Years Required"
   name_key: state
-  color_scheme: linear
+  color_scheme: red-green
   color_scale: linear
-  color_inverse: true
-  color_note: "Color is inverted: fewer years (higher risk for owners) = red; more years (lower risk) = green"
+  color_note: "Fewer years (higher risk for owners) shows as red; more years (lower risk) shows as green."
   detail_keys:
     - requires_property_taxes
     - eviction_days
@@ -482,16 +481,7 @@ table:
       adverse_possession_years: 30
       requires_property_taxes: "No"
       eviction_days: "~10 days"
-      note: "30 years of continuous possession required for the primary adverse possession claim. Texas has a notably fast eviction process (approximately 10 days) despite having the longest adverse possession period. A separate 10-year statute applies when the squatter holds color of title."
-
-compare:
-  metric_slug: adverse-possession
-  title: "Compare Squatters Laws Between States"
-  description: "Choose two states and compare their adverse possession periods, tax requirements, and eviction timelines."
-  button_text: "Compare squatter laws"
-  icon: "fa-solid fa-house-lock"
-  default_state_a: california
-  default_state_b: new-jersey
+      note: "30 years of continuous possession required for the primary adverse possession claim. Texas has an unusually fast eviction process (approximately 10 days) despite having the longest adverse possession period. A separate 10-year statute applies when the squatter holds color of title."
 
 sections:
   - id: "states-with-shortest-adverse-possession"
@@ -522,31 +512,37 @@ visual_assets:
     alt: Residential property in Arizona desert landscape representing the state with the shortest adverse possession period at 3 years
     caption: Arizona has the shortest adverse possession period in the United States at 3 years, requiring the squatter to hold a deed and pay property taxes during possession.
     section: states-with-shortest-adverse-possession
-    layout: right
+    layout: full-width-tall
   - id: new-jersey-farmland
     src: /images/rankings/law/squatters-rights-by-state/new-jersey-farmland.jpg
     alt: Rural woodland and farmland in New Jersey, where adverse possession requires 30 years for standard property and 60 years for woodland
     caption: New Jersey requires 30 years for standard adverse possession and 60 years for woodland — the longest such requirement for any property type in the country.
     section: states-with-longest-adverse-possession
-    layout: left
+    layout: full-width-tall
+  - id: property-tax-payment
+    src: /images/rankings/law/squatters-rights-by-state/property-tax-payment.jpg
+    alt: Property tax documents and house keys laid out on a desk
+    caption: In several states, tax payment is what turns long occupancy into a potentially valid adverse possession claim. Those records give courts concrete evidence that the occupant was asserting ownership, not merely staying on the land informally.
+    section: states-requiring-property-tax-payment
+    layout: full-width-tall
 
 faq:
-  - question: "What state has the shortest squatters rights period"
+  - question: "What state has the shortest squatters rights period?"
     answer: "Arizona has the shortest adverse possession period at 3 years, but requires the squatter to hold a deed and pay property taxes throughout. California and Montana follow at 5 years, also with mandatory tax payment. Nevada also allows claims after 5 years with no tax requirement."
 
-  - question: "What state has the longest adverse possession period"
+  - question: "What state has the longest adverse possession period?"
     answer: "New Jersey and Texas both require 30 years of continuous occupation, the longest standard period in the country. New Jersey extends the requirement to 60 years for woodland properties — the longest adverse possession period for any property type in the nation."
 
-  - question: "What is adverse possession and how does it work"
+  - question: "What is adverse possession and how does it work?"
     answer: "Adverse possession is a legal doctrine that allows a person who occupies someone else's property openly, continuously, and without permission for a state-defined period to claim legal ownership. The required period ranges from 3 years in Arizona to 30 years in New Jersey and Texas. Some states also require the squatter to pay property taxes during possession."
 
-  - question: "Which states require squatters to pay property taxes to claim ownership"
+  - question: "Which states require squatters to pay property taxes to claim ownership?"
     answer: "14 states require or provide a tax-payment path for adverse possession: Alabama, Alaska, Arizona, Arkansas, California, Colorado, Florida, Idaho, Illinois, Maine, Montana, New Mexico, North Dakota, and South Dakota. California is the strictest, requiring tax payment for all 5 years of possession."
 
-  - question: "How long does it take to evict a squatter in Texas"
+  - question: "How long does it take to evict a squatter in Texas?"
     answer: "Texas has a relatively fast eviction process of approximately 10 days, despite having the longest adverse possession period (30 years) of any state. Property owners must serve a notice to vacate before filing an eviction suit in justice court."
 
-  - question: "How many states require 10 years for adverse possession"
+  - question: "How many states require 10 years for adverse possession?"
     answer: "15 states require exactly 10 years: Alabama, Indiana, Iowa, Louisiana, Mississippi, Missouri, Nebraska, New Mexico, New York, Oregon, Rhode Island, South Carolina, Washington, West Virginia, and Wyoming. New Mexico also requires tax payment during the 10-year period."
 
 related:

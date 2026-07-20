@@ -100,36 +100,42 @@ map:
 sections:
   - id: "no-natural-lakes"
     icon: "fa-solid fa-water"
+    style: "law-cards"
     title: "Which States Have No Natural Lakes?"
-    table:
-      columns:
-        state: "State"
-        notable_lake: "Largest Lake"
-        lake_type: "Type"
-        year_created: "Year Created"
-        lake_acres: "Size (acres)"
-      rows:
-        - state: "Oklahoma"
-          state_slug: "oklahoma"
-          notable_lake: "Lake Eufaula"
-          lake_type: "Army Corps reservoir"
-          year_created: 1964
-          lake_acres: 102500
-        - state: "Maryland"
-          state_slug: "maryland"
-          notable_lake: "Deep Creek Lake"
-          lake_type: "Hydroelectric reservoir"
-          year_created: 1925
-          lake_acres: 3900
-        - state: "West Virginia"
-          state_slug: "west-virginia"
-          notable_lake: "Summersville Lake"
-          lake_type: "Army Corps reservoir"
-          year_created: 1966
-          lake_acres: 2790
     paragraphs:
       - "Maryland, West Virginia, and Oklahoma have no documented natural lakes. Each state's best-known lake is a reservoir: Deep Creek Lake in Maryland (1925), Summersville Lake in West Virginia (1966), and Lake Eufaula in Oklahoma (1964)."
       - "Oklahoma's Lake Eufaula covers 102,500 acres, more than 26 times the size of Maryland's Deep Creek Lake (3,900 acres). Both are entirely man-made."
+    subsections:
+      - subtitle: "Oklahoma"
+        text: |
+          **Largest lake:** Lake Eufaula
+          **Lake type:** Army Corps reservoir
+          **Year created:** 1964
+          **Size:** 102,500 acres
+
+          Oklahoma has no natural lakes even though it has more than 200 man-made ones. Lake Eufaula is the biggest example and the biggest lake on this page by a huge margin.
+
+          That makes Oklahoma the strongest surprise case. A state can look lake-rich on the map and still have zero natural lakes in the geologic sense used here.
+      - subtitle: "Maryland"
+        text: |
+          **Largest lake:** Deep Creek Lake
+          **Lake type:** Hydroelectric reservoir
+          **Year created:** 1925
+          **Size:** 3,900 acres
+
+          Maryland's best-known lake is Deep Creek Lake, but it is entirely man-made. The reservoir was created in 1925 and remains the state's largest lake.
+
+          That is why Maryland belongs on this list despite its wooded mountain setting in the west. The state has well-known lakes, just not natural ones.
+      - subtitle: "West Virginia"
+        text: |
+          **Largest lake:** Summersville Lake
+          **Lake type:** Army Corps reservoir
+          **Year created:** 1966
+          **Size:** 2,790 acres
+
+          West Virginia also has no documented natural lakes, even though water and mountain scenery are central to the state's image. Summersville Lake, its largest, was created by dam construction in 1966.
+
+          That contrast is what makes West Virginia memorable here. The state looks like it should have natural mountain lakes, but its major lakes are reservoirs.
 
   - id: "most-natural-lakes"
     icon: "fa-solid fa-list-ol"
@@ -161,17 +167,28 @@ sections:
       - "Minnesota, Wisconsin, and Michigan all sit within the zone of glaciation that retreated roughly 10,000 years ago, leaving behind thousands of lake basins. Maryland, West Virginia, and Oklahoma lie outside this zone."
 
 visual_assets:
-  - id: lake-eufaula-oklahoma
+  - id: no-natural-lakes-oklahoma-card
     src: /images/rankings/geography/states-with-no-natural-lakes/lake-eufaula-oklahoma.jpg
-    alt: Panoramic view of Lake Eufaula in Oklahoma with broad open water and low hills in the distance
-    caption: Lake Eufaula is Oklahoma's largest lake at 102,500 acres, but it is entirely man-made. It was created in 1964 by the U.S. Army Corps of Engineers, illustrating how a state can have many reservoirs and still no natural lakes.
-    section: no-natural-lakes
-    layout: right
+    alt: Broad open water at Lake Eufaula in Oklahoma
+    section: no-natural-lakes::oklahoma
+    layout: left
+
+  - id: no-natural-lakes-maryland-card
+    src: /images/rankings/geography/states-with-no-natural-lakes/deep-creek-lake-maryland.jpg
+    alt: Deep Creek Lake in western Maryland with forested shoreline
+    section: no-natural-lakes::maryland
+    layout: left
+
+  - id: no-natural-lakes-west-virginia-card
+    src: /images/license-plates/west-virginia/new-river-gorge-bridge.jpg
+    alt: New River Gorge Bridge in West Virginia above a river valley
+    section: no-natural-lakes::west-virginia
+    layout: left
 
   - id: minnesota-natural-lakes-aerial
     src: /images/rankings/geography/states-with-no-natural-lakes/minnesota-natural-lakes-aerial.jpg
     alt: Aerial view of a Minnesota lake landscape with wooded shoreline and water extending between forested landforms
-    caption: Minnesota's lake-filled glacial landscape shows the opposite pattern: thousands of natural basins created by retreating ice sheets. The state officially counts 11,842 natural lakes larger than 10 acres.
+    caption: "Minnesota's lake-filled glacial landscape shows the opposite pattern, thousands of natural basins created by retreating ice sheets. The state officially counts 11,842 natural lakes larger than 10 acres."
     section: most-natural-lakes
     layout: left
 

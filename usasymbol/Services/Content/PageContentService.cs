@@ -224,7 +224,8 @@ namespace USASymbol.Services
                     FillColor   = mapD.ContainsKey("fill_color")   ? Str(mapD, "fill_color")   : null,
                     ColorScheme = mapD.ContainsKey("color_scheme") ? Str(mapD, "color_scheme") : "blue",
                     ColorScale  = mapD.ContainsKey("color_scale")  ? Str(mapD, "color_scale")  : "linear",
-                    ShowLabels  = mapD.ContainsKey("show_labels")  && Str(mapD, "show_labels") == "true",
+                    ShowLabels   = mapD.ContainsKey("show_labels")   && Str(mapD, "show_labels").Equals("true", StringComparison.OrdinalIgnoreCase),
+                    TextOverlay  = mapD.ContainsKey("text_overlay")  && Str(mapD, "text_overlay").Equals("true", StringComparison.OrdinalIgnoreCase),
                     SummaryKey  = mapD.ContainsKey("summary_key")  ? Str(mapD, "summary_key")  : null,
                     Filters     = mapD.TryGetValue("filters", out var filtersObj) && filtersObj is List<object> filtersList
                         ? filtersList
@@ -391,11 +392,12 @@ namespace USASymbol.Services
                     var key = kvp.Key?.ToString() ?? "";
                     if (key == "") continue;
 
+                    var label = kvp.Value?.ToString() ?? key;
                     var col = new TableColumn
                     {
                         Key        = key,
-                        Label      = kvp.Value?.ToString() ?? key,
-                        Type       = InferColumnType(key),
+                        Label      = label,
+                        Type       = InferColumnType(key, label),
                         Sortable   = true,
                         Toggleable = table.ToggleableColumns.Contains(key),
                     };
@@ -405,6 +407,15 @@ namespace USASymbol.Services
 
                     table.Columns.Add(col);
                 }
+
+            if (d.TryGetValue("column_formats", out var formatsObj) && formatsObj is Dictionary<object, object> formatsD)
+            {
+                foreach (var col in table.Columns)
+                {
+                    if (formatsD.TryGetValue(col.Key, out var fmtObj) && fmtObj != null)
+                        col.Format = fmtObj.ToString();
+                }
+            }
 
 
             if (d.TryGetValue("rows", out var rowsObj) && rowsObj is List<object> rowsL)
@@ -424,7 +435,51 @@ namespace USASymbol.Services
                     table.Rows.Add(row);
                 }
 
+            UpgradeNumericColumns(table);
+
             return table;
+        }
+
+        /// <summary>
+        /// A column whose every non-empty value is numeric is a number column,
+        /// regardless of how its key is spelled. Ensures thousands separators
+        /// and numeric (not string) sorting without per-page key patterns.
+        /// </summary>
+        private static void UpgradeNumericColumns(PageTable table)
+        {
+            foreach (var col in table.Columns)
+            {
+                if (col.Type != "text") continue;
+
+                var values = table.Rows
+                    .Select(r => r.Data.TryGetValue(col.Key, out var v) ? v : null)
+                    .Where(v => v != null && !string.IsNullOrWhiteSpace(v.ToString()))
+                    .ToList();
+                if (values.Count == 0) continue;
+
+                var maxDecimals = 0;
+                var allNumeric = true;
+                var allYearLike = true;
+                foreach (var v in values)
+                {
+                    var s = (v!.ToString() ?? "").Replace(",", "").TrimStart('$').TrimEnd('%').Trim();
+                    if (!double.TryParse(s, System.Globalization.NumberStyles.Any,
+                            System.Globalization.CultureInfo.InvariantCulture, out var parsed))
+                    {
+                        allNumeric = false;
+                        break;
+                    }
+                    var dot = s.IndexOf('.');
+                    if (dot >= 0) maxDecimals = Math.Max(maxDecimals, Math.Min(3, s.Length - dot - 1));
+                    if (dot >= 0 || parsed < 1000 || parsed > 2100) allYearLike = false;
+                }
+
+                if (!allNumeric) continue;
+
+                col.Type = "number";
+                // Integer columns entirely within 1000–2100 are years — no separators.
+                col.Format ??= allYearLike ? "0" : maxDecimals == 0 ? "N0" : "N" + maxDecimals;
+            }
         }
 
         private static void ParseSectionsInto(PageContent content, List<object> sectsL)
@@ -662,7 +717,7 @@ namespace USASymbol.Services
 
 
 
-        private static string InferColumnType(string key)
+        private static string InferColumnType(string key, string? label = null)
         {
             var k = key.ToLower();
 
@@ -672,8 +727,25 @@ namespace USASymbol.Services
             if (k.Contains("population") || k.Contains("area")   || k.Contains("land")   ||
                 k.Contains("water")      || k.Contains("total")   || k.Contains("count")  ||
                 k.Contains("number")     || k.Contains("amount")  || k.Contains("size")   ||
+                k.Contains("price")      || k.Contains("cost")    || k.Contains("rate")   ||
+                k.Contains("density")    || k.Contains("score")   || k.Contains("index")  ||
+                k.Contains("pct")        || k.Contains("percent") || k.Contains("avg")    ||
+                k.Contains("average")    || k.Contains("wage")    || k.Contains("income") ||
+                k.Contains("salary")     || k.Contains("tuition") ||
                 k == "year" || k == "value" || k.Contains("year_"))
                 return "number";
+
+            // Fall back to the human-readable label when the field key itself is an
+            // abbreviation (e.g. "rpp", "accepts") that gives no hint of its own.
+            if (!string.IsNullOrWhiteSpace(label))
+            {
+                var l = label.ToLower();
+                if (l.Contains('$') || l.Contains('%') || l.Contains("price")   || l.Contains("cost")   ||
+                    l.Contains("rate")  || l.Contains("income") || l.Contains("wage")    || l.Contains("salary") ||
+                    l.Contains("index") || l.Contains("score")  || l.Contains("percent") || l.Contains("population") ||
+                    l.Contains("count") || l.Contains("total")  || l.Contains("amount"))
+                    return "number";
+            }
 
             if (k.Contains("date") || k is "established" or "founded" or "admitted")
                 return "date";

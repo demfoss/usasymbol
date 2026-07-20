@@ -222,7 +222,8 @@
         @* ── JSON for tooltip JS (embedded in HTML, server-rendered) ── *@
         <script type="application/json"
                 id="choropleth-data"
-                data-metric-label="@Model.MetricLabel">@Html.Raw(choroplethJson)</script>
+                data-metric-label="@Model.MetricLabel"
+                data-text-overlay="@Model.ShowTextOverlay.ToString().ToLowerInvariant()">@Html.Raw(choroplethJson)</script>
         <script type="application/json" id="map-filter-groups-data">@Html.Raw(filterGroupsJson)</script>
 
         @* ── SEO layer: visually hidden table + static image for Google crawler ── *@
@@ -305,4 +306,8 @@
     <script src="~/js/map-svg-loader.js" asp-append-version="true" defer></script>
     <script src="~/js/map-choropleth.js" asp-append-version="true" defer></script>
     <script src="~/js/map-icon-overlay.js" asp-append-version="true" defer></script>
+    @if (Model.ShowTextOverlay)
+    {
+        <script src="~/js/map-text-overlay.js" asp-append-version="true" defer></script>
+    }
 }

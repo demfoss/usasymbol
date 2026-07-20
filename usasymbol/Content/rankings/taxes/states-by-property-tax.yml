@@ -19,7 +19,7 @@ page:
   h1: "Property Tax Rate by State"
   quick_answer:
     - "New Jersey has the highest effective property tax rate in the U.S. at 2.11% of assessed value. A homeowner with a $400,000 house pays roughly $8,400 per year. Illinois (2.01%), Connecticut (1.81%), and New Hampshire (1.66%) follow."
-    - "Hawaii has the lowest effective property tax rate at just 0.27%. Alabama, Colorado, and Louisiana also rank among the lowest. Low rates in Hawaii are partly offset by very high home values — the dollar tax bill can still be substantial."
+    - "Hawaii has the lowest effective property tax rate at just 0.27%. Alabama, Colorado, and Louisiana also rank among the lowest. Low rates in Hawaii are partly offset by very high home values, the dollar tax bill can still be substantial."
     - "Effective property tax rate measures actual taxes paid as a percentage of assessed home value, which is more useful for comparison than statutory rates, which vary by local assessment practices."
   methodology: "Effective property tax rates are from WalletHub's 2026 Property Tax by State report using 2024 data. The effective rate is calculated as median annual property taxes paid divided by the median home value, expressing taxes as a percentage of the home's value. This controls for differences in assessment ratios across states."
   sources:
@@ -45,7 +45,7 @@ computed_data:
   metric_key: property_tax
 
 compare:
-  metric_slug: taxes
+  metric_slug: property-tax
   title: "Compare Property Taxes Between Two States"
   description: "Pick two states to see a full side-by-side breakdown of property tax, income tax, cost of living, and more."
   icon: "fa-solid fa-house-circle-check"
@@ -67,10 +67,10 @@ sections:
 
   - id: "new_hampshire_paradox"
     icon: "fa-solid fa-circle-question"
-    title: "New Hampshire: No Income or Sales Tax, High Property Tax"
+    title: "Why New Hampshire's Property Tax Is So High"
     paragraphs:
       - "New Hampshire's 1.66% property tax rate, fourth-highest in the country, is the direct consequence of relying on property taxes as the primary government funding mechanism. The state has no income tax and no sales tax, eliminating two of the three major revenue streams most states use. What remains is property tax, and New Hampshire leans heavily on it."
-      - "The distributional effect is significant. Renters do not pay property taxes directly, while homeowners with modest incomes bear a heavy burden relative to their wages. A retiree owning a $300,000 home in New Hampshire owes roughly $5,000 per year regardless of income. Several northeastern states have circuit-breaker credits that cap property taxes as a share of income; New Hampshire's programs are limited."
+      - "The distributional effect is significant. Renters do not pay property taxes directly, while homeowners with modest incomes bear a heavy burden relative to their wages. A retiree owning a $300,000 home in New Hampshire owes roughly $5,000 per year regardless of income. Several northeastern states have circuit-breaker credits that cap property taxes as a share of income, but New Hampshire's programs are limited."
 
   - id: "rate_vs_bill"
     icon: "fa-solid fa-receipt"
@@ -94,13 +94,13 @@ visual_assets:
     layout: right
 
 faq:
-  - question: "Which state has the highest property taxes"
+  - question: "Which state has the highest property taxes?"
     answer: "New Jersey has the highest effective property tax rate in the U.S. at 2.11%. The state relies heavily on property taxes to fund local schools, and its densely populated suburbs command high home values that generate large tax bills even at moderate rates."
-  - question: "Which state has the lowest property taxes"
+  - question: "Which state has the lowest property taxes?"
     answer: "Hawaii has the lowest effective property tax rate at 0.27%, making it the most property-tax-friendly state despite having the highest home values in the country. The low rate means homeowners in Hawaii pay relatively modest annual tax bills as a percentage of their home's value."
-  - question: "What is an effective property tax rate"
+  - question: "What is an effective property tax rate?"
     answer: "The effective property tax rate is the annual property tax bill divided by the home's market value, expressed as a percentage. It is more useful for cross-state comparisons than nominal tax rates because it accounts for local assessment ratios, exemptions, and abatements that vary widely across jurisdictions."
-  - question: "Does a no-income-tax state compensate with higher property taxes"
+  - question: "Does a no-income-tax state compensate with higher property taxes?"
     answer: "Often, yes. Texas lacks a state income tax and has a property tax rate around 1.63%. New Hampshire is similar at 1.66%. But Florida, Nevada, and Wyoming also have no income tax yet maintain moderate property tax rates, so the trade-off is not universal."
 
 related:

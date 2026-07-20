@@ -6,82 +6,86 @@
         .Select(f => (f ?? "").RenderListItem().Value ?? "")
         .Where(f => !string.IsNullOrWhiteSpace(f))
         .ToList();
-    var factsId = "facts-" + Guid.NewGuid().ToString("N");
-    var factsTitle = ViewData["FactsTitle"] as string;
+
+    if (!factsHtml.Any()) { return; }
+
+    var factsId     = "fc-" + Guid.NewGuid().ToString("N")[..8];
+    var factsTitle  = ViewData["FactsTitle"]   as string;
     var factsEyebrow = ViewData["FactsEyebrow"] as string;
-    var factsAccent = ViewData["FactsAccent"] as string;
-    var accentClass = string.Equals(factsAccent, "amber", StringComparison.OrdinalIgnoreCase)
-        ? "from-amber-500 to-orange-500"
-        : "from-slate-700 to-slate-900";
-    var showControls = factsHtml.Count > 1;
 }
 
-@if (factsHtml.Any())
-{
-    <aside class="mt-8 clear-both border border-slate-200 bg-white text-slate-900">
-        <div class="border-b border-slate-200 px-4 py-3 sm:px-5">
-            <div class="flex items-start justify-between gap-4">
-                <div class="min-w-0">
-                    @if (!string.IsNullOrWhiteSpace(factsEyebrow))
-                    {
-                        <div class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
-                            @factsEyebrow
+<aside class="mt-8 clear-both">
+    <div class="mb-4 flex items-center gap-2 border-b border-slate-200 pb-3">
+        <i class="fa-solid fa-lightbulb text-amber-500 text-sm" aria-hidden="true"></i>
+        @if (!string.IsNullOrWhiteSpace(factsEyebrow))
+        {
+            <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">@factsEyebrow</span>
+        }
+        <h3 class="text-sm font-semibold text-slate-900">@(string.IsNullOrWhiteSpace(factsTitle) ? "Key Facts" : factsTitle)</h3>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2" id="@factsId">
+        @for (var i = 0; i < factsHtml.Count; i++)
+        {
+            var cardId   = $"{factsId}-c{i}";
+            var fullText = factsHtml[i];
+
+            @* Front: first sentence or first 90 chars *@
+            var dotIdx      = fullText.IndexOf(". ");
+            var previewHtml = dotIdx > 15 && dotIdx < fullText.Length - 4
+                ? fullText[..dotIdx] + "."
+                : fullText.Length > 90 ? fullText[..87] + "…" : fullText;
+
+            @* CSS-Grid stacking: both faces share grid-area 1/1 so the card grows
+               to fit the taller face — no JS height measurement needed. *@
+            <div class="fc-card cursor-pointer" style="perspective:1000px">
+                <div id="@cardId"
+                     class="fc-inner"
+                     style="display:grid;transform-style:preserve-3d;transition:transform 0.45s cubic-bezier(.4,0,.2,1)">
+
+                    @* Front face *@
+                    <div class="flex flex-col gap-2 border border-slate-200 bg-white p-4"
+                         style="grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden">
+                        <div class="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                            <i class="fa-solid fa-lightbulb text-amber-400" aria-hidden="true"></i>
+                            Did you know?
                         </div>
-                    }
-                    <h3 class="@(string.IsNullOrWhiteSpace(factsEyebrow) ? "text-sm" : "mt-1 text-base") font-semibold leading-6 text-slate-900">
-                        @(string.IsNullOrWhiteSpace(factsTitle) ? "Key Facts" : factsTitle)
-                    </h3>
-                </div>
-
-                @if (showControls)
-                {
-                    <div id="factCounter-@factsId" class="shrink-0 text-[11px] font-semibold tabular-nums text-slate-500">
-                        1 / @factsHtml.Count
+                        <div class="flex-1 text-sm leading-[1.65] text-slate-700">@Html.Raw(previewHtml)</div>
+                        <div class="flex items-center gap-1 text-[9px] font-semibold text-slate-400">
+                            <svg class="h-3 w-3 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
+                            Tap to reveal
+                        </div>
                     </div>
-                }
-            </div>
-        </div>
 
-        <div class="px-4 py-4 sm:px-5">
-            <div class="border-l-4 border-amber-600 pl-4">
-                <div class="min-h-[64px] text-[1rem] leading-7 text-slate-800 transition-opacity duration-200" id="factText-@factsId">
-                    @Html.Raw(factsHtml.First())
+                    @* Back face — rotated 180 °, hidden until card flips *@
+                    <div class="flex flex-col gap-2 border border-amber-200 bg-amber-50/70 p-4"
+                         style="grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">
+                        <div class="flex-1 text-sm leading-[1.7] text-slate-800">@Html.Raw(fullText)</div>
+                        <div class="flex items-center gap-1 text-[9px] font-semibold text-slate-400">
+                            <svg class="h-3 w-3 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg>
+                            Tap to flip back
+                        </div>
+                    </div>
+
                 </div>
             </div>
-
-            @if (showControls)
-            {
-                <div class="mt-4 flex justify-end">
-                    <button id="nextFactBtn-@factsId"
-                            type="button"
-                            class="inline-flex min-h-[38px] items-center gap-2 border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-900 hover:text-slate-900">
-                        <span>Next fact</span>
-                        <i class="fa-solid fa-arrow-right text-[11px]" aria-hidden="true"></i>
-                    </button>
-                </div>
-            }
-        </div>
-    </aside>
-}
+        }
+    </div>
+</aside>
 
 <script>
-    (function () {
-        const facts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(factsHtml));
-        let idx = 0;
-        const textEl = document.getElementById('factText-@factsId');
-        const counterEl = document.getElementById('factCounter-@factsId');
-        const nextBtn = document.getElementById('nextFactBtn-@factsId');
+(function () {
+    var container = document.getElementById('@factsId');
+    if (!container) return;
 
-        if (!textEl || !nextBtn || facts.length < 2) return;
-
-        nextBtn.addEventListener('click', () => {
-            idx = (idx + 1) % facts.length;
-            textEl.style.opacity = 0;
-            setTimeout(() => {
-                textEl.innerHTML = facts[idx];
-                textEl.style.opacity = 1;
-                if (counterEl) counterEl.textContent = (idx + 1) + " / " + facts.length;
-            }, 150);
-        });
-    })();
+    container.addEventListener('click', function (e) {
+        var card = e.target.closest('.fc-card');
+        if (!card) return;
+        var inner = card.querySelector('.fc-inner');
+        if (!inner) return;
+        var flipped = inner.dataset.flipped === '1';
+        inner.style.transform = flipped ? '' : 'rotateY(180deg)';
+        inner.dataset.flipped  = flipped ? '0' : '1';
+    });
+})();
 </script>

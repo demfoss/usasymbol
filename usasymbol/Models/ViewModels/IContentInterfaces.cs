@@ -23,6 +23,8 @@ namespace USASymbol.Models.ViewModels
         string Text { get; }
         List<string>? ListItems { get; }
         LinkData? Link { get; set; }
+        string? Image => null;
+        string? ImageCaption => null;
     }
 
     public interface ISource

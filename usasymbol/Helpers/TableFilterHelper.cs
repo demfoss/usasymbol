@@ -1,3 +1,4 @@
+using System.Globalization;
 using USASymbol.Models.Content;
 
 namespace Usasymbol.Helpers
@@ -40,11 +41,20 @@ namespace Usasymbol.Helpers
 
                 if (values.Count < 2 || values.Count > 6) continue;
                 if (values.Count >= nonEmptyCount) continue;
+                // Numeric values (e.g. 0, 0.7, 12) make meaningless filter chips —
+                // only categorical text columns work as a quick filter.
+                if (values.All(IsNumericValue)) continue;
 
                 return new QuickFilterColumn(col.Key, col.Label, values);
             }
 
             return null;
+        }
+
+        private static bool IsNumericValue(string value)
+        {
+            var clean = value.Replace(",", "").Replace("%", "").Replace("$", "").Trim();
+            return double.TryParse(clean, NumberStyles.Any, CultureInfo.InvariantCulture, out _);
         }
 
         public static string? GetQuickFilterValue(QuickFilterColumn? column, TableRow row)

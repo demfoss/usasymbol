@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using USASymbol.Data;
 using USASymbol.Extensions;
 using USASymbol.Models.ViewModels;
@@ -16,37 +17,48 @@ namespace USASymbol.Services
     public class LatestContentRailService : ILatestContentRailService
     {
         private const int PerTypeLimit = 5;
+        private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(15);
         private readonly IWebHostEnvironment _env;
         private readonly AppDbContext _db;
+        private readonly IMemoryCache _cache;
         private readonly ILogger<LatestContentRailService> _logger;
 
         public LatestContentRailService(
             IWebHostEnvironment env,
             AppDbContext db,
+            IMemoryCache cache,
             ILogger<LatestContentRailService> logger)
         {
             _env = env;
             _db = db;
+            _cache = cache;
             _logger = logger;
         }
 
         public async Task<LatestContentRailViewModel> GetLatestItemsAsync(int count = 8)
         {
-            var items = new List<LatestContentRailItemViewModel>();
+            var cacheKey = $"latest-content-rail-{count}";
 
-            items.AddRange(await LoadLatestSymbolItemsAsync(PerTypeLimit));
-            items.AddRange(await LoadLatestPageItemsAsync("rankings", "Rankings", PerTypeLimit));
-            items.AddRange(await LoadLatestPageItemsAsync("collections", "Collections", PerTypeLimit));
-
-            return new LatestContentRailViewModel
+            return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
-                Title = "You Might Also Like",
-                Items = items
-                    .Where(x => !string.IsNullOrWhiteSpace(x.Url) && !string.IsNullOrWhiteSpace(x.Title))
-                    .OrderByDescending(x => x.DateModified ?? DateTime.MinValue)
-                    .Take(count)
-                    .ToList()
-            };
+                entry.AbsoluteExpirationRelativeToNow = CacheDuration;
+
+                var items = new List<LatestContentRailItemViewModel>();
+
+                items.AddRange(await LoadLatestSymbolItemsAsync(PerTypeLimit));
+                items.AddRange(await LoadLatestPageItemsAsync("rankings", "Rankings", PerTypeLimit));
+                items.AddRange(await LoadLatestPageItemsAsync("collections", "Collections", PerTypeLimit));
+
+                return new LatestContentRailViewModel
+                {
+                    Title = "You Might Also Like",
+                    Items = items
+                        .Where(x => !string.IsNullOrWhiteSpace(x.Url) && !string.IsNullOrWhiteSpace(x.Title))
+                        .OrderByDescending(x => x.DateModified ?? DateTime.MinValue)
+                        .Take(count)
+                        .ToList()
+                };
+            }) ?? new LatestContentRailViewModel { Title = "You Might Also Like", Items = new List<LatestContentRailItemViewModel>() };
         }
 
         private async Task<List<LatestContentRailItemViewModel>> LoadLatestSymbolItemsAsync(int take)

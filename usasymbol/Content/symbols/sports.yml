@@ -8,8 +8,8 @@ author: "USA Symbol Team"
 date_published: "2026-06-19"
 date_modified: "2026-06-19"
 
-hero_image: "/images/rankings/sports/most-popular-sport-by-state/most-popular-sport-by-state.webp"
-hero_image_alt: "Map-style visual about sports across the United States"
+hero_image: "/images/symbols/maps/state-sports-map.webp"
+hero_image_alt: "Map of official U.S. state sports by state"
 
 seo:
   title: "Official State Sports | List, Map & Facts"
@@ -19,9 +19,9 @@ page:
   h1: "List of State Sports by State"
 
   quick_answer:
-    - "At least 19 U.S. states have designated an official state sport, a state team sport, or another sport category tied closely to state identity."
+    - "At least 18 U.S. states have legislated an official state sport, a state team sport, or another sport category tied closely to state identity."
     - "Alaska's official state sport is dog mushing, adopted in 1972. Maryland has the most layered system: jousting as state sport, lacrosse as state team sport, and walking as state exercise."
-    - "Several state sports reflect landscape more than spectator culture. Alaska chose dog mushing, Hawaii chose surfing and outrigger canoe paddling, and North Carolina chose stock car racing."
+    - "Several state sports reflect landscape and local identity rather than national popularity. Alaska chose dog mushing for its transport history, Hawaii chose surfing and outrigger canoe paddling for its ocean culture, and North Carolina chose stock car racing for its motorsports industry."
     - "Some states now recognize very recent choices: Washington adopted pickleball in 2022, North Dakota adopted curling in 2023, and Montana adopted rodeo in 2025."
 
   intro_paragraphs:
@@ -48,222 +48,253 @@ page:
       title: Why States Pick Sports at All
       paragraphs:
         - "When a legislature names an official sport, it is usually making a cultural argument, not just a recreational one. The chosen sport often points to geography, settlement patterns, Indigenous traditions, working landscapes, or a state institution that residents treat as part of their identity."
-        - "That is why Alaska chose dog mushing instead of a mainstream spectator sport, Hawaii chose ocean sports, and North Carolina chose stock car racing. These choices are not random. They tell you what kind of place each state believes it is."
+        - "That is why Alaska chose dog mushing over any mainstream team sport, Hawaii chose ocean sports rooted in Native Hawaiian tradition, and North Carolina chose stock car racing to match its motorsports industry. These choices are not random. They tell you what kind of place each state believes it is."
 
   methodology: "This page lists official state sports and closely related sport designations as presented in state-symbol reference compilations and current public summaries. Adoption years are given as the year of legislative designation."
 
   sources:
-    - name: "Wikipedia — List of U.S. state sports"
+    - name: "Wikipedia - List of U.S. state sports"
       url: "https://en.wikipedia.org/wiki/List_of_U.S._state_sports"
       description: "Overview list of official state sports and adoption years."
+
+map:
+  title: "Official U.S. State Sports Map"
+  caption: "Only 18 of 50 states appear on this map. Rodeo is the most repeated pick, claimed by four of them: Montana, South Dakota, Texas, and Wyoming."
+  metric_key: sport
+  metric_label: "State Sport"
+  image_key: symbol_image
+  detail_keys:
+    - designation
+    - adopted_year
+  fill_color: "#d7eadf"
+  color_scheme: blue
+  color_scale: categorical
+
 table:
   columns:
+    symbol_image: "Image"
     state: "State"
     sport: "State Sport"
     designation: "Designation"
     adopted_year: "Adopted"
-    short_fact: "Why It Fits"
+    notes: "Notes"
 
   rows:
-    - state: "Alaska"
+    - symbol_image: "/images/sports/alaska/dog-mushing-hero.jpg"
+      state: "Alaska"
       state_slug: "alaska"
       sport: "Dog Mushing"
       designation: "Official state sport"
       adopted_year: 1972
       symbol_url: "/states/alaska/sport/dog-mushing"
-      short_fact: "A transport tradition before it was a race. Alaska made dog mushing official before the first full Iditarod ran to Nome in 1973."
+      notes: "A transport tradition before it was a race. Alaska made dog mushing official before the first full Iditarod ran to Nome in 1973."
 
-    - state: "California"
+    - symbol_image: "/images/sports/california/surfing-huntington-beach.jpg"
+      state: "California"
       state_slug: "california"
       sport: "Surfing"
       designation: "Official state sport"
       adopted_year: 2018
-      symbol_url: "/states/california"
-      short_fact: "California tied its sport symbol to one of the state's best-known coastal identities and beach cultures."
+      symbol_url: "/states/california/sport/surfing"
+      notes: "California tied its sport symbol to one of the state's best-known coastal identities and beach cultures."
 
-    - state: "Colorado"
+    - symbol_image: "/images/sports/colorado/skiing-snowboarding-vail.jpg"
+      state: "Colorado"
       state_slug: "colorado"
       sport: "Skiing and Snowboarding"
-      designation: "Official state recreational winter sports"
+      designation: "Official state winter sport"
       adopted_year: 2008
-      symbol_url: "/states/colorado"
-      short_fact: "A mountain-state choice built around Colorado's ski economy, alpine recreation, and national winter-sports profile."
+      symbol_url: "/states/colorado/sport/skiing-and-snowboarding"
+      notes: "A mountain-state choice built around Colorado's ski economy, alpine recreation, and national winter-sports profile."
 
-    - state: "Colorado"
+    - symbol_image: "/images/sports/colorado/pack-burro-racing-fairplay.jpg"
+      state: "Colorado"
       state_slug: "colorado"
       sport: "Pack Burro Racing"
       designation: "State summer heritage sport"
       adopted_year: 2012
-      symbol_url: "/states/colorado"
-      short_fact: "One of the strangest state sports in America, rooted in mining-camp lore and endurance running with loaded burros."
+      symbol_url: "/states/colorado/sport/pack-burro-racing"
+      notes: "One of the strangest state sports in America, rooted in mining-camp lore and endurance running with loaded burros."
 
-    - state: "Delaware"
+    - symbol_image: "/images/sports/delaware/bicycling-jack-markell-trail.jpg"
+      state: "Delaware"
       state_slug: "delaware"
       sport: "Bicycling"
       designation: "Official sport of the state"
       adopted_year: 2014
-      symbol_url: "/states/delaware"
-      short_fact: "A compact state with strong trail and road-riding culture chose a sport ordinary residents can actually practice statewide."
+      symbol_url: "/states/delaware/sport/bicycling"
+      notes: "A compact state with strong trail and road-riding culture chose a sport ordinary residents can actually practice statewide."
 
-    - state: "Hawaii"
+    - symbol_image: "/images/sports/hawaii/outrigger-canoe-molokai-hoe.jpg"
+      state: "Hawaii"
       state_slug: "hawaii"
       sport: "Outrigger Canoe Paddling"
       designation: "Official team sport"
       adopted_year: 1986
-      symbol_url: "/states/hawaii"
-      short_fact: "More than recreation, it reflects Hawaiian voyaging, teamwork, and ocean culture."
+      symbol_url: "/states/hawaii/sport/outrigger-canoe-paddling"
+      notes: "More than recreation, it reflects Hawaiian voyaging, teamwork, and ocean culture."
 
-    - state: "Hawaii"
+    - symbol_image: "/images/sports/hawaii/surfing-pipeline-north-shore.jpg"
+      state: "Hawaii"
       state_slug: "hawaii"
       sport: "Surfing"
       designation: "Official individual sport"
       adopted_year: 1998
-      symbol_url: "/states/hawaii"
-      short_fact: "An obvious fit for Hawaii, where surfing is tied to Native Hawaiian tradition as well as global image."
+      symbol_url: "/states/hawaii/sport/surfing"
+      notes: "An obvious fit for Hawaii, where surfing is tied to Native Hawaiian tradition as well as global image."
 
-    - state: "Maryland"
+    - symbol_image: "/images/sports/maryland/jousting-ring-tournament.jpg"
+      state: "Maryland"
       state_slug: "maryland"
       sport: "Jousting"
       designation: "State sport"
       adopted_year: 1962
-      symbol_url: "/states/maryland"
-      short_fact: "Maryland's oldest sport designation leans into colonial pageantry and a long-running local tournament culture."
+      symbol_url: "/states/maryland/sport/jousting"
+      notes: "Maryland's oldest sport designation leans into colonial pageantry and a long-running local tournament culture."
 
-    - state: "Maryland"
+    - symbol_image: "/images/sports/maryland/lacrosse-johns-hopkins-maryland.jpg"
+      state: "Maryland"
       state_slug: "maryland"
       sport: "Lacrosse"
       designation: "State team sport"
       adopted_year: 2004
-      symbol_url: "/states/maryland"
-      short_fact: "Lacrosse is deeply woven into Maryland school, college, and regional sports identity."
+      symbol_url: "/states/maryland/sport/lacrosse"
+      notes: "Lacrosse is deeply woven into Maryland school, college, and regional sports identity."
 
-    - state: "Maryland"
+    - symbol_image: "/images/sports/maryland/walking-chesapeake-bay-bridge.jpg"
+      state: "Maryland"
       state_slug: "maryland"
       sport: "Walking"
       designation: "State exercise"
       adopted_year: 2008
-      symbol_url: "/states/maryland"
-      short_fact: "Maryland broadened the category beyond competition and recognized the most universal form of physical activity."
+      symbol_url: "/states/maryland/sport/walking"
+      notes: "Maryland broadened the category beyond competition and recognized the most universal form of physical activity."
 
-    - state: "Massachusetts"
+    - symbol_image: "/images/sports/massachusetts/basketball-springfield-massachusetts.jpg"
+      state: "Massachusetts"
       state_slug: "massachusetts"
       sport: "Basketball"
       designation: "Sport of the Commonwealth"
       adopted_year: 2006
-      symbol_url: "/states/massachusetts"
-      short_fact: "Massachusetts leaned into Springfield, where basketball was invented in 1891."
+      symbol_url: "/states/massachusetts/sport/basketball"
+      notes: "Massachusetts leaned into Springfield, where basketball was invented in 1891."
 
-    - state: "Massachusetts"
+    - symbol_image: "/images/sports/massachusetts/volleyball-holyoke-massachusetts.jpg"
+      state: "Massachusetts"
       state_slug: "massachusetts"
       sport: "Volleyball"
       designation: "Recreational and team sport of the Commonwealth"
       adopted_year: 2014
-      symbol_url: "/states/massachusetts"
-      short_fact: "Like basketball, volleyball was born in Massachusetts, giving the state an unusually strong invention claim."
+      symbol_url: "/states/massachusetts/sport/volleyball"
+      notes: "Like basketball, volleyball was born in Massachusetts, giving the state an unusually strong invention claim."
 
-    - state: "Michigan"
-      state_slug: "michigan"
-      sport: "American Football"
-      designation: "Official state sport"
-      adopted_year: 1972
-      symbol_url: "/states/michigan"
-      short_fact: "Football has a grip on Michigan through school culture, college rivalries, and the state's deep fan base."
-
-    - state: "Minnesota"
+    - symbol_image: "/images/sports/minnesota/ice-hockey-minnesota.jpg"
+      state: "Minnesota"
       state_slug: "minnesota"
       sport: "Ice Hockey"
       designation: "State sport"
       adopted_year: 2009
-      symbol_url: "/states/minnesota"
-      short_fact: "The State of Hockey picked the sport that best matches its winters, youth programs, and community rinks."
+      symbol_url: "/states/minnesota/sport/ice-hockey"
+      notes: "The State of Hockey picked the sport that best matches its winters, youth programs, and community rinks."
 
-    - state: "Missouri"
+    - symbol_image: "/images/sports/missouri/jumping-jack-missouri.jpg"
+      state: "Missouri"
       state_slug: "missouri"
       sport: "Jumping Jack"
       designation: "State exercise"
       adopted_year: 2014
-      symbol_url: "/states/missouri"
-      short_fact: "Missouri honored a simple bodyweight exercise invented by a Missouri native, James F. Jackson."
+      symbol_url: "/states/missouri/sport/jumping-jack"
+      notes: "Missouri honored a simple bodyweight exercise credited to General John J. Pershing, a Missouri native who is said to have developed it training cadets at West Point."
 
-    - state: "Missouri"
+    - symbol_image: "/images/sports/missouri/archery-springfield-missouri.jpg"
+      state: "Missouri"
       state_slug: "missouri"
       sport: "Archery"
       designation: "State sport"
       adopted_year: 2022
-      symbol_url: "/states/missouri"
-      short_fact: "Archery fits Missouri's outdoor culture, hunting tradition, and conservation identity."
+      symbol_url: "/states/missouri/sport/archery"
+      notes: "Archery fits Missouri's outdoor culture, hunting tradition, and conservation identity."
 
-    - state: "Montana"
+    - symbol_image: "/images/sports/montana/rodeo-saddle-bronc-montana.jpg"
+      state: "Montana"
       state_slug: "montana"
       sport: "Rodeo"
       designation: "Official state sport"
       adopted_year: 2025
-      symbol_url: "/states/montana"
-      short_fact: "Rodeo is a natural symbol for a ranching state that still ties identity to stock, open land, and county-fair culture."
+      symbol_url: "/states/montana/sport/rodeo"
+      notes: "Rodeo is a natural symbol for a ranching state that still ties identity to stock, open land, and county-fair culture."
 
-    - state: "New Hampshire"
+    - symbol_image: "/images/sports/new-hampshire/skiing-white-mountains-new-hampshire.jpg"
+      state: "New Hampshire"
       state_slug: "new-hampshire"
       sport: "Skiing"
       designation: "Official state sport"
       adopted_year: 1998
-      symbol_url: "/states/new-hampshire"
-      short_fact: "New Hampshire picked the sport most associated with White Mountains tourism and winter recreation."
+      symbol_url: "/states/new-hampshire/sport/skiing"
+      notes: "New Hampshire picked the sport most associated with White Mountains tourism and winter recreation."
 
-    - state: "New York"
+    - symbol_image: "/images/sports/new-york/baseball-yankee-stadium-new-york.jpg"
+      state: "New York"
       state_slug: "new-york"
       sport: "Baseball"
       designation: "Official state sport"
       adopted_year: 2021
-      symbol_url: "/states/new-york"
-      short_fact: "New York linked its symbol to baseball's long claim on the state's mythology, cities, and historic teams."
+      symbol_url: "/states/new-york/sport/baseball"
+      notes: "New York linked its symbol to baseball's long claim on the state's mythology, cities, and historic teams."
 
-    - state: "North Carolina"
+    - symbol_image: "/images/sports/north-carolina/stock-car-racing-charlotte-north-carolina.jpg"
+      state: "North Carolina"
       state_slug: "north-carolina"
       sport: "Stock Car Racing"
       designation: "Official state sport"
       adopted_year: 2011
-      symbol_url: "/states/north-carolina"
-      short_fact: "NASCAR culture, race shops, and the Charlotte region made stock car racing an easy North Carolina choice."
+      symbol_url: "/states/north-carolina/sport/stock-car-racing"
+      notes: "NASCAR culture, race shops, and the Charlotte region made stock car racing an easy North Carolina choice."
 
-    - state: "North Dakota"
+    - symbol_image: "/images/sports/north-dakota/curling-sheet-ice-north-dakota.jpg"
+      state: "North Dakota"
       state_slug: "north-dakota"
       sport: "Curling"
       designation: "Official state sport"
       adopted_year: 2023
-      symbol_url: "/states/north-dakota"
-      short_fact: "Curling reflects northern winters, prairie community clubs, and a strong Upper Midwest tradition."
+      symbol_url: "/states/north-dakota/sport/curling"
+      notes: "Curling reflects northern winters, prairie community clubs, and a strong Upper Midwest tradition."
 
-    - state: "South Dakota"
+    - symbol_image: "/images/sports/south-dakota/rodeo-black-hills-roundup-belle-fourche.jpg"
+      state: "South Dakota"
       state_slug: "south-dakota"
       sport: "Rodeo"
       designation: "Official sport"
       adopted_year: 2003
-      symbol_url: "/states/south-dakota"
-      short_fact: "South Dakota's ranching culture and rodeo circuit made this one of the least surprising designations."
+      symbol_url: "/states/south-dakota/sport/rodeo"
+      notes: "South Dakota's ranching culture and rodeo circuit made this one of the least surprising designations."
 
-    - state: "Texas"
+    - symbol_image: "/images/sports/texas/rodeo-west-of-the-pecos-arena.jpg"
+      state: "Texas"
       state_slug: "texas"
       sport: "Rodeo"
       designation: "State sport"
       adopted_year: 1997
-      symbol_url: "/states/texas"
-      short_fact: "Texas chose the sport that best compresses cattle culture, spectacle, and frontier mythology into one image."
+      symbol_url: "/states/texas/sport/rodeo"
+      notes: "Texas chose the sport that best compresses cattle culture, spectacle, and frontier mythology into one image."
 
-    - state: "Washington"
+    - symbol_image: "/images/sports/washington/pickleball-bainbridge-island-court.jpg"
+      state: "Washington"
       state_slug: "washington"
       sport: "Pickleball"
       designation: "Official state sport"
       adopted_year: 2022
-      symbol_url: "/states/washington"
-      short_fact: "Washington's choice points directly to Bainbridge Island, where pickleball was created in 1965."
+      symbol_url: "/states/washington/sport/pickleball"
+      notes: "Washington's choice points directly to Bainbridge Island, where pickleball was created in 1965."
 
-    - state: "Wyoming"
+    - symbol_image: "/images/sports/wyoming/rodeo-cheyenne-frontier-days-arena.jpg"
+      state: "Wyoming"
       state_slug: "wyoming"
       sport: "Rodeo"
       designation: "Official state sport"
       adopted_year: 2003
-      symbol_url: "/states/wyoming"
-      short_fact: "Rodeo fits Wyoming's cattle-country image as cleanly as almost any symbol fits any state."
+      symbol_url: "/states/wyoming/sport/rodeo"
+      notes: "Rodeo fits Wyoming's cattle-country image as cleanly as almost any symbol fits any state."
 
 faq:
   - question: "What is Alaska's official state sport?"

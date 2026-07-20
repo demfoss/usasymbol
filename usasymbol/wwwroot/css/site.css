@@ -137,6 +137,29 @@
     margin-top: clamp(2rem, 3vw, 3rem);
 }
 
+/* Journey targets these stable containers after its site recrawl. The ad
+   provider, rather than the site navigation, owns sidebar sticky behavior. */
+.journey-content {
+    min-width: 0;
+}
+
+@media (min-width: 1024px) {
+    .journey-sidebar {
+        min-width: 300px;
+    }
+
+    .journey-sidebar .sticky,
+    .journey-sidebar .toc-minimal {
+        position: static;
+        top: auto;
+    }
+
+    .journey-sidebar > section {
+        min-height: 0;
+        padding-bottom: 0;
+    }
+}
+
 /* Shared shell, header, navigation, and footer */
 :root {
     --site-ink: #11203d;

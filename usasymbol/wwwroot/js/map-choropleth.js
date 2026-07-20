@@ -3,33 +3,36 @@
 
     var container = document.getElementById('usmap-container');
     if (!container) return;
+    var hasBooted = false;
 
     function boot() {
-    var wrapper = document.getElementById('usmap-wrapper');
-    var tooltip = document.getElementById('map-tooltip');
-    var tooltipState = document.getElementById('tt-state');
-    var tooltipValue = document.getElementById('tt-value');
-    var tooltipDot = document.getElementById('tt-status-dot');
-    var dataEl = document.getElementById('choropleth-data');
-    var filterGroupsEl = document.getElementById('map-filter-groups-data');
-    var filtersHost = document.getElementById('map-filter-groups');
-    var searchInput = document.getElementById('map-search-input');
-    var searchResults = document.getElementById('map-search-results');
-    var drawer = document.getElementById('map-drawer');
-    var drawerBackdrop = document.getElementById('map-drawer-backdrop');
-    var drawerClose = document.getElementById('map-drawer-close');
-    var drawerFlag = document.getElementById('drawer-flag');
-    var drawerState = document.getElementById('map-drawer-state');
-    var drawerValue = document.getElementById('drawer-value');
-    var drawerRank = document.getElementById('drawer-rank');
-    var drawerSummary = document.getElementById('drawer-summary');
-    var drawerDetails = document.getElementById('drawer-details');
-    var drawerItems = document.getElementById('drawer-items');
-    var drawerStateInfo = document.getElementById('drawer-state-info');
-    var drawerDot = document.getElementById('drawer-status-dot');
-    var drawerLink = document.getElementById('drawer-view-link');
-    var smallStateButtons = Array.prototype.slice.call(document.querySelectorAll('.map-small-state'));
-    var clearFiltersBtn = document.getElementById('map-clear-filters');
+        if (hasBooted) return;
+        hasBooted = true;
+        var wrapper = document.getElementById('usmap-wrapper');
+        var tooltip = document.getElementById('map-tooltip');
+        var tooltipState = document.getElementById('tt-state');
+        var tooltipValue = document.getElementById('tt-value');
+        var tooltipDot = document.getElementById('tt-status-dot');
+        var dataEl = document.getElementById('choropleth-data');
+        var filterGroupsEl = document.getElementById('map-filter-groups-data');
+        var filtersHost = document.getElementById('map-filter-groups');
+        var searchInput = document.getElementById('map-search-input');
+        var searchResults = document.getElementById('map-search-results');
+        var drawer = document.getElementById('map-drawer');
+        var drawerBackdrop = document.getElementById('map-drawer-backdrop');
+        var drawerClose = document.getElementById('map-drawer-close');
+        var drawerFlag = document.getElementById('drawer-flag');
+        var drawerState = document.getElementById('map-drawer-state');
+        var drawerValue = document.getElementById('drawer-value');
+        var drawerRank = document.getElementById('drawer-rank');
+        var drawerSummary = document.getElementById('drawer-summary');
+        var drawerDetails = document.getElementById('drawer-details');
+        var drawerItems = document.getElementById('drawer-items');
+        var drawerStateInfo = document.getElementById('drawer-state-info');
+        var drawerDot = document.getElementById('drawer-status-dot');
+        var drawerLink = document.getElementById('drawer-view-link');
+        var smallStateButtons = Array.prototype.slice.call(document.querySelectorAll('.map-small-state'));
+        var clearFiltersBtn = document.getElementById('map-clear-filters');
 
     if (!container || !wrapper || !tooltip || !dataEl) return;
 
@@ -59,13 +62,62 @@
         return a.name.localeCompare(b.name);
     });
 
-    // Assign quintile bucket (0–4) so legend steps can filter by value range
+    // Value-based legend buckets (max 5). Quintile cut points are snapped to
+    // distinct values so equal values never split across buckets and chip
+    // ranges never overlap (no more "0 – 0" / "0 – 2" / "2 – 8").
+    var legendBuckets = [];
     (function () {
         var sortedKeys = Object.keys(stateData)
             .filter(function (k) { return stateData[k] && stateData[k].nv != null; })
             .sort(function (a, b) { return stateData[a].nv - stateData[b].nv; });
-        sortedKeys.forEach(function (k, idx) {
-            stateData[k].legendBucket = Math.min(4, Math.floor(idx * 5 / sortedKeys.length));
+        var n = sortedKeys.length;
+        if (!n) return;
+
+        var displayByValue = {};
+        var distinct = [];
+        sortedKeys.forEach(function (k) {
+            var v = stateData[k].nv;
+            if (!distinct.length || distinct[distinct.length - 1] !== v) distinct.push(v);
+            if (!(v in displayByValue)) displayByValue[v] = stateData[k].v || String(v);
+        });
+
+        // Upper bound (inclusive) of each bucket, snapped to distinct values
+        var cuts = [];
+        if (distinct.length <= 5) {
+            cuts = distinct.slice();
+        } else {
+            for (var b = 1; b <= 5; b++) {
+                var v = stateData[sortedKeys[Math.min(n - 1, Math.ceil(b * n / 5) - 1)]].nv;
+                if (!cuts.length || cuts[cuts.length - 1] < v) cuts.push(v);
+            }
+            var maxVal = distinct[distinct.length - 1];
+            if (cuts[cuts.length - 1] < maxVal) cuts[cuts.length - 1] = maxVal;
+        }
+
+        var lo = distinct[0];
+        cuts.forEach(function (hi) {
+            legendBuckets.push({
+                lo: lo,
+                hi: hi,
+                count: 0,
+                label: lo === hi
+                    ? displayByValue[lo]
+                    : displayByValue[lo] + ' – ' + displayByValue[hi]
+            });
+            for (var j = 0; j < distinct.length; j++) {
+                if (distinct[j] > hi) { lo = distinct[j]; break; }
+            }
+        });
+
+        sortedKeys.forEach(function (k) {
+            var v = stateData[k].nv;
+            for (var i = 0; i < legendBuckets.length; i++) {
+                if (v <= legendBuckets[i].hi) {
+                    stateData[k].legendBucket = i;
+                    legendBuckets[i].count++;
+                    break;
+                }
+            }
         });
     })();
 
@@ -100,17 +152,33 @@
 
     function getOptionColor(group, option) {
         if (!group) return '#0f766e';
-        if (group.useColors) {
-            for (var key in stateData) {
-                if (!Object.prototype.hasOwnProperty.call(stateData, key)) continue;
-                var record = stateData[key];
-                var values = getFilterValues(record, group.key);
-                if (values.indexOf(option) >= 0) {
-                    return record.fill || '#0f766e';
-                }
+
+        var matchingColor = null;
+        var hasMultipleColors = false;
+
+        for (var key in stateData) {
+            if (!Object.prototype.hasOwnProperty.call(stateData, key)) continue;
+            var record = stateData[key];
+            var values = getFilterValues(record, group.key);
+            if (values.indexOf(option) < 0) continue;
+
+            var fill = record.fill || '#0f766e';
+            if (matchingColor === null) {
+                matchingColor = fill;
+                continue;
+            }
+
+            if (matchingColor !== fill) {
+                hasMultipleColors = true;
+                if (!group.useColors) break;
             }
         }
-        return group.accentColor || '#0f766e';
+
+        if (matchingColor && (!hasMultipleColors || group.useColors)) {
+            return matchingColor;
+        }
+
+        return group.accentColor || matchingColor || '#0f766e';
     }
 
     function getFilterValues(record, filterKey) {
@@ -456,6 +524,16 @@
             });
         }
 
+        var textOverlay = container.querySelector('#text-overlay');
+        if (textOverlay) {
+            textOverlay.querySelectorAll('g[data-postal]').forEach(function (g) {
+                var postal = g.getAttribute('data-postal').toUpperCase();
+                var record = stateData[postal];
+                var isMatch = !record || matchesFilters(record);
+                g.style.display = isMatch ? '' : 'none';
+            });
+        }
+
         syncLegendButtons();
         syncClearButton();
     }
@@ -567,7 +645,8 @@
         legendEl.classList.toggle('has-active', activeLegendBucket !== null);
         legendStepButtons.forEach(function (button) {
             var idx = parseInt(button.getAttribute('data-step-index'), 10);
-            var isActive = activeLegendBucket !== null && idx === activeLegendBucket;
+            var bucketIdx = isNaN(idx) ? -1 : parseInt(button.dataset.legendBucket || idx, 10);
+            var isActive = activeLegendBucket !== null && bucketIdx === activeLegendBucket;
             button.classList.toggle('is-active', isActive);
             button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
         });
@@ -583,45 +662,30 @@
     }
 
     function initLegend() {
-        if (!legendStepButtons.length) return;
+        if (!legendStepButtons.length || !legendBuckets.length) return;
 
-        var bucketCounts = [0, 0, 0, 0, 0];
-        Object.keys(stateData).forEach(function (k) {
-            var rec = stateData[k];
-            if (rec && rec.legendBucket != null) bucketCounts[rec.legendBucket]++;
-        });
+        // The bottom legend renders one swatch per gradient step; buckets are
+        // value-based and can be fewer, so each step maps to its nearest bucket.
+        function bucketForStep(idx) {
+            if (legendBuckets.length >= legendStepButtons.length) return Math.min(idx, legendBuckets.length - 1);
+            return Math.min(legendBuckets.length - 1,
+                Math.floor(idx * legendBuckets.length / legendStepButtons.length));
+        }
 
-        // Count badges on the bottom legend swatches + click handlers
         legendStepButtons.forEach(function (button) {
             var idx = parseInt(button.getAttribute('data-step-index'), 10);
-            if (idx >= 0 && bucketCounts[idx]) {
-                var badge = document.createElement('span');
-                badge.className = 'map-legend-step__count';
-                badge.textContent = bucketCounts[idx];
-                button.appendChild(badge);
-            }
+            if (isNaN(idx) || idx < 0) return;
+            var bucketIdx = bucketForStep(idx);
+            button.dataset.legendBucket = String(bucketIdx);
 
             button.addEventListener('click', function () {
-                activeLegendBucket = activeLegendBucket === idx ? null : idx;
+                activeLegendBucket = activeLegendBucket === bucketIdx ? null : bucketIdx;
                 applyFilters();
             });
         });
 
         // Render gradient filter chips ABOVE the map when there are no categorical filters
         if (!filtersHost || filterGroups.length) return;
-
-        // Compute display values at each quintile boundary for chip range labels
-        var sortedKeys = Object.keys(stateData)
-            .filter(function (k) { return stateData[k] && stateData[k].nv != null; })
-            .sort(function (a, b) { return stateData[a].nv - stateData[b].nv; });
-
-        var n = sortedKeys.length;
-        if (!n) return;
-
-        var boundaryIdxs = [0, Math.floor(n / 5), Math.floor(2 * n / 5), Math.floor(3 * n / 5), Math.floor(4 * n / 5), n - 1];
-        var boundaryVals = boundaryIdxs.map(function (i) {
-            return (stateData[sortedKeys[Math.min(i, n - 1)]] || {}).v || '';
-        });
 
         var groupWrap = document.createElement('div');
         groupWrap.className = 'map-filter-group';
@@ -635,12 +699,15 @@
         chipsList.className = 'map-filter-options';
         chipsList.id = 'map-legend-chips';
 
-        legendStepButtons.forEach(function (button, i) {
-            var swatchEl = button.querySelector('.map-legend-step__swatch');
+        legendBuckets.forEach(function (bucket, i) {
+            if (!bucket.count) return;
+
+            // Pick the swatch color of the legend step closest to this bucket
+            var stepIdx = legendBuckets.length > 1
+                ? Math.round(i * (legendStepButtons.length - 1) / (legendBuckets.length - 1))
+                : legendStepButtons.length - 1;
+            var swatchEl = legendStepButtons[stepIdx] && legendStepButtons[stepIdx].querySelector('.map-legend-step__swatch');
             var color = swatchEl ? swatchEl.style.background : '#94a3b8';
-            var lo = boundaryVals[i];
-            var hi = boundaryVals[i + 1];
-            var rangeLabel = i < 4 ? lo + ' – ' + hi : '≥ ' + lo;
 
             var chip = document.createElement('button');
             chip.type = 'button';
@@ -652,12 +719,12 @@
             chip.innerHTML =
                 '<span class="map-filter-chip__label-wrap">' +
                     '<span class="map-filter-chip__range-swatch" style="background:' + color + '"></span>' +
-                    '<span class="map-filter-chip__label">' + rangeLabel + '</span>' +
+                    '<span class="map-filter-chip__label">' + bucket.label + '</span>' +
                 '</span>';
 
             var countSpan = document.createElement('span');
             countSpan.className = 'map-filter-chip__count';
-            countSpan.textContent = String(bucketCounts[i] || '');
+            countSpan.textContent = String(bucket.count);
             chip.appendChild(countSpan);
 
             chip.addEventListener('click', function () {
@@ -836,9 +903,19 @@
     initLegend();
     } // end boot()
 
-    if (container.dataset.svgSrc) {
-        document.addEventListener('map-svg-ready', boot, { once: true });
-    } else {
+    if (container.querySelector('svg')) {
         boot();
+        return;
     }
+
+    if (container.dataset.svgSrc) {
+        document.addEventListener('map-svg-ready', function () {
+            if (container.querySelector('svg')) {
+                boot();
+            }
+        }, { once: true });
+        return;
+    }
+
+    boot();
 })();

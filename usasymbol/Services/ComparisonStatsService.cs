@@ -111,6 +111,48 @@ namespace USASymbol.Services
                 if (fields.TryGetValue("gas_tax_cents", out var gasTax) && gasTax != null)
                     stats.GasTaxCents = Convert.ToDouble(gasTax);
 
+                if (fields.TryGetValue("total_tax_burden_pct", out var taxBurden) && taxBurden != null)
+                    stats.TotalTaxBurdenPct = Convert.ToDouble(taxBurden);
+
+                if (fields.TryGetValue("home_insurance_annual_premium", out var homeIns) && homeIns != null)
+                    stats.HomeInsuranceAnnualPremium = Convert.ToInt32(homeIns);
+
+                if (fields.TryGetValue("car_insurance_full_coverage_annual", out var carIns) && carIns != null)
+                    stats.CarInsuranceFullCoverageAnnual = Convert.ToInt32(carIns);
+
+                if (fields.TryGetValue("unemployment_benefit_max_weekly", out var uiBenefit) && uiBenefit != null)
+                    stats.UnemploymentBenefitMaxWeekly = Convert.ToInt32(uiBenefit);
+
+                if (fields.TryGetValue("per_pupil_spending", out var spending) && spending != null)
+                    stats.PerPupilSpending = Convert.ToInt32(spending);
+
+                if (fields.TryGetValue("aza_accredited_zoos", out var zoos) && zoos != null)
+                    stats.AzaAccreditedZoos = Convert.ToInt32(zoos);
+
+                if (fields.TryGetValue("teacher_average_salary", out var teacherSalary) && teacherSalary != null)
+                    stats.TeacherAverageSalary = Convert.ToInt32(teacherSalary);
+
+                if (fields.TryGetValue("public_school_rank", out var schoolRank) && schoolRank != null)
+                    stats.PublicSchoolRank = Convert.ToInt32(schoolRank);
+
+                if (fields.TryGetValue("student_loan_debt_avg", out var loanDebt) && loanDebt != null)
+                    stats.StudentLoanDebtAvg = Convert.ToInt32(loanDebt);
+
+                if (fields.TryGetValue("college_graduation_rate_4yr_pct", out var gradRate) && gradRate != null)
+                    stats.CollegeGraduationRate4yrPct = Convert.ToDouble(gradRate);
+
+                if (fields.TryGetValue("childcare_infant_annual_cost", out var childcare) && childcare != null)
+                    stats.ChildcareInfantAnnualCost = Convert.ToInt32(childcare);
+
+                if (fields.TryGetValue("healthcare_score", out var healthcare) && healthcare != null)
+                    stats.HealthcareScore = Convert.ToDouble(healthcare);
+
+                if (fields.TryGetValue("gun_ownership_pct", out var gunOwnership) && gunOwnership != null)
+                    stats.GunOwnershipPct = Convert.ToDouble(gunOwnership);
+
+                if (fields.TryGetValue("electoral_votes", out var electoralVotes) && electoralVotes != null)
+                    stats.ElectoralVotes = Convert.ToInt32(electoralVotes);
+
                 if (fields.TryGetValue("presidential_margin_pct", out var presidentialMargin) && presidentialMargin != null)
                     stats.PresidentialVotingMarginPct = Convert.ToDouble(presidentialMargin);
 

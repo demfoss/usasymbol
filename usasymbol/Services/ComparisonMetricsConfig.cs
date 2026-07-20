@@ -202,6 +202,31 @@ namespace USASymbol.Services
             },
             new()
             {
+                Slug = "childcare-costs",
+                Name = "Infant Childcare Cost",
+                Description = "Average annual cost of full-time infant daycare.",
+                GroupSlug = "economy",
+                GroupName = "Income",
+                GroupOrder = 2,
+                SortOrder = 7,
+                Unit = "USD",
+                Icon = "fa-solid fa-baby",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.ChildcareInfantAnnualCost.HasValue == true ? (double)stats.ChildcareInfantAnnualCost.Value : null,
+                GetDisplayValue = (_, stats) => stats?.ChildcareInfantAnnualCost is int value ? $"${value:N0}/yr" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b,
+                    sa?.ChildcareInfantAnnualCost.HasValue == true ? (double?)sa.ChildcareInfantAnnualCost.Value : null,
+                    sb?.ChildcareInfantAnnualCost.HasValue == true ? (double?)sb.ChildcareInfantAnnualCost.Value : null,
+                    false,
+                    "Childcare cost data is not available for comparison.",
+                    "have the same average infant childcare cost",
+                    "has cheaper average infant childcare than",
+                    "USD")
+            },
+            new()
+            {
                 Slug = "regional-price-parity",
                 Name = "Regional Price Parity",
                 Description = "Official price level relative to the national average (100 = U.S. average).",
@@ -263,6 +288,31 @@ namespace USASymbol.Services
                     "Minimum wage data is not available for comparison.",
                     "have the same minimum wage",
                     "has a higher minimum wage than",
+                    "USD")
+            },
+            new()
+            {
+                Slug = "unemployment-benefit",
+                Name = "Unemployment Benefit",
+                Description = "Maximum weekly unemployment insurance benefit (IndeedFlex 2026).",
+                GroupSlug = "jobs",
+                GroupName = "Jobs",
+                GroupOrder = 2,
+                SortOrder = 2,
+                Unit = "USD",
+                Icon = "fa-solid fa-hand-holding-dollar",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.UnemploymentBenefitMaxWeekly.HasValue == true ? (double)stats.UnemploymentBenefitMaxWeekly.Value : null,
+                GetDisplayValue = (_, stats) => stats?.UnemploymentBenefitMaxWeekly is int value ? $"${value:N0}/wk" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b,
+                    sa?.UnemploymentBenefitMaxWeekly.HasValue == true ? (double?)sa.UnemploymentBenefitMaxWeekly.Value : null,
+                    sb?.UnemploymentBenefitMaxWeekly.HasValue == true ? (double?)sb.UnemploymentBenefitMaxWeekly.Value : null,
+                    true,
+                    "Unemployment benefit data is not available for comparison.",
+                    "pay the same maximum weekly unemployment benefit",
+                    "pays a higher maximum weekly unemployment benefit than",
                     "USD")
             },
             new()
@@ -412,6 +462,31 @@ namespace USASymbol.Services
                     "Electricity price data is not available for comparison.",
                     "have the same average residential electricity rate",
                     "has cheaper residential electricity than")
+            },
+            new()
+            {
+                Slug = "car-insurance",
+                Name = "Car Insurance Cost",
+                Description = "Average annual full coverage car insurance premium (WalletHub 2026).",
+                GroupSlug = "quality-of-life",
+                GroupName = "Quality of Life",
+                GroupOrder = 3,
+                SortOrder = 7,
+                Unit = "USD",
+                Icon = "fa-solid fa-car",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.CarInsuranceFullCoverageAnnual.HasValue == true ? (double)stats.CarInsuranceFullCoverageAnnual.Value : null,
+                GetDisplayValue = (_, stats) => stats?.CarInsuranceFullCoverageAnnual is int value ? $"${value:N0}/yr" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b,
+                    sa?.CarInsuranceFullCoverageAnnual.HasValue == true ? (double?)sa.CarInsuranceFullCoverageAnnual.Value : null,
+                    sb?.CarInsuranceFullCoverageAnnual.HasValue == true ? (double?)sb.CarInsuranceFullCoverageAnnual.Value : null,
+                    false,
+                    "Car insurance data is not available for comparison.",
+                    "have the same average full coverage car insurance premium",
+                    "has cheaper average full coverage car insurance than",
+                    "USD")
             },
             new()
             {
@@ -692,6 +767,31 @@ namespace USASymbol.Services
             },
             new()
             {
+                Slug = "home-insurance",
+                Name = "Home Insurance Cost",
+                Description = "Average annual home insurance premium for $250,000 in dwelling coverage (MoneyGeek 2026).",
+                GroupSlug = "housing",
+                GroupName = "Housing",
+                GroupOrder = 5,
+                SortOrder = 9,
+                Unit = "USD",
+                Icon = "fa-solid fa-house-flood-water",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.HomeInsuranceAnnualPremium.HasValue == true ? (double)stats.HomeInsuranceAnnualPremium.Value : null,
+                GetDisplayValue = (_, stats) => stats?.HomeInsuranceAnnualPremium is int value ? $"${value:N0}/yr" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b,
+                    sa?.HomeInsuranceAnnualPremium.HasValue == true ? (double?)sa.HomeInsuranceAnnualPremium.Value : null,
+                    sb?.HomeInsuranceAnnualPremium.HasValue == true ? (double?)sb.HomeInsuranceAnnualPremium.Value : null,
+                    false,
+                    "Home insurance data is not available for comparison.",
+                    "have the same average home insurance premium",
+                    "has cheaper average home insurance than",
+                    "USD")
+            },
+            new()
+            {
                 Slug = "retirement-score",
                 Name = "Retirement Score",
                 Description = "Composite score for comparing states for retirement, combining affordability, taxes, housing, health, safety, and winter climate.",
@@ -773,6 +873,27 @@ namespace USASymbol.Services
                     "Property tax data is not available for comparison.",
                     "have the same effective property tax rate",
                     "has a lower effective property tax rate than")
+            },
+            new()
+            {
+                Slug = "tax-burden",
+                Name = "Total Tax Burden",
+                Description = "Total state and local tax burden (property, income, and sales and excise taxes) as a percentage of personal income (WalletHub 2026).",
+                GroupSlug = "taxes",
+                GroupName = "Taxes",
+                GroupOrder = 7,
+                SortOrder = 4,
+                Unit = "%",
+                Icon = "fa-solid fa-scale-balanced",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.TotalTaxBurdenPct,
+                GetDisplayValue = (_, stats) => stats?.TotalTaxBurdenPct is double value ? $"{value:F2}%" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.TotalTaxBurdenPct, sb?.TotalTaxBurdenPct, false,
+                    "Tax burden data is not available for comparison.",
+                    "have the same total tax burden",
+                    "has a lower total tax burden than")
             },
             new()
             {
@@ -999,6 +1120,30 @@ namespace USASymbol.Services
             },
             new()
             {
+                Slug = "electoral-votes",
+                Name = "Electoral Votes",
+                Description = "Number of electoral votes in the Electoral College.",
+                GroupSlug = "politics",
+                GroupName = "Politics",
+                GroupOrder = 7,
+                SortOrder = 8,
+                Unit = "votes",
+                Icon = "fa-solid fa-landmark-flag",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.ElectoralVotes.HasValue == true ? (double)stats.ElectoralVotes.Value : null,
+                GetDisplayValue = (_, stats) => stats?.ElectoralVotes is int value ? value.ToString("N0") : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b,
+                    sa?.ElectoralVotes.HasValue == true ? (double?)sa.ElectoralVotes.Value : null,
+                    sb?.ElectoralVotes.HasValue == true ? (double?)sb.ElectoralVotes.Value : null,
+                    true,
+                    "Electoral vote data is not available for comparison.",
+                    "have the same number of electoral votes",
+                    "has more electoral votes than")
+            },
+            new()
+            {
                 Slug = "gun-laws-status",
                 Name = "Gun Laws Status",
                 Description = "Simplified statewide gun-law label based on current Giffords grades: A to B = Restrictive, C to F = Permissive (scorecard modified February 20, 2026).",
@@ -1123,6 +1268,27 @@ namespace USASymbol.Services
                     var lowerState = higherState == a ? b : a;
                     return $"{higherState.Name} has a higher minimum marriage age than {lowerState.Name}.";
                 }
+            },
+            new()
+            {
+                Slug = "gun-ownership",
+                Name = "Gun Ownership",
+                Description = "Share of adults who personally own a gun (%).",
+                GroupSlug = "laws",
+                GroupName = "Laws",
+                GroupOrder = 8,
+                SortOrder = 5,
+                Unit = "%",
+                Icon = "fa-solid fa-gun",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.GunOwnershipPct,
+                GetDisplayValue = (_, stats) => stats?.GunOwnershipPct is double v ? $"{v:F1}%" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.GunOwnershipPct, sb?.GunOwnershipPct, true,
+                    "Gun ownership data is not available for comparison.",
+                    "have the same share of adults who own guns",
+                    "has a higher share of adults who own guns than")
             },
             new()
             {
@@ -1327,6 +1493,27 @@ namespace USASymbol.Services
             },
             new()
             {
+                Slug = "best-healthcare",
+                Name = "Healthcare Quality Score",
+                Description = "Composite healthcare score combining outcomes, cost, and access.",
+                GroupSlug = "health",
+                GroupName = "Health",
+                GroupOrder = 10,
+                SortOrder = 5,
+                Unit = "score",
+                Icon = "fa-solid fa-briefcase-medical",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.HealthcareScore,
+                GetDisplayValue = (_, stats) => stats?.HealthcareScore is double v ? $"{v:F1}" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.HealthcareScore, sb?.HealthcareScore, true,
+                    "Healthcare quality data is not available for comparison.",
+                    "have the same healthcare quality score",
+                    "scores higher for healthcare quality")
+            },
+            new()
+            {
                 Slug = "violent-crime",
                 Name = "Violent Crime Rate",
                 Description = "Violent crime incidents per 100,000 residents (FBI UCR 2022).",
@@ -1437,6 +1624,128 @@ namespace USASymbol.Services
                     "have the same student-teacher ratio",
                     "has a lower student-teacher ratio than")
             },
+            new()
+            {
+                Slug = "school-spending",
+                Name = "School Spending",
+                Description = "Per-pupil K-12 education spending (World Population Review 2025).",
+                GroupSlug = "education",
+                GroupName = "Education",
+                GroupOrder = 12,
+                SortOrder = 4,
+                Unit = "USD",
+                Icon = "fa-solid fa-school",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.PerPupilSpending.HasValue == true ? (double)stats.PerPupilSpending.Value : null,
+                GetDisplayValue = (_, stats) => stats?.PerPupilSpending is int value ? $"${value:N0}" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b,
+                    sa?.PerPupilSpending.HasValue == true ? (double?)sa.PerPupilSpending.Value : null,
+                    sb?.PerPupilSpending.HasValue == true ? (double?)sb.PerPupilSpending.Value : null,
+                    true,
+                    "School spending data is not available for comparison.",
+                    "spend the same per pupil",
+                    "spends more per pupil than",
+                    "USD")
+            },
+            new()
+            {
+                Slug = "teacher-salary",
+                Name = "Teacher Salary",
+                Description = "Average public school teacher salary, 2024-25 (NEA).",
+                GroupSlug = "education",
+                GroupName = "Education",
+                GroupOrder = 12,
+                SortOrder = 5,
+                Unit = "USD",
+                Icon = "fa-solid fa-chalkboard-user",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.TeacherAverageSalary.HasValue == true ? (double)stats.TeacherAverageSalary.Value : null,
+                GetDisplayValue = (_, stats) => stats?.TeacherAverageSalary is int value ? $"${value:N0}" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b,
+                    sa?.TeacherAverageSalary.HasValue == true ? (double?)sa.TeacherAverageSalary.Value : null,
+                    sb?.TeacherAverageSalary.HasValue == true ? (double?)sb.TeacherAverageSalary.Value : null,
+                    true,
+                    "Teacher salary data is not available for comparison.",
+                    "pay teachers the same average salary",
+                    "pays teachers a higher average salary than",
+                    "USD")
+            },
+            new()
+            {
+                Slug = "public-school-rank",
+                Name = "Public School Ranking",
+                Description = "Public school system ranking, 1 = best.",
+                GroupSlug = "education",
+                GroupName = "Education",
+                GroupOrder = 12,
+                SortOrder = 6,
+                Unit = "rank",
+                Icon = "fa-solid fa-ranking-star",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.PublicSchoolRank.HasValue == true ? (double)stats.PublicSchoolRank.Value : null,
+                GetDisplayValue = (_, stats) => stats?.PublicSchoolRank is int r ? $"#{r}" : null,
+                GenerateSummary = (a, sa, b, sb) =>
+                {
+                    if (sa?.PublicSchoolRank is null || sb?.PublicSchoolRank is null) return "Public school ranking data is not available.";
+                    if (sa.PublicSchoolRank == sb.PublicSchoolRank) return $"{a.Name} and {b.Name} share the same public school rank.";
+                    var better = sa.PublicSchoolRank < sb.PublicSchoolRank ? a : b;
+                    var worse  = better == a ? b : a;
+                    var rankBetter = better == a ? sa.PublicSchoolRank!.Value : sb.PublicSchoolRank!.Value;
+                    var rankWorse  = better == a ? sb.PublicSchoolRank!.Value : sa.PublicSchoolRank!.Value;
+                    return $"{better.Name} ranks #{rankBetter} for public schools, higher than {worse.Name} at #{rankWorse}.";
+                }
+            },
+            new()
+            {
+                Slug = "student-loan-debt",
+                Name = "Student Loan Debt",
+                Description = "Average federal student loan debt per borrower.",
+                GroupSlug = "education",
+                GroupName = "Education",
+                GroupOrder = 12,
+                SortOrder = 7,
+                Unit = "USD",
+                Icon = "fa-solid fa-hand-holding-dollar",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.StudentLoanDebtAvg.HasValue == true ? (double)stats.StudentLoanDebtAvg.Value : null,
+                GetDisplayValue = (_, stats) => stats?.StudentLoanDebtAvg is int value ? $"${value:N0}" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b,
+                    sa?.StudentLoanDebtAvg.HasValue == true ? (double?)sa.StudentLoanDebtAvg.Value : null,
+                    sb?.StudentLoanDebtAvg.HasValue == true ? (double?)sb.StudentLoanDebtAvg.Value : null,
+                    false,
+                    "Student loan debt data is not available for comparison.",
+                    "carry the same average student loan debt",
+                    "has lower average student loan debt than",
+                    "USD")
+            },
+            new()
+            {
+                Slug = "college-graduation-rate",
+                Name = "College Graduation Rate",
+                Description = "4-year college graduation rate (%).",
+                GroupSlug = "education",
+                GroupName = "Education",
+                GroupOrder = 12,
+                SortOrder = 8,
+                Unit = "%",
+                Icon = "fa-solid fa-graduation-cap",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.CollegeGraduationRate4yrPct,
+                GetDisplayValue = (_, stats) => stats?.CollegeGraduationRate4yrPct is double v ? $"{v:F1}%" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.CollegeGraduationRate4yrPct, sb?.CollegeGraduationRate4yrPct, true,
+                    "College graduation rate data is not available for comparison.",
+                    "have the same 4-year college graduation rate",
+                    "has a higher 4-year college graduation rate than")
+            },
 
             // ── Natural Disaster Risk (GroupOrder 13) ───────────────────────────
             new()
@@ -1542,6 +1851,32 @@ namespace USASymbol.Services
                         ? $"{a.Name} and {b.Name} share the same wildfire risk level ({rA.ToLowerInvariant()})."
                         : $"{a.Name} has {rA.ToLowerInvariant()} wildfire risk, while {b.Name} has {rB.ToLowerInvariant()} wildfire risk.";
                 }
+            },
+
+            // ── Culture (GroupOrder 14) ──────────────────────────────────────────
+            new()
+            {
+                Slug = "aza-zoos",
+                Name = "AZA-Accredited Zoos",
+                Description = "Number of zoos, aquariums, and related facilities accredited by the Association of Zoos and Aquariums (AZA institution status, 2026).",
+                GroupSlug = "culture",
+                GroupName = "Culture",
+                GroupOrder = 14,
+                SortOrder = 1,
+                Unit = "count",
+                Icon = "fa-solid fa-paw",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.AzaAccreditedZoos.HasValue == true ? (double)stats.AzaAccreditedZoos.Value : null,
+                GetDisplayValue = (_, stats) => stats?.AzaAccreditedZoos is int value ? value.ToString("N0") : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b,
+                    sa?.AzaAccreditedZoos.HasValue == true ? (double?)sa.AzaAccreditedZoos.Value : null,
+                    sb?.AzaAccreditedZoos.HasValue == true ? (double?)sb.AzaAccreditedZoos.Value : null,
+                    true,
+                    "AZA-accredited zoo data is not available for comparison.",
+                    "have the same number of AZA-accredited zoos",
+                    "has more AZA-accredited zoos than")
             }
         };
 

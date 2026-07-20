@@ -46,6 +46,9 @@ table:
 
   metric_default: value
   sort_default: desc
+  column_formats:
+    value: "C2"
+    rpp: "N1"
 
   rows:
     - rank: 1
@@ -456,8 +459,8 @@ map:
   metric_key: value
   metric_label: "value of $100"
   tooltip_label: state
-  color_scheme: green_red
-  color_scale: diverging
+  color_scheme: red-green
+  color_scale: linear
 
 compare:
   metric_slug: purchasing-power
@@ -489,7 +492,7 @@ sections:
     icon: "fa-solid fa-sun"
     title: "The Sun Belt Split: Texas at $109, Florida at $106"
     paragraphs:
-      - "The Sun Belt states reveal a divide that the national narrative about migration and growth tends to flatten. Texas sits at rank 20 with a value of $109.17 — firmly above average, benefiting from no income tax, a large and competitive labor market, and inland metros like Houston, Dallas, and San Antonio where land is plentiful and housing has historically been cheap. Florida ranks 27th at $106.45, above the national average but notably lower than Texas, pulled down by Miami's coastal real estate market and the retirement-driven demand along the Gulf and Atlantic coasts."
+      - "The Sun Belt states reveal a divide that the national narrative about migration and growth tends to flatten. Texas sits at rank 20 with a value of $109.17 — firmly above average, benefiting from no income tax, a large and competitive labor market, and inland metros like Houston, Dallas, and San Antonio where land is plentiful and housing has historically been cheap. Florida ranks 27th at $106.45, above the national average but well below Texas, pulled down by Miami's coastal real estate market and the retirement-driven demand along the Gulf and Atlantic coasts."
       - "Both states saw rapid in-migration after 2020, and the pressure shows. Texas's RPP has risen meaningfully since 2015 as Austin and Dallas-Fort Worth absorbed hundreds of thousands of new residents; Florida's coastal markets now price out many of the workers the service and hospitality sectors need. The purchasing power advantage that made both states magnets for relocators is narrowing, even as the nominal tax advantage remains. For context on why people moved, the [states by population](/rankings/demographics/states-by-population) ranking shows just how much the Sun Belt has grown."
       - "States in the Mountain West — Idaho (23rd, $107.39), Montana (25th, $107.15), Wyoming (28th, $106.35) — show above-average purchasing power built on low population density and historically modest real estate markets. Idaho's purchasing power advantage is eroding in the Boise metro as in-migration drives up housing costs; rural Montana and Wyoming remain well below national price levels."
 

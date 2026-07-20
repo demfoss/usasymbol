@@ -130,6 +130,48 @@ namespace USASymbol.Models
         public string? EarthquakeRisk { get; set; }
         public string? WildfireRisk { get; set; }
 
+        /// <summary>Total state and local tax burden as a % of personal income (WalletHub 2026).</summary>
+        public double? TotalTaxBurdenPct { get; set; }
+
+        /// <summary>Average annual home insurance premium for $250,000 in dwelling coverage (MoneyGeek 2026).</summary>
+        public int? HomeInsuranceAnnualPremium { get; set; }
+
+        /// <summary>Average annual full coverage car insurance premium (WalletHub 2026).</summary>
+        public int? CarInsuranceFullCoverageAnnual { get; set; }
+
+        /// <summary>Maximum weekly unemployment benefit (IndeedFlex 2026).</summary>
+        public int? UnemploymentBenefitMaxWeekly { get; set; }
+
+        /// <summary>Per-pupil K-12 education spending (World Population Review 2025).</summary>
+        public int? PerPupilSpending { get; set; }
+
+        /// <summary>Number of AZA-accredited zoos and aquariums (AZA institution status, 2026).</summary>
+        public int? AzaAccreditedZoos { get; set; }
+
+        /// <summary>Average public school teacher salary, 2024-25 (NEA).</summary>
+        public int? TeacherAverageSalary { get; set; }
+
+        /// <summary>Public school ranking, 1 = best (Niche/WalletHub-style public school rank).</summary>
+        public int? PublicSchoolRank { get; set; }
+
+        /// <summary>Average federal student loan debt per borrower.</summary>
+        public int? StudentLoanDebtAvg { get; set; }
+
+        /// <summary>4-year college graduation rate (%).</summary>
+        public double? CollegeGraduationRate4yrPct { get; set; }
+
+        /// <summary>Average annual infant care cost.</summary>
+        public int? ChildcareInfantAnnualCost { get; set; }
+
+        /// <summary>Composite healthcare quality score (outcomes, cost, access).</summary>
+        public double? HealthcareScore { get; set; }
+
+        /// <summary>Share of adults who personally own a gun (%).</summary>
+        public double? GunOwnershipPct { get; set; }
+
+        /// <summary>Number of electoral votes.</summary>
+        public int? ElectoralVotes { get; set; }
+
         // Calculated
         public double? PopulationDensity(int? population)
         {

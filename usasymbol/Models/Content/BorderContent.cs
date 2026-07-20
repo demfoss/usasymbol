@@ -49,6 +49,8 @@
         public string BorderType { get; set; } = "";
         public string Features { get; set; } = "";
         public string? Anchor { get; set; }
+        public string? Image { get; set; }
+        public string? ParkName { get; set; }
     }
 
     public class BorderSection

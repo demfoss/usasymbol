@@ -57,6 +57,9 @@
         }.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
     }
 
+    if (string.IsNullOrWhiteSpace(heroImage) && ViewData["MapPngPath"] is string mapPngPath)
+        heroImage = mapPngPath;
+
     var heroImageResolved = string.IsNullOrWhiteSpace(heroImage) ? "/images/og-default.webp" : heroImage!;
     var heroImageUrl = Images.Full(heroImageResolved);
     ViewData["OgImage"] = heroImageUrl;
@@ -219,9 +222,9 @@
     <article class="w-full">
         @await Html.PartialAsync("_PageHero", heroModel)
 
-        <div class="page-flow-shell lg:grid lg:grid-cols-[232px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[244px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[256px_minmax(0,912px)] 2xl:gap-12 relative">
-            <aside class="hidden lg:block relative h-full">
-                <div class="sticky top-24 pb-10">
+        <div class="page-flow-shell lg:grid lg:grid-cols-[300px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[300px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[300px_minmax(0,912px)] 2xl:gap-12 relative">
+            <aside class="journey-sidebar hidden lg:block relative h-full" aria-label="Article sidebar">
+                <div class="pb-10">
                     @await Html.PartialAsync("_TocSidebar", Model)
                     @await Html.PartialAsync("_RelatedCollectionsSidebar", Model)
                 </div>
@@ -230,9 +233,7 @@
             <div class="min-w-0">
                 @if (Model.HasQuickAnswer)
                 {
-                    <section id="quick-answer" class="scroll-mt-24">
-                        @await Html.PartialAsync("Pages/_QuickAnswer", Model)
-                    </section>
+                    @await Html.PartialAsync("Pages/_QuickAnswer", Model)
                 }
 
                 @if (content?.Map != null)
@@ -242,7 +243,7 @@
                     </section>
                 }
 
-                <div class="relative content-flow site-content page-flow-content">
+                <div class="journey-content relative content-flow site-content page-flow-content">
 
                 @if (Model.HasRows)
                 {

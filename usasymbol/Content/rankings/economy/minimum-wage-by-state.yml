@@ -24,11 +24,11 @@ page:
   h1: "Minimum Wage by State 2026"
 
   quick_answer:
-    - "The 2026 minimum wage by state ranges from $7.25 — the federal rate applied in 20 states with no higher state law — to $16.66 in Washington. Thirty states set minimum wages above the federal floor."
+    - "The 2026 minimum wage by state ranges from $7.25, the federal rate applied in 20 states with no higher state law, to $16.66 in Washington. Thirty states set minimum wages above the federal floor."
     - "Washington ($16.66), California ($16.50), and New York ($16.50) have the highest minimum wages in 2026. Missouri, Nebraska, and Virginia all reached $15.00 on January 1, 2026, joining Massachusetts, Illinois, Maryland, and Rhode Island."
     - "Five states have no state minimum wage law: Alabama, Louisiana, Mississippi, South Carolina, and Tennessee. The federal rate of $7.25 applies in all five."
 
-  methodology: "Rates reflect effective statewide minimums as of January 1, 2026, or the most recent effective date. CPI-indexed states show the last confirmed rate. Local rates in cities or counties may be higher. Tipped minimum wages show the required cash wage before tips."
+  methodology: "Rates reflect effective statewide minimums as of January 1, 2026, or the most recent effective date, with CPI-indexed states showing the last confirmed rate. Local rates in cities or counties may be higher, and tipped minimum wages show the required cash wage before tips."
 
   sources:
     - name: "Economic Policy Institute — Minimum Wage Tracker"
@@ -62,6 +62,9 @@ table:
 
   metric_default: min_wage
   sort_default: desc
+  column_formats:
+    min_wage: "C2"
+    tipped_wage: "C2"
 
   rows:
     - rank: 1
@@ -528,7 +531,7 @@ sections:
     icon: "fa-solid fa-arrow-trend-up"
     title: "States With the Highest Minimum Wage in 2026"
     paragraphs:
-      - "Washington leads at $16.66, indexed annually under Initiative 1433 (2016). California ($16.50) and New York ($16.50) follow — California under a CPI-indexed schedule, New York under a legislated increase that brought the statewide rate to $16.50 on January 1, 2026."
+      - "Washington leads at $16.66, indexed annually under Initiative 1433 (2016). California ($16.50) and New York ($16.50) follow, California under a CPI-indexed schedule, New York under a legislated increase that brought the statewide rate to $16.50 on January 1, 2026."
       - "Connecticut ($16.35), Hawaii ($16.00), and Oregon ($15.95) round out the top six. Hawaii's $16.00 rate is the fourth step of Act 114 (2022), which scales the state to $18.00 by January 1, 2028."
       - "Fourteen states now pay $15.00 or more. Missouri and Nebraska both completed multi-year ballot measure schedules on January 1, 2026. Virginia also reached $15.00 on the same date, completing its 2020 Minimum Wage Act schedule."
 
@@ -536,8 +539,8 @@ sections:
     icon: "fa-solid fa-landmark"
     title: "States Still Using the Federal Minimum Wage"
     paragraphs:
-      - "Twenty states are effectively at $7.25 — the federal minimum unchanged since July 24, 2009. Five have no state minimum wage law at all: Alabama, Louisiana, Mississippi, South Carolina, and Tennessee. The federal rate applies by default in each."
-      - "Thirteen others match $7.25 by their own state statute, including Texas, Indiana, Kansas, Pennsylvania, and Wisconsin. Georgia and Wyoming set state minimums of $5.15 — below the federal floor — so the Fair Labor Standards Act's $7.25 applies to most covered workers in both states."
+      - "Twenty states are effectively at $7.25, the federal minimum unchanged since July 24, 2009. Five have no state minimum wage law at all: Alabama, Louisiana, Mississippi, South Carolina, and Tennessee. The federal rate applies by default in each."
+      - "Thirteen others match $7.25 by their own state statute, including Texas, Indiana, Kansas, Pennsylvania, and Wisconsin. Georgia and Wyoming set state minimums of $5.15, below the federal floor, so the Fair Labor Standards Act's $7.25 applies to most covered workers in both states."
       - "Texas and Pennsylvania are the most populous states still at $7.25. Neither has raised its minimum wage since adopting the federal floor in 2009. Pennsylvania's legislature has debated increases multiple times without passing one."
 
   - id: "tipped-minimum-wage"
@@ -553,7 +556,7 @@ sections:
     title: "Minimum Wage Increases in 2026"
     paragraphs:
       - "Missouri, Nebraska, Virginia, and Hawaii all saw their minimum wages increase to $15.00 or higher on January 1, 2026. Missouri and Nebraska completed multi-year ballot initiative schedules. Virginia completed the final step of its 2020 Minimum Wage Act."
-      - "Alaska increases from $13.00 to $14.00 on July 1, 2026, under Proposition 2 (2024). Florida moves from $14.00 to $15.00 on September 30, 2026 — the final step in Amendment 2's annual $1 increase schedule that began in October 2021."
+      - "Alaska increases from $13.00 to $14.00 on July 1, 2026, under Proposition 2 (2024). Florida moves from $14.00 to $15.00 on September 30, 2026, the final step in Amendment 2's annual $1 increase schedule that began in October 2021."
       - "Several CPI-indexed states adjusted upward on January 1, 2026: Washington (to $16.66), Arizona, Colorado, Maine, Minnesota, Montana, Ohio, South Dakota, and Vermont. Michigan is scheduled to increase again on February 21, 2027, with $15.00 targeted by 2028."
 
   - id: "federal-vs-state"
@@ -579,22 +582,22 @@ visual_assets:
     layout: left
 
 faq:
-  - question: "What is the federal minimum wage in 2026"
+  - question: "What is the federal minimum wage in 2026?"
     answer: "The federal minimum wage is $7.25 per hour in 2026. It has not changed since July 24, 2009 — the longest period without an increase since the Fair Labor Standards Act established a national minimum in 1938. States may set higher rates, and 30 states do."
 
-  - question: "Which state has the highest minimum wage in 2026"
+  - question: "Which state has the highest minimum wage in 2026?"
     answer: "Washington has the highest minimum wage in 2026 at $16.66 per hour, effective January 1, 2026. California and New York follow at $16.50 each. Washington's rate is indexed to the Consumer Price Index and adjusts each January 1 under Initiative 1433 (2016)."
 
-  - question: "Which states still use the $7.25 minimum wage"
+  - question: "Which states still use the $7.25 minimum wage?"
     answer: "Twenty states are effectively at the $7.25 federal minimum in 2026. Five states have no state minimum wage law: Alabama, Louisiana, Mississippi, South Carolina, and Tennessee. Thirteen others match $7.25 by state statute. Georgia and Wyoming have state rates of $5.15, below the federal floor, so $7.25 applies under federal law."
 
-  - question: "What is the tipped minimum wage by state"
+  - question: "What is the tipped minimum wage by state?"
     answer: "Eight states require the full minimum wage for tipped workers with no tip credit: Alaska, California, Hawaii, Minnesota, Montana, Nevada, Oregon, and Washington. The federal cash minimum for tipped workers is $2.13 per hour. State cash minimums elsewhere range from $2.13 to $10.98 (Florida) and $10.00 (New York food service workers)."
 
-  - question: "Which states are raising their minimum wage in 2026"
+  - question: "Which states are raising their minimum wage in 2026?"
     answer: "Missouri, Nebraska, Virginia, and Hawaii all increased to $15.00 or higher on January 1, 2026. Alaska increases from $13.00 to $14.00 on July 1, 2026. Florida increases from $14.00 to $15.00 on September 30, 2026. Several CPI-indexed states also adjusted upward in January 2026."
 
-  - question: "Can cities have a higher minimum wage than the state"
+  - question: "Can cities have a higher minimum wage than the state?"
     answer: "Yes, where state preemption law allows it. Seattle ($20.29/hr), San Francisco ($18.67/hr), and New York City ($17.00/hr) all exceed their state rates. Arkansas, Tennessee, and Wisconsin bar local minimum wage ordinances, so the state rate is the ceiling in those states."
 
 related:

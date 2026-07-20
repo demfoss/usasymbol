@@ -209,6 +209,8 @@ namespace USASymbol.Models.Content
         public string Text { get; set; } = "";
         public LinkData? Link { get; set; }
         public List<string>? AnchorPhrases { get; set; }
+        public string? Image { get; set; }
+        public string? ImageCaption { get; set; }
     }
 
     public class PageSource
@@ -245,6 +247,7 @@ namespace USASymbol.Models.Content
         public string ColorScheme { get; set; } = "blue";
         public string ColorScale { get; set; } = "linear";
         public bool ShowLabels { get; set; } = false;
+        public bool TextOverlay { get; set; } = false;
         public string? SummaryKey { get; set; }
         public List<PageMapFilter> Filters { get; set; } = new();
         public Dictionary<string, string> ColorMap { get; set; } = new(StringComparer.OrdinalIgnoreCase);

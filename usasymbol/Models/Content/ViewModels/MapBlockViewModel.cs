@@ -36,6 +36,8 @@ namespace Usasymbol.ViewModels
         public bool IsCategorical { get; set; }
         public List<FilterGroup> FilterGroups { get; set; } = new();
 
+        public bool ShowTextOverlay { get; set; }
+
         public bool HasChoropleth => Entries.Count > 0;
         public bool IsNumeric => Entries.Any(e => e.NumericValue.HasValue);
     }

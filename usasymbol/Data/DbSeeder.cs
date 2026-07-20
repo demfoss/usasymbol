@@ -2063,9 +2063,11 @@ namespace USASymbol.Data
             var deserializer = new DeserializerBuilder().Build();
             var symbols = new List<Symbol>();
 
-            foreach (var file in Directory.EnumerateFiles(contentRoot, "sport.yaml", SearchOption.AllDirectories))
+            var sportDirs = Directory.EnumerateDirectories(contentRoot, "sport", SearchOption.AllDirectories);
+
+            foreach (var sportDir in sportDirs)
             {
-                var stateSlug = new DirectoryInfo(Path.GetDirectoryName(file) ?? string.Empty).Name;
+                var stateSlug = new DirectoryInfo(Path.GetDirectoryName(sportDir) ?? string.Empty).Name;
                 if (string.IsNullOrWhiteSpace(stateSlug))
                     continue;
 
@@ -2073,41 +2075,48 @@ namespace USASymbol.Data
                 if (state == null)
                     continue;
 
-                Dictionary<object, object>? data;
-                try
+                foreach (var file in Directory.EnumerateFiles(sportDir, "*.yaml", SearchOption.TopDirectoryOnly))
                 {
-                    data = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(file));
+                    var slug = Path.GetFileNameWithoutExtension(file);
+                    if (string.IsNullOrWhiteSpace(slug))
+                        continue;
+
+                    Dictionary<object, object>? data;
+                    try
+                    {
+                        data = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(file));
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    if (data == null)
+                        continue;
+
+                    var name = GetYamlString(data, "name");
+                    if (string.IsNullOrWhiteSpace(name))
+                        name = GetYamlString(data, "title");
+                    if (string.IsNullOrWhiteSpace(name))
+                        name = $"State Sport of {state.Name}";
+
+                    symbols.Add(new Symbol
+                    {
+                        StateId = state.Id,
+                        Type = "sport",
+                        Name = name,
+                        Slug = slug,
+                        ScientificName = null,
+                        AdoptedYear = GetYamlInt(data, "adopted_year"),
+                        Status = GetYamlBool(data, "is_official") ? "Official" : null,
+                        Designation = "State sport",
+                        Legislation = GetYamlString(data, "legislation"),
+                        WikidataId = null,
+                        Meaning = GetYamlString(data, "meaning"),
+                        ImageUrl = GetYamlString(data, "hero_image"),
+                        YamlPath = $"Content/states/{state.Slug}/sport/{slug}.yaml"
+                    });
                 }
-                catch
-                {
-                    continue;
-                }
-
-                if (data == null)
-                    continue;
-
-                var name = GetYamlString(data, "name");
-                if (string.IsNullOrWhiteSpace(name))
-                    name = GetYamlString(data, "title");
-                if (string.IsNullOrWhiteSpace(name))
-                    name = $"State Sport of {state.Name}";
-
-                symbols.Add(new Symbol
-                {
-                    StateId = state.Id,
-                    Type = "sport",
-                    Name = name,
-                    Slug = GenerateSlug(name),
-                    ScientificName = null,
-                    AdoptedYear = GetYamlInt(data, "adopted_year"),
-                    Status = GetYamlBool(data, "is_official") ? "Official" : null,
-                    Designation = "State sport",
-                    Legislation = GetYamlString(data, "legislation"),
-                    WikidataId = null,
-                    Meaning = GetYamlString(data, "meaning"),
-                    ImageUrl = GetYamlString(data, "hero_image"),
-                    YamlPath = $"Content/states/{state.Slug}/sport.yaml"
-                });
             }
 
             if (symbols.Count == 0)

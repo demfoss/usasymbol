@@ -26,12 +26,13 @@ namespace Usasymbol.Helpers
 
             var model = new MapBlockViewModel
             {
-                Slug          = slug ?? string.Empty,
-                Title         = map.Title,
-                Image         = map.Image,
-                ImageAlt      = map.ImageAlt,
-                Caption       = map.Caption ?? string.Empty,
-                IsCategorical = ChoroplethBuilder.IsCategoricalMap(map),
+                Slug            = slug ?? string.Empty,
+                Title           = map.Title,
+                Image           = map.Image,
+                ImageAlt        = map.ImageAlt,
+                Caption         = map.Caption ?? string.Empty,
+                IsCategorical   = ChoroplethBuilder.IsCategoricalMap(map),
+                ShowTextOverlay = map.TextOverlay,
                 FilterGroups  = map.Filters
                     .Where(filter => !string.IsNullOrWhiteSpace(filter.Key))
                     .Select(filter => new MapBlockViewModel.FilterGroup

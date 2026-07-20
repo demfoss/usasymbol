@@ -5,81 +5,65 @@
 @inject IImageUrlService Images
 
 @{
-    var items = Model.Items;
+    var items    = Model.Items;
     var basePath = Model.ImageBasePath.TrimEnd('/');
 }
 
 @if (items?.Any() == true)
 {
-    <div class="mt-8">
-        <div class="divide-y divide-slate-200/60">
-            @for (var i = 0; i < items.Count; i++)
-            {
-                var symbol = items[i];
-                var imageUrl = string.IsNullOrWhiteSpace(symbol.Image)
-                    ? null
-                    : symbol.Image.StartsWith("/", StringComparison.Ordinal)
-                        ? symbol.Image
-                        : $"{basePath}/{symbol.Image.TrimStart('/')}";
+    <div class="law-cards mt-6">
 
-                var num = (i + 1).ToString("D2");
-                var hasImage = !string.IsNullOrWhiteSpace(imageUrl);
+        @foreach (var symbol in items)
+        {
+            var imageUrl = string.IsNullOrWhiteSpace(symbol.Image)
+                ? null
+                : symbol.Image.StartsWith("/", StringComparison.Ordinal)
+                    ? symbol.Image
+                    : $"{basePath}/{symbol.Image.TrimStart('/')}";
+            var hasImage  = !string.IsNullOrWhiteSpace(imageUrl);
+            var firstPara = symbol.Paragraphs?.FirstOrDefault() ?? "";
 
-                <article class="py-9 first:pt-0 last:pb-0">
-                    <div class="grid @(hasImage ? "sm:grid-cols-[160px_minmax(0,1fr)] lg:grid-cols-[200px_minmax(0,1fr)]" : "") gap-6 sm:gap-8 items-start">
+            <article class="law-card">
+                <div class="law-card__layout">
 
-                        @if (hasImage)
-                        {
-                            @* Symbol image — square container with neutral background so SVGs read clearly *@
-                            <figure class="group shrink-0">
-                                <div class="relative overflow-hidden border border-slate-200/60 bg-gradient-to-br from-slate-50 to-white"
-                                     style="aspect-ratio:1/1;">
-                                    @* Subtle inner vignette ring *@
-                                    <div class="absolute inset-0 rounded-[inherit] shadow-[inset_0_0_0_1px_rgba(15,23,42,0.04)]" aria-hidden="true"></div>
-                                    <img src="@Images.Card(imageUrl)"
-                                         alt="@symbol.Name"
-                                         class="absolute inset-0 h-full w-full object-contain p-7 transition-transform duration-500 group-hover:scale-105"
-                                         loading="lazy" />
-                                </div>
-                            </figure>
-                        }
-
-                        <div class="min-w-0 @(hasImage ? "" : "max-w-3xl")">
-
-                            @* Symbol index label *@
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white text-[10px] font-bold leading-none" aria-hidden="true">
-                                    @(i + 1)
-                                </span>
-                                <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
-                                    Symbol @num
+                    @* ── Media panel ─────────────────────────── *@
+                    @if (hasImage)
+                    {
+                        <div class="law-card__media" style="background:#0f172a">
+                            <img src="@Images.Card(imageUrl!)"
+                                 alt="@symbol.Name"
+                                 class="law-card__image"
+                                 style="object-fit:contain;padding:1.25rem"
+                                 loading="lazy">
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="law-card__media law-card__media--fallback" style="background:#0f172a">
+                            <div class="law-card__fallback">
+                                <span class="law-card__fallback-icon">
+                                    <i class="fa-solid fa-shapes text-lg" aria-hidden="true"></i>
                                 </span>
                             </div>
-
-                            @* Symbol name *@
-                            <h3 class="text-[1.3rem] font-bold leading-tight text-slate-900 lg:text-[1.55rem]"
-                                style="font-family:'Libre Baskerville',Georgia,serif;">
-                                @symbol.Name
-                            </h3>
-
-                            @if (symbol.Paragraphs?.Any() == true)
-                            {
-                                <div class="mt-4 space-y-3">
-                                    @for (var p = 0; p < symbol.Paragraphs.Count; p++)
-                                    {
-                                        @* First paragraph slightly larger — lead text *@
-                                        <p class="@(p == 0 ? "text-[1rem] leading-[1.8] text-slate-700 font-[450]" : "text-[0.9625rem] leading-[1.78] text-slate-600")">
-                                            @symbol.Paragraphs[p].RenderAutoLinks()
-                                        </p>
-                                    }
-                                </div>
-                            }
-
                         </div>
+                    }
 
+                    @* ── Content panel ────────────────────────── *@
+                    <div class="law-card__content">
+                        <h3 class="law-card__title">@symbol.Name</h3>
+                        @if (!string.IsNullOrWhiteSpace(firstPara))
+                        {
+                            <div class="law-card__body">
+                                <p style="display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden">
+                                    @firstPara.RenderAutoLinks()
+                                </p>
+                            </div>
+                        }
                     </div>
-                </article>
-            }
-        </div>
+
+                </div>
+            </article>
+        }
+
     </div>
 }

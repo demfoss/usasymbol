@@ -1,0 +1,489 @@
+type: ranking
+slug: death-penalty-by-state
+category: law
+url: /rankings/law/death-penalty-by-state
+auto_link_phrases:
+  - "death penalty by state"
+  - "states with the death penalty"
+  - "capital punishment by state"
+  - "where is the death penalty legal"
+  - "execution methods by state"
+  - "states that abolished the death penalty"
+extremes_mode: topOnly
+extremes_title: "States Where the Death Penalty Is Currently Active"
+hero_image: "/images/rankings/law/death-penalty-by-state/death-penalty-by-state-hero.jpg"
+hero_image_alt: "Exterior of a state correctional facility in the United States, where capital punishment sentences are carried out"
+hero_image_caption: "27 states retain the death penalty in 2026, along with the U.S. federal government and U.S. Military. Of those, 4 states have active executive holds on executions. Michigan abolished capital punishment in 1847, the first English-speaking government in the world to do so."
+
+author: "USA Symbol Team"
+date_published: "2026-06-22"
+date_modified: "2026-06-22"
+
+seo:
+  title: "Death Penalty by State | Map, Status & Methods"
+  description: "27 states retain the death penalty in 2026. 23 states have abolished capital punishment. 4 states have a gubernatorial moratorium on executions."
+
+page:
+  h1: "Death Penalty by State"
+
+  quick_answer:
+    - "27 states retain the death penalty as of 2026, along with the U.S. federal government and U.S. Military. Lethal injection is the primary method, with several states also authorizing nitrogen hypoxia, electrocution, or firing squad."
+    - "23 states have abolished capital punishment. Michigan abolished it in 1847, the earliest of any state. Virginia was among the most recent, in 2021, followed by Washington in 2023."
+    - "4 death penalty states have active executive holds on executions: California (Gov. Newsom, 2019), Oregon (Gov. Kotek continuing the hold in 2023), Pennsylvania (Gov. Shapiro, 2023), and Ohio (Gov. DeWine, February 2025). None anticipates carrying out an execution during their current terms."
+
+  methodology: "Status reflects state law and executive orders as of June 2026, based on Death Penalty Information Center data. Abolition years shown are the effective date of the legislative repeal or binding court ruling."
+
+  sources:
+    - name: "Death Penalty Information Center — State by State"
+      url: "https://deathpenaltyinfo.org/state-and-federal-info/state-by-state"
+      description: "State-by-state death penalty status, execution counts, and abolition history"
+    - name: "DPIC — Methods of Execution"
+      url: "https://deathpenaltyinfo.org/executions/methods-of-execution"
+      description: "Authorized execution methods by state, including primary and alternative methods"
+
+map:
+  title: "Death Penalty Status by State 2026"
+  image: "/images/rankings/law/death-penalty-by-state/death-penalty-by-state-map.webp"
+  image_alt: "U.S. map showing death penalty legal status by state in 2026: dark red for 23 active states, yellow for 4 moratorium states, light blue for 23 abolished states"
+  caption: "23 states in dark red actively apply the death penalty. 4 states in yellow — California, Ohio, Oregon, and Pennsylvania — retain it in law but have executive holds on executions. 23 states in light blue have abolished capital punishment; Michigan was first in 1847."
+  disclaimer: "This map is for informational purposes only and does not constitute legal advice."
+  metric_key: status
+  metric_label: "Status"
+  name_key: state
+  summary_key: note
+  color_scheme: categorical
+  color_scale: categorical
+  color_map:
+    "Legal - Active": "red-dark"
+    "Gubernatorial Moratorium": "yellow"
+    "Abolished": "blue-light"
+  detail_keys:
+    - primary_method
+    - year_abolished
+  filters:
+    - key: status
+      label: "Filter by Status"
+      use_colors: true
+
+table:
+  caption: "2026 Death Penalty Status by State"
+  note: "The U.S. federal government and U.S. Military also retain the death penalty. Abolition years reflect the effective date of legislative repeal or binding court ruling. Execution method shown is the primary authorized method; several states authorize multiple alternatives by statute."
+  columns:
+    state: "State"
+    status: "Status"
+    primary_method: "Execution Method"
+    year_abolished: "Year Abolished"
+
+  metric_default: status
+  sort_default: asc
+
+  rows:
+    # ── LEGAL - ACTIVE (23 states) ────────────────────────────────────────────
+    - state: "Alabama"
+      state_slug: "alabama"
+      status: "Legal - Active"
+      primary_method: "Nitrogen hypoxia, lethal injection"
+      year_abolished: "—"
+      note: "Alabama carried out the first execution by nitrogen hypoxia in the United States, on January 25, 2024. Lethal injection remains authorized."
+
+    - state: "Arizona"
+      state_slug: "arizona"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection is the primary method. The gas chamber is authorized for inmates sentenced before November 1992."
+
+    - state: "Arkansas"
+      state_slug: "arkansas"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only. Arkansas executed 8 inmates over 11 days in April 2017 after a prolonged period without executions."
+
+    - state: "Florida"
+      state_slug: "florida"
+      status: "Legal - Active"
+      primary_method: "Lethal injection, electrocution"
+      year_abolished: "—"
+      note: "Lethal injection is primary. Electrocution is authorized as an alternative. Florida maintains one of the larger death row populations in the country."
+
+    - state: "Georgia"
+      state_slug: "georgia"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only. Georgia's death penalty law was the first upheld by the U.S. Supreme Court after Gregg v. Georgia (1976)."
+
+    - state: "Idaho"
+      state_slug: "idaho"
+      status: "Legal - Active"
+      primary_method: "Lethal injection, firing squad"
+      year_abolished: "—"
+      note: "Lethal injection is primary. Idaho authorized the firing squad in 2023 as a backup method when lethal injection drugs are unavailable."
+
+    - state: "Indiana"
+      state_slug: "indiana"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only."
+
+    - state: "Kansas"
+      state_slug: "kansas"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only. Kansas has not carried out an execution since reinstating the death penalty in 1994."
+
+    - state: "Kentucky"
+      state_slug: "kentucky"
+      status: "Legal - Active"
+      primary_method: "Lethal injection, electrocution"
+      year_abolished: "—"
+      note: "Lethal injection is primary. Electrocution is authorized for inmates sentenced before March 31, 1998."
+
+    - state: "Louisiana"
+      state_slug: "louisiana"
+      status: "Legal - Active"
+      primary_method: "Lethal injection, nitrogen hypoxia"
+      year_abolished: "—"
+      note: "Lethal injection is primary. Louisiana authorized nitrogen hypoxia as an alternative method in 2024."
+
+    - state: "Mississippi"
+      state_slug: "mississippi"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection is primary. Mississippi also authorizes nitrogen gas, electrocution, and firing squad by statute."
+
+    - state: "Missouri"
+      state_slug: "missouri"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only."
+
+    - state: "Montana"
+      state_slug: "montana"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only."
+
+    - state: "Nebraska"
+      state_slug: "nebraska"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only. Nebraska abolished electrocution in 2004. Voters rejected a repeal of the death penalty in a 2016 referendum."
+
+    - state: "Nevada"
+      state_slug: "nevada"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only."
+
+    - state: "North Carolina"
+      state_slug: "north-carolina"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only. North Carolina has not carried out an execution since 2006."
+
+    - state: "Oklahoma"
+      state_slug: "oklahoma"
+      status: "Legal - Active"
+      primary_method: "Lethal injection, nitrogen hypoxia"
+      year_abolished: "—"
+      note: "Oklahoma was the first state to authorize nitrogen hypoxia, in 2015. Electrocution and firing squad are also authorized as backup methods."
+
+    - state: "South Carolina"
+      state_slug: "south-carolina"
+      status: "Legal - Active"
+      primary_method: "Lethal injection, electrocution, firing squad"
+      year_abolished: "—"
+      note: "South Carolina reactivated executions in 2022 after a drug shortage halted them for over a decade. Inmates may choose electrocution or firing squad if lethal injection is unavailable."
+
+    - state: "South Dakota"
+      state_slug: "south-dakota"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection only."
+
+    - state: "Tennessee"
+      state_slug: "tennessee"
+      status: "Legal - Active"
+      primary_method: "Lethal injection, electrocution"
+      year_abolished: "—"
+      note: "Lethal injection is primary. Electrocution is authorized if lethal injection is found unconstitutional or if the inmate was sentenced before January 1, 1999."
+
+    - state: "Texas"
+      state_slug: "texas"
+      status: "Legal - Active"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Lethal injection is the only authorized method. Texas has carried out more executions than any other state since capital punishment was reinstated in 1976."
+
+    - state: "Utah"
+      state_slug: "utah"
+      status: "Legal - Active"
+      primary_method: "Lethal injection, firing squad"
+      year_abolished: "—"
+      note: "Lethal injection is primary. Utah re-authorized the firing squad in 2015 as a backup when lethal injection drugs are unavailable."
+
+    - state: "Wyoming"
+      state_slug: "wyoming"
+      status: "Legal - Active"
+      primary_method: "Lethal injection, nitrogen hypoxia"
+      year_abolished: "—"
+      note: "Lethal injection is primary. Wyoming authorized nitrogen hypoxia in 2017. The state has not carried out an execution since 1992."
+
+    # ── GUBERNATORIAL MORATORIUM (4 states) ──────────────────────────────────
+    - state: "California"
+      state_slug: "california"
+      status: "Gubernatorial Moratorium"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Gov. Gavin Newsom issued an executive moratorium on March 13, 2019, stating he would not oversee any execution while governor. California has not carried out an execution since 2006."
+
+    - state: "Ohio"
+      state_slug: "ohio"
+      status: "Gubernatorial Moratorium"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Gov. Mike DeWine stated on February 13, 2025, that he does not anticipate any more executions during his governorship, which runs through 2026."
+
+    - state: "Oregon"
+      state_slug: "oregon"
+      status: "Gubernatorial Moratorium"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Gov. Kate Brown continued a moratorium begun by Gov. Kitzhaber and commuted all death sentences in 2022. Gov. Tina Kotek announced in January 2023 that she would continue the hold on executions."
+
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      status: "Gubernatorial Moratorium"
+      primary_method: "Lethal injection"
+      year_abolished: "—"
+      note: "Gov. Josh Shapiro announced continuation of the moratorium begun by Gov. Wolf in 2023 and encouraged the legislature to approve abolition of the death penalty."
+
+    # ── ABOLISHED (23 states) ─────────────────────────────────────────────────
+    - state: "Alaska"
+      state_slug: "alaska"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1957"
+      note: "Alaska abolished the death penalty in 1957, two years before statehood."
+
+    - state: "Colorado"
+      state_slug: "colorado"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2020"
+      note: "Colorado abolished capital punishment in 2020. Gov. Jared Polis commuted the sentences of the 3 remaining death row inmates at the time of repeal."
+
+    - state: "Connecticut"
+      state_slug: "connecticut"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2012"
+      note: "Connecticut abolished the death penalty in 2012 for future cases. The state Supreme Court ruled in 2015 that applying it to existing death row inmates was unconstitutional."
+
+    - state: "Delaware"
+      state_slug: "delaware"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2016"
+      note: "Delaware's Supreme Court struck down the death penalty in 2016, ruling its sentencing procedure unconstitutional under the Sixth Amendment."
+
+    - state: "Hawaii"
+      state_slug: "hawaii"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1957"
+      note: "Hawaii abolished the death penalty in 1957, two years before statehood."
+
+    - state: "Illinois"
+      state_slug: "illinois"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2011"
+      note: "Illinois abolished the death penalty in 2011. Gov. Pat Quinn commuted the sentences of all 15 remaining death row inmates upon signing the repeal."
+
+    - state: "Iowa"
+      state_slug: "iowa"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1965"
+      note: "Iowa abolished the death penalty in 1965."
+
+    - state: "Maine"
+      state_slug: "maine"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1887"
+      note: "Maine abolished the death penalty in 1887, among the earliest states to do so."
+
+    - state: "Maryland"
+      state_slug: "maryland"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2013"
+      note: "Maryland abolished capital punishment in 2013. Gov. Martin O'Malley signed the repeal, making Maryland the 18th state to abolish the death penalty."
+
+    - state: "Massachusetts"
+      state_slug: "massachusetts"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1984"
+      note: "Massachusetts abolished the death penalty in 1984 after the state Supreme Judicial Court ruled it unconstitutional."
+
+    - state: "Michigan"
+      state_slug: "michigan"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1847"
+      note: "Michigan abolished the death penalty in 1847, the first English-speaking government in the world to do so. The prohibition was written into the state's 1963 constitution."
+
+    - state: "Minnesota"
+      state_slug: "minnesota"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1911"
+      note: "Minnesota abolished the death penalty in 1911."
+
+    - state: "New Hampshire"
+      state_slug: "new-hampshire"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2019"
+      note: "New Hampshire abolished the death penalty in 2019 when the legislature overrode Gov. Chris Sununu's veto."
+
+    - state: "New Jersey"
+      state_slug: "new-jersey"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2007"
+      note: "New Jersey abolished the death penalty in 2007, the first state to do so by legislative action in the modern post-Furman era."
+
+    - state: "New Mexico"
+      state_slug: "new-mexico"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2009"
+      note: "New Mexico abolished the death penalty in 2009."
+
+    - state: "New York"
+      state_slug: "new-york"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2007"
+      note: "New York's death penalty statute was ruled unconstitutional by the state Court of Appeals in 2004. The legislature allowed the law to lapse in 2007."
+
+    - state: "North Dakota"
+      state_slug: "north-dakota"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1973"
+      note: "North Dakota abolished the death penalty in 1973."
+
+    - state: "Rhode Island"
+      state_slug: "rhode-island"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1984"
+      note: "Rhode Island abolished the death penalty in 1984."
+
+    - state: "Vermont"
+      state_slug: "vermont"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1972"
+      note: "Vermont abolished the death penalty in 1972."
+
+    - state: "Virginia"
+      state_slug: "virginia"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2021"
+      note: "Virginia abolished the death penalty on March 24, 2021, becoming the first Southern state to do so. Gov. Ralph Northam signed the repeal into law."
+
+    - state: "Washington"
+      state_slug: "washington"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "2023"
+      note: "Washington abolished the death penalty in 2023. The state Supreme Court had earlier ruled it unconstitutional in 2018, halting executions before the legislative repeal."
+
+    - state: "West Virginia"
+      state_slug: "west-virginia"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1965"
+      note: "West Virginia abolished the death penalty in 1965."
+
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      status: "Abolished"
+      primary_method: "—"
+      year_abolished: "1853"
+      note: "Wisconsin abolished the death penalty in 1853, six years after statehood, making it among the earliest states to do so."
+
+sections:
+  - id: "states-that-have-abolished-the-death-penalty"
+    icon: "fa-solid fa-ban"
+    title: "States That Have Abolished the Death Penalty"
+    paragraphs:
+      - "23 states have abolished capital punishment, with Michigan leading in 1847 as the earliest English-speaking government in the world to do so. Wisconsin followed in 1853, Maine in 1887, and Minnesota in 1911."
+      - "Virginia became the first Southern state to abolish the death penalty in 2021. Washington followed in 2023, the most recent. New Jersey in 2007 was the first state in the modern era to repeal it through the legislature."
+
+  - id: "death-penalty-states-with-a-gubernatorial-moratorium"
+    icon: "fa-solid fa-pause-circle"
+    title: "Death Penalty States with a Gubernatorial Moratorium"
+    paragraphs:
+      - "4 states retain the death penalty in law but have active executive holds on executions: California, Ohio, Oregon, and Pennsylvania. Gov. Gavin Newsom halted executions in California on March 13, 2019. Gov. Tina Kotek continued Oregon's moratorium in January 2023, following Gov. Kate Brown, who commuted all death sentences in 2022."
+      - "Gov. Josh Shapiro continued Pennsylvania's moratorium in 2023 and urged the legislature to repeal capital punishment. Gov. Mike DeWine stated on February 13, 2025, that he does not anticipate further executions during his term through 2026."
+
+visual_assets:
+  - id: us-supreme-court-building
+    src: /images/rankings/law/death-penalty-by-state/us-supreme-court-building.jpg
+    alt: United States Supreme Court building in Washington D.C., where Furman v. Georgia (1972) and Gregg v. Georgia (1976) shaped modern capital punishment law
+    caption: Furman v. Georgia (1972) effectively halted all U.S. executions for four years. Gregg v. Georgia (1976) allowed states to resume capital punishment under revised statutes. 23 states have abolished it in the decades since.
+    section: states-that-have-abolished-the-death-penalty
+    layout: full-width-tall
+
+  - id: california-state-capitol
+    src: /images/rankings/law/death-penalty-by-state/california-state-capitol.jpg
+    alt: California State Capitol building in Sacramento, California
+    caption: Gov. Gavin Newsom issued a moratorium on executions in California on March 13, 2019. Three other states — Ohio, Oregon, and Pennsylvania — also have active executive holds as of 2026.
+    section: death-penalty-states-with-a-gubernatorial-moratorium
+    layout: full-width-tall
+
+faq:
+  - question: "Which states have the death penalty in 2026?"
+    answer: "27 states retain the death penalty in 2026: Alabama, Arizona, Arkansas, California, Florida, Georgia, Idaho, Indiana, Kansas, Kentucky, Louisiana, Mississippi, Missouri, Montana, Nebraska, Nevada, North Carolina, Ohio, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, and Wyoming. The U.S. federal government and U.S. Military also retain capital punishment."
+
+  - question: "What states have abolished the death penalty?"
+    answer: "23 states have abolished capital punishment: Alaska, Colorado, Connecticut, Delaware, Hawaii, Illinois, Iowa, Maine, Maryland, Massachusetts, Michigan, Minnesota, New Hampshire, New Jersey, New Mexico, New York, North Dakota, Rhode Island, Vermont, Virginia, Washington, West Virginia, and Wisconsin. Michigan abolished it in 1847; Washington was the most recent, in 2023."
+
+  - question: "Which state was the first to abolish the death penalty?"
+    answer: "Michigan abolished the death penalty in 1847, the first of any U.S. state and the first English-speaking government in the world to do so. Wisconsin followed in 1853, Maine in 1887, and Minnesota in 1911."
+
+  - question: "Is the death penalty legal in California?"
+    answer: "Capital punishment remains legal under California state law, but Gov. Gavin Newsom issued an executive moratorium on March 13, 2019, stating he would not oversee any execution while governor. California has not carried out an execution since 2006."
+
+  - question: "What is the execution method in Texas?"
+    answer: "Texas uses lethal injection as its only authorized execution method. Texas has carried out more executions than any other state since capital punishment was reinstated in 1976."
+
+  - question: "When did Virginia abolish the death penalty?"
+    answer: "Virginia abolished the death penalty on March 24, 2021, when Gov. Ralph Northam signed the repeal into law. Virginia was the first Southern state to do so."
+
+related:
+  - title: "Abortion Laws by State"
+    url: "/rankings/law/abortion-laws-by-state"
+  - title: "Gun Laws by State — Concealed Carry"
+    url: "/rankings/law/gun-laws-concealed-carry"
+  - title: "Marijuana Laws by State"
+    url: "/rankings/law/marijuana-legality-by-state"

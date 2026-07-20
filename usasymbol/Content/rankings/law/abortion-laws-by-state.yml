@@ -71,9 +71,6 @@ map:
     - key: status_summary
       label: "Filter by Legal Status"
       use_colors: true
-    - key: waiting_period
-      label: "Filter by Waiting Period"
-      accent_color: "#ff7a45"
     - key: mandatory_ultrasound
       label: "Filter by Ultrasound Rule"
       accent_color: "#b1135b"
@@ -549,28 +546,19 @@ table:
       counties_without_provider: "100%"
       note: "SB 4 (2022) banned abortion in West Virginia, signed September 16, 2022. Abortion banned at fertilization with limited medical exceptions."
 
-compare:
-  metric_slug: abortion-laws
-  title: "Compare Abortion Laws Between States"
-  description: "Choose two states and compare their gestational limits, waiting periods, and provider access."
-  button_text: "Compare abortion laws"
-  icon: "fa-solid fa-scale-balanced"
-  default_state_a: new-york
-  default_state_b: texas
-
 sections:
   - id: "states-with-total-abortion-bans-2026"
     icon: "fa-solid fa-ban"
     title: "States with Total Abortion Bans in 2026"
     paragraphs:
       - "13 states ban abortion at fertilization as of 2026: Alabama, Arkansas, Idaho, Indiana, Kentucky, Louisiana, Mississippi, North Dakota, Oklahoma, South Dakota, Tennessee, Texas, and West Virginia. All enacted or activated their bans following the Supreme Court's Dobbs v. Jackson Women's Health Organization ruling in June 2022."
-      - "100% of counties in each ban state have no in-state abortion provider, based on 2017 Guttmacher Institute data. Missouri had enforced a near-total ban after Dobbs; voters approved Amendment 3 in November 2024, establishing a state constitutional right to abortion up to viability and reversing the ban."
+      - "100% of counties in each ban state have no in-state abortion provider, based on 2017 Guttmacher Institute data. Missouri had enforced a near-total ban after Dobbs, but voters approved Amendment 3 in November 2024, establishing a state constitutional right to abortion up to viability and reversing the ban."
 
   - id: "states-where-abortion-is-legal-after-dobbs"
     icon: "fa-solid fa-check-circle"
     title: "States Where Abortion Is Legal After Dobbs"
     paragraphs:
-      - "8 states place no gestational limit on abortion in 2026: Alaska, Colorado, Maryland, Minnesota, New Jersey, New Mexico, Oregon, and Vermont. Maryland and Vermont added state constitutional abortion protections after Dobbs; Montana added constitutional protection via CI-128 in 2024."
+      - "8 states place no gestational limit on abortion in 2026: Alaska, Colorado, Maryland, Minnesota, New Jersey, New Mexico, Oregon, and Vermont. Maryland and Vermont added state constitutional abortion protections after Dobbs, and Montana added constitutional protection via CI-128 in 2024."
       - "15 states allow abortion to viability, typically 22 to 24 weeks: Arizona, California, Connecticut, Delaware, Hawaii, Illinois, Maine, Michigan, Missouri, Montana, New Hampshire, Ohio, Rhode Island, Washington, and Wyoming. Arizona's viability standard was restored in 2024 after the legislature repealed an 1864 ban that the state Supreme Court had briefly reinstated."
 
   - id: "states-with-early-gestational-limits"
@@ -603,22 +591,22 @@ visual_assets:
     layout: full-width-tall
 
 faq:
-  - question: "Which states have banned abortion in 2026"
+  - question: "Which states have banned abortion in 2026?"
     answer: "13 states ban abortion at fertilization in 2026: Alabama, Arkansas, Idaho, Indiana, Kentucky, Louisiana, Mississippi, North Dakota, Oklahoma, South Dakota, Tennessee, Texas, and West Virginia. All activated their bans after the Supreme Court's Dobbs v. Jackson decision in June 2022."
 
-  - question: "Is abortion legal in Texas in 2026"
+  - question: "Is abortion legal in Texas in 2026?"
     answer: "No. Texas bans abortion at fertilization under the Human Life Protection Act, which activated after Dobbs in June 2022. Texas also passed SB 8 (2021), which allows private civil lawsuits against providers. 100% of Texas counties have no in-state abortion provider."
 
-  - question: "What states have no gestational limit on abortion"
+  - question: "What states have no gestational limit on abortion?"
     answer: "8 states place no gestational limit on abortion in 2026: Alaska, Colorado, Maryland, Minnesota, New Jersey, New Mexico, Oregon, and Vermont. Maryland and Vermont have added state constitutional abortion protections since Dobbs."
 
-  - question: "How many weeks is abortion legal in Florida"
+  - question: "How many weeks is abortion legal in Florida?"
     answer: "Florida restricts abortion at 6 weeks under SB 300 (2023), which took effect May 1, 2024. The 6-week limit is measured from detection of cardiac activity. A prior 15-week restriction (HB 5, 2022) had been in effect from July 2022 through April 2024."
 
-  - question: "What is the abortion limit in New York"
+  - question: "What is the abortion limit in New York?"
     answer: "New York allows abortion up to 24 weeks under the Reproductive Health Act (2019). After 24 weeks, abortion is permitted when the fetus is not viable or to protect the patient's life or health. No mandatory waiting period applies."
 
-  - question: "What does legal to viability mean for abortion limits"
+  - question: "What does legal to viability mean for abortion limits?"
     answer: "Viability is the point at which a fetus can survive outside the womb with medical support, typically between 22 and 24 weeks of pregnancy. 15 states use viability as their on-demand gestational limit: Arizona, California, Connecticut, Delaware, Hawaii, Illinois, Maine, Michigan, Missouri, Montana, New Hampshire, Ohio, Rhode Island, Washington, and Wyoming."
 
 related:

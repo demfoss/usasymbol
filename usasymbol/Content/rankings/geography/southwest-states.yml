@@ -13,21 +13,21 @@ hero_image_caption: "Monument Valley straddles the Arizona-Utah border on the Na
 
 author: "USA Symbol Team"
 date_published: "2026-06-03"
-date_modified: "2026-06-03"
+date_modified: "2026-06-22"
 
 seo:
-  title: "Southwest States | Map, States & History"
-  description: "The Southwest typically includes Arizona, New Mexico, Nevada, and Utah, with nearby states sometimes included."
+  title: "Southwest States | Map, States & Facts"
+  description: "Arizona and New Mexico are the core Southwest states. Texas, Nevada, Utah, and Colorado are often included for specific subregions."
 
 page:
   h1: "Southwest States"
 
   quick_answer:
-    - "Arizona and New Mexico are the only two states that appear in every definition of the American Southwest. Texas, Nevada, Utah, and Colorado are frequently included but are not in every source's definition."
-    - "Texas (268,596 sq mi) is the largest state in any Southwest definition. If Texas is included, the Southwest becomes the largest U.S. region by area and population. New Mexico (121,590 sq mi) and Arizona (113,990 sq mi) are the geographic core of the region."
-    - "The Southwest has no Census definition — the Census Bureau groups these states in the West region. Definitions come from geographic encyclopedias, tourism boards, and cultural references, which produce anywhere from 4 to 8 states depending on the source."
+    - "The Southwest usually includes two core states, plus four others that appear in some definitions but not all."
+    - "Texas is the largest state on this list at 268,596 square miles. Utah is the smallest at 84,897 square miles."
+    - "Most definitions center on the desert Southwest first, then add nearby states only for specific subregions such as West Texas or southern Utah."
 
-  methodology: "Southwest classification reflects the geographic consensus across major reference sources. Core states appear in virtually every published definition. Sometimes-included states appear in some definitions but not others, typically due to overlapping regional identities (Texas with the South, Nevada with the West, Colorado with the Mountain West). southwest_score: 3 = universally recognized, 2 = frequently or sometimes included."
+  methodology: "Southwest status follows the source definitions cited below. Arizona and New Mexico are treated as core states, while Texas, Nevada, Utah, and Colorado are included only for the subregions named in the source descriptions."
 
   sources:
     - name: "Encyclopaedia Britannica — Southwestern United States"
@@ -38,18 +38,15 @@ page:
       description: "The National Park Service's Southwest region administrative boundary, which covers Arizona, New Mexico, and parts of surrounding states"
 
 table:
-  hidden_columns:
-    - southwest_score
   columns:
     rank: "Rank"
     state: "State"
     southwest_status: "Status"
-    southwest_score: "Score"
     area_sq_mi: "Area (sq mi)"
     notes: "Notes"
 
-  metric_default: southwest_score
-  sort_default: desc
+  metric_default: state
+  sort_default: asc
 
   rows:
     - rank: 1
@@ -110,67 +107,153 @@ map:
   title: "Southwest States Map"
   image: "/images/rankings/geography/southwest-states/southwest-states-map.webp"
   image_alt: "Map of the United States showing Arizona and New Mexico in dark orange as core Southwest states, Texas, Nevada, Utah, and Colorado in medium orange as frequently included states, all others in grey"
-  caption: "Arizona (113,990 sq mi) and New Mexico (121,590 sq mi) are the two core Southwest states that appear in every definition. Texas (268,596 sq mi) is the largest sometimes-included state — if included, it would account for more than half the Southwest's total area."
-  metric_key: southwest_score
+  caption: "Arizona and New Mexico form the core of most Southwest maps. Texas, Nevada, Utah, and Colorado are more often added for specific subregions than for the full state."
+  metric_key: southwest_status
   metric_label: "Southwest Status"
   tooltip_label: southwest_status
   color_scheme: orange
-  color_scale: linear
+  color_scale: categorical
 
 sections:
-  - id: "what-states-are-in-the-southwest"
-    icon: "fa-solid fa-map-location-dot"
-    title: "What States Are in the Southwest?"
+  - id: "core-southwest-states"
+    icon: "fa-solid fa-sun"
+    style: "law-cards"
+    title: "Core Southwest States"
     paragraphs:
-      - "Arizona and New Mexico are the only two states that appear in every definition of the American Southwest. Both are in the Census Mountain division of the West region. Arizona (113,990 sq mi, approximately 7.2 million residents) and New Mexico (121,590 sq mi, approximately 2.1 million residents) share a long border and the cultural overlap of the Sonoran and Chihuahuan deserts, Native American nations spanning both states, and the tri-cultural tradition of Native, Hispanic, and Anglo heritage."
-      - "Texas, Nevada, Utah, and Colorado are frequently included but not universal. Texas is included in most Southwest definitions based on the terrain and culture of West Texas (El Paso, Big Bend, the Trans-Pecos region), but its eastern two-thirds are firmly Southern. Nevada is included based on its southern Mojave Desert landscape; Utah is included based on its canyon country in the south. Colorado is included by some sources for its Four Corners and Mesa Verde region."
+      - "Arizona and New Mexico are the two states most consistently treated as the American Southwest. Arizona covers 113,990 sq mi, and New Mexico covers 121,590 sq mi."
+    subsections:
+      - subtitle: "Arizona"
+        status: "Core"
+        text: |
+          **Area:** 113,990 sq mi
+          **Rank:** 1
+          **Population:** approximately 7.2 million
 
-  - id: "southwest-states-why-no-census-definition"
-    icon: "fa-solid fa-circle-question"
-    title: "Why Doesn't the Census Define the Southwest?"
-    paragraphs:
-      - "The Census Bureau's four-region system places Arizona, Colorado, Nevada, New Mexico, and Utah in the West region's Mountain division, and Texas in the South's West South Central division. The Census does not define a Southwest region. As a result, Southwest definitions come from geographic encyclopedias, the National Park Service's administrative regions, tourism organizations, and cultural usage — producing anywhere from 4 to 8 states depending on the source."
-      - "The National Park Service's Intermountain Region covers Arizona, Colorado, Montana, New Mexico, North Dakota, Oklahoma, South Dakota, Texas, Utah, and Wyoming — a much broader set than the cultural Southwest. Encyclopaedia Britannica's definition of the Southwestern United States typically covers the core states of Arizona, New Mexico, and parts of Texas, with Utah and Colorado treated as Mountain West or sometimes-Southwest."
+          Arizona is one of the two states that appears in every definition of the Southwest. The table notes point to Phoenix, the Grand Canyon, the Sonoran Desert, and Monument Valley as the clearest markers of that identity.
 
-  - id: "southwest-states-largest"
-    icon: "fa-solid fa-chart-bar"
-    title: "Largest Southwest States by Area and Population"
+          Few states match the standard image of the region as closely. Arizona sits at the center of most Southwest maps and rarely gets treated as an edge case.
+      - subtitle: "New Mexico"
+        status: "Core"
+        text: |
+          **Area:** 121,590 sq mi
+          **Rank:** 2
+          **Population:** approximately 2.1 million
+
+          New Mexico is the other state that appears in every definition of the Southwest. Santa Fe, established in 1610, is the oldest state capital in the United States, and Albuquerque is the state's largest city.
+
+          The table notes also point to 23 federally recognized tribal nations and an approximately 11 percent Native American population share. Those details help explain why New Mexico stays in the core of the region.
+
+  - id: "often-included-southwest-states"
+    icon: "fa-solid fa-mountain-sun"
+    style: "law-cards"
+    title: "Southwest States Often Included"
     paragraphs:
-      - "If Texas is included, it is by far the largest Southwest state at 268,596 square miles — more than twice the size of New Mexico (121,590 sq mi) and Arizona (113,990 sq mi) combined. Texas also has the largest Southwest population at approximately 29.1 million, followed by Arizona at approximately 7.2 million and Colorado at approximately 5.8 million. If Texas is excluded, New Mexico (121,590 sq mi) is the largest Southwest state by area, and Arizona (approximately 7.2 million) leads by population."
+      - "Texas and Nevada are often included, but each one depends on a specific part of the state. Texas is the area outlier at 268,596 sq mi, while Nevada covers 110,572 sq mi."
+    subsections:
+      - subtitle: "Texas"
+        status: "Frequently Included"
+        text: |
+          **Area:** 268,596 sq mi
+          **Rank:** 3
+          **Population:** approximately 29.1 million
+
+          Texas is the largest state on the list by a wide margin, but its Southwest identity is uneven. The table notes tie that label to West Texas, especially El Paso, Big Bend, and the Trans Pecos region.
+
+          That is why Texas lands in the frequently included group instead of the core. East Texas is described in the same notes as culturally Southern.
+      - subtitle: "Nevada"
+        status: "Frequently Included"
+        text: |
+          **Area:** 110,572 sq mi
+          **Rank:** 4
+          **Population:** approximately 3.1 million
+
+          Nevada fits the Southwest most clearly in its southern half. The table notes single out Las Vegas, Lake Mead, and the Mojave Desert, with the Las Vegas metro listed at approximately 2.3 million residents.
+
+          Northern Nevada points in another direction. Reno and the Great Basin are why the state is frequently included rather than universally treated as Southwest.
+
+  - id: "sometimes-included-southwest-states"
+    icon: "fa-solid fa-road"
+    style: "law-cards"
+    title: "Southwest States Sometimes Included"
+    paragraphs:
+      - "Utah at 84,897 sq mi and Colorado at 104,094 sq mi sit on the edge of the region in this table. Both entries point to southern terrain rather than the full state."
+    subsections:
+      - subtitle: "Utah"
+        status: "Sometimes Included"
+        text: |
+          **Area:** 84,897 sq mi
+          **Rank:** 5
+          **Population:** approximately 3.3 million
+
+          Utah enters Southwest definitions through its southern canyon country. The table notes name Zion, Bryce Canyon, Capitol Reef, Canyonlands, and Arches as the landscapes that place the state in this conversation.
+
+          Northern Utah tells a different story. Salt Lake City and the Wasatch Front are more often grouped with the Mountain West, which keeps Utah in the sometimes included tier.
+      - subtitle: "Colorado"
+        status: "Sometimes Included"
+        text: |
+          **Area:** 104,094 sq mi
+          **Rank:** 6
+          **Population:** approximately 5.8 million
+
+          Colorado makes the list through its southwestern corner rather than the whole state. The table notes name Mesa Verde, Durango, and the Four Corners area as the places most closely tied to the Southwest.
+
+          The Front Range pulls the state the other way. Denver, Boulder, and Fort Collins are noted as Mountain West, which is why Colorado stays in the sometimes included group.
 
 visual_assets:
-  - id: monument-valley-arizona-utah-navajo
-    src: /images/rankings/geography/southwest-states/monument-valley-arizona-utah-navajo-nation.jpg
-    alt: The red sandstone mittens of Monument Valley on the Arizona-Utah border at golden hour
-    caption: Monument Valley straddles the Arizona-Utah border on the Navajo Nation. Arizona and New Mexico are the two states that appear in every Southwest definition, united by shared desert landscapes and Native American heritage.
-    section: what-states-are-in-the-southwest
-    layout: right
+  - id: southwest-arizona-card
+    src: /images/parks/national/grand-canyon-national-park/01-overview.jpg
+    alt: Layered canyon walls and desert light at Grand Canyon National Park in Arizona
+    section: core-southwest-states::arizona
+    layout: left
 
-  - id: el-paso-texas-border-rio-grande
-    src: /images/rankings/geography/southwest-states/el-paso-texas-rio-grande-ciudad-juarez.jpg
-    alt: El Paso, Texas viewed from a hilltop showing the Rio Grande and Ciudad Juarez, Mexico beyond
-    caption: El Paso is the westernmost city in Texas, on the Rio Grande opposite Ciudad Juarez, Mexico. West Texas (El Paso, Big Bend) is universally Southwest in terrain; East Texas is culturally Southern — the reason Texas appears in some Southwest definitions but not others.
-    section: southwest-states-why-no-census-definition
+  - id: southwest-new-mexico-card
+    src: /images/parks/national/white-sands-national-park/01-overview-aerial-dune-field.jpg
+    alt: White gypsum dunes stretching across White Sands National Park in New Mexico
+    section: core-southwest-states::new-mexico
+    layout: left
+
+  - id: southwest-texas-card
+    src: /images/parks/national/big-bend-national-park/06-santa-elena-canyon.jpg
+    alt: Santa Elena Canyon cliffs rising above the Rio Grande in Big Bend National Park, Texas
+    section: often-included-southwest-states::texas
+    layout: left
+
+  - id: southwest-nevada-card
+    src: /images/parks/national/great-basin-national-park/13-overview.jpg
+    alt: Basin and mountain landscape at Great Basin National Park in Nevada
+    section: often-included-southwest-states::nevada
+    layout: left
+
+  - id: southwest-utah-card
+    src: /images/parks/national/zion-national-park/10-best-kolob-canyons.jpg
+    alt: Red rock canyon walls in Zion National Park, Utah
+    section: sometimes-included-southwest-states::utah
+    layout: left
+
+  - id: southwest-colorado-card
+    src: /images/parks/national/mesa-verde-national-park/04-long-house.jpg
+    alt: Cliff dwelling ruins at Mesa Verde National Park in Colorado
+    section: sometimes-included-southwest-states::colorado
     layout: left
 
 faq:
-  - question: "What states are in the Southwest?"
-    answer: "Arizona and New Mexico are the only states in every definition of the Southwest. Texas, Nevada, Utah, and Colorado are frequently included. The Southwest has no Census definition — the Census groups Arizona, Colorado, Nevada, New Mexico, and Utah in the West, and Texas in the South."
+  - question: "What are the core Southwest states?"
+    answer: "Arizona and New Mexico are the core Southwest states in this table. The other four entries are included more selectively, depending on which part of the state a definition emphasizes."
 
-  - question: "Is Texas in the Southwest?"
-    answer: "Texas is frequently included in the Southwest, particularly based on West Texas — the El Paso area, Big Bend National Park, and the Trans-Pecos region. East Texas and the Gulf Coast are culturally Southern and are not Southwest. Some sources include the full state; others include only West Texas."
+  - question: "Which state is the largest in the Southwest?"
+    answer: "Texas is the largest listed Southwest state at 268,596 sq mi. New Mexico is next at 121,590 sq mi, and Arizona follows at 113,990 sq mi."
 
-  - question: "Is Utah in the Southwest?"
-    answer: "Utah is sometimes included in the Southwest. Southern Utah — home to Zion, Bryce Canyon, Capitol Reef, Canyonlands, and Arches national parks — matches Southwest terrain and culture. Northern Utah, including Salt Lake City and the Wasatch Front, is more commonly classified as Mountain West. Utah is a Census West state."
+  - question: "Is Texas a Southwest state?"
+    answer: "Texas is frequently included, not core. The table notes tie that label to West Texas, El Paso, Big Bend, and the Trans Pecos region."
 
   - question: "Is Nevada in the Southwest?"
-    answer: "Nevada is frequently included in the Southwest. Southern Nevada — Las Vegas, Lake Mead, and the Mojave Desert — is consistently classified as Southwest. Northern Nevada, including Reno and the Great Basin, is more often called the Mountain West or Great Basin region. Nevada is a Census West state."
+    answer: "Nevada is frequently included. The notes point to southern Nevada, Las Vegas, Lake Mead, and the Mojave Desert rather than the whole state."
 
-  - question: "What is the largest Southwest state?"
-    answer: "If Texas is included, it is by far the largest Southwest state at 268,596 square miles. If Texas is excluded, New Mexico (121,590 sq mi) is the largest by area, and Arizona (approximately 7.2 million residents) is the largest by population."
+  - question: "Is Utah a Southwest state?"
+    answer: "Utah is sometimes included. Zion, Bryce Canyon, Capitol Reef, Canyonlands, and Arches are the southern landmarks named in the table notes."
 
-  - question: "What is the Southwest known for?"
-    answer: "The core Southwest — Arizona (113,990 sq mi) and New Mexico (121,590 sq mi) — is known for the Sonoran and Chihuahuan deserts, the Grand Canyon, Monument Valley, and a tri-cultural heritage of Native American, Hispanic, and Anglo traditions. New Mexico has 23 federally recognized tribal nations; Arizona includes the Navajo Nation, the largest Native American nation by area in the United States."
+  - question: "Is Colorado part of the Southwest?"
+    answer: "Colorado is sometimes included. Mesa Verde, Durango, and the Four Corners area support the Southwest case in the table notes."
 
 related:
   - title: "West States"

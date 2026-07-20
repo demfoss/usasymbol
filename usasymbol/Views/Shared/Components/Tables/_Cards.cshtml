@@ -22,7 +22,10 @@
             {
                 if (!table.Rows.Any() || !table.Columns.Any()) { continue; }
 
-                var columns = table.Columns;
+                var hiddenColumns = new HashSet<string>(table.HiddenColumns ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
+                var columns = table.Columns
+                    .Where(c => !hiddenColumns.Contains(c.Key))
+                    .ToList();
 
                 // Displayable columns: not image, not system
                 var displayColumns = columns

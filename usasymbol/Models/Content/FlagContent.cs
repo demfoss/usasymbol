@@ -87,6 +87,8 @@ namespace USASymbol.Models.Content
         public string Text { get; set; } = string.Empty;
         public List<string> ListItems { get; set; } = new();
         public LinkData? Link { get; set; }
+        public string? Image { get; set; }
+        public string? ImageCaption { get; set; }
     }
 
     public class FlagVersion
@@ -102,6 +104,7 @@ namespace USASymbol.Models.Content
         public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
+        public string? ClipRegion { get; set; }
         public List<string> Paragraphs { get; set; } = new();
     }
 

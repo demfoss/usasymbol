@@ -38,7 +38,16 @@ builder.Services.AddTransient<BunnyImageSyncRunner>();
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    if (builder.Environment.IsProduction())
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    }
+    else
+    {
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    }
+});
 
 
 builder.Services.AddScoped<IStateService, StateService>();
@@ -227,7 +236,17 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<ILoggerFactory>()
         .CreateLogger("Startup");
 
-    await context.Database.EnsureCreatedAsync();
+    if (app.Environment.IsProduction())
+    {
+        // Azure SQL is a real persistent server, so schema changes must go through EF Core
+        // migrations (dotnet ef migrations add ...) rather than EnsureCreated, which would
+        // otherwise never alter an already-existing database and risks being reset by hand.
+        await context.Database.MigrateAsync();
+    }
+    else
+    {
+        await context.Database.EnsureCreatedAsync();
+    }
 
     var requiresInitialSeed = !await context.States.AnyAsync();
     if (forceSeedCommand || requiresInitialSeed)

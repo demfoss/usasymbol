@@ -24,8 +24,8 @@ page:
 
   quick_answer:
     - "13 states form the Appalachian Region: Alabama, Georgia, Kentucky, Maryland, Mississippi, New York, North Carolina, Ohio, Pennsylvania, South Carolina, Tennessee, Virginia, and West Virginia. All 13 are officially designated by the Appalachian Regional Commission, covering 423 counties."
-    - "West Virginia is the only fully Appalachian state — all 55 of its counties fall within the ARC boundary. Kentucky (54 counties), Tennessee (52), and Pennsylvania (52) are the next largest; these four states together account for 213 of the region's 423 counties."
-    - "New York (14 counties), South Carolina (6 counties), and Maryland (3 counties) have the smallest Appalachian footprints of the 13 states. Maryland's 3 counties — Garrett, Allegany, and Washington — are the northernmost point of the region."
+    - "West Virginia is the only fully Appalachian state, all 55 of its counties fall within the ARC boundary. Kentucky (54 counties), Tennessee (52), and Pennsylvania (52) are the next largest, and these four states together account for 213 of the region's 423 counties."
+    - "New York (14 counties), South Carolina (6 counties), and Maryland (3 counties) have the smallest Appalachian footprints of the 13 states. Maryland's 3 counties, Garrett, Allegany, and Washington, are the northernmost point of the region."
 
   methodology: "Appalachian Region boundaries are established by the Appalachian Regional Commission Act (1965) and subsequent congressional amendments. County membership reflects statutory definitions enacted by Congress. Source: Appalachian Regional Commission, arc.gov."
 
@@ -162,20 +162,76 @@ map:
   color_scale: linear
 
 sections:
+  - id: "appalachian-states-at-a-glance"
+    icon: "fa-solid fa-signs-post"
+    style: "law-cards"
+    title: "Representative Appalachian States"
+    paragraphs:
+      - "All 13 states on this page are officially in Appalachia, but they do not all represent the region in the same way. These six cards show the core, the major subregions, and the smallest edge case."
+    subsections:
+      - subtitle: "West Virginia"
+        text: |
+          **Subregion:** Central
+          **ARC counties:** 55
+
+          West Virginia is the only state lying entirely within the Appalachian Region. Every county in the state is inside the ARC boundary, which makes it the clearest full-state expression of Appalachia on the map.
+
+          That is why West Virginia is the natural starting point for any card set here. It is not partly Appalachian. It is Appalachian all the way through.
+      - subtitle: "Kentucky"
+        text: |
+          **Subregion:** Central
+          **ARC counties:** 54
+
+          Kentucky has nearly as many Appalachian counties as West Virginia, but only in its eastern half. The table notes separate those counties from Louisville and the Bluegrass region outside the boundary.
+
+          That makes Kentucky a strong central-Appalachian contrast case. It has one of the biggest footprints in the region without being fully inside it.
+      - subtitle: "Pennsylvania"
+        text: |
+          **Subregion:** Northern
+          **ARC counties:** 52
+
+          Pennsylvania carries one of the largest Appalachian footprints in the northern subregion. The notes place 52 counties in central and western Pennsylvania inside the ARC boundary while leaving Philadelphia and the southeast outside it.
+
+          That gives Pennsylvania a very different Appalachian feel from West Virginia or Kentucky. It is large, northern, and split between two very different state geographies.
+      - subtitle: "North Carolina"
+        text: |
+          **Subregion:** Southern
+          **ARC counties:** 29
+
+          North Carolina represents the southern mountain version of Appalachia. The table notes tie its Appalachian footprint to the western part of the state rather than to Charlotte or the Piedmont.
+
+          It works especially well as a card because many readers already picture the Blue Ridge and Smokies when they hear Appalachia. North Carolina gives that image a clear place in the official map.
+      - subtitle: "Mississippi"
+        text: |
+          **Subregion:** Southern
+          **ARC counties:** 24
+
+          Mississippi is the southernmost extension of Appalachia on this page. Its 24 Appalachian counties are in the northeastern corner, while Jackson, the Gulf Coast, and the Delta are outside the boundary.
+
+          That makes Mississippi one of the most surprising inclusions for readers. It shows how far the official ARC region stretches beyond the mountain stereotype.
+      - subtitle: "Maryland"
+        text: |
+          **Subregion:** Northern
+          **ARC counties:** 3
+
+          Maryland has the smallest Appalachian footprint of any state on the list with just 3 counties. Garrett, Allegany, and Washington are in; Baltimore and the Washington suburbs are out.
+
+          Maryland is useful as the outer-edge card because it shows how narrow Appalachian membership can be. A state can be officially in the region and still touch it only at one corner.
+
   - id: "what-states-are-in-appalachia"
     icon: "fa-solid fa-mountain"
     title: "What States Are in Appalachia?"
     paragraphs:
-      - "13 states are officially in the Appalachian Region: Alabama, Georgia, Kentucky, Maryland, Mississippi, New York, North Carolina, Ohio, Pennsylvania, South Carolina, Tennessee, Virginia, and West Virginia. The boundary was established by the Appalachian Regional Commission Act of 1965 and covers 423 counties. Unlike cultural regions such as the Bible Belt, Appalachian membership is statutory — each county is in or out by federal law, not academic consensus."
-      - "West Virginia is the only state where every county lies within the ARC boundary — all 55. The remaining 12 states are partially Appalachian: Kentucky has 54 of its 120 counties in the region, Tennessee has 52 of 95, and Pennsylvania has 52 of 67. At the other extreme, Maryland has only 3 of its 23 counties in the region, and South Carolina has 6 of 46."
+      - "13 states are officially in the Appalachian Region: Alabama, Georgia, Kentucky, Maryland, Mississippi, New York, North Carolina, Ohio, Pennsylvania, South Carolina, Tennessee, Virginia, and West Virginia. The boundary was established by the Appalachian Regional Commission Act of 1965 and covers 423 counties. Unlike cultural regions such as the Bible Belt, Appalachian membership is statutory, each county is in or out by federal law, not academic consensus."
+      - "West Virginia is the only state where every county lies within the ARC boundary, all 55. The remaining 12 states are partially Appalachian: Kentucky has 54 of its 120 counties in the region, Tennessee has 52 of 95, and Pennsylvania has 52 of 67. At the other extreme, Maryland has only 3 of its 23 counties in the region, and South Carolina has 6 of 46."
 
   - id: "appalachian-subregions"
     icon: "fa-solid fa-map"
-    title: "Appalachian Subregions: Northern, Central, and Southern"
+    title: "The Three Appalachian Subregions"
     paragraphs:
-      - "The Northern Appalachian subregion covers New York (14 counties), Pennsylvania (52 counties), Ohio (32 counties), and Maryland (3 counties) — 101 counties total. These states share the ridge-and-valley topography of the central Appalachians and the coal and steel industrial history of the 19th and 20th centuries."
-      - "The Central Appalachian subregion covers West Virginia (55 counties), Kentucky (54 counties), and Virginia (28 counties and independent cities) — 137 counties total. West Virginia lies entirely within this subregion. Central Appalachia has the highest concentration of ARC-designated economically distressed counties of any subregion."
-      - "The Southern Appalachian subregion covers Tennessee (52 counties), North Carolina (29 counties), Georgia (37 counties), Alabama (37 counties), Mississippi (24 counties), and South Carolina (6 counties) — 185 counties and the largest subregion by county count. It stretches from the Great Smoky Mountains of western North Carolina to the foothills of northeastern Mississippi."
+      - "The Northern Appalachian subregion covers New York (14 counties), Pennsylvania (52 counties), Ohio (32 counties), and Maryland (3 counties), 101 counties total. These states share the ridge-and-valley topography of the central Appalachians and the coal and steel industrial history of the 19th and 20th centuries."
+      - "The Central Appalachian subregion covers West Virginia (55 counties), Kentucky (54 counties), and Virginia (28 counties and independent cities), 137 counties total. West Virginia lies entirely within this subregion. Central Appalachia has the highest concentration of ARC-designated economically distressed counties of any subregion."
+      - "The Southern Appalachian subregion covers Tennessee (52 counties), North Carolina (29 counties), Georgia (37 counties), Alabama (37 counties), Mississippi (24 counties), and South Carolina (6 counties), 185 counties and the largest subregion by county count. It stretches from the Great Smoky Mountains of western North Carolina to the foothills of northeastern Mississippi."
 
   - id: "why-is-it-called-appalachia"
     icon: "fa-solid fa-circle-info"
@@ -186,12 +242,48 @@ sections:
 
   - id: "appalachian-counties-by-state"
     icon: "fa-solid fa-table"
-    title: "Appalachian Counties by State: Largest and Smallest Footprints"
+    title: "Which States Have the Most Appalachian Counties"
     paragraphs:
-      - "West Virginia's 55-county inclusion makes it the only wholly Appalachian state. Kentucky's 54 counties represent 45 percent of its 120 total counties. By contrast, Maryland's 3 Appalachian counties — Garrett, Allegany, and Washington — represent just 13 percent of its 23 counties. South Carolina's 6 counties (Oconee, Pickens, Greenville, Spartanburg, Cherokee, and York) are its Blue Ridge and upper Piedmont corner."
+      - "West Virginia's 55-county inclusion makes it the only wholly Appalachian state. Kentucky's 54 counties represent 45 percent of its 120 total counties. By contrast, Maryland's 3 Appalachian counties, Garrett, Allegany, and Washington, represent just 13 percent of its 23 counties. South Carolina's 6 counties (Oconee, Pickens, Greenville, Spartanburg, Cherokee, and York) are its Blue Ridge and upper Piedmont corner."
       - "New York's 14 Appalachian counties form the region's northern terminus, all located in the Southern Tier along the Pennsylvania border. Mississippi's 24 northeastern counties are the southernmost extension of the region. Together, these geographic outliers explain why Appalachia spans nearly 1,300 miles from southern New York to northeastern Mississippi."
 
 visual_assets:
+  - id: appalachia-west-virginia-card
+    src: /images/rankings/geography/appalachian-states/appalachian-mountains-west-virginia.jpg
+    alt: Layered Appalachian ridgelines in West Virginia
+    section: appalachian-states-at-a-glance::west-virginia
+    layout: left
+
+  - id: appalachia-kentucky-card
+    src: /images/soils/kentucky/burley-tobacco-field.webp
+    alt: Rolling farmland in Kentucky
+    section: appalachian-states-at-a-glance::kentucky
+    layout: left
+
+  - id: appalachia-pennsylvania-card
+    src: /images/soils/pennsylvania/pennsylvania-soil-landscape.webp
+    alt: Landscape in Pennsylvania's Appalachian zone
+    section: appalachian-states-at-a-glance::pennsylvania
+    layout: left
+
+  - id: appalachia-north-carolina-card
+    src: /images/rankings/geography/appalachian-states/appalachian-trail-north-carolina.jpg
+    alt: Appalachian Trail ridge in North Carolina
+    section: appalachian-states-at-a-glance::north-carolina
+    layout: left
+
+  - id: appalachia-mississippi-card
+    src: /images/rankings/geography/deep-south-states/cotton-field-mississippi.jpg
+    alt: Rural landscape in Mississippi
+    section: appalachian-states-at-a-glance::mississippi
+    layout: left
+
+  - id: appalachia-maryland-card
+    src: /images/rankings/geography/states-with-no-natural-lakes/deep-creek-lake-maryland.jpg
+    alt: Deep Creek Lake landscape in western Maryland
+    section: appalachian-states-at-a-glance::maryland
+    layout: left
+
   - id: appalachian-mountains-west-virginia
     src: /images/rankings/geography/appalachian-states/appalachian-mountains-west-virginia.jpg
     alt: Layered Appalachian ridgelines in West Virginia at sunrise, heavily forested

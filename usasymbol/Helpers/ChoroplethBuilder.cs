@@ -37,10 +37,16 @@ namespace Usasymbol.Helpers
         {
             ["blue"]   = ((219, 234, 254), (30,  58,  138)),
             ["green"]  = ((220, 252, 231), (20,  83,  45)),
+            ["green-red"] = ((220, 252, 231), (127, 29, 29)),
+            ["red-green"] = ((254, 226, 226), (20,  83,  45)),
             ["orange"] = ((255, 237, 213), (124, 45,  18)),
             ["purple"] = ((243, 232, 255), (74,  4,   78)),
             ["red"]    = ((254, 226, 226), (127, 29,  29)),
             ["warm"]   = ((254, 249, 195), (120, 53,  15)),
+            ["teal"]   = ((204, 251, 241), (19,  78,  74)),
+            ["amber"]  = ((254, 243, 199), (146, 64,  14)),
+            ["pink"]   = ((252, 231, 243), (131, 24,  67)),
+            ["yellow"] = ((254, 249, 195), (161, 98,  7)),
         };
 
         private const string NoDataColor = "#e2e8f0";
@@ -99,6 +105,9 @@ namespace Usasymbol.Helpers
             var key = map.MetricKey!;
 
             var parsed = ToMapRows(rows, map, key, r => FormatValue(r, key));
+
+            if (schemeName == "diverging")
+                return BuildDiverging(parsed, map);
 
             var values = parsed.Where(x => x.NumericValue.HasValue).Select(x => x.NumericValue!.Value).ToList();
             if (!values.Any())
@@ -205,6 +214,75 @@ namespace Usasymbol.Helpers
             return new ChoroplethResult { Entries = entries };
         }
 
+        private static ChoroplethResult BuildDiverging(List<MapSourceRow> rows, PageMap map)
+        {
+            var withValues = rows.Where(r => r.NumericValue.HasValue).ToList();
+            if (!withValues.Any())
+                return BuildCategorical(rows, map);
+
+            var positives = withValues.Where(r => r.NumericValue!.Value > 0).Select(r => r.NumericValue!.Value).ToList();
+            var negatives = withValues.Where(r => r.NumericValue!.Value < 0).Select(r => r.NumericValue!.Value).ToList();
+
+            double maxPos = positives.Any() ? positives.Max() : 1;
+            double minNeg = negatives.Any() ? negatives.Min() : -1;
+
+            (int r, int g, int b) greenLight = (220, 252, 231);
+            (int r, int g, int b) greenDark  = (20,  83,  45);
+            (int r, int g, int b) redLight   = (254, 226, 226);
+            (int r, int g, int b) redDark    = (127, 29,  29);
+
+            var entries = rows.Select(x =>
+            {
+                string fill;
+                if (!x.NumericValue.HasValue)
+                    fill = NoDataColor;
+                else if (x.NumericValue.Value > 0)
+                    fill = Lerp(x.NumericValue.Value / maxPos, greenLight, greenDark);
+                else if (x.NumericValue.Value < 0)
+                    fill = Lerp(Math.Abs(x.NumericValue.Value) / Math.Abs(minNeg), redLight, redDark);
+                else
+                    fill = "#e2e8f0";
+
+                return new StateMapEntry(
+                    x.PostalCode, x.StateName, x.StateSlug,
+                    x.NumericValue, x.Rank, x.DisplayValue, fill,
+                    x.Details, x.ImageUrl, null, null, x.Summary, x.Filters);
+            })
+            .GroupBy(e => e.PostalCode, StringComparer.OrdinalIgnoreCase)
+            .Select(CombineEntries)
+            .ToList();
+
+            var steps = new List<(string Color, string Label)>
+            {
+                (Lerp(1.0, redLight,   redDark),   SignedLabel(minNeg)),
+                (Lerp(0.4, redLight,   redDark),   SignedLabel(minNeg / 3.0)),
+                ("#e2e8f0",                         "0"),
+                (Lerp(0.4, greenLight, greenDark),  SignedLabel(maxPos / 3.0)),
+                (Lerp(1.0, greenLight, greenDark),  SignedLabel(maxPos)),
+            };
+
+            return new ChoroplethResult
+            {
+                Entries         = entries,
+                LightColor      = ToHex(redLight),
+                DarkColor       = ToHex(greenDark),
+                MinDisplayValue = SignedLabel(minNeg),
+                MaxDisplayValue = SignedLabel(maxPos),
+                LegendSteps     = steps,
+            };
+        }
+
+        private static string SignedLabel(double value)
+        {
+            var abs = Math.Abs(value);
+            string formatted;
+            if (abs >= 1_000_000)      formatted = $"{abs / 1_000_000:F1}M";
+            else if (abs >= 1_000)     formatted = ((long)Math.Round(abs)).ToString("N0", CultureInfo.InvariantCulture);
+            else if (abs % 1 == 0)     formatted = ((long)abs).ToString();
+            else                       formatted = abs.ToString("G3", CultureInfo.InvariantCulture);
+            return value < 0 ? $"−{formatted}" : value > 0 ? $"+{formatted}" : "0";
+        }
+
         private static ChoroplethResult BuildCategorical(List<MapSourceRow> rows, PageMap map)
         {
             var categories = rows
@@ -297,7 +375,6 @@ namespace Usasymbol.Helpers
         public static bool IsCategoricalMap(PageMap map) =>
             string.Equals(map.ColorScale, "categorical", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(map.ColorScheme, "categorical", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(map.ColorScheme, "diverging", StringComparison.OrdinalIgnoreCase) ||
             map.ColorMap.Count > 0;
 
         private static string? ResolveColorToken(string? color)
