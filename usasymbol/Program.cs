@@ -39,13 +39,15 @@ builder.Services.AddTransient<BunnyImageSyncRunner>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    if (builder.Environment.IsProduction())
+    if (builder.Environment.IsDevelopment())
     {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
     }
     else
     {
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            sqlOptions => sqlOptions.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorNumbersToAdd: null));
     }
 });
 
@@ -103,6 +105,13 @@ builder.Services.AddSingleton<YamlContentLoader>();
 builder.Services.AddScoped<SitemapBuilder>();
 builder.Services.AddScoped<SitemapCacheService>();
 builder.Services.AddResponseCaching();
+builder.Services.AddOutputCache(options =>
+{
+    options.AddPolicy("SymbolDetail", policy => policy
+        .Expire(TimeSpan.FromHours(6))
+        .SetVaryByQuery("*")
+        .Tag("symbol-detail"));
+});
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
@@ -236,7 +245,7 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<ILoggerFactory>()
         .CreateLogger("Startup");
 
-    if (app.Environment.IsProduction())
+    if (!app.Environment.IsDevelopment())
     {
         // Azure SQL is a real persistent server, so schema changes must go through EF Core
         // migrations (dotnet ef migrations add ...) rather than EnsureCreated, which would
@@ -310,6 +319,7 @@ else
 
 app.UseResponseCaching();
 app.UseRouting();
+app.UseOutputCache();
 
 bool pipelineEnabled;
 using (var scope = app.Services.CreateScope())
