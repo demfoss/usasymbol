@@ -398,21 +398,21 @@
 
 <div id="top"></div>
 
-<main class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
 
     <!-- Hero — full width before the two-column grid -->
     @await Html.PartialAsync("_PageHero", heroModel)
 
     <article class="w-full">
-    <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_300px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative pb-12">
+    <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative pb-12">
 
-        <aside class="hidden lg:block relative h-full">
+        <aside class="hidden xl:block relative h-full">
             <div class="sticky top-24 pb-10">
                 @await Html.PartialAsync("_TocSidebar", (object)Model)
             </div>
         </aside>
 
-        <div class="journey-content min-w-0">
+        <div class="article-content min-w-0">
 
             <!-- TOP 3 PODIUM ─────────────────────────────── -->
             @if (top1 != null)
@@ -777,7 +777,7 @@
                 </section>
             }
 
-            <div class="mt-10 space-y-8 xl:hidden">
+            <div class="mt-10 space-y-8 lg:hidden">
                 @await Html.PartialAsync("_QuickFacts", (IReadOnlyList<QuickFactItem>)quickFacts)
                 @await Html.PartialAsync("_RelatedStatesSidebar", (IStateScopedViewModel)Model)
                 @await Html.PartialAsync("_GuidesAndRankingsSidebar")
@@ -785,32 +785,17 @@
 
         </div><!-- /main col -->
 
-        <aside class="journey-sidebar mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start" aria-label="Article sidebar">
-            <section class="relative min-h-[calc(100vh-5rem)] pb-16">
-                <div class="sticky top-32 pr-2">
-
-                <!-- Quick facts via existing partial -->
+        <aside class="article-sidebar hidden lg:block" aria-label="Article sidebar">
+            <div class="sidebar-content space-y-10">
                 @await Html.PartialAsync("_QuickFacts", (IReadOnlyList<QuickFactItem>)quickFacts)
-
-                </div>
-            </section>
-
-            <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
-                <div class="sticky top-32 pr-2">
-                    @await Html.PartialAsync("_RelatedStatesSidebar", (IStateScopedViewModel)Model)
-                </div>
-            </section>
-
-            <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
-                <div class="sticky top-32 pr-2">
-                    @await Html.PartialAsync("_GuidesAndRankingsSidebar")
-                </div>
-            </section>
+                @await Html.PartialAsync("_RelatedStatesSidebar", (IStateScopedViewModel)Model)
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+            </div>
         </aside>
 
     </div><!-- /grid -->
     </article>
-</main>
+</div>
 
 @await Html.PartialAsync("_TocMobileFab", (object)Model)
 

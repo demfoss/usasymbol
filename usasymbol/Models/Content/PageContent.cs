@@ -19,6 +19,13 @@ namespace USASymbol.Models.Content
         public string? DefaultColumn { get; set; }
         public bool Searchable { get; set; } = true;
         public bool Sortable { get; set; } = true;
+
+        /// <summary>
+        /// Optional alternate renderer for this table. When set to "insignia-grid", the page
+        /// renders a multi-image gallery grid (see _InsigniaGrid.cshtml) instead of the standard
+        /// sortable/searchable data table. Set via YAML field <c>table.display_mode</c>.
+        /// </summary>
+        public string? DisplayMode { get; set; }
     }
 
     public class TableColumn
@@ -96,6 +103,7 @@ namespace USASymbol.Models.Content
 
         public string? DetailType { get; set; }
         public string? Subcategory { get; set; }
+        public string? HeroVariant { get; set; }
 
         public PageSeo Seo { get; set; } = new();
         public PageBody Page { get; set; } = new();
@@ -195,6 +203,7 @@ namespace USASymbol.Models.Content
         public string? Caption { get; set; }
         public string? Note { get; set; }
         public bool FirstColumnIsHeader { get; set; } = true;
+        public bool ShowRowNumbers { get; set; } = false;
     }
 
     public class PageSectionTableRow
@@ -213,11 +222,11 @@ namespace USASymbol.Models.Content
         public string? ImageCaption { get; set; }
     }
 
-    public class PageSource
+    public class PageSource : ISource
     {
         public string Name { get; set; } = "";
         public string Url { get; set; } = "";
-        public string? Description { get; set; }
+        public string Description { get; set; } = "";
     }
 
     public class PageFaq

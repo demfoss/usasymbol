@@ -4,7 +4,13 @@
 @using USASymbol.Extensions
 
 @{
-    ViewData["Title"] = $"{Model.State.Name} State Symbols | Bird, Flower, Flag & More";
+    var isFederalDistrict = string.Equals(Model.State.Abbreviation, "DC", StringComparison.OrdinalIgnoreCase);
+    var symbolsHeading = isFederalDistrict
+        ? $"{Model.State.Name} Symbols"
+        : $"{Model.State.Name} State Symbols";
+    ViewData["Title"] = isFederalDistrict
+        ? $"{Model.State.Name} Symbols | Flag, Facts & More"
+        : $"{Model.State.Name} State Symbols | Bird, Flower, Flag & More";
     ViewData["Description"] = !string.IsNullOrWhiteSpace(Model.HubContent?.SeoDescription)
         ? Model.HubContent.SeoDescription
         : $"{Model.State.Name} state symbols list: official state symbols including the flag, bird, flower, tree, motto, nickname, animals, and other state emblems and symbols.";
@@ -291,7 +297,7 @@
 /* ── Guide cards ────────────────────────────────────── */
 .guide-carousel {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: .65rem;
 }
 .guide-card {
@@ -363,18 +369,27 @@
 
             <div class="md:col-span-2 order-2 md:order-1">
                 <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.25rem);margin:.5rem 0 .75rem">
-                    @Model.State.Name State Symbols
+                    @symbolsHeading
                 </h1>
                 <p class="hero-subtitle mb-6">@GetHeroSubtitle(Model)</p>
 
                 <div class="facts-bar" style="max-width:500px">
                     <div class="facts-bar__cell">
-                        <div class="facts-bar__value"><a href="/states/@Model.State.Slug/abbreviation" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(27,42,74,.25)">@Model.State.Abbreviation</a></div>
+                        <div class="facts-bar__value">
+                            @if (isFederalDistrict)
+                            {
+                                @Model.State.Abbreviation
+                            }
+                            else
+                            {
+                                <a href="/states/@Model.State.Slug/abbreviation" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(27,42,74,.25)">@Model.State.Abbreviation</a>
+                            }
+                        </div>
                         <div class="facts-bar__label">Abbreviation Guide</div>
                     </div>
                     <div class="facts-bar__cell">
                         <div class="facts-bar__value" style="font-size:.95rem">@Model.State.Capital</div>
-                        <div class="facts-bar__label">Capital</div>
+                        <div class="facts-bar__label">@(isFederalDistrict ? "Federal Capital" : "Capital")</div>
                     </div>
                     @if (Model.State.StateHoodDate.HasValue)
                     {
@@ -442,6 +457,21 @@
                                     </div>
                                 }
                             </div>
+                            <a href="/states/@Model.State.Slug/living"
+                               style="display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;padding:.62rem .85rem;border:1px solid var(--cream-dark);border-radius:.55rem;background:white;color:var(--navy);font-size:.78rem;font-weight:800;text-decoration:none">
+                                <i class="fa-solid fa-chart-simple" style="color:var(--gold)"></i>
+                                Cost, quality of life & moving guide
+                                <i class="fa-solid fa-arrow-right" style="font-size:.6rem;opacity:.55"></i>
+                            </a>
+                            @if (!string.Equals(Model.State.Abbreviation, "DC", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <a href="/states/@Model.State.Slug/counties"
+                                   style="display:inline-flex;align-items:center;gap:.5rem;margin-top:.55rem;margin-left:.35rem;padding:.62rem .85rem;border:1px solid var(--cream-dark);border-radius:.55rem;background:white;color:var(--navy);font-size:.78rem;font-weight:800;text-decoration:none">
+                                    <i class="fa-solid fa-map-location-dot" style="color:var(--gold)"></i>
+                                    Counties &amp; population
+                                    <i class="fa-solid fa-arrow-right" style="font-size:.6rem;opacity:.55"></i>
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -453,8 +483,8 @@
                         <div class="widget-title"><i class="fa-solid fa-chart-bar"></i>Quick Facts</div>
                         <dl>
                             <div class="fact-row"><dt class="fact-label">Official Name</dt><dd class="fact-value">@Model.State.Name</dd></div>
-                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value"><a href="/states/@Model.State.Slug/abbreviation" style="color:inherit;text-decoration:none">@Model.State.Abbreviation</a></dd></div>
-                            <div class="fact-row"><dt class="fact-label">Capital City</dt><dd class="fact-value">@Model.State.Capital</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value">@if (isFederalDistrict) { @Model.State.Abbreviation } else { <a href="/states/@Model.State.Slug/abbreviation" style="color:inherit;text-decoration:none">@Model.State.Abbreviation</a> }</dd></div>
+                            <div class="fact-row"><dt class="fact-label">@(isFederalDistrict ? "Federal Capital" : "Capital City")</dt><dd class="fact-value">@Model.State.Capital</dd></div>
                             @if (Model.State.Population.HasValue) { <div class="fact-row"><dt class="fact-label">Population</dt><dd class="fact-value">@Model.State.Population.Value.ToString("N0")</dd></div> }
                             @if (Model.State.StateHoodDate.HasValue) { <div class="fact-row"><dt class="fact-label">Statehood</dt><dd class="fact-value">@Model.State.StateHoodDate.Value.ToString("MMMM d, yyyy")</dd></div> }
                             <div class="fact-row"><dt class="fact-label">Region</dt><dd class="fact-value">@(Model.State.Region ?? "N/A")</dd></div>
@@ -467,7 +497,7 @@
                 @if (Model.Symbols.Any())
                 {
                     <div class="state-section">
-                        <h2 class="content-h2 mb-5">@Model.State.Name State Symbols — Complete List</h2>
+                        <h2 class="content-h2 mb-5">@symbolsHeading — Complete List</h2>
                         <div class="state-table-wrap">
                             <table class="state-symbol-table">
                                 <thead>
@@ -773,8 +803,8 @@
                         <div class="widget-title"><i class="fa-solid fa-chart-bar"></i>Quick Facts</div>
                         <dl>
                             <div class="fact-row"><dt class="fact-label">Official Name</dt><dd class="fact-value">@Model.State.Name</dd></div>
-                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value"><a href="/states/@Model.State.Slug/abbreviation" style="color:inherit;text-decoration:none">@Model.State.Abbreviation</a></dd></div>
-                            <div class="fact-row"><dt class="fact-label">Capital City</dt><dd class="fact-value">@Model.State.Capital</dd></div>
+                            <div class="fact-row"><dt class="fact-label">Abbreviation</dt><dd class="fact-value">@if (isFederalDistrict) { @Model.State.Abbreviation } else { <a href="/states/@Model.State.Slug/abbreviation" style="color:inherit;text-decoration:none">@Model.State.Abbreviation</a> }</dd></div>
+                            <div class="fact-row"><dt class="fact-label">@(isFederalDistrict ? "Federal Capital" : "Capital City")</dt><dd class="fact-value">@Model.State.Capital</dd></div>
                             @if (Model.State.Population.HasValue) { <div class="fact-row"><dt class="fact-label">Population</dt><dd class="fact-value">@Model.State.Population.Value.ToString("N0")</dd></div> }
                             @if (Model.State.StateHoodDate.HasValue) { <div class="fact-row"><dt class="fact-label">Statehood</dt><dd class="fact-value">@Model.State.StateHoodDate.Value.ToString("MMMM d, yyyy")</dd></div> }
                             <div class="fact-row"><dt class="fact-label">Region</dt><dd class="fact-value">@(Model.State.Region ?? "N/A")</dd></div>
@@ -830,7 +860,7 @@
 </div>
 
 <!-- Compare CTA -->
-@if (Model.RelatedStates.Any())
+@if (Model.CompareStates.Any())
 {
     <section style="background:white;border-top:1px solid var(--cream-dark);padding:2.5rem 0">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -845,7 +875,7 @@
             </div>
 
             <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem">
-                @foreach (var rs in Model.RelatedStates)
+                @foreach (var rs in Model.CompareStates)
                 {
                     var pairSlug = string.Compare(Model.State.Slug, rs.Slug, StringComparison.Ordinal) < 0
                         ? $"{Model.State.Slug}-vs-{rs.Slug}" : $"{rs.Slug}-vs-{Model.State.Slug}";
@@ -865,7 +895,7 @@
                 <div style="display:flex;gap:.75rem;flex:1;min-width:0">
                     <select id="compare-state-select" style="flex:1;max-width:12rem;border:1px solid var(--cream-dark);background:white;border-radius:.5rem;padding:.55rem .875rem;font-size:.84rem;color:var(--navy)">
                         <option value="">Choose a state&hellip;</option>
-                        @foreach (var rs in Model.RelatedStates)
+                        @foreach (var rs in Model.CompareStates)
                         {
                             <option value="@rs.Slug">@rs.Name</option>
                         }

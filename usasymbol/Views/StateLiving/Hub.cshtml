@@ -1,0 +1,246 @@
+@model StateLivingHubViewModel
+@inject IImageUrlService Images
+@using System.Globalization
+@using System.Text.Json
+@{
+    var itemList = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "ItemList",
+        ["name"] = "State living guides",
+        ["numberOfItems"] = Model.StateCount,
+        ["itemListElement"] = Model.States.Select((item, index) => new Dictionary<string, object?>
+        {
+            ["@type"] = "ListItem",
+            ["position"] = index + 1,
+            ["name"] = $"Living in {item.State.Name}",
+            ["url"] = $"https://usasymbol.com/states/{item.State.Slug}/living"
+        }).ToList()
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/state-living-hub.css" asp-append-version="true" />
+}
+
+<nav class="slh-breadcrumb" aria-label="Breadcrumb">
+    <div class="slh-container">
+        <a href="/">Home</a><span>/</span><a href="/states">States</a><span>/</span><strong>Living guides</strong>
+    </div>
+</nav>
+
+<main>
+    <section class="slh-hero">
+        <div class="slh-container slh-hero-grid">
+            <div>
+                <p class="slh-kicker">50 state moving guides</p>
+                <h1>Where should you live?</h1>
+                <p class="slh-deck">Search every state or narrow the list by statewide affordability, safety, climate, and quality of life. Open any card for costs, housing, income, schools, healthcare, pros and cons.</p>
+                <div class="slh-hero-actions">
+                    <a class="slh-button slh-button-gold" href="/state-match"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Match states to my priorities</a>
+                    <a class="slh-button slh-button-ghost" href="/compare-states"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Compare two states</a>
+                </div>
+            </div>
+            <aside class="slh-hero-facts" aria-label="Guide coverage">
+                <div><strong>@Model.StateCount</strong><span>state guides</span></div>
+                <div><strong>4</strong><span>quick filters</span></div>
+                <div><strong>@Model.DataReviewedOn</strong><span>data review</span></div>
+            </aside>
+        </div>
+    </section>
+
+    <section class="slh-explorer" aria-labelledby="state-guide-heading">
+        <div class="slh-container">
+            <div class="slh-explorer-head">
+                <div>
+                    <p class="slh-eyebrow">Browse all states</p>
+                    <h2 id="state-guide-heading">Find a state living guide</h2>
+                </div>
+                <p>Filters are shortcuts, not final recommendations. A state can qualify for more than one.</p>
+            </div>
+
+            <div class="slh-controls">
+                <label class="slh-search">
+                    <span class="sr-only">Search states</span>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="living-state-search" type="search" placeholder="Search by state or region…" autocomplete="off" />
+                </label>
+                <label class="slh-sort">
+                    <span>Sort</span>
+                    <select id="living-state-sort">
+                        <option value="name">State name</option>
+                        <option value="cost">Lowest cost of living</option>
+                        <option value="safety">Lowest violent crime</option>
+                        <option value="climate">Warmest climate</option>
+                        <option value="quality">Highest quality of life</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="slh-filters" role="group" aria-label="Quick state filters">
+                <button type="button" class="is-active" data-filter="all" aria-pressed="true">All states</button>
+                <button type="button" data-filter="affordable" aria-pressed="false"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Affordable <small>index ≤ 100</small></button>
+                <button type="button" data-filter="safer" aria-pressed="false"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Safer <small>top third</small></button>
+                <button type="button" data-filter="warm" aria-pressed="false"><i class="fa-solid fa-sun" aria-hidden="true"></i> Warm climate <small>60°F+</small></button>
+                <button type="button" data-filter="quality" aria-pressed="false"><i class="fa-solid fa-star" aria-hidden="true"></i> Quality of life <small>top third</small></button>
+            </div>
+
+            <div class="slh-results-bar">
+                <strong id="living-state-count">@Model.StateCount states</strong>
+                <span>Statewide measures · local conditions vary</span>
+            </div>
+
+            <div class="slh-grid" id="living-state-grid">
+                @foreach (var item in Model.States)
+                {
+                    var state = item.State;
+                    <article class="slh-card"
+                             data-name="@state.Name.ToLowerInvariant()"
+                             data-region="@(state.Region?.ToLowerInvariant() ?? string.Empty)"
+                             data-affordable="@item.IsAffordable.ToString().ToLowerInvariant()"
+                             data-safer="@item.IsSafer.ToString().ToLowerInvariant()"
+                             data-warm="@item.IsWarm.ToString().ToLowerInvariant()"
+                             data-quality-filter="@item.IsHighQualityOfLife.ToString().ToLowerInvariant()"
+                             data-cost="@(item.CostOfLiving?.RawValue.ToString(CultureInfo.InvariantCulture) ?? string.Empty)"
+                             data-safety="@(item.Safety?.RawValue.ToString(CultureInfo.InvariantCulture) ?? string.Empty)"
+                             data-climate="@(item.Climate?.RawValue.ToString(CultureInfo.InvariantCulture) ?? string.Empty)"
+                             data-quality="@(item.QualityOfLife?.RawValue.ToString(CultureInfo.InvariantCulture) ?? string.Empty)">
+                        <div class="slh-card-head">
+                            <img src="@Images.Thumb(item.FlagImageUrl)" alt="@state.Name flag" width="64" height="42" loading="lazy" />
+                            <div>
+                                <p>@state.Abbreviation · @(state.Region ?? "United States")</p>
+                                <h3><a href="/states/@state.Slug/living">Living in @state.Name</a></h3>
+                            </div>
+                        </div>
+                        <p class="slh-card-summary">@item.Summary</p>
+                        <dl class="slh-card-metrics">
+                            <div>
+                                <dt>Cost of living</dt>
+                                <dd>@(item.CostOfLiving?.DisplayValue ?? "—")</dd>
+                                <small>@(item.CostOfLiving is null ? "No data" : $"#{item.CostOfLiving.Rank} lowest")</small>
+                            </div>
+                            <div>
+                                <dt>Violent crime</dt>
+                                <dd>@(item.Safety?.DisplayValue ?? "—")</dd>
+                                <small>@(item.Safety is null ? "No data" : $"#{item.Safety.Rank} lowest")</small>
+                            </div>
+                            <div>
+                                <dt>Annual climate</dt>
+                                <dd>@(item.Climate?.DisplayValue ?? "—")</dd>
+                                <small>@item.ClimateLabel</small>
+                            </div>
+                            <div>
+                                <dt>Livability</dt>
+                                <dd>@(item.QualityOfLife?.DisplayValue ?? "—")</dd>
+                                <small>@(item.QualityOfLife is null ? "No data" : $"#{item.QualityOfLife.Rank} of {item.QualityOfLife.AvailableStateCount}")</small>
+                            </div>
+                        </dl>
+                        <div class="slh-card-links">
+                            <a href="/states/@state.Slug/living">Open living guide <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                            <a href="/states/@state.Slug">Symbols &amp; facts</a>
+                        </div>
+                    </article>
+                }
+            </div>
+
+            <div class="slh-empty" id="living-state-empty" hidden>
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <h2>No states match</h2>
+                <p>Clear the search or choose another quick filter.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slh-methodology" id="methodology">
+        <div class="slh-container">
+            <div class="slh-method-grid">
+                <div>
+                    <p class="slh-eyebrow">How the filters work</p>
+                    <h2>Simple thresholds, transparent data</h2>
+                    <p>“Affordable” means a cost-of-living index at or below the national benchmark of 100. “Safer” and “Quality of life” show the best-scoring third of states with available data. “Warm climate” means an annual statewide average of at least 60°F.</p>
+                    <p>Ranks are calculated only among states with a value for that metric. The cards are screening tools; cities, counties, and neighborhoods can differ sharply from statewide averages.</p>
+                </div>
+                <div class="slh-source-list">
+                    <h3>Primary sources</h3>
+                    <a href="https://meric.mo.gov/data/cost-living-data-series" rel="noopener noreferrer"><strong>MERIC</strong><span>Cost of Living Index · 2026 incorporated release</span></a>
+                    <a href="https://cde.ucr.cjis.gov/" rel="noopener noreferrer"><strong>FBI Crime Data Explorer</strong><span>Violent crime · 2022 UCR data</span></a>
+                    <a href="https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals" rel="noopener noreferrer"><strong>NOAA</strong><span>Climate · 1991–2020 normals</span></a>
+                    <a href="https://wallethub.com/edu/best-states-to-live-in/62617" rel="noopener noreferrer"><strong>WalletHub</strong><span>Best States to Live In · 2025 comparison</span></a>
+                    <p>Source inventory reviewed @Model.DataReviewedOn. Each state guide shows metric-level periods and source links.</p>
+                </div>
+            </div>
+            <div class="slh-method-links">
+                <a href="/state-match">Weight the metrics in State Match</a>
+                <a href="/compare-states">Compare two states side by side</a>
+                <a href="/rankings">Explore all state rankings</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(itemList))</script>
+<script>
+(() => {
+    const grid = document.getElementById('living-state-grid');
+    const cards = Array.from(grid?.querySelectorAll('.slh-card') || []);
+    const search = document.getElementById('living-state-search');
+    const sort = document.getElementById('living-state-sort');
+    const buttons = Array.from(document.querySelectorAll('.slh-filters [data-filter]'));
+    const count = document.getElementById('living-state-count');
+    const empty = document.getElementById('living-state-empty');
+    let activeFilter = 'all';
+
+    if (!grid || !search || !sort) return;
+
+    function numeric(card, key, missing) {
+        const value = Number.parseFloat(card.dataset[key] || '');
+        return Number.isFinite(value) ? value : missing;
+    }
+
+    function refresh() {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+
+        cards.forEach(card => {
+            const searchMatch = !query ||
+                (card.dataset.name || '').includes(query) ||
+                (card.dataset.region || '').includes(query);
+            const filterMatch = activeFilter === 'all' ||
+                (activeFilter === 'quality'
+                    ? card.dataset.qualityFilter === 'true'
+                    : card.dataset[activeFilter] === 'true');
+            const show = searchMatch && filterMatch;
+            card.hidden = !show;
+            if (show) visible++;
+        });
+
+        const direction = sort.value === 'cost' || sort.value === 'safety' ? 1 : -1;
+        cards.sort((a, b) => {
+            if (sort.value === 'name') {
+                return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+            }
+            const aValue = numeric(a, sort.value, direction > 0 ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY);
+            const bValue = numeric(b, sort.value, direction > 0 ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY);
+            return ((aValue - bValue) * direction) ||
+                (a.dataset.name || '').localeCompare(b.dataset.name || '');
+        }).forEach(card => grid.appendChild(card));
+
+        count.textContent = `${visible} state${visible === 1 ? '' : 's'}`;
+        empty.hidden = visible !== 0;
+    }
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            activeFilter = button.dataset.filter || 'all';
+            buttons.forEach(item => {
+                const active = item === button;
+                item.classList.toggle('is-active', active);
+                item.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+            refresh();
+        });
+    });
+    search.addEventListener('input', refresh);
+    sort.addEventListener('change', refresh);
+})();
+</script>

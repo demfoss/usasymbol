@@ -1,0 +1,736 @@
+type: ranking
+slug: power-outages-by-state
+category: infrastructure
+url: /rankings/infrastructure/power-outages-by-state
+auto_link_phrases:
+- power outages by state
+- states with most power outages
+- annual power outages by state
+- power outage duration by state
+- power grid reliability by state
+extremes_mode: top
+extremes_title: States With the Longest Power Outages
+hero_image: /images/rankings/infrastructure/power-outages-by-state/hero.jpg
+hero_image_alt: Electrical transmission lines beneath dark storm clouds
+hero_image_caption: South Carolina customers averaged 52.3 hours without power in 2024, the highest annual SAIDI of any state.
+author: USA Symbol Team
+date_published: '2026-07-11'
+date_modified: '2026-07-11'
+seo:
+  title: Power Outages by State | Duration & Grid Reliability
+  description: South Carolina averaged 52.3 outage hours per customer in 2024, followed by Maine at 29.1 hours and North Carolina at 24.0 hours.
+page:
+  h1: Power Outages by State
+  quick_answer:
+  - Power outages by state lasted longest in South Carolina during 2024, where the average customer experienced 3,136.5 interruption minutes, or 52.3 hours. Maine ranked second at 29.1 hours.
+  - Maine had the most frequent interruptions at 3.636 per customer, followed by West Virginia at 2.832 and Louisiana at 2.722. Hawaii recorded 2.616 interruptions.
+  - Major events produced 80% of nationwide outage hours in 2024. South Carolina's major-event share reached about 96%, compared with 95% in Florida and 90% in North Carolina and Texas.
+  methodology: Figures come from 2024 Form EIA-861 utility reliability filings. Outage hours show the average total time a customer spent without power during the year, and outages per year count non-momentary interruptions per customer.
+  sources:
+  - name: U.S. Energy Information Administration Table 11.3
+    url: https://www.eia.gov/electricity/annual/table.php?t=epa_11_03.html
+    description: 2024 state SAIDI, SAIFI, CAIDI, major-event, and reporting-coverage data
+  - name: EIA Form 861 Detailed Data
+    url: https://www.eia.gov/electricity/data/eia861/
+    description: Utility-level annual reliability reports and metric definitions
+  - name: EIA 2024 Power Interruption Analysis
+    url: https://www.eia.gov/todayinenergy/detail.php?id=66744
+    description: National major-event share and customer impacts from Hurricanes Beryl, Helene, and Milton
+table:
+  columns:
+    rank: Rank
+    state: State
+    outage_hours: Outage Hours/Year
+    saifi: Outages/Year
+    caidi_minutes: Avg. Outage (min)
+  metric_default: outage_hours
+  sort_default: desc
+  rows:
+  - rank: 1
+    state: South Carolina
+    state_slug: south-carolina
+    postal_code: SC
+    saidi_minutes: 3136.5
+    outage_hours: 52.3
+    saifi: 2.365
+    caidi_minutes: 1326.3
+    major_event_share_pct: 96%
+    customers_reported_pct: 96.5%
+  - rank: 2
+    state: Maine
+    state_slug: maine
+    postal_code: ME
+    saidi_minutes: 1748.6
+    outage_hours: 29.1
+    saifi: 3.636
+    caidi_minutes: 480.9
+    major_event_share_pct: 84%
+    customers_reported_pct: 100.3%
+  - rank: 3
+    state: North Carolina
+    state_slug: north-carolina
+    postal_code: NC
+    saidi_minutes: 1441.0
+    outage_hours: 24.0
+    saifi: 1.812
+    caidi_minutes: 795.0
+    major_event_share_pct: 90%
+    customers_reported_pct: 96.0%
+  - rank: 4
+    state: Florida
+    state_slug: florida
+    postal_code: FL
+    saidi_minutes: 1321.5
+    outage_hours: 22.0
+    saifi: 1.77
+    caidi_minutes: 746.6
+    major_event_share_pct: 95%
+    customers_reported_pct: 100.4%
+  - rank: 5
+    state: Texas
+    state_slug: texas
+    postal_code: TX
+    saidi_minutes: 1270.6
+    outage_hours: 21.2
+    saifi: 2.114
+    caidi_minutes: 600.9
+    major_event_share_pct: 90%
+    customers_reported_pct: 98.1%
+  - rank: 6
+    state: Georgia
+    state_slug: georgia
+    postal_code: GA
+    saidi_minutes: 1229.1
+    outage_hours: 20.5
+    saifi: 2.122
+    caidi_minutes: 579.2
+    major_event_share_pct: 83%
+    customers_reported_pct: 88.9%
+  - rank: 7
+    state: West Virginia
+    state_slug: west-virginia
+    postal_code: WV
+    saidi_minutes: 1165.5
+    outage_hours: 19.4
+    saifi: 2.832
+    caidi_minutes: 411.5
+    major_event_share_pct: 58%
+    customers_reported_pct: 97.3%
+  - rank: 8
+    state: New Hampshire
+    state_slug: new-hampshire
+    postal_code: NH
+    saidi_minutes: 922.7
+    outage_hours: 15.4
+    saifi: 2.021
+    caidi_minutes: 456.6
+    major_event_share_pct: 86%
+    customers_reported_pct: 99.2%
+  - rank: 9
+    state: Louisiana
+    state_slug: louisiana
+    postal_code: LA
+    saidi_minutes: 727.5
+    outage_hours: 12.1
+    saifi: 2.722
+    caidi_minutes: 267.2
+    major_event_share_pct: 72%
+    customers_reported_pct: 93.5%
+  - rank: 10
+    state: Vermont
+    state_slug: vermont
+    postal_code: VT
+    saidi_minutes: 696.7
+    outage_hours: 11.6
+    saifi: 2.516
+    caidi_minutes: 276.9
+    major_event_share_pct: 61%
+    customers_reported_pct: 87.0%
+  - rank: 11
+    state: Kentucky
+    state_slug: kentucky
+    postal_code: KY
+    saidi_minutes: 648.3
+    outage_hours: 10.8
+    saifi: 1.955
+    caidi_minutes: 331.7
+    major_event_share_pct: 76%
+    customers_reported_pct: 96.5%
+  - rank: 12
+    state: Nebraska
+    state_slug: nebraska
+    postal_code: NE
+    saidi_minutes: 641.7
+    outage_hours: 10.7
+    saifi: 1.232
+    caidi_minutes: 520.8
+    major_event_share_pct: 89%
+    customers_reported_pct: 73.7%
+  - rank: 13
+    state: Washington
+    state_slug: washington
+    postal_code: WA
+    saidi_minutes: 623.5
+    outage_hours: 10.4
+    saifi: 1.752
+    caidi_minutes: 355.9
+    major_event_share_pct: 75%
+    customers_reported_pct: 95.2%
+  - rank: 14
+    state: Oregon
+    state_slug: oregon
+    postal_code: OR
+    saidi_minutes: 591.0
+    outage_hours: 9.9
+    saifi: 1.346
+    caidi_minutes: 439.1
+    major_event_share_pct: 78%
+    customers_reported_pct: 93.0%
+  - rank: 15
+    state: Mississippi
+    state_slug: mississippi
+    postal_code: MS
+    saidi_minutes: 567.1
+    outage_hours: 9.5
+    saifi: 2.555
+    caidi_minutes: 221.9
+    major_event_share_pct: 53%
+    customers_reported_pct: 83.2%
+  - rank: 16
+    state: Ohio
+    state_slug: ohio
+    postal_code: OH
+    saidi_minutes: 510.5
+    outage_hours: 8.5
+    saifi: 1.298
+    caidi_minutes: 393.4
+    major_event_share_pct: 74%
+    customers_reported_pct: 96.6%
+  - rank: 17
+    state: Arkansas
+    state_slug: arkansas
+    postal_code: AR
+    saidi_minutes: 509.1
+    outage_hours: 8.5
+    saifi: 2.128
+    caidi_minutes: 239.3
+    major_event_share_pct: 62%
+    customers_reported_pct: 89.2%
+  - rank: 18
+    state: Michigan
+    state_slug: michigan
+    postal_code: MI
+    saidi_minutes: 470.4
+    outage_hours: 7.8
+    saifi: 1.356
+    caidi_minutes: 346.8
+    major_event_share_pct: 66%
+    customers_reported_pct: 97.5%
+  - rank: 19
+    state: Virginia
+    state_slug: virginia
+    postal_code: VA
+    saidi_minutes: 418.3
+    outage_hours: 7.0
+    saifi: 1.627
+    caidi_minutes: 257.1
+    major_event_share_pct: 60%
+    customers_reported_pct: 96.4%
+  - rank: 20
+    state: Montana
+    state_slug: montana
+    postal_code: MT
+    saidi_minutes: 351.5
+    outage_hours: 5.9
+    saifi: 1.621
+    caidi_minutes: 216.9
+    major_event_share_pct: 55%
+    customers_reported_pct: 74.7%
+  - rank: 21
+    state: Pennsylvania
+    state_slug: pennsylvania
+    postal_code: PA
+    saidi_minutes: 336.1
+    outage_hours: 5.6
+    saifi: 1.353
+    caidi_minutes: 248.3
+    major_event_share_pct: 61%
+    customers_reported_pct: 94.5%
+  - rank: 22
+    state: Alaska
+    state_slug: alaska
+    postal_code: AK
+    saidi_minutes: 327.1
+    outage_hours: 5.5
+    saifi: 2.591
+    caidi_minutes: 126.3
+    major_event_share_pct: 41%
+    customers_reported_pct: 84.2%
+  - rank: 23
+    state: Hawaii
+    state_slug: hawaii
+    postal_code: HI
+    saidi_minutes: 320.6
+    outage_hours: 5.3
+    saifi: 2.616
+    caidi_minutes: 122.6
+    major_event_share_pct: 30%
+    customers_reported_pct: 99.9%
+  - rank: 24
+    state: Indiana
+    state_slug: indiana
+    postal_code: IN
+    saidi_minutes: 312.4
+    outage_hours: 5.2
+    saifi: 1.283
+    caidi_minutes: 243.5
+    major_event_share_pct: 61%
+    customers_reported_pct: 92.0%
+  - rank: 25
+    state: Kansas
+    state_slug: kansas
+    postal_code: KS
+    saidi_minutes: 285.6
+    outage_hours: 4.8
+    saifi: 1.506
+    caidi_minutes: 189.7
+    major_event_share_pct: 64%
+    customers_reported_pct: 82.4%
+  - rank: 26
+    state: California
+    state_slug: california
+    postal_code: CA
+    saidi_minutes: 279.6
+    outage_hours: 4.7
+    saifi: 1.345
+    caidi_minutes: 208.0
+    major_event_share_pct: 43%
+    customers_reported_pct: 100.0%
+  - rank: 27
+    state: Alabama
+    state_slug: alabama
+    postal_code: AL
+    saidi_minutes: 279.4
+    outage_hours: 4.7
+    saifi: 1.87
+    caidi_minutes: 149.4
+    major_event_share_pct: 58%
+    customers_reported_pct: 80.7%
+  - rank: 28
+    state: New Mexico
+    state_slug: new-mexico
+    postal_code: NM
+    saidi_minutes: 278.8
+    outage_hours: 4.6
+    saifi: 1.321
+    caidi_minutes: 211.1
+    major_event_share_pct: 44%
+    customers_reported_pct: 90.1%
+  - rank: 29
+    state: Tennessee
+    state_slug: tennessee
+    postal_code: TN
+    saidi_minutes: 278.6
+    outage_hours: 4.6
+    saifi: 2.0
+    caidi_minutes: 139.3
+    major_event_share_pct: 43%
+    customers_reported_pct: 85.9%
+  - rank: 30
+    state: Oklahoma
+    state_slug: oklahoma
+    postal_code: OK
+    saidi_minutes: 270.9
+    outage_hours: 4.5
+    saifi: 1.731
+    caidi_minutes: 156.5
+    major_event_share_pct: 56%
+    customers_reported_pct: 90.6%
+  - rank: 31
+    state: Wisconsin
+    state_slug: wisconsin
+    postal_code: WI
+    saidi_minutes: 266.1
+    outage_hours: 4.4
+    saifi: 1.02
+    caidi_minutes: 260.8
+    major_event_share_pct: 66%
+    customers_reported_pct: 92.3%
+  - rank: 32
+    state: Colorado
+    state_slug: colorado
+    postal_code: CO
+    saidi_minutes: 255.1
+    outage_hours: 4.3
+    saifi: 1.409
+    caidi_minutes: 181.0
+    major_event_share_pct: 53%
+    customers_reported_pct: 93.7%
+  - rank: 33
+    state: Idaho
+    state_slug: idaho
+    postal_code: ID
+    saidi_minutes: 232.8
+    outage_hours: 3.9
+    saifi: 1.314
+    caidi_minutes: 177.1
+    major_event_share_pct: 25%
+    customers_reported_pct: 95.1%
+  - rank: 34
+    state: Missouri
+    state_slug: missouri
+    postal_code: MO
+    saidi_minutes: 224.3
+    outage_hours: 3.7
+    saifi: 1.189
+    caidi_minutes: 188.6
+    major_event_share_pct: 53%
+    customers_reported_pct: 86.7%
+  - rank: 35
+    state: New York
+    state_slug: new-york
+    postal_code: NY
+    saidi_minutes: 219.9
+    outage_hours: 3.7
+    saifi: 0.91
+    caidi_minutes: 241.7
+    major_event_share_pct: 67%
+    customers_reported_pct: 98.2%
+  - rank: 36
+    state: Minnesota
+    state_slug: minnesota
+    postal_code: MN
+    saidi_minutes: 219.6
+    outage_hours: 3.7
+    saifi: 1.25
+    caidi_minutes: 175.6
+    major_event_share_pct: 58%
+    customers_reported_pct: 89.0%
+  - rank: 37
+    state: New Jersey
+    state_slug: new-jersey
+    postal_code: NJ
+    saidi_minutes: 174.2
+    outage_hours: 2.9
+    saifi: 1.119
+    caidi_minutes: 155.7
+    major_event_share_pct: 43%
+    customers_reported_pct: 100.9%
+  - rank: 38
+    state: Iowa
+    state_slug: iowa
+    postal_code: IA
+    saidi_minutes: 166.7
+    outage_hours: 2.8
+    saifi: 1.15
+    caidi_minutes: 145.0
+    major_event_share_pct: 46%
+    customers_reported_pct: 85.4%
+  - rank: 39
+    state: Nevada
+    state_slug: nevada
+    postal_code: NV
+    saidi_minutes: 158.9
+    outage_hours: 2.6
+    saifi: 1.108
+    caidi_minutes: 143.4
+    major_event_share_pct: 60%
+    customers_reported_pct: 103.1%
+  - rank: 40
+    state: Illinois
+    state_slug: illinois
+    postal_code: IL
+    saidi_minutes: 156.9
+    outage_hours: 2.6
+    saifi: 0.852
+    caidi_minutes: 184.0
+    major_event_share_pct: 62%
+    customers_reported_pct: 98.1%
+  - rank: 41
+    state: Connecticut
+    state_slug: connecticut
+    postal_code: CT
+    saidi_minutes: 153.6
+    outage_hours: 2.6
+    saifi: 0.876
+    caidi_minutes: 175.5
+    major_event_share_pct: 52%
+    customers_reported_pct: 101.2%
+  - rank: 42
+    state: Wyoming
+    state_slug: wyoming
+    postal_code: WY
+    saidi_minutes: 137.8
+    outage_hours: 2.3
+    saifi: 0.999
+    caidi_minutes: 138.0
+    major_event_share_pct: 21%
+    customers_reported_pct: 76.0%
+  - rank: 43
+    state: Utah
+    state_slug: utah
+    postal_code: UT
+    saidi_minutes: 119.8
+    outage_hours: 2.0
+    saifi: 1.03
+    caidi_minutes: 116.3
+    major_event_share_pct: 11%
+    customers_reported_pct: 88.3%
+  - rank: 44
+    state: Maryland
+    state_slug: maryland
+    postal_code: MD
+    saidi_minutes: 118.1
+    outage_hours: 2.0
+    saifi: 0.817
+    caidi_minutes: 144.5
+    major_event_share_pct: 36%
+    customers_reported_pct: 98.6%
+  - rank: 45
+    state: Delaware
+    state_slug: delaware
+    postal_code: DE
+    saidi_minutes: 116.1
+    outage_hours: 1.9
+    saifi: 0.843
+    caidi_minutes: 137.8
+    major_event_share_pct: 43%
+    customers_reported_pct: 89.1%
+  - rank: 46
+    state: Rhode Island
+    state_slug: rhode-island
+    postal_code: RI
+    saidi_minutes: 104.3
+    outage_hours: 1.7
+    saifi: 0.896
+    caidi_minutes: 116.4
+    major_event_share_pct: 42%
+    customers_reported_pct: 97.6%
+  - rank: 47
+    state: Massachusetts
+    state_slug: massachusetts
+    postal_code: MA
+    saidi_minutes: 102.0
+    outage_hours: 1.7
+    saifi: 0.843
+    caidi_minutes: 120.9
+    major_event_share_pct: 25%
+    customers_reported_pct: 92.3%
+  - rank: 48
+    state: North Dakota
+    state_slug: north-dakota
+    postal_code: ND
+    saidi_minutes: 99.1
+    outage_hours: 1.7
+    saifi: 0.915
+    caidi_minutes: 108.4
+    major_event_share_pct: 15%
+    customers_reported_pct: 88.5%
+  - rank: 49
+    state: Arizona
+    state_slug: arizona
+    postal_code: AZ
+    saidi_minutes: 87.5
+    outage_hours: 1.5
+    saifi: 0.988
+    caidi_minutes: 88.6
+    major_event_share_pct: 18%
+    customers_reported_pct: 96.6%
+  - rank: 50
+    state: South Dakota
+    state_slug: south-dakota
+    postal_code: SD
+    saidi_minutes: 84.7
+    outage_hours: 1.4
+    saifi: 0.815
+    caidi_minutes: 104.0
+    major_event_share_pct: 27%
+    customers_reported_pct: 75.4%
+map:
+  title: Annual Power Outages by State Map
+  image: /images/maps/power-outages-by-state.png
+  image_alt: U.S. map color-coded by average annual power interruption minutes per customer in 2024
+  caption: South Carolina recorded 3,136.5 interruption minutes per customer in 2024, while South Dakota recorded 84.7. The national average was 611.3 minutes.
+  metric_key: outage_hours
+  metric_label: Hours
+  color_scheme: red
+  color_scale: linear
+  detail_keys:
+  - outage_hours
+  - saifi
+  - caidi_minutes
+  - major_event_share_pct
+sections:
+- id: longest-power-outages
+  icon: fa-solid fa-bolt
+  title: States With the Longest Power Outages
+  paragraphs:
+  - South Carolina had the highest 2024 SAIDI at 3,136.5 minutes per customer, equal to 52.3 hours. Maine followed at 1,748.6 minutes, while North Carolina reached 1,441.0 and Florida reached 1,321.5.
+  - South Dakota recorded the lowest annual duration at 84.7 minutes. Arizona followed at 87.5 minutes, while North Dakota had 99.1 and Massachusetts had 102.0.
+  table:
+    columns:
+      rank: Rank
+      state: State
+      outage_hours: Outage Hours/Year
+      saifi: Outages/Year
+    rows:
+    - rank: 1
+      state: South Carolina
+      state_slug: south-carolina
+      outage_hours: 52.3
+      saifi: 2.365
+    - rank: 2
+      state: Maine
+      state_slug: maine
+      outage_hours: 29.1
+      saifi: 3.636
+    - rank: 3
+      state: North Carolina
+      state_slug: north-carolina
+      outage_hours: 24.0
+      saifi: 1.812
+    - rank: 4
+      state: Florida
+      state_slug: florida
+      outage_hours: 22.0
+      saifi: 1.77
+    - rank: 5
+      state: Texas
+      state_slug: texas
+      outage_hours: 21.2
+      saifi: 2.114
+    - rank: 6
+      state: Georgia
+      state_slug: georgia
+      outage_hours: 20.5
+      saifi: 2.122
+    - rank: 7
+      state: West Virginia
+      state_slug: west-virginia
+      outage_hours: 19.4
+      saifi: 2.832
+    - rank: 8
+      state: New Hampshire
+      state_slug: new-hampshire
+      outage_hours: 15.4
+      saifi: 2.021
+    - rank: 9
+      state: Louisiana
+      state_slug: louisiana
+      outage_hours: 12.1
+      saifi: 2.722
+    - rank: 10
+      state: Vermont
+      state_slug: vermont
+      outage_hours: 11.6
+      saifi: 2.516
+- id: power-outage-frequency
+  icon: fa-solid fa-chart-line
+  title: Power Outage Frequency by State
+  paragraphs:
+  - Maine customers averaged 3.636 non-momentary interruptions in 2024, the highest SAIFI in the table. West Virginia followed at 2.832, Louisiana at 2.722, Hawaii at 2.616, and Alaska at 2.591.
+  - South Dakota had the lowest frequency at 0.815 interruptions per customer. Maryland recorded 0.817, while Massachusetts and Delaware each reported 0.843.
+  table:
+    columns:
+      rank: Rank
+      state: State
+      saifi: Outages/Year
+      caidi_minutes: Avg. Outage (min)
+    rows:
+    - rank: 1
+      state: Maine
+      state_slug: maine
+      saifi: 3.636
+      caidi_minutes: 480.9
+    - rank: 2
+      state: West Virginia
+      state_slug: west-virginia
+      saifi: 2.832
+      caidi_minutes: 411.5
+    - rank: 3
+      state: Louisiana
+      state_slug: louisiana
+      saifi: 2.722
+      caidi_minutes: 267.2
+    - rank: 4
+      state: Hawaii
+      state_slug: hawaii
+      saifi: 2.616
+      caidi_minutes: 122.6
+    - rank: 5
+      state: Alaska
+      state_slug: alaska
+      saifi: 2.591
+      caidi_minutes: 126.3
+    - rank: 6
+      state: Mississippi
+      state_slug: mississippi
+      saifi: 2.555
+      caidi_minutes: 221.9
+    - rank: 7
+      state: Vermont
+      state_slug: vermont
+      saifi: 2.516
+      caidi_minutes: 276.9
+    - rank: 8
+      state: South Carolina
+      state_slug: south-carolina
+      saifi: 2.365
+      caidi_minutes: 1326.3
+    - rank: 9
+      state: Arkansas
+      state_slug: arkansas
+      saifi: 2.128
+      caidi_minutes: 239.3
+    - rank: 10
+      state: Georgia
+      state_slug: georgia
+      saifi: 2.122
+      caidi_minutes: 579.2
+- id: weather-related-power-outages
+  icon: fa-solid fa-cloud-bolt
+  title: Weather-Related Power Outages
+  paragraphs:
+  - Major events accounted for 80% of U.S. outage hours in 2024. South Carolina's calculated major-event share was about 96%, Florida's was 95%, and the shares in North Carolina and Texas were about 90%.
+  - Hurricane Beryl interrupted service to 2.6 million Texas customers, while Hurricane Helene affected 5.9 million customers across 10 states, including at least 1.2 million in South Carolina. Hurricane Milton then affected 3.4 million Florida customers.
+visual_assets:
+- id: longest-power-outages
+  src: /images/rankings/infrastructure/power-outages-by-state/longest-power-outages.jpg
+  alt: Utility poles and power lines damaged after a severe storm
+  caption: South Carolina, Maine, North Carolina, and Florida posted the longest average annual outage durations in 2024. South Carolina alone averaged 52.3 hours without power per customer.
+  section: longest-power-outages
+  layout: full-width-tall
+- id: power-outage-frequency
+  src: /images/rankings/infrastructure/power-outages-by-state/power-outage-frequency.jpg
+  alt: Utility control room with operators and large monitoring screens
+  caption: Maine had the highest outage frequency in 2024 at 3.636 interruptions per customer, followed by West Virginia and Louisiana. South Dakota and Maryland were among the most stable on frequency.
+  section: power-outage-frequency
+  layout: full-width-tall
+- id: weather-related-power-outages
+  src: /images/rankings/infrastructure/power-outages-by-state/weather-related-power-outages.jpg
+  alt: Lightning storm over transmission lines and dark clouds
+  caption: Major weather events drove most outage hours in 2024, especially in South Carolina, Florida, North Carolina, and Texas. Hurricanes Beryl, Helene, and Milton accounted for millions of customer interruptions.
+  section: weather-related-power-outages
+  layout: full-width-tall
+faq:
+- question: Which state had the most power outages in 2024?
+  answer: South Carolina had the longest annual outage duration at 3,136.5 minutes, or 52.3 hours, per customer. Maine had the highest outage frequency at 3.636 interruptions per customer.
+- question: What is power outage duration by state?
+  answer: State SAIDI ranged from 84.7 minutes in South Dakota to 3,136.5 minutes in South Carolina during 2024. The U.S. average was 611.3 minutes, or about 10.2 hours.
+- question: Which state has the most reliable power grid?
+  answer: South Dakota had the lowest 2024 SAIDI at 84.7 minutes and the lowest SAIFI at 0.815 interruptions per customer. Arizona ranked second for annual duration at 87.5 minutes.
+- question: What do SAIDI and SAIFI mean?
+  answer: South Carolina's SAIDI of 3,136.5 measures annual interruption minutes for the average customer. Its SAIFI of 2.365 measures interruption frequency, while its CAIDI of 1,326.3 minutes measures average restoration time.
+- question: How long is the average power outage?
+  answer: National CAIDI was 401.9 minutes per interruption when major events were included in 2024. State averages ranged from Arizona's 88.6 minutes to South Carolina's 1,326.3 minutes.
+- question: Is this a live power outage map?
+  answer: No, the 50-state ranking summarizes completed 2024 utility reliability reports and does not show customers currently without power. South Carolina's 3,136.5-minute SAIDI is an annual measure, not a current outage total.
+related:
+- title: Data Centers by State
+  url: /rankings/infrastructure/data-centers-by-state
+- title: Road Quality by State
+  url: /rankings/infrastructure/road-quality-by-state
+- title: Most Likely to Be Struck by Lightning
+  url: /rankings/geography/most-likely-to-be-struck-by-lightning
+- title: Windiest States in the U.S.
+  url: /rankings/geography/windiest-states-in-the-us

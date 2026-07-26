@@ -1,4 +1,4 @@
-﻿@model USASymbol.Models.ViewModels.NicknameDetailViewModel
+@model USASymbol.Models.ViewModels.NicknameDetailViewModel
 @using System.Globalization
 @using USASymbol.Models.ViewModels
 @using USASymbol.Extensions
@@ -75,6 +75,7 @@
     var heroModel = new SymbolHeroViewModel
     {
         PageModel = Model,
+        Variant = SymbolHeroVariant.Quote,
         BackgroundClass = "bg-[linear-gradient(180deg,#1f2937_0%,#111827_100%)]",
         TopRuleClass = "bg-gradient-to-r from-amber-300/0 via-amber-200/70 to-amber-300/0",
         PrimaryGlowClass = "bg-amber-300/12",
@@ -82,14 +83,11 @@
         AccentDotClass = "bg-amber-300",
         MediaBackgroundClass = "bg-[linear-gradient(135deg,rgba(15,23,42,0.92),rgba(120,53,15,0.86),rgba(15,23,42,0.94))]",
         FallbackIconClass = "fa-solid fa-signature",
-        Title = pageHeading,
+        Title = $"{stateName} {designation}",
         Description = heroDescription,
         LegalReference = Model.Legislation,
-        ImageUrl = Model.Symbol?.ImageUrl,
-        ImageAlt = pageHeading,
-        FigureTitle = resolvedNickname,
-        FigureSubtitle = $"{(Model.NicknameContent?.IsOfficial == true ? "Official " : "")}{designation.ToLowerInvariant()} of {stateName}",
-        ImageLinkUrl = Model.Symbol?.ImageUrl,
+        FeaturedLabel = Model.NicknameContent?.IsOfficial == true ? "Official nickname" : "State nickname",
+        FeaturedText = resolvedNickname,
         HeroLabel = Model.NicknameContent?.IsOfficial == true ? "Official state nickname" : "State nickname",
         EyebrowItems = new List<string>
         {
@@ -112,7 +110,7 @@
 
 <div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
     <article class="symbol-editorial w-full">
-        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[228px_minmax(0,760px)_320px] xl:gap-12 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
+        <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6 xl:grid-cols-[200px_minmax(0,760px)_320px] xl:gap-[2px] 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
 
             @await Html.PartialAsync("_SymbolHero", heroModel)
 
@@ -123,7 +121,7 @@
             </aside>
 
             <div class="min-w-0">
-                <div class="journey-content content-flow site-content">
+                <div class="article-content content-flow site-content">
                     @{
                         IHtmlContent nicknameOverviewBody = !string.IsNullOrWhiteSpace(Model.NicknameContent?.IntroText)
                             ? Model.NicknameContent!.IntroText.RenderAutoLinks()
@@ -140,7 +138,7 @@
 
                     @if (quickFacts.Any())
                     {
-                        <div class="xl:hidden">
+                        <div class="lg:hidden">
                             @await Html.PartialAsync("_QuickFacts", quickFacts)
                         </div>
                     }
@@ -174,7 +172,7 @@
                         @await Html.PartialAsync("_Sources", Model)
                     </section>
 
-                    <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
+                    <div class="mt-10 space-y-8 lg:hidden" data-nosnippet>
                         @await Html.PartialAsync("_RelatedSymbols", Model)
                         @await Html.PartialAsync("_RelatedStatesSidebar", Model)
                         @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
@@ -186,33 +184,11 @@
                 </div>
             </div>
 
-            <aside class="journey-sidebar mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start" aria-label="Article sidebar">
-                @if (quickFacts.Any())
-                {
-                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
-                        <div class="sticky top-32 pr-2">
-                            @await Html.PartialAsync("_QuickFacts", quickFacts)
-                        </div>
-                    </section>
-                }
-
-                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
-                    <div class="sticky top-32 pr-2">
-                        @await Html.PartialAsync("_RelatedSymbols", Model)
-                    </div>
-                </section>
-
-                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
-                    <div class="sticky top-32 pr-2">
-                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
-                    </div>
-                </section>
-
-                <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
-                    <div class="sticky top-32 pr-2">
-                        @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
-                    </div>
-                </section>
+            <aside class="article-sidebar hidden lg:block" aria-label="Article sidebar">
+                <div class="sidebar-content space-y-10">
+                    @await Html.PartialAsync("_RelatedSymbols", Model)
+                    @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                </div>
             </aside>
         </div>
 

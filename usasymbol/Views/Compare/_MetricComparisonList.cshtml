@@ -1,0 +1,121 @@
+@model USASymbol.Models.ViewModels.MetricComparisonListViewModel
+@inject IImageUrlService Images
+
+<section class="cmp2-block" id="metric-comparison">
+    <div class="cmp2-shell">
+        <div class="cmp2-head">
+            <p class="cmp2-eyebrow">Full comparison</p>
+            <h2 class="cmp2-title">Every metric, side by side</h2>
+            <p class="cmp2-sub">Pick a category. Each row opens the full breakdown for that metric — national rank, chart, and sourcing.</p>
+        </div>
+
+        <div class="cmp2-tabbar-wrap">
+            <div class="cmp2-tabbar" id="mcl-tab-bar">
+                @for (var ti = 0; ti < Model.Tabs.Count; ti++)
+                {
+                    var tab = Model.Tabs[ti];
+                    var isFirst = ti == 0;
+                    var leader = tab.LeaderSlug == Model.StateA.Slug ? Model.StateA
+                               : tab.LeaderSlug == Model.StateB.Slug ? Model.StateB
+                               : null;
+                    <button type="button"
+                            class="mcl-tab-btn cmp2-tab @(isFirst ? "is-active" : "")"
+                            data-tab="@tab.Id">
+                        <i class="@tab.Icon" aria-hidden="true"></i>
+                        <span>@tab.Label</span>
+                        @if (leader != null)
+                        {
+                            <img src="@Images.Thumb(leader.FlagImageUrl)" alt="" class="cmp2-tab-flag" onerror="this.style.display='none'" />
+                        }
+                    </button>
+                }
+            </div>
+        </div>
+
+        @for (var ti = 0; ti < Model.Tabs.Count; ti++)
+        {
+            var tab = Model.Tabs[ti];
+            var isFirst = ti == 0;
+            <div id="@tab.Id" class="mcl-tab-panel cmp2-panel @(isFirst ? "" : "is-hidden")">
+                <div class="cmp2-rows">
+                    @foreach (var result in tab.Results)
+                    {
+                        var winA = result.WinnerSlug == Model.StateA.Slug;
+                        var winB = result.WinnerSlug == Model.StateB.Slug;
+                        var hasBar = result.NumericA.HasValue && result.NumericB.HasValue;
+                        double barA = 0, barB = 0;
+                        if (hasBar)
+                        {
+                            var mx = Math.Max(result.NumericA!.Value, result.NumericB!.Value);
+                            if (mx > 0)
+                            {
+                                barA = Math.Round(result.NumericA.Value / mx * 100, 1);
+                                barB = Math.Round(result.NumericB!.Value / mx * 100, 1);
+                            }
+                        }
+                        <a class="cmp2-row" href="/compare/@Model.PairSlug/@result.Metric.Slug">
+                            <div class="cmp2-row-head">
+                                <i class="@result.Metric.Icon cmp2-row-icon" aria-hidden="true"></i>
+                                <span class="cmp2-row-name">@result.Metric.Name</span>
+                                <i class="fa-solid fa-chevron-right cmp2-row-chevron" aria-hidden="true"></i>
+                            </div>
+
+                            @if (hasBar)
+                            {
+                                <div class="cmp2-diverge">
+                                    <div class="cmp2-diverge-side cmp2-diverge-a">
+                                        <span class="cmp2-val @(winA ? "is-winner" : "")" style="@(winA ? $"color:{Model.AccentA}" : "")">@result.DisplayValueA</span>
+                                        <div class="cmp2-bar-track">
+                                            <div class="cmp2-bar" style="width:@(barA.ToString("F1", System.Globalization.CultureInfo.InvariantCulture))%; background:@(winA ? Model.AccentA : "var(--cmp-line-strong)")"></div>
+                                        </div>
+                                    </div>
+                                    <div class="cmp2-diverge-mid"></div>
+                                    <div class="cmp2-diverge-side cmp2-diverge-b">
+                                        <div class="cmp2-bar-track">
+                                            <div class="cmp2-bar" style="width:@(barB.ToString("F1", System.Globalization.CultureInfo.InvariantCulture))%; background:@(winB ? Model.AccentB : "var(--cmp-line-strong)")"></div>
+                                        </div>
+                                        <span class="cmp2-val @(winB ? "is-winner" : "")" style="@(winB ? $"color:{Model.AccentB}" : "")">@result.DisplayValueB</span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="cmp2-flat">
+                                    <span class="cmp2-val @(winA ? "is-winner" : "")" style="@(winA ? $"color:{Model.AccentA}" : "")">@(result.DisplayValueA ?? "—")</span>
+                                    <span class="cmp2-flat-mid">vs</span>
+                                    <span class="cmp2-val @(winB ? "is-winner" : "")" style="@(winB ? $"color:{Model.AccentB}" : "")">@(result.DisplayValueB ?? "—")</span>
+                                </div>
+                            }
+                        </a>
+                    }
+                </div>
+                @if (tab.CategorySlug != null)
+                {
+                    <a class="cmp2-row-more" href="/compare/@tab.CategorySlug">
+                        Browse @tab.Label.ToLowerInvariant() for all 50 states <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+<script>
+    (function () {
+        var btns = Array.from(document.querySelectorAll('.mcl-tab-btn'));
+        var panels = Array.from(document.querySelectorAll('.mcl-tab-panel'));
+        var bar = document.getElementById('mcl-tab-bar');
+
+        btns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var target = btn.getAttribute('data-tab');
+                btns.forEach(function (b) { b.classList.remove('is-active'); });
+                panels.forEach(function (p) { p.classList.add('is-hidden'); });
+                btn.classList.add('is-active');
+                var panel = document.getElementById(target);
+                if (panel) panel.classList.remove('is-hidden');
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            });
+        });
+    })();
+</script>

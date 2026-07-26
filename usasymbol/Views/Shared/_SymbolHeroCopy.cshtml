@@ -1,0 +1,25 @@
+@using System.Linq
+@model USASymbol.Models.ViewModels.SymbolHeroViewModel
+
+<div class="sdh-eyebrow">
+    <span class="sdh-eyebrow-lead">
+        <span class="sdh-dot" aria-hidden="true"></span>
+        @(string.IsNullOrWhiteSpace(Model.HeroLabel) ? "Official state symbol" : Model.HeroLabel)
+    </span>
+    @foreach (var item in Model.EyebrowItems.Where(item => !string.IsNullOrWhiteSpace(item)))
+    {
+        <span class="sdh-eyebrow-item">@item</span>
+    }
+</div>
+
+<h1 class="sdh-title">@Model.Title</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.Subtitle) && Model.Variant != SymbolHeroVariant.Quote)
+{
+    <p class="sdh-subtitle">@Model.Subtitle</p>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Description))
+{
+    <p class="sdh-deck">@Model.Description</p>
+}

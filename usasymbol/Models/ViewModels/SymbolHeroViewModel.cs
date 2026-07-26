@@ -2,9 +2,20 @@ using System.Collections.Generic;
 
 namespace USASymbol.Models.ViewModels
 {
+    public enum SymbolHeroVariant
+    {
+        Split,
+        WideMedia,
+        Quote,
+        TextOnly
+    }
+
     public class SymbolHeroViewModel
     {
         public ISymbolDetailViewModel PageModel { get; set; } = null!;
+        public SymbolHeroVariant Variant { get; set; } = SymbolHeroVariant.Split;
+        public List<QuickFactItem> HeroFacts { get; set; } = new();
+        public int MaxHeroFacts { get; set; } = 5;
         public string BackgroundClass { get; set; } = "bg-[linear-gradient(180deg,#1b2230_0%,#1f2735_100%)]";
         public string TopRuleClass { get; set; } = "bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-amber-200/0";
         public string PrimaryGlowClass { get; set; } = "bg-amber-300/10";

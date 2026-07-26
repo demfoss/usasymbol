@@ -1,0 +1,40 @@
+{
+  "key": "ranking",
+  "displayName": "Ranking",
+  "output_path_pattern": "rankings/{topic_slug}/{slug}.yaml",
+  "intent": "Answer the ranking query immediately, then explain what the rank means and why it matters in a concise, human way.",
+  "style": "editorial, analytical, concise, mobile-friendly",
+  "avoid": [
+    "generic state profile tone",
+    "methodology sludge",
+    "AI-sounding filler",
+    "forced FAQ",
+    "repetitive opener formulas"
+  ],
+  "default_secondary_queries": [
+    "[TOPIC] ranking in [STATE]",
+    "where does [STATE] rank for [TOPIC]",
+    "[STATE] [TOPIC] rank"
+  ],
+  "exact_phrase_rule": "Use the primary keyword naturally in the title, intro, and SEO description.",
+  "anti_template_bans": [
+    "Do not open with 'When it comes to...'",
+    "Do not open with a vague superlative",
+    "Do not restate the ranking three different ways in the intro"
+  ],
+  "good_intro_examples": [
+    "Texas ranks high for wind energy, and the interesting part is not just the position but what keeps it there.",
+    "If California's housing costs rank near the top, the useful question is what that rank actually reflects on the ground.",
+    "Florida's tourism ranking matters because the state has built whole regions of its economy around that one strength."
+  ],
+  "good_title_examples": [
+    "Texas Wind Energy Ranking",
+    "California Housing Cost Ranking",
+    "Florida Tourism Ranking Explained"
+  ],
+  "bad_template_examples": [
+    "When it comes to [topic], [State] stands out.",
+    "[State] has long been known for [topic].",
+    "This ranking offers valuable insight into [State]."
+  ]
+}

@@ -10,7 +10,7 @@
         .Where(section => !string.Equals(section.Style, "meaning-banner", StringComparison.OrdinalIgnoreCase))
         .ToList();
     var quoteDone = false;
-    var timelineDone = false;
+    var timelineDone = true; // Timeline hidden for license plate pages for now
     var statDone = false;
     var stateSlug = Model.State?.Slug ?? "";
     var quoteAfterSectionId = (Model.ExpertQuoteAfterSectionId ?? string.Empty).Trim();

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections;
+using System.Linq;
 using USASymbol.Models;
 using USASymbol.Services.Interface;
 using YamlDotNet.Serialization;
@@ -39,20 +40,42 @@ namespace USASymbol.Services
 
         private async Task<Dictionary<string, StateStats>> LoadFromFileAsync()
         {
-            var path = Path.Combine(_env.ContentRootPath, "Content", "compare", "state-stats.yaml");
-            if (!File.Exists(path))
+            var statsDir = Path.Combine(_env.ContentRootPath, "Content", "compare", "stats");
+            if (!Directory.Exists(statsDir))
                 return new Dictionary<string, StateStats>();
 
-            var yaml = await File.ReadAllTextAsync(path);
-
             var deserializer = new DeserializerBuilder().Build();
-            var raw = deserializer.Deserialize<Dictionary<string, object>>(yaml);
+
+            // Each file under Content/compare/stats/ holds one category (e.g. taxes.yaml, housing.yaml)
+            // for all states. Merge every category's fields per state slug before building StateStats.
+            var fieldsBySlug = new Dictionary<string, Dictionary<string, object?>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var file in Directory.EnumerateFiles(statsDir, "*.yaml").OrderBy(f => f))
+            {
+                var yaml = await File.ReadAllTextAsync(file);
+                var raw = deserializer.Deserialize<Dictionary<string, object>>(yaml);
+                if (raw == null) continue;
+
+                foreach (var (slug, node) in raw)
+                {
+                    if (!fieldsBySlug.TryGetValue(slug, out var target))
+                    {
+                        target = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+                        fieldsBySlug[slug] = target;
+                    }
+                    FlattenInto(target, node);
+                }
+            }
 
             var result = new Dictionary<string, StateStats>();
-            foreach (var (slug, node) in raw)
+            foreach (var (slug, fields) in fieldsBySlug)
             {
-                var fields = FlattenFields(node);
                 var stats = new StateStats { Slug = slug };
+
+                if (fields.TryGetValue("population_estimate_2025", out var populationEstimate) && populationEstimate != null)
+                    stats.PopulationEstimate2025 = Convert.ToInt32(populationEstimate);
+
+                if (fields.TryGetValue("population_change_since_2020_pct", out var populationChange) && populationChange != null)
+                    stats.PopulationChangeSince2020Pct = Convert.ToDouble(populationChange);
 
                 if (fields.TryGetValue("land_area_sq_mi", out var area) && area != null)
                     stats.LandAreaSqMi = Convert.ToDouble(area);
@@ -87,6 +110,21 @@ namespace USASymbol.Services
                 if (fields.TryGetValue("job_growth_pct", out var jobGrowth) && jobGrowth != null)
                     stats.JobGrowthPct = Convert.ToDouble(jobGrowth);
 
+                if (fields.TryGetValue("net_domestic_migration", out var netMigration) && netMigration != null)
+                    stats.NetDomesticMigration = Convert.ToInt32(netMigration);
+
+                if (fields.TryGetValue("domestic_migration_band", out var migrationBand) && migrationBand != null)
+                    stats.DomesticMigrationBand = Convert.ToString(migrationBand);
+
+                if (fields.TryGetValue("single_person_living_wage", out var livingWage) && livingWage != null)
+                    stats.SinglePersonLivingWage = Convert.ToInt32(livingWage);
+
+                if (fields.TryGetValue("single_person_living_wage_change_pct", out var livingWageChange) && livingWageChange != null)
+                    stats.SinglePersonLivingWageChangePct = Convert.ToDouble(livingWageChange);
+
+                if (fields.TryGetValue("average_credit_score", out var creditScore) && creditScore != null)
+                    stats.AverageCreditScore = Convert.ToInt32(creditScore);
+
                 if (fields.TryGetValue("minimum_wage_hourly", out var minimumWage) && minimumWage != null)
                     stats.MinimumWageHourly = Convert.ToDouble(minimumWage);
 
@@ -110,6 +148,24 @@ namespace USASymbol.Services
 
                 if (fields.TryGetValue("gas_tax_cents", out var gasTax) && gasTax != null)
                     stats.GasTaxCents = Convert.ToDouble(gasTax);
+
+                if (fields.TryGetValue("grocery_tax_status", out var groceryTaxStatus) && groceryTaxStatus != null)
+                    stats.GroceryTaxStatus = Convert.ToString(groceryTaxStatus);
+
+                if (fields.TryGetValue("grocery_tax_rate_pct", out var groceryTaxRate) && groceryTaxRate != null)
+                    stats.GroceryTaxRatePct = Convert.ToDouble(groceryTaxRate);
+
+                if (fields.TryGetValue("death_tax_status", out var deathTaxStatus) && deathTaxStatus != null)
+                    stats.DeathTaxStatus = Convert.ToString(deathTaxStatus);
+
+                if (fields.TryGetValue("estate_tax_status", out var estateTaxStatus) && estateTaxStatus != null)
+                    stats.EstateTaxStatus = Convert.ToString(estateTaxStatus);
+
+                if (fields.TryGetValue("inheritance_tax_status", out var inheritanceTaxStatus) && inheritanceTaxStatus != null)
+                    stats.InheritanceTaxStatus = Convert.ToString(inheritanceTaxStatus);
+
+                if (fields.TryGetValue("vehicle_property_tax_status", out var vehiclePropertyTaxStatus) && vehiclePropertyTaxStatus != null)
+                    stats.VehiclePropertyTaxStatus = Convert.ToString(vehiclePropertyTaxStatus);
 
                 if (fields.TryGetValue("total_tax_burden_pct", out var taxBurden) && taxBurden != null)
                     stats.TotalTaxBurdenPct = Convert.ToDouble(taxBurden);
@@ -183,6 +239,15 @@ namespace USASymbol.Services
                 if (fields.TryGetValue("marijuana_legalization_status", out var marijuanaLegalizationStatus) && marijuanaLegalizationStatus != null)
                     stats.MarijuanaLegalizationStatus = Convert.ToString(marijuanaLegalizationStatus);
 
+                if (fields.TryGetValue("abortion_law_status", out var abortionLawStatus) && abortionLawStatus != null)
+                    stats.AbortionLawStatus = Convert.ToString(abortionLawStatus);
+
+                if (fields.TryGetValue("abortion_gestational_limit", out var abortionGestationalLimit) && abortionGestationalLimit != null)
+                    stats.AbortionGestationalLimit = Convert.ToString(abortionGestationalLimit);
+
+                if (fields.TryGetValue("right_to_work_status", out var rightToWorkStatus) && rightToWorkStatus != null)
+                    stats.RightToWorkStatus = Convert.ToString(rightToWorkStatus);
+
                 if (fields.TryGetValue("marriage_age_without_consent", out var marriageAgeWithoutConsent) && marriageAgeWithoutConsent != null)
                     stats.MarriageAgeWithoutConsent = Convert.ToInt32(marriageAgeWithoutConsent);
 
@@ -231,6 +296,18 @@ namespace USASymbol.Services
                 if (fields.TryGetValue("annual_precipitation_in", out var annualPrecip) && annualPrecip != null)
                     stats.AnnualPrecipitationIn = Convert.ToDouble(annualPrecip);
 
+                if (fields.TryGetValue("average_wind_speed_mph", out var windSpeed) && windSpeed != null)
+                    stats.AverageWindSpeedMph = Convert.ToDouble(windSpeed);
+
+                if (fields.TryGetValue("lightning_density_per_sq_mile", out var lightningDensity) && lightningDensity != null)
+                    stats.LightningDensityPerSqMile = Convert.ToDouble(lightningDensity);
+
+                if (fields.TryGetValue("highest_point_name", out var highestPointName) && highestPointName != null)
+                    stats.HighestPointName = Convert.ToString(highestPointName);
+
+                if (fields.TryGetValue("highest_point_elevation_ft", out var highestPointElevation) && highestPointElevation != null)
+                    stats.HighestPointElevationFt = Convert.ToDouble(highestPointElevation);
+
                 if (fields.TryGetValue("life_expectancy_years", out var lifeExp) && lifeExp != null)
                     stats.LifeExpectancyYears = Convert.ToDouble(lifeExp);
 
@@ -245,6 +322,63 @@ namespace USASymbol.Services
 
                 if (fields.TryGetValue("property_crime_rate_per_100k", out var propertyCrime) && propertyCrime != null)
                     stats.PropertyCrimeRatePer100k = Convert.ToDouble(propertyCrime);
+
+                if (fields.TryGetValue("infant_mortality_rate_per_1000", out var infantMortality) && infantMortality != null)
+                    stats.InfantMortalityRatePer1000 = Convert.ToDouble(infantMortality);
+
+                if (fields.TryGetValue("maternal_mortality_rate_per_100k", out var maternalMortality) && maternalMortality != null)
+                    stats.MaternalMortalityRatePer100k = Convert.ToDouble(maternalMortality);
+
+                if (fields.TryGetValue("overdose_death_rate_per_100k", out var overdoseDeathRate) && overdoseDeathRate != null)
+                    stats.OverdoseDeathRatePer100k = Convert.ToDouble(overdoseDeathRate);
+
+                if (fields.TryGetValue("water_quality_score", out var waterQualityScore) && waterQualityScore != null)
+                    stats.WaterQualityScore = Convert.ToDouble(waterQualityScore);
+
+                if (fields.TryGetValue("water_quality_grade", out var waterQualityGrade) && waterQualityGrade != null)
+                    stats.WaterQualityGrade = Convert.ToString(waterQualityGrade);
+
+                if (fields.TryGetValue("power_outage_hours_annual", out var outageHours) && outageHours != null)
+                    stats.PowerOutageHoursAnnual = Convert.ToDouble(outageHours);
+
+                if (fields.TryGetValue("road_quality_rank", out var roadQualityRank) && roadQualityRank != null)
+                    stats.RoadQualityRank = Convert.ToInt32(roadQualityRank);
+
+                if (fields.TryGetValue("renewable_electricity_pct", out var renewableElectricity) && renewableElectricity != null)
+                    stats.RenewableElectricityPct = Convert.ToDouble(renewableElectricity);
+
+                if (fields.TryGetValue("largest_airport_name", out var largestAirportName) && largestAirportName != null)
+                    stats.LargestAirportName = Convert.ToString(largestAirportName);
+
+                if (fields.TryGetValue("largest_airport_iata", out var largestAirportIata) && largestAirportIata != null)
+                    stats.LargestAirportIata = Convert.ToString(largestAirportIata);
+
+                if (fields.TryGetValue("largest_airport_passengers_millions", out var airportPassengers) && airportPassengers != null)
+                    stats.LargestAirportPassengersMillions = Convert.ToDouble(airportPassengers);
+
+                if (fields.TryGetValue("casino_count", out var casinoCount) && casinoCount != null)
+                    stats.CasinoCount = Convert.ToInt32(casinoCount);
+
+                if (fields.TryGetValue("best_known_casino", out var bestKnownCasino) && bestKnownCasino != null)
+                    stats.BestKnownCasino = Convert.ToString(bestKnownCasino);
+
+                if (fields.TryGetValue("ufo_sightings_total", out var ufoSightingsTotal) && ufoSightingsTotal != null)
+                    stats.UfoSightingsTotal = Convert.ToInt32(ufoSightingsTotal);
+
+                if (fields.TryGetValue("ufo_sightings_per_100k", out var ufoSightingsRate) && ufoSightingsRate != null)
+                    stats.UfoSightingsPer100k = Convert.ToDouble(ufoSightingsRate);
+
+                if (fields.TryGetValue("daily_screen_time_minutes", out var screenTimeMinutes) && screenTimeMinutes != null)
+                    stats.DailyScreenTimeMinutes = Convert.ToInt32(screenTimeMinutes);
+
+                if (fields.TryGetValue("daily_screen_time_label", out var screenTimeLabel) && screenTimeLabel != null)
+                    stats.DailyScreenTimeLabel = Convert.ToString(screenTimeLabel);
+
+                if (fields.TryGetValue("most_popular_car_brand", out var popularCarBrand) && popularCarBrand != null)
+                    stats.MostPopularCarBrand = Convert.ToString(popularCarBrand);
+
+                if (fields.TryGetValue("most_popular_car_model", out var popularCarModel) && popularCarModel != null)
+                    stats.MostPopularCarModel = Convert.ToString(popularCarModel);
 
                 if (fields.TryGetValue("k12_rank", out var k12Rank) && k12Rank != null)
                     stats.K12Rank = Convert.ToInt32(k12Rank);
@@ -270,13 +404,6 @@ namespace USASymbol.Services
                 result[slug] = stats;
             }
             return result;
-        }
-
-        private static Dictionary<string, object?> FlattenFields(object? node)
-        {
-            var flattened = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
-            FlattenInto(flattened, node);
-            return flattened;
         }
 
         private static void FlattenInto(IDictionary<string, object?> target, object? node)

@@ -1,0 +1,544 @@
+type: ranking
+slug: student-loan-debt-by-state
+category: education
+url: /rankings/education/student-loan-debt-by-state
+auto_link_phrases:
+  - "student loan debt by state"
+  - "average student loan debt"
+  - "student loan delinquency by state"
+extremes_mode: both
+extremes_title: "Highest and Lowest Student Loan Debt by State"
+hero_image: "/images/rankings/education/student-loan-debt-by-state/student-loan-debt-by-state-hero.jpg"
+hero_image_alt: "Graduation cap resting on a stack of dollar bills"
+hero_image_caption: "Maryland borrowers carry the highest average student loan debt at $43,781. Nationwide, 42.8 million borrowers owe $1.833 trillion in federal student loans."
+
+author: "USA Symbol Team"
+date_published: "2026-07-10"
+date_modified: "2026-07-10"
+
+seo:
+  title: "Student Loan Debt by State | Map, Averages & Delinquency"
+  description: "Maryland has the highest average student loan debt at $43,781 per borrower. North Dakota is lowest at $29,115. Borrowers nationwide owe $1.833 trillion."
+
+page:
+  h1: "Student Loan Debt by State"
+
+  quick_answer:
+    - "Student loan debt by state runs highest in Maryland, where borrowers owe an average of $43,781. Georgia follows at $42,226 and Virginia at $40,287."
+    - "North Dakota has the lowest average at $29,115, the only state under $30,000. Wyoming at $30,631 and Iowa at $30,698 sit just above it."
+    - "Nationally, 42.8 million borrowers hold $1.833 trillion in federal student loan debt. In early 2025, 13.7% of borrowers, about six million people, were at least 90 days past due."
+
+  methodology: "Balances cover federal student loans per borrower, from Federal Student Aid data updated in 2025. Delinquency figures come from New York Fed analysis of first-quarter 2025 credit data."
+
+  sources:
+    - name: "Education Data Initiative — Student Loan Debt by State"
+      url: "https://educationdata.org/student-loan-debt-by-state"
+      description: "Average federal student loan debt per borrower and share of residents with debt"
+    - name: "Federal Reserve Bank of New York — Liberty Street Economics"
+      url: "https://libertystreeteconomics.newyorkfed.org/2025/05/student-loan-delinquencies-are-back-and-credit-scores-take-a-tumble/"
+      description: "Student loan delinquency rates by state, Q1 2025"
+
+map:
+  title: "Student Loan Debt by State Map"
+  image_alt: "U.S. map showing average student loan debt per borrower in each state, shaded from light for the lowest balances to dark orange for the highest"
+  caption: "Maryland leads at $43,781 per borrower, with Georgia at $42,226 and Virginia at $40,287. North Dakota sits lowest at $29,115."
+  metric_key: avg_debt
+  metric_label: "Average Debt"
+  name_key: state
+  color_scheme: orange
+  color_scale: linear
+
+table:
+  searchable: true
+  sortable: true
+  metric_default: debt
+  sort_default: desc
+
+  columns:
+    rank: "Rank"
+    state: "State"
+    debt: "Average Debt per Borrower"
+    with_debt: "Residents with Debt"
+
+  rows:
+    - rank: 1
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      avg_debt: 43781
+      debt: "$43,781"
+      with_debt: "13.5%"
+
+    - rank: 2
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      avg_debt: 42226
+      debt: "$42,226"
+      with_debt: "15.2%"
+
+    - rank: 3
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      avg_debt: 40287
+      debt: "$40,287"
+      with_debt: "12.5%"
+
+    - rank: 4
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      avg_debt: 39574
+      debt: "$39,574"
+      with_debt: "11.7%"
+
+    - rank: 5
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      avg_debt: 39042
+      debt: "$39,042"
+      with_debt: "12.8%"
+
+    - rank: 6
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      avg_debt: 38929
+      debt: "$38,929"
+      with_debt: "8.5%"
+
+    - rank: 7
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      avg_debt: 38929
+      debt: "$38,929"
+      with_debt: "12.4%"
+
+    - rank: 8
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      avg_debt: 38856
+      debt: "$38,856"
+      with_debt: "13.0%"
+
+    - rank: 9
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      avg_debt: 38751
+      debt: "$38,751"
+      with_debt: "12.5%"
+
+    - rank: 10
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      avg_debt: 38715
+      debt: "$38,715"
+      with_debt: "14.1%"
+
+    - rank: 11
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      avg_debt: 38300
+      debt: "$38,300"
+      with_debt: "10.0%"
+
+    - rank: 12
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      avg_debt: 38036
+      debt: "$38,036"
+      with_debt: "12.5%"
+
+    - rank: 13
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      avg_debt: 37819
+      debt: "$37,819"
+      with_debt: "12.8%"
+
+    - rank: 14
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      avg_debt: 37760
+      debt: "$37,760"
+      with_debt: "11.8%"
+
+    - rank: 15
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      avg_debt: 37552
+      debt: "$37,552"
+      with_debt: "15.4%"
+
+    - rank: 16
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      avg_debt: 37393
+      debt: "$37,393"
+      with_debt: "13.1%"
+
+    - rank: 17
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      avg_debt: 37287
+      debt: "$37,287"
+      with_debt: "13.1%"
+
+    - rank: 18
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      avg_debt: 37054
+      debt: "$37,054"
+      with_debt: "12.4%"
+
+    - rank: 19
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      avg_debt: 36973
+      debt: "$36,973"
+      with_debt: "13.8%"
+
+    - rank: 20
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      avg_debt: 36837
+      debt: "$36,837"
+      with_debt: "14.1%"
+
+    - rank: 21
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      avg_debt: 36709
+      debt: "$36,709"
+      with_debt: "9.9%"
+
+    - rank: 22
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      avg_debt: 36120
+      debt: "$36,120"
+      with_debt: "14.3%"
+
+    - rank: 23
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      avg_debt: 35874
+      debt: "$35,874"
+      with_debt: "9.0%"
+
+    - rank: 24
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      avg_debt: 35792
+      debt: "$35,792"
+      with_debt: "12.1%"
+
+    - rank: 25
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      avg_debt: 35650
+      debt: "$35,650"
+      with_debt: "13.3%"
+
+    - rank: 26
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      avg_debt: 35400
+      debt: "$35,400"
+      with_debt: "12.9%"
+
+    - rank: 27
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      avg_debt: 35072
+      debt: "$35,072"
+      with_debt: "15.0%"
+
+    - rank: 28
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      avg_debt: 34860
+      debt: "$34,860"
+      with_debt: "13.6%"
+
+    - rank: 29
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      avg_debt: 34821
+      debt: "$34,821"
+      with_debt: "14.9%"
+
+    - rank: 30
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      avg_debt: 34756
+      debt: "$34,756"
+      with_debt: "11.2%"
+
+    - rank: 31
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      avg_debt: 34355
+      debt: "$34,355"
+      with_debt: "13.5%"
+
+    - rank: 32
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      avg_debt: 34256
+      debt: "$34,256"
+      with_debt: "10.7%"
+
+    - rank: 33
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      avg_debt: 34215
+      debt: "$34,215"
+      with_debt: "11.3%"
+
+    - rank: 34
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      avg_debt: 34163
+      debt: "$34,163"
+      with_debt: "13.6%"
+
+    - rank: 35
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      avg_debt: 34024
+      debt: "$34,024"
+      with_debt: "13.1%"
+
+    - rank: 36
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      avg_debt: 33872
+      debt: "$33,872"
+      with_debt: "9.2%"
+
+    - rank: 37
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      avg_debt: 33770
+      debt: "$33,770"
+      with_debt: "12.5%"
+
+    - rank: 38
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      avg_debt: 33691
+      debt: "$33,691"
+      with_debt: "13.4%"
+
+    - rank: 39
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      avg_debt: 33621
+      debt: "$33,621"
+      with_debt: "11.0%"
+
+    - rank: 40
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      avg_debt: 33400
+      debt: "$33,400"
+      with_debt: "13.5%"
+
+    - rank: 41
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      avg_debt: 33234
+      debt: "$33,234"
+      with_debt: "13.1%"
+
+    - rank: 42
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      avg_debt: 33013
+      debt: "$33,013"
+      with_debt: "13.0%"
+
+    - rank: 43
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      avg_debt: 32619
+      debt: "$32,619"
+      with_debt: "12.1%"
+
+    - rank: 44
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      avg_debt: 32343
+      debt: "$32,343"
+      with_debt: "12.9%"
+
+    - rank: 45
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      avg_debt: 32245
+      debt: "$32,245"
+      with_debt: "12.4%"
+
+    - rank: 46
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      avg_debt: 32206
+      debt: "$32,206"
+      with_debt: "12.4%"
+
+    - rank: 47
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      avg_debt: 31171
+      debt: "$31,171"
+      with_debt: "12.8%"
+
+    - rank: 48
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      avg_debt: 30698
+      debt: "$30,698"
+      with_debt: "13.3%"
+
+    - rank: 49
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      avg_debt: 30631
+      debt: "$30,631"
+      with_debt: "9.4%"
+
+    - rank: 50
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      avg_debt: 29115
+      debt: "$29,115"
+      with_debt: "11.2%"
+
+compare:
+  metric_slug: student-loan-debt
+  title: "Compare Student Debt Between Two States"
+  description: "Pick any two states to see a side-by-side comparison of education, income, and cost-of-living data."
+  button_text: "Compare states"
+  icon: "fa-solid fa-graduation-cap"
+  default_state_a: maryland
+  default_state_b: north-dakota
+
+sections:
+  - id: "highest-student-loan-debt"
+    icon: "fa-solid fa-arrow-up"
+    title: "States with the Highest Student Loan Debt"
+    paragraphs:
+      - "Maryland borrowers carry the highest average balance at $43,781, followed by Georgia at $42,226 and Virginia at $40,287. No other state tops $40,000."
+      - "Mississippi has the largest share of residents with student debt at 15.4%, ahead of Georgia's 15.2% and Ohio's 15.0%. Georgia is the only state that ranks in the top three on both measures."
+
+  - id: "lowest-student-loan-debt"
+    icon: "fa-solid fa-arrow-down"
+    title: "States with the Lowest Student Loan Debt"
+    paragraphs:
+      - "North Dakota has the lowest average at $29,115, the only state under $30,000. Wyoming at $30,631, Iowa at $30,698, and South Dakota at $31,171 follow."
+      - "Hawaii has the smallest share of residents with student debt at 8.5%, with Alaska at 9.0%, Utah at 9.2%, and Wyoming at 9.4% close behind. Even so, Hawaiian borrowers rank sixth for average balance at $38,929."
+
+  - id: "student-loan-delinquency"
+    icon: "fa-solid fa-triangle-exclamation"
+    title: "Student Loan Delinquency by State"
+    paragraphs:
+      - "New Mexico has the highest share of delinquent student debt, with 29.63% of balances 90 or more days past due in early 2025. Oklahoma at 28.23%, West Virginia at 27.78%, and Mississippi at 26.54% follow."
+      - "Among borrowers actually in repayment, Mississippi's delinquency rate reaches 44.6%, and six more states exceed 30%, including Alabama, West Virginia, and Kentucky. Massachusetts posts the lowest rate at 13.83%."
+
+visual_assets:
+  - id: highest-student-loan-debt
+    src: /images/rankings/education/student-loan-debt-by-state/highest-student-loan-debt.jpg
+    alt: "Graduates in caps and gowns at a university commencement ceremony"
+    caption: "Maryland, Georgia, and Virginia are the only states where average student loan balances exceed $40,000 per borrower."
+    section: highest-student-loan-debt
+    layout: full-width-tall
+
+  - id: lowest-student-loan-debt
+    src: /images/rankings/education/student-loan-debt-by-state/lowest-student-loan-debt.jpg
+    alt: "College students walking across campus between classes on a clear day"
+    caption: "North Dakota has the lowest average student loan balance at $29,115, followed by Wyoming, Iowa, and South Dakota. Hawaii has the smallest share of residents with student debt despite ranking high for average balance."
+    section: lowest-student-loan-debt
+    layout: full-width-tall
+
+  - id: student-loan-delinquency
+    src: /images/rankings/education/student-loan-debt-by-state/student-loan-delinquency.jpg
+    alt: "Person reviewing loan statements and bills at a kitchen table"
+    caption: "In the first quarter of 2025, 13.7% of borrowers nationwide were at least 90 days past due. New Mexico had the highest share of delinquent balances at 29.63%."
+    section: student-loan-delinquency
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the highest student loan debt?"
+    answer: "Maryland, where the average federal balance is $43,781 per borrower. Georgia at $42,226 and Virginia at $40,287 are the only other states above $40,000."
+
+  - question: "Which state has the lowest student loan debt?"
+    answer: "North Dakota, at an average of $29,115 per borrower. No other state falls below $30,000."
+
+  - question: "What is the average student loan debt per borrower?"
+    answer: "State averages range from $29,115 in North Dakota to $43,781 in Maryland. Nationwide, 42.8 million borrowers hold $1.833 trillion in federal student loans."
+
+  - question: "Which state has the highest student loan delinquency rate?"
+    answer: "New Mexico, with 29.63% of student debt balances at least 90 days past due in early 2025. Counting only borrowers in repayment, Mississippi is highest at 44.6%."
+
+  - question: "Which states have the lowest student loan delinquency?"
+    answer: "Massachusetts at 13.83%, New Hampshire at 14.11%, and Utah at 14.3%. All three sit well below the seven states that exceed 30% among borrowers in repayment."
+
+  - question: "Which state has the most residents with student loan debt?"
+    answer: "Mississippi, where 15.4% of residents carry student loans. Georgia follows at 15.2% and Ohio at 15.0%, while Hawaii has the smallest share at 8.5%."
+
+related:
+  - title: "Teacher Salary by State"
+    url: "/rankings/education/teacher-salary-by-state"
+  - title: "States by K-12 Education"
+    url: "/rankings/education/states-by-k12-education"
+  - title: "States by Median Income"
+    url: "/rankings/economy/states-by-median-income"
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"

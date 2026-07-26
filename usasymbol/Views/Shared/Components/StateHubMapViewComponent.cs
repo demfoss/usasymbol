@@ -28,7 +28,7 @@ namespace Usasymbol.Views.Shared.Components
             ["NH"]=33, ["NJ"]=34, ["NM"]=35, ["NY"]=36, ["NC"]=37, ["ND"]=38, ["OH"]=39,
             ["OK"]=40, ["OR"]=41, ["PA"]=42, ["RI"]=44, ["SC"]=45, ["SD"]=46, ["TN"]=47,
             ["TX"]=48, ["UT"]=49, ["VT"]=50, ["VA"]=51, ["WA"]=53, ["WV"]=54, ["WI"]=55,
-            ["WY"]=56,
+            ["WY"]=56, ["DC"]=11,
         };
 
         private static readonly Dictionary<int, string> StateSlugs = new()
@@ -45,7 +45,7 @@ namespace Usasymbol.Views.Shared.Components
             [41]="oregon",       [42]="pennsylvania",  [44]="rhode-island", [45]="south-carolina",
             [46]="south-dakota", [47]="tennessee",     [48]="texas",        [49]="utah",
             [50]="vermont",      [51]="virginia",      [53]="washington",   [54]="west-virginia",
-            [55]="wisconsin",    [56]="wyoming",
+            [55]="wisconsin",    [56]="wyoming",       [11]="district-of-columbia",
         };
 
         private static readonly Dictionary<string, (double Lat, double Lon)> CapitalCoords = new()
@@ -58,6 +58,7 @@ namespace Usasymbol.Views.Shared.Components
             ["CO"] = (39.714, -104.984), // Denver
             ["CT"] = (41.763, -72.685),  // Hartford
             ["DE"] = (39.158, -75.524),  // Dover
+            ["DC"] = (38.907, -77.037),  // Washington, D.C.
             ["FL"] = (30.455, -84.253),  // Tallahassee
             ["GA"] = (33.755, -84.390),  // Atlanta
             ["HI"] = (21.305, -157.858), // Honolulu

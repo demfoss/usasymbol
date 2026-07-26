@@ -5,6 +5,7 @@ namespace USASymbol.Models
     public class ComparisonMetricDefinition
     {
         public string Slug { get; set; } = string.Empty;
+        public IReadOnlyList<string> LegacySlugs { get; set; } = Array.Empty<string>();
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string GroupSlug { get; set; } = "general";
@@ -14,6 +15,10 @@ namespace USASymbol.Models
         public string Unit { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
         public MetricType Type { get; set; } = MetricType.Numeric;
+        public string SourceName { get; set; } = string.Empty;
+        public string SourceUrl { get; set; } = string.Empty;
+        public string DataYear { get; set; } = string.Empty;
+        public string UpdatedAt { get; set; } = string.Empty;
 
         /// <summary>
         /// For numeric/ordinal metrics: true = higher value wins.

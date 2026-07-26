@@ -1,0 +1,671 @@
+type: ranking
+slug: marijuana-legality-by-state
+category: law
+url: /rankings/law/marijuana-legality-by-state
+auto_link_phrases:
+  - "marijuana laws by state"
+  - "states where weed is legal"
+  - "recreational marijuana states"
+  - "weed legal map 2026"
+  - "medical marijuana states"
+  - "marijuana possession limits by state"
+extremes_mode: topOnly
+extremes_title: "States That Have Legalized Recreational Marijuana"
+hero_image: "/images/rankings/law/marijuana-legality-by-state/marijuana-legality-by-state-hero.jpg"
+hero_image_alt: "Close-up of cannabis leaves photographed in natural light"
+hero_image_caption: "Marijuana law is now split into several tiers across the country, from full recreational legalization to complete prohibition. By June 2026, 24 states allow adult-use marijuana, while only four still ban it outright with no medical or decriminalized exception."
+
+author: "USA Symbol Team"
+date_published: "2026-06-20"
+date_modified: "2026-06-20"
+
+seo:
+  title: "Marijuana Laws by State 2026 | Map & Legal Status"
+  description: "Twenty-four states have legalized recreational marijuana. Medical access, possession limits, and decriminalization rules vary by state."
+
+page:
+  h1: "Marijuana Laws by State"
+
+  quick_answer:
+    - "24 states allow recreational marijuana as of 2026. Ohio opened retail dispensaries in August 2024, the most recent state to do so. Colorado and Washington were the first, both legalizing in November 2012."
+    - "New Jersey allows the highest recreational possession limit at 6 oz per person. Missouri and New York each permit 3 oz. Most states that have legalized cap public possession at 1 oz."
+    - "Idaho, Kansas, South Carolina, and Wyoming are the only 4 states where marijuana is fully illegal, with no medical, decriminalized, or CBD exception. Oklahoma allows medical patients to carry 3 oz on their person, the highest personal possession limit in any non-recreational state."
+
+  methodology: "Legal status reflects state law as of June 2026 via NORML and Marijuana Policy Project; possession limits shown are the primary adult-use on-person maximum. Federal law classifies marijuana as Schedule I regardless of state law, and this page is for informational purposes only and does not constitute legal advice."
+
+  sources:
+    - name: "NORML State Laws"
+      url: "https://norml.org/laws/"
+      description: "State-by-state marijuana law summaries, possession limits, and decriminalization status"
+    - name: "Marijuana Policy Project — State Policy"
+      url: "https://www.mpp.org/states/"
+      description: "Recreational and medical marijuana policy tracker by state"
+    - name: "National Conference of State Legislatures"
+      url: "https://www.ncsl.org/civil-and-criminal-justice/state-medical-marijuana-laws"
+      description: "State medical marijuana laws and program summaries"
+
+map:
+  title: "Marijuana Legal Status by State 2026"
+  image: "/images/rankings/law/marijuana-legality-by-state/marijuana-legality-by-state-map.webp"
+  image_alt: "U.S. map showing marijuana legal status by state in 2026: dark green for 24 recreational states, light green for medical and decriminalized, yellow for medical only, and red-grey for 4 fully illegal states"
+  caption: "24 states are dark green for full recreational legalization. The 4 fully illegal states — Idaho, Kansas, South Carolina, and Wyoming — are shown in grey-red. New Jersey leads all states with a 6-oz recreational possession limit."
+  disclaimer: "This map is for informational purposes only and does not constitute legal advice."
+  metric_key: legality_status
+  metric_label: "Legal Status"
+  name_key: state
+  color_scheme: categorical
+  color_scale: categorical
+  color_map:
+    "Fully Legal": "green"
+    "Medical and Decriminalized": "green-light"
+    "Medical Only": "yellow"
+    "Decriminalized": "yellow-dark"
+    "CBD Only": "orange"
+    "Fully Illegal": "red"
+  detail_keys:
+    - possession_limit_oz
+    - medical_legal
+    - recreational_legal
+
+table:
+  caption: "2026 Marijuana Legal Status by State"
+  note: "Possession limits shown are for adults in the applicable legal context. Medical limits represent the maximum a patient may possess or purchase per the specified period. Always verify local ordinances; cities and counties may add restrictions. Federal law classifies marijuana as Schedule I regardless of state law."
+  columns:
+    state: "State"
+    legality_status: "Legal Status"
+    recreational_legal: "Recreational"
+    medical_legal: "Medical"
+    decriminalized: "Decriminalized"
+    possession_limit_oz: "Possession Limit"
+    year_enacted: "Year Enacted"
+
+  metric_default: legality_status
+  sort_default: asc
+
+  rows:
+    # ── FULLY LEGAL — recreational + medical (rank 1) ─────────────────────────
+    - state: "Alaska"
+      state_slug: "alaska"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2015
+      note: "Ballot Measure 2 (2014), retail sales began February 2016. Limit: 1 oz in public, 4 oz at home."
+
+    - state: "Arizona"
+      state_slug: "arizona"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2020
+      note: "Proposition 207 (2020), retail sales began January 2021. Adults 21+ may possess 1 oz of flower or 5g of concentrate."
+
+    - state: "California"
+      state_slug: "california"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2016
+      note: "Proposition 64 (2016), retail sales began January 2018. Limit: 28.5g of flower or 8g of concentrate."
+
+    - state: "Colorado"
+      state_slug: "colorado"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2012
+      note: "Amendment 64 (2012), retail sales began January 1, 2014. First state to open legal recreational dispensaries. Limit: 1 oz in public, 2 oz at home."
+
+    - state: "Connecticut"
+      state_slug: "connecticut"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1.5 oz recreational"
+      year_enacted: 2021
+      note: "HB 6377 (2021), retail sales began January 10, 2023. Limit: 1.5 oz (42g) in public, 6 oz at home."
+
+    - state: "Delaware"
+      state_slug: "delaware"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2023
+      note: "HB 1 signed April 23, 2023; retail sales began 2024. Limit: 1 oz of flower or 12g of concentrate."
+
+    - state: "Illinois"
+      state_slug: "illinois"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2019
+      note: "HB 1438 (2019), retail sales began January 1, 2020. Illinois residents: 1 oz; non-residents: 0.5 oz. Concentrate: 5g residents, 2.5g non-residents."
+
+    - state: "Maine"
+      state_slug: "maine"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "2.5 oz recreational"
+      year_enacted: 2016
+      note: "Question 1 (2016), retail sales began October 2020. Limit: 2.5 oz in public (70g)."
+
+    - state: "Maryland"
+      state_slug: "maryland"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1.5 oz recreational"
+      year_enacted: 2022
+      note: "Question 4 (2022), personal use and retail sales effective July 1, 2023. Limit: 1.5 oz (42g) in public."
+
+    - state: "Massachusetts"
+      state_slug: "massachusetts"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2016
+      note: "Question 4 (2016), retail sales began November 2018. Limit: 1 oz in public, up to 10 oz at home."
+
+    - state: "Michigan"
+      state_slug: "michigan"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "2.5 oz recreational"
+      year_enacted: 2018
+      note: "Proposal 1 (2018), retail sales began December 2019. Limit: 2.5 oz in public, 10 oz at home."
+
+    - state: "Minnesota"
+      state_slug: "minnesota"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "2 oz recreational"
+      year_enacted: 2023
+      note: "HF 100 (2023), signed May 30, 2023; retail sales began February 1, 2024. Limit: 2 oz of flower, 8g of concentrate."
+
+    - state: "Missouri"
+      state_slug: "missouri"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "3 oz recreational"
+      year_enacted: 2022
+      note: "Amendment 3 (2022), retail sales began February 3, 2023. Limit: 3 oz of flower, 8g of concentrate, 3g of edible concentrate."
+
+    - state: "Montana"
+      state_slug: "montana"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2020
+      note: "CI-118 + I-190 (2020), retail sales began January 1, 2022. Limit: 1 oz of usable marijuana."
+
+    - state: "Nevada"
+      state_slug: "nevada"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2016
+      note: "Question 2 (2016), retail sales began July 1, 2017. Limit: 1 oz of flower or 3.5g of concentrate."
+
+    - state: "New Jersey"
+      state_slug: "new-jersey"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "6 oz recreational"
+      year_enacted: 2020
+      note: "Public Question No. 1 (2020), retail sales began April 21, 2022. Highest recreational possession limit in the country at 6 oz (170g)."
+
+    - state: "New Mexico"
+      state_slug: "new-mexico"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "2 oz recreational"
+      year_enacted: 2021
+      note: "HB 2 (2021), retail sales began June 26, 2021. Limit: 2 oz of flower, 16g of extract, 800mg edible THC."
+
+    - state: "New York"
+      state_slug: "new-york"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "3 oz recreational"
+      year_enacted: 2021
+      note: "Marihuana Regulation and Taxation Act (MRTA, 2021), retail sales began December 2022. Limit: 3 oz of flower, 24g of concentrate."
+
+    - state: "Ohio"
+      state_slug: "ohio"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "2.5 oz recreational"
+      year_enacted: 2023
+      note: "Issue 2 (November 2023), retail dispensaries opened August 6, 2024. Most recent state to open recreational sales. Limit: 2.5 oz of flower."
+
+    - state: "Oregon"
+      state_slug: "oregon"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2014
+      note: "Measure 91 (2014), retail sales began October 2015. Limit: 1 oz in public, 8 oz at home."
+
+    - state: "Rhode Island"
+      state_slug: "rhode-island"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2022
+      note: "HB 7593 (2022), retail sales began December 1, 2022. Limit: 1 oz of flower or 10g of concentrate."
+
+    - state: "Vermont"
+      state_slug: "vermont"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2018
+      note: "S. 54 (2018) legalized personal possession — first state to do so via legislature, not ballot initiative. Retail sales began October 1, 2022 under S. 18 (2020). Limit: 1 oz."
+
+    - state: "Virginia"
+      state_slug: "virginia"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2021
+      note: "HB 2312 (2021), personal possession legal July 1, 2021; retail sales began January 1, 2024. Limit: 1 oz."
+
+    - state: "Washington"
+      state_slug: "washington"
+      legality_status: "Fully Legal"
+      recreational_legal: "Yes"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "1 oz recreational"
+      year_enacted: 2012
+      note: "I-502 (2012), retail sales began July 8, 2014. One of the first two states to legalize recreational marijuana. Limit: 1 oz of usable marijuana."
+
+    # ── MEDICAL AND DECRIMINALIZED (rank 2) ───────────────────────────────────
+    - state: "Hawaii"
+      state_slug: "hawaii"
+      legality_status: "Medical and Decriminalized"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "4 oz medical (per 15 days)"
+      year_enacted: 2024
+      note: "Medical: SB 862 (2000). Decrim: SB 3095 (2024), effective January 1, 2025 — possession of up to 3g is a civil infraction only. Medical patients: up to 4 oz per 15-day dispensary period."
+
+    - state: "Louisiana"
+      state_slug: "louisiana"
+      legality_status: "Medical and Decriminalized"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "2.5 oz medical (per 14 days)"
+      year_enacted: 2021
+      note: "Medical: SB 143 (2015). Decrim: HB 652 (2021) — possession of up to 14g is a civil violation ($100 fine). Medical patients: up to 2.5 oz per 14-day dispensary purchase."
+
+    - state: "Mississippi"
+      state_slug: "mississippi"
+      legality_status: "Medical and Decriminalized"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "3 oz medical (per 14 days)"
+      year_enacted: 2022
+      note: "Medical: HB 2820 (2022). Decrim: SB 2577 (2014) — possession up to 30g civil fine. Medical patients: up to 3 oz per 14-day dispensary period."
+
+    - state: "Nebraska"
+      state_slug: "nebraska"
+      legality_status: "Medical and Decriminalized"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "5 oz medical (program est.)"
+      year_enacted: 2024
+      note: "Medical: Amendment 3 (November 2024). Decrim: Initiative 437 (November 2024). Program implementation underway as of 2026. Patient possession limit: 5 oz per the ballot measure text."
+
+    - state: "New Hampshire"
+      state_slug: "new-hampshire"
+      legality_status: "Medical and Decriminalized"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "2 oz medical (per 10 days)"
+      year_enacted: 2017
+      note: "Medical: RSA 126-X (HB 573, 2013). Decrim: HB 640 (2017) — possession under 3/4 oz is a civil violation ($100 fine). Medical patients: 2 oz per 10-day dispensary purchase."
+
+    - state: "North Dakota"
+      state_slug: "north-dakota"
+      legality_status: "Medical and Decriminalized"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "Yes"
+      possession_limit_oz: "3 oz medical (per 14 days)"
+      year_enacted: 2019
+      note: "Medical: Measure 5 (2016). Decrim: SB 2034 (2019) — possession under 0.5 oz civil infraction (up to $1,000 fine). Medical patients: up to 3 oz per 14-day period."
+
+    # ── MEDICAL ONLY (rank 3) ─────────────────────────────────────────────────
+    - state: "Alabama"
+      state_slug: "alabama"
+      legality_status: "Medical Only"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "No"
+      possession_limit_oz: "Varies by condition and product"
+      year_enacted: 2021
+      note: "SB 46 (Darren Wesley 'Ato' Hall Compassion Act, 2021). No smokeable flower; specific consumable forms only. Daily THC limits vary by condition and product type. Dispensaries opened 2023."
+
+    - state: "Arkansas"
+      state_slug: "arkansas"
+      legality_status: "Medical Only"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "No"
+      possession_limit_oz: "2.5 oz medical (per 14 days)"
+      year_enacted: 2016
+      note: "Issue 6 (2016). Patients may purchase up to 2.5 oz per 14-day dispensary period. Smokeable flower permitted."
+
+    - state: "Florida"
+      state_slug: "florida"
+      legality_status: "Medical Only"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "No"
+      possession_limit_oz: "2.5 oz medical (per 35 days)"
+      year_enacted: 2016
+      note: "Amendment 2 (2016). Patients may purchase up to 2.5 oz of smokeable flower per 35-day period. Amendment 3 (recreational legalization) received 55.9% in November 2024, falling short of Florida's required 60% supermajority."
+
+    - state: "Kentucky"
+      state_slug: "kentucky"
+      legality_status: "Medical Only"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "No"
+      possession_limit_oz: "30-day supply (physician-set)"
+      year_enacted: 2023
+      note: "SB 47 (2023), signed March 31, 2023; program launched 2024. Dispensaries issue up to a 30-day supply per physician certification; specific gram amounts are physician-determined."
+
+    - state: "Oklahoma"
+      state_slug: "oklahoma"
+      legality_status: "Medical Only"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "No"
+      possession_limit_oz: "3 oz medical (on person)"
+      year_enacted: 2018
+      note: "State Question 788 (2018). Most permissive medical possession limits in any non-recreational state: 3 oz on person, 6 oz at home, 1 oz of concentrate. No qualifying-condition list; physician discretion required."
+
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      legality_status: "Medical Only"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "No"
+      possession_limit_oz: "30-day supply per visit"
+      year_enacted: 2016
+      note: "SB 3 (2016). Patients may purchase a 30-day supply per dispensary visit. Smokeable flower permitted since 2021."
+
+    - state: "South Dakota"
+      state_slug: "south-dakota"
+      legality_status: "Medical Only"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "No"
+      possession_limit_oz: "3 oz medical (per 14 days)"
+      year_enacted: 2020
+      note: "Measure 26 (2020). Amendment A (which included recreational) also passed in 2020 but was struck down by the SD Supreme Court in April 2021. Medical program only remains. Patients: 3 oz per 14-day period."
+
+    - state: "Utah"
+      state_slug: "utah"
+      legality_status: "Medical Only"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "No"
+      possession_limit_oz: "4 oz medical (per 30 days)"
+      year_enacted: 2018
+      note: "Proposition 2 (2018), amended by Utah Medical Cannabis Act (HB 3001, 2018 special session). Patients may possess up to 4 oz per 30 days in flower equivalent."
+
+    - state: "West Virginia"
+      state_slug: "west-virginia"
+      legality_status: "Medical Only"
+      recreational_legal: "No"
+      medical_legal: "Yes"
+      decriminalized: "No"
+      possession_limit_oz: "30-day supply (physician-set)"
+      year_enacted: 2017
+      note: "SB 386 (2017). Patients may possess up to a 30-day supply. Dispensaries opened in 2021 after a slow program launch."
+
+    # ── DECRIMINALIZED ONLY (rank 4) ──────────────────────────────────────────
+    - state: "North Carolina"
+      state_slug: "north-carolina"
+      legality_status: "Decriminalized"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "Yes"
+      possession_limit_oz: "Under 0.5 oz (civil fine)"
+      year_enacted: 1977
+      note: "G.S. 90-95(d)(4) (1977). Possession of up to 0.5 oz is a civil infraction ($200 fine). Possession over 0.5 oz remains a misdemeanor or felony. No medical program."
+
+    # ── CBD ONLY (rank 5) ──────────────────────────────────────────────────────
+    - state: "Georgia"
+      state_slug: "georgia"
+      legality_status: "CBD Only"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "20 fl oz low-THC oil (with card)"
+      year_enacted: 2015
+      note: "HB 1 (Haleigh's Hope Act, 2015), expanded by HB 324 (2019). Registered patients may possess up to 20 fluid ounces of low-THC oil (max 5% THC). Licensed dispensaries began limited operations in 2020."
+
+    - state: "Indiana"
+      state_slug: "indiana"
+      legality_status: "CBD Only"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "Hemp-derived CBD only"
+      year_enacted: 2018
+      note: "SEA 516 (2018) plus 2018 Farm Bill alignment. Hemp and CBD products legal. Full marijuana — medical or recreational — remains a criminal offense."
+
+    - state: "Iowa"
+      state_slug: "iowa"
+      legality_status: "CBD Only"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "4.5g THC per 90 days"
+      year_enacted: 2014
+      note: "Iowa Medical Cannabidiol Act (SF 2360, 2014). One of the most restrictive programs: cardholders may purchase only 4.5g of THC per 90-day period from state-authorized dispensaries."
+
+    - state: "Tennessee"
+      state_slug: "tennessee"
+      legality_status: "CBD Only"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "Hemp-derived CBD only"
+      year_enacted: 2019
+      note: "SB 357 (2019) plus 2018 Farm Bill alignment. Hemp-derived CBD legal for general sale. Full marijuana possession is a criminal offense."
+
+    - state: "Texas"
+      state_slug: "texas"
+      legality_status: "CBD Only"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "0.5% THC limit (CUP patients)"
+      year_enacted: 2019
+      note: "Compassionate Use Program (HB 1325, 2019, expanding SB 339, 2015). Covers epilepsy, PTSD, cancer, ALS, and other qualifying conditions. Products capped at 0.5% THC. No smokeable flower. Full marijuana remains illegal."
+
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      legality_status: "CBD Only"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "Hemp-derived CBD only"
+      year_enacted: 2018
+      note: "Hemp and CBD legal under state law consistent with the 2018 Farm Bill. No medical marijuana program. Marijuana possession is a criminal offense (misdemeanor for first offense under 25g)."
+
+    # ── FULLY ILLEGAL (rank 6) ────────────────────────────────────────────────
+    - state: "Idaho"
+      state_slug: "idaho"
+      legality_status: "Fully Illegal"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "Illegal"
+      year_enacted: 1971
+      note: "Idaho Uniform Controlled Substances Act (1971). No medical program, no decriminalization. Any marijuana possession is a misdemeanor or felony. Idaho has historically maintained one of the strictest cannabis laws in the country."
+
+    - state: "Kansas"
+      state_slug: "kansas"
+      legality_status: "Fully Illegal"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "Illegal"
+      year_enacted: 1972
+      note: "Kansas Uniform Controlled Substances Act. No medical program, no decriminalization. Possession under 25g is a misdemeanor (up to 6 months); larger amounts carry felony charges."
+
+    - state: "South Carolina"
+      state_slug: "south-carolina"
+      legality_status: "Fully Illegal"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "Illegal"
+      year_enacted: 1971
+      note: "SC Code of Laws 44-53. No medical program, no decriminalization. First-offense possession of any amount is a misdemeanor (up to 30 days and $200 fine)."
+
+    - state: "Wyoming"
+      state_slug: "wyoming"
+      legality_status: "Fully Illegal"
+      recreational_legal: "No"
+      medical_legal: "No"
+      decriminalized: "No"
+      possession_limit_oz: "Illegal"
+      year_enacted: 1971
+      note: "Wyoming Controlled Substances Act. No medical program, no decriminalization. Possession under 3 oz is a misdemeanor (up to 12 months); 3 oz or more is a felony."
+
+compare:
+  metric_slug: marijuana-legalization
+  title: "Compare Marijuana Laws Between States"
+  description: "Choose two states and compare their legal status, possession limits, and medical access."
+  button_text: "Compare marijuana laws"
+  icon: "fa-solid fa-scale-balanced"
+  default_state_a: colorado
+  default_state_b: texas
+
+sections:
+  - id: "recreational-marijuana-states-2026"
+    icon: "fa-solid fa-leaf"
+    title: "States with Recreational Marijuana Legal in 2026"
+    paragraphs:
+      - "24 states allow recreational marijuana as of 2026. Ohio opened retail dispensaries August 6, 2024 under Issue 2, becoming the most recent state to do so. Colorado and Washington were first, both legalizing in November 2012."
+      - "10 states joined between 2020 and 2024: Arizona, Montana, and New Jersey in 2020, Connecticut, New Mexico, New York, and Virginia in 2021, Maryland and Rhode Island in 2022, Minnesota and Delaware in 2023, and Ohio in 2023. Vermont was the first to legalize through the legislature rather than a ballot initiative, doing so in 2018."
+      - "New Jersey allows the highest public possession limit at 6 oz. Missouri and New York each permit 3 oz. Maine, Michigan, and Ohio allow 2.5 oz. Most states cap on-person possession at 1 oz."
+
+  - id: "states-where-marijuana-is-still-illegal"
+    icon: "fa-solid fa-ban"
+    title: "States Where Marijuana Is Still Fully Illegal"
+    paragraphs:
+      - "Four states have no legal marijuana provision of any kind in 2026: Idaho, Kansas, South Carolina, and Wyoming. No medical program, decriminalization, or dispensary system exists in any of the four. Possession carries criminal charges in all four states."
+      - "North Carolina is not in this group despite having no medical program. Possession of less than 0.5 oz has carried only a $200 civil fine since 1977. Florida remains medical-only after Amendment 3, a recreational legalization measure, received 55.9% of the vote in November 2024, short of the state's required 60% supermajority."
+
+  - id: "medical-only-and-cbd-only-states"
+    icon: "fa-solid fa-hospital"
+    title: "Medical-Only and CBD-Only States"
+    paragraphs:
+      - "Nine states operate medical programs without recreational legalization: Alabama, Arkansas, Florida, Kentucky, Oklahoma, Pennsylvania, South Dakota, Utah, and West Virginia. Oklahoma's program allows patients to carry 3 oz on their person and 6 oz at home, the most permissive personal possession limits in any non-recreational state."
+      - "Six states permit only low-THC CBD products: Georgia, Indiana, Iowa, Tennessee, Texas, and Wisconsin. Iowa's program is the most restrictive: cardholders may purchase only 4.5g of THC per 90-day period. Texas's Compassionate Use Program covers specific qualifying conditions but caps product THC at 0.5%."
+
+visual_assets:
+  - id: colorado-cannabis-dispensary
+    src: /images/rankings/law/marijuana-legality-by-state/colorado-cannabis-dispensary.jpg
+    alt: Licensed cannabis dispensary in Colorado with green signage, the first state to open recreational marijuana retail sales in 2014
+    caption: Colorado became one of the first two states to legalize recreational marijuana in November 2012. Retail dispensaries opened January 1, 2014.
+    section: recreational-marijuana-states-2026
+    layout: full-width-tall
+
+  - id: wyoming-rural-highway
+    src: /images/rankings/law/marijuana-legality-by-state/wyoming-rural-highway.jpg
+    alt: Long highway cutting through open rural prairie in Wyoming
+    caption: Wyoming remains one of only four states where marijuana is still fully illegal in 2026. Along with Idaho, Kansas, and South Carolina, it has no recreational market, no medical system, and no decriminalized possession framework.
+    section: states-where-marijuana-is-still-illegal
+    layout: full-width-tall
+
+  - id: florida-medical-cannabis
+    src: /images/rankings/law/marijuana-legality-by-state/florida-medical-cannabis.jpg
+    alt: Florida Medical Marijuana Treatment Center dispensary exterior
+    caption: Florida voters passed medical marijuana under Amendment 2 (2016). A 2024 recreational legalization measure received 55.9% — just under the required 60% threshold.
+    section: medical-only-and-cbd-only-states
+    layout: full-width-tall
+
+faq:
+  - question: "What states have legalized recreational marijuana in 2026?"
+    answer: "24 states allow recreational marijuana in 2026: Alaska, Arizona, California, Colorado, Connecticut, Delaware, Illinois, Maine, Maryland, Massachusetts, Michigan, Minnesota, Missouri, Montana, Nevada, New Jersey, New Mexico, New York, Ohio, Oregon, Rhode Island, Vermont, Virginia, and Washington. Ohio was the most recent to open retail dispensaries, in August 2024."
+
+  - question: "Is marijuana legal in Texas in 2026?"
+    answer: "Recreational and standard medical marijuana remain illegal in Texas. The Compassionate Use Program (CUP) permits low-THC products capped at 0.5% THC for patients with qualifying conditions including epilepsy, PTSD, and cancer. No smokeable flower is allowed under the program."
+
+  - question: "Which states is marijuana fully illegal in?"
+    answer: "Idaho, Kansas, South Carolina, and Wyoming are the only 4 states with a complete prohibition in 2026. No medical, decriminalized, or CBD dispensary provision exists in any of the four. Possession carries criminal charges in all four."
+
+  - question: "What state allows the most marijuana to carry legally?"
+    answer: "New Jersey allows the highest recreational possession limit at 6 oz. Missouri and New York each permit 3 oz. For medical-only states, Oklahoma allows patients to carry 3 oz on their person and 6 oz at home — the highest personal possession limits in any non-recreational state."
+
+  - question: "Is medical marijuana legal in Florida?"
+    answer: "Yes. Amendment 2 (2016) legalized medical marijuana in Florida. Qualified patients may purchase up to 2.5 oz of smokeable flower per 35-day period. Recreational marijuana remains illegal after Amendment 3 failed with 55.9% of the vote in November 2024, short of the required 60% supermajority."
+
+  - question: "What is the difference between decriminalized and legal marijuana?"
+    answer: "Decriminalization removes criminal penalties for small-amount possession, replacing them with a civil fine, but does not allow legal purchase or sale at dispensaries. North Carolina has decriminalized possession of under 0.5 oz since 1977, carrying only a $200 fine, but has no medical program and no legal dispensaries. In fully legal states, adults 21+ can purchase from licensed retailers."
+
+related:
+  - title: "Gun Laws by State — Concealed Carry"
+    url: "/rankings/law/gun-laws-concealed-carry"
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"

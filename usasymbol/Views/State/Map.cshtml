@@ -130,10 +130,13 @@
         <section class="county-section" aria-labelledby="county-summary-title">
             <div>
                 <h2 id="county-summary-title" class="county-section-title">How many counties are in @Model.State.Name?</h2>
-                <p class="county-section-copy">
-                    @Model.State.Name has @Model.CountySummary.CountyCount counties. The list below includes each county, its FIPS code, and population.
-                </p>
-            </div>
+                    <p class="county-section-copy">
+                        @Model.State.Name has @Model.CountySummary.CountyCount counties. The list below includes each county, its FIPS code, and population.
+                    </p>
+                    <p class="county-section-copy">
+                        <a href="/states/@stateSlug/counties">Search the full @Model.State.Name county directory and open published county profiles →</a>
+                    </p>
+                </div>
 
             <div class="county-summary">
                 <article class="county-summary-card">

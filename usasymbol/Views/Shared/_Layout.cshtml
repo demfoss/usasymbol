@@ -23,6 +23,7 @@
     bool isSymbols = currentPath.StartsWith("/symbols");
     bool isAbout = currentPath.StartsWith("/about");
     bool isCompare = currentPath.StartsWith("/compare");
+    bool isStateMatch = currentPath.StartsWith("/state-match");
     bool isParks = currentPath.StartsWith("/national-parks");
     bool isSymbolDetail = System.Text.RegularExpressions.Regex.IsMatch(
         currentPath,
@@ -81,14 +82,14 @@
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" /></noscript>
 
     <link rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
           as="style" />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
           rel="stylesheet"
           media="print"
           onload="this.media='all'" />
     <noscript>
-        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
               rel="stylesheet" />
     </noscript>
 
@@ -96,6 +97,9 @@
     <link rel="stylesheet" href="~/css/editorial-typography.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/symbol-detail.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/page-data-hero.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/key-takeaways.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TBCLTSYXNQ"></script>
@@ -126,6 +130,7 @@
                     <div class="site-nav-links">
                         <a asp-controller="Home" asp-action="Index" class="@(isHome ? "nav-link is-active" : "nav-link")">Home</a>
                         <a asp-controller="State" asp-action="Listing" class="@(isStates ? "nav-link is-active" : "nav-link")">States</a>
+                        <a href="/state-match" class="@(isStateMatch ? "nav-link is-active" : "nav-link")">Match</a>
                         <a asp-controller="Symbol" asp-action="Categories" class="@(isSymbols ? "nav-link is-active nav-cta" : "nav-link nav-cta")">Symbols</a>
                         <a href="/national-parks" class="@(isParks ? "nav-link is-active" : "nav-link")">Parks</a>
                         <a href="/compare-states" class="@(isCompare ? "nav-link is-active" : "nav-link")">Compare</a>
@@ -147,6 +152,10 @@
                         </a>
                         <a asp-controller="State" asp-action="Listing" class="@(isStates ? "mobile-menu-link is-active" : "mobile-menu-link")">
                             <span>States</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                        <a href="/state-match" class="@(isStateMatch ? "mobile-menu-link is-active" : "mobile-menu-link")">
+                            <span>Find Your State</span>
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
                         <a asp-controller="Symbol" asp-action="Categories" class="@(isSymbols ? "mobile-menu-link is-active" : "mobile-menu-link")">
@@ -203,6 +212,9 @@
                         <h3>Explore</h3>
                         <ul class="site-footer-list">
                             <li><a asp-controller="State" asp-action="Listing">Browse States</a></li>
+                            <li><a href="/state-match">Find Your State</a></li>
+                            <li><a href="/county-match">Find Your County</a></li>
+                            <li><a href="/county-rankings">County Rankings</a></li>
                             <li><a asp-controller="Symbol" asp-action="Categories">Browse Symbols</a></li>
                             <li><a href="/compare-states">Compare States</a></li>
                             <li><a asp-controller="Quiz" asp-action="Index">Take a Quiz</a></li>

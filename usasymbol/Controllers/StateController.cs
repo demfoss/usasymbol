@@ -35,7 +35,7 @@ namespace USASymbol.Controllers
             ["MO"]=29,["MT"]=30,["NE"]=31,["NV"]=32,["NH"]=33,["NJ"]=34,["NM"]=35,["NY"]=36,
             ["NC"]=37,["ND"]=38,["OH"]=39,["OK"]=40,["OR"]=41,["PA"]=42,["RI"]=44,["SC"]=45,
             ["SD"]=46,["TN"]=47,["TX"]=48,["UT"]=49,["VT"]=50,["VA"]=51,["WA"]=53,["WV"]=54,
-            ["WI"]=55,["WY"]=56,
+            ["WI"]=55,["WY"]=56,["DC"]=11,
         };
 
         private static readonly Dictionary<int, string> _slugsByFips = new()
@@ -50,6 +50,7 @@ namespace USASymbol.Controllers
             [40]="oklahoma",[41]="oregon",[42]="pennsylvania",[44]="rhode-island",[45]="south-carolina",
             [46]="south-dakota",[47]="tennessee",[48]="texas",[49]="utah",[50]="vermont",
             [51]="virginia",[53]="washington",[54]="west-virginia",[55]="wisconsin",[56]="wyoming",
+            [11]="district-of-columbia",
         };
 
         [Route("states/{slug}/map")]
@@ -126,12 +127,54 @@ namespace USASymbol.Controllers
                 State = state,
                 Symbols = symbols,
                 RelatedStates = relatedStates.Where(s => s.Id != state.Id).Take(3).ToList(),
+                CompareStates = await BuildCompareStatesAsync(state),
                 HubContent = hubContent
             };
 
             ViewData["OgImage"] = state.FlagImageUrl;
 
             return View(model);
+        }
+
+        /// <summary>
+        /// Curated high-intent comparison partners first (migration corridors, popular pairs from
+        /// ComparisonService.TopComparisonPairs), topped up with same-region states so the Compare CTA
+        /// always has a handful of links even for states outside the curated pair list.
+        /// </summary>
+        private async Task<List<State>> BuildCompareStatesAsync(State state)
+        {
+            const int max = 6;
+            var allStates = await _stateService.GetAllStatesAsync();
+            var byslug = allStates.ToDictionary(s => s.Slug, s => s, StringComparer.OrdinalIgnoreCase);
+
+            var result = new List<State>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { state.Slug };
+
+            foreach (var (slug1, slug2) in ComparisonService.TopComparisonPairs)
+            {
+                if (result.Count >= max) break;
+
+                string? partnerSlug = null;
+                if (string.Equals(slug1, state.Slug, StringComparison.OrdinalIgnoreCase)) partnerSlug = slug2;
+                else if (string.Equals(slug2, state.Slug, StringComparison.OrdinalIgnoreCase)) partnerSlug = slug1;
+                if (partnerSlug == null || !seen.Add(partnerSlug)) continue;
+
+                if (byslug.TryGetValue(partnerSlug, out var partner))
+                    result.Add(partner);
+            }
+
+            if (result.Count < max)
+            {
+                var sameRegion = await _stateService.GetStatesByRegionAsync(state.Region ?? "");
+                foreach (var rs in sameRegion)
+                {
+                    if (result.Count >= max) break;
+                    if (!seen.Add(rs.Slug)) continue;
+                    result.Add(rs);
+                }
+            }
+
+            return result;
         }
 
         private List<StateCountyMapItem> BuildStateCountyMapItems(State state)

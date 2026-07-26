@@ -15,89 +15,107 @@
     var hasFaq = Model.HasFaq;
     var hasSections = Model.HasSections;
     var hasMethodology = !string.IsNullOrWhiteSpace(content?.Page?.Methodology) || Model.HasSources;
+    var showExploreMore = ViewData["ShowExploreMore"] as bool? ?? false;
+    var shellGridClass = showExploreMore
+        ? "page-flow-shell lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:justify-center lg:gap-8 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[240px_minmax(0,900px)_300px] 2xl:gap-4 relative"
+        : "page-flow-shell lg:grid lg:grid-cols-[300px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[300px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[300px_minmax(0,912px)] 2xl:gap-12 relative";
+    var tocSidebarClass = showExploreMore
+        ? "hidden xl:block relative h-full"
+        : "article-sidebar hidden lg:block relative h-full";
+    var slugRaw = (content?.Slug ?? "").Trim();
+    var slugWords = Regex.Replace(slugRaw, @"[-_]+", " ");
+    var slugTitle = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(slugWords.ToLowerInvariant());
+    var pageHeading = !string.IsNullOrWhiteSpace(content?.Page?.H1) ? content.Page.H1.Trim() : slugTitle;
+    var tableSectionHeading = !string.IsNullOrWhiteSpace(content?.Table?.Title)
+        ? content.Table.Title
+        : $"{pageHeading} Table";
+    var tableVM = Model.ToTableSection();
+    var numericInsights = RankingNumericInsightsViewModel.Create(content?.Table);
 }
 
-<div class="page-flow-shell lg:grid lg:grid-cols-[300px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[300px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[300px_minmax(0,912px)] 2xl:gap-12 relative">
-    <aside class="journey-sidebar hidden lg:block relative h-full" aria-label="Article sidebar">
-        <div class="pb-10">
+<div class="@shellGridClass">
+    <aside class="@tocSidebarClass" aria-label="Article sidebar">
+        <div class="pb-10 h-full">
             @await Html.PartialAsync("_TocSidebar", Model)
         </div>
     </aside>
 
-    <div class="min-w-0">
+    <div class="min-w-0 article-content">
         @if (Model.HasQuickAnswer)
         {
-            @await Html.PartialAsync("Pages/_QuickAnswer", Model, ViewData)
+            @await Html.PartialAsync("Pages/_QuickAnswerBigNumber", Model, ViewData)
         }
 
         @if (content?.Map != null)
         {
-            <section class="page-map-stage @(Model.HasQuickAnswer ? "page-map-stage--after-qa" : "")">
+            <div class="page-map-stage @(Model.HasQuickAnswer ? "page-map-stage--after-qa" : "")">
                 @await Html.RenderMapBlockAsync(content.Map, content?.Table, content?.Slug)
-            </section>
+            </div>
         }
 
-        <div class="journey-content relative content-flow site-content page-flow-content">
+        @if (numericInsights != null)
+        {
+            <div class="ranking-insights-before-table">
+                @await Html.PartialAsync("~/Views/Rankings/_RankingSuperlatives.cshtml", Model)
+            </div>
+        }
+
+        <div id="@rankingTableSectionId" class="ranking-primary-table scroll-mt-24">
+            <div class="ranking-primary-table__heading">
+                <h2>@tableSectionHeading</h2>
+
+                <div class="ranking-primary-table__meta">
+                    <span id="resultsCounter">@tableVM.TotalRowsCount entries</span>
+                    @if (Model.HasRows)
+                    {
+                        @await Html.PartialAsync("_PrintableWidget", Model)
+                    }
+                </div>
+            </div>
+
+            <div class="ranking-data-shell">
+                @await Html.PartialAsync("Components/Tables/_Controls", tableVM)
+                @await Html.PartialAsync("Components/Tables/_Cards", tableVM)
+                @await Html.PartialAsync("Components/Tables/_Table", tableVM)
+            </div>
+        </div>
+
+        @if (numericInsights != null)
+        {
+            <div class="ranking-insights-after-table">
+                @await Html.PartialAsync("~/Views/Rankings/_RankingDistribution.cshtml", Model)
+            </div>
+        }
+
+        <div class="article-content relative content-flow site-content page-flow-content">
             @if (content?.Heatmap != null)
             {
-                <section class="content-divider">
+                <div class="content-divider">
                     @await Component.InvokeAsync("HeatmapBlock", content.Heatmap)
-                </section>
+                </div>
             }
-
-            <section id="@rankingTableSectionId" class="scroll-mt-24 content-divider">
-                <div class="flex items-baseline justify-between gap-4">
-                    @{
-                        var slugRaw = (content?.Slug ?? "").Trim();
-                        var slugWords = Regex.Replace(slugRaw, @"[-_]+", " ");
-                        var slugTitle = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(slugWords.ToLowerInvariant());
-                        var pageHeading = !string.IsNullOrWhiteSpace(content?.Page?.H1) ? content.Page.H1.Trim() : slugTitle;
-                        var tableSectionHeading = !string.IsNullOrWhiteSpace(content?.Table?.Title)
-                            ? content.Table.Title
-                            : $"{pageHeading} Table";
-                        var tableVM = Model.ToTableSection();
-                    }
-
-                    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
-                        @tableSectionHeading
-                    </h2>
-
-                    <span id="resultsCounter" class="hidden md:inline shrink-0 text-sm text-slate-500">@tableVM.TotalRowsCount entries</span>
-                </div>
-
-                <div class="mt-5 overflow-hidden border border-slate-200/80 bg-white/40">
-                    @await Html.PartialAsync("Components/Tables/_Controls", tableVM)
-                    @await Html.PartialAsync("Components/Tables/_Cards", tableVM)
-                    @await Html.PartialAsync("Components/Tables/_Table", tableVM)
-                </div>
-
-                @if (Model.HasRows)
-                {
-                    @await Html.PartialAsync("_PrintableWidget", Model)
-                }
-            </section>
 
             @await Html.PartialAsync("~/Views/Rankings/_RankingExtremesBlock.cshtml", Model)
 
             @if (hasSections)
             {
-                <section id="@sectionsSectionId" class="scroll-mt-24 content-divider">
+                <div id="@sectionsSectionId" class="scroll-mt-24 content-divider">
                     @await Html.PartialAsync("Pages/_Sections", Model)
-                </section>
+                </div>
             }
 
             @if (hasFaq)
             {
-                <section id="@faqSectionId" class="scroll-mt-24 content-divider">
+                <div id="@faqSectionId" class="scroll-mt-24 content-divider">
                     @await Html.PartialAsync("_Faq", Model, ViewData)
-                </section>
+                </div>
             }
 
             @if (hasMethodology)
             {
-                <section id="@methodologySectionId" class="scroll-mt-24 content-divider">
+                <div id="@methodologySectionId" class="scroll-mt-24 content-divider">
                     @await Html.PartialAsync("Pages/_MethodologySources", Model, ViewData)
-                </section>
+                </div>
             }
 
             @if (content?.QuizPromo != null)
@@ -138,6 +156,22 @@
             <div class="content-divider">
                 @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
             </div>
+
+            @if (showExploreMore)
+            {
+                <div class="mt-12 lg:hidden">
+                    @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                </div>
+            }
         </div>
     </div>
+
+    @if (showExploreMore)
+    {
+        <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+            <div class="sidebar-content">
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+            </div>
+        </aside>
+    }
 </div>

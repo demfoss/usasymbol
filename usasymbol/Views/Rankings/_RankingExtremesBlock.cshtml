@@ -93,116 +93,90 @@
     // Helpers to pull common row fields
     string RowState(TableRow r) => r.GetString("state");
     string RowSlug(TableRow r)  => r.GetString("state_slug");
-    string RowAbbr(TableRow r)  => r.GetString("postal_code");
     string RowVal(TableRow r)   => r.Has(metricKey) ? r.Data[metricKey]?.ToString() ?? "" : "";
-    int    RowRank(TableRow r)  => r.Has("rank") ? r.Get<int>("rank") : 0;
 }
 
-<div class="content-divider">
-
-    @* ── Section heading ── *@
-    <div class="mb-6">
+<div class="content-divider ranking-extremes">
+    <div class="ranking-extremes__heading">
         @if (!string.IsNullOrWhiteSpace(extremesTitle))
         {
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">@extremesTitle</h2>
+            <h2>@extremesTitle</h2>
         }
         else if (showTop && showBottom)
         {
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">Highest and Lowest @metricLabel by State</h2>
+            <h2>Highest and Lowest @metricLabel by State</h2>
         }
         else if (showTop)
         {
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">Top 10 States by @metricLabel</h2>
+            <h2>Top 10 States by @metricLabel</h2>
         }
         else
         {
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">Bottom 10 States by @metricLabel</h2>
+            <h2>Bottom 10 States by @metricLabel</h2>
         }
     </div>
 
     @* ── Highlight cards ── *@
-    <div class="grid @(showTop && showBottom ? "sm:grid-cols-2" : "sm:grid-cols-1 max-w-xs") gap-4 mb-7">
+    <div class="ranking-extremes__cards @(showTop && showBottom ? "ranking-extremes__cards--paired" : "")">
 
         @if (showTop && topCard.Row != null)
         {
             var slug = RowSlug(topCard.Row);
-            var abbr = RowAbbr(topCard.Row);
-            var rank = RowRank(topCard.Row);
-            <div class="rounded-2xl border border-gray-200 bg-white p-5">
-                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400 mb-2">Highest</p>
-                <div class="text-3xl font-extrabold text-slate-900 mb-3 leading-none">@RowVal(topCard.Row)</div>
-                <div class="flex items-center gap-2">
+            <article class="ranking-extreme-card">
+                <p class="ranking-extreme-card__label">Highest</p>
+                <p class="ranking-extreme-card__value">@RowVal(topCard.Row)</p>
+                <a class="ranking-extreme-card__state" href="/states/@slug">
                     <img src="/images/flags/@slug/flag.webp" alt="@RowState(topCard.Row) flag"
-                         class="w-8 h-[21px] object-cover rounded-sm shadow-sm shrink-0"
+                         width="32" height="21"
                          onerror="this.style.display='none'" loading="lazy" />
-                    <div>
-                        <span class="text-sm font-semibold text-slate-800">@RowState(topCard.Row)</span>
-                        @if (rank > 0)
-                        {
-                            <span class="ml-1.5 text-[11px] text-slate-400">#@rank</span>
-                        }
-                    </div>
-                </div>
-            </div>
+                    <span>@RowState(topCard.Row)</span>
+                </a>
+            </article>
         }
 
         @if (showBottom && bottomCard.Row != null)
         {
             var slug = RowSlug(bottomCard.Row);
-            var abbr = RowAbbr(bottomCard.Row);
-            var rank = RowRank(bottomCard.Row);
-            <div class="rounded-2xl border border-gray-200 bg-white p-5">
-                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400 mb-2">Lowest</p>
-                <div class="text-3xl font-extrabold text-slate-900 mb-3 leading-none">@RowVal(bottomCard.Row)</div>
-                <div class="flex items-center gap-2">
+            <article class="ranking-extreme-card">
+                <p class="ranking-extreme-card__label">Lowest</p>
+                <p class="ranking-extreme-card__value">@RowVal(bottomCard.Row)</p>
+                <a class="ranking-extreme-card__state" href="/states/@slug">
                     <img src="/images/flags/@slug/flag.webp" alt="@RowState(bottomCard.Row) flag"
-                         class="w-8 h-[21px] object-cover rounded-sm shadow-sm shrink-0"
+                         width="32" height="21"
                          onerror="this.style.display='none'" loading="lazy" />
-                    <div>
-                        <span class="text-sm font-semibold text-slate-800">@RowState(bottomCard.Row)</span>
-                        @if (rank > 0)
-                        {
-                            <span class="ml-1.5 text-[11px] text-slate-400">#@rank</span>
-                        }
-                    </div>
-                </div>
-            </div>
+                    <span>@RowState(bottomCard.Row)</span>
+                </a>
+            </article>
         }
 
     </div>
 
     @* ── Bar charts ── *@
-    <div class="grid @(showTop && showBottom ? "md:grid-cols-2" : "grid-cols-1") gap-5">
+    <div class="ranking-extremes__charts @(showTop && showBottom ? "ranking-extremes__charts--paired" : "")">
 
         @* Top chart *@
         @if (showTop && topRows.Any())
         {
-            <div class="rounded-2xl border border-gray-200 overflow-hidden">
-                <div class="px-5 py-3 bg-gray-50 border-b border-gray-100">
-                    <h3 class="text-sm font-semibold text-slate-700">
+            <div class="ranking-extreme-list">
+                <div class="ranking-extreme-list__header">
+                    <h3>
                         @(showBottom ? "Top 10 Highest" : "Top 10") — @metricLabel
                     </h3>
                 </div>
-                <div class="divide-y divide-gray-50">
+                <div class="ranking-extreme-list__rows">
                     @foreach (var (row, val) in topRows)
                     {
                         var barW = F(TopBarPct(val!.Value));
-                        var rank = RowRank(row);
-                        var abbr = RowAbbr(row);
                         var slug = RowSlug(row);
-                        <div class="flex items-center gap-3 px-4 py-2">
-                            @if (rank > 0)
-                            {
-                                <span class="text-[11px] text-slate-400 w-5 text-right shrink-0 tabular-nums">#@rank</span>
-                            }
+                        <div class="ranking-extreme-row">
                             <img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
-                                 class="w-7 h-[18px] object-cover rounded-sm shadow-sm shrink-0"
-                                 onerror="this.replaceWith(document.createTextNode('@abbr'))" loading="lazy" />
-                            <span class="text-sm text-slate-800 w-28 shrink-0 truncate">@RowState(row)</span>
-                            <div class="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden min-w-0">
-                                <div class="h-full rounded-sm bg-slate-400" style="width: @barW%"></div>
+                                 width="28" height="18"
+                                 onerror="this.style.visibility='hidden'" loading="lazy" />
+                            <a href="/states/@slug" class="ranking-extreme-row__state">@RowState(row)</a>
+                            <div class="ranking-extreme-row__track" aria-hidden="true">
+                                <span style="width:@barW%"></span>
                             </div>
-                            <span class="text-xs text-slate-700 w-16 text-right shrink-0 tabular-nums">@RowVal(row)</span>
+                            <span class="ranking-extreme-row__value">@RowVal(row)</span>
                         </div>
                     }
                 </div>
@@ -212,32 +186,26 @@
         @* Bottom chart *@
         @if (showBottom && bottomRows.Any())
         {
-            <div class="rounded-2xl border border-gray-200 overflow-hidden">
-                <div class="px-5 py-3 bg-gray-50 border-b border-gray-100">
-                    <h3 class="text-sm font-semibold text-slate-700">
+            <div class="ranking-extreme-list">
+                <div class="ranking-extreme-list__header">
+                    <h3>
                         Top 10 Lowest — @metricLabel
                     </h3>
                 </div>
-                <div class="divide-y divide-gray-50">
+                <div class="ranking-extreme-list__rows">
                     @foreach (var (row, val) in Enumerable.Reverse(bottomRows))
                     {
                         var barW = F(BotBarPct(val!.Value));
-                        var rank = RowRank(row);
-                        var abbr = RowAbbr(row);
                         var slug = RowSlug(row);
-                        <div class="flex items-center gap-3 px-4 py-2">
-                            @if (rank > 0)
-                            {
-                                <span class="text-[11px] text-slate-400 w-5 text-right shrink-0 tabular-nums">#@rank</span>
-                            }
+                        <div class="ranking-extreme-row">
                             <img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
-                                 class="w-7 h-[18px] object-cover rounded-sm shadow-sm shrink-0"
-                                 onerror="this.replaceWith(document.createTextNode('@abbr'))" loading="lazy" />
-                            <span class="text-sm text-slate-800 w-28 shrink-0 truncate">@RowState(row)</span>
-                            <div class="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden min-w-0">
-                                <div class="h-full rounded-sm bg-slate-400" style="width: @barW%"></div>
+                                 width="28" height="18"
+                                 onerror="this.style.visibility='hidden'" loading="lazy" />
+                            <a href="/states/@slug" class="ranking-extreme-row__state">@RowState(row)</a>
+                            <div class="ranking-extreme-row__track" aria-hidden="true">
+                                <span style="width:@barW%"></span>
                             </div>
-                            <span class="text-xs text-slate-700 w-16 text-right shrink-0 tabular-nums">@RowVal(row)</span>
+                            <span class="ranking-extreme-row__value">@RowVal(row)</span>
                         </div>
                     }
                 </div>
@@ -245,5 +213,4 @@
         }
 
     </div>
-
 </div>

@@ -1,0 +1,443 @@
+@model StateLivingViewModel
+@inject IImageUrlService Images
+@using System.Text.Json
+@{
+    var state = Model.State;
+    var isDistrict = string.Equals(state.Abbreviation, "DC", StringComparison.OrdinalIgnoreCase);
+    var structuredData = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@graph"] = new object[]
+        {
+            new Dictionary<string, object?>
+            {
+                ["@type"] = "WebPage",
+                ["name"] = $"Living in {state.Name}",
+                ["description"] = ViewData["Description"],
+                ["url"] = $"https://usasymbol.com/states/{state.Slug}/living",
+                ["dateModified"] = "2026-07-23",
+                ["about"] = new Dictionary<string, object?>
+                {
+                    ["@type"] = "AdministrativeArea",
+                    ["name"] = state.Name
+                }
+            },
+            new Dictionary<string, object?>
+            {
+                ["@type"] = "FAQPage",
+                ["mainEntity"] = Model.Faqs.Select(faq => new Dictionary<string, object?>
+                {
+                    ["@type"] = "Question",
+                    ["name"] = faq.Question,
+                    ["acceptedAnswer"] = new Dictionary<string, object?>
+                    {
+                        ["@type"] = "Answer",
+                        ["text"] = faq.Answer
+                    }
+                }).ToList()
+            }
+        }
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/state-living.css" asp-append-version="true" />
+}
+
+<nav class="sl-breadcrumb" aria-label="Breadcrumb">
+    <div class="sl-container">
+        <a href="/">Home</a><span>/</span><a href="/states/living">Living guides</a><span>/</span><strong>@state.Name</strong>
+    </div>
+</nav>
+
+<main>
+    <section class="sl-hero">
+        <div class="sl-container sl-hero-grid">
+            <div class="sl-hero-copy">
+                <p class="sl-kicker">Moving guide · statewide data</p>
+                <h1>Living in @state.Name</h1>
+                <p class="sl-deck">Cost of living, quality of life, pros and cons—shown against the full U.S. dataset.</p>
+                <div class="sl-verdict">
+                    <span>Quick read</span>
+                    <p>@Model.Verdict</p>
+                </div>
+                <div class="sl-hero-actions">
+                    <a class="sl-button sl-button-primary" href="/state-match?state=@state.Slug">
+                        <i class="fa-solid fa-sliders" aria-hidden="true"></i> Match to my priorities
+                    </a>
+                    <a class="sl-button sl-button-secondary" href="#key-metrics">See the numbers</a>
+                    @if (!isDistrict)
+                    {
+                        <a class="sl-button sl-button-secondary" href="/county-match?state=@state.Slug">Find a county</a>
+                    }
+                </div>
+            </div>
+            <aside class="sl-identity" aria-label="@state.Name quick facts">
+                <img src="@Images.Hero(Model.FlagImageUrl)" alt="@state.Name flag" width="320" height="204" />
+                <dl>
+                    <div><dt>Capital</dt><dd>@state.Capital</dd></div>
+                    <div><dt>Region</dt><dd>@(state.Region ?? "United States")</dd></div>
+                    @if (state.Population.HasValue)
+                    {
+                        <div><dt>Population</dt><dd>@state.Population.Value.ToString("N0")</dd></div>
+                    }
+                    <div><dt>Abbreviation</dt><dd>@state.Abbreviation</dd></div>
+                </dl>
+            </aside>
+        </div>
+    </section>
+
+    <nav class="sl-jump" aria-label="On this page">
+        <div class="sl-container">
+            <a href="#overview">Overview</a>
+            <a href="#moving">Moving</a>
+            <a href="#key-metrics">Key metrics</a>
+            <a href="#pros-cons">Pros & cons</a>
+            <a href="#all-metrics">All data</a>
+            @if (Model.CountyHighlights is not null) { <a href="#counties">Counties</a> }
+            @if (Model.Photos.Any()) { <a href="#outdoors">Outdoors</a> }
+            <a href="#faq">FAQ</a>
+            <a href="#methodology">Methodology</a>
+        </div>
+    </nav>
+
+    <div class="sl-container sl-content">
+        <section id="overview" class="sl-section sl-overview">
+            <div>
+                <p class="sl-eyebrow">Is @state.Name a good place to live?</p>
+                <h2>The short answer</h2>
+            </div>
+            <p>@Model.Overview</p>
+        </section>
+
+        <section id="moving" class="sl-section">
+            <div class="sl-section-head">
+                <div>
+                    <p class="sl-eyebrow">Relocation questions</p>
+                    <h2>Moving to @state.Name: what to know</h2>
+                </div>
+                <p>Three practical readings of the same statewide data—fit, household costs, and the first local checks to make.</p>
+            </div>
+            <div class="sl-editorial-grid">
+                <article>
+                    <i class="fa-solid fa-truck-moving" aria-hidden="true"></i>
+                    <h3>Before moving</h3>
+                    <p>@Model.MovingOverview</p>
+                </article>
+                <article>
+                    <i class="fa-solid fa-wallet" aria-hidden="true"></i>
+                    <h3>Cost of living in @state.Name</h3>
+                    <p>@Model.CostOfLivingSummary</p>
+                </article>
+                <article>
+                    <i class="fa-solid fa-user-check" aria-hidden="true"></i>
+                    <h3>Who @state.Name may suit</h3>
+                    <p>@Model.BestForSummary</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="key-metrics" class="sl-section">
+            <div class="sl-section-head">
+                <div>
+                    <p class="sl-eyebrow">At a glance</p>
+                    <h2>Where @state.Name sits in the U.S. range</h2>
+                </div>
+                <p>Each marker shows the raw value from the minimum to maximum in our database. Rank follows whether higher or lower is better.</p>
+            </div>
+
+            <div class="sl-metric-grid">
+                @foreach (var metric in Model.KeyMetrics)
+                {
+                    <article class="sl-metric-card">
+                        <div class="sl-metric-top">
+                            <h3>@metric.Name</h3>
+                            <strong>@metric.DisplayValue</strong>
+                        </div>
+                        <div class="sl-range" aria-label="@metric.Name range position">
+                            <i style="left:@metric.RangePosition.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%"></i>
+                        </div>
+                        <div class="sl-range-labels">
+                            <span>@FormatRange(metric.MinValue)</span>
+                            <span>#@metric.Rank of @metric.AvailableStateCount</span>
+                            <span>@FormatRange(metric.MaxValue)</span>
+                        </div>
+                        <p>@metric.Description</p>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <section id="pros-cons" class="sl-section">
+            <div class="sl-section-head">
+                <div>
+                    <p class="sl-eyebrow">Decision support</p>
+                    <h2>Pros and cons of living in @state.Name</h2>
+                </div>
+                <p>These are data-based strengths and trade-offs, not a substitute for checking the city or county where you plan to live.</p>
+            </div>
+            <div class="sl-procon-grid">
+                <article class="sl-procon sl-pro">
+                    <h3><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Potential advantages</h3>
+                    <ul>
+                        @foreach (var point in Model.Pros) { <li>@point</li> }
+                    </ul>
+                </article>
+                <article class="sl-procon sl-con">
+                    <h3><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> Trade-offs to check</h3>
+                    <ul>
+                        @foreach (var point in Model.Cons) { <li>@point</li> }
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section id="all-metrics" class="sl-section">
+            <div class="sl-section-head">
+                <div>
+                    <p class="sl-eyebrow">Detailed data</p>
+                    <h2>@state.Name living metrics</h2>
+                </div>
+                <p>Open only the category you need. Sources link to the underlying publisher where available.</p>
+            </div>
+            <div class="sl-accordion">
+                @foreach (var group in Model.MetricGroups)
+                {
+                    <details>
+                        <summary>
+                            <span><i class="@group.Icon" aria-hidden="true"></i>@group.Name</span>
+                            <small>@group.Metrics.Count metrics</small>
+                        </summary>
+                        <div class="sl-table-wrap">
+                            <table>
+                                <thead><tr><th>Metric</th><th>@state.Name</th><th>U.S. rank</th><th>Source</th></tr></thead>
+                                <tbody>
+                                    @foreach (var metric in group.Metrics)
+                                    {
+                                        <tr>
+                                            <td><strong>@metric.Name</strong><small>@metric.Description</small></td>
+                                            <td>@metric.DisplayValue</td>
+                                            <td>#@metric.Rank of @metric.AvailableStateCount</td>
+                                            <td>
+                                                @if (!string.IsNullOrWhiteSpace(metric.SourceUrl))
+                                                {
+                                                    <a href="@metric.SourceUrl" rel="noopener noreferrer">@(!string.IsNullOrWhiteSpace(metric.SourceName) ? metric.SourceName : "Source")</a>
+                                                }
+                                                else
+                                                {
+                                                    <span>@(!string.IsNullOrWhiteSpace(metric.SourceName) ? metric.SourceName : "Methodology")</span>
+                                                }
+                                                @if (!string.IsNullOrWhiteSpace(metric.DataYear))
+                                                {
+                                                    <small>@metric.DataYear</small>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                }
+            </div>
+        </section>
+
+        @if (Model.CountyHighlights is not null)
+        {
+            <section id="counties" class="sl-section">
+                <div class="sl-section-head">
+                    <div>
+                        <p class="sl-eyebrow">Local differences inside the state</p>
+                        <h2>Notable @state.Name counties by metric</h2>
+                    </div>
+                    <p>Top data rows among @Model.CountyHighlights.CountyCount county equivalents. Open County Match to set your own priorities.</p>
+                </div>
+                <div class="sl-county-highlights">
+                    @foreach (var ranking in Model.CountyHighlights.Sections)
+                    {
+                        <article>
+                            <div><i class="@ranking.Icon" aria-hidden="true"></i><h3>@ranking.Title</h3></div>
+                            <ol>
+                                @foreach (var county in ranking.Counties)
+                                {
+                                    var href = county.Published
+                                        ? $"/states/{county.StateSlug}/counties/{county.Slug}"
+                                        : $"/states/{county.StateSlug}/counties";
+                                    <li><a href="@href"><span><b>@county.Rank</b><strong>@county.Name</strong></span><small>@county.DisplayValue</small></a></li>
+                                }
+                            </ol>
+                        </article>
+                    }
+                </div>
+                <div class="sl-county-actions">
+                    <a class="sl-button sl-button-primary" href="/county-match?state=@state.Slug">Match @state.Name counties</a>
+                    <a class="sl-button sl-button-secondary" href="/county-rankings?state=@state.Slug">See county rankings</a>
+                    <a class="sl-button sl-button-secondary" href="/states/@state.Slug/counties">All @state.Name counties and map</a>
+                </div>
+            </section>
+        }
+
+        @if (Model.Photos.Any())
+        {
+            <section id="outdoors" class="sl-section">
+                <div class="sl-section-head">
+                    <div>
+                        <p class="sl-eyebrow">Nature & places</p>
+                        <h2>A look at @state.Name</h2>
+                    </div>
+                    @if (Model.Parks.Any())
+                    {
+                        <p>@Model.Parks.Count national park@(Model.Parks.Count == 1 ? "" : "s") connected to the state in our local park library. This is a real inventory, not a synthetic nature score.</p>
+                    }
+                    else
+                    {
+                        <p>Location-verified scenery from the state, stored locally with photographer and source attribution.</p>
+                    }
+                </div>
+                <div class="sl-gallery">
+                    @foreach (var photo in Model.Photos)
+                    {
+                        <figure>
+                            <a href="@photo.LocationUrl">
+                                <img src="@Images.Card(photo.ImageUrl, 900)" alt="@photo.Alt" loading="lazy" width="900" height="600" />
+                            </a>
+                            <figcaption>
+                                <a href="@photo.LocationUrl">@photo.LocationName</a>
+                                @if (!string.IsNullOrWhiteSpace(photo.Credit))
+                                {
+                                    @if (!string.IsNullOrWhiteSpace(photo.CreditUrl))
+                                    {
+                                        <a class="sl-photo-credit" href="@photo.CreditUrl" rel="noopener noreferrer">@photo.Credit</a>
+                                    }
+                                    else
+                                    {
+                                        <span>@photo.Credit</span>
+                                    }
+                                }
+                            </figcaption>
+                        </figure>
+                    }
+                </div>
+            </section>
+        }
+
+        <section id="faq" class="sl-section">
+            <div class="sl-section-head">
+                <div>
+                    <p class="sl-eyebrow">Common relocation questions</p>
+                    <h2>Living in @state.Name FAQ</h2>
+                </div>
+                <p>Direct answers based on the same sourced metrics used in the tables above.</p>
+            </div>
+            <div class="sl-faq">
+                @foreach (var faq in Model.Faqs)
+                {
+                    <details>
+                        <summary>@faq.Question <i class="fa-solid fa-plus" aria-hidden="true"></i></summary>
+                        <p>@faq.Answer</p>
+                    </details>
+                }
+            </div>
+        </section>
+
+        <section id="methodology" class="sl-section">
+            <div class="sl-section-head">
+                <div>
+                    <p class="sl-eyebrow">Data notes</p>
+                    <h2>Methodology and sources</h2>
+                </div>
+                <p>Source inventory reviewed @Model.DataReviewedOn. Each metric keeps its own publication period because the underlying datasets update on different schedules.</p>
+            </div>
+            <div class="sl-method-grid">
+                <article>
+                    <span>01</span>
+                    <h3>Statewide comparison</h3>
+                    <p>Every value represents the whole state. City, county, neighborhood, household, and demographic conditions can differ from the statewide figure.</p>
+                </article>
+                <article>
+                    <span>02</span>
+                    <h3>Ranges and ranks</h3>
+                    <p>The bar runs from the minimum to maximum available value in the 50-state database. Rank direction follows the metric: for example, lower costs and lower crime rank better.</p>
+                </article>
+                <article>
+                    <span>03</span>
+                    <h3>No hidden overall score</h3>
+                    <p>Pros and trade-offs use relative metric standings. The page does not claim one universal “best” state; State Match lets the user choose the weights.</p>
+                </article>
+            </div>
+            <details class="sl-sources">
+                <summary>
+                    <span><i class="fa-solid fa-database" aria-hidden="true"></i> View source inventory</span>
+                    <small>@Model.Sources.Count source records</small>
+                </summary>
+                <div class="sl-source-list">
+                    @foreach (var source in Model.Sources)
+                    {
+                        <div>
+                            <p>
+                                @if (!string.IsNullOrWhiteSpace(source.Url))
+                                {
+                                    <a href="@source.Url" rel="noopener noreferrer">@source.Name</a>
+                                }
+                                else
+                                {
+                                    <strong>@source.Name</strong>
+                                }
+                            </p>
+                            <span>@source.DataPeriod</span>
+                        </div>
+                    }
+                </div>
+            </details>
+        </section>
+
+        <section class="sl-next">
+            <div>
+                <p class="sl-eyebrow">Keep exploring</p>
+                <h2>Put @state.Name in context</h2>
+                <p>Browse all living guides, weight the metrics in State Match, compare two states, open statewide rankings, or switch to @state.Name’s symbols and identity guide.</p>
+            </div>
+            <div class="sl-next-actions">
+                <a class="sl-button sl-button-secondary" href="/states/living">All living guides</a>
+                <a class="sl-button sl-button-primary" href="/state-match?state=@state.Slug">Open State Match</a>
+                <a class="sl-button sl-button-secondary" href="/compare-states">Compare states</a>
+                <a class="sl-button sl-button-secondary" href="/rankings">State rankings</a>
+                @if (!isDistrict)
+                {
+                    <a class="sl-button sl-button-secondary" href="/states/@state.Slug/counties">Explore @state.Name counties</a>
+                }
+                <a class="sl-button sl-button-secondary" href="/states/@state.Slug">@state.Name symbols & facts</a>
+            </div>
+        </section>
+
+        @if (Model.RelatedStates.Any())
+        {
+            <section class="sl-related">
+                <h2>Compare nearby options</h2>
+                <div>
+                    @foreach (var related in Model.RelatedStates)
+                    {
+                        <a href="/states/@related.Slug/living">
+                            <img src="@Images.Thumb(related.FlagImageUrl)" alt="" width="38" height="25" loading="lazy" />
+                            <span>Living in @related.Name</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        <p class="sl-note">Statewide figures can hide major local differences. Rankings use available states in each metric, so the denominator may vary. Source inventory reviewed @Model.DataReviewedOn; individual data periods are shown beside each source.</p>
+    </div>
+</main>
+
+<script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(structuredData))</script>
+
+@functions {
+    static string FormatRange(double value)
+    {
+        var absolute = Math.Abs(value);
+        if (absolute >= 1_000_000) return $"{value / 1_000_000:0.#}m";
+        if (absolute >= 1_000) return $"{value / 1_000:0.#}k";
+        return value.ToString(absolute < 10 ? "0.##" : "0.#");
+    }
+}

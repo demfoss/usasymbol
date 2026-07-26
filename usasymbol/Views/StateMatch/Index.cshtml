@@ -1,0 +1,211 @@
+@model USASymbol.Models.ViewModels.StateMatchPageViewModel
+@using System.Text.Json
+
+@{
+    var jsonOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    var placesJson = JsonSerializer.Serialize(Model.Places, jsonOptions);
+    var metricsJson = JsonSerializer.Serialize(Model.MetricOptions, jsonOptions);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/state-match.css" asp-append-version="true" />
+}
+
+<div class="sm-page">
+    <section class="sm-hero">
+        <div class="sm-shell sm-hero-grid">
+            <div>
+                <nav class="sm-breadcrumb" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    <span aria-current="page">State Match</span>
+                </nav>
+                <p class="sm-eyebrow"><span></span> Interactive relocation planner</p>
+                <h1>Find the state that <em>fits your life.</em></h1>
+                <p class="sm-lede">
+                    Tell us what matters most. We score every state using the same sourced data
+                    that powers USA Symbol comparisons, then show where each state stands.
+                </p>
+                <a class="sm-hero-guide-link" href="/states/living">
+                    Browse all 50 state living guides
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+            <div class="sm-hero-note">
+                <span class="sm-note-number">01</span>
+                <div>
+                    <strong>Set your priorities</strong>
+                    <p>Move a slider higher when that factor matters more. Zero removes it from your score.</p>
+                </div>
+                <span class="sm-note-number">02</span>
+                <div>
+                    <strong>Explore your matches</strong>
+                    <p>Use the map or ranked list to inspect the raw numbers behind every result.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="sm-shell sm-workspace">
+        <aside class="sm-controls" aria-labelledby="sm-controls-title">
+            <div class="sm-controls-head">
+                <div>
+                    <p class="sm-section-kicker">Your priorities</p>
+                    <h2 id="sm-controls-title">What matters to you?</h2>
+                </div>
+                <button class="sm-icon-button" id="sm-mobile-toggle" type="button" aria-expanded="true" aria-controls="sm-controls-body">
+                    <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                    <span class="sr-only">Toggle priorities</span>
+                </button>
+            </div>
+
+            <div id="sm-controls-body">
+                <div class="sm-presets" aria-label="Quick priority presets">
+                    <button type="button" class="sm-preset is-active" data-preset="balanced">Balanced</button>
+                    <button type="button" class="sm-preset" data-preset="budget">Budget</button>
+                    <button type="button" class="sm-preset" data-preset="career">Career</button>
+                    <button type="button" class="sm-preset" data-preset="family">Family</button>
+                    <button type="button" class="sm-preset" data-preset="warm">Warmth</button>
+                </div>
+
+                <div class="sm-sliders" id="sm-sliders"></div>
+
+                <div class="sm-controls-actions">
+                    <button type="button" class="sm-reset" id="sm-reset">
+                        <i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i>
+                        Reset
+                    </button>
+                    <button type="button" class="sm-share" id="sm-share">
+                        <i class="fa-solid fa-link" aria-hidden="true"></i>
+                        Copy result link
+                    </button>
+                </div>
+                <p class="sm-share-status" id="sm-share-status" role="status" aria-live="polite"></p>
+            </div>
+        </aside>
+
+        <div class="sm-results">
+            <section class="sm-map-card" aria-labelledby="sm-map-title">
+                <div class="sm-card-head">
+                    <div>
+                        <p class="sm-section-kicker">Live results</p>
+                        <h2 id="sm-map-title">Your state match map</h2>
+                    </div>
+                    <div class="sm-legend" aria-label="Map score legend">
+                        <span><i class="is-best"></i> Strong</span>
+                        <span><i class="is-mid"></i> Possible</span>
+                        <span><i class="is-low"></i> Weak</span>
+                    </div>
+                </div>
+
+                <div class="sm-map-wrap" id="sm-map-wrap">
+                    <div class="sm-map-loading" id="sm-map-loading">
+                        <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+                        Loading map
+                    </div>
+                    <svg id="sm-map" viewBox="0 0 960 600" role="img" aria-label="Interactive map of state match scores"></svg>
+                    <div class="sm-map-tooltip" id="sm-map-tooltip" role="tooltip"></div>
+                </div>
+
+                <div class="sm-map-caption">
+                    <span><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Color shows relative match band.</span>
+                    <span id="sm-result-summary">@Model.Places.Count places scored</span>
+                </div>
+            </section>
+
+            <section class="sm-ranking-card" aria-labelledby="sm-ranking-title">
+                <div class="sm-card-head sm-ranking-head">
+                    <div>
+                        <p class="sm-section-kicker">Ranked for you</p>
+                        <h2 id="sm-ranking-title">Best matching states</h2>
+                    </div>
+                    <label class="sm-search">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <span class="sr-only">Search states</span>
+                        <input id="sm-search" type="search" placeholder="Search a state" autocomplete="off" />
+                    </label>
+                </div>
+
+                <div class="sm-table-head" aria-hidden="true">
+                    <span>Rank</span>
+                    <span>State</span>
+                    <span>Best fit</span>
+                    <span>Match</span>
+                </div>
+                <div class="sm-ranking-list" id="sm-ranking-list"></div>
+                <button type="button" class="sm-show-all" id="sm-show-all">
+                    Show all states
+                    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+            </section>
+
+            <section class="sm-method">
+                <div>
+                    <p class="sm-section-kicker">How scoring works</p>
+                    <h2>Comparable, transparent, and adjustable.</h2>
+                </div>
+                <div class="sm-method-grid">
+                    <article>
+                        <span>01</span>
+                        <h3>Normalize</h3>
+                        <p>Each raw metric is placed on a 0–100 scale against every available state.</p>
+                    </article>
+                    <article>
+                        <span>02</span>
+                        <h3>Weight</h3>
+                        <p>Your sliders control how much each metric contributes to the final score.</p>
+                    </article>
+                    <article>
+                        <span>03</span>
+                        <h3>Rank</h3>
+                        <p>Missing values are excluded and remaining weights are rebalanced automatically.</p>
+                    </article>
+                </div>
+                <p class="sm-method-note">
+                    State Match is a planning aid, not a recommendation to move. Statewide averages can hide large local differences.
+                </p>
+            </section>
+        </div>
+    </main>
+</div>
+
+<div class="sm-drawer-backdrop" id="sm-drawer-backdrop"></div>
+<aside class="sm-drawer" id="sm-drawer" aria-hidden="true" aria-labelledby="sm-drawer-title">
+    <div id="sm-drawer-content"></div>
+</aside>
+
+<noscript>
+    <div class="sm-noscript sm-shell">
+        <h2>JavaScript is required for State Match</h2>
+        <p>The matcher recalculates scores in your browser as priorities change. You can still <a href="/states">browse all states</a> or <a href="/compare-states">compare two states</a>.</p>
+    </div>
+</noscript>
+
+<script>
+    window.stateMatchData = {
+        places: @Html.Raw(placesJson),
+        metrics: @Html.Raw(metricsJson),
+        mapUrl: "/maps/us-states-topo.json"
+    };
+</script>
+
+@section Scripts {
+    <script defer src="~/js/d3.min.js"></script>
+    <script defer src="~/js/topojson-client.min.js"></script>
+    <script defer src="~/js/state-match.js" asp-append-version="true"></script>
+}
+
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "WebApplication",
+    "name": "State Match",
+    "url": "https://usasymbol.com/state-match",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any",
+    "description": "Interactive tool for matching U.S. states to personal priorities using sourced state metrics."
+}
+</script>

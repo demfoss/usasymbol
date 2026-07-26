@@ -30,10 +30,6 @@ function initViewToggle() {
 
     if (!cardsView || !tableView) return;
 
-    const ACTIVE = ['bg-white', 'text-slate-900', 'shadow-sm'];
-    const INACTIVE_ADD = ['text-slate-600'];
-    const INACTIVE_REMOVE = ['bg-white', 'text-slate-900', 'shadow-sm'];
-
     // Tailwind lg breakpoint
     const mq = window.matchMedia('(min-width: 1024px)');
 
@@ -42,7 +38,10 @@ function initViewToggle() {
     // { mobile: { view, touched }, desktop: { view, touched } }
 
     function defaultForBreakpoint() {
-        return mq.matches ? 'table' : 'cards';
+        // Table is denser than Cards (fewer scroll-pixels per row), so it's
+        // the default at every breakpoint now that Rank+State stay frozen
+        // during horizontal scroll on mobile.
+        return 'table';
     }
 
     function readPrefs() {
@@ -62,7 +61,7 @@ function initViewToggle() {
             };
         } catch {
             return {
-                mobile: { view: 'cards', touched: false },
+                mobile: { view: 'table', touched: false },
                 desktop: { view: 'table', touched: false }
             };
         }
@@ -114,17 +113,10 @@ function initViewToggle() {
         // buttons
         if (viewBtns.length) {
             viewBtns.forEach(b => {
-                b.classList.remove(...INACTIVE_REMOVE);
-                b.classList.add(...INACTIVE_ADD);
-                b.setAttribute('aria-pressed', 'false');
+                const isActive = b.dataset.view === view;
+                b.classList.toggle('is-active', isActive);
+                b.setAttribute('aria-pressed', String(isActive));
             });
-
-            const activeBtn = document.querySelector(`.viewBtn[data-view="${view}"]`);
-            if (activeBtn) {
-                activeBtn.classList.remove(...INACTIVE_ADD);
-                activeBtn.classList.add(...ACTIVE);
-                activeBtn.setAttribute('aria-pressed', 'true');
-            }
         }
 
         // views
@@ -201,12 +193,7 @@ function initFilterChips() {
             chips.forEach(c => {
                 const isActive = c === this;
                 c.setAttribute('aria-pressed', String(isActive));
-                c.classList.toggle('border-slate-900', isActive);
-                c.classList.toggle('bg-slate-900', isActive);
-                c.classList.toggle('text-white', isActive);
-                c.classList.toggle('border-slate-200', !isActive);
-                c.classList.toggle('bg-white', !isActive);
-                c.classList.toggle('text-slate-600', !isActive);
+                c.classList.toggle('is-active', isActive);
             });
 
             applyFilters();
@@ -250,17 +237,19 @@ function applySort(table, th, direction) {
 
     // Update header icons ONLY within this table
     table.querySelectorAll('th[data-sort]').forEach(h => {
+        h.setAttribute('aria-sort', 'none');
         const icon = h.querySelector('i');
-        if (icon) icon.className = 'fas fa-sort text-slate-400 text-xs';
+        if (icon) icon.className = 'ranking-sort-icon fas fa-sort';
     });
 
     const activeIcon = th.querySelector('i');
     if (activeIcon) {
         activeIcon.className =
             direction === 'asc'
-                ? 'fas fa-sort-up text-blue-600 text-xs'
-                : 'fas fa-sort-down text-blue-600 text-xs';
+                ? 'ranking-sort-icon is-active fas fa-sort-up'
+                : 'ranking-sort-icon is-active fas fa-sort-down';
     }
+    th.setAttribute('aria-sort', direction === 'asc' ? 'ascending' : 'descending');
 
     // Sort rows inside this tbody only
     const rows = Array.from(tbody.querySelectorAll('tr.tableRow'));
@@ -286,12 +275,6 @@ function applySort(table, th, direction) {
     // Re-append sorted rows
     rows.forEach(row => tbody.appendChild(row));
 
-    // Update zebra striping (within this tbody)
-    rows.forEach((row, index) => {
-        row.classList.remove('bg-white', 'bg-slate-50/35');
-        row.classList.add(index % 2 === 0 ? 'bg-white' : 'bg-slate-50/35');
-    });
-
     // Keep the "Sort by" select in sync when sorting comes from a header click
     const sortBySelect = document.getElementById('sortBySelect');
     const firstTable = document.querySelector('.rankingTable');
@@ -305,7 +288,7 @@ function initSort() {
     if (!headers.length) return;
 
     headers.forEach(th => {
-        th.addEventListener('click', function () {
+        function sortFromHeader() {
             const table = th.closest('table');
             if (!table) return;
 
@@ -316,6 +299,13 @@ function initSort() {
                 : 'asc';
 
             applySort(table, th, direction);
+        }
+
+        th.addEventListener('click', sortFromHeader);
+        th.addEventListener('keydown', function (event) {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+            sortFromHeader();
         });
     });
 }
@@ -344,13 +334,12 @@ function initMetricToggle() {
         btn.addEventListener('click', function () {
             const selectedMetric = this.dataset.metric;
 
-            // Update button styles
+            // Update button state
             metricBtns.forEach(b => {
-                b.classList.remove('bg-blue-600', 'text-white');
-                b.classList.add('bg-white', 'text-slate-700');
+                const isActive = b === this;
+                b.classList.toggle('is-active', isActive);
+                b.setAttribute('aria-pressed', String(isActive));
             });
-            this.classList.remove('bg-white', 'text-slate-700');
-            this.classList.add('bg-blue-600', 'text-white');
 
             // Toggle table columns
             document.querySelectorAll('[data-toggleable="true"]').forEach(el => {

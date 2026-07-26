@@ -134,7 +134,7 @@
     <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-12">
 
         @* ── Main column ──────────────────────────────────────────── *@
-        <div class="journey-content min-w-0">
+        <div class="article-content min-w-0">
 
             @* Quick Answer *@
             @if (!string.IsNullOrWhiteSpace(park.IntroText))
@@ -593,7 +593,7 @@
         </div>
 
         @* ── Sidebar ───────────────────────────────────────────────── *@
-        <aside class="journey-sidebar space-y-6 lg:self-start" aria-label="Article sidebar">
+        <aside class="article-sidebar space-y-6 lg:self-start" aria-label="Article sidebar">
 
             @* Quick Facts *@
             @if (Model.QuickFacts?.Count > 0)

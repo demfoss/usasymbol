@@ -1,0 +1,40 @@
+@model USASymbol.Models.ViewModels.SymbolHeroViewModel
+
+@{
+    var reviewer = ViewData["Reviewer"] as string ?? "Artsiom Dusau";
+    var hasAudioAction = !string.IsNullOrWhiteSpace(Model.ActionButtonId) &&
+        !string.IsNullOrWhiteSpace(Model.ActionButtonLabel);
+}
+
+<div class="sdh-meta" data-nosnippet>
+    <div class="sdh-review">
+        <a href="/about/artsiom-dusau" class="sdh-reviewer">
+            <img src="/images/profile/artsiom-dusau.png" alt="" width="26" height="26" />
+            <span>Reviewed by <strong>@reviewer</strong></span>
+        </a>
+        @if (Model.PageModel.DateModified.HasValue)
+        {
+            <span class="sdh-meta-separator" aria-hidden="true">·</span>
+            <time datetime="@Model.PageModel.DateModified.Value.ToString("yyyy-MM-dd")">
+                Updated @Model.PageModel.DateModified.Value.ToString("MMM d, yyyy")
+            </time>
+        }
+    </div>
+
+    <div class="sdh-actions">
+        @if (hasAudioAction)
+        {
+            <button id="@Model.ActionButtonId" type="button" class="sdh-action-button">
+                <i class="@(string.IsNullOrWhiteSpace(Model.ActionButtonIconClass) ? "fas fa-play" : Model.ActionButtonIconClass)" aria-hidden="true"></i>
+                <span>@Model.ActionButtonLabel</span>
+            </button>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.ActionAudioSrc))
+        {
+            <audio id="heroAudio" preload="metadata">
+                <source src="@Model.ActionAudioSrc" type="audio/mpeg" />
+            </audio>
+        }
+        @await Html.PartialAsync("_ShareButtons", Model.PageModel)
+    </div>
+</div>

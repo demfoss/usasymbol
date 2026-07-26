@@ -114,17 +114,17 @@
 
 <div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
     <article class="symbol-editorial w-full">
-        <div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[244px_minmax(0,1fr)_300px] xl:gap-10 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
+        <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
             @await Html.PartialAsync("_SymbolHero", heroModel)
 
-            <aside class="hidden lg:block relative h-full">
+            <aside class="hidden xl:block relative h-full">
                 <div class="sticky top-24 pb-10">
                     @await Html.PartialAsync("_TocSidebar", Model)
                 </div>
             </aside>
 
             <div class="min-w-0">
-                <div class="journey-content site-content">
+                <div class="article-content site-content">
                     @await Html.PartialAsync("_Overview", null, new ViewDataDictionary(ViewData) {
                         { "Heading", $"{designation} of {stateName}" },
                         { "Body", overviewText.RenderAutoLinks() }
@@ -132,7 +132,7 @@
 
                     @if (quickFacts.Any())
                     {
-                        <div class="xl:hidden">
+                        <div class="lg:hidden">
                             @await Html.PartialAsync("_QuickFacts", quickFacts)
                         </div>
                     }
@@ -147,7 +147,7 @@
                         @await Html.PartialAsync("_Sources", Model)
                     </section>
 
-                    <div class="mt-10 space-y-8 xl:hidden" data-nosnippet>
+                    <div class="mt-10 space-y-8 lg:hidden" data-nosnippet>
                         @await Html.PartialAsync("_RelatedSymbols", Model)
                         @await Html.PartialAsync("_RelatedStatesSidebar", Model)
                         @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
@@ -159,33 +159,11 @@
                 </div>
             </div>
 
-            <aside class="journey-sidebar mt-12 hidden xl:block xl:col-span-1 xl:mt-0 relative self-start" aria-label="Article sidebar">
-                @if (quickFacts.Any())
-                {
-                    <section class="relative min-h-[calc(100vh-5rem)] pb-16">
-                        <div class="sticky top-32 pr-2">
-                            @await Html.PartialAsync("_QuickFacts", quickFacts)
-                        </div>
-                    </section>
-                }
-
-                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
-                    <div class="sticky top-32 pr-2">
-                        @await Html.PartialAsync("_RelatedSymbols", Model)
-                    </div>
-                </section>
-
-                <section class="relative mt-10 min-h-[calc(100vh-5rem)] pb-16">
-                    <div class="sticky top-32 pr-2">
-                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
-                    </div>
-                </section>
-
-                <section class="relative mt-10 min-h-[calc(100vh+8rem)] pb-20">
-                    <div class="sticky top-32 pr-2">
-                        @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
-                    </div>
-                </section>
+            <aside class="article-sidebar hidden lg:block" aria-label="Article sidebar">
+                <div class="sidebar-content space-y-10">
+                    @await Html.PartialAsync("_RelatedSymbols", Model)
+                    @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                </div>
             </aside>
         </div>
 

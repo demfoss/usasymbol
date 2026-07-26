@@ -54,7 +54,7 @@
     }
     else if (Model is PageDetailViewModel pageModel)
     {
-        if (pageModel.HasQuickAnswer) Add("quick-answer", "Quick Answer");
+        if (pageModel.HasQuickAnswer) Add("quick-answer", "Key Takeaways");
         if (pageModel.HasRows) Add(pageModel.IsCollection ? "collection-table" : pageModel.IsRanking ? "ranking-table" : "listing-table", "Table");
         if (pageModel.HasInsights) Add("insights", "Key Insights");
         if (pageModel.HasSections) Add("sections", "Details");

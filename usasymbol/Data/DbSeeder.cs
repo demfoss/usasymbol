@@ -196,6 +196,7 @@ namespace USASymbol.Data
                 new State { Name = "Kentucky", Slug = "kentucky", Abbreviation = "KY", Capital = "Frankfort", Population = 4505836, Region = "South", StateHoodDate = new DateTime(1792, 6, 1) },
                 new State { Name = "Louisiana", Slug = "louisiana", Abbreviation = "LA", Capital = "Baton Rouge", Population = 4657757, Region = "South", StateHoodDate = new DateTime(1812, 4, 30) },
                 new State { Name = "Maryland", Slug = "maryland", Abbreviation = "MD", Capital = "Annapolis", Population = 6177224, Region = "South", StateHoodDate = new DateTime(1788, 4, 28) },
+                new State { Name = "District of Columbia", Slug = "district-of-columbia", Abbreviation = "DC", Capital = "Washington, D.C.", Population = 689545, Region = "South", StateHoodDate = null },
                 new State { Name = "Mississippi", Slug = "mississippi", Abbreviation = "MS", Capital = "Jackson", Population = 2961279, Region = "South", StateHoodDate = new DateTime(1817, 12, 10) },
                 new State { Name = "North Carolina", Slug = "north-carolina", Abbreviation = "NC", Capital = "Raleigh", Population = 10439388, Region = "South", StateHoodDate = new DateTime(1789, 11, 21) },
                 new State { Name = "Oklahoma", Slug = "oklahoma", Abbreviation = "OK", Capital = "Oklahoma City", Population = 3959353, Region = "South", StateHoodDate = new DateTime(1907, 11, 16) },
@@ -221,20 +222,27 @@ namespace USASymbol.Data
                 new State { Name = "Wyoming", Slug = "wyoming", Abbreviation = "WY", Capital = "Cheyenne", Population = 576851, Region = "West", StateHoodDate = new DateTime(1890, 7, 10) }
             };
 
-            if (!context.States.Any())
+            var existingStateSlugs = (await context.States
+                .Select(s => s.Slug)
+                .ToListAsync())
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var missingStates = states
+                .Where(s => !existingStateSlugs.Contains(s.Slug))
+                .ToList();
+
+            if (missingStates.Any())
             {
-                foreach (var state in states)
+                foreach (var state in missingStates)
                 {
                     state.FlagImageUrl = $"/images/states/flags/medium/{state.Abbreviation.ToLower()}.webp";
                 }
 
-                context.States.AddRange(states);
+                context.States.AddRange(missingStates);
                 await context.SaveChangesAsync();
             }
-            else
-            {
-                states = await context.States.ToListAsync();
-            }
+
+            states = await context.States.ToListAsync();
 
             await SeedStateBirds(context, states);
             await SeedStateMottos(context, states);
@@ -253,6 +261,7 @@ namespace USASymbol.Data
             await SeedStateSoils(context, states);
             await SeedStateFossils(context, states);
             await SeedStateSports(context, states);
+            await SeedStateInsects(context, states);
 
 
             {
@@ -404,6 +413,20 @@ namespace USASymbol.Data
                         Name = "State Sports",
                         Description = "Explore official state sports and heritage sporting traditions recognized by U.S. states.",
                         ImageUrl = "/images/rankings/sports/most-popular-sport-by-state/most-popular-sport-by-state.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "insects",
+                        Name = "State Insects",
+                        Description = "Discover official state insects, from monarch butterflies to honeybees, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/insects.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "butterflies",
+                        Name = "State Butterflies",
+                        Description = "Explore official state butterflies, including monarchs, swallowtails, fritillaries, hairstreaks, and sulphurs.",
+                        ImageUrl = "/images/insects/species/eastern-tiger-swallowtail-01.webp"
                     },
 
                 };
@@ -1949,6 +1972,77 @@ namespace USASymbol.Data
                     Meaning = GetYamlString(data, "meaning"),
                     ImageUrl = heroImage,
                     YamlPath = $"Content/states/{state.Slug}/soil.yaml"
+                });
+            }
+
+            if (symbols.Count == 0)
+                return;
+
+            context.Symbols.AddRange(symbols);
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedStateInsects(AppDbContext context, List<State> states)
+        {
+            var old = await context.Symbols.Where(s => s.Type == "insect").ToListAsync();
+            if (old.Count > 0)
+            {
+                context.Symbols.RemoveRange(old);
+                await context.SaveChangesAsync();
+            }
+
+            var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
+            if (!Directory.Exists(contentRoot))
+                return;
+
+            var deserializer = new DeserializerBuilder().Build();
+            var symbols = new List<Symbol>();
+
+            // Wildcard match: states can have several insect-related designations
+            // (state insect, state butterfly, state agricultural insect, state bug, etc.),
+            // one YAML file per designation - e.g. insect.yaml, insect-butterfly.yaml, insect-agricultural.yaml.
+            foreach (var file in Directory.EnumerateFiles(contentRoot, "insect*.yaml", SearchOption.AllDirectories))
+            {
+                var stateSlug = new DirectoryInfo(Path.GetDirectoryName(file) ?? string.Empty).Name;
+                if (string.IsNullOrWhiteSpace(stateSlug))
+                    continue;
+
+                var state = states.FirstOrDefault(s => string.Equals(s.Slug, stateSlug, StringComparison.OrdinalIgnoreCase));
+                if (state == null)
+                    continue;
+
+                Dictionary<object, object>? data;
+                try { data = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(file)); }
+                catch { continue; }
+
+                if (data == null)
+                    continue;
+
+                var name = GetYamlString(data, "name");
+                if (string.IsNullOrWhiteSpace(name))
+                    name = GetYamlString(data, "title");
+                if (string.IsNullOrWhiteSpace(name))
+                    name = $"State Insect of {state.Name}";
+
+                var designation = GetYamlString(data, "designation");
+                if (string.IsNullOrWhiteSpace(designation))
+                    designation = "State insect";
+
+                symbols.Add(new Symbol
+                {
+                    StateId = state.Id,
+                    Type = "insect",
+                    Name = name,
+                    Slug = GenerateSlug(name),
+                    ScientificName = GetYamlString(data, "binomial_name"),
+                    AdoptedYear = GetYamlInt(data, "adopted_year"),
+                    Status = GetYamlBool(data, "is_official") ? "Official" : null,
+                    Designation = designation,
+                    Legislation = GetYamlString(data, "legislation"),
+                    WikidataId = null,
+                    Meaning = GetYamlString(data, "meaning"),
+                    ImageUrl = GetYamlString(data, "hero_image"),
+                    YamlPath = $"Content/states/{state.Slug}/{Path.GetFileName(file)}"
                 });
             }
 

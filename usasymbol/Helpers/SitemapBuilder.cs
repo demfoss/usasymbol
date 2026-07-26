@@ -24,6 +24,7 @@ namespace USASymbol.Services
         private readonly IMapPngService _mapPngService;
         private readonly IComparisonStatsService _statsService;
         private readonly IStateService _stateService;
+        private readonly ICountyService _countyService;
 
         public SitemapBuilder(
             AppDbContext db,
@@ -37,7 +38,8 @@ namespace USASymbol.Services
             IWebHostEnvironment env,
             IMapPngService mapPngService,
             IComparisonStatsService statsService,
-            IStateService stateService)
+            IStateService stateService,
+            ICountyService countyService)
         {
             _db                 = db;
             _rankingsService    = rankingsService;
@@ -51,6 +53,7 @@ namespace USASymbol.Services
             _mapPngService      = mapPngService;
             _statsService       = statsService;
             _stateService       = stateService;
+            _countyService      = countyService;
         }
 
         public async Task<List<string>> BuildMainUrlsAsync()
@@ -62,6 +65,10 @@ namespace USASymbol.Services
 
             urls.Add("/");
             urls.Add("/states");
+            urls.Add("/states/living");
+            urls.Add("/state-match");
+            urls.Add("/county-match");
+            urls.Add("/county-rankings");
             urls.Add("/symbols");
             urls.Add("/rankings");
             urls.Add("/guides");
@@ -80,9 +87,12 @@ namespace USASymbol.Services
             foreach (var state in states)
             {
                 urls.Add($"/states/{state.Slug}");
+                urls.Add($"/states/{state.Slug}/living");
                 urls.Add($"/states/{state.Slug}/abbreviation");
                 urls.Add($"/states/{state.Slug}/map");
             }
+
+            urls.AddRange(await _countyService.GetPublishedPathsAsync());
 
 
 
@@ -400,12 +410,55 @@ namespace USASymbol.Services
                 urls.Add($"/compare/{pairSlug}");
             }
 
-            var metricSlugs = ComparisonMetricsConfig.All.Select(metric => metric.Slug).ToList();
+            // Keep the comparison sitemap focused on demonstrated search demand and
+            // high-intent relocation questions. Every metric remains reachable in the UI,
+            // but low-demand Cartesian combinations do not consume sitemap crawl budget.
+            var indexableMetricSlugs = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "population", "density", "domestic-migration", "population-growth",
+                "median-income", "unemployment-rate", "job-growth",
+                "single-person-living-wage", "minimum-wage",
+                "cost-of-living", "regional-price-parity", "purchasing-power",
+                "gas-price", "electricity-rates",
+                "average-temperature", "summer-temperature", "winter-temperature",
+                "average-wind-speed", "lightning-density",
+                "home-value", "median-rent", "owner-costs-with-mortgage",
+                "homeownership-rate", "home-insurance",
+                "income-tax", "sales-tax", "property-tax", "tax-burden",
+                "grocery-tax", "death-tax", "vehicle-property-tax",
+                "political-lean", "abortion-laws", "marijuana-legalization",
+                "right-to-work", "gun-laws-status",
+                "land-area", "life-expectancy", "violent-crime",
+                "infant-mortality", "overdose-death-rate",
+                "water-quality", "power-outages", "road-quality",
+                "casinos", "ufo-sightings"
+            };
+            var metricSlugs = ComparisonMetricsConfig.All
+                .Where(metric => indexableMetricSlugs.Contains(metric.Slug))
+                .Select(metric => metric.Slug)
+                .ToList();
             foreach (var (slug1, slug2) in ComparisonService.TierOneComparisonPairs)
             {
                 var pairSlug = ComparisonService.CanonicalPairSlug(slug1, slug2);
                 foreach (var metricSlug in metricSlugs)
                     urls.Add($"/compare/{pairSlug}/{metricSlug}");
+            }
+
+            // Category hubs: always indexed, static in-memory config, no per-pair cost.
+            foreach (var (categorySlug, _) in ComparisonMetricsConfig.GroupOrder)
+                urls.Add($"/compare/{categorySlug}");
+
+            // Category-scoped pair pages: only for Tier-One pairs, and only categories with 2+ metrics
+            // (single-metric categories would be near-duplicate content with the existing /compare/{pair}/{metric} page).
+            var categorySlugsForPairs = ComparisonMetricsConfig.GroupOrder
+                .Where(g => ComparisonMetricsConfig.All.Count(m => m.GroupSlug == g.Slug) >= 2)
+                .Select(g => g.Slug)
+                .ToList();
+            foreach (var (slug1, slug2) in ComparisonService.TierOneComparisonPairs)
+            {
+                var pairSlug = ComparisonService.CanonicalPairSlug(slug1, slug2);
+                foreach (var categorySlug in categorySlugsForPairs)
+                    urls.Add($"/compare/{categorySlug}/{pairSlug}");
             }
 
             return Task.FromResult(urls.Distinct().ToList());

@@ -1,0 +1,23 @@
+@model IReadOnlyList<USASymbol.Models.ViewModels.QuickFactItem>
+
+@if (Model.Any())
+{
+    <dl class="sdh-specs" aria-label="Key facts">
+        @foreach (var fact in Model)
+        {
+            <div class="sdh-spec">
+                <dt>@fact.Label</dt>
+                <dd class="@(fact.Italic ? "sdh-spec-value--italic" : null)">
+                    @if (!string.IsNullOrWhiteSpace(fact.Url))
+                    {
+                        <a href="@fact.Url">@fact.Value</a>
+                    }
+                    else
+                    {
+                        @fact.Value
+                    }
+                </dd>
+            </div>
+        }
+    </dl>
+}

@@ -1,0 +1,71 @@
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+@using Usasymbol.Helpers
+@using USASymbol.Extensions
+
+@{
+    var sectionId = (ViewData["QuickAnswerSectionId"] as string ?? "quick-answer").Trim();
+    var title = string.IsNullOrWhiteSpace(Model.Content.Page.QuickAnswerTitle)
+        ? Model.Content.Page.H1
+        : Model.Content.Page.QuickAnswerTitle;
+    var typed = KeyTakeawaysBuilder.BuildTypedTakeaways(Model);
+    var hasAnything = typed != null &&
+        (typed.StatesCovered > 0 || typed.Highlights.Any() || !string.IsNullOrWhiteSpace(typed.Footnote));
+}
+
+@if (hasAnything)
+{
+    <section id="@sectionId" class="kt-typed scroll-mt-24" aria-labelledby="kt-typed-title">
+        <header class="kt-typed__head">
+            <p class="kt-typed__eyebrow">Key takeaways</p>
+            <h2 id="kt-typed-title" class="kt-typed__title">@title</h2>
+        </header>
+
+        @if (typed!.StatesCovered > 0)
+        {
+            <div class="kt-typed__coverage">
+                <div class="kt-typed__meter" role="img" aria-label="@typed.StatesCovered of @typed.StatesTotal states">
+                    <span style="width:@(typed.CoveragePercent)%"></span>
+                </div>
+                <p class="kt-typed__coverage-label"><strong>@typed.StatesCovered</strong> of @typed.StatesTotal states</p>
+            </div>
+        }
+
+        @if (typed.Highlights.Any())
+        {
+            <div class="kt-typed__split @(typed.Highlights.Count == 1 ? "kt-typed__split--single" : "")">
+                @foreach (var item in typed.Highlights)
+                {
+                    <article class="kt-typed__split-item">
+                        <p class="kt-typed__split-label"><i class="@item.Icon" aria-hidden="true"></i> @item.Label</p>
+                        <blockquote class="kt-typed__split-quote">&ldquo;@item.Value&rdquo;</blockquote>
+                        @if (!string.IsNullOrWhiteSpace(item.Subject))
+                        {
+                            <p class="kt-typed__split-meta">
+                                @if (!string.IsNullOrWhiteSpace(item.SubjectSlug))
+                                {
+                                    <a href="/states/@item.SubjectSlug">@item.Subject</a>
+                                }
+                                else
+                                {
+                                    @item.Subject
+                                }
+                            </p>
+                        }
+                    </article>
+                }
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(typed.Footnote))
+        {
+            <div class="kt-typed__footnote">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <p>@typed.Footnote.RenderAutoLinks()</p>
+            </div>
+        }
+    </section>
+}
+else if (Model.HasQuickAnswer)
+{
+    @await Html.PartialAsync("Pages/_QuickAnswer", Model, ViewData)
+}

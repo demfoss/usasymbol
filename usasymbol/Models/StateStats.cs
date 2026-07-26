@@ -5,6 +5,8 @@ namespace USASymbol.Models
         public string Slug { get; set; } = string.Empty;
 
         // Tier 0 - base (already in State model, but useful here for calculations)
+        public int? PopulationEstimate2025 { get; set; }
+        public double? PopulationChangeSince2020Pct { get; set; }
         public double? LandAreaSqMi { get; set; }
         public int? StatehoodOrder { get; set; }
 
@@ -18,6 +20,11 @@ namespace USASymbol.Models
         public double? EmploymentPopulationRatioPct { get; set; }
         public double? UnemploymentRatePct { get; set; }
         public double? JobGrowthPct { get; set; }
+        public int? NetDomesticMigration { get; set; }
+        public string? DomesticMigrationBand { get; set; }
+        public int? SinglePersonLivingWage { get; set; }
+        public double? SinglePersonLivingWageChangePct { get; set; }
+        public int? AverageCreditScore { get; set; }
         public double? MinimumWageHourly { get; set; }
         public int? MedianHomeValue { get; set; }
         public int? MedianGrossRent { get; set; }
@@ -43,6 +50,12 @@ namespace USASymbol.Models
 
         /// <summary>State gasoline excise tax in cents per gallon.</summary>
         public double? GasTaxCents { get; set; }
+        public string? GroceryTaxStatus { get; set; }
+        public double? GroceryTaxRatePct { get; set; }
+        public string? DeathTaxStatus { get; set; }
+        public string? EstateTaxStatus { get; set; }
+        public string? InheritanceTaxStatus { get; set; }
+        public string? VehiclePropertyTaxStatus { get; set; }
 
         /// <summary>Signed 2024 presidential margin in percentage points (positive = Democratic, negative = Republican).</summary>
         public double? PresidentialVotingMarginPct { get; set; }
@@ -73,6 +86,9 @@ namespace USASymbol.Models
 
         /// <summary>Current statewide marijuana legalization status.</summary>
         public string? MarijuanaLegalizationStatus { get; set; }
+        public string? AbortionLawStatus { get; set; }
+        public string? AbortionGestationalLimit { get; set; }
+        public string? RightToWorkStatus { get; set; }
 
         /// <summary>Age at which a person may marry without parental consent.</summary>
         public int? MarriageAgeWithoutConsent { get; set; }
@@ -94,6 +110,8 @@ namespace USASymbol.Models
         public double? WinterTemperatureF { get; set; }
         public int? SunnyDaysPerYear { get; set; }
         public double? AnnualPrecipitationIn { get; set; }
+        public double? AverageWindSpeedMph { get; set; }
+        public double? LightningDensityPerSqMile { get; set; }
 
         public string? HighestPointName { get; set; }
         public double? HighestPointElevationFt { get; set; }
@@ -113,6 +131,29 @@ namespace USASymbol.Models
 
         /// <summary>Property crime incidents per 100,000 residents.</summary>
         public double? PropertyCrimeRatePer100k { get; set; }
+        public double? InfantMortalityRatePer1000 { get; set; }
+        public double? MaternalMortalityRatePer100k { get; set; }
+        public double? OverdoseDeathRatePer100k { get; set; }
+
+        // Infrastructure
+        public double? WaterQualityScore { get; set; }
+        public string? WaterQualityGrade { get; set; }
+        public double? PowerOutageHoursAnnual { get; set; }
+        public int? RoadQualityRank { get; set; }
+        public double? RenewableElectricityPct { get; set; }
+        public string? LargestAirportName { get; set; }
+        public string? LargestAirportIata { get; set; }
+        public double? LargestAirportPassengersMillions { get; set; }
+
+        // Culture and high-engagement comparisons
+        public int? CasinoCount { get; set; }
+        public string? BestKnownCasino { get; set; }
+        public int? UfoSightingsTotal { get; set; }
+        public double? UfoSightingsPer100k { get; set; }
+        public int? DailyScreenTimeMinutes { get; set; }
+        public string? DailyScreenTimeLabel { get; set; }
+        public string? MostPopularCarBrand { get; set; }
+        public string? MostPopularCarModel { get; set; }
 
         // Education
         /// <summary>US News K-12 education ranking (1 = best, 50 = worst).</summary>

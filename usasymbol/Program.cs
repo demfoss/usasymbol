@@ -33,6 +33,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IImagePathNormalizer, ImagePathNormalizer>();
 builder.Services.AddSingleton<IImageUrlService, ImageUrlService>();
 builder.Services.AddSingleton<IMapPngService, MapPngService>();
+builder.Services.AddSingleton<LegacyRedirectService>();
 builder.Services.AddHttpClient<BunnyImageSyncService>();
 builder.Services.AddTransient<BunnyImageSyncRunner>();
 
@@ -70,6 +71,7 @@ builder.Services.AddScoped<ISealService, SealService>();
 builder.Services.AddScoped<ISoilService, SoilService>();
 builder.Services.AddScoped<IFossilService, FossilService>();
 builder.Services.AddScoped<ISportService, SportService>();
+builder.Services.AddScoped<IInsectService, InsectService>();
 builder.Services.AddHostedService<IndexNowBackgroundService>();
 
 
@@ -91,6 +93,10 @@ builder.Services.AddScoped<IBirdService, BirdService>();
 builder.Services.AddScoped<IFirearmService, FirearmService>();
 builder.Services.AddScoped<IComparisonStatsService, ComparisonStatsService>();
 builder.Services.AddScoped<IComparisonService, ComparisonService>();
+builder.Services.AddScoped<IStateMatchService, StateMatchService>();
+builder.Services.AddScoped<IStateLivingService, StateLivingService>();
+builder.Services.AddScoped<ICountyService, CountyService>();
+builder.Services.AddSingleton<INormalizer, StateMatchNormalizer>();
 builder.Services.AddSingleton<QuizService>();
 builder.Services.AddScoped<IParkService, ParkService>();
 builder.Services.AddScoped<ISoilService, SoilService>();
@@ -130,8 +136,6 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var isImageSyncCommand = args.Any(x =>
     string.Equals(x, "--sync-bunny-images", StringComparison.OrdinalIgnoreCase));
-var forceSeedCommand = args.Any(x =>
-    string.Equals(x, "--seed", StringComparison.OrdinalIgnoreCase));
 
 var app = builder.Build();
 
@@ -237,6 +241,18 @@ app.Use(async (context, next) =>
     context.Response.Redirect(redirectUrl, permanent: true);
 });
 
+app.Use(async (context, next) =>
+{
+    var redirects = context.RequestServices.GetRequiredService<LegacyRedirectService>();
+    if (redirects.TryResolve(context.Request.Path, out var target))
+    {
+        context.Response.Redirect(target + context.Request.QueryString, permanent: true);
+        return;
+    }
+
+    await next();
+});
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -257,20 +273,16 @@ using (var scope = app.Services.CreateScope())
         await context.Database.EnsureCreatedAsync();
     }
 
-    var requiresInitialSeed = !await context.States.AnyAsync();
-    if (forceSeedCommand || requiresInitialSeed)
-    {
-        logger.LogInformation(
-            "Running database seed. ForceSeed: {ForceSeed}, InitialSeed: {InitialSeed}",
-            forceSeedCommand,
-            requiresInitialSeed);
-
-        await DbSeeder.SeedAsync(context);
-    }
-    else
-    {
-        logger.LogInformation("Skipping startup seed because the database is already initialized.");
-    }
+    // DbSeeder is the source of truth for reference data. Run it after every
+    // migration so persistent production databases receive the same content
+    // updates as a newly-created local database.
+    logger.LogInformation("Synchronizing database reference data.");
+    await DbSeeder.SeedAsync(context);
+    logger.LogInformation(
+        "Database reference data synchronized. States: {StateCount}, Symbols: {SymbolCount}, Categories: {CategoryCount}",
+        await context.States.CountAsync(),
+        await context.Symbols.CountAsync(),
+        await context.SymbolCategories.CountAsync());
 }
 
 
@@ -418,13 +430,24 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "compareMetric",
-    pattern: "compare/{pair}/{metric}",
+    pattern: "compare/{pair:regex(^.+-vs-.+$)}/{metric}",
     defaults: new { controller = "Compare", action = "Metric" });
+
+// category alternation must mirror ComparisonMetricsConfig.GroupOrder — update both if a category is ever added/removed
+app.MapControllerRoute(
+    name: "categoryPair",
+    pattern: "compare/{category:regex(^(demographics|economy|jobs|quality-of-life|climate|housing|retirement|taxes|politics|laws|geography|health|safety|education|disasters|culture|infrastructure)$)}/{pair:regex(^.+-vs-.+$)}",
+    defaults: new { controller = "Compare", action = "CategoryPair" });
 
 app.MapControllerRoute(
     name: "compareOverview",
-    pattern: "compare/{pair}",
+    pattern: "compare/{pair:regex(^.+-vs-.+$)}",
     defaults: new { controller = "Compare", action = "Overview" });
+
+app.MapControllerRoute(
+    name: "categoryHub",
+    pattern: "compare/{category:regex(^(demographics|economy|jobs|quality-of-life|climate|housing|retirement|taxes|politics|laws|geography|health|safety|education|disasters|culture|infrastructure)$)}",
+    defaults: new { controller = "Compare", action = "CategoryHub" });
 
 app.MapControllerRoute(
     name: "guides",

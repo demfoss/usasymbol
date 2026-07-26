@@ -1,0 +1,69 @@
+@model CountyRankingsPageViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/county-explore.css" asp-append-version="true" />
+}
+
+<nav class="cx-breadcrumb" aria-label="Breadcrumb">
+    <div class="cx-container"><a href="/">Home</a><span>/</span><strong>County rankings</strong></div>
+</nav>
+
+<main>
+    <section class="cx-hero cx-rank-hero">
+        <div class="cx-container">
+            <p class="cx-kicker">ACS · BLS LAUS · County Health Rankings</p>
+            <h1>County rankings that show their work</h1>
+            <p>Compare affordability, household income, unemployment, education, and health without mixing statewide values into county records.</p>
+            <div class="cx-hero-links"><a href="/county-match">Weight your own priorities</a><a href="/states/living">Browse state guides</a></div>
+        </div>
+    </section>
+
+    <div class="cx-container cx-ranking-content">
+        <form class="cx-ranking-filter" method="get" action="/county-rankings">
+            <label><span>Show rankings for</span><select name="state" onchange="this.form.submit()">
+                <option value="">All U.S. counties</option>
+                @foreach (var state in Model.States)
+                {
+                    <option value="@state.Slug" selected="@(state.Slug == Model.SelectedStateSlug ? "selected" : null)">@state.Name</option>
+                }
+            </select></label>
+            @if (!string.IsNullOrWhiteSpace(Model.SelectedStateSlug))
+            {
+                <a href="/county-rankings">Clear state filter</a>
+            }
+        </form>
+
+        <nav class="cx-ranking-jump" aria-label="Ranking categories">
+            @foreach (var ranking in Model.Sections) { <a href="#@ranking.Key">@ranking.Title</a> }
+        </nav>
+
+        @foreach (var ranking in Model.Sections)
+        {
+            <section id="@ranking.Key" class="cx-ranking-section">
+                <div class="cx-ranking-head">
+                    <i class="@ranking.Icon" aria-hidden="true"></i>
+                    <div><p class="cx-eyebrow">Top @ranking.Counties.Count</p><h2>@ranking.Title</h2><p>@ranking.Description</p></div>
+                </div>
+                <div class="cx-ranking-list">
+                    @foreach (var county in ranking.Counties)
+                    {
+                        var href = county.Published
+                            ? $"/states/{county.StateSlug}/counties/{county.Slug}"
+                            : $"/states/{county.StateSlug}/counties";
+                        <a href="@href">
+                            <span class="cx-ranking-number">@county.Rank</span>
+                            <span><strong>@county.Name</strong><small>@county.StateName</small></span>
+                            <b>@county.DisplayValue</b>
+                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        <section class="cx-ranking-method">
+            <div><p class="cx-eyebrow">Methodology</p><h2>Comparable, source-specific metrics</h2></div>
+            <p>Income, housing, and education use the 2020–2024 ACS 5-year release. Jobs use 2025 BLS LAUS annual averages. Health uses the 2025 County Health Rankings release. Composite sections state their components; missing records are excluded. Data index generated @Model.GeneratedOn.</p>
+        </section>
+    </div>
+</main>

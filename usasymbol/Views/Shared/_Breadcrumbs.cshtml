@@ -10,30 +10,17 @@
     var symbolTypeUrl = $"/symbols/{symbolTypeSlug}";
 }
 
-<div class="max-w-6xl mx-auto px-4 pt-4">
-    <ol class="inline-flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-sm text-slate-600 shadow-sm backdrop-blur-md">
-        <li class="inline-flex items-center gap-2">
-            <a href="/" class="hover:text-slate-900 transition">Home</a>
+<ol class="sd-breadcrumbs">
+    <li><a href="/">Home</a></li>
+    <li class="sd-breadcrumb-divider" aria-hidden="true">/</li>
+    <li><a href="/states/@Model.State.Slug">@Model.State.Name</a></li>
+    <li class="sd-breadcrumb-divider" aria-hidden="true">/</li>
+    <li><a href="/symbols">State symbols</a></li>
+    @if (!string.IsNullOrWhiteSpace(symbolTypeSlug))
+    {
+        <li class="sd-breadcrumb-divider" aria-hidden="true">/</li>
+        <li aria-current="page">
+            <span>@symbolTypeText</span>
         </li>
-
-        <li class="text-slate-300" aria-hidden="true">/</li>
-
-        <li>
-            <a href="/symbols" class="hover:text-slate-900 transition">Symbols</a>
-        </li>
-
-        @if (!string.IsNullOrWhiteSpace(symbolTypeSlug))
-        {
-            <li class="text-slate-300" aria-hidden="true">/</li>
-            <li>
-                <a href="@symbolTypeUrl" class="hover:text-slate-900 transition">@symbolTypeText</a>
-            </li>
-        }
-
-        <li class="text-slate-300" aria-hidden="true">/</li>
-
-        <li class="font-semibold text-slate-900 truncate max-w-[55vw] sm:max-w-none">
-            @Model.State.Name
-        </li>
-    </ol>
-</div>
+    }
+</ol>

@@ -1,0 +1,473 @@
+type: ranking
+slug: amazon-employees-by-state
+category: economy
+url: /rankings/economy/amazon-employees-by-state
+auto_link_phrases:
+  - "amazon employees by state"
+  - "amazon jobs by state"
+  - "how many people does amazon employ"
+  - "amazon indirect jobs by state"
+extremes_mode: both
+extremes_title: "States With the Most and Fewest Amazon Employees"
+hero_image: "/images/rankings/economy/amazon-employees-by-state/amazon-employees-by-state-hero.jpg"
+hero_image_alt: "Amazon fulfillment center warehouse with delivery vans lined up outside"
+hero_image_caption: "California has the most Amazon employees of any state at 154,000. West Virginia and Wyoming have the fewest, at 200 each."
+
+author: "USA Symbol Team"
+date_published: "2026-07-21"
+date_modified: "2026-07-21"
+
+seo:
+  title: "Amazon Employees by State | Map & Jobs Data"
+  description: "California has the most Amazon employees at 154,000. Washington supports the most indirect jobs at 240,000, more than double its own employee count."
+
+page:
+  h1: "Amazon Employees by State"
+
+  quick_answer:
+    - "California has the most Amazon employees of any state at 154,000, followed by Washington at 92,000 and Texas at 86,500."
+    - "Washington's 92,000 direct employees support 240,000 indirect jobs, more than any other state and over 2.5 times its own employee count."
+    - "West Virginia and Wyoming report the fewest Amazon employees at 200 each. Maine and Alaska follow at 300 each."
+
+  methodology: "Employee counts and indirect jobs supported reflect Amazon's own investment data as of May 2025, listed by World Population Review. Vermont is not listed."
+
+  sources:
+    - name: "World Population Review — Amazon Employees by State"
+      url: "https://worldpopulationreview.com/state-rankings/amazon-employees-by-state"
+      description: "State-by-state count of direct Amazon employees and indirect jobs supported"
+
+map:
+  title: "Amazon Employees by State Map"
+  image_alt: "Map of the United States shaded by number of Amazon employees, from California's 154,000 down to 200 in West Virginia and Wyoming"
+  caption: "California leads with 154,000 Amazon employees, more than 750 times West Virginia and Wyoming's 200 each. Vermont is unshaded because it is not listed."
+  metric_key: employees
+  metric_label: "Amazon Employees"
+  color_scheme: orange
+  color_scale: log
+  detail_keys:
+    - indirect_jobs
+
+table:
+  columns:
+    state: "State"
+    employees: "Amazon Employees"
+    indirect_jobs: "Indirect Jobs Supported"
+
+  metric_default: employees
+  sort_default: desc
+
+  rows:
+    - state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      employees: 154000
+      indirect_jobs: 147500
+      notes: "Most Amazon employees of any state"
+    - state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      employees: 92000
+      indirect_jobs: 240000
+      notes: "Highest indirect jobs figure of any state, over 2.5 times its own employee count"
+    - state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      employees: 86500
+      indirect_jobs: 65000
+    - state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      employees: 55500
+      indirect_jobs: 47000
+    - state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      employees: 47500
+      indirect_jobs: 33000
+    - state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      employees: 43000
+      indirect_jobs: 29000
+    - state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      employees: 43000
+      indirect_jobs: 117500
+      notes: "Indirect jobs figure is 2.7 times its own employee count, the widest gap of any state after Oregon"
+    - state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      employees: 39500
+      indirect_jobs: 23500
+    - state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      employees: 36500
+      indirect_jobs: 56500
+      notes: "Indirect jobs exceed direct employees"
+    - state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      employees: 35000
+      indirect_jobs: 23500
+    - state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      employees: 31500
+      indirect_jobs: 22500
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      employees: 31000
+      indirect_jobs: 23000
+    - state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      employees: 28000
+      indirect_jobs: 18500
+    - state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      employees: 27500
+      indirect_jobs: 16500
+    - state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      employees: 24500
+      indirect_jobs: 27500
+      notes: "Indirect jobs exceed direct employees"
+    - state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      employees: 23500
+      indirect_jobs: 20000
+    - state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      employees: 23000
+      indirect_jobs: 9000
+    - state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      employees: 22500
+      indirect_jobs: 17000
+    - state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      employees: 20000
+      indirect_jobs: 50500
+      notes: "Indirect jobs figure is 2.5 times its own employee count"
+    - state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      employees: 19500
+      indirect_jobs: 13500
+    - state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      employees: 18500
+      indirect_jobs: 13000
+    - state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      employees: 15500
+      indirect_jobs: 8500
+    - state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      employees: 12000
+      indirect_jobs: 34500
+      notes: "Indirect jobs figure is nearly 3 times its own employee count, the widest gap of any state"
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      employees: 12000
+      indirect_jobs: 9500
+    - state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      employees: 9500
+      indirect_jobs: 5500
+    - state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      employees: 9500
+      indirect_jobs: 6000
+    - state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      employees: 8500
+      indirect_jobs: 5500
+    - state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      employees: 7500
+      indirect_jobs: 11500
+      notes: "Indirect jobs exceed direct employees"
+    - state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      employees: 7500
+      indirect_jobs: 7000
+    - state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      employees: 7000
+      indirect_jobs: 4000
+    - state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      employees: 7000
+      indirect_jobs: 11000
+      notes: "Indirect jobs exceed direct employees"
+    - state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      employees: 7000
+      indirect_jobs: 12000
+      notes: "Indirect jobs exceed direct employees"
+    - state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      employees: 6500
+      indirect_jobs: 6000
+    - state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      employees: 6000
+      indirect_jobs: 6000
+    - state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      employees: 6000
+      indirect_jobs: 4500
+    - state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      employees: 4500
+      indirect_jobs: 4000
+    - state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      employees: 4000
+      indirect_jobs: 3000
+    - state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      employees: 4000
+      indirect_jobs: 2500
+    - state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      employees: 3000
+      indirect_jobs: 6000
+      notes: "Indirect jobs exceed direct employees"
+    - state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      employees: 2000
+      indirect_jobs: 1500
+    - state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      employees: 1500
+      indirect_jobs: 800
+    - state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      employees: 1500
+      indirect_jobs: 1500
+    - state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      employees: 1000
+      indirect_jobs: 1500
+      notes: "Indirect jobs exceed direct employees"
+    - state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      employees: 1000
+      indirect_jobs: 500
+    - state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      employees: 500
+      indirect_jobs: 100
+    - state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      employees: 300
+      indirect_jobs: 300
+    - state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      employees: 300
+      indirect_jobs: 100
+    - state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      employees: 200
+      indirect_jobs: 50
+      notes: "Fewest Amazon employees of any state, tied with Wyoming"
+    - state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      employees: 200
+      indirect_jobs: 100
+      notes: "Fewest Amazon employees of any state, tied with West Virginia"
+
+compare:
+  metric_slug: amazon-employees
+  title: "Compare Amazon Employees Between Two States"
+  description: "Choose two states and compare Amazon employee counts and indirect jobs supported."
+  button_text: "Compare Amazon employees"
+  icon: "fa-solid fa-box"
+  default_state_a: california
+  default_state_b: washington
+
+sections:
+  - id: "states-with-the-most-amazon-employees"
+    icon: "fa-solid fa-arrow-trend-up"
+    title: "States With the Most Amazon Employees"
+    table:
+      columns:
+        state: "State"
+        employees: "Amazon Employees"
+        indirect_jobs: "Indirect Jobs Supported"
+      rows:
+        - state: "California"
+          state_slug: "california"
+          employees: 154000
+          indirect_jobs: 147500
+        - state: "Washington"
+          state_slug: "washington"
+          employees: 92000
+          indirect_jobs: 240000
+        - state: "Texas"
+          state_slug: "texas"
+          employees: 86500
+          indirect_jobs: 65000
+        - state: "Florida"
+          state_slug: "florida"
+          employees: 55500
+          indirect_jobs: 47000
+        - state: "New York"
+          state_slug: "new-york"
+          employees: 47500
+          indirect_jobs: 33000
+        - state: "New Jersey"
+          state_slug: "new-jersey"
+          employees: 43000
+          indirect_jobs: 29000
+        - state: "Virginia"
+          state_slug: "virginia"
+          employees: 43000
+          indirect_jobs: 117500
+        - state: "Illinois"
+          state_slug: "illinois"
+          employees: 39500
+          indirect_jobs: 23500
+        - state: "Ohio"
+          state_slug: "ohio"
+          employees: 36500
+          indirect_jobs: 56500
+        - state: "Arizona"
+          state_slug: "arizona"
+          employees: 35000
+          indirect_jobs: 23500
+    paragraphs:
+      - "California employs 154,000 Amazon workers, well ahead of Washington at 92,000 and Texas at 86,500. Florida is fourth at 55,500, and New York follows at 47,500."
+      - "New Jersey and Virginia are tied for sixth at 43,000. Illinois, Ohio, and Arizona round out the top ten at 39,500, 36,500, and 35,000."
+
+  - id: "states-where-indirect-jobs-outnumber-direct-employees"
+    icon: "fa-solid fa-arrows-turn-to-dots"
+    title: "States Where Indirect Jobs Outnumber Direct Employees"
+    table:
+      columns:
+        state: "State"
+        employees: "Amazon Employees"
+        indirect_jobs: "Indirect Jobs Supported"
+      rows:
+        - state: "Washington"
+          state_slug: "washington"
+          employees: 92000
+          indirect_jobs: 240000
+        - state: "Virginia"
+          state_slug: "virginia"
+          employees: 43000
+          indirect_jobs: 117500
+        - state: "Kentucky"
+          state_slug: "kentucky"
+          employees: 20000
+          indirect_jobs: 50500
+        - state: "Ohio"
+          state_slug: "ohio"
+          employees: 36500
+          indirect_jobs: 56500
+        - state: "Oregon"
+          state_slug: "oregon"
+          employees: 12000
+          indirect_jobs: 34500
+    paragraphs:
+      - "Oregon's 12,000 Amazon employees support 34,500 indirect jobs, nearly 3 times its own employee count, the widest gap of any state. Virginia is close behind: 43,000 employees support 117,500 indirect jobs, a 2.7 times multiple."
+      - "Washington supports 240,000 indirect jobs on 92,000 employees, a 2.6 times multiple and the highest indirect jobs total in the country. Kentucky and Ohio also post indirect totals above their employee counts, at 50,500 and 56,500."
+
+  - id: "states-with-the-fewest-amazon-employees"
+    icon: "fa-solid fa-arrow-trend-down"
+    title: "States With the Fewest Amazon Employees"
+    table:
+      columns:
+        state: "State"
+        employees: "Amazon Employees"
+        indirect_jobs: "Indirect Jobs Supported"
+      rows:
+        - state: "West Virginia"
+          state_slug: "west-virginia"
+          employees: 200
+          indirect_jobs: 50
+        - state: "Wyoming"
+          state_slug: "wyoming"
+          employees: 200
+          indirect_jobs: 100
+        - state: "Alaska"
+          state_slug: "alaska"
+          employees: 300
+          indirect_jobs: 300
+        - state: "Maine"
+          state_slug: "maine"
+          employees: 300
+          indirect_jobs: 100
+        - state: "Montana"
+          state_slug: "montana"
+          employees: 500
+          indirect_jobs: 100
+    paragraphs:
+      - "West Virginia and Wyoming report the fewest Amazon employees, tied at 200 each. Alaska and Maine follow at 300 each, and Montana is next at 500."
+
+faq:
+  - question: "Which state has the most Amazon employees?"
+    answer: "California has the most Amazon employees at 154,000, ahead of Washington at 92,000 and Texas at 86,500."
+
+  - question: "Which state has the fewest Amazon employees?"
+    answer: "West Virginia and Wyoming report the fewest Amazon employees, tied at 200 each. Alaska and Maine follow at 300 each."
+
+  - question: "How many indirect jobs does Amazon support in Washington?"
+    answer: "Amazon supports 240,000 indirect jobs in Washington, the highest total of any state. That figure is over 2.5 times Washington's own 92,000 direct employees."
+
+  - question: "How many people does Amazon employ in Texas?"
+    answer: "Amazon employs 86,500 people directly in Texas and supports another 65,000 indirect jobs in the state."
+
+  - question: "Does Amazon report employee data for Vermont?"
+    answer: "No. Vermont is not listed in this data. Every other state has at least 200 Amazon employees on record."
+
+  - question: "Which states have more indirect jobs than direct Amazon employees?"
+    answer: "Washington, Virginia, Kentucky, Ohio, Indiana, Oregon, Louisiana, Mississippi, Utah, Rhode Island, and Hawaii all report more indirect jobs than direct employees. Oregon's gap is the widest, at nearly 3 times its employee count."
+
+related:
+  - title: "Costco Locations by State"
+    url: "/rankings/economy/costco-by-state"
+  - title: "Fortune 500 Companies by State"
+    url: "/rankings/economy/fortune-500-companies-by-state"
+  - title: "Minimum Wage by State"
+    url: "/rankings/economy/minimum-wage-by-state"

@@ -30,6 +30,50 @@ namespace USASymbol.Services
             ("colorado", "utah"),
             ("north-carolina", "tennessee"),
             ("alaska", "hawaii"),
+
+            // Migration corridors (high out-migration states → popular destinations)
+            ("california", "idaho"),
+            ("california", "colorado"),
+            ("california", "washington"),
+            ("new-york", "north-carolina"),
+            ("new-york", "pennsylvania"),
+            ("new-york", "connecticut"),
+            ("illinois", "texas"),
+            ("illinois", "florida"),
+            ("illinois", "indiana"),
+            ("new-jersey", "pennsylvania"),
+            ("new-jersey", "florida"),
+            ("massachusetts", "new-hampshire"),
+            ("massachusetts", "florida"),
+            ("michigan", "ohio"),
+            ("michigan", "illinois"),
+            ("pennsylvania", "ohio"),
+            ("pennsylvania", "florida"),
+            ("virginia", "north-carolina"),
+            ("virginia", "tennessee"),
+            ("tennessee", "kentucky"),
+            ("tennessee", "georgia"),
+            ("texas", "oklahoma"),
+            ("texas", "colorado"),
+            ("texas", "tennessee"),
+            ("florida", "tennessee"),
+            ("florida", "south-carolina"),
+            ("georgia", "south-carolina"),
+            ("georgia", "alabama"),
+            ("arizona", "nevada"),
+            ("arizona", "colorado"),
+            ("nevada", "utah"),
+            ("washington", "idaho"),
+            ("oregon", "idaho"),
+            ("colorado", "wyoming"),
+            ("utah", "idaho"),
+            ("missouri", "kansas"),
+            ("minnesota", "wisconsin"),
+            ("ohio", "indiana"),
+            ("north-carolina", "south-carolina"),
+            ("maryland", "delaware"),
+            ("new-hampshire", "vermont"),
+            ("rhode-island", "massachusetts"),
         };
 
         public static readonly IReadOnlyList<(string Slug1, string Slug2)> TierOneComparisonPairs = new List<(string, string)>
@@ -42,6 +86,24 @@ namespace USASymbol.Services
             ("new-york", "texas"),
             ("washington", "oregon"),
             ("maryland", "virginia"),
+
+            // High single-metric search intent (migration + no-income-tax comparisons)
+            ("california", "idaho"),
+            ("california", "nevada"),
+            ("new-jersey", "pennsylvania"),
+            ("massachusetts", "new-hampshire"),
+            ("illinois", "texas"),
+            ("illinois", "florida"),
+            ("texas", "oklahoma"),
+            ("texas", "tennessee"),
+            ("florida", "tennessee"),
+            ("arizona", "nevada"),
+            ("new-york", "north-carolina"),
+            ("virginia", "north-carolina"),
+            ("tennessee", "kentucky"),
+            ("michigan", "ohio"),
+            ("missouri", "kansas"),
+            ("colorado", "utah"),
         };
 
         private readonly IStateService _stateService;
@@ -161,28 +223,126 @@ namespace USASymbol.Services
                 StatsB = statsB,
                 Metric = metric,
                 Result = BuildResult(metric, stateA, statsA, stateB, statsB),
-                OtherMetrics = metrics.Where(m => m.Slug != metricSlug).ToList(),
+                OtherMetrics = metrics.Where(m => m.Slug != metric.Slug).ToList(),
                 AllStateRanks = allStateRanks,
                 HigherIsBetter = metric.HigherIsBetter
             };
+        }
+
+        public async Task<(TableSectionViewModel? Table, List<CategoryExtreme> Highlights)> GetCategoryStatesTableAsync(string categorySlug)
+        {
+            var metrics = ComparisonMetricsConfig.All
+                .Where(m => string.Equals(m.GroupSlug, categorySlug, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(m => m.SortOrder)
+                .ToList();
+            if (metrics.Count == 0) return (null, new List<CategoryExtreme>());
+
+            var allStates = await _stateService.GetAllStatesAsync();
+            var allStats = await _statsService.GetAllStatsAsync();
+
+            var table = new PageTable
+            {
+                Searchable = true,
+                Sortable = true,
+                DefaultColumn = metrics.FirstOrDefault(m => m.Type == MetricType.Numeric)?.Slug ?? "state"
+            };
+            table.Columns.Add(new TableColumn { Key = "rank", Label = "Rank", Type = "rank", Sortable = true });
+            table.Columns.Add(new TableColumn { Key = "state", Label = "State", Type = "state-link", Sortable = true });
+            foreach (var m in metrics)
+            {
+                table.Columns.Add(new TableColumn
+                {
+                    Key = m.Slug,
+                    Label = m.Name,
+                    Type = m.Type == MetricType.Numeric ? "number" : "text",
+                    Sortable = m.Type == MetricType.Numeric
+                });
+            }
+
+            var rankMetric = metrics.FirstOrDefault(m => m.Type == MetricType.Numeric);
+            var ordered = allStates
+                .Select(s =>
+                {
+                    allStats.TryGetValue(s.Slug, out var st);
+                    return (State: s, Stats: st);
+                })
+                .OrderByDescending(x => rankMetric?.GetNumericValue == null
+                    ? 0
+                    : (rankMetric.HigherIsBetter ? rankMetric.GetNumericValue(x.State, x.Stats) : -rankMetric.GetNumericValue(x.State, x.Stats)) ?? double.MinValue)
+                .ThenBy(x => x.State.Name)
+                .ToList();
+
+            for (int i = 0; i < ordered.Count; i++)
+            {
+                var (state, stats) = ordered[i];
+                var row = new TableRow();
+                row.Data["rank"] = i + 1;
+                row.Data["state"] = state.Name;
+                row.Data["state_slug"] = state.Slug;
+                foreach (var m in metrics)
+                {
+                    row.Data[m.Slug] = m.Type == MetricType.Numeric
+                        ? (object?)m.GetNumericValue?.Invoke(state, stats)
+                        : m.GetDisplayValue(state, stats);
+                }
+                table.Rows.Add(row);
+            }
+
+            var highlights = new List<CategoryExtreme>();
+            foreach (var m in metrics.Where(m => m.Type == MetricType.Numeric && m.GetNumericValue != null))
+            {
+                var withValues = ordered
+                    .Select(x => (x.State, x.Stats, Value: m.GetNumericValue!(x.State, x.Stats)))
+                    .Where(x => x.Value.HasValue)
+                    .ToList();
+                if (withValues.Count == 0) continue;
+
+                var best = withValues.OrderByDescending(x => m.HigherIsBetter ? x.Value!.Value : -x.Value!.Value).First();
+                var worst = withValues.OrderBy(x => m.HigherIsBetter ? x.Value!.Value : -x.Value!.Value).First();
+
+                highlights.Add(new CategoryExtreme
+                {
+                    MetricName = m.Name,
+                    Icon = m.Icon,
+                    HigherIsBetter = m.HigherIsBetter,
+                    BestStateName = best.State.Name,
+                    BestStateSlug = best.State.Slug,
+                    BestValue = m.GetDisplayValue(best.State, best.Stats),
+                    WorstStateName = worst.State.Name,
+                    WorstStateSlug = worst.State.Slug,
+                    WorstValue = m.GetDisplayValue(worst.State, worst.Stats)
+                });
+            }
+
+            var tableSection = new TableSectionViewModel
+            {
+                Tables = new List<PageTable> { table },
+                Searchable = true,
+                TotalRowsCount = table.Rows.Count
+            };
+
+            return (tableSection, highlights);
         }
 
         // ── private helpers ──────────────────────────────────────────────────
 
         private async Task<(State?, State?)> LoadStatePairAsync(string slugA, string slugB)
         {
-            var taskA = _stateService.GetStateBySlugAsync(slugA);
-            var taskB = _stateService.GetStateBySlugAsync(slugB);
-            await Task.WhenAll(taskA, taskB);
-            return (taskA.Result, taskB.Result);
+            // StateService uses the request-scoped AppDbContext. EF Core does not
+            // support concurrent queries on the same context, which caused compare
+            // pages to fail intermittently against Azure SQL. Keep these queries
+            // sequential while they share that scoped dependency.
+            var stateA = await _stateService.GetStateBySlugAsync(slugA);
+            var stateB = await _stateService.GetStateBySlugAsync(slugB);
+            return (stateA, stateB);
         }
 
         private async Task<(StateStats?, StateStats?)> LoadStatsPairAsync(string slugA, string slugB)
         {
-            var taskA = _statsService.GetStatsAsync(slugA);
-            var taskB = _statsService.GetStatsAsync(slugB);
-            await Task.WhenAll(taskA, taskB);
-            return (taskA.Result, taskB.Result);
+            var allStats = await _statsService.GetAllStatsAsync();
+            allStats.TryGetValue(slugA, out var statsA);
+            allStats.TryGetValue(slugB, out var statsB);
+            return (statsA, statsB);
         }
 
         private static MetricComparisonResult BuildResult(

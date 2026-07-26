@@ -1,0 +1,12 @@
+@model USASymbol.Models.ViewModels.PageDataHeroViewModel
+
+<nav class="pdh-jumps" aria-label="On this page">
+    @if (Model.EntryCount > 0)
+    {
+        <a href="@Model.TableAnchor">Full data</a>
+    }
+    @if (Model.HasMethodology)
+    {
+        <a href="@Model.MethodologyAnchor">Methodology</a>
+    }
+</nav>

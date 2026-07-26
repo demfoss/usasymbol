@@ -10,7 +10,7 @@ namespace USASymbol.Services
             {
                 Slug = "population",
                 Name = "Population",
-                Description = "Total resident population (2020 Census).",
+                Description = "Estimated resident population in 2025 (U.S. Census Bureau Population Estimates).",
                 GroupSlug = "demographics",
                 GroupName = "Demographics",
                 GroupOrder = 1,
@@ -19,12 +19,12 @@ namespace USASymbol.Services
                 Icon = "fa-solid fa-people-group",
                 Type = MetricType.Numeric,
                 HigherIsBetter = true,
-                GetNumericValue = (state, _) => state.Population.HasValue ? (double)state.Population.Value : null,
-                GetDisplayValue = (state, _) => state.Population.HasValue ? state.Population.Value.ToString("N0") : null,
-                GenerateSummary = (a, _, b, _) => CompareStates(
+                GetNumericValue = (state, stats) => stats?.PopulationEstimate2025 ?? state.Population,
+                GetDisplayValue = (state, stats) => (stats?.PopulationEstimate2025 ?? state.Population) is int value ? value.ToString("N0") : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
                     a, b,
-                    a.Population.HasValue ? (double?)a.Population.Value : null,
-                    b.Population.HasValue ? (double?)b.Population.Value : null,
+                    sa?.PopulationEstimate2025 ?? a.Population,
+                    sb?.PopulationEstimate2025 ?? b.Population,
                     true,
                     "Population data is not available for comparison.",
                     "have the same population",
@@ -44,10 +44,13 @@ namespace USASymbol.Services
                 Icon = "fa-solid fa-city",
                 Type = MetricType.Numeric,
                 HigherIsBetter = true,
-                GetNumericValue = (state, stats) => stats?.PopulationDensity(state.Population),
-                GetDisplayValue = (state, stats) => stats?.PopulationDensity(state.Population) is double d ? $"{d:N1} per sq mi" : null,
+                GetNumericValue = (state, stats) => stats?.PopulationDensity(stats?.PopulationEstimate2025 ?? state.Population),
+                GetDisplayValue = (state, stats) => stats?.PopulationDensity(stats?.PopulationEstimate2025 ?? state.Population) is double d ? $"{d:N1} per sq mi" : null,
                 GenerateSummary = (a, sa, b, sb) => CompareStates(
-                    a, b, sa?.PopulationDensity(a.Population), sb?.PopulationDensity(b.Population), true,
+                    a, b,
+                    sa?.PopulationDensity(sa?.PopulationEstimate2025 ?? a.Population),
+                    sb?.PopulationDensity(sb?.PopulationEstimate2025 ?? b.Population),
+                    true,
                     "Density data is not available for comparison.",
                     "have the same population density",
                     "is more densely populated than")
@@ -595,6 +598,48 @@ namespace USASymbol.Services
             },
             new()
             {
+                Slug = "average-wind-speed",
+                Name = "Average Wind Speed",
+                Description = "Average statewide wind speed in miles per hour.",
+                GroupSlug = "climate",
+                GroupName = "Climate",
+                GroupOrder = 4,
+                SortOrder = 6,
+                Unit = "mph",
+                Icon = "fa-solid fa-wind",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.AverageWindSpeedMph,
+                GetDisplayValue = (_, stats) => stats?.AverageWindSpeedMph is double value ? $"{value:F1} mph" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.AverageWindSpeedMph, sb?.AverageWindSpeedMph, false,
+                    "Average wind speed data is not available for comparison.",
+                    "have the same average wind speed",
+                    "is less windy than")
+            },
+            new()
+            {
+                Slug = "lightning-density",
+                Name = "Lightning Density",
+                Description = "Average lightning events per square mile from the incorporated Vaisala state dataset.",
+                GroupSlug = "climate",
+                GroupName = "Climate",
+                GroupOrder = 4,
+                SortOrder = 7,
+                Unit = "per sq mi",
+                Icon = "fa-solid fa-bolt-lightning",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.LightningDensityPerSqMile,
+                GetDisplayValue = (_, stats) => stats?.LightningDensityPerSqMile is double value ? $"{value:F1} per sq mi" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.LightningDensityPerSqMile, sb?.LightningDensityPerSqMile, false,
+                    "Lightning density data is not available for comparison.",
+                    "have the same lightning density",
+                    "has lower lightning density than")
+            },
+            new()
+            {
                 Slug = "home-value",
                 Name = "Median Housing Value",
                 Description = "Median residential home value in U.S. dollars.",
@@ -641,7 +686,7 @@ namespace USASymbol.Services
             {
                 Slug = "owner-costs-with-mortgage",
                 Name = "Median Monthly Owner Costs With Mortgage",
-                Description = "Median selected monthly owner costs for households with a mortgage.",
+                Description = "Median selected monthly owner costs for households with a mortgage (ACS 2024 1-year estimates, table B25088).",
                 GroupSlug = "housing",
                 GroupName = "Housing",
                 GroupOrder = 5,
@@ -663,7 +708,7 @@ namespace USASymbol.Services
             {
                 Slug = "owner-costs-without-mortgage",
                 Name = "Owner Costs Without Mortgage",
-                Description = "Median selected monthly owner costs for households without a mortgage.",
+                Description = "Median selected monthly owner costs for households without a mortgage (ACS 2024 1-year estimates, table B25088).",
                 GroupSlug = "housing",
                 GroupName = "Housing",
                 GroupOrder = 5,
@@ -898,6 +943,7 @@ namespace USASymbol.Services
             new()
             {
                 Slug = "political-lean",
+                LegacySlugs = new[] { "state-color" },
                 Name = "State Color",
                 Description = "Simple political color label based on the 2024 presidential result and battleground status.",
                 GroupSlug = "politics",
@@ -1526,7 +1572,7 @@ namespace USASymbol.Services
                 Type = MetricType.Numeric,
                 HigherIsBetter = false,
                 GetNumericValue = (_, stats) => stats?.ViolentCrimeRatePer100k,
-                GetDisplayValue = (_, stats) => stats?.ViolentCrimeRatePer100k is double v ? $"{v:F1}" : null,
+                GetDisplayValue = (_, stats) => stats?.ViolentCrimeRatePer100k is double v ? $"{v:F1} per 100k" : null,
                 GenerateSummary = (a, sa, b, sb) => CompareStates(
                     a, b, sa?.ViolentCrimeRatePer100k, sb?.ViolentCrimeRatePer100k, false,
                     "Violent crime data is not available for comparison.",
@@ -1547,7 +1593,7 @@ namespace USASymbol.Services
                 Type = MetricType.Numeric,
                 HigherIsBetter = false,
                 GetNumericValue = (_, stats) => stats?.PropertyCrimeRatePer100k,
-                GetDisplayValue = (_, stats) => stats?.PropertyCrimeRatePer100k is double v ? $"{v:F1}" : null,
+                GetDisplayValue = (_, stats) => stats?.PropertyCrimeRatePer100k is double v ? $"{v:F1} per 100k" : null,
                 GenerateSummary = (a, sa, b, sb) => CompareStates(
                     a, b, sa?.PropertyCrimeRatePer100k, sb?.PropertyCrimeRatePer100k, false,
                     "Property crime data is not available for comparison.",
@@ -1877,6 +1923,414 @@ namespace USASymbol.Services
                     "AZA-accredited zoo data is not available for comparison.",
                     "have the same number of AZA-accredited zoos",
                     "has more AZA-accredited zoos than")
+            },
+
+            // ── Metrics imported from Content/rankings ──────────────────────────
+            new()
+            {
+                Slug = "domestic-migration",
+                Name = "Net Domestic Migration",
+                Description = "Net moves from other U.S. states from July 1, 2024 to July 1, 2025 (U.S. Census Bureau).",
+                GroupSlug = "demographics",
+                GroupName = "Demographics",
+                GroupOrder = 1,
+                SortOrder = 5,
+                Unit = "people",
+                Icon = "fa-solid fa-truck-moving",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.NetDomesticMigration,
+                GetDisplayValue = (_, stats) => stats?.NetDomesticMigration is int value
+                    ? value > 0 ? $"+{value:N0}" : value.ToString("N0")
+                    : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.NetDomesticMigration, sb?.NetDomesticMigration, true,
+                    "Domestic migration data is not available for comparison.",
+                    "had the same net domestic migration",
+                    "had a stronger net domestic migration result than",
+                    "people")
+            },
+            new()
+            {
+                Slug = "population-growth",
+                Name = "Population Growth Since 2020",
+                Description = "Percentage change from the 2020 Census population to the 2025 Census estimate.",
+                GroupSlug = "demographics",
+                GroupName = "Demographics",
+                GroupOrder = 1,
+                SortOrder = 6,
+                Unit = "%",
+                Icon = "fa-solid fa-arrow-trend-up",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.PopulationChangeSince2020Pct,
+                GetDisplayValue = (_, stats) => stats?.PopulationChangeSince2020Pct is double value
+                    ? $"{(value > 0 ? "+" : string.Empty)}{value:0.0}%"
+                    : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.PopulationChangeSince2020Pct, sb?.PopulationChangeSince2020Pct, true,
+                    "Population growth data is not available for comparison.",
+                    "had the same population change since 2020",
+                    "had faster population growth since 2020 than")
+            },
+            new()
+            {
+                Slug = "single-person-living-wage",
+                Name = "Income Needed to Live Alone",
+                Description = "Estimated annual income a single adult needs to cover basic living costs in 2025.",
+                GroupSlug = "economy",
+                GroupName = "Income",
+                GroupOrder = 2,
+                SortOrder = 10,
+                Unit = "USD",
+                Icon = "fa-solid fa-wallet",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.SinglePersonLivingWage,
+                GetDisplayValue = (_, stats) => stats?.SinglePersonLivingWage is int value ? $"${value:N0}/yr" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.SinglePersonLivingWage, sb?.SinglePersonLivingWage, false,
+                    "Single-person living-wage data is not available for comparison.",
+                    "require the same estimated income for one adult",
+                    "requires less annual income for one adult than",
+                    "USD")
+            },
+            new()
+            {
+                Slug = "average-credit-score",
+                Name = "Average Credit Score",
+                Description = "Average consumer credit score by state in 2025.",
+                GroupSlug = "quality-of-life",
+                GroupName = "Quality of Life",
+                GroupOrder = 3,
+                SortOrder = 10,
+                Unit = "points",
+                Icon = "fa-solid fa-credit-card",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.AverageCreditScore,
+                GetDisplayValue = (_, stats) => stats?.AverageCreditScore is int value ? value.ToString("N0") : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.AverageCreditScore, sb?.AverageCreditScore, true,
+                    "Average credit score data is not available for comparison.",
+                    "have the same average credit score",
+                    "has a higher average credit score than")
+            },
+            new()
+            {
+                Slug = "grocery-tax",
+                Name = "Grocery Tax Rate",
+                Description = "State sales tax rate on ordinary groceries as of January 1, 2026; local taxes may differ.",
+                GroupSlug = "taxes",
+                GroupName = "Taxes",
+                GroupOrder = 7,
+                SortOrder = 5,
+                Unit = "%",
+                Icon = "fa-solid fa-basket-shopping",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.GroceryTaxRatePct,
+                GetDisplayValue = (_, stats) => stats?.GroceryTaxRatePct is double value
+                    ? $"{value:0.###}% ({stats.GroceryTaxStatus})"
+                    : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.GroceryTaxRatePct, sb?.GroceryTaxRatePct, false,
+                    "Grocery tax data is not available for comparison.",
+                    "have the same statewide grocery tax rate",
+                    "has a lower statewide grocery tax rate than")
+            },
+            new()
+            {
+                Slug = "death-tax",
+                Name = "Estate and Inheritance Tax",
+                Description = "Whether the state levies an estate tax, inheritance tax, both, or neither in 2025.",
+                GroupSlug = "taxes",
+                GroupName = "Taxes",
+                GroupOrder = 7,
+                SortOrder = 6,
+                Unit = "",
+                Icon = "fa-solid fa-file-signature",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetDisplayValue = (_, stats) => stats?.DeathTaxStatus,
+                GenerateSummary = (a, sa, b, sb) =>
+                    sa?.DeathTaxStatus is null || sb?.DeathTaxStatus is null
+                        ? "Estate and inheritance tax data is not available for comparison."
+                        : sa.DeathTaxStatus == sb.DeathTaxStatus
+                            ? $"{a.Name} and {b.Name} have the same state death-tax status: {sa.DeathTaxStatus}."
+                            : $"{a.Name} is listed as {sa.DeathTaxStatus}, while {b.Name} is listed as {sb.DeathTaxStatus}."
+            },
+            new()
+            {
+                Slug = "vehicle-property-tax",
+                Name = "Annual Vehicle Property Tax",
+                Description = "Whether the state or its local governments impose a recurring value-based tax on vehicles.",
+                GroupSlug = "taxes",
+                GroupName = "Taxes",
+                GroupOrder = 7,
+                SortOrder = 7,
+                Unit = "",
+                Icon = "fa-solid fa-car",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetDisplayValue = (_, stats) => stats?.VehiclePropertyTaxStatus,
+                GenerateSummary = (a, sa, b, sb) =>
+                    sa?.VehiclePropertyTaxStatus is null || sb?.VehiclePropertyTaxStatus is null
+                        ? "Vehicle property tax data is not available for comparison."
+                        : $"{a.Name}: {sa.VehiclePropertyTaxStatus}. {b.Name}: {sb.VehiclePropertyTaxStatus}."
+            },
+            new()
+            {
+                Slug = "abortion-laws",
+                Name = "Abortion Law Status",
+                Description = "Simplified statewide abortion-law status and on-demand gestational limit in 2026.",
+                GroupSlug = "laws",
+                GroupName = "Laws",
+                GroupOrder = 8,
+                SortOrder = 6,
+                Unit = "",
+                Icon = "fa-solid fa-scale-balanced",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetDisplayValue = (_, stats) => stats?.AbortionLawStatus is string status
+                    ? stats.AbortionGestationalLimit is string limit ? $"{status} ({limit})" : status
+                    : null,
+                GenerateSummary = (a, sa, b, sb) =>
+                    sa?.AbortionLawStatus is null || sb?.AbortionLawStatus is null
+                        ? "Abortion law data is not available for comparison."
+                        : $"{a.Name}: {sa.AbortionLawStatus}. {b.Name}: {sb.AbortionLawStatus}."
+            },
+            new()
+            {
+                Slug = "right-to-work",
+                Name = "Right-to-Work Law",
+                Description = "Whether a right-to-work law is in effect in 2026.",
+                GroupSlug = "laws",
+                GroupName = "Laws",
+                GroupOrder = 8,
+                SortOrder = 7,
+                Unit = "",
+                Icon = "fa-solid fa-briefcase",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetDisplayValue = (_, stats) => stats?.RightToWorkStatus,
+                GenerateSummary = (a, sa, b, sb) =>
+                    sa?.RightToWorkStatus is null || sb?.RightToWorkStatus is null
+                        ? "Right-to-work law data is not available for comparison."
+                        : $"{a.Name}: {sa.RightToWorkStatus}. {b.Name}: {sb.RightToWorkStatus}."
+            },
+            new()
+            {
+                Slug = "infant-mortality",
+                Name = "Infant Mortality Rate",
+                Description = "Infant deaths per 1,000 live births (CDC NCHS 2024).",
+                GroupSlug = "health",
+                GroupName = "Health",
+                GroupOrder = 10,
+                SortOrder = 6,
+                Unit = "per 1,000",
+                Icon = "fa-solid fa-baby",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.InfantMortalityRatePer1000,
+                GetDisplayValue = (_, stats) => stats?.InfantMortalityRatePer1000 is double value ? $"{value:0.00} per 1,000" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.InfantMortalityRatePer1000, sb?.InfantMortalityRatePer1000, false,
+                    "Infant mortality data is not available for comparison.",
+                    "have the same infant mortality rate",
+                    "has a lower infant mortality rate than")
+            },
+            new()
+            {
+                Slug = "overdose-death-rate",
+                Name = "Drug Overdose Death Rate",
+                Description = "Drug overdose deaths per 100,000 residents in the incorporated CDC dataset.",
+                GroupSlug = "health",
+                GroupName = "Health",
+                GroupOrder = 10,
+                SortOrder = 8,
+                Unit = "per 100,000",
+                Icon = "fa-solid fa-capsules",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.OverdoseDeathRatePer100k,
+                GetDisplayValue = (_, stats) => stats?.OverdoseDeathRatePer100k is double value ? $"{value:0.0} per 100,000" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.OverdoseDeathRatePer100k, sb?.OverdoseDeathRatePer100k, false,
+                    "Drug overdose death rate data is not available for comparison.",
+                    "have the same drug overdose death rate",
+                    "has a lower drug overdose death rate than")
+            },
+            new()
+            {
+                Slug = "water-quality",
+                Name = "Water Quality Score",
+                Description = "State tap-water score on a 100-point scale from the existing water-quality ranking.",
+                GroupSlug = "infrastructure",
+                GroupName = "Infrastructure",
+                GroupOrder = 15,
+                SortOrder = 1,
+                Unit = "score",
+                Icon = "fa-solid fa-droplet",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.WaterQualityScore,
+                GetDisplayValue = (_, stats) => stats?.WaterQualityScore is double value
+                    ? $"{value:0.0}/100 ({stats.WaterQualityGrade})"
+                    : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.WaterQualityScore, sb?.WaterQualityScore, true,
+                    "Water quality data is not available for comparison.",
+                    "have the same water quality score",
+                    "has a higher water quality score than")
+            },
+            new()
+            {
+                Slug = "power-outages",
+                Name = "Annual Power Outage Hours",
+                Description = "Average annual electric outage duration, including major events, in hours.",
+                GroupSlug = "infrastructure",
+                GroupName = "Infrastructure",
+                GroupOrder = 15,
+                SortOrder = 2,
+                Unit = "hours",
+                Icon = "fa-solid fa-bolt",
+                Type = MetricType.Numeric,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.PowerOutageHoursAnnual,
+                GetDisplayValue = (_, stats) => stats?.PowerOutageHoursAnnual is double value ? $"{value:0.0} hours/yr" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.PowerOutageHoursAnnual, sb?.PowerOutageHoursAnnual, false,
+                    "Power outage data is not available for comparison.",
+                    "have the same average annual outage duration",
+                    "has fewer annual power outage hours than")
+            },
+            new()
+            {
+                Slug = "road-quality",
+                Name = "Road Quality Rank",
+                Description = "State road-quality ranking from the existing infrastructure table (1 = best).",
+                GroupSlug = "infrastructure",
+                GroupName = "Infrastructure",
+                GroupOrder = 15,
+                SortOrder = 3,
+                Unit = "rank",
+                Icon = "fa-solid fa-road",
+                Type = MetricType.Ordinal,
+                HigherIsBetter = false,
+                GetNumericValue = (_, stats) => stats?.RoadQualityRank,
+                GetDisplayValue = (_, stats) => stats?.RoadQualityRank is int value ? $"#{value}" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.RoadQualityRank, sb?.RoadQualityRank, false,
+                    "Road quality ranking data is not available for comparison.",
+                    "have the same road quality rank",
+                    "ranks higher for road quality than")
+            },
+            new()
+            {
+                Slug = "renewable-electricity",
+                Name = "Renewable Electricity Share",
+                Description = "Share of statewide electricity generation from renewable sources.",
+                GroupSlug = "infrastructure",
+                GroupName = "Infrastructure",
+                GroupOrder = 15,
+                SortOrder = 4,
+                Unit = "%",
+                Icon = "fa-solid fa-leaf",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.RenewableElectricityPct,
+                GetDisplayValue = (_, stats) => stats?.RenewableElectricityPct is double value ? $"{value:0.0}%" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.RenewableElectricityPct, sb?.RenewableElectricityPct, true,
+                    "Renewable electricity data is not available for comparison.",
+                    "have the same renewable electricity share",
+                    "has a higher renewable electricity share than")
+            },
+            new()
+            {
+                Slug = "largest-airport",
+                Name = "Largest Airport",
+                Description = "The state's largest commercial airport and its annual passenger volume.",
+                GroupSlug = "infrastructure",
+                GroupName = "Infrastructure",
+                GroupOrder = 15,
+                SortOrder = 5,
+                Unit = "",
+                Icon = "fa-solid fa-plane-departure",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetDisplayValue = (_, stats) => stats?.LargestAirportName is string airport
+                    ? $"{airport} ({stats.LargestAirportIata})"
+                    : null,
+                GenerateSummary = (a, sa, b, sb) =>
+                    sa?.LargestAirportName is null || sb?.LargestAirportName is null
+                        ? "Largest airport data is not available for comparison."
+                        : $"{a.Name}'s largest airport is {sa.LargestAirportName}; {b.Name}'s is {sb.LargestAirportName}."
+            },
+            new()
+            {
+                Slug = "casinos",
+                Name = "Casinos",
+                Description = "Number of casinos in the maintained state casino ranking.",
+                GroupSlug = "culture",
+                GroupName = "Culture",
+                GroupOrder = 14,
+                SortOrder = 2,
+                Unit = "count",
+                Icon = "fa-solid fa-dice",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.CasinoCount,
+                GetDisplayValue = (_, stats) => stats?.CasinoCount is int value
+                    ? stats.BestKnownCasino is string casino ? $"{value:N0} ({casino})" : value.ToString("N0")
+                    : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.CasinoCount, sb?.CasinoCount, true,
+                    "Casino count data is not available for comparison.",
+                    "have the same number of casinos",
+                    "has more casinos than")
+            },
+            new()
+            {
+                Slug = "ufo-sightings",
+                Name = "UFO Sightings per 100,000",
+                Description = "Reported UFO sightings per 100,000 residents in the maintained culture ranking.",
+                GroupSlug = "culture",
+                GroupName = "Culture",
+                GroupOrder = 14,
+                SortOrder = 3,
+                Unit = "per 100,000",
+                Icon = "fa-solid fa-user-astronaut",
+                Type = MetricType.Numeric,
+                HigherIsBetter = true,
+                GetNumericValue = (_, stats) => stats?.UfoSightingsPer100k,
+                GetDisplayValue = (_, stats) => stats?.UfoSightingsPer100k is double value ? $"{value:0.0} per 100K" : null,
+                GenerateSummary = (a, sa, b, sb) => CompareStates(
+                    a, b, sa?.UfoSightingsPer100k, sb?.UfoSightingsPer100k, true,
+                    "UFO sighting data is not available for comparison.",
+                    "have the same reported UFO sighting rate",
+                    "has a higher reported UFO sighting rate than")
+            },
+            new()
+            {
+                Slug = "most-popular-car",
+                Name = "Most Popular Car",
+                Description = "The most popular vehicle brand and model in the maintained state ranking.",
+                GroupSlug = "culture",
+                GroupName = "Culture",
+                GroupOrder = 14,
+                SortOrder = 5,
+                Unit = "",
+                Icon = "fa-solid fa-car-side",
+                Type = MetricType.Text,
+                HigherIsBetter = false,
+                GetDisplayValue = (_, stats) => stats?.MostPopularCarModel ?? stats?.MostPopularCarBrand,
+                GenerateSummary = (a, sa, b, sb) =>
+                    (sa?.MostPopularCarModel ?? sa?.MostPopularCarBrand) is not string carA ||
+                    (sb?.MostPopularCarModel ?? sb?.MostPopularCarBrand) is not string carB
+                        ? "Most popular car data is not available for comparison."
+                        : $"{a.Name}'s most popular car is {carA}; {b.Name}'s is {carB}."
             }
         };
 
@@ -1887,7 +2341,22 @@ namespace USASymbol.Services
             .Distinct()
             .ToList();
 
-        public static ComparisonMetricDefinition? GetBySlug(string slug) => All.FirstOrDefault(m => m.Slug == slug);
+        static ComparisonMetricsConfig()
+        {
+            foreach (var metric in All)
+            {
+                var source = ComparisonMetricSourceCatalog.Get(metric);
+                metric.SourceName = source.Name;
+                metric.SourceUrl = source.Url;
+                metric.DataYear = source.DataPeriod;
+                metric.UpdatedAt = source.ReviewedOn;
+            }
+        }
+
+        public static ComparisonMetricDefinition? GetBySlug(string slug) =>
+            All.FirstOrDefault(metric =>
+                string.Equals(metric.Slug, slug, StringComparison.OrdinalIgnoreCase) ||
+                metric.LegacySlugs.Contains(slug, StringComparer.OrdinalIgnoreCase));
 
         private static string CompareStates(State a, State b, double? valueA, double? valueB, bool higherIsBetter, string unavailable, string tieText, string winnerText, string? unit = null)
         {

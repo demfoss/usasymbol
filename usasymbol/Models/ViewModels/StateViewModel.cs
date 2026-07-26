@@ -31,6 +31,9 @@ namespace USASymbol.Models.ViewModels
         public State State { get; set; } = new();
         public List<Symbol> Symbols { get; set; } = new();
         public List<State> RelatedStates { get; set; } = new();
+
+        /// <summary>States to feature in the "Compare" CTA — curated high-intent pairs first, same-region states as filler.</summary>
+        public List<State> CompareStates { get; set; } = new();
         public StateHubContent? HubContent { get; set; }
     }
 

@@ -31,12 +31,12 @@
                 </h3>
             }
 
-            <div class="ranking-table-scroll overflow-x-auto @(Model.Tables.Count > 1 ? "mb-6" : "")">
-                <table class="rankingTable min-w-full text-left text-sm">
+            <div class="ranking-table-scroll @(Model.Tables.Count > 1 ? "ranking-table-scroll--spaced" : "")">
+                <table class="rankingTable">
 
                     <!-- HEADER -->
-                    <thead class="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm">
-                        <tr class="border-b border-slate-200/80">
+                    <thead>
+                        <tr>
                             @foreach (var col in columns)
                             {
                                 if (col.Key == "state_slug") { continue; }
@@ -46,18 +46,18 @@
                                 var hiddenClass  = isHidden ? "hidden" : "";
                                 var sortable     = col.Sortable && table.Sortable;
 
-                                <th class="px-4 py-3 text-[11px] font-extrabold uppercase tracking-[0.12em] text-slate-600
-                                           @(sortable ? "cursor-pointer hover:bg-slate-100/80" : "")
-                                           transition select-none @hiddenClass"
+                                <th class="rankingTh @(sortable ? "rankingTh--sortable" : "") @hiddenClass"
                                     data-column="@col.Key"
                                     data-coltype="@col.Type"
+                                    scope="col"
+                                    @if (sortable) { <text>tabindex="0" role="button" aria-sort="none"</text> }
                                     @if (isToggleable) { <text>data-toggleable="true"</text> }
                                     @if (sortable)     { <text>data-sort="@col.Key"</text> }>
-                                    <div class="flex items-center gap-2">
+                                    <div class="rankingTh__content">
                                         <span>@col.Label</span>
                                         @if (sortable)
                                         {
-                                            <i class="fas fa-sort text-slate-300 text-xs"></i>
+                                            <i class="ranking-sort-icon fas fa-sort" aria-hidden="true"></i>
                                         }
                                     </div>
                                 </th>
@@ -66,15 +66,17 @@
                     </thead>
 
                     <!-- BODY -->
-                    <tbody class="rankingTbody divide-y divide-slate-100">
+                    <tbody class="rankingTbody">
                         @for (int i = 0; i < table.Rows.Count; i++)
                         {
                             var row        = table.Rows[i];
-                            var rowBg      = i % 2 == 0 ? "bg-white" : "bg-slate-50/35";
                             var stateSlug  = row.GetString("state_slug");
                             var stateName  = row.GetString("state");
                             var postalCode = row.GetString("postal_code") ?? row.GetString("state_code") ?? row.GetString("abbr") ?? row.GetString("abbreviation");
-                            var stateUrl   = $"/states/{stateSlug}";
+                            // Empty when the row has no real state page (e.g. Washington D.C., Canadian
+                            // provinces) so it doesn't fall back to a bare "/states/" link -- rows without
+                            // a resolvable state/symbol URL should not be clickable at all (see below).
+                            var stateUrl   = !string.IsNullOrWhiteSpace(stateSlug) ? $"/states/{stateSlug}" : "";
 
                             // ── URL priority: custom_url > auto-built ──────────────────
                             var customRowUrl = row.GetString("custom_url");
@@ -95,6 +97,9 @@
                                     : "";
                             }
 
+                            var effectiveSymbolUrl = row.GetString("symbol_url") is { Length: > 0 } explicitSymbolUrl ? explicitSymbolUrl : symbolUrl;
+                            var rowIsClickable = !string.IsNullOrWhiteSpace(stateUrl) || !string.IsNullOrWhiteSpace(effectiveSymbolUrl);
+
                             // ── Search text: include all non-slug text columns ─────────
                             var searchParts = new System.Collections.Generic.List<string?> { stateName };
                             foreach (var c in columns.Where(c => c.Type != "image" && !c.Key.EndsWith("_slug") && c.Key != "state" && c.Key != "custom_url"))
@@ -105,22 +110,14 @@
                             var rowSearchText = string.Join(" ", searchParts.Where(s => !string.IsNullOrEmpty(s))).ToLowerInvariant();
                             var rowRankRaw = row.GetString("rank");
                             var rowRank = int.TryParse((rowRankRaw ?? string.Empty).Replace(",", ""), out var parsedRank) ? parsedRank : 0;
-                            var topRankRowClass = rowRank == 1
-                                ? "bg-amber-50/50"
-                                : rowRank == 2
-                                    ? "bg-slate-50/70"
-                                    : rowRank == 3
-                                        ? "bg-orange-50/50"
-                                        : "";
-
-                            <tr class="tableRow group @rowBg @topRankRowClass cursor-pointer transition-colors hover:bg-slate-50/90"
+                            <tr class="tableRow group @(rowIsClickable ? "tableRow--clickable" : "")"
                                 data-state="@(stateName?.ToLower())"
                                 data-search="@rowSearchText"
                                 data-state-slug="@stateSlug"
                                 data-state-code="@postalCode"
                                 data-rank="@rowRank"
                                 data-state-url="@stateUrl"
-                                data-symbol-url="@(row.GetString("symbol_url") is { Length: > 0 } explicitSymbolUrl ? explicitSymbolUrl : symbolUrl)"
+                                data-symbol-url="@effectiveSymbolUrl"
                                 @if (tableQuickFilter != null) { <text>data-chip-value="@TableFilterHelper.GetQuickFilterValue(tableQuickFilter, row)"</text> }>
 
                                 @foreach (var col in columns)
@@ -131,9 +128,9 @@
                                     var isHidden     = isToggleable && col.Key != defaultCol && toggleable.Count > 1;
                                     var hiddenClass  = isHidden ? "hidden" : "";
                                     var cellValue    = !string.IsNullOrWhiteSpace(col.Key) && row.Data.TryGetValue(col.Key, out var val) ? val : null;
-
-                                    <td class="px-4 py-3.5 align-middle @hiddenClass"
+                                    <td class="ranking-cell @hiddenClass"
                                         data-column="@col.Key"
+                                        data-coltype="@col.Type"
                                         @if (isToggleable) { <text>data-toggleable="true"</text> }>
 
                                         @switch (col.Type)
@@ -141,13 +138,7 @@
                                             case "rank":
                                             {
                                                 var rankStr = FormatValue(cellValue, col);
-                                                var rankNum = int.TryParse(rankStr.Replace(",", ""), out var rn) ? rn : 0;
-                                                var medalCls = rankNum == 1 ? "border-amber-300 bg-amber-50 text-amber-700"
-                                                             : rankNum == 2 ? "border-slate-300 bg-slate-100 text-slate-600"
-                                                             : rankNum == 3 ? "border-orange-300 bg-orange-50 text-orange-700"
-                                                             : "border-slate-200 bg-white text-slate-800";
-                                                <span class="inline-flex h-7 min-w-[2.25rem] items-center justify-center rounded-full
-                                                             border @medalCls text-xs font-extrabold tabular-nums">
+                                                <span class="ranking-rank">
                                                     @rankStr
                                                 </span>
                                                 break;
@@ -156,14 +147,14 @@
                                             case "state-link":
                                             {
                                                 var flagPath = !string.IsNullOrEmpty(stateSlug) ? $"/images/flags/{stateSlug}/flag.webp" : "";
-                                                <span class="inline-flex items-center gap-2 font-semibold text-slate-900">
+                                                <span class="ranking-state">
                                                     @if (!string.IsNullOrEmpty(flagPath))
                                                     {
                                                         <img src="@Images.Thumb(flagPath)" alt="@(stateName ?? "State") flag"
                                                              class="h-5 w-auto object-contain rounded-sm flex-shrink-0"
                                                              loading="lazy" decoding="async" />
                                                     }
-                                                    <span class="leading-6 group-hover:underline underline-offset-2">@(cellValue?.ToString() ?? stateName ?? "—")</span>
+                                                    <span>@(cellValue?.ToString() ?? stateName ?? "—")</span>
                                                 </span>
                                                 break;
                                             }
@@ -229,13 +220,13 @@
                                                 break;
 
                                             case "number":
-                                                <span class="tabular-nums text-slate-900 font-semibold">
+                                                <span class="ranking-number">
                                                     @FormatValue(cellValue, col)
                                                 </span>
                                                 break;
 
                                             case "date":
-                                                <span class="text-slate-700">@FormatValue(cellValue, col)</span>
+                                                <span class="ranking-date">@FormatValue(cellValue, col)</span>
                                                 break;
 
                                             default:
@@ -246,11 +237,11 @@
 
                                                 if (key == "scientific_name" || key.Contains("scientific"))
                                                 {
-                                                    <span class="italic text-slate-600">@text</span>
+                                                    <span class="ranking-scientific">@text</span>
                                                 }
                                                 else if (isDetailCol)
                                                 {
-                                                    <span class="font-semibold text-slate-900">@text</span>
+                                                    <span class="ranking-primary-value">@text</span>
                                                 }
                                                 else if (key == "notes" || key == "note")
                                                 {
@@ -281,7 +272,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <span class="text-slate-700">@text</span>
+                                                    <span class="ranking-text-value">@text</span>
                                                 }
                                                 break;
                                             }

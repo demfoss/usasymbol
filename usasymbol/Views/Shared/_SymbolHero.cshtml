@@ -3,226 +3,139 @@
 @inject IImageUrlService Images
 
 @{
-    var heroImageSrc = Images.Hero(Model.ImageUrl);
-    var heroImageSrcSet = string.Join(", ", new[]
+    var hasImage = !string.IsNullOrWhiteSpace(Model.ImageUrl);
+    var hasPalette = Model.PaletteHexes.Any(hex => !string.IsNullOrWhiteSpace(hex));
+    var isWide = Model.Variant == SymbolHeroVariant.WideMedia && (hasImage || hasPalette);
+    var isQuote = Model.Variant == SymbolHeroVariant.Quote;
+    var isTextOnly = Model.Variant == SymbolHeroVariant.TextOnly || (!hasImage && !hasPalette && !isQuote);
+    var layoutClass = isWide
+        ? "sdh--wide"
+        : isQuote
+            ? "sdh--quote"
+            : isTextOnly
+                ? "sdh--text"
+                : "sdh--split";
+
+    var heroImageSrc = hasImage ? Images.Hero(Model.ImageUrl) : string.Empty;
+    var heroImageSrcSet = hasImage
+        ? string.Join(", ", new[]
+        {
+            $"{Images.Hero(Model.ImageUrl, 480)} 480w",
+            $"{Images.Hero(Model.ImageUrl, 768)} 768w",
+            $"{Images.Hero(Model.ImageUrl, 1200)} 1200w"
+        })
+        : string.Empty;
+    var heroImageSizes = isWide
+        ? "(max-width: 1439px) 100vw, 1320px"
+        : "(max-width: 899px) 100vw, (max-width: 1279px) 44vw, 560px";
+    var mediaFitClass = Model.ImageClass.Contains("object-contain", StringComparison.OrdinalIgnoreCase)
+        ? "sdh-media--contain"
+        : "sdh-media--cover";
+
+    var factSource = Model.HeroFacts.Any()
+        ? Model.HeroFacts
+        : Model.PageModel.QuickFacts?.ToList() ?? new List<QuickFactItem>();
+    var heroFacts = factSource
+        .Where(fact => fact != null &&
+            !string.IsNullOrWhiteSpace(fact.Label) &&
+            !string.IsNullOrWhiteSpace(fact.Value))
+        .Take(Math.Max(0, Model.MaxHeroFacts))
+        .ToList();
+
+    if (!string.IsNullOrWhiteSpace(Model.LegalReference) &&
+        heroFacts.Count < Model.MaxHeroFacts &&
+        !heroFacts.Any(fact =>
+            fact.Label.Contains("statute", StringComparison.OrdinalIgnoreCase) ||
+            fact.Label.Contains("law", StringComparison.OrdinalIgnoreCase) ||
+            fact.Label.Contains("legislation", StringComparison.OrdinalIgnoreCase)))
     {
-        $"{Images.Hero(Model.ImageUrl, 480)} 480w",
-        $"{Images.Hero(Model.ImageUrl, 768)} 768w",
-        $"{Images.Hero(Model.ImageUrl, 1200)} 1200w"
-    });
-    var heroImageSizes = "(max-width: 1023px) 100vw, (max-width: 1279px) 420px, 460px";
+        heroFacts.Add(new QuickFactItem
+        {
+            Label = "Statute",
+            Value = Model.LegalReference
+        });
+    }
+
+    var quoteText = !string.IsNullOrWhiteSpace(Model.FeaturedText)
+        ? Model.FeaturedText
+        : !string.IsNullOrWhiteSpace(Model.Subtitle)
+            ? Model.Subtitle
+            : Model.FigureTitle;
+    var reviewer = "Artsiom Dusau";
 }
 
-<header class="lg:col-span-2 xl:col-span-3 mb-10">
-    <div class="relative overflow-hidden rounded-none shadow-none @Model.BackgroundClass text-white">
-        <div class="absolute inset-x-0 top-0 h-px @Model.TopRuleClass"></div>
-        <div class="absolute right-8 top-14 hidden h-48 w-48 rounded-full @Model.PrimaryGlowClass blur-3xl lg:block"></div>
-        <div class="absolute left-1/3 top-0 hidden h-40 w-40 rounded-full @Model.SecondaryGlowClass blur-3xl lg:block"></div>
+<header id="symbol-detail-hero" class="sdh @layoutClass lg:col-span-2 xl:col-span-3" data-hero-variant="@Model.Variant.ToString().ToLowerInvariant()">
+    @if (isWide)
+    {
+        <div class="sdh-card">
+            @await Html.PartialAsync("_SymbolHeroMedia", Model, new ViewDataDictionary(ViewData)
+            {
+                ["HeroImageSrc"] = heroImageSrc,
+                ["HeroImageSrcSet"] = heroImageSrcSet,
+                ["HeroImageSizes"] = heroImageSizes,
+                ["MediaFitClass"] = mediaFitClass
+            })
 
-        <div class="relative px-5 pb-7 pt-6 sm:px-6 lg:px-8 lg:pb-9 lg:pt-8 xl:px-10">
-            <div class="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(300px,420px)] xl:grid-cols-[minmax(0,1fr)_460px] lg:items-start xl:gap-10">
-                <div class="min-w-0 order-1 pt-2 lg:pt-6">
-                    <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">
-                        <span class="inline-flex items-center gap-2 text-white">
-                            <span class="block h-1.5 w-1.5 rounded-full @Model.AccentDotClass"></span>
-                            @(string.IsNullOrWhiteSpace(Model.HeroLabel) ? "Official state symbol" : Model.HeroLabel)
-                        </span>
-                        @foreach (var item in Model.EyebrowItems.Where(item => !string.IsNullOrWhiteSpace(item)))
+            <div class="sdh-wide-plate">
+                <div class="sdh-wide-grid">
+                    <div class="sdh-copy">
+                        @await Html.PartialAsync("_SymbolHeroCopy", Model)
+                    </div>
+                    @await Html.PartialAsync("_SymbolHeroFacts", heroFacts)
+                </div>
+                @await Html.PartialAsync("_SymbolHeroMeta", Model, new ViewDataDictionary(ViewData)
+                {
+                    ["Reviewer"] = reviewer
+                })
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="sdh-grid">
+            <div class="sdh-copy">
+                @await Html.PartialAsync("_SymbolHeroCopy", Model)
+                @await Html.PartialAsync("_SymbolHeroFacts", heroFacts)
+                @await Html.PartialAsync("_SymbolHeroMeta", Model, new ViewDataDictionary(ViewData)
+                {
+                    ["Reviewer"] = reviewer
+                })
+            </div>
+
+            @if (isQuote)
+            {
+                <blockquote class="sdh-quote">
+                    @if (!string.IsNullOrWhiteSpace(Model.FeaturedLabel))
+                    {
+                        <div class="sdh-quote-label">@Model.FeaturedLabel</div>
+                    }
+                    <p class="sdh-quote-text">@quoteText</p>
+                    @if (!string.IsNullOrWhiteSpace(Model.FeaturedNoteText))
+                    {
+                        <p class="sdh-quote-translation">“@Model.FeaturedNoteText”</p>
+                    }
+                    <footer class="sdh-quote-meta">
+                        @foreach (var badge in Model.FeaturedBadges.Where(item => !string.IsNullOrWhiteSpace(item)))
+                        {
+                            <span>@badge</span>
+                        }
+                        @foreach (var item in Model.EyebrowItems.Skip(1).Where(item => !string.IsNullOrWhiteSpace(item)))
                         {
                             <span>@item</span>
                         }
-                    </div>
-
-                    <div class="mt-6 max-w-4xl">
-                        <h1 class="max-w-4xl text-4xl font-bold tracking-tight text-white leading-[0.98] sm:text-5xl lg:text-[4.15rem]">
-                            @Model.Title
-                        </h1>
-
-                        @if (!string.IsNullOrWhiteSpace(Model.Subtitle))
-                        {
-                            <p class="mt-4 text-lg font-medium italic text-slate-300 sm:text-[1.3rem]">@Model.Subtitle</p>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(Model.Description))
-                        {
-                            <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-100 sm:text-xl hidden lg:block">
-                                @Model.Description
-                            </p>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(Model.FeaturedText))
-                        {
-                            <div class="mt-6 max-w-3xl rounded-[1.9rem] @Model.FeaturedPanelClass p-6 text-white shadow-[0_24px_50px_-30px_rgba(15,23,42,0.42)] sm:p-7">
-                                <div class="flex flex-wrap items-center gap-2">
-                                    @if (!string.IsNullOrWhiteSpace(Model.FeaturedLabel))
-                                    {
-                                        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-white/65">@Model.FeaturedLabel</div>
-                                    }
-
-                                    @foreach (var badge in Model.FeaturedBadges.Where(item => !string.IsNullOrWhiteSpace(item)))
-                                    {
-                                        <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/70">
-                                            @badge
-                                        </span>
-                                    }
-                                </div>
-
-                                <blockquote class="mt-4 @(string.IsNullOrWhiteSpace(Model.FeaturedTextClass) ? "text-2xl font-semibold leading-[1.08] italic sm:text-3xl xl:text-[2.7rem]" : Model.FeaturedTextClass)">
-                                    @Model.FeaturedText
-                                </blockquote>
-
-                                @if (!string.IsNullOrWhiteSpace(Model.FeaturedNoteText))
-                                {
-                                    <div class="mt-5 rounded-[1.35rem] @Model.FeaturedNoteClass px-4 py-3 backdrop-blur">
-                                        @if (!string.IsNullOrWhiteSpace(Model.FeaturedNoteLabel))
-                                        {
-                                            <div class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/60">@Model.FeaturedNoteLabel</div>
-                                        }
-                                        <p class="mt-2 text-sm font-medium italic leading-6 text-white/90 sm:text-base">
-                                            @Model.FeaturedNoteText
-                                        </p>
-                                    </div>
-                                }
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(Model.LegalReference))
-                        {
-            <div class="mt-7 hidden items-start gap-2 text-sm text-slate-300 lg:flex">
-                                <i class="fa-solid fa-scale-balanced mt-0.5 shrink-0 text-slate-400"></i>
-                                <span><strong class="text-white">Legal Reference:</strong> @Model.LegalReference</span>
-                            </div>
-                        }
-
-                        <div class="mt-7 hidden border-t border-white/12 pt-5 lg:flex lg:items-center lg:gap-3 lg:flex-wrap">
-                            @if (!string.IsNullOrWhiteSpace(Model.ActionButtonId) && !string.IsNullOrWhiteSpace(Model.ActionButtonLabel))
-                            {
-                                <button id="@Model.ActionButtonId"
-                                        type="button"
-                                        class="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white/12 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_16px_28px_-22px_rgba(15,23,42,0.4)] transition hover:bg-white/18">
-                                    <i class="@(string.IsNullOrWhiteSpace(Model.ActionButtonIconClass) ? "fas fa-play text-xs" : Model.ActionButtonIconClass)"></i>
-                                    <span>@Model.ActionButtonLabel</span>
-                                </button>
-                            }
-
-                            @if (!string.IsNullOrWhiteSpace(Model.ActionAudioSrc))
-                            {
-                                <audio id="heroAudio" preload="metadata">
-                                    <source src="@Model.ActionAudioSrc" type="audio/mpeg" />
-                                </audio>
-                            }
-
-                            @await Html.PartialAsync("_ShareButtons", Model.PageModel)
-
-                            <a href="/about/artsiom-dusau"
-                               class="ml-auto flex items-center gap-2 text-[11px] text-slate-300 hover:text-white transition-colors">
-                                <img src="/images/profile/artsiom-dusau.png"
-                                     alt="Artsiom Dusau"
-                                     class="h-5 w-5 rounded-full object-cover opacity-80">
-                                <span>Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong></span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="order-2 lg:pt-5">
-                    <figure>
-                        <div class="relative aspect-[16/9] overflow-hidden rounded-none shadow-none @Model.MediaBackgroundClass">
-                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
-                            {
-                                <img src="@heroImageSrc"
-                                     srcset="@heroImageSrcSet"
-                                     sizes="@heroImageSizes"
-                                     alt="@(string.IsNullOrWhiteSpace(Model.ImageAlt) ? Model.Title : Model.ImageAlt)"
-                                     class="@Model.ImageClass"
-                                     loading="eager"
-                                     fetchpriority="high"
-                                     onerror="this.style.display='none';var f=this.parentNode.querySelector('.hero-img-fallback');if(f)f.classList.remove('hidden');" />
-                                @if (!string.IsNullOrWhiteSpace(Model.ImageLinkUrl))
-                                {
-                                    <button type="button"
-                                            class="js-visual-lightbox absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-[0.8rem] bg-slate-900/88 text-white transition hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-white/70"
-                                            data-lightbox-src="@Images.Full(Model.ImageLinkUrl)"
-                                            data-lightbox-alt="@(string.IsNullOrWhiteSpace(Model.ImageAlt) ? Model.Title : Model.ImageAlt)"
-                                            data-lightbox-caption="@(string.IsNullOrWhiteSpace(Model.FigureCaption) ? (string.IsNullOrWhiteSpace(Model.ImageAlt) ? Model.Title : Model.ImageAlt) : Model.FigureCaption)"
-                                            onclick="window.__openVisualLightboxFromButton && window.__openVisualLightboxFromButton(this)"
-                                            aria-label="Open image in popup">
-                                        <i class="fa-solid fa-expand text-sm"></i>
-                                    </button>
-                                }
-                                <div class="hero-img-fallback hidden absolute inset-0 flex items-center justify-center">
-                                    <i class="@(string.IsNullOrWhiteSpace(Model.FallbackIconClass) ? "fa-solid fa-star" : Model.FallbackIconClass) text-7xl text-slate-300"></i>
-                                </div>
-                            }
-                            else if (Model.PaletteHexes.Any())
-                            {
-                                <div class="absolute inset-0 flex">
-                                    @foreach (var hex in Model.PaletteHexes)
-                                    {
-                                        <div class="flex-1" style="background-color: @hex;"></div>
-                                    }
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <i class="@(string.IsNullOrWhiteSpace(Model.FallbackIconClass) ? "fa-solid fa-star" : Model.FallbackIconClass) text-7xl text-slate-300"></i>
-                                </div>
-                            }
-                        </div>
-
-                        <figcaption class="mt-3 flex flex-wrap items-start justify-between gap-3 border-t @(Model.UseLightFigureCaption ? "border-slate-200/70 text-slate-600" : "border-white/15 text-slate-300") pt-3">
-                            <div class="min-w-0">
-                                @if (!string.IsNullOrWhiteSpace(Model.FigureTitle))
-                                {
-                                    <p class="text-sm font-semibold @(Model.UseLightFigureCaption ? "text-slate-900" : "text-white")">@Model.FigureTitle</p>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(Model.FigureSubtitle))
-                                {
-                                    <p class="text-xs uppercase tracking-[0.14em]">@Model.FigureSubtitle</p>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(Model.FigureCaption))
-                                {
-                                    <p class="mt-2 text-sm leading-6 @(Model.UseLightFigureCaption ? "text-slate-600" : "text-slate-300")">@Model.FigureCaption</p>
-                                }
-                            </div>
-
-                        </figcaption>
-                    </figure>
-
-                    @if (!string.IsNullOrWhiteSpace(Model.LegalReference))
-                    {
-                        <div class="mt-5 flex items-start gap-2 text-sm text-slate-300 lg:hidden">
-                            <i class="fa-solid fa-scale-balanced mt-0.5 shrink-0 text-slate-400"></i>
-                            <span><strong class="text-white">Legal Reference:</strong> @Model.LegalReference</span>
-                        </div>
-                    }
-
-                    <div class="mt-5 border-t border-white/12 pt-4 lg:hidden">
-                        @if (!string.IsNullOrWhiteSpace(Model.ActionButtonId) && !string.IsNullOrWhiteSpace(Model.ActionButtonLabel))
-                        {
-                            <div class="mb-3">
-                                <button id="@($"{Model.ActionButtonId}Mobile")"
-                                        type="button"
-                                        class="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white/12 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_16px_28px_-22px_rgba(15,23,42,0.4)] transition hover:bg-white/18">
-                                    <i class="@(string.IsNullOrWhiteSpace(Model.ActionButtonIconClass) ? "fas fa-play text-xs" : Model.ActionButtonIconClass)"></i>
-                                    <span>@Model.ActionButtonLabel</span>
-                                </button>
-                            </div>
-                        }
-
-                        @await Html.PartialAsync("_ShareButtons", Model.PageModel)
-
-                        <a href="/about/artsiom-dusau"
-                           class="mt-3 flex items-center gap-2 text-[11px] text-slate-300">
-                            <img src="/images/profile/artsiom-dusau.png"
-                                 alt="Artsiom Dusau"
-                                 class="h-5 w-5 rounded-full object-cover opacity-80">
-                            <span>Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+                    </footer>
+                </blockquote>
+            }
+            else if (!isTextOnly)
+            {
+                @await Html.PartialAsync("_SymbolHeroMedia", Model, new ViewDataDictionary(ViewData)
+                {
+                    ["HeroImageSrc"] = heroImageSrc,
+                    ["HeroImageSrcSet"] = heroImageSrcSet,
+                    ["HeroImageSizes"] = heroImageSizes,
+                    ["MediaFitClass"] = mediaFitClass
+                })
+            }
         </div>
-    </div>
+    }
 </header>

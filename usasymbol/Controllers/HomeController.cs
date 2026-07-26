@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -35,7 +36,9 @@ namespace USASymbol.Controllers
             ["license-plate-slogans"] = "fa-solid fa-car-side",
             ["state-seals"] = "fa-solid fa-stamp",
             ["coats-of-arms"] = "fa-solid fa-shield-halved",
-            ["sports"] = "fa-solid fa-medal"
+            ["sports"] = "fa-solid fa-medal",
+            ["insects"] = "fa-solid fa-bug",
+            ["butterflies"] = "fa-solid fa-bug"
         };
 
         public HomeController(IStateService stateService, AppDbContext dbContext, IWebHostEnvironment env)
@@ -45,6 +48,7 @@ namespace USASymbol.Controllers
             _env = env;
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         public async Task<IActionResult> Index()
         {
             var allSymbols = await _dbContext.Symbols
@@ -79,8 +83,7 @@ namespace USASymbol.Controllers
                     Abbreviation = state.Abbreviation,
                     Capital = state.Capital,
                     Population = state.Population
-                }).ToList(),
-                HomeMapSvg = GetHomeMapSvg()
+                }).ToList()
             };
 
             return View(model);
@@ -255,9 +258,20 @@ namespace USASymbol.Controllers
                 "state-seals" => symbol.Type == "state-seal",
                 "coats-of-arms" => symbol.Type == "coat-of-arms",
                 "sports" => symbol.Type == "sport",
+                "insects" => symbol.Type == "insect",
+                "butterflies" => symbol.Type == "insect" && IsButterfly(designation, name),
                 _ => false
             };
         }
+
+        private static bool IsButterfly(string designation, string name) =>
+            designation.Contains("butterfly", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("butterfly", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("swallowtail", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("fritillary", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("hairstreak", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("sulphur", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("longwing", StringComparison.OrdinalIgnoreCase);
 
         private static bool IsDog(string designation) =>
             designation.Contains("dog", StringComparison.OrdinalIgnoreCase);
@@ -419,50 +433,5 @@ namespace USASymbol.Controllers
             return images;
         }
 
-        private string GetHomeMapSvg()
-        {
-            var path = Path.Combine(_env.WebRootPath, "maps", "us-states.svg");
-            if (!System.IO.File.Exists(path))
-            {
-                return string.Empty;
-            }
-
-            var svg = System.IO.File.ReadAllText(path);
-            svg = Regex.Replace(svg, @"<title>.*?</title>", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-            svg = Regex.Replace(svg, @"<svg([^>]*)>", match =>
-            {
-                var attrs = match.Groups[1].Value;
-                attrs = Regex.Replace(attrs, @"\s+width=""[^""]*""", "");
-                attrs = Regex.Replace(attrs, @"\s+height=""[^""]*""", "");
-                if (!attrs.Contains("viewBox"))
-                {
-                    attrs += " viewBox=\"0 0 959 593\"";
-                }
-
-                attrs += " width=\"100%\" preserveAspectRatio=\"xMidYMid meet\" aria-hidden=\"true\"";
-                return $"<svg{attrs}>";
-            });
-
-            var css = string.Join(Environment.NewLine, new[]
-            {
-                "g.state path { fill: #cfd9e8; cursor: pointer; transition: fill .18s ease, opacity .18s ease; }",
-                "g.state path:hover, g.state path:focus { fill: #5f7faa; opacity: 1; outline: none; }",
-                ".borders { stroke: #ffffff; stroke-width: 1.1; }",
-                ".separator1 { stroke: #94a3b8; stroke-width: 1.6; }"
-            });
-
-            var marker = "Place this code in the empty space below. */";
-            var idx = svg.IndexOf(marker, StringComparison.Ordinal);
-            if (idx >= 0)
-            {
-                var closeStyle = svg.IndexOf("</style>", idx, StringComparison.Ordinal);
-                if (closeStyle >= 0)
-                {
-                    svg = svg[..(idx + marker.Length)] + Environment.NewLine + css + Environment.NewLine + svg[closeStyle..];
-                }
-            }
-
-            return svg;
-        }
     }
 }

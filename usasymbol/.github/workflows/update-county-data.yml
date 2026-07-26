@@ -1,0 +1,41 @@
+name: Update county data
+
+on:
+  schedule:
+    - cron: "17 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: county-data-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Download and join official county sources
+        run: dotnet run --project tools/CountyDataImporter/CountyDataImporter.csproj -- --refresh
+
+      - name: Commit changed county records
+        shell: pwsh
+        run: |
+          if (-not (git status --porcelain -- Content/places/counties)) {
+            Write-Host "County sources are unchanged."
+            exit 0
+          }
+          git config user.name "usasymbol-data-bot"
+          git config user.email "data-bot@usasymbol.com"
+          git add Content/places/counties
+          git commit -m "data: refresh county metrics"
+          git push

@@ -1,11 +1,10 @@
 @model USASymbol.Models.ViewModels.PageDetailViewModel
 
 @{
-    var sectionId = (ViewData["MethodologySectionId"] as string ?? "methodology").Trim();
     var sources = Model.Content?.Page?.Sources;
 }
 
-<section id="@sectionId" class="my-12 scroll-mt-24" aria-label="Sources and methodology">
+<div class="my-12 scroll-mt-24" aria-label="Sources and methodology">
     <div class="space-y-10">
         @if (!string.IsNullOrEmpty(Model.Content?.Page?.Methodology))
         {
@@ -35,20 +34,7 @@
                 </div>
 
                 <div class="pt-5">
-                    <ul class="space-y-2.5">
-                        @foreach (var source in sources.Where(source => !source.Url.IsSuppressedSourceUrl()))
-                        {
-                            <li>
-                                <a href="@source.Url"
-                                   target="_blank"
-                                   rel="nofollow noopener noreferrer"
-                                   class="inline-flex items-center gap-2 text-[1rem] leading-7 text-slate-600 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-900 hover:decoration-slate-500">
-                                    <span>@source.Name</span>
-                                    <i class="fa-solid fa-arrow-up-right-from-square text-[11px] opacity-70"></i>
-                                </a>
-                            </li>
-                        }
-                    </ul>
+                    @await Html.PartialAsync("_SourceLinksList", sources)
 
                     <div class="mt-6 border-t border-slate-200/70 pt-4">
                         <div class="flex flex-col gap-2 text-[12px] text-slate-400 sm:flex-row sm:items-center sm:justify-between">
@@ -63,4 +49,4 @@
             </div>
         }
     </div>
-</section>
+</div>

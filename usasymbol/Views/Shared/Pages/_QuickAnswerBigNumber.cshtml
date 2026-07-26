@@ -1,0 +1,40 @@
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+@using Usasymbol.Helpers
+@using USASymbol.Extensions
+
+@{
+    var sectionId = (ViewData["QuickAnswerSectionId"] as string ?? "quick-answer").Trim();
+    var title = string.IsNullOrWhiteSpace(Model.Content.Page.QuickAnswerTitle)
+        ? Model.Content.Page.H1
+        : Model.Content.Page.QuickAnswerTitle;
+    var stories = Model.HasQuickAnswer
+        ? KeyTakeawaysBuilder.BuildBigNumberStories(Model.Content.Page.QuickAnswer)
+        : new List<BigNumberStory>();
+}
+
+@if (stories.Count >= 2)
+{
+    <div id="@sectionId" class="kt-story scroll-mt-24">
+        <p class="kt-story__eyebrow">Key takeaways</p>
+        <h2 class="kt-story__title">@title</h2>
+
+        <div class="kt-story__grid @(stories.Count == 2 ? "kt-story__grid--2" : "")">
+            @foreach (var story in stories)
+            {
+                <article class="kt-story__card">
+                    <p class="kt-story__label">@story.Label</p>
+                    <div class="kt-story__number">@story.Number</div>
+                    @if (!string.IsNullOrWhiteSpace(story.Subject))
+                    {
+                        <p class="kt-story__subject">@story.Subject</p>
+                    }
+                    <p class="kt-story__copy">@story.Copy.RenderAutoLinks()</p>
+                </article>
+            }
+        </div>
+    </div>
+}
+else if (Model.HasQuickAnswer)
+{
+    @await Html.PartialAsync("Pages/_QuickAnswer", Model, ViewData)
+}

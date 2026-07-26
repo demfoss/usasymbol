@@ -2,7 +2,7 @@
 
 @if (Model.HasRelated)
 {
-    var related = Model.Content?.Related ?? new List<USASymbol.Models.Content.PageRelated>();
+    var related = (Model.Content?.Related ?? new List<USASymbol.Models.Content.PageRelated>()).Take(3).ToList();
     if (related.Any())
     {
         <div class="mt-8 pt-6 border-t border-slate-200/80">

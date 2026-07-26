@@ -117,7 +117,7 @@
 
         if (pageModel.HasQuickAnswer)
         {
-            Add("quick-answer", "Quick Answer", "fa-solid fa-bolt");
+            Add("quick-answer", "Key Takeaways", "fa-solid fa-bolt");
         }
 
         if (pageModel.HasRows)
@@ -194,8 +194,8 @@
 
 @if (hasToc)
 {
-    <nav aria-label="On this page" class="toc-minimal sticky top-24 w-full max-w-none">
-        <div class="mx-auto max-w-[280px]">
+    <nav aria-label="On this page" class="toc-minimal sticky top-28 w-full max-w-none">
+        <div class="mx-auto w-full max-w-full">
             <div class="text-center">
                 @if (!string.IsNullOrWhiteSpace(imageUrl))
                 {

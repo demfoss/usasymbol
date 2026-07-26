@@ -15,6 +15,5 @@ namespace USASymbol.Models.ViewModels
         public List<SymbolCategoryViewModel> SymbolCategories { get; set; } = new();
         public List<SymbolWithState> SymbolOfTheDayPool { get; set; } = new();
         public List<HomeStateMapItem> StateMapItems { get; set; } = new();
-        public string HomeMapSvg { get; set; } = string.Empty;
     }
 }

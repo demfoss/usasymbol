@@ -7,71 +7,73 @@
     var pickerStates = Model.States
         .Select(s => new
         {
-            s.Slug,
-            s.Name,
-            s.Abbreviation,
-            s.Region,
-            s.FlagImageUrl
+            slug = s.Slug,
+            name = s.Name,
+            abbreviation = s.Abbreviation,
+            region = s.Region,
+            flagImageUrl = Images.Card(s.FlagImageUrl)
         })
         .ToList();
 }
 
-<nav class="bg-gray-50 py-3 border-b">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ol class="flex items-center space-x-2 text-sm text-gray-600">
-            <li><a href="/" class="text-blue-700 hover:underline">Home</a></li>
-            <li class="text-gray-400">/</li>
-            <li class="font-semibold">Compare States</li>
-        </ol>
+<!-- Sticky breadcrumb bar -->
+<div class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-3">
+        <nav aria-label="Breadcrumb">
+            <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
+                <li class="text-slate-300">/</li>
+                <li class="text-slate-900 font-semibold">Compare States</li>
+            </ol>
+        </nav>
     </div>
-</nav>
+</div>
 
-<section class="bg-[linear-gradient(135deg,#0f172a_0%,#1d4ed8_55%,#60a5fa_100%)] text-white py-14 md:py-20">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span class="inline-flex items-center px-4 py-1.5 mb-5 text-xs font-semibold uppercase tracking-[0.24em] rounded-full bg-white/10 border border-white/20">
-            <i class="fa-solid fa-scale-balanced text-amber-300 mr-2"></i>
-            State Comparison Tool
-        </span>
-        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">Compare U.S. States</h1>
-        <p class="text-lg md:text-2xl text-blue-100 max-w-3xl mx-auto">
-            See which state wins on affordability, housing, taxes, laws, politics, geography, and other quick-read metrics.
-        </p>
-    </div>
-</section>
+<div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-8 lg:py-12 article-content">
 
-<section class="bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] py-12 md:py-16">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="rounded-[2rem] border border-slate-200 bg-white shadow-[0_30px_80px_-40px_rgba(15,23,42,0.35)] overflow-hidden">
-            <div class="px-6 md:px-10 pt-8 md:pt-10 pb-6 border-b border-slate-100">
-                <div class="max-w-3xl">
-                    <p class="text-sm font-semibold uppercase tracking-[0.22em] text-blue-700 mb-3">Build A Comparison</p>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">Select two states to compare</h2>
-                    <p class="text-base md:text-lg text-slate-600">
-                        Pick any two states and we will stack the headline metrics, show who leads, and link you into each detailed comparison page.
-                    </p>
-                </div>
+    <!-- HERO -->
+    <section class="mb-8 lg:mb-10">
+        <div class="relative overflow-hidden border border-slate-200 bg-white shadow-sm">
+            <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-slate-50 to-transparent"></div>
+            <div class="relative p-6 sm:p-8 lg:p-10">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-slate-900 max-w-3xl">
+                    Compare U.S. States
+                </h1>
+                <p class="mt-3 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
+                    Pick any two states and see who wins on affordability, housing, taxes, laws, politics, geography, and other headline metrics.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATE PICKER -->
+    <section class="mb-8 lg:mb-10">
+        <div class="border border-slate-200 bg-white shadow-sm">
+            <div class="px-6 md:px-8 pt-7 md:pt-8 pb-5 border-b border-slate-200">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-2">Build A Comparison</p>
+                <h2 class="text-xl md:text-2xl font-semibold text-slate-900">Select two states to compare</h2>
             </div>
 
-            <div class="p-6 md:p-10">
-                <form id="compare-form" class="grid gap-6 lg:grid-cols-3 lg:gap-5 items-end" onsubmit="event.preventDefault(); goCompare();">
+            <div class="p-6 md:p-8">
+                <form id="compare-form" class="grid gap-6 lg:grid-cols-[1fr_auto_1fr] lg:gap-5 items-end" onsubmit="event.preventDefault(); goCompare();">
 
                     @* STATE A PICKER *@
                     <div class="w-full relative" id="picker-wrap-a">
-                        <label class="block text-base font-semibold text-slate-800 mb-3">First state</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">First state</label>
                         <input type="hidden" id="state-a" value="" />
 
                         <button type="button" id="trigger-a"
-                                class="w-full flex items-center gap-3 rounded-2xl border border-slate-300 bg-white px-5 py-4 md:py-5 text-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all">
-                            <img id="trigger-a-flag" class="w-9 h-6 rounded object-cover shrink-0 hidden" alt="Selected first state flag" />
+                                class="w-full flex items-center gap-3 border border-slate-300 bg-white px-4 py-3 md:py-3.5 text-base shadow-sm focus:border-slate-500 focus:ring-2 focus:ring-slate-200 transition-all">
+                            <img id="trigger-a-flag" class="w-9 h-6 object-cover shrink-0 hidden" alt="Selected first state flag" />
                             <span id="trigger-a-label" class="flex-1 text-left font-medium text-slate-400">Choose a state...</span>
                             <svg class="w-5 h-5 text-slate-400 shrink-0 transition-transform" id="trigger-a-chevron" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                             </svg>
                         </button>
 
-                        <div id="dropdown-a" class="picker-dropdown hidden absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_-20px_rgba(15,23,42,0.22)]">
+                        <div id="dropdown-a" class="picker-dropdown hidden absolute left-0 right-0 top-full mt-2 z-50 border border-slate-200 bg-white shadow-lg">
                             <div class="p-3 border-b border-slate-100">
-                                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 cursor-text">
+                                <label class="flex items-center gap-2 border border-slate-200 bg-slate-50 px-3 py-2 cursor-text">
                                     <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                                     <input id="search-a" type="text" autocomplete="off" placeholder="Search states..."
                                            class="flex-1 bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none" />
@@ -82,14 +84,14 @@
                                 {
                                     <li data-slug="@s.Slug" data-name="@s.Name" data-abbr="@s.Abbreviation"
                                         data-flag="@Images.Card(s.FlagImageUrl)" data-region="@(s.Region ?? "United States")"
-                                        class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors select-none">
+                                        class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-slate-50 transition-colors select-none">
                                         @if (s.FlagImageUrl != null)
                                         {
-                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="@s.Name flag" class="w-9 h-6 object-cover rounded shrink-0" loading="lazy" onerror="this.style.display='none'" />
+                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="@s.Name flag" class="w-9 h-6 object-cover shrink-0" loading="lazy" onerror="this.style.display='none'" />
                                         }
                                         else
                                         {
-                                            <span class="w-9 h-6 rounded bg-slate-200 shrink-0"></span>
+                                            <span class="w-9 h-6 bg-slate-200 shrink-0"></span>
                                         }
                                         <span class="text-sm font-bold text-slate-500 w-7 shrink-0">@s.Abbreviation</span>
                                         <span class="text-sm font-medium text-slate-800">@s.Name</span>
@@ -97,41 +99,31 @@
                                 }
                             </ul>
                         </div>
-
-                        <div id="preview-a" class="mt-4 hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                            <div class="flex items-center gap-4">
-                                <img id="preview-a-flag" class="w-16 h-11 rounded-lg object-cover shadow-sm hidden" alt="First selected state flag" />
-                                <div>
-                                    <div id="preview-a-name" class="text-lg font-bold text-slate-900"></div>
-                                    <div id="preview-a-meta" class="text-sm text-slate-600"></div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="flex items-center justify-center">
-                        <div class="w-16 h-16 rounded-full bg-slate-950 text-white flex items-center justify-center shadow-lg">
-                            <span class="text-sm md:text-base font-extrabold tracking-[0.18em]">VS</span>
+                    <div class="flex items-center justify-center pb-1">
+                        <div class="w-11 h-11 bg-slate-900 text-white flex items-center justify-center">
+                            <span class="text-xs font-extrabold tracking-[0.18em]">VS</span>
                         </div>
                     </div>
 
                     @* STATE B PICKER *@
                     <div class="w-full relative" id="picker-wrap-b">
-                        <label class="block text-base font-semibold text-slate-800 mb-3">Second state</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Second state</label>
                         <input type="hidden" id="state-b" value="" />
 
                         <button type="button" id="trigger-b"
-                                class="w-full flex items-center gap-3 rounded-2xl border border-slate-300 bg-white px-5 py-4 md:py-5 text-lg shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all">
-                            <img id="trigger-b-flag" class="w-9 h-6 rounded object-cover shrink-0 hidden" alt="Selected second state flag" />
+                                class="w-full flex items-center gap-3 border border-slate-300 bg-white px-4 py-3 md:py-3.5 text-base shadow-sm focus:border-slate-500 focus:ring-2 focus:ring-slate-200 transition-all">
+                            <img id="trigger-b-flag" class="w-9 h-6 object-cover shrink-0 hidden" alt="Selected second state flag" />
                             <span id="trigger-b-label" class="flex-1 text-left font-medium text-slate-400">Choose a state...</span>
                             <svg class="w-5 h-5 text-slate-400 shrink-0 transition-transform" id="trigger-b-chevron" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                             </svg>
                         </button>
 
-                        <div id="dropdown-b" class="picker-dropdown hidden absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_-20px_rgba(15,23,42,0.22)]">
+                        <div id="dropdown-b" class="picker-dropdown hidden absolute left-0 right-0 top-full mt-2 z-50 border border-slate-200 bg-white shadow-lg">
                             <div class="p-3 border-b border-slate-100">
-                                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 cursor-text">
+                                <label class="flex items-center gap-2 border border-slate-200 bg-slate-50 px-3 py-2 cursor-text">
                                     <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                                     <input id="search-b" type="text" autocomplete="off" placeholder="Search states..."
                                            class="flex-1 bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none" />
@@ -142,14 +134,14 @@
                                 {
                                     <li data-slug="@s.Slug" data-name="@s.Name" data-abbr="@s.Abbreviation"
                                         data-flag="@Images.Card(s.FlagImageUrl)" data-region="@(s.Region ?? "United States")"
-                                        class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-blue-50 transition-colors select-none">
+                                        class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-slate-50 transition-colors select-none">
                                         @if (s.FlagImageUrl != null)
                                         {
-                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="@s.Name flag" class="w-9 h-6 object-cover rounded shrink-0" loading="lazy" onerror="this.style.display='none'" />
+                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="@s.Name flag" class="w-9 h-6 object-cover shrink-0" loading="lazy" onerror="this.style.display='none'" />
                                         }
                                         else
                                         {
-                                            <span class="w-9 h-6 rounded bg-slate-200 shrink-0"></span>
+                                            <span class="w-9 h-6 bg-slate-200 shrink-0"></span>
                                         }
                                         <span class="text-sm font-bold text-slate-500 w-7 shrink-0">@s.Abbreviation</span>
                                         <span class="text-sm font-medium text-slate-800">@s.Name</span>
@@ -157,75 +149,49 @@
                                 }
                             </ul>
                         </div>
-
-                        <div id="preview-b" class="mt-4 hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                            <div class="flex items-center gap-4">
-                                <img id="preview-b-flag" class="w-16 h-11 rounded-lg object-cover shadow-sm hidden" alt="Second selected state flag" />
-                                <div>
-                                    <div id="preview-b-name" class="text-lg font-bold text-slate-900"></div>
-                                    <div id="preview-b-meta" class="text-sm text-slate-600"></div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </form>
 
-                <div class="mt-8">
+                <div class="mt-7">
                     <button id="compare-btn" onclick="goCompare()"
-                            class="w-full inline-flex items-center justify-center gap-3 bg-slate-950 hover:bg-slate-900 text-white text-lg font-bold px-8 py-4 rounded-2xl shadow-[0_18px_40px_-24px_rgba(15,23,42,0.55)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                            class="w-full inline-flex items-center justify-center gap-2.5 bg-slate-900 hover:bg-slate-800 text-white text-base font-semibold px-8 py-3.5 shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                         <i class="fa-solid fa-scale-balanced"></i>
                         Compare States
                     </button>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-4 mt-8">
-                    <div class="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4">
-                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700 mb-2">Fast Read</div>
-                        <p class="text-sm text-slate-700">See the headline winner first, then scan the biggest differences.</p>
-                    </div>
-                    <div class="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4">
-                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700 mb-2">Bigger Type</div>
-                        <p class="text-sm text-slate-700">Cleaner, larger form controls make state picking easier on desktop and mobile.</p>
-                    </div>
-                    <div class="rounded-2xl border border-amber-100 bg-amber-50 px-5 py-4">
-                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700 mb-2">Visual Cues</div>
-                        <p class="text-sm text-slate-700">Selected states get a flag preview so the page feels more recognizable before compare.</p>
-                    </div>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-4 mt-6">
-                    <a href="/guides/state-abbreviations"
-                       class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 hover:border-slate-300 transition">
-                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-700 mb-2">Reference</div>
-                        <div class="text-sm font-bold text-slate-900 mb-1">All State Abbreviations</div>
-                        <p class="text-sm text-slate-600">Open the full 50-state abbreviation hub if you need a quick code lookup while comparing.</p>
-                    </a>
+                <div class="grid md:grid-cols-3 gap-3 mt-6">
                     <a id="abbr-link-a" href="/guides/state-abbreviations"
-                       class="rounded-2xl border border-slate-200 bg-white px-5 py-4 hover:border-blue-300 transition">
-                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700 mb-2">First State Code</div>
+                       class="border border-slate-200 bg-white px-4 py-3.5 hover:border-slate-400 transition">
+                        <div class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 mb-1.5">First State Code</div>
                         <div id="abbr-link-a-title" class="text-sm font-bold text-slate-900 mb-1">Pick a state</div>
-                        <p id="abbr-link-a-copy" class="text-sm text-slate-600">We will link you to that state's dedicated abbreviation guide.</p>
+                        <p id="abbr-link-a-copy" class="text-xs text-slate-500 leading-relaxed">We will link you to that state's dedicated abbreviation guide.</p>
                     </a>
                     <a id="abbr-link-b" href="/guides/state-abbreviations"
-                       class="rounded-2xl border border-slate-200 bg-white px-5 py-4 hover:border-blue-300 transition">
-                        <div class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700 mb-2">Second State Code</div>
+                       class="border border-slate-200 bg-white px-4 py-3.5 hover:border-slate-400 transition">
+                        <div class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 mb-1.5">Second State Code</div>
                         <div id="abbr-link-b-title" class="text-sm font-bold text-slate-900 mb-1">Pick a state</div>
-                        <p id="abbr-link-b-copy" class="text-sm text-slate-600">This card updates as soon as you select the second state.</p>
+                        <p id="abbr-link-b-copy" class="text-xs text-slate-500 leading-relaxed">This card updates as soon as you select the second state.</p>
+                    </a>
+                    <a href="/guides/state-abbreviations"
+                       class="border border-slate-200 bg-slate-50 px-4 py-3.5 hover:border-slate-400 transition">
+                        <div class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 mb-1.5">Reference</div>
+                        <div class="text-sm font-bold text-slate-900 mb-1">All State Abbreviations</div>
+                        <p class="text-xs text-slate-500 leading-relaxed">Open the full 50-state abbreviation hub for a quick code lookup.</p>
                     </a>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="bg-gray-50 py-12 border-t">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Popular Comparisons</h2>
+    <!-- POPULAR COMPARISONS -->
+    <section class="mb-8 lg:mb-10">
+        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mb-5">Popular Comparisons</h2>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach (var pair in Model.FeaturedPairs)
             {
                 <a href="/compare/@(pair.Slug1)-vs-@(pair.Slug2)"
-                   class="flex items-center gap-3 bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-md hover:border-blue-300 transition group">
+                   class="flex items-center gap-3 bg-white border border-slate-200 p-4 hover:shadow-md hover:border-slate-400 transition group">
                     @{
                         var stateObjA = Model.States.FirstOrDefault(s => s.Slug == pair.Slug1);
                         var stateObjB = Model.States.FirstOrDefault(s => s.Slug == pair.Slug2);
@@ -233,103 +199,62 @@
                     @if (stateObjA?.FlagImageUrl != null)
                     {
                         <img src="@Images.Card(stateObjA.FlagImageUrl)" onerror="this.style.display='none'"
-                             class="w-11 h-8 object-cover rounded-md shadow-sm" alt="@pair.Name1 flag" />
+                             class="w-11 h-8 object-cover shadow-sm" alt="@pair.Name1 flag" />
                     }
-                    <span class="font-semibold text-gray-700 group-hover:text-blue-700 flex-1">@pair.Name1 vs @pair.Name2</span>
+                    <span class="font-semibold text-slate-700 group-hover:text-slate-900 flex-1">@pair.Name1 vs @pair.Name2</span>
                     @if (stateObjB?.FlagImageUrl != null)
                     {
                         <img src="@Images.Card(stateObjB.FlagImageUrl)" onerror="this.style.display='none'"
-                             class="w-11 h-8 object-cover rounded-md shadow-sm" alt="@pair.Name2 flag" />
+                             class="w-11 h-8 object-cover shadow-sm" alt="@pair.Name2 flag" />
                     }
-                    <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-blue-500 text-sm"></i>
+                    <i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-slate-600 text-sm"></i>
                 </a>
             }
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="bg-white py-12 border-t">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="mb-8 max-w-2xl">
-            <h2 class="text-2xl md:text-[2rem] font-bold leading-tight tracking-tight text-gray-900">What You Can Compare</h2>
+    <!-- COMPARE BY CATEGORY -->
+    <section>
+        @{
+            var metrics = USASymbol.Services.ComparisonMetricsConfig.All;
+            var metricGroups = USASymbol.Services.ComparisonMetricsConfig.GroupOrder;
+        }
+        <div class="mb-5 max-w-2xl">
+            <h2 class="text-xl md:text-2xl font-semibold text-slate-900">Compare By Category</h2>
             <p class="mt-1.5 text-sm leading-6 text-slate-500">
-                @{
-                    var metrics = USASymbol.Services.ComparisonMetricsConfig.All
-                        .OrderBy(m => m.GroupOrder)
-                        .ThenBy(m => m.SortOrder)
-                        .ToList();
-                    var metricGroups = metrics
-                        .GroupBy(m => new { m.GroupSlug, m.GroupName, m.GroupOrder })
-                        .OrderBy(g => g.Key.GroupOrder)
-                        .ToList();
-                    string GroupIcon(string? groupSlug) => (groupSlug ?? "").ToLowerInvariant() switch
-                    {
-                        "demographics" => "fa-solid fa-users",
-                        "income" => "fa-solid fa-sack-dollar",
-                        "jobs" => "fa-solid fa-briefcase",
-                        "quality-of-life" => "fa-solid fa-heart-pulse",
-                        "climate" => "fa-solid fa-cloud-sun",
-                        "housing" => "fa-solid fa-house",
-                        "retirement" => "fa-solid fa-umbrella-beach",
-                        "taxes" => "fa-solid fa-file-invoice-dollar",
-                        "politics" => "fa-solid fa-landmark-dome",
-                        "laws" => "fa-solid fa-scale-balanced",
-                        "geography" => "fa-solid fa-mountain-sun",
-                        "health" => "fa-solid fa-stethoscope",
-                        "safety" => "fa-solid fa-shield-halved",
-                        _ => "fa-solid fa-layer-group"
-                    };
-                }
-                @metrics.Count metrics across @metricGroups.Count categories.
+                @metrics.Count metrics across @metricGroups.Count categories. Pick a category to see all 50 states ranked, or jump straight to a two-state comparison.
             </p>
         </div>
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 items-start">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
             @foreach (var group in metricGroups)
             {
-                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-                    <div class="flex items-center gap-2.5 mb-2.5">
-                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-blue-100 text-blue-600 shrink-0">
-                            <i class="@GroupIcon(group.Key.GroupSlug) text-xs"></i>
+                var count = metrics.Count(m => m.GroupSlug == group.Slug);
+                <a href="/compare/@group.Slug" class="flex flex-col border border-slate-200 bg-white px-4 py-4 hover:border-slate-400 hover:shadow-sm transition group">
+                    <div class="flex items-center gap-2.5 mb-2">
+                        <span class="flex h-8 w-8 items-center justify-center bg-slate-100 text-slate-600 shrink-0">
+                            <i class="@USASymbol.Services.ComparisonCategoryCopy.GetIcon(group.Slug) text-xs"></i>
                         </span>
-                        <span class="text-sm font-bold text-slate-900">@group.Key.GroupName</span>
+                        <span class="text-sm font-bold text-slate-900 group-hover:text-slate-700">@group.Name</span>
                     </div>
-                    <p class="text-xs text-slate-500 leading-relaxed">@string.Join(", ", group.Select(m => m.Name))</p>
-                </div>
+                    <p class="text-xs text-slate-500 leading-relaxed flex-1">@USASymbol.Services.ComparisonCategoryCopy.Get(group.Slug, group.Name)</p>
+                    <div class="mt-3 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">@count metric@(count == 1 ? "" : "s")</span>
+                        <span class="inline-flex items-center gap-1 font-semibold text-slate-700 group-hover:text-slate-900">
+                            Compare <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </span>
+                    </div>
+                </a>
             }
         </div>
-    </div>
-</section>
+    </section>
+
+</div>
 
 <script>
     const compareStates = @Html.Raw(JsonSerializer.Serialize(pickerStates));
 
     function findState(slug) {
         return compareStates.find(s => s.slug === slug);
-    }
-
-    function updatePreview(slot, slug) {
-        const card = document.getElementById(`preview-${slot}`);
-        const flag = document.getElementById(`preview-${slot}-flag`);
-        const name = document.getElementById(`preview-${slot}-name`);
-        const meta = document.getElementById(`preview-${slot}-meta`);
-        const state = findState(slug);
-
-        if (!state) {
-            card.classList.add('hidden');
-            return;
-        }
-
-        name.textContent = state.name;
-        meta.textContent = `${state.abbreviation} • ${state.region || 'United States'}`;
-        card.classList.remove('hidden');
-
-        if (state.flagImageUrl) {
-            flag.src = state.flagImageUrl;
-            flag.alt = `${state.name} flag`;
-            flag.classList.remove('hidden');
-        } else {
-            flag.classList.add('hidden');
-        }
     }
 
     function updateAbbreviationLink(slot, slug) {
@@ -376,7 +301,7 @@
         function openDropdown() {
             dropdown.classList.remove('hidden');
             tChevron.style.transform = 'rotate(180deg)';
-            trigger.classList.add('border-blue-500', 'ring-4', 'ring-blue-100');
+            trigger.classList.add('border-slate-500', 'ring-2', 'ring-slate-200');
             search.value = '';
             filterList('');
             setTimeout(() => search.focus(), 30);
@@ -385,7 +310,7 @@
         function closeDropdown() {
             dropdown.classList.add('hidden');
             tChevron.style.transform = '';
-            trigger.classList.remove('border-blue-500', 'ring-4', 'ring-blue-100');
+            trigger.classList.remove('border-slate-500', 'ring-2', 'ring-slate-200');
         }
 
         function filterList(query) {
@@ -412,7 +337,6 @@
                 tFlag.classList.add('hidden');
             }
             closeDropdown();
-            updatePreview(slot, slug);
             updateAbbreviationLink(slot, slug);
         }
 

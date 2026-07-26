@@ -36,7 +36,7 @@ namespace USASymbol.Controllers
             var stateName = SlugToTitleCase(stateSlug);
             var all = await _parkService.GetAllNationalParksAsync();
             var parks = all
-                .Where(p => p.Location.State.Contains(stateName, StringComparison.OrdinalIgnoreCase))
+                .Where(p => p.Location.States.Contains(stateName, StringComparer.OrdinalIgnoreCase))
                 .OrderBy(p => p.Stats.VisitationRank > 0 ? p.Stats.VisitationRank : 999)
                 .ThenBy(p => p.Name)
                 .ToList();

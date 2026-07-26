@@ -1,0 +1,147 @@
+@model PageTable
+@inject IImageUrlService Images
+
+@{
+    var rows = Model?.Rows ?? new List<TableRow>();
+    const string flagKey = "flag_image";
+    const string sealKey = "seal_image";
+    const string coatKey = "coat_of_arms_image";
+    var gridId = "insigniaGrid-" + Guid.NewGuid().ToString("N")[..8];
+    var nameColClass = "w-24 shrink-0 px-2.5 py-3 sm:w-36 sm:px-4 sm:py-4 md:w-48 lg:w-56";
+}
+
+@if (rows.Any())
+{
+    <div id="@gridId" class="insignia-grid mt-5 border border-slate-200/80 bg-white/40">
+
+        <div class="border-b border-slate-200/80 px-4 py-4 md:px-5 md:py-5">
+            <div class="relative w-full sm:max-w-xs">
+                <input type="text"
+                       class="insigniaSearch w-full border border-slate-200 bg-white px-4 py-3 pr-12 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100"
+                       placeholder="Search states..."
+                       autocomplete="off"
+                       aria-label="Search states" />
+                <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                </span>
+            </div>
+        </div>
+
+        <div class="insigniaTable">
+
+            <!-- Column header, shown once -->
+            <div class="flex items-stretch border-b border-slate-200/80 bg-slate-50">
+                <div class="@nameColClass flex items-center">
+                    <span class="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500">State</span>
+                </div>
+                <div class="grid flex-1 grid-cols-3">
+                    <div class="flex items-center justify-center px-2 py-3">
+                        <span class="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500">Flag</span>
+                    </div>
+                    <div class="flex items-center justify-center border-l border-slate-200/80 px-2 py-3">
+                        <span class="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500">Seal</span>
+                    </div>
+                    <div class="flex items-center justify-center border-l border-slate-200/80 px-2 py-3">
+                        <span class="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500">Coat of Arms</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- One full-width row per state -->
+            @for (int i = 0; i < rows.Count; i++)
+            {
+                var row = rows[i];
+                var stateName = row.GetString("state");
+                var stateSlug = row.GetString("state_slug");
+                var postal = row.GetString("postal_code");
+                var flagSrc = row.GetString(flagKey);
+                var sealSrc = row.GetString(sealKey);
+                var coatSrc = row.GetString(coatKey);
+                var stateUrl = !string.IsNullOrWhiteSpace(stateSlug) ? $"/states/{stateSlug}" : "#";
+                var rowBg = i % 2 == 0 ? "bg-white" : "bg-slate-50/35";
+
+                <a href="@stateUrl"
+                   class="insigniaCard group flex items-stretch border-b border-slate-100 transition hover:bg-blue-50/40 last:border-b-0 @rowBg"
+                   data-search="@stateName.ToLowerInvariant() @(postal ?? "").ToLowerInvariant()">
+
+                    <div class="@nameColClass flex flex-col justify-center">
+                        <span class="break-words text-[13px] font-bold leading-tight text-slate-900 group-hover:text-blue-800 sm:text-[15px] md:text-base">@stateName</span>
+                        @if (!string.IsNullOrWhiteSpace(postal))
+                        {
+                            <span class="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 sm:text-[11px]">@postal</span>
+                        }
+                    </div>
+
+                    <div class="grid flex-1 grid-cols-3">
+                        <div class="flex items-center justify-center p-2 sm:p-3 md:p-4">
+                            <div class="flex aspect-square w-full max-w-[200px] items-center justify-center border border-slate-100 bg-slate-50 p-3 sm:p-4">
+                                @if (!string.IsNullOrWhiteSpace(flagSrc))
+                                {
+                                    <img src="@Images.Card(flagSrc)" alt="@stateName state flag" class="h-full w-full object-contain" loading="lazy" decoding="async" />
+                                }
+                                else
+                                {
+                                    <span class="text-slate-300">—</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-center border-l border-slate-100 p-2 sm:p-3 md:p-4">
+                            <div class="flex aspect-square w-full max-w-[200px] items-center justify-center border border-slate-100 bg-slate-50 p-3 sm:p-4">
+                                @if (!string.IsNullOrWhiteSpace(sealSrc))
+                                {
+                                    <img src="@Images.Card(sealSrc)" alt="@stateName state seal" class="h-full w-full object-contain" loading="lazy" decoding="async" />
+                                }
+                                else
+                                {
+                                    <span class="text-slate-300">—</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-center border-l border-slate-100 p-2 sm:p-3 md:p-4">
+                            <div class="flex aspect-square w-full max-w-[200px] items-center justify-center border border-slate-100 bg-slate-50 p-3 sm:p-4">
+                                @if (!string.IsNullOrWhiteSpace(coatSrc))
+                                {
+                                    <img src="@Images.Card(coatSrc)" alt="@stateName coat of arms" class="h-full w-full object-contain" loading="lazy" decoding="async" />
+                                }
+                                else
+                                {
+                                    <span class="text-slate-300">—</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+
+        <div class="insigniaEmpty hidden px-4 py-12 text-center">
+            <div class="text-4xl mb-3">🔍</div>
+            <h3 class="text-lg font-black text-slate-900 mb-1">No matching states</h3>
+            <p class="text-slate-600 text-sm">Try a different search term.</p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var root = document.getElementById(@Html.Raw(Json.Serialize(gridId)));
+            if (!root) return;
+            var input = root.querySelector('.insigniaSearch');
+            var cards = Array.prototype.slice.call(root.querySelectorAll('.insigniaCard'));
+            var empty = root.querySelector('.insigniaEmpty');
+            if (!input) return;
+
+            input.addEventListener('input', function () {
+                var q = input.value.trim().toLowerCase();
+                var visible = 0;
+                cards.forEach(function (card) {
+                    var match = !q || (card.getAttribute('data-search') || '').indexOf(q) !== -1;
+                    card.classList.toggle('hidden', !match);
+                    if (match) visible++;
+                });
+                if (empty) empty.classList.toggle('hidden', visible !== 0);
+            });
+        })();
+    </script>
+}

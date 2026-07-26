@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="obj-verify\**\*.cs;bin-verify\**\*.cs;tmp\**\*.cs;artifacts\**\*.cs" />
+    <Compile Remove="obj-verify\**\*.cs;bin-verify\**\*.cs;tmp\**\*.cs;artifacts\**\*.cs;tools\**\*.cs" />
     <Content Remove="obj-verify\**;bin-verify\**;tmp\**;artifacts\**" />
     <None Remove="obj-verify\**;bin-verify\**;tmp\**;artifacts\**" />
     <EmbeddedResource Remove="obj-verify\**;bin-verify\**;tmp\**;artifacts\**" />
@@ -41,6 +41,11 @@
 
   <ItemGroup>
     <Content Include="Content\**\*.yaml;Content\**\*.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+
+    <Content Update="Content\places\counties\county-metrics.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

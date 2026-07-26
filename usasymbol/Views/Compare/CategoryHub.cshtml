@@ -1,0 +1,424 @@
+@model USASymbol.Models.ViewModels.CompareCategoryHubViewModel
+@using System.Text.Json
+@inject IImageUrlService Images
+
+@{
+    ViewData["Title"] = ViewData["Title"] ?? $"{Model.CategoryName} by State";
+
+    var faqItems = Model.Highlights.Take(8).Select(h =>
+    {
+        var metric = h.MetricName.ToLowerInvariant();
+        var q = h.HigherIsBetter ? $"Which state has the highest {metric}?" : $"Which state has the lowest {metric}?";
+        var a = h.HigherIsBetter
+            ? $"{h.BestStateName} has the highest {metric} at {h.BestValue}. {h.WorstStateName} has the lowest, at {h.WorstValue}."
+            : $"{h.BestStateName} has the lowest {metric} at {h.BestValue}. {h.WorstStateName} has the highest, at {h.WorstValue}.";
+        return (Question: q, Answer: a);
+    }).ToList();
+
+    var faqSchemaObj = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "FAQPage",
+        ["mainEntity"] = faqItems.Select(f => new Dictionary<string, object>
+        {
+            ["@type"] = "Question",
+            ["name"] = f.Question,
+            ["acceptedAnswer"] = new Dictionary<string, object>
+            {
+                ["@type"] = "Answer",
+                ["text"] = f.Answer
+            }
+        }).ToArray()
+    };
+    var faqSchemaJson = JsonSerializer.Serialize(faqSchemaObj, new JsonSerializerOptions { WriteIndented = false });
+}
+
+<!-- Sticky breadcrumb bar -->
+<div class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-3">
+        <nav aria-label="Breadcrumb">
+            <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
+                <li class="text-slate-300">/</li>
+                <li><a href="/compare-states" class="hover:text-slate-900 transition">Compare States</a></li>
+                <li class="text-slate-300">/</li>
+                <li class="text-slate-900 font-semibold">@Model.CategoryName</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-8 lg:py-12 article-content">
+
+    <!-- HERO -->
+    <section class="mb-8 lg:mb-10">
+        <div class="relative overflow-hidden border border-slate-200 bg-white shadow-sm">
+            <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-slate-50 to-transparent"></div>
+            <div class="relative p-6 sm:p-8 lg:p-10">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-slate-900 max-w-3xl">
+                    @Model.CategoryName by State
+                </h1>
+                <p class="mt-3 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
+                    @Model.Description
+                </p>
+                @if (!string.IsNullOrEmpty(Model.RankingsCategoryId))
+                {
+                    <a href="/rankings/@Model.RankingsCategoryId" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-slate-900 hover:underline">
+                        <i class="fa-solid fa-ranking-star text-xs"></i>
+                        See @Model.RankingsItemCount more @Model.RankingsCategoryTitle.ToLower() rankings
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+
+    @if (Model.Highlights.Any())
+    {
+        <!-- HIGHLIGHTS -->
+        <section class="mb-8 lg:mb-10">
+            <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mb-5">Standouts</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach (var h in Model.Highlights.Take(6))
+                {
+                    <div class="border border-slate-200 bg-white p-4">
+                        <div class="flex items-center gap-2.5 mb-3">
+                            <span class="flex h-8 w-8 items-center justify-center bg-slate-100 text-slate-600 shrink-0">
+                                <i class="@h.Icon text-xs"></i>
+                            </span>
+                            <span class="text-sm font-bold text-slate-900">@h.MetricName</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm mb-1.5">
+                            <a href="/states/@h.BestStateSlug" class="text-slate-700 hover:text-slate-900 hover:underline">@h.BestStateName</a>
+                            <span class="font-semibold text-emerald-700">@h.BestValue</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <a href="/states/@h.WorstStateSlug" class="text-slate-500 hover:text-slate-900 hover:underline">@h.WorstStateName</a>
+                            <span class="text-slate-500">@h.WorstValue</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.FeaturedComparison != null && Model.FeaturedComparison.Total > 0)
+    {
+        <!-- FEATURED COMPARISON -->
+        <section class="mb-8 lg:mb-10">
+            <div class="mb-5 flex items-center justify-between gap-4 flex-wrap">
+                <h2 class="text-xl md:text-2xl font-semibold text-slate-900">Featured @Model.CategoryName Comparison</h2>
+                <a href="/compare/@Model.CategorySlug/@Model.FeaturedComparison.StateA.Slug-vs-@Model.FeaturedComparison.StateB.Slug"
+                   class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-slate-900 hover:underline">
+                    See the full breakdown
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+            <a href="/compare/@Model.CategorySlug/@Model.FeaturedComparison.StateA.Slug-vs-@Model.FeaturedComparison.StateB.Slug" class="block hover:opacity-95 transition">
+                @await Html.PartialAsync("_ComparisonScoreCard", Model.FeaturedComparison)
+            </a>
+        </section>
+    }
+
+    <!-- PICKER -->
+    <section class="mb-8 lg:mb-10">
+        <div class="border border-slate-200 bg-white shadow-sm">
+            <div class="px-6 md:px-8 pt-7 md:pt-8 pb-5 border-b border-slate-200">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-2">Build A Comparison</p>
+                <h2 class="text-xl md:text-2xl font-semibold text-slate-900">Compare two states on @Model.CategoryName.ToLower()</h2>
+            </div>
+
+            <div class="p-6 md:p-8">
+                <form id="compare-form" class="grid gap-6 lg:grid-cols-[1fr_auto_1fr] lg:gap-5 items-end" onsubmit="event.preventDefault(); goCompare();">
+                    <div class="w-full relative" id="picker-wrap-a">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">First state</label>
+                        <input type="hidden" id="state-a" value="" />
+                        <button type="button" id="trigger-a"
+                                class="w-full flex items-center gap-3 border border-slate-300 bg-white px-4 py-3 md:py-3.5 text-base shadow-sm focus:border-slate-500 focus:ring-2 focus:ring-slate-200 transition-all">
+                            <img id="trigger-a-flag" class="w-9 h-6 object-cover shrink-0 hidden" alt="Selected first state flag" />
+                            <span id="trigger-a-label" class="flex-1 text-left font-medium text-slate-400">Choose a state...</span>
+                            <svg class="w-5 h-5 text-slate-400 shrink-0 transition-transform" id="trigger-a-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="dropdown-a" class="picker-dropdown hidden absolute left-0 right-0 top-full mt-2 z-50 border border-slate-200 bg-white shadow-lg">
+                            <div class="p-3 border-b border-slate-100">
+                                <label class="flex items-center gap-2 border border-slate-200 bg-slate-50 px-3 py-2 cursor-text">
+                                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    <input id="search-a" type="text" autocomplete="off" placeholder="Search states..."
+                                           class="flex-1 bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none" />
+                                </label>
+                            </div>
+                            <ul id="list-a" class="max-h-60 overflow-y-auto py-1">
+                                @foreach (var s in Model.States)
+                                {
+                                    <li data-slug="@s.Slug" data-name="@s.Name" data-abbr="@s.Abbreviation"
+                                        data-flag="@Images.Card(s.FlagImageUrl)" data-region="@(s.Region ?? "United States")"
+                                        class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-slate-50 transition-colors select-none">
+                                        @if (s.FlagImageUrl != null)
+                                        {
+                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="@s.Name flag" class="w-9 h-6 object-cover shrink-0" loading="lazy" onerror="this.style.display='none'" />
+                                        }
+                                        else
+                                        {
+                                            <span class="w-9 h-6 bg-slate-200 shrink-0"></span>
+                                        }
+                                        <span class="text-sm font-bold text-slate-500 w-7 shrink-0">@s.Abbreviation</span>
+                                        <span class="text-sm font-medium text-slate-800">@s.Name</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center pb-1">
+                        <div class="w-11 h-11 bg-slate-900 text-white flex items-center justify-center">
+                            <span class="text-xs font-extrabold tracking-[0.18em]">VS</span>
+                        </div>
+                    </div>
+
+                    <div class="w-full relative" id="picker-wrap-b">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Second state</label>
+                        <input type="hidden" id="state-b" value="" />
+                        <button type="button" id="trigger-b"
+                                class="w-full flex items-center gap-3 border border-slate-300 bg-white px-4 py-3 md:py-3.5 text-base shadow-sm focus:border-slate-500 focus:ring-2 focus:ring-slate-200 transition-all">
+                            <img id="trigger-b-flag" class="w-9 h-6 object-cover shrink-0 hidden" alt="Selected second state flag" />
+                            <span id="trigger-b-label" class="flex-1 text-left font-medium text-slate-400">Choose a state...</span>
+                            <svg class="w-5 h-5 text-slate-400 shrink-0 transition-transform" id="trigger-b-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="dropdown-b" class="picker-dropdown hidden absolute left-0 right-0 top-full mt-2 z-50 border border-slate-200 bg-white shadow-lg">
+                            <div class="p-3 border-b border-slate-100">
+                                <label class="flex items-center gap-2 border border-slate-200 bg-slate-50 px-3 py-2 cursor-text">
+                                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    <input id="search-b" type="text" autocomplete="off" placeholder="Search states..."
+                                           class="flex-1 bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none" />
+                                </label>
+                            </div>
+                            <ul id="list-b" class="max-h-60 overflow-y-auto py-1">
+                                @foreach (var s in Model.States)
+                                {
+                                    <li data-slug="@s.Slug" data-name="@s.Name" data-abbr="@s.Abbreviation"
+                                        data-flag="@Images.Card(s.FlagImageUrl)" data-region="@(s.Region ?? "United States")"
+                                        class="picker-item flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-slate-50 transition-colors select-none">
+                                        @if (s.FlagImageUrl != null)
+                                        {
+                                            <img src="@Images.Thumb(s.FlagImageUrl)" alt="@s.Name flag" class="w-9 h-6 object-cover shrink-0" loading="lazy" onerror="this.style.display='none'" />
+                                        }
+                                        else
+                                        {
+                                            <span class="w-9 h-6 bg-slate-200 shrink-0"></span>
+                                        }
+                                        <span class="text-sm font-bold text-slate-500 w-7 shrink-0">@s.Abbreviation</span>
+                                        <span class="text-sm font-medium text-slate-800">@s.Name</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-7">
+                    <button id="compare-btn" onclick="goCompare()"
+                            class="w-full inline-flex items-center justify-center gap-2.5 bg-slate-900 hover:bg-slate-800 text-white text-base font-semibold px-8 py-3.5 shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                        Compare on @Model.CategoryName.ToLower()
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ALL STATES TABLE -->
+    <section class="mb-8 lg:mb-10">
+        <div class="mb-5">
+            <h2 class="text-xl md:text-2xl font-semibold text-slate-900">All 50 States</h2>
+            <p class="mt-1.5 text-sm leading-6 text-slate-500">Sortable and searchable — click a column to re-rank, or click a state to see its full profile.</p>
+        </div>
+        <div class="border border-slate-200/80 bg-white/40">
+            @await Html.PartialAsync("Components/Tables/_Controls", Model.StatesTable)
+            @await Html.PartialAsync("Components/Tables/_Cards", Model.StatesTable)
+            @await Html.PartialAsync("Components/Tables/_Table", Model.StatesTable)
+        </div>
+    </section>
+
+    @if (Model.FeaturedPairs.Any())
+    {
+        <!-- POPULAR COMPARISONS -->
+        <section class="mb-8 lg:mb-10">
+            <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mb-5">Popular @Model.CategoryName Comparisons</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach (var fp in Model.FeaturedPairs)
+                {
+                    var stateObjA = Model.States.FirstOrDefault(s => s.Slug == fp.Slug1);
+                    var stateObjB = Model.States.FirstOrDefault(s => s.Slug == fp.Slug2);
+                    <a href="/compare/@Model.CategorySlug/@fp.Slug1-vs-@fp.Slug2"
+                       class="flex items-center gap-3 bg-white border border-slate-200 p-4 hover:shadow-md hover:border-slate-400 transition group">
+                        @if (stateObjA?.FlagImageUrl != null)
+                        {
+                            <img src="@Images.Card(stateObjA.FlagImageUrl)" onerror="this.style.display='none'"
+                                 class="w-11 h-8 object-cover shadow-sm" alt="@fp.Name1 flag" />
+                        }
+                        <span class="font-semibold text-slate-700 group-hover:text-slate-900 flex-1">@fp.Name1 vs @fp.Name2</span>
+                        @if (stateObjB?.FlagImageUrl != null)
+                        {
+                            <img src="@Images.Card(stateObjB.FlagImageUrl)" onerror="this.style.display='none'"
+                                 class="w-11 h-8 object-cover shadow-sm" alt="@fp.Name2 flag" />
+                        }
+                        <i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-slate-600 text-sm"></i>
+                    </a>
+                }
+            </div>
+        </section>
+    }
+
+    @if (faqItems.Any())
+    {
+        <!-- FAQ -->
+        <section class="mb-8 lg:mb-10">
+            <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mb-5">Common Questions</h2>
+            <div class="space-y-0 divide-y divide-slate-100 border border-slate-200 bg-white">
+                @foreach (var (q, a) in faqItems)
+                {
+                    <details class="group p-5">
+                        <summary class="flex items-center justify-between gap-4 cursor-pointer font-semibold text-slate-900 list-none">
+                            @q
+                            <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <p class="mt-3 text-sm leading-6 text-slate-600">@a</p>
+                    </details>
+                }
+            </div>
+        </section>
+    }
+
+    <!-- OTHER CATEGORIES -->
+    <section>
+        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mb-5">Compare By Other Categories</h2>
+        <div class="flex flex-wrap gap-2">
+            @foreach (var g in USASymbol.Services.ComparisonMetricsConfig.GroupOrder)
+            {
+                if (string.Equals(g.Slug, Model.CategorySlug, StringComparison.OrdinalIgnoreCase)) { continue; }
+                <a href="/compare/@g.Slug" class="inline-block text-sm text-slate-600 bg-slate-50 border border-slate-200 px-3 py-1.5 hover:border-slate-400 hover:text-slate-900 transition">@g.Name</a>
+            }
+        </div>
+    </section>
+
+</div>
+
+<script src="~/js/rankings/rankingTable.js" asp-append-version="true"></script>
+
+<script>
+    const categorySlug = @Html.Raw(JsonSerializer.Serialize(Model.CategorySlug));
+
+    function goCompare() {
+        const a = document.getElementById('state-a').value;
+        const b = document.getElementById('state-b').value;
+        if (!a || !b) { alert('Please select two states.'); return; }
+        if (a === b) { alert('Please select two different states.'); return; }
+        const pair = [a, b].sort().join('-vs-');
+        window.location.href = '/compare/' + categorySlug + '/' + pair;
+    }
+
+    function setupPicker(slot) {
+        const trigger   = document.getElementById(`trigger-${slot}`);
+        const tFlag     = document.getElementById(`trigger-${slot}-flag`);
+        const tLabel    = document.getElementById(`trigger-${slot}-label`);
+        const tChevron  = document.getElementById(`trigger-${slot}-chevron`);
+        const dropdown  = document.getElementById(`dropdown-${slot}`);
+        const search    = document.getElementById(`search-${slot}`);
+        const list      = document.getElementById(`list-${slot}`);
+        const hidden    = document.getElementById(`state-${slot}`);
+
+        function openDropdown() {
+            dropdown.classList.remove('hidden');
+            tChevron.style.transform = 'rotate(180deg)';
+            trigger.classList.add('border-slate-500', 'ring-2', 'ring-slate-200');
+            search.value = '';
+            filterList('');
+            setTimeout(() => search.focus(), 30);
+        }
+
+        function closeDropdown() {
+            dropdown.classList.add('hidden');
+            tChevron.style.transform = '';
+            trigger.classList.remove('border-slate-500', 'ring-2', 'ring-slate-200');
+        }
+
+        function filterList(query) {
+            const q = query.toLowerCase().trim();
+            list.querySelectorAll('.picker-item').forEach(item => {
+                const match = !q
+                    || item.dataset.name.toLowerCase().includes(q)
+                    || item.dataset.abbr.toLowerCase().startsWith(q);
+                item.style.display = match ? '' : 'none';
+            });
+        }
+
+        function selectItem(item) {
+            const { slug, name, abbr, flag } = item.dataset;
+            hidden.value = slug;
+            tLabel.textContent = `${abbr} · ${name}`;
+            tLabel.classList.remove('text-slate-400');
+            tLabel.classList.add('text-slate-900', 'font-semibold');
+            if (flag && flag !== 'null') {
+                tFlag.src = flag;
+                tFlag.alt = `${name} flag`;
+                tFlag.classList.remove('hidden');
+            } else {
+                tFlag.classList.add('hidden');
+            }
+            closeDropdown();
+        }
+
+        trigger.addEventListener('click', () => {
+            dropdown.classList.contains('hidden') ? openDropdown() : closeDropdown();
+        });
+
+        search.addEventListener('input', () => filterList(search.value));
+
+        list.addEventListener('click', e => {
+            const item = e.target.closest('.picker-item');
+            if (item) selectItem(item);
+        });
+
+        search.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeDropdown(); trigger.focus(); return; }
+            if (e.key === 'Enter') {
+                const visible = list.querySelector('.picker-item:not([style*="none"])');
+                if (visible) selectItem(visible);
+            }
+        });
+
+        document.addEventListener('click', e => {
+            const wrap = document.getElementById(`picker-wrap-${slot}`);
+            if (!wrap.contains(e.target)) closeDropdown();
+        });
+    }
+
+    setupPicker('a');
+    setupPicker('b');
+</script>
+
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "WebPage",
+  "name": @Html.Raw(JsonSerializer.Serialize($"{Model.CategoryName} by State | Compare All 50 States")),
+  "description": @Html.Raw(JsonSerializer.Serialize(Model.Description)),
+  "url": "https://usasymbol.com/compare/@Model.CategorySlug",
+  "breadcrumb": {
+    "@@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@@type": "ListItem", "position": 1, "name": "Home", "item": "https://usasymbol.com" },
+      { "@@type": "ListItem", "position": 2, "name": "Compare States", "item": "https://usasymbol.com/compare-states" },
+      { "@@type": "ListItem", "position": 3, "name": "@Model.CategoryName", "item": "https://usasymbol.com/compare/@Model.CategorySlug" }
+    ]
+  }
+}
+</script>
+
+@if (faqItems.Any())
+{
+    <script type="application/ld+json">@Html.Raw(faqSchemaJson)</script>
+}

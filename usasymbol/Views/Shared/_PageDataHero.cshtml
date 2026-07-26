@@ -1,0 +1,304 @@
+@using System.Globalization
+@using System.Linq
+@model USASymbol.Models.ViewModels.PageDataHeroViewModel
+
+@{
+    var updatedLabel = Model.DateModified?.ToString("MMM d, yyyy", CultureInfo.InvariantCulture);
+    var topValue = Model.Items
+        .Where(item => item.NumericValue.HasValue)
+        .Select(item => Math.Abs(item.NumericValue!.Value))
+        .DefaultIfEmpty(0)
+        .Max();
+    var firstActiveTile = Model.StateTiles
+        .Where(tile => tile.Item != null)
+        .OrderBy(tile => tile.Item!.Rank)
+        .FirstOrDefault();
+}
+
+<header id="page-data-hero"
+        class="pdh pdh--@Model.Variant.ToString().ToLowerInvariant()"
+        data-hero-variant="@Model.Variant.ToString().ToLowerInvariant()">
+    @if (Model.Variant == PageDataHeroVariant.Compact)
+    {
+        <div class="pdh-eyebrow">
+            <span class="pdh-dot" aria-hidden="true"></span>
+            <span class="pdh-eyebrow-lead">@Model.KindLabel</span>
+            <span>@Model.CategoryLabel</span>
+        </div>
+
+        <h1 class="pdh-title">@Model.Title</h1>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <p class="pdh-deck">@Model.Description</p>
+        }
+
+        <div class="pdh-compact-footer">
+            <div class="pdh-meta">
+                @if (!string.IsNullOrWhiteSpace(Model.SourceName))
+                {
+                    <span><i class="fa-solid fa-database" aria-hidden="true"></i>@Model.SourceName</span>
+                }
+                @if (Model.EntryCount > 0)
+                {
+                    <span>@Model.EntryCount entries</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(updatedLabel))
+                {
+                    <span><i class="fa-regular fa-calendar" aria-hidden="true"></i>Updated @updatedLabel</span>
+                }
+            </div>
+
+            <div class="pdh-actions">
+                @if (Model.EntryCount > 0)
+                {
+                    <a class="pdh-jump-primary" href="@Model.TableAnchor">
+                        Jump to data <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+                    </a>
+                }
+                @await Html.PartialAsync("_ShareButtons", Model.PageModel)
+            </div>
+        </div>
+    }
+    else if (Model.Variant == PageDataHeroVariant.TopChart)
+    {
+        <div class="pdh-light-grid">
+            <div class="pdh-copy">
+                <div class="pdh-eyebrow">
+                    <span class="pdh-dot" aria-hidden="true"></span>
+                    <span class="pdh-eyebrow-lead">@Model.KindLabel</span>
+                    <span>@Model.CategoryLabel</span>
+                    @if (!string.IsNullOrWhiteSpace(Model.SourceName))
+                    {
+                        <span>@Model.SourceName</span>
+                    }
+                </div>
+
+                <h1 class="pdh-title pdh-title--large">@Model.Title</h1>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p class="pdh-deck pdh-deck--large">@Model.Description</p>
+                }
+
+                <dl class="pdh-facts">
+                    @if (Model.EntryCount > 0)
+                    {
+                        <div><dt>Entries ranked</dt><dd>@Model.EntryCount</dd></div>
+                    }
+                    @if (Model.StatesRepresented > 0)
+                    {
+                        <div><dt>States represented</dt><dd>@Model.StatesRepresented</dd></div>
+                    }
+                    @if (Model.Items.FirstOrDefault() is { } leader && !string.IsNullOrWhiteSpace(leader.Value))
+                    {
+                        <div><dt>@Model.MetricLabel</dt><dd>@leader.Value</dd></div>
+                    }
+                </dl>
+
+                <div class="pdh-actions pdh-actions--spread">
+                    @await Html.PartialAsync("_PageDataHeroJumps", Model)
+                    @await Html.PartialAsync("_ShareButtons", Model.PageModel)
+                </div>
+            </div>
+
+            <aside class="pdh-chart" aria-label="Top results">
+                <div class="pdh-chart-head">
+                    <strong>Top of the chart</strong>
+                    <span>@Model.MetricLabel</span>
+                </div>
+                @foreach (var item in Model.Items.Take(3))
+                {
+                    var width = topValue > 0 && item.NumericValue.HasValue
+                        ? Math.Clamp(Math.Abs(item.NumericValue.Value) / topValue * 100, 4, 100)
+                        : Math.Max(28, 100 - ((item.Rank - 1) * 18));
+                    <div class="pdh-chart-row @(item.Rank == 1 ? "pdh-chart-row--leader" : null)">
+                        <div class="pdh-rank">@item.Rank</div>
+                        <div>
+                            @if (!string.IsNullOrWhiteSpace(item.State))
+                            {
+                                <a class="pdh-state" href="/states/@item.StateSlug">@item.State</a>
+                            }
+                            <p class="pdh-item-title">@item.Title</p>
+                            @if (!string.IsNullOrWhiteSpace(item.Subtitle))
+                            {
+                                <p class="pdh-item-subtitle">@item.Subtitle</p>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(item.Value))
+                            {
+                                <div class="pdh-units">
+                                    <span><i style="width:@width.ToString("0.#", CultureInfo.InvariantCulture)%"></i></span>
+                                    <b>@item.Value</b>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                <div class="pdh-chart-foot">
+                    <span>@Model.EntryCount entries</span>
+                    <a href="@Model.TableAnchor">See all</a>
+                </div>
+            </aside>
+        </div>
+    }
+    else if (Model.Variant == PageDataHeroVariant.TopStrip)
+    {
+        <div class="pdh-eyebrow">
+            <span class="pdh-dot" aria-hidden="true"></span>
+            <span class="pdh-eyebrow-lead">@Model.KindLabel</span>
+            <span>@Model.CategoryLabel</span>
+        </div>
+
+        <div class="pdh-strip-head">
+            <h1 class="pdh-title pdh-title--display">@Model.Title</h1>
+            <div>
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p class="pdh-deck pdh-deck--large">@Model.Description</p>
+                }
+                <p class="pdh-source-line">
+                    @if (!string.IsNullOrWhiteSpace(Model.SourceName))
+                    {
+                        <span>Source: @Model.SourceName</span>
+                    }
+                    <span>@Model.EntryCount entries</span>
+                    @if (!string.IsNullOrWhiteSpace(updatedLabel))
+                    {
+                        <span>Updated @updatedLabel</span>
+                    }
+                </p>
+            </div>
+        </div>
+
+        <div class="pdh-top-strip" aria-label="Top five results">
+            @foreach (var item in Model.Items.Take(5))
+            {
+                var titleMatchesState = !string.IsNullOrWhiteSpace(item.State) &&
+                    string.Equals(item.Title, item.State, StringComparison.OrdinalIgnoreCase);
+                <article class="pdh-top-card @(item.Rank == 1 ? "pdh-top-card--leader" : null)">
+                    <span class="pdh-top-rank">@item.Rank.ToString("00")</span>
+                    @if (!string.IsNullOrWhiteSpace(item.State) && !titleMatchesState)
+                    {
+                        <a class="pdh-state" href="/states/@item.StateSlug">@item.State</a>
+                    }
+                    @if (titleMatchesState)
+                    {
+                        <h2><a class="pdh-card-state-link" href="/states/@item.StateSlug">@item.State</a></h2>
+                    }
+                    else
+                    {
+                        <h2>@item.Title</h2>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(item.Subtitle))
+                    {
+                        <p>@item.Subtitle</p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(item.Value))
+                    {
+                        <strong>@item.Value</strong>
+                    }
+                </article>
+            }
+        </div>
+
+        <div class="pdh-actions pdh-actions--below-strip">
+            @await Html.PartialAsync("_PageDataHeroJumps", Model)
+            @await Html.PartialAsync("_ShareButtons", Model.PageModel)
+        </div>
+    }
+    else
+    {
+        <div class="pdh-tile-grid" data-page-tile-map>
+            <div class="pdh-copy">
+                <div class="pdh-eyebrow">
+                    <span class="pdh-dot" aria-hidden="true"></span>
+                    <span class="pdh-eyebrow-lead">@Model.KindLabel</span>
+                    <span>@Model.CategoryLabel</span>
+                    @if (!string.IsNullOrWhiteSpace(Model.SourceName))
+                    {
+                        <span>@Model.SourceName</span>
+                    }
+                </div>
+
+                <h1 class="pdh-title pdh-title--large">@Model.Title</h1>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p class="pdh-deck pdh-deck--large">@Model.Description</p>
+                }
+
+                <div class="pdh-tile-output" aria-live="polite">
+                    <div class="pdh-output-state" data-pdh-output-state>@(firstActiveTile?.Name ?? "Select a state")</div>
+                    <p class="pdh-output-title" data-pdh-output-title>@(firstActiveTile?.Item?.Title ?? "Choose a tile to inspect the result")</p>
+                    <p class="pdh-output-subtitle" data-pdh-output-subtitle>
+                        @if (firstActiveTile?.Item != null)
+                        {
+                            @string.Join(" · ", new[] { firstActiveTile.Item.Subtitle, firstActiveTile.Item.Value }.Where(value => !string.IsNullOrWhiteSpace(value)))
+                        }
+                    </p>
+                    <a data-pdh-output-link href="@(!string.IsNullOrWhiteSpace(firstActiveTile?.Item?.Url) ? firstActiveTile!.Item!.Url : $"/states/{firstActiveTile?.Slug ?? "alabama"}")">
+                        View state <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <div class="pdh-actions pdh-actions--tile">
+                    @await Html.PartialAsync("_PageDataHeroJumps", Model)
+                    @await Html.PartialAsync("_ShareButtons", Model.PageModel)
+                </div>
+            </div>
+
+            <div class="pdh-map-panel">
+                <div class="pdh-tile-map" aria-label="Interactive tile map of the United States">
+                    @foreach (var tile in Model.StateTiles)
+                    {
+                        var tileSubtitle = tile.Item == null
+                            ? "This state is not represented in the current result set."
+                            : string.Join(" · ", new[] { tile.Item.Subtitle, tile.Item.Value }.Where(value => !string.IsNullOrWhiteSpace(value)));
+                        var tileHref = !string.IsNullOrWhiteSpace(tile.Item?.Url) ? tile.Item!.Url : $"/states/{tile.Slug}";
+                        <a href="@tileHref"
+                           class="pdh-state-tile @(tile.Item != null ? "pdh-state-tile--active" : null)"
+                           style="grid-column:@tile.Column;grid-row:@tile.Row"
+                           data-pdh-state="@tile.Name"
+                           data-pdh-slug="@tile.Slug"
+                           data-pdh-url="@tileHref"
+                           data-pdh-title="@(tile.Item?.Title ?? "Not represented in this chart")"
+                           data-pdh-subtitle="@tileSubtitle"
+                           aria-label="@tile.Name">
+                            @tile.PostalCode
+                        </a>
+                    }
+                </div>
+                <div class="pdh-map-legend">
+                    <span><i class="pdh-legend-active"></i>In this result set</span>
+                    <span><i></i>@(50 - Model.StatesRepresented) not represented</span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                var root = document.currentScript.previousElementSibling;
+                if (!root || !root.matches('[data-page-tile-map]')) return;
+
+                var state = root.querySelector('[data-pdh-output-state]');
+                var title = root.querySelector('[data-pdh-output-title]');
+                var subtitle = root.querySelector('[data-pdh-output-subtitle]');
+                var link = root.querySelector('[data-pdh-output-link]');
+
+                root.querySelectorAll('.pdh-state-tile').forEach(function (tile) {
+                    tile.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        root.querySelectorAll('.pdh-state-tile').forEach(function (candidate) {
+                            candidate.classList.remove('is-selected');
+                        });
+                        tile.classList.add('is-selected');
+                        state.textContent = tile.dataset.pdhState || '';
+                        title.textContent = tile.dataset.pdhTitle || '';
+                        subtitle.textContent = tile.dataset.pdhSubtitle || '';
+                        link.href = tile.dataset.pdhUrl || ('/states/' + (tile.dataset.pdhSlug || ''));
+                    });
+                });
+            })();
+        </script>
+    }
+</header>

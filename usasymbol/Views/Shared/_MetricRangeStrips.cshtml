@@ -1,0 +1,17 @@
+@model USASymbol.Models.ViewModels.IPlaceMetricsViewModel
+
+<div class="place-metric-strips" data-place-kind="@Model.Kind.ToString().ToLowerInvariant()">
+    @foreach (var metric in Model.Metrics)
+    {
+        <div class="place-metric-strip" data-metric-key="@metric.Key">
+            <div class="place-metric-strip-head">
+                <span>@metric.Name</span>
+                <strong>@metric.DisplayValue</strong>
+            </div>
+            <div class="place-metric-strip-track" aria-hidden="true">
+                <span class="place-metric-strip-marker"></span>
+            </div>
+            <small>@(metric.Direction > 0 ? "Higher is better" : "Lower is better")</small>
+        </div>
+    }
+</div>

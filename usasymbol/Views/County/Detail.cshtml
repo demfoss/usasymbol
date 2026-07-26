@@ -1,0 +1,214 @@
+@model CountyProfileViewModel
+@inject IImageUrlService Images
+@using System.Text.Json
+@{
+    var state = Model.State;
+    var county = Model.County;
+    var metrics = county.Metrics.ToDictionary(metric => metric.Key, StringComparer.OrdinalIgnoreCase);
+    var income = metrics.GetValueOrDefault("medianHouseholdIncome");
+    var unemployment = metrics.GetValueOrDefault("unemploymentRate");
+    var lifeExpectancy = metrics.GetValueOrDefault("lifeExpectancy");
+    var relationToMedian = county.Population >= Model.StateCountyMedianPopulation ? "above" : "below";
+    var faqItems = Model.Faqs;
+    var structuredData = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@graph"] = new object[]
+        {
+            new Dictionary<string, object?>
+            {
+                ["@type"] = "WebPage",
+                ["name"] = $"{county.Name}, {state.Name}",
+                ["url"] = $"https://usasymbol.com/states/{state.Slug}/counties/{county.Slug}",
+                ["about"] = new Dictionary<string, object?>
+                {
+                    ["@type"] = "AdministrativeArea",
+                    ["name"] = county.Name,
+                    ["containedInPlace"] = new Dictionary<string, object?> { ["@type"] = "AdministrativeArea", ["name"] = state.Name }
+                }
+            },
+            new Dictionary<string, object?>
+            {
+                ["@type"] = "FAQPage",
+                ["mainEntity"] = faqItems.Select(item => new Dictionary<string, object?>
+                {
+                    ["@type"] = "Question",
+                    ["name"] = item.Question,
+                    ["acceptedAnswer"] = new Dictionary<string, object?> { ["@type"] = "Answer", ["text"] = item.Answer }
+                }).ToList()
+            }
+        }
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/county.css" asp-append-version="true" />
+}
+
+<nav class="cty-breadcrumb" aria-label="Breadcrumb">
+    <div class="cty-container">
+        <a href="/">Home</a><span>/</span><a href="/states/@state.Slug/living">@state.Name</a><span>/</span>
+        <a href="/states/@state.Slug/counties">Counties</a><span>/</span><strong>@county.Name</strong>
+    </div>
+</nav>
+
+<main>
+    <section class="cty-profile-hero">
+        <div class="cty-container">
+            <p class="cty-kicker">Published county profile · Official data · FIPS @county.Fips</p>
+            <h1>@county.Name, @state.Name</h1>
+            <p class="cty-deck">County-level income, housing, jobs, education, health, and population with transparent statewide comparisons and source periods.</p>
+            <div class="cty-profile-stats">
+                <div><span>Population</span><strong>@county.Population.ToString("N0")</strong></div>
+                <div><span>Household income</span><strong>@(income?.DisplayValue ?? "Not available")</strong></div>
+                <div><span>Unemployment</span><strong>@(unemployment?.DisplayValue ?? "Not available")</strong></div>
+                <div><span>Life expectancy</span><strong>@(lifeExpectancy?.DisplayValue ?? "Not available")</strong></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="cty-container cty-profile-content">
+        <section class="cty-profile-overview">
+            <div>
+                <p class="cty-eyebrow">County overview</p>
+                <h2>Living metrics at a glance</h2>
+            </div>
+            <p>@Model.Summary Its county population is @relationToMedian the state county median. Every figure below stays at county scope.</p>
+        </section>
+
+        <section class="cty-profile-section">
+            <div class="cty-section-head">
+                <div>
+                    <p class="cty-eyebrow">Within @state.Name</p>
+                    <h2>County population range</h2>
+                </div>
+                <p>The marker places this county between the smallest and largest county populations in the state.</p>
+            </div>
+            <article class="cty-range-card">
+                <div><span>State rank</span><strong>#@Model.StatePopulationRank of @Model.CountyCount</strong></div>
+                <div class="cty-range"><i style="left:@Model.PopulationRangePosition.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%"></i></div>
+                <div class="cty-range-labels"><span>Smallest county</span><b>@county.Population.ToString("N0") residents</b><span>@Model.LargestCounty?.Name</span></div>
+            </article>
+        </section>
+
+        <section class="cty-profile-section">
+            <div class="cty-section-head">
+                <div>
+                    <p class="cty-eyebrow">Relocation guide</p>
+                    <h2>Moving to @county.Name: what to check</h2>
+                </div>
+                <p>Data narrows the search; municipality, neighborhood, commute, schools, and current listings complete the decision.</p>
+            </div>
+            <div class="cty-editorial-grid">
+                <article><i class="fa-solid fa-truck-moving" aria-hidden="true"></i><h3>Before moving</h3><p>@Model.MovingOverview</p></article>
+                <article><i class="fa-solid fa-house" aria-hidden="true"></i><h3>Cost and housing</h3><p>@Model.CostOverview</p></article>
+                <article><i class="fa-solid fa-user-check" aria-hidden="true"></i><h3>Who it may suit</h3><p>@Model.BestForOverview</p></article>
+            </div>
+            <div class="cty-procon-grid">
+                <article class="cty-pro"><h3><i class="fa-solid fa-circle-check"></i>Potential advantages</h3><ul>@foreach (var point in Model.Pros) { <li>@point</li> }</ul></article>
+                <article class="cty-con"><h3><i class="fa-solid fa-circle-exclamation"></i>Trade-offs to check</h3><ul>@foreach (var point in Model.Cons) { <li>@point</li> }</ul></article>
+            </div>
+        </section>
+
+        <section class="cty-profile-section">
+            <div class="cty-section-head">
+                <div>
+                    <p class="cty-eyebrow">Income, housing, jobs, education &amp; health</p>
+                    <h2>County metrics within @state.Name</h2>
+                </div>
+                <p>Rank and range use only counties in @state.Name with that field available. A lower rank number is stronger when the metric has a clear direction.</p>
+            </div>
+            <div class="cty-metric-grid">
+                @foreach (var comparison in Model.MetricComparisons.Where(item => item.Metric.Key != "population"))
+                {
+                    <article class="cty-metric-card">
+                        <div>
+                            <span>@comparison.Metric.Name</span>
+                            <strong>@comparison.Metric.DisplayValue</strong>
+                        </div>
+                        <div class="cty-metric-range" aria-label="@comparison.Metric.Name position in state range">
+                            <i style="left:@comparison.RangePosition.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%"></i>
+                        </div>
+                        <p>@comparison.Context</p>
+                        <small>State rank #@comparison.StateRank of @comparison.AvailableCountyCount · @comparison.Metric.SourceName</small>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <section class="cty-profile-section">
+            <div class="cty-section-head">
+                <div>
+                    <p class="cty-eyebrow">Common questions</p>
+                    <h2>@county.Name FAQ</h2>
+                </div>
+            </div>
+            <div class="cty-faq">
+                @foreach (var item in faqItems)
+                {
+                    <details><summary>@item.Question <i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p>@item.Answer</p></details>
+                }
+            </div>
+        </section>
+
+        @if (Model.NearbyPopulationCounties.Any())
+        {
+            <section class="cty-profile-section">
+                <div class="cty-section-head">
+                    <div>
+                        <p class="cty-eyebrow">Similar population</p>
+                        <h2>Nearby counties in the state ranking</h2>
+                    </div>
+                </div>
+                <div class="cty-nearby">
+                    @foreach (var item in Model.NearbyPopulationCounties)
+                    {
+                        @if (item.Published)
+                        {
+                            <a href="/states/@state.Slug/counties/@item.Slug"><span>#@item.StatePopulationRank</span><strong>@item.Name</strong><small>@item.Population.ToString("N0")</small></a>
+                        }
+                        else
+                        {
+                            <div><span>#@item.StatePopulationRank</span><strong>@item.Name</strong><small>@item.Population.ToString("N0")</small></div>
+                        }
+                    }
+                </div>
+            </section>
+        }
+
+        <section class="cty-source-note">
+            <div>
+                <p class="cty-eyebrow">Source and gate</p>
+                <h2>Methodology and source periods</h2>
+                <p>All records join by five-digit FIPS. Profiles publish when ACS county population is at least 100,000 or the county is the state’s largest. Missing source values remain unavailable and are excluded from ranks. Runtime data was generated @Model.GeneratedOn.</p>
+            </div>
+            <div class="cty-source-list">
+                @foreach (var source in Model.Sources)
+                {
+                    <a href="@source.Url" rel="noopener noreferrer">
+                        <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                        <span>@source.Name<small>@source.Period</small></span>
+                    </a>
+                }
+            </div>
+        </section>
+
+        <section class="cty-next">
+            <div>
+                <p class="cty-eyebrow">Continue exploring</p>
+                <h2>See the state context</h2>
+            </div>
+            <div>
+                <a href="/states/@state.Slug/counties">All @state.Name counties</a>
+                <a href="/states/@state.Slug/living">Living in @state.Name</a>
+                <a href="/county-match?state=@state.Slug">County Match</a>
+                <a href="/county-rankings?state=@state.Slug">County rankings</a>
+                <a href="/state-match?state=@state.Slug">State Match</a>
+                <a href="/rankings">State rankings</a>
+                <a href="/states/@state.Slug">@state.Name symbols &amp; facts</a>
+            </div>
+        </section>
+    </div>
+</main>
+
+<script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(structuredData))</script>

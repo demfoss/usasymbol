@@ -64,6 +64,8 @@ namespace USASymbol.Models.Content
     {
         public string State { get; set; } = string.Empty;
         public string StateCode { get; set; } = string.Empty;
+        public List<string> States { get; set; } = new();
+        public List<string> StateCodes { get; set; } = new();
         public string Region { get; set; } = string.Empty;
         public double Latitude { get; set; }
         public double Longitude { get; set; }

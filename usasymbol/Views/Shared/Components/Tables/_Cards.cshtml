@@ -46,7 +46,9 @@
                 {
                     var stateSlug = row.GetString("state_slug");
                     var stateName = row.GetString("state") ?? "";
-                    var stateUrl  = $"/states/{stateSlug}";
+                    // Empty when the row has no real state page (e.g. Washington D.C., Canadian
+                    // provinces) so the card below doesn't fall back to a bare "/states/" link.
+                    var stateUrl  = !string.IsNullOrWhiteSpace(stateSlug) ? $"/states/{stateSlug}" : "";
 
                     // Rank badge
                     var rankValue =
@@ -134,7 +136,7 @@
                     }
                     var cardSearchText = string.Join(" ", searchParts.Where(s => !string.IsNullOrEmpty(s))).ToLowerInvariant();
 
-    <a href="@primaryUrl"
+    <a href="@(string.IsNullOrWhiteSpace(primaryUrl) ? null : primaryUrl)"
        class="rankingCard group block rounded-2xl border border-slate-200/80 bg-white
               hover:border-slate-300 hover:shadow-md transition-all duration-200 overflow-hidden"
        data-state="@stateName.ToLowerInvariant()"
@@ -187,13 +189,13 @@
                 <div class="min-w-0 flex-1">
                     <div class="flex min-w-0 items-start justify-between gap-2">
                         <div class="min-w-0">
-                            <div class="break-words text-[17px] md:text-[18px] font-black text-slate-900 leading-tight">
+                            <div class="break-words text-[17px] md:text-[18px] font-bold text-slate-900 leading-tight">
                                 @stateName
                             </div>
 
                             @if (!string.IsNullOrWhiteSpace(mainValue))
                             {
-                                <div class="mt-0.5 break-words text-sm md:text-[15px] font-semibold text-slate-700 leading-snug">
+                                <div class="mt-0.5 break-words text-sm md:text-[15px] font-medium text-slate-600 leading-snug">
                                     @mainValue
                                 </div>
                             }

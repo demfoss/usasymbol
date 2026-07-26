@@ -34,16 +34,26 @@
 
     var first = Model.SymbolOfTheDayPool.FirstOrDefault();
     var firstTypeLabel = first != null && typeLabels.TryGetValue(first.Symbol.Type, out var fl) ? fl : "State Symbol";
-    var stateMapJson = JsonSerializer.Serialize(
-        Model.StateMapItems.Select(item => new
-        {
-            name = item.Name,
-            slug = item.Slug,
-            abbr = item.Abbreviation,
-            capital = item.Capital,
-            population = item.Population
-        })
-    );
+    var stateMapLookup = Model.StateMapItems
+        .Where(item => !string.Equals(item.Abbreviation, "DC", StringComparison.OrdinalIgnoreCase))
+        .ToDictionary(item => item.Abbreviation, StringComparer.OrdinalIgnoreCase);
+    var initialMapState = stateMapLookup.TryGetValue("CA", out var california)
+        ? california
+        : stateMapLookup.Values.FirstOrDefault();
+    var initialMapPopulation = initialMapState?.Population is int population
+        ? population.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("en-US"))
+        : "Not available";
+    var stateTileRows = new[]
+    {
+        new[] { "AK", "",   "",   "",   "",   "",   "",   "",   "",   "",   "ME" },
+        new[] { "",   "",   "",   "",   "",   "",   "",   "",   "",   "VT", "NH" },
+        new[] { "WA", "ID", "MT", "ND", "MN", "WI", "IL", "MI", "NY", "RI", "MA" },
+        new[] { "OR", "NV", "WY", "SD", "IA", "IN", "OH", "PA", "NJ", "CT", ""   },
+        new[] { "CA", "UT", "CO", "NE", "MO", "KY", "WV", "VA", "MD", "DE", ""   },
+        new[] { "",   "AZ", "NM", "KS", "AR", "TN", "NC", "SC", "",   "",   ""   },
+        new[] { "",   "",   "OK", "LA", "MS", "AL", "GA", "",   "",   "",   ""   },
+        new[] { "HI", "",   "TX", "",   "",   "",   "",   "",   "FL", "",   ""   }
+    };
 }
 
 <section class="editorial-hero home-hero">
@@ -56,7 +66,7 @@
             Official State Symbols<br>of All 50 U.S. States
         </h1>
         <p class="hero-subtitle">
-            Every official U.S. state symbol in one place — flags, birds, flowers, trees, mottos, seals, nicknames, mammals, fossils, minerals, and 20+ more categories across all 50 states.
+            Explore every official U.S. state symbol — flags, birds, flowers, trees, mottos, seals, nicknames, and 20+ more categories across all 50 states.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
             <a href="/states" class="hero-cta-btn hero-cta-btn--light">
@@ -71,44 +81,90 @@
     </div>
 </section>
 
-@if (!string.IsNullOrWhiteSpace(Model.HomeMapSvg) && Model.StateMapItems.Any())
+@if (initialMapState != null && stateMapLookup.Any())
 {
-    <section class="pt-6 lg:pt-8 pb-10 lg:pb-12">
+    <section class="home-map-section">
         <div class="home-map-shell">
             <div class="home-map-card">
-                <div class="home-map-top">
+                <div class="home-map-layout">
                     <div class="home-map-copy">
                         <div class="hs-eyebrow">
                             <i class="fa-solid fa-map"></i>
                             State Map
                         </div>
                         <h2 class="content-h2">Browse State Symbols by Map</h2>
-                        <p>Choose any state to explore its official symbols, from flags and birds to flowers, trees, mottos, seals, and more.</p>
-                    </div>
-                    <div class="home-map-hint">
-                        <i class="fa-solid fa-arrow-pointer"></i>
-                        Hover for details, click to open
-                    </div>
-                </div>
+                        <p>Choose any tile to explore its state's flags, birds, flowers, trees, mottos, seals, and other official symbols.</p>
 
-                <div class="home-map-frame" id="home-state-map">
-                    @Html.Raw(Model.HomeMapSvg)
-                    <div class="home-map-tooltip" id="home-map-tooltip" hidden>
-                        <div class="home-map-tooltip__state" id="home-map-state"></div>
-                        <div class="home-map-tooltip__meta">
-                            <div class="home-map-tooltip__row">
-                                <span class="home-map-tooltip__label">Capital</span>
-                                <span class="home-map-tooltip__value" id="home-map-capital"></span>
+                        <div class="home-map-detail" id="home-map-detail" aria-live="polite">
+                            <div class="home-map-detail__eyebrow">Selected state</div>
+                            <h3 class="home-map-detail__state" id="home-map-state">@initialMapState.Name</h3>
+                            <div class="home-map-detail__meta">
+                                <div class="home-map-detail__fact">
+                                    <span>Capital</span>
+                                    <strong id="home-map-capital">@initialMapState.Capital</strong>
+                                </div>
+                                <div class="home-map-detail__fact">
+                                    <span>Population</span>
+                                    <strong id="home-map-population">@initialMapPopulation</strong>
+                                </div>
                             </div>
-                            <div class="home-map-tooltip__row">
-                                <span class="home-map-tooltip__label">Population</span>
-                                <span class="home-map-tooltip__value" id="home-map-population"></span>
-                            </div>
+                            <a class="home-map-detail__link"
+                               id="home-map-state-link"
+                               href="/states/@initialMapState.Slug">
+                                <span id="home-map-state-link-label">Explore @initialMapState.Name symbols</span>
+                                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="home-map-visual">
+                        <div class="home-map-visual__top">
+                            <span>50-state tile map</span>
+                            <span class="home-map-hint">
+                                <i class="fa-solid fa-arrow-pointer" aria-hidden="true"></i>
+                                Hover to preview · click to open
+                            </span>
+                        </div>
+
+                        <nav class="home-map-tiles" id="home-state-map" aria-label="Browse symbols by state">
+                            @foreach (var row in stateTileRows)
+                            {
+                                @foreach (var abbreviation in row)
+                                {
+                                    if (string.IsNullOrEmpty(abbreviation))
+                                    {
+                                        <span class="home-map-tile home-map-tile--empty" aria-hidden="true"></span>
+                                    }
+                                    else if (stateMapLookup.TryGetValue(abbreviation, out var state))
+                                    {
+                                        var statePopulation = state.Population is int tilePopulation
+                                            ? tilePopulation.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("en-US"))
+                                            : "Not available";
+                                        var isInitialState = string.Equals(state.Abbreviation, initialMapState.Abbreviation, StringComparison.OrdinalIgnoreCase);
+                                        <a class="home-map-tile@(isInitialState ? " is-selected" : "")"
+                                           href="/states/@state.Slug"
+                                           data-state-name="@state.Name"
+                                           data-state-capital="@state.Capital"
+                                           data-state-population="@statePopulation"
+                                           aria-label="Explore @state.Name state symbols"
+                                           aria-current="@(isInitialState ? "true" : null)">
+                                            @state.Abbreviation
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="home-map-tile home-map-tile--unavailable" aria-hidden="true">@abbreviation</span>
+                                    }
+                                }
+                            }
+                        </nav>
+
+                        <div class="home-map-legend" aria-hidden="true">
+                            <span><i></i>State symbols available</span>
+                            <strong>50 of 50 states</strong>
                         </div>
                     </div>
                 </div>
-
-                <script type="application/json" id="home-map-data">@Html.Raw(stateMapJson)</script>
             </div>
         </div>
     </section>
@@ -216,6 +272,39 @@
         </div>
         <h2 class="content-h2 mb-8">Popular State Guides &amp; Collections</h2>
         <div class="disc-grid">
+            <a href="/states/living" class="disc-card">
+                <div class="disc-card__banner disc-card__banner--living">
+                    <i class="fa-solid fa-house-chimney-window text-5xl disc-card__icon"></i>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">Moving &amp; Living</div>
+                    <div class="disc-card__title">State Living Guides</div>
+                    <p class="disc-card__desc">Compare costs, income, housing, safety, schools, healthcare, climate, and quality of life across all 50 states.</p>
+                    <span class="disc-card__cta">Browse Living Guides <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
+            <a href="/county-match" class="disc-card">
+                <div class="disc-card__banner" style="background:linear-gradient(135deg,#10253d 0%,#176a72 100%)">
+                    <i class="fa-solid fa-location-crosshairs text-5xl disc-card__icon"></i>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">Moving &amp; Data</div>
+                    <div class="disc-card__title">County Match</div>
+                    <p class="disc-card__desc">Weight housing, income, jobs, education, and health to find counties that fit your priorities.</p>
+                    <span class="disc-card__cta">Find a County <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
+            <a href="/county-rankings" class="disc-card">
+                <div class="disc-card__banner" style="background:linear-gradient(135deg,#3d315b 0%,#7d5ba6 100%)">
+                    <i class="fa-solid fa-chart-column text-5xl disc-card__icon"></i>
+                </div>
+                <div class="disc-card__body">
+                    <div class="disc-card__eyebrow">County Data</div>
+                    <div class="disc-card__title">County Rankings</div>
+                    <p class="disc-card__desc">Explore transparent rankings for affordability, household income, employment, education, and health.</p>
+                    <span class="disc-card__cta">Browse Rankings <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+            </a>
             <a href="/national-parks" class="disc-card">
                 <div class="disc-card__banner" style="background:linear-gradient(135deg,#1a3a2a 0%,#2d6a4f 50%,#52b788 100%)">
                     <i class="fa-solid fa-mountain-sun text-5xl disc-card__icon"></i>
@@ -486,75 +575,33 @@
 <script>
 (() => {
     const mapEl = document.getElementById('home-state-map');
-    const mapDataEl = document.getElementById('home-map-data');
-    const tooltipEl = document.getElementById('home-map-tooltip');
-    const tooltipStateEl = document.getElementById('home-map-state');
-    const tooltipCapitalEl = document.getElementById('home-map-capital');
-    const tooltipPopulationEl = document.getElementById('home-map-population');
+    const stateEl = document.getElementById('home-map-state');
+    const capitalEl = document.getElementById('home-map-capital');
+    const populationEl = document.getElementById('home-map-population');
+    const stateLinkEl = document.getElementById('home-map-state-link');
+    const stateLinkLabelEl = document.getElementById('home-map-state-link-label');
 
-    if (mapEl && mapDataEl && tooltipEl && tooltipStateEl && tooltipCapitalEl && tooltipPopulationEl) {
-        let states = [];
-        try { states = JSON.parse(mapDataEl.textContent || '[]'); } catch { states = []; }
+    if (mapEl && stateEl && capitalEl && populationEl && stateLinkEl && stateLinkLabelEl) {
+        const tiles = Array.from(mapEl.querySelectorAll('.home-map-tile[href]'));
 
-        const lookup = Object.fromEntries(states.map(item => [String(item.abbr || '').toLowerCase(), item]));
-        const numberFmt = new Intl.NumberFormat('en-US');
+        function selectState(tile) {
+            tiles.forEach(item => {
+                item.classList.remove('is-selected');
+                item.removeAttribute('aria-current');
+            });
 
-        function getPathKey(target) {
-            if (!target || target.tagName !== 'path') return null;
-            return Array.from(target.classList).find(cls => /^[a-z]{2}$/.test(cls)) || null;
+            tile.classList.add('is-selected');
+            tile.setAttribute('aria-current', 'true');
+            stateEl.textContent = tile.dataset.stateName || '';
+            capitalEl.textContent = tile.dataset.stateCapital || 'Not available';
+            populationEl.textContent = tile.dataset.statePopulation || 'Not available';
+            stateLinkEl.href = tile.href;
+            stateLinkLabelEl.textContent = `Explore ${tile.dataset.stateName || 'state'} symbols`;
         }
 
-        function showTooltip(target, item, clientX, clientY) {
-            tooltipStateEl.textContent = item.name || '';
-            tooltipCapitalEl.textContent = item.capital || 'Unknown';
-            tooltipPopulationEl.textContent = item.population ? numberFmt.format(item.population) : 'Unknown';
-
-            const rect = mapEl.getBoundingClientRect();
-            const ttW = tooltipEl.offsetWidth || 210;
-            const ttH = tooltipEl.offsetHeight || 120;
-            let left = clientX - rect.left + 18;
-            let top = clientY - rect.top - ttH - 14;
-
-            if (left + ttW > rect.width - 10) left = clientX - rect.left - ttW - 18;
-            if (top < 10) top = clientY - rect.top + 18;
-
-            tooltipEl.style.left = left + 'px';
-            tooltipEl.style.top = top + 'px';
-            tooltipEl.hidden = false;
-            target.style.fill = '#8fb2e8';
-        }
-
-        function hideTooltip(target) {
-            tooltipEl.hidden = true;
-            if (target) target.style.fill = '';
-        }
-
-        mapEl.querySelectorAll('g.state path').forEach(path => {
-            const key = getPathKey(path);
-            const item = key ? lookup[key] : null;
-            if (!item) return;
-
-            path.setAttribute('tabindex', '0');
-            path.setAttribute('role', 'link');
-            path.setAttribute('aria-label', item.name);
-
-            path.addEventListener('mouseenter', e => showTooltip(path, item, e.clientX, e.clientY));
-            path.addEventListener('mousemove', e => showTooltip(path, item, e.clientX, e.clientY));
-            path.addEventListener('mouseleave', () => hideTooltip(path));
-            path.addEventListener('focus', () => {
-                const rect = path.getBoundingClientRect();
-                showTooltip(path, item, rect.left + rect.width / 2, rect.top + rect.height / 2);
-            });
-            path.addEventListener('blur', () => hideTooltip(path));
-            path.addEventListener('click', () => {
-                window.location.href = '/states/' + item.slug;
-            });
-            path.addEventListener('keydown', e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    window.location.href = '/states/' + item.slug;
-                }
-            });
+        tiles.forEach(tile => {
+            tile.addEventListener('mouseenter', () => selectState(tile));
+            tile.addEventListener('focus', () => selectState(tile));
         });
     }
 

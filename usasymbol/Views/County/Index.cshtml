@@ -1,0 +1,332 @@
+@model CountyIndexViewModel
+@inject IImageUrlService Images
+@using System.Text.Json
+@using System.Globalization
+@{
+    var state = Model.State;
+    var countyJsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var weightVector = Context.Request.Query["w"].ToString();
+    var weightSuffix = string.IsNullOrWhiteSpace(weightVector)
+        ? string.Empty
+        : $"?w={Uri.EscapeDataString(weightVector)}";
+    var structuredData = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "ItemList",
+        ["name"] = $"{state.Name} counties",
+        ["numberOfItems"] = Model.Counties.Count,
+        ["itemListElement"] = Model.Counties.Select((county, index) => new Dictionary<string, object?>
+        {
+            ["@type"] = "ListItem",
+            ["position"] = index + 1,
+            ["name"] = county.Name,
+            ["url"] = county.Published
+                ? $"https://usasymbol.com/states/{state.Slug}/counties/{county.Slug}"
+                : null
+        }).ToList()
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/county.css" asp-append-version="true" />
+}
+
+<nav class="cty-breadcrumb" aria-label="Breadcrumb">
+    <div class="cty-container">
+        <a href="/">Home</a><span>/</span><a href="/states/living">Living guides</a><span>/</span>
+        <a href="/states/@state.Slug/living">@state.Name</a><span>/</span><strong>Counties</strong>
+    </div>
+</nav>
+
+<main>
+    <section class="cty-hero">
+        <div class="cty-container cty-hero-grid">
+            <div>
+                <p class="cty-kicker">County directory · Official data joined by FIPS</p>
+                <h1>@state.Name counties</h1>
+                <p class="cty-deck">Compare all @Model.Counties.Count counties and county equivalents in @state.Name by income, housing, employment, education, health, and population.</p>
+                <div class="cty-actions">
+                    <a class="cty-button cty-button-primary" href="/states/@state.Slug/living">Living in @state.Name</a>
+                    <a class="cty-button cty-button-secondary" href="/county-match?state=@state.Slug">Match counties</a>
+                    <a class="cty-button cty-button-secondary" href="/county-rankings?state=@state.Slug">County rankings</a>
+                </div>
+            </div>
+            <aside class="cty-flag-card">
+                <img src="@Images.Hero(state.FlagImageUrl)" alt="@state.Name flag" width="240" height="150" />
+                <dl>
+                    <div><dt>County equivalents</dt><dd>@Model.Counties.Count</dd></div>
+                    <div><dt>Largest</dt><dd>@Model.LargestCounty?.Name</dd></div>
+                    <div><dt>Metrics joined</dt><dd>13 county fields</dd></div>
+                    <div><dt>Published profiles</dt><dd>@Model.PublishedCount</dd></div>
+                </dl>
+            </aside>
+        </div>
+    </section>
+
+    <section class="cty-map-section">
+        <div class="cty-container">
+            <div class="cty-section-head">
+                <div>
+                    <p class="cty-eyebrow">Interactive county map</p>
+                    <h2>See where the numbers change</h2>
+                </div>
+                <p>Choose a county metric. Color is normalized within @state.Name, and gray means the source has no county value.</p>
+            </div>
+            <div class="cty-map-shell">
+                <div class="cty-map-toolbar">
+                    <label><span>Color counties by</span><select id="county-map-metric">
+                        <option value="MedianHouseholdIncome">Household income</option>
+                        <option value="MedianHomeValue">Median home value</option>
+                        <option value="MedianGrossRent">Median gross rent</option>
+                        <option value="UnemploymentRate">Unemployment rate</option>
+                        <option value="CollegeEducatedRate">Bachelor’s degree or higher</option>
+                        <option value="LifeExpectancy">Life expectancy</option>
+                        <option value="Population">Population</option>
+                    </select></label>
+                    <div class="cty-map-legend"><span>Lower</span><i></i><span>Higher</span></div>
+                </div>
+                <div id="county-metric-map" class="cty-map-canvas" aria-label="@state.Name county metric map"></div>
+                <div id="county-map-tip" class="cty-map-tip" hidden></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cty-directory">
+        <div class="cty-container">
+            <div class="cty-section-head">
+                <div>
+                    <p class="cty-eyebrow">Browse the state</p>
+                    <h2>All @state.Name counties</h2>
+                </div>
+                <p>Every row uses county-level ACS, LAUS, and County Health Rankings data. Standalone profiles still open only above the publication gate.</p>
+            </div>
+
+            <div class="cty-controls">
+                <label>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <span class="sr-only">Search counties</span>
+                    <input id="county-search" type="search" placeholder="Search a county or FIPS…" autocomplete="off" />
+                </label>
+                <select id="county-sort" aria-label="Sort counties">
+                    <option value="population">Largest population</option>
+                    <option value="income">Highest household income</option>
+                    <option value="homevalue">Lowest home value</option>
+                    <option value="rent">Lowest rent</option>
+                    <option value="unemployment">Lowest unemployment</option>
+                    <option value="education">Highest college attainment</option>
+                    <option value="health">Highest life expectancy</option>
+                    <option value="name">County name</option>
+                    <option value="rank">State rank</option>
+                </select>
+            </div>
+
+            <div class="cty-result-line">
+                <strong id="county-result-count">@Model.Counties.Count counties</strong>
+                <span>Publication gate: population ≥ 100,000 or largest in state</span>
+            </div>
+
+            <div class="cty-table-wrap">
+                <table class="cty-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th><th>County</th><th>Population</th><th>Income</th>
+                            <th>Home value</th><th>Unemployment</th><th>Degree+</th><th>Life exp.</th><th>Profile</th>
+                        </tr>
+                    </thead>
+                    <tbody id="county-table-body">
+                        @foreach (var county in Model.Counties)
+                        {
+                            <tr data-name="@county.Name.ToLowerInvariant()"
+                                data-fips="@county.Fips"
+                                data-population="@county.Population"
+                                data-income="@(county.MedianHouseholdIncome?.ToString(CultureInfo.InvariantCulture) ?? "")"
+                                data-homevalue="@(county.MedianHomeValue?.ToString(CultureInfo.InvariantCulture) ?? "")"
+                                data-rent="@(county.MedianGrossRent?.ToString(CultureInfo.InvariantCulture) ?? "")"
+                                data-unemployment="@(county.UnemploymentRate?.ToString(CultureInfo.InvariantCulture) ?? "")"
+                                data-education="@(county.CollegeEducatedRate?.ToString(CultureInfo.InvariantCulture) ?? "")"
+                                data-health="@(county.LifeExpectancy?.ToString(CultureInfo.InvariantCulture) ?? "")"
+                                data-rank="@county.StatePopulationRank">
+                                <td class="cty-num">#@county.StatePopulationRank</td>
+                                <td>
+                                    @if (county.Published)
+                                    {
+                                        <a href="/states/@state.Slug/counties/@county.Slug@weightSuffix">@county.Name</a>
+                                    }
+                                    else
+                                    {
+                                        <strong>@county.Name</strong>
+                                    }
+                                </td>
+                                <td class="cty-num">@county.Population.ToString("N0")</td>
+                                <td class="cty-num">@(county.MedianHouseholdIncome.HasValue ? county.MedianHouseholdIncome.Value.ToString("$#,0") : "—")</td>
+                                <td class="cty-num">@(county.MedianHomeValue.HasValue ? county.MedianHomeValue.Value.ToString("$#,0") : "—")</td>
+                                <td class="cty-num">@(county.UnemploymentRate.HasValue ? $"{county.UnemploymentRate.Value:0.#}%" : "—")</td>
+                                <td class="cty-num">@(county.CollegeEducatedRate.HasValue ? $"{county.CollegeEducatedRate.Value:0.#}%" : "—")</td>
+                                <td class="cty-num">@(county.LifeExpectancy.HasValue ? $"{county.LifeExpectancy.Value:0.#} yrs" : "—")</td>
+                                <td>
+                                    @if (county.Published)
+                                    {
+                                        <a class="cty-profile-link" href="/states/@state.Slug/counties/@county.Slug@weightSuffix">Open <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <span class="cty-data-only">Data row</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="cty-empty" id="county-empty" hidden>
+                <h2>No counties found</h2>
+                <p>Try another county name or five-digit FIPS code.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cty-method">
+        <div class="cty-container cty-method-grid">
+            <div>
+                <p class="cty-eyebrow">County data policy</p>
+                <h2>Depth without index bloat</h2>
+                <p>Every county stays available in this directory, but a standalone profile is published only when population is at least 100,000 or the county is the largest in its state. This keeps smaller counties comparable without producing thousands of thin pages.</p>
+                <p>Five-digit FIPS—not the county name—is the join key. ACS supplies income, housing, population, and education; BLS LAUS supplies annual employment; County Health Rankings supplies health outcomes and access.</p>
+            </div>
+            <aside>
+                <i class="fa-solid fa-database" aria-hidden="true"></i>
+                <h3>Official source periods</h3>
+                @foreach (var source in Model.Sources)
+                {
+                    <a class="cty-source-link" href="@source.Url" rel="noopener noreferrer">@source.Name</a>
+                    <p>@source.Period</p>
+                }
+                <p>Generated @Model.GeneratedOn. Missing fields remain blank; statewide values are never copied into a county.</p>
+            </aside>
+        </div>
+    </section>
+</main>
+
+<script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(structuredData))</script>
+<script id="county-map-data" type="application/json">@Html.Raw(JsonSerializer.Serialize(Model.Counties, countyJsonOptions))</script>
+<script>
+(() => {
+    const host = document.getElementById('county-metric-map');
+    const selector = document.getElementById('county-map-metric');
+    const tip = document.getElementById('county-map-tip');
+    const rows = JSON.parse(document.getElementById('county-map-data')?.textContent || '[]');
+    if (!host || !selector || !tip) return;
+
+    const byFips = Object.fromEntries(rows.map(row => [row.fips, row]));
+    const stateFips = Number('@Model.StateFips');
+    const labels = {
+        MedianHouseholdIncome: ['Household income', value => '$' + Math.round(value).toLocaleString('en-US')],
+        MedianHomeValue: ['Home value', value => '$' + Math.round(value).toLocaleString('en-US')],
+        MedianGrossRent: ['Gross rent', value => '$' + Math.round(value).toLocaleString('en-US') + '/mo'],
+        UnemploymentRate: ['Unemployment', value => value.toFixed(1) + '%'],
+        CollegeEducatedRate: ['Degree+', value => value.toFixed(1) + '%'],
+        LifeExpectancy: ['Life expectancy', value => value.toFixed(1) + ' years'],
+        Population: ['Population', value => Math.round(value).toLocaleString('en-US')]
+    };
+    function load(src) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src; script.onload = resolve; script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+    async function init() {
+        if (typeof d3 === 'undefined') await load('/js/d3.min.js');
+        if (typeof topojson === 'undefined') await load('/js/topojson-client.min.js');
+        const topology = await d3.json('/maps/us-counties-topo.json');
+        const features = topojson.feature(topology, topology.objects.counties).features
+            .filter(feature => Math.floor(Number(feature.id) / 1000) === stateFips);
+        const width = 960, height = 560;
+        const collection = {type:'FeatureCollection', features};
+        const projection = d3.geoIdentity().reflectY(true).fitExtent([[18,18],[width-18,height-18]], collection);
+        const path = d3.geoPath(projection);
+        const svg = d3.select(host).append('svg').attr('viewBox', `0 0 ${width} ${height}`).attr('role','img');
+        const paths = svg.selectAll('path').data(features).join('path')
+            .attr('d', path).attr('stroke','#fff').attr('stroke-width',.7)
+            .style('cursor', feature => byFips[String(feature.id).padStart(5,'0')]?.published ? 'pointer' : 'default');
+
+        function redraw() {
+            const key = selector.value;
+            const values = rows.map(row => row[key.charAt(0).toLowerCase() + key.slice(1)]).filter(Number.isFinite);
+            const extent = d3.extent(values);
+            const color = d3.scaleSequential(d3.interpolateYlGnBu).domain(extent[0] === extent[1] ? [extent[0]-1,extent[1]+1] : extent);
+            paths.attr('fill', feature => {
+                const row = byFips[String(feature.id).padStart(5,'0')];
+                const value = row?.[key.charAt(0).toLowerCase() + key.slice(1)];
+                return Number.isFinite(value) ? color(value) : '#d9dee2';
+            });
+        }
+        paths.on('mouseenter', function(event, feature) {
+            const row = byFips[String(feature.id).padStart(5,'0')];
+            if (!row) return;
+            const key = selector.value;
+            const value = row[key.charAt(0).toLowerCase() + key.slice(1)];
+            const label = labels[key];
+            tip.innerHTML = `<strong>${row.name}</strong><span>${label[0]}: ${Number.isFinite(value) ? label[1](value) : 'not available'}</span>`;
+            tip.hidden = false;
+            d3.select(this).attr('stroke','#132c48').attr('stroke-width',2);
+        }).on('mousemove', event => {
+            const box = host.getBoundingClientRect();
+            tip.style.left = `${event.clientX - box.left + 12}px`;
+            tip.style.top = `${event.clientY - box.top + 12}px`;
+        }).on('mouseleave', function() {
+            tip.hidden = true;
+            d3.select(this).attr('stroke','#fff').attr('stroke-width',.7);
+        }).on('click', function(event, feature) {
+            const row = byFips[String(feature.id).padStart(5,'0')];
+            if (row?.published) location.href = `/states/@state.Slug/counties/${row.slug}`;
+        });
+        selector.addEventListener('change', redraw);
+        redraw();
+    }
+    init().catch(() => { host.innerHTML = '<p class="cty-map-error">Map data could not be loaded. The sortable table below remains available.</p>'; });
+})();
+
+(() => {
+    const body = document.getElementById('county-table-body');
+    const rows = Array.from(body?.querySelectorAll('tr') || []);
+    const search = document.getElementById('county-search');
+    const sort = document.getElementById('county-sort');
+    const count = document.getElementById('county-result-count');
+    const empty = document.getElementById('county-empty');
+    if (!body || !search || !sort) return;
+
+    function refresh() {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        rows.forEach(row => {
+            const show = !query ||
+                (row.dataset.name || '').includes(query) ||
+                (row.dataset.fips || '').includes(query);
+            row.hidden = !show;
+            if (show) visible++;
+        });
+
+        rows.sort((a, b) => {
+            if (sort.value === 'name') {
+                return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+            }
+            const key = sort.value;
+            const descending = ['population', 'income', 'education', 'health'].includes(key);
+            const aValue = Number(a.dataset[key]);
+            const bValue = Number(b.dataset[key]);
+            const aMissing = !Number.isFinite(aValue) || (a.dataset[key] || '') === '';
+            const bMissing = !Number.isFinite(bValue) || (b.dataset[key] || '') === '';
+            if (aMissing !== bMissing) return aMissing ? 1 : -1;
+            return (aValue - bValue) * (descending ? -1 : 1);
+        }).forEach(row => body.appendChild(row));
+
+        count.textContent = `${visible} count${visible === 1 ? 'y' : 'ies'}`;
+        empty.hidden = visible !== 0;
+    }
+
+    search.addEventListener('input', refresh);
+    sort.addEventListener('change', refresh);
+})();
+</script>

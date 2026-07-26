@@ -1,0 +1,55 @@
+@using System.Globalization
+@using USASymbol.Models.ViewModels
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+
+@{
+    var insights = RankingNumericInsightsViewModel.Create(Model.Content?.Table);
+    if (insights?.HasFiftyStateDistribution != true) { return; }
+    var invariant = CultureInfo.InvariantCulture;
+}
+
+<div class="ranking-insight ranking-distribution">
+    <div class="ranking-distribution__header">
+        <div>
+            <p class="ranking-insight__eyebrow">
+                <i class="fa-solid fa-chart-simple" aria-hidden="true"></i>
+                Distribution
+            </p>
+            <h2>How @insights.MetricLabel.ToLowerInvariant() varies across 50 states</h2>
+        </div>
+        <span class="ranking-distribution__count">50 states</span>
+    </div>
+
+    <div class="ranking-distribution__plot"
+         role="img"
+         aria-label="@insights.MetricLabel distribution from @insights.Highest.State at @insights.Highest.DisplayValue to @insights.Lowest.State at @insights.Lowest.DisplayValue.">
+        @for (var i = 0; i < insights.Distribution.Count; i++)
+        {
+            var point = insights.Distribution[i];
+            var bottom = point.BarBottomPercent.ToString("0.###", invariant);
+            var height = point.BarHeightPercent.ToString("0.###", invariant);
+            <span class="ranking-distribution__slot" aria-hidden="true">
+                <span class="ranking-distribution__bar @(i < 3 ? "ranking-distribution__bar--top" : "")"
+                      style="bottom:@bottom%;height:@height%"
+                      title="@point.State: @point.DisplayValue"></span>
+            </span>
+        }
+    </div>
+
+    <div class="ranking-distribution__labels" aria-hidden="true">
+        <span>
+            <strong>Highest</strong>
+            @insights.Highest.State · @insights.Highest.DisplayValue
+        </span>
+        <span>
+            <strong>Median</strong>
+            @insights.MedianDisplay
+        </span>
+        <span>
+            <strong>Lowest</strong>
+            @insights.Lowest.State · @insights.Lowest.DisplayValue
+        </span>
+    </div>
+
+    <p class="ranking-distribution__summary">@insights.DistributionSummary</p>
+</div>

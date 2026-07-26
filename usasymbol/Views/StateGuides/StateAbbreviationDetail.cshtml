@@ -717,7 +717,7 @@
     </div>
 </div>
 
-<main class="sab-shell">
+<div class="sab-shell">
 
     <section class="sab-hero">
 
@@ -785,7 +785,7 @@
     </section>
 
     <div class="sab-layout">
-        <div class="journey-content">
+        <div class="article-content">
 
 
             <section class="sab-section">
@@ -922,7 +922,7 @@
 
         </div>
 
-        <aside class="journey-sidebar" aria-label="Article sidebar">
+        <aside class="article-sidebar" aria-label="Article sidebar">
             <div class="sab-sidebar-sticky">
 
                 @if (Model.SimilarStates.Any())
@@ -983,7 +983,7 @@
         @await Html.PartialAsync("_AuthorBox", new USASymbol.Models.ViewModels.AuthorBox { DateModified = new DateTime(2026, 5, 28) })
     </div>
 
-</main>
+</div>
 
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(breadcrumbSchema, jsonOptions))</script>
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(faqSchema, jsonOptions))</script>

@@ -1,0 +1,226 @@
+@model CountyMatchPageViewModel
+@using System.Text.Json
+@{
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/county-explore.css" asp-append-version="true" />
+}
+
+<nav class="cx-breadcrumb" aria-label="Breadcrumb">
+    <div class="cx-container"><a href="/">Home</a><span>/</span><strong>County Match</strong></div>
+</nav>
+
+<main>
+    <section class="cx-hero">
+        <div class="cx-container">
+            <p class="cx-kicker">3,143 counties · Your priorities</p>
+            <h1>Find your county match</h1>
+            <p>Set what matters, choose a state or search nationwide, and see which counties fit. Missing fields are excluded county by county and the remaining weights rebalance automatically.</p>
+            <div class="cx-hero-links">
+                <a href="/county-rankings">Browse county rankings</a>
+                <a href="/state-match">Start with State Match</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="cx-container cx-match-layout">
+        <aside class="cx-panel">
+            <div class="cx-panel-head">
+                <div><span>01</span><h2>Set priorities</h2></div>
+                <button id="cm-reset" type="button">Reset</button>
+            </div>
+
+            <label class="cx-field">
+                <span>State filter</span>
+                <select id="cm-state">
+                    <option value="">All 50 states</option>
+                    @foreach (var state in Model.States)
+                    {
+                        <option value="@state.Slug">@state.Name</option>
+                    }
+                </select>
+            </label>
+
+            <fieldset class="cx-frame">
+                <legend>Comparison frame</legend>
+                <label><input type="radio" name="frame" value="national" checked /><span>National range</span></label>
+                <label><input type="radio" name="frame" value="state" /><span>Within selected state</span></label>
+            </fieldset>
+
+            <div class="cx-sliders">
+                @foreach (var option in Model.MetricOptions)
+                {
+                    <label class="cx-slider">
+                        <span class="cx-slider-icon"><i class="@option.Icon" aria-hidden="true"></i></span>
+                        <span class="cx-slider-copy"><strong>@option.Name</strong><small>@option.Hint</small></span>
+                        <output for="weight-@option.Key">@option.DefaultWeight</output>
+                        <input id="weight-@option.Key" data-axis="@option.Key" type="range" min="0" max="100" step="5" value="@option.DefaultWeight" />
+                    </label>
+                }
+            </div>
+            <p class="cx-panel-note">A zero weight turns an axis off. A county is ranked when at least two active axes have data.</p>
+        </aside>
+
+        <section class="cx-results">
+            <div class="cx-results-head">
+                <div>
+                    <p class="cx-eyebrow">Live results</p>
+                    <h2>Your best matches</h2>
+                </div>
+                <label class="cx-search"><i class="fa-solid fa-magnifying-glass"></i><input id="cm-search" type="search" placeholder="Filter result names…" /></label>
+            </div>
+            <div class="cx-result-meta">
+                <strong id="cm-count">Calculating…</strong>
+                <span id="cm-frame-label">Normalized across all U.S. counties</span>
+            </div>
+            <div id="cm-results" class="cx-match-results" aria-live="polite"></div>
+            <div id="cm-empty" class="cx-empty" hidden>
+                <h3>No counties have enough data for these settings</h3>
+                <p>Turn on another priority or broaden the state filter.</p>
+            </div>
+        </section>
+    </div>
+
+    <section class="cx-method">
+        <div class="cx-container">
+            <div>
+                <p class="cx-eyebrow">How scoring works</p>
+                <h2>Transparent normalization, no invented county facts</h2>
+                <p>Each raw metric is scaled from 0 to 100 inside the selected frame. Affordability averages home value and rent; health averages available life expectancy, poor-or-fair health, and uninsured rate. The weighted mean uses only axes available for that county.</p>
+            </div>
+            <div class="cx-source-chips">
+                @foreach (var source in Model.Sources)
+                {
+                    <a href="@source.Url" rel="noopener noreferrer"><strong>@source.Name</strong><span>@source.Period</span></a>
+                }
+            </div>
+        </div>
+    </section>
+</main>
+
+<script id="county-match-data" type="application/json">@Html.Raw(JsonSerializer.Serialize(Model.Counties, jsonOptions))</script>
+<script>
+(() => {
+    const counties = JSON.parse(document.getElementById('county-match-data').textContent || '[]');
+    const state = document.getElementById('cm-state');
+    const search = document.getElementById('cm-search');
+    const results = document.getElementById('cm-results');
+    const empty = document.getElementById('cm-empty');
+    const count = document.getElementById('cm-count');
+    const frameLabel = document.getElementById('cm-frame-label');
+    const sliders = Array.from(document.querySelectorAll('[data-axis]'));
+    const defaults = Object.fromEntries(sliders.map(input => [input.dataset.axis, Number(input.value)]));
+
+    const rawDefinitions = {
+        income: ['income', true],
+        jobs: ['unemployment', false],
+        education: ['education', true],
+        lifeExpectancy: ['lifeExpectancy', true],
+        poorFairHealth: ['poorFairHealth', false],
+        uninsured: ['uninsured', false],
+        homeValue: ['homeValue', false],
+        rent: ['rent', false]
+    };
+
+    function range(rows, key) {
+        const values = rows.map(row => row.metrics[key]).filter(Number.isFinite);
+        return values.length ? [Math.min(...values), Math.max(...values)] : null;
+    }
+    function normalized(value, bounds, higher) {
+        if (!Number.isFinite(value) || !bounds) return null;
+        if (bounds[1] <= bounds[0]) return 50;
+        const score = 100 * (value - bounds[0]) / (bounds[1] - bounds[0]);
+        return higher ? score : 100 - score;
+    }
+    function average(values) {
+        const usable = values.filter(Number.isFinite);
+        return usable.length ? usable.reduce((sum, value) => sum + value, 0) / usable.length : null;
+    }
+    function axisScores(row, ranges) {
+        const score = key => {
+            const definition = rawDefinitions[key];
+            return normalized(row.metrics[definition[0]], ranges[key], definition[1]);
+        };
+        return {
+            affordability: average([score('homeValue'), score('rent')]),
+            income: score('income'),
+            jobs: score('jobs'),
+            education: score('education'),
+            health: average([score('lifeExpectancy'), score('poorFairHealth'), score('uninsured')])
+        };
+    }
+    function fmt(value, kind) {
+        if (!Number.isFinite(value)) return 'n/a';
+        if (kind === 'money') return '$' + Math.round(value).toLocaleString('en-US');
+        if (kind === 'percent') return value.toFixed(1).replace('.0','') + '%';
+        return value.toFixed(1);
+    }
+    function refresh() {
+        const selectedState = state.value;
+        const candidates = selectedState ? counties.filter(row => row.stateSlug === selectedState) : counties;
+        const frame = document.querySelector('input[name="frame"]:checked').value;
+        const frameRows = frame === 'state' && selectedState ? candidates : counties;
+        const ranges = Object.fromEntries(Object.keys(rawDefinitions).map(key => [key, range(frameRows, rawDefinitions[key][0])]));
+        const weights = Object.fromEntries(sliders.map(input => [input.dataset.axis, Number(input.value)]));
+        const activeCount = Object.values(weights).filter(value => value > 0).length;
+        const query = search.value.trim().toLowerCase();
+
+        const scored = candidates.map(row => {
+            const axes = axisScores(row, ranges);
+            const available = Object.keys(weights).filter(key => weights[key] > 0 && Number.isFinite(axes[key]));
+            const denominator = available.reduce((sum, key) => sum + weights[key], 0);
+            const total = denominator ? available.reduce((sum, key) => sum + axes[key] * weights[key], 0) / denominator : null;
+            return {...row, axes, available: available.length, score: total};
+        }).filter(row => Number.isFinite(row.score) && row.available >= Math.min(2, activeCount || 2))
+          .filter(row => !query || `${row.name} ${row.stateName}`.toLowerCase().includes(query))
+          .sort((a,b) => b.score - a.score || a.name.localeCompare(b.name));
+
+        const top = scored.slice(0, 24);
+        results.innerHTML = top.map((row, index) => {
+            const href = row.published
+                ? `/states/${row.stateSlug}/counties/${row.slug}`
+                : `/states/${row.stateSlug}/counties`;
+            return `<article class="cx-result-card">
+                <div class="cx-result-rank">${index + 1}</div>
+                <div class="cx-result-main">
+                    <span>${row.stateName} · FIPS ${row.fips}</span>
+                    <h3><a href="${href}">${row.name}</a></h3>
+                    <div class="cx-result-facts">
+                        <span>Income <b>${fmt(row.metrics.income,'money')}</b></span>
+                        <span>Home <b>${fmt(row.metrics.homeValue,'money')}</b></span>
+                        <span>Jobs <b>${fmt(row.metrics.unemployment,'percent')}</b></span>
+                        <span>Degree+ <b>${fmt(row.metrics.education,'percent')}</b></span>
+                    </div>
+                </div>
+                <div class="cx-score"><strong>${row.score.toFixed(0)}</strong><span>match</span><small>${row.available}/${activeCount} axes</small></div>
+            </article>`;
+        }).join('');
+        count.textContent = `${scored.length.toLocaleString('en-US')} counties qualify`;
+        frameLabel.textContent = frame === 'state' && selectedState ? 'Normalized within the selected state' : 'Normalized across all U.S. counties';
+        empty.hidden = top.length !== 0;
+    }
+
+    sliders.forEach(input => input.addEventListener('input', () => {
+        input.closest('label').querySelector('output').value = input.value;
+        refresh();
+    }));
+    state.addEventListener('change', refresh);
+    search.addEventListener('input', refresh);
+    document.querySelectorAll('input[name="frame"]').forEach(input => input.addEventListener('change', refresh));
+    document.getElementById('cm-reset').addEventListener('click', () => {
+        sliders.forEach(input => {
+            input.value = defaults[input.dataset.axis];
+            input.closest('label').querySelector('output').value = input.value;
+        });
+        state.value = '';
+        search.value = '';
+        document.querySelector('input[name="frame"][value="national"]').checked = true;
+        refresh();
+    });
+    const requestedState = new URLSearchParams(location.search).get('state');
+    if (requestedState && Array.from(state.options).some(option => option.value === requestedState)) state.value = requestedState;
+    refresh();
+})();
+</script>

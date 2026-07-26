@@ -1,0 +1,114 @@
+type: ranking
+slug: states-by-cost-of-living
+category: economy
+url: /rankings/economy/states-by-cost-of-living
+hero_image: "/images/rankings/economy/states-by-cost-of-living/states-by-cost-of-living-hero.jpg"
+hero_image_alt: "Coastal city skyline with mountains and ocean in the background"
+extremes_mode: both
+extremes_title: "Most and Least Expensive States to Live In"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Cost of Living by State 2026 | Map & Index"
+  description: "Hawaii has the highest cost of living index at 187, while West Virginia has the lowest at 83.6."
+
+page:
+  h1: "Cost of Living by State 2026"
+  quick_answer:
+    - "Hawaii is the most expensive state to live in, with a cost-of-living index of 187, placing everyday expenses 87% above the national average. Housing, groceries, and utilities cost more due to its island location and dependence on imports."
+    - "West Virginia is the cheapest state with an index of 83.6, followed by Mississippi (85.5) and Arkansas (87.6). In these states, the same dollar buys significantly more than it would in a high-cost state like Hawaii or California."
+    - "The national average is set at 100 by the MERIC/C2ER index. States above 100 are more expensive than average, and states below 100 are cheaper. Thirty states fall below the national average."
+  methodology: "Cost of living index values are composite MERIC/C2ER (Missouri Economic Research and Information Center / Council for Community and Economic Research) scores using data from the most recent quarterly Cost of Living Index report. The index covers grocery items, housing, utilities, transportation, health care, and miscellaneous goods and services. 100 = national average."
+  sources:
+    - name: "Missouri Economic Research and Information Center (MERIC) — Cost of Living Index"
+      url: "https://meric.mo.gov/data/cost-living-data-series"
+      description: "Annual average composite cost of living index by state"
+
+map:
+  title: "Cost of Living Index by State 2026 Map"
+  image_alt: "U.S. map showing cost of living index by state, darkest red for most expensive states"
+  caption: "Hawaii stands alone at the top. The coasts run red; the South and Plains run light. Mississippi, Oklahoma, and Kansas are the most affordable. The national average index is 100."
+  metric_key: col_index
+  metric_label: "CoL Index"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
+computed_data:
+  field: cost_of_living_index
+  sort: desc
+  format: "F1"
+  label: "Cost of Living Index"
+  metric_key: col_index
+
+compare:
+  metric_slug: cost-of-living
+  title: "Compare Cost of Living Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of cost of living, income, taxes, and more."
+  icon: "fa-solid fa-cart-shopping"
+
+sections:
+  - id: "why_hawaii_most_expensive"
+    icon: "fa-solid fa-ship"
+    title: "Why Hawaii Has the Highest Cost of Living in the U.S."
+    paragraphs:
+      - "Hawaii's cost-of-living index of 186.8, nearly 87% above the national average, is driven by geography. The state imports roughly 85% to 90% of its food and nearly all manufactured goods by ship. Ocean freight adds cost to every product before it reaches a store shelf. Housing is constrained by limited buildable land, high construction costs, and demand from both residents and second-home buyers."
+      - "Energy costs compound the problem. Hawaii's electricity rate averages around $0.40 per kilowatt-hour, the highest in the nation, because the state burns imported petroleum to generate most of its power. Gas prices run $1.50 to $2.00 per gallon above the U.S. average year-round for the same import-dependency reason."
+
+  - id: "why_west_virginia_cheapest"
+    icon: "fa-solid fa-house"
+    title: "Why West Virginia Is the Least Expensive State"
+    paragraphs:
+      - "West Virginia's cost-of-living index of 83.6 reflects low housing costs combined with depressed local wages. The median home value in West Virginia is $124,800, the lowest of any state, and median gross rent averages around $760 per month. When housing is cheap, the entire cost structure of a local economy shifts downward: retail margins, service wages, and property taxes adjust accordingly."
+      - "Population decline plays a role. West Virginia has lost residents in most recent census counts as younger workers leave for higher-wage markets. Falling demand for housing keeps prices low, which in turn keeps the cost-of-living index low. Mississippi, Arkansas, Kentucky, and Alabama follow West Virginia for similar structural reasons."
+
+  - id: "coast_vs_interior"
+    icon: "fa-solid fa-arrows-left-right"
+    title: "Coastal States Have the Highest Cost of Living"
+    paragraphs:
+      - "Thirty-three states have a cost-of-living index below the national average of 100. Almost all are in the South, Midwest, or Great Plains. The most expensive states, Hawaii, Massachusetts, California, New York, and Alaska, are coastal or geographically isolated. Coastal labor markets pay higher wages, which drives up housing prices, service costs, and retail prices in a reinforcing cycle."
+      - "The inland Mountain West is a partial exception. Colorado (110.2) and Montana (105.2) have risen above the national average as remote-work migration brings high-earning households from coastal cities. Idaho (103.3) crossed above 100 in recent years for the same reason. States that were inexpensive a decade ago are seeing cost structures change as migration reshapes their housing markets."
+
+  - id: "cheap_vs_affordable"
+    icon: "fa-solid fa-scale-balanced"
+    title: "Low Cost of Living Does Not Always Mean Affordable"
+    paragraphs:
+      - "West Virginia, Mississippi, and Arkansas rank as the cheapest states to live in, but all three also rank near the bottom for median household income. A lower cost of living matters only when local incomes are high enough relative to local prices. In these states, incomes are low enough that many households still struggle even at discounted prices."
+      - "Maryland has a high cost of living (121.7) but an even higher income, producing a purchasing-power surplus. Mississippi has a low cost of living (85.5) but an income so low that its purchasing power is only modestly better than states with higher costs and higher wages. See [states by median income](/rankings/economy/states-by-median-income) alongside this ranking for the full picture."
+
+visual_assets:
+  - id: hawaii-cost-of-living-placeholder
+    src: /images/rankings/economy/states-by-cost-of-living/hawaii-cost-of-living-placeholder.jpg
+    alt: "Shipping containers stacked at a busy port terminal"
+    caption: "Stacks of imported cargo capture the shipping costs that ripple into food, fuel, and everyday prices in island markets."
+    section: why_hawaii_most_expensive
+    layout: left
+  - id: west-virginia-cost-of-living-placeholder
+    src: /images/rankings/economy/states-by-cost-of-living/west-virginia-cost-of-living-placeholder.jpg
+    alt: "Small-town homes and low-rise buildings along a quiet street"
+    caption: "Lower housing costs shape the broader price structure in many of the country's least expensive states."
+    section: why_west_virginia_cheapest
+    layout: right
+
+faq:
+  - question: "Which state has the highest cost of living?"
+    answer: "Hawaii has the highest cost of living in the U.S. with a composite index of around 187, meaning expenses run 87% above the national average. The state's remote location in the Pacific Ocean means most goods must be shipped or flown in, which drives up prices for groceries, fuel, and building materials."
+  - question: "Which state has the lowest cost of living?"
+    answer: "West Virginia consistently ranks as the least expensive state in the U.S. with a cost of living index of 83.6. Housing costs are the lowest of any state — median home value around $125,000 — and everyday expenses like groceries and utilities are well below the national average."
+  - question: "What does a cost of living index of 100 mean?"
+    answer: "An index of 100 represents the national average. A state with an index of 120 costs 20% more than average to live in; a state with an index of 85 costs 15% less. The C2ER index covers six categories: groceries, housing, utilities, transportation, health care, and miscellaneous goods and services."
+  - question: "Does a high cost of living mean a lower standard of living?"
+    answer: "Not necessarily. High-cost states often have higher wages that partially offset expenses. Purchasing power — income adjusted for cost of living — is a better measure of real living standards. Some low-income, low-cost states offer less purchasing power than high-income, high-cost states."
+
+related:
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"
+  - title: "Purchasing Power by State"
+    url: "/rankings/economy/purchasing-power-by-state"
+  - title: "States by Median Home Value"
+    url: "/rankings/economy/states-by-home-value"
+  - title: "States by Income Tax Rate"
+    url: "/rankings/economy/states-by-income-tax"

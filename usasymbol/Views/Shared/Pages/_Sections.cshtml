@@ -59,29 +59,27 @@
         var compareLeftAsset = sectionAssets.FirstOrDefault();
         var compareRightAsset = sectionAssets.Skip(1).FirstOrDefault();
 
-        <section id="@sect.Id"
-                 class="scroll-mt-24 @(isFirst ? "pt-2 pb-8 md:pb-10" : "py-8 md:py-10")"
-                 aria-label="@sect.Title">
+        <div id="@sect.Id"
+             class="scroll-mt-24 @(isFirst ? "pt-2 pb-8 md:pb-10" : "py-8 md:py-10")"
+             aria-label="@sect.Title">
 
-            <header class="mb-5 lg:mb-6">
-                @if (!string.IsNullOrWhiteSpace(sect.Icon))
-                {
-                    <div class="flex items-center gap-3 md:gap-4">
-                        <span class="inline-flex h-9 w-9 shrink-0 min-h-[2.25rem] min-w-[2.25rem] items-center justify-center rounded-xl bg-slate-900 text-white">
-                            <i class="@sect.Icon text-sm" aria-hidden="true"></i>
-                        </span>
-                        <h2 class="content-h2 !leading-[1.12]">
-                            @sect.Title
-                        </h2>
-                    </div>
-                }
-                else
-                {
-                    <h2 class="content-h2">
+            @if (!string.IsNullOrWhiteSpace(sect.Icon))
+            {
+                <div class="mb-5 lg:mb-6 flex items-center gap-3 md:gap-4">
+                    <span class="inline-flex h-9 w-9 shrink-0 min-h-[2.25rem] min-w-[2.25rem] items-center justify-center rounded-xl bg-slate-900 text-white">
+                        <i class="@sect.Icon text-sm" aria-hidden="true"></i>
+                    </span>
+                    <h2 class="content-h2 !leading-[1.12]">
                         @sect.Title
                     </h2>
-                }
-            </header>
+                </div>
+            }
+            else
+            {
+                <h2 class="content-h2 mb-5 lg:mb-6">
+                    @sect.Title
+                </h2>
+            }
 
             @if (sectionAssets.Any() && style != "compare-cards")
             {
@@ -106,16 +104,14 @@
 
             @if (sect.Paragraphs?.Any() == true)
             {
-                <div class="mt-6">
-                    <div class="prose prose-lg prose-headings:scroll-mt-24 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-p:leading-relaxed text-gray-800">
-                        @for (int p = 0; p < sect.Paragraphs.Count; p++)
-                        {
-                            var isLead = p == 0;
-                            <p class="content-p @(isLead ? "text-gray-900" : "text-gray-800")">
-                                @sect.Paragraphs[p].RenderAutoLinks()
-                            </p>
-                        }
-                    </div>
+                <div class="mt-6 prose prose-lg prose-headings:scroll-mt-24 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-p:leading-relaxed text-gray-800">
+                    @for (int p = 0; p < sect.Paragraphs.Count; p++)
+                    {
+                        var isLead = p == 0;
+                        <p class="content-p @(isLead ? "text-gray-900" : "text-gray-800")">
+                            @sect.Paragraphs[p].RenderAutoLinks()
+                        </p>
+                    }
                 </div>
             }
 
@@ -318,7 +314,7 @@
             }
 
             <div class="clear-both"></div>
-        </section>
+        </div>
 
         @if (i == 0 && !quoteDone && pageContent?.ExpertQuote != null)
         {

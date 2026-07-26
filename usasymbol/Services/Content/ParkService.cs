@@ -11,11 +11,16 @@ namespace USASymbol.Services.Content
         private readonly IMemoryCache _cache;
         private readonly IWebHostEnvironment _env;
         private readonly IDeserializer _yaml;
+        private readonly ILogger<ParkService> _logger;
 
-        public ParkService(IMemoryCache cache, IWebHostEnvironment env)
+        public ParkService(
+            IMemoryCache cache,
+            IWebHostEnvironment env,
+            ILogger<ParkService> logger)
         {
             _cache = cache;
             _env = env;
+            _logger = logger;
             _yaml = new DeserializerBuilder().Build();
         }
 
@@ -153,10 +158,22 @@ namespace USASymbol.Services.Content
 
                 if (data.TryGetValue("location", out var locObj) && locObj is Dictionary<object, object> loc)
                 {
+                    var state = S(loc, "state");
+                    var stateCode = S(loc, "state_code");
+                    var states = ParseStringList(loc, "states");
+                    var stateCodes = ParseStringList(loc, "state_codes");
+
+                    if (states.Count == 0 && !string.IsNullOrWhiteSpace(state))
+                        states.Add(state);
+                    if (stateCodes.Count == 0 && !string.IsNullOrWhiteSpace(stateCode))
+                        stateCodes.Add(stateCode);
+
                     park.Location = new ParkLocation
                     {
-                        State = S(loc, "state"),
-                        StateCode = S(loc, "state_code"),
+                        State = state,
+                        StateCode = stateCode,
+                        States = states,
+                        StateCodes = stateCodes,
                         Region = S(loc, "region"),
                         Latitude = ParseDouble(loc, "latitude"),
                         Longitude = ParseDouble(loc, "longitude"),
@@ -399,8 +416,9 @@ namespace USASymbol.Services.Content
 
                 return park;
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Failed to load national park content from {Path}", path);
                 return null;
             }
         }

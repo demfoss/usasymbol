@@ -1,0 +1,71 @@
+@using System.Linq
+@model USASymbol.Models.ViewModels.SymbolHeroViewModel
+@inject IImageUrlService Images
+
+@{
+    var imageSrc = ViewData["HeroImageSrc"] as string ?? string.Empty;
+    var imageSrcSet = ViewData["HeroImageSrcSet"] as string ?? string.Empty;
+    var imageSizes = ViewData["HeroImageSizes"] as string ?? "100vw";
+    var mediaFitClass = ViewData["MediaFitClass"] as string ?? "sdh-media--cover";
+    var imageAlt = string.IsNullOrWhiteSpace(Model.ImageAlt) ? Model.Title : Model.ImageAlt;
+}
+
+<figure class="sdh-figure">
+    <div class="sdh-media @mediaFitClass">
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            <img src="@imageSrc"
+                 srcset="@imageSrcSet"
+                 sizes="@imageSizes"
+                 alt="@imageAlt"
+                 loading="eager"
+                 fetchpriority="high"
+                 onerror="this.hidden=true;this.parentElement.classList.add('sdh-media--failed');" />
+
+            @if (!string.IsNullOrWhiteSpace(Model.ImageLinkUrl))
+            {
+                <button type="button"
+                        class="sdh-expand js-visual-lightbox"
+                        data-lightbox-src="@Images.Full(Model.ImageLinkUrl)"
+                        data-lightbox-alt="@imageAlt"
+                        data-lightbox-caption="@(string.IsNullOrWhiteSpace(Model.FigureCaption) ? imageAlt : Model.FigureCaption)"
+                        onclick="window.__openVisualLightboxFromButton && window.__openVisualLightboxFromButton(this)"
+                        aria-label="Open image in popup">
+                    <i class="fa-solid fa-expand" aria-hidden="true"></i>
+                </button>
+            }
+        }
+        else if (Model.PaletteHexes.Any(hex => !string.IsNullOrWhiteSpace(hex)))
+        {
+            <div class="sdh-palette" aria-label="Color palette">
+                @foreach (var hex in Model.PaletteHexes.Where(hex => !string.IsNullOrWhiteSpace(hex)))
+                {
+                    <span style="background-color:@hex"></span>
+                }
+            </div>
+        }
+        <div class="sdh-media-fallback" aria-hidden="true">
+            <i class="@(string.IsNullOrWhiteSpace(Model.FallbackIconClass) ? "fa-solid fa-star" : Model.FallbackIconClass)"></i>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.FigureTitle) ||
+         !string.IsNullOrWhiteSpace(Model.FigureSubtitle) ||
+         !string.IsNullOrWhiteSpace(Model.FigureCaption))
+    {
+        <figcaption class="sdh-caption">
+            @if (!string.IsNullOrWhiteSpace(Model.FigureTitle))
+            {
+                <strong>@Model.FigureTitle</strong>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.FigureSubtitle))
+            {
+                <span>@Model.FigureSubtitle</span>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.FigureCaption))
+            {
+                <span>@Model.FigureCaption</span>
+            }
+        </figcaption>
+    }
+</figure>

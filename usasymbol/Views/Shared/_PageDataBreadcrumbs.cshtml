@@ -1,0 +1,18 @@
+@model USASymbol.Models.ViewModels.PageDataHeroViewModel
+
+<nav class="pdh-breadcrumb-shell" aria-label="Breadcrumb">
+    <div>
+        <ol class="pdh-breadcrumbs">
+            <li><a href="/">Home</a></li>
+            <li aria-hidden="true">/</li>
+            <li><a href="@Model.HubUrl">@Model.KindLabel</a></li>
+            @if (!string.IsNullOrWhiteSpace(Model.CategoryLabel))
+            {
+                <li aria-hidden="true">/</li>
+                <li><a href="@Model.CategoryUrl">@Model.CategoryLabel</a></li>
+            }
+            <li aria-hidden="true">/</li>
+            <li aria-current="page"><span>@Model.Title</span></li>
+        </ol>
+    </div>
+</nav>

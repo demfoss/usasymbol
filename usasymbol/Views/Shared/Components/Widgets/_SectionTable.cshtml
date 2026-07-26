@@ -1,6 +1,7 @@
 @using System.Linq
 @using USASymbol.Extensions
 @model USASymbol.Models.Content.PageSectionTable
+@inject IImageUrlService Images
 
 @{
     if (Model?.Rows?.Any() != true)
@@ -18,6 +19,10 @@
         headers.AddRange(Enumerable.Range(headers.Count + 1, maxColumns - headers.Count)
             .Select(i => $"Column {i}"));
     }
+
+    var firstColumnIsState = Model.FirstColumnIsHeader &&
+        headers.Count > 0 &&
+        headers[0].Contains("state", StringComparison.OrdinalIgnoreCase);
 }
 
 @functions {
@@ -30,6 +35,31 @@
 
         return row.Cells[index] ?? string.Empty;
     }
+
+    private static string SlugifyStateName(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+
+        var normalized = value.Trim().ToLowerInvariant();
+        var builder = new System.Text.StringBuilder(normalized.Length);
+        var previousWasHyphen = false;
+
+        foreach (var ch in normalized)
+        {
+            if (char.IsLetterOrDigit(ch))
+            {
+                builder.Append(ch);
+                previousWasHyphen = false;
+            }
+            else if (!previousWasHyphen)
+            {
+                builder.Append('-');
+                previousWasHyphen = true;
+            }
+        }
+
+        return builder.ToString().Trim('-');
+    }
 }
 
 <div class="overflow-hidden border border-slate-200 bg-white">
@@ -41,44 +71,66 @@
         </div>
     }
 
-    <div class="hidden md:block overflow-x-auto">
-        <table class="min-w-full border-collapse text-left">
-            <thead class="bg-slate-50/95">
-                <tr class="border-b border-slate-200/80">
+    <div class="hidden md:block ranking-table-scroll">
+        <table class="rankingTable">
+            <thead>
+                <tr>
+                    @if (Model.ShowRowNumbers)
+                    {
+                        <th scope="col" class="rankingTh" data-coltype="rank">#</th>
+                    }
                     @for (var i = 0; i < headers.Count; i++)
                     {
-                        var isFirst = i == 0;
-                        <th scope="col"
-                            class="px-5 py-3.5 text-xs font-extrabold uppercase tracking-[0.12em] text-slate-600 @(isFirst ? "w-[26%]" : "")">
+                        <th scope="col" class="rankingTh" data-coltype="@(i == 0 && firstColumnIsState ? "state-link" : "text")">
                             @headers[i]
                         </th>
                     }
                 </tr>
             </thead>
 
-            <tbody class="divide-y divide-slate-100">
+            <tbody class="rankingTbody">
                 @for (var rowIndex = 0; rowIndex < Model.Rows.Count; rowIndex++)
                 {
                     var row = Model.Rows[rowIndex];
-                    var rowClass = rowIndex % 2 == 0 ? "bg-white" : "bg-slate-50/35";
+                    var rank = rowIndex + 1;
 
-                    <tr class="@rowClass">
+                    <tr class="tableRow" data-rank="@rank">
+                        @if (Model.ShowRowNumbers)
+                        {
+                            <td class="ranking-cell" data-coltype="rank">
+                                <span class="ranking-rank">@rank</span>
+                            </td>
+                        }
                         @for (var cellIndex = 0; cellIndex < headers.Count; cellIndex++)
                         {
                             var cell = GetCell(row, cellIndex);
                             var isFirst = cellIndex == 0;
 
-                            if (isFirst && Model.FirstColumnIsHeader)
+                            if (isFirst && firstColumnIsState)
                             {
-                                <th scope="row"
-                                    class="px-5 py-4 align-top text-sm font-semibold leading-6 text-slate-900 bg-slate-50/60">
-                                    @cell.RenderMarkdown()
-                                </th>
+                                var stateSlug = SlugifyStateName(cell);
+                                <td class="ranking-cell" data-coltype="state-link">
+                                    <span class="ranking-state">
+                                        @if (!string.IsNullOrWhiteSpace(stateSlug))
+                                        {
+                                            <img src="@Images.Thumb($"/images/flags/{stateSlug}/flag.webp")" alt=""
+                                                 loading="lazy" decoding="async"
+                                                 onerror="this.style.display='none'" />
+                                        }
+                                        <span>@cell.RenderMarkdown()</span>
+                                    </span>
+                                </td>
+                            }
+                            else if (isFirst && Model.FirstColumnIsHeader)
+                            {
+                                <td class="ranking-cell">
+                                    <span class="ranking-primary-value">@cell.RenderMarkdown()</span>
+                                </td>
                             }
                             else
                             {
-                                <td class="px-5 py-4 align-top text-sm leading-6 text-slate-700">
-                                    @cell.RenderMarkdown()
+                                <td class="ranking-cell">
+                                    <span class="ranking-text-value">@cell.RenderMarkdown()</span>
                                 </td>
                             }
                         }
@@ -89,20 +141,35 @@
     </div>
 
     <div class="space-y-3 p-3 md:hidden">
-        @foreach (var row in Model.Rows)
+        @for (var rowIndex = 0; rowIndex < Model.Rows.Count; rowIndex++)
         {
+            var row = Model.Rows[rowIndex];
             var rowTitle = Model.FirstColumnIsHeader ? GetCell(row, 0) : string.Empty;
             var startIndex = Model.FirstColumnIsHeader ? 1 : 0;
+            var stateSlug = firstColumnIsState ? SlugifyStateName(rowTitle) : string.Empty;
 
             <article class="border border-slate-200 bg-slate-50/40 p-4">
                 @if (!string.IsNullOrWhiteSpace(rowTitle))
                 {
-                    <div class="mb-3 border-b border-slate-200 pb-3">
-                        <div class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-                            @(headers.Count > 0 ? headers[0] : "Row")
-                        </div>
-                        <div class="mt-1 text-sm font-semibold leading-6 text-slate-900">
-                            @rowTitle.RenderMarkdown()
+                    <div class="mb-3 flex items-start gap-3 border-b border-slate-200 pb-3">
+                        @if (Model.ShowRowNumbers)
+                        {
+                            <span class="ranking-rank mt-0.5 shrink-0">@(rowIndex + 1)</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(stateSlug))
+                        {
+                            <img src="@Images.Thumb($"/images/flags/{stateSlug}/flag.webp")" alt=""
+                                 class="mt-0.5 h-4 w-auto shrink-0 object-contain"
+                                 loading="lazy" decoding="async"
+                                 onerror="this.style.display='none'" />
+                        }
+                        <div class="min-w-0">
+                            <div class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                                @(headers.Count > 0 ? headers[0] : "Row")
+                            </div>
+                            <div class="mt-1 text-sm font-bold leading-6 text-slate-900">
+                                @rowTitle.RenderMarkdown()
+                            </div>
                         </div>
                     </div>
                 }
@@ -115,7 +182,7 @@
                             <div class="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
                                 @headers[cellIndex]
                             </div>
-                            <div class="mt-1 text-sm leading-6 text-slate-700">
+                            <div class="mt-1 text-sm font-medium leading-6 text-slate-800">
                                 @cell.RenderMarkdown()
                             </div>
                         </div>

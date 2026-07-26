@@ -1,0 +1,101 @@
+type: ranking
+slug: oldest-college-by-state
+category: education
+url: /rankings/education/oldest-college-by-state
+hero_image: "/images/rankings/education/oldest-college-by-state/oldest-college-by-state.png"
+hero_image_alt: "Map infographic showing the oldest college in every US state by founding year, from Harvard (1636) to the University of Wyoming (1886)"
+
+author: "USA Symbol Team"
+date_published: "2026-04-24"
+date_modified: "2026-04-24"
+
+seo:
+  title: "Oldest College in Each State | Founded Year & U.S. Map"
+  description: "The oldest college in every US state by founding year. Harvard (1636) is the oldest university in the US. Nine schools predate the Declaration of Independence. Full map and list."
+
+page:
+  h1: "The Oldest College in Every US State (Map)"
+
+  quick_answer:
+    - "Harvard University, founded in Cambridge, Massachusetts in 1636, is the oldest college in the United States, the oldest on this state-by-state list. Nine colleges predate the Declaration of Independence; the youngest state's oldest college, the University of Wyoming (1886), was chartered 250 years after Harvard first opened its doors."
+    - "The five oldest colleges in the US by founding year: Harvard, MA (1636) → College of William and Mary, VA (1693) → Yale, CT (1701) → University of Pennsylvania, PA (1740) → Princeton, NJ (1746). At the other end, four of the five states with the most recently founded oldest colleges are in the Mountain West: Wyoming (1886), Nevada (1874), Colorado (1874), and Montana (1878), where the railroads arrived before any college did."
+
+  methodology: "Founding years use each state's oldest continuously operating higher-education institution. Acceptance rates use 2025 NCES or school data."
+
+  sources:
+    - name: "Harvard University Archives"
+      url: "https://library.harvard.edu/university-archives"
+      description: "Official historical records of America's oldest university, established 1636"
+    - name: "College of William and Mary – History"
+      url: "https://www.wm.edu/about/history/"
+      description: "Institutional history of the second-oldest college in the United States, chartered 1693"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    college: "Oldest College"
+    year_founded: "Year Founded"
+    accepts: "Accepts (%)"
+    notes: "Notes"
+
+  metric_default: year_founded
+  sort_default: asc
+
+  rows:
+    - rank: 1
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      college: "Harvard University"
+      year_founded: 1636
+      accepts: 4
+      notes: "Oldest college in the United States; founded by the Massachusetts Bay Colony just six years after the colony itself was established"
+
+    - rank: 2
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      college: "College of William and Mary"
+      year_founded: 1693
+      accepts: 33
+      notes: "Second-oldest college in the United States; chartered by King William III and Queen Mary II; home to the first law school in America (1779) and the first collegiate honor society, Phi Beta Kappa (1776)"
+
+map:
+  title: "The Oldest College in Every US State"
+  image: "/images/rankings/education/oldest-college-by-state/oldest-college-by-state-map.webp"
+  image_alt: "Map of the United States color-coded by the founding year of the oldest college in each state, from Harvard (1636) in Massachusetts to the University of Wyoming (1886)"
+  caption: "The darker the shade, the older the institution. Colonial-era colleges cluster tightly in the Northeast; the Mountain West and Pacific states are uniformly lighter, reflecting how late both European settlement and higher education arrived west of the Mississippi."
+  metric_key: year_founded
+  metric_label: "founded"
+  tooltip_label: college
+  color_scheme: blue
+  color_scale: linear
+
+sections:
+  - id: "10-oldest-universities-in-continuous-operation"
+    icon: "fa-solid fa-graduation-cap"
+    title: "10 Oldest Universities in Continuous Operation"
+    paragraphs:
+      - "Harvard University leads every ranking of oldest American colleges, and the lead is not close. Founded in 1636 by a vote of the Massachusetts Bay Colony's General Court, Harvard predates the second-oldest American college, the College of William and Mary (1693), by 57 years. That gap, longer than the span from the Civil War to the Moon landing, reflects how long it took other colonies to muster the resources and population to sustain a second institution."
+      - "The remaining eight in the top ten were all founded before the Revolutionary War: Yale (1701, Connecticut), University of Pennsylvania (1740), University of Delaware (1743), Princeton (1746, New Jersey), Columbia (1754, New York), Brown (1764, Rhode Island), Rutgers (1766, New Jersey), and Dartmouth (1769, New Hampshire). Every one of them was initially intended to train Protestant ministers, except Penn, which Benjamin Franklin deliberately designed as a secular institution focused on practical arts. That distinction set Penn apart from its contemporaries in a way that still shapes its curriculum. Most of these schools sit in states that were also early in the [statehood order](/rankings/government/states-order-of-succession)."
+      - "Together, these ten institutions span just 133 founding years, from 1636 to 1769, yet represent more than three centuries of unbroken educational tradition. No other country has a comparable cluster of institutions this old still actively granting degrees. Placed on this map, all ten fall within a corridor running from New Hampshire to New Jersey, a rectangle roughly 400 miles long and 150 miles wide — the same Northeast concentration visible in the [population density by state](/rankings/demographics/states-by-population-density) ranking."
+
+visual_assets:
+  - id: harvard-massachusetts-hall
+    src: /images/rankings/education/oldest-college-by-state/harvard-massachusetts-hall.jpg
+    alt: Massachusetts Hall at Harvard University in Cambridge, the oldest surviving building on the Harvard campus, built in 1720
+    caption: Massachusetts Hall (1720) is the oldest surviving building at Harvard and one of the oldest academic buildings in the United States. Harvard itself, founded in 1636, predates the next oldest American college by 57 years and the Declaration of Independence by 140.
+    section: 10-oldest-universities-in-continuous-operation
+    layout: right
+
+faq:
+  - question: "Is Harvard the oldest college in the United States?"
+    answer: "Harvard University, established in 1636, is the oldest institution of higher education in the United States. It predates the next oldest school, William and Mary, by nearly 60 years."
+
+  - question: "What are the 10 oldest colleges in the United States?"
+    answer: "The 10 oldest include the Colonial Nine (Harvard, William and Mary, Yale, Princeton, Columbia, Penn, Brown, Rutgers, and Dartmouth) followed by the University of Delaware, tracing its origins to 1743."
+
+related:
+  - title: "Oldest City in Each U.S. State"
+    url: "/rankings/geography/oldest-city-by-state"

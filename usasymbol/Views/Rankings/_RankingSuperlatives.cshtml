@@ -1,0 +1,52 @@
+@using USASymbol.Models.ViewModels
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+
+@{
+    var insights = RankingNumericInsightsViewModel.Create(Model.Content?.Table);
+    if (insights == null) { return; }
+}
+
+<div class="ranking-insight ranking-superlatives">
+    <div class="ranking-insight__header">
+        <span class="ranking-insight__icon" aria-hidden="true">
+            <i class="fa-solid fa-arrow-up-wide-short"></i>
+        </span>
+        <div>
+            <h2>@insights.MetricLabel: highest, median, and lowest</h2>
+        </div>
+    </div>
+
+    <div class="ranking-superlatives__grid">
+        <article class="ranking-superlative">
+            <p class="ranking-superlative__label ranking-superlative__label--accent">Highest</p>
+            <p class="ranking-superlative__value">@insights.Highest.DisplayValue</p>
+            <a class="ranking-superlative__state" href="/states/@insights.Highest.StateSlug">
+                <img src="/images/flags/@insights.Highest.StateSlug/flag.webp"
+                     alt="" width="32" height="21" loading="lazy"
+                     onerror="this.style.display='none'" />
+                <span>@insights.Highest.State</span>
+            </a>
+        </article>
+
+        <article class="ranking-superlative">
+            <p class="ranking-superlative__label">Median</p>
+            <p class="ranking-superlative__value">@insights.MedianDisplay</p>
+            <p class="ranking-superlative__note">
+                Across @insights.RankedCount @(insights.RankedCount == 50 ? "ranked states" : "ranked entries")
+            </p>
+        </article>
+
+        <article class="ranking-superlative">
+            <p class="ranking-superlative__label ranking-superlative__label--accent">Lowest</p>
+            <p class="ranking-superlative__value">@insights.Lowest.DisplayValue</p>
+            <a class="ranking-superlative__state" href="/states/@insights.Lowest.StateSlug">
+                <img src="/images/flags/@insights.Lowest.StateSlug/flag.webp"
+                     alt="" width="32" height="21" loading="lazy"
+                     onerror="this.style.display='none'" />
+                <span>@insights.Lowest.State</span>
+            </a>
+        </article>
+    </div>
+
+    <p class="ranking-insight__footer">@insights.RangeSummary</p>
+</div>

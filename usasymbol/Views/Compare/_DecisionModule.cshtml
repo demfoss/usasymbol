@@ -1,0 +1,323 @@
+@model USASymbol.Models.ViewModels.StatePairComparisonViewModel
+@using USASymbol.Services
+@inject IImageUrlService Images
+
+@{
+    var accentA = ViewData["AccentA"] as string ?? "#1D5A8F";
+    var accentB = ViewData["AccentB"] as string ?? "#B45309";
+    var score = ComparisonScoreCalculator.Calculate(Model);
+
+    (State winner, State loser, string winVal, string loseVal) WinnerOf(MetricComparisonResult r)
+    {
+        bool aWins = r.WinnerSlug == Model.StateA.Slug;
+        return (
+            aWins ? Model.StateA : Model.StateB,
+            aWins ? Model.StateB : Model.StateA,
+            (aWins ? r.DisplayValueA : r.DisplayValueB) ?? "-",
+            (aWins ? r.DisplayValueB : r.DisplayValueA) ?? "-"
+        );
+    }
+
+    string ChipFor(string category) => category switch
+    {
+        "Affordability" or "Taxes" => "Saving Money",
+        "Housing" => "Housing",
+        "Jobs" or "Remote Work" => "Jobs",
+        "Climate" => "Weather",
+        "Families" => "Family &amp; Health",
+        "Politics" or "Laws" => "Politics &amp; Laws",
+        _ => category
+    };
+
+    string ChipIcon(string chip) => chip switch
+    {
+        "Saving Money" => "fa-solid fa-piggy-bank",
+        "Housing" => "fa-solid fa-house",
+        "Jobs" => "fa-solid fa-briefcase",
+        "Weather" => "fa-solid fa-cloud-sun",
+        "Family &amp; Health" => "fa-solid fa-people-roof",
+        "Politics &amp; Laws" => "fa-solid fa-scale-balanced",
+        _ => "fa-solid fa-star"
+    };
+
+    var cards = new List<(string Category, string Icon, string Label, string Title, string Body, string Link)>();
+
+    void AddCard(string slug, string category, string icon, string label, Func<State, State, string, string, string> title, Func<State, State, string, string, string> body)
+    {
+        var r = Model.MetricResults.FirstOrDefault(x => x.Metric.Slug == slug);
+        if (r?.WinnerSlug == null) return;
+        var (w, l, wv, lv) = WinnerOf(r);
+        cards.Add((category, icon, label, title(w, l, wv, lv), body(w, l, wv, lv), $"/compare/{Model.PairSlug}/{slug}"));
+    }
+
+    AddCard("cost-of-living", "Affordability", "fa-solid fa-piggy-bank", "Saving Money",
+        (w, l, wv, lv) => $"{w.Name} is cheaper overall",
+        (w, l, wv, lv) => $"Cost-of-living index: {wv} in {w.Name} vs {lv} in {l.Name}. On a national baseline of 100, the lower score usually means cheaper day-to-day expenses.");
+    AddCard("gas-price", "Affordability", "fa-solid fa-gas-pump", "Gas Price",
+        (w, l, wv, lv) => $"{w.Name} is cheaper at the pump",
+        (w, l, wv, lv) => $"Average regular gas price: {wv} in {w.Name} vs {lv} in {l.Name}.");
+    AddCard("electricity-rates", "Affordability", "fa-solid fa-bolt", "Electricity",
+        (w, l, wv, lv) => $"{w.Name} has cheaper electricity",
+        (w, l, wv, lv) => $"Average residential electricity rate: {wv} in {w.Name} vs {lv} in {l.Name}.");
+    AddCard("income-tax", "Taxes", "fa-solid fa-file-invoice-dollar", "Lower Taxes",
+        (w, l, wv, lv) => $"{w.Name} keeps more of your paycheck",
+        (w, l, wv, lv) => $"Top state income tax rate: {wv} in {w.Name} vs {lv} in {l.Name}.");
+    AddCard("home-value-to-income", "Housing", "fa-solid fa-house", "Buying a Home",
+        (w, l, wv, lv) => $"{w.Name} is more attainable for buyers",
+        (w, l, wv, lv) => $"Home-value-to-income ratio: {wv} in {w.Name} vs {lv} in {l.Name}. Lower means the median home is easier to afford on a median income.");
+    AddCard("rent-to-income", "Housing", "fa-solid fa-key", "Renting",
+        (w, l, wv, lv) => $"{w.Name} is easier for renters",
+        (w, l, wv, lv) => $"Rent-to-income ratio: {wv} in {w.Name} vs {lv} in {l.Name}.");
+    AddCard("property-tax", "Housing", "fa-solid fa-house-circle-check", "Property Tax",
+        (w, l, wv, lv) => $"{w.Name} has lower property taxes",
+        (w, l, wv, lv) => $"Effective property tax rate: {wv} in {w.Name} vs {lv} in {l.Name}.");
+    AddCard("minimum-wage", "Jobs", "fa-solid fa-wallet", "Minimum Wage",
+        (w, l, wv, lv) => $"{w.Name} has the higher minimum wage",
+        (w, l, wv, lv) => $"State minimum wage: {wv} in {w.Name} vs {lv} in {l.Name}. Matters most for hourly and entry-level work.");
+    AddCard("unemployment-rate", "Jobs", "fa-solid fa-briefcase", "Job Opportunities",
+        (w, l, wv, lv) => $"{w.Name} looks better for job seekers",
+        (w, l, wv, lv) => $"Unemployment rate: {wv} in {w.Name} vs {lv} in {l.Name}.");
+    AddCard("livability-score", "Remote Work", "fa-solid fa-laptop-house", "Remote Workers",
+        (w, l, wv, lv) => $"{w.Name} looks better for remote workers",
+        (w, l, wv, lv) => $"Livability score: {wv} in {w.Name} vs {lv} in {l.Name}.");
+    AddCard("commute-time", "Jobs", "fa-solid fa-road", "Shorter Commute",
+        (w, l, wv, lv) => $"{w.Name} has the shorter commute",
+        (w, l, wv, lv) => $"Average commute: {wv} in {w.Name} vs {lv} in {l.Name}.");
+    AddCard("average-temperature", "Climate", "fa-solid fa-temperature-half", "Warmer Climate",
+        (w, l, wv, lv) => $"{w.Name} is warmer overall",
+        (w, l, wv, lv) => $"Average annual temperature: {wv} in {w.Name} vs {lv} in {l.Name}.");
+    AddCard("sunny-days", "Climate", "fa-solid fa-cloud-sun", "More Sunshine",
+        (w, l, wv, lv) => $"{w.Name} gets more sun",
+        (w, l, wv, lv) => $"Sunny days per year: {wv} in {w.Name} vs {lv} in {l.Name}.");
+
+    {
+        var familySignals = new[] {
+            Model.MetricResults.FirstOrDefault(x => x.Metric.Slug == "violent-crime"),
+            Model.MetricResults.FirstOrDefault(x => x.Metric.Slug == "life-expectancy"),
+            Model.MetricResults.FirstOrDefault(x => x.Metric.Slug == "uninsured-rate"),
+            Model.MetricResults.FirstOrDefault(x => x.Metric.Slug == "college-educated")
+        }.Where(x => x?.WinnerSlug != null).Cast<MetricComparisonResult>().ToList();
+
+        if (familySignals.Count >= 2)
+        {
+            var famA = familySignals.Count(x => x.WinnerSlug == Model.StateA.Slug);
+            var famB = familySignals.Count(x => x.WinnerSlug == Model.StateB.Slug);
+            if (famA != famB)
+            {
+                var w = famA > famB ? Model.StateA : Model.StateB;
+                var l = w == Model.StateA ? Model.StateB : Model.StateA;
+                var winningLabels = familySignals.Where(x => x.WinnerSlug == w.Slug).Select(x => x.Metric.Name.ToLowerInvariant()).Take(3).ToList();
+                cards.Add(("Families", "fa-solid fa-people-roof", "Families",
+                    $"{w.Name} looks better for families",
+                    $"{w.Name} wins more family-oriented signals in this matchup, including {string.Join(", ", winningLabels)}, compared with {l.Name}.",
+                    $"/compare/{Model.PairSlug}/violent-crime"));
+            }
+        }
+    }
+
+    var chipGroups = cards
+        .GroupBy(c => ChipFor(c.Category))
+        .Select(g => new { Chip = g.Key, Icon = ChipIcon(g.Key), Cards = g.ToList() })
+        .OrderByDescending(g => g.Cards.Count)
+        .ToList();
+
+    string SlugOf(string s) => new string(s.ToLowerInvariant().Where(ch => char.IsLetterOrDigit(ch) || ch == ' ').ToArray()).Trim().Replace(' ', '-');
+
+    var overallVerdictTitle = score.Winner != null
+        ? $"{score.Winner.Name} fits you better"
+        : "It's close between these two";
+    var overallVerdictBody = score.Winner != null
+        ? $"{score.Winner.Name} wins {(score.Winner == score.StateA ? score.WinsA : score.WinsB)} of {score.Total} scored metrics against {(score.Winner == score.StateA ? score.StateB.Name : score.StateA.Name)}."
+        : $"{score.StateA.Name} and {score.StateB.Name} split the {score.Total} scored metrics roughly evenly — pick a priority below to see who pulls ahead where it matters to you.";
+}
+
+<section class="cmp2-block cmp2-decision" id="decision">
+    <div class="cmp2-shell">
+        <p class="cmp2-eyebrow">What matters to you?</p>
+        <h2 class="cmp2-title">Tell us your priority, get a verdict</h2>
+
+        <div class="dm-chips" id="dm-chips">
+            <button type="button" class="dm-chip is-active" data-target="dm-verdict-all">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><span>Overall</span>
+            </button>
+            @foreach (var g in chipGroups)
+            {
+                <button type="button" class="dm-chip" data-target="dm-verdict-@SlugOf(g.Chip)">
+                    <i class="@g.Icon" aria-hidden="true"></i><span>@Html.Raw(g.Chip)</span>
+                </button>
+            }
+        </div>
+
+        <div class="dm-verdict-wrap">
+            <div class="dm-verdict" id="dm-verdict-all">
+                <p class="dm-verdict-label">Your match</p>
+                <h3 class="dm-verdict-title"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> @overallVerdictTitle</h3>
+                <p class="dm-verdict-body">@overallVerdictBody</p>
+            </div>
+            @foreach (var g in chipGroups)
+            {
+                var headline = g.Cards[0];
+                <div class="dm-verdict is-hidden" id="dm-verdict-@SlugOf(g.Chip)">
+                    <p class="dm-verdict-label">Your match &mdash; @Html.Raw(g.Chip)</p>
+                    <h3 class="dm-verdict-title"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> @headline.Title</h3>
+                    <p class="dm-verdict-body">@headline.Body <a href="@headline.Link">See full data &rarr;</a></p>
+                    @if (g.Cards.Count > 1)
+                    {
+                        <ul class="dm-verdict-more">
+                            @foreach (var extra in g.Cards.Skip(1).Take(3))
+                            {
+                                <li><a href="@extra.Link"><i class="@extra.Icon" aria-hidden="true"></i> @extra.Title</a></li>
+                            }
+                        </ul>
+                    }
+                </div>
+            }
+        </div>
+
+        @if (Model.StatsA?.RegionalPriceParity != null && Model.StatsB?.RegionalPriceParity != null)
+        {
+            var rppA = Model.StatsA.RegionalPriceParity.Value;
+            var rppB = Model.StatsB.RegionalPriceParity.Value;
+            var pp100A = Model.StatsA.PurchasingPower100 ?? Math.Round(100.0 * 100.0 / rppA, 2);
+            var pp100B = Model.StatsB.PurchasingPower100 ?? Math.Round(100.0 * 100.0 / rppB, 2);
+            var colA = Model.StatsA.CostOfLivingIndex ?? rppA;
+            var colB = Model.StatsB.CostOfLivingIndex ?? rppB;
+            var taxA = Model.StatsA.IncomeTaxRatePct ?? 0.0;
+            var taxB = Model.StatsB.IncomeTaxRatePct ?? 0.0;
+            string F2(double v) => v.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+
+            <div class="dm-calc" id="dm-calc"
+                 data-pp100-a="@F2(pp100A)" data-pp100-b="@F2(pp100B)"
+                 data-col-a="@F2(colA)" data-col-b="@F2(colB)"
+                 data-tax-a="@F2(taxA)" data-tax-b="@F2(taxB)"
+                 data-name-a="@Model.StateA.Name" data-name-b="@Model.StateB.Name"
+                 data-rent-a="@(Model.StatsA?.MedianGrossRent?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
+                 data-rent-b="@(Model.StatsB?.MedianGrossRent?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
+                 data-mortgage-a="@(Model.StatsA?.MedianOwnerCostsWithMortgage?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
+                 data-mortgage-b="@(Model.StatsB?.MedianOwnerCostsWithMortgage?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
+                 data-no-mortgage-a="@(Model.StatsA?.MedianOwnerCostsWithoutMortgage?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
+                 data-no-mortgage-b="@(Model.StatsB?.MedianOwnerCostsWithoutMortgage?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")">
+
+                <p class="cmp2-eyebrow">Run the numbers</p>
+                <h3 class="cmp2-title dm-calc-title">What's your salary really worth?</h3>
+
+                <div class="dm-calc-inputs">
+                    <label class="dm-field">
+                        <span>Annual gross salary</span>
+                        <div class="dm-field-money">
+                            <span>$</span>
+                            <input type="number" id="dm-salary" inputmode="numeric" value="100000" min="10000" max="1000000" step="5000">
+                        </div>
+                        <input type="range" id="dm-salary-slider" min="10000" max="500000" step="5000" value="100000">
+                    </label>
+                    <label class="dm-field">
+                        <span>Housing scenario</span>
+                        <select id="dm-housing">
+                            <option value="rent">Median rent</option>
+                            <option value="mortgage">Owner costs with mortgage</option>
+                            <option value="noMortgage">Owner costs without mortgage</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="dm-calc-grid">
+                    <article class="dm-calc-card" style="--dm-accent:@accentA">
+                        <h4>@Model.StateA.Name</h4>
+                        <dl>
+                            <div><dt>After state tax</dt><dd id="dm-takehome-a">—</dd></div>
+                            <div><dt>Housing / month</dt><dd id="dm-housing-a">—</dd></div>
+                            <div><dt>Left after housing</dt><dd id="dm-left-a">—</dd></div>
+                            <div class="dm-calc-highlight"><dt>Cost-adjusted remainder</dt><dd id="dm-real-a">—</dd></div>
+                        </dl>
+                    </article>
+                    <article class="dm-calc-card" style="--dm-accent:@accentB">
+                        <h4>@Model.StateB.Name</h4>
+                        <dl>
+                            <div><dt>After state tax</dt><dd id="dm-takehome-b">—</dd></div>
+                            <div><dt>Housing / month</dt><dd id="dm-housing-b">—</dd></div>
+                            <div><dt>Left after housing</dt><dd id="dm-left-b">—</dd></div>
+                            <div class="dm-calc-highlight"><dt>Cost-adjusted remainder</dt><dd id="dm-real-b">—</dd></div>
+                        </dl>
+                    </article>
+                </div>
+
+                <p class="dm-calc-insight" id="dm-calc-insight"></p>
+                <p class="dm-calc-fine">Illustrative estimate only. Uses top marginal state income tax rate, BEA Regional Price Parity, and median housing costs — excludes federal tax, utilities, insurance, childcare, and debt.</p>
+            </div>
+        }
+    </div>
+</section>
+
+<script>
+(function () {
+    var chips = Array.from(document.querySelectorAll('.dm-chip'));
+    var verdicts = Array.from(document.querySelectorAll('.dm-verdict'));
+    chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+            chips.forEach(function (c) { c.classList.remove('is-active'); });
+            verdicts.forEach(function (v) { v.classList.add('is-hidden'); });
+            chip.classList.add('is-active');
+            var target = document.getElementById(chip.getAttribute('data-target'));
+            if (target) target.classList.remove('is-hidden');
+        });
+    });
+})();
+
+(function () {
+    var root = document.getElementById('dm-calc');
+    if (!root) return;
+    var salary = document.getElementById('dm-salary');
+    var slider = document.getElementById('dm-salary-slider');
+    var housing = document.getElementById('dm-housing');
+
+    var pp100A = parseFloat(root.dataset.pp100A), pp100B = parseFloat(root.dataset.pp100B);
+    var colA = parseFloat(root.dataset.colA), colB = parseFloat(root.dataset.colB);
+    var taxA = parseFloat(root.dataset.taxA), taxB = parseFloat(root.dataset.taxB);
+    var nameA = root.dataset.nameA, nameB = root.dataset.nameB;
+
+    function num(v) { var n = parseFloat(v); return Number.isFinite(n) ? n : 0; }
+    function usd(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+    function housingFor(side, mode) {
+        if (mode === 'mortgage') return num(root.dataset['mortgage' + side]);
+        if (mode === 'noMortgage') return num(root.dataset['noMortgage' + side]);
+        return num(root.dataset['rent' + side]);
+    }
+
+    function update() {
+        var gross = Math.max(0, num(salary.value));
+        var mode = housing.value;
+
+        var takeHomeA = gross - gross * (taxA / 100);
+        var takeHomeB = gross - gross * (taxB / 100);
+        var housingA = housingFor('A', mode) * 12;
+        var housingB = housingFor('B', mode) * 12;
+        var leftA = takeHomeA - housingA;
+        var leftB = takeHomeB - housingB;
+        var realA = leftA / Math.max(0.01, colA / 100);
+        var realB = leftB / Math.max(0.01, colB / 100);
+
+        document.getElementById('dm-takehome-a').textContent = usd(takeHomeA);
+        document.getElementById('dm-takehome-b').textContent = usd(takeHomeB);
+        document.getElementById('dm-housing-a').textContent = usd(housingA / 12);
+        document.getElementById('dm-housing-b').textContent = usd(housingB / 12);
+        document.getElementById('dm-left-a').textContent = usd(leftA);
+        document.getElementById('dm-left-b').textContent = usd(leftB);
+        document.getElementById('dm-real-a').textContent = usd(realA);
+        document.getElementById('dm-real-b').textContent = usd(realB);
+
+        var winner = realA >= realB ? nameA : nameB;
+        var gap = Math.abs(realA - realB);
+        document.getElementById('dm-calc-insight').textContent =
+            winner + ' leaves about ' + usd(gap) + ' more cost-adjusted spending room per year in this scenario.';
+    }
+
+    salary.addEventListener('input', function () {
+        var v = Math.max(10000, Math.min(1000000, parseInt(this.value, 10) || 100000));
+        slider.value = Math.min(v, 500000);
+        update();
+    });
+    slider.addEventListener('input', function () { salary.value = this.value; update(); });
+    housing.addEventListener('change', update);
+    update();
+})();
+</script>

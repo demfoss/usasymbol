@@ -265,7 +265,7 @@
     <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-12">
 
         @* ── Main column ─────────────────────────────────────────────── *@
-        <div class="journey-content min-w-0">
+        <div class="article-content min-w-0">
 
             @* Quick answer *@
             @if (!string.IsNullOrWhiteSpace(config.QuickAnswer))
@@ -564,7 +564,7 @@
         </div>
 
         @* ── Sidebar ─────────────────────────────────────────────────── *@
-        <aside class="journey-sidebar space-y-6 lg:self-start" aria-label="Article sidebar">
+        <aside class="article-sidebar space-y-6 lg:self-start" aria-label="Article sidebar">
 
             @* Collection quick stats *@
             @if (parks.Count > 0)

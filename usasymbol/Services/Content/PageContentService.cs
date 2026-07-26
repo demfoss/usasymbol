@@ -167,6 +167,7 @@ namespace USASymbol.Services
                 DateModified  = Date(raw, "date_modified"),
                 DetailType    = Str(raw, "detail_type"),
                 Subcategory   = Str(raw, "subcategory"),
+                HeroVariant   = Str(raw, "hero_variant"),
             };
 
 
@@ -371,6 +372,7 @@ namespace USASymbol.Services
             if (d.TryGetValue("searchable",   out var s)) table.Searchable    = s?.ToString()?.ToLower() == "true";
             if (d.TryGetValue("sortable",     out var o)) table.Sortable      = o?.ToString()?.ToLower() == "true";
             if (d.TryGetValue("default_column", out var dc)) table.DefaultColumn = dc?.ToString();
+            if (d.TryGetValue("display_mode", out var dm)) table.DisplayMode = dm?.ToString();
 
 
             if (table.DefaultColumn == null && d.TryGetValue("metric_default", out var md))
@@ -547,6 +549,14 @@ namespace USASymbol.Services
                 table.FirstColumnIsHeader = !string.Equals(
                     firstColumn?.ToString(),
                     "false",
+                    StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (d.TryGetValue("numbered", out var numbered))
+            {
+                table.ShowRowNumbers = string.Equals(
+                    numbered?.ToString(),
+                    "true",
                     StringComparison.OrdinalIgnoreCase);
             }
 
@@ -862,6 +872,7 @@ namespace USASymbol.Services
 
         private static string? GetCategoryImage(string id) => id switch
         {
+            "culture"        => "/images/rankings/culture/state-fairs-by-state/hero-fair-midway.jpg",
             "demographics"   => "/images/rankings/demographics/states-by-population-map.webp",
             "economy"        => "/images/rankings/economy/states-by-cost-of-living/states-by-cost-of-living-hero.jpg",
             "education"      => "/images/rankings/education/states-by-k12-education/states-by-k12-education-hero.jpg",
@@ -871,6 +882,7 @@ namespace USASymbol.Services
             "health"         => "/images/rankings/health/states-by-life-expectancy/states-by-life-expectancy-hero.jpg",
             "infrastructure" => "/images/rankings/infrastructure/largest-airport-by-state/largest-airport-by-state.png",
             "law"            => "/images/rankings/law/weird-laws-by-state/weird-laws-by-state.webp",
+            "nature"         => "/images/parks/national/yellowstone-national-park/01-hero-image.jpg",
             "religion"       => "/images/rankings/religion/biggest-church-by-state/life-church-oklahoma.jpg",
             "sports"         => "/images/rankings/sports/most-popular-sport-by-state/most-popular-sport-by-state.webp",
             "taxes"          => "/images/rankings/taxes/states-by-income-tax/states-by-income-tax-hero.jpg",

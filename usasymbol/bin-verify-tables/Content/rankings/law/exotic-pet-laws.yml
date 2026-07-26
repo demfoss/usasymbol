@@ -1,0 +1,549 @@
+type: ranking
+slug: exotic-pet-laws
+category: law
+url: /rankings/law/exotic-pet-laws
+auto_link_phrases:
+  - "exotic pet laws by state"
+  - "states where you can own a tiger"
+  - "can I own a monkey in [State]"
+  - "big cat ownership by state"
+  - "exotic animal laws by state"
+  - "states where exotic pets are legal"
+extremes_mode: topOnly
+extremes_title: "States That Allow Exotic Animal Ownership with a Permit"
+hero_image: "/images/rankings/law/exotic-pet-laws/exotic-pet-laws-hero.jpg"
+hero_image_alt: "Tiger in a private enclosure in the United States, representing exotic pet ownership laws across states"
+hero_image_caption: "27 states ban private ownership of big cats, bears, and primates outright. 20 states allow ownership with a license or permit. North Carolina is the only state with no statewide restriction of any kind on exotic animals."
+
+author: "USA Symbol Team"
+date_published: "2026-06-22"
+date_modified: "2026-06-22"
+
+seo:
+  title: "Exotic Pet Laws by State | Map, Big Cats & Primates"
+  description: "27 states ban private ownership of big cats and primates. 20 states require a permit. North Carolina has no statewide restriction on exotic animals."
+
+page:
+  h1: "Exotic Pet Laws by State"
+
+  quick_answer:
+    - "27 states ban private ownership of big cats, bears, and non-human primates outright, while Arkansas and Virginia impose partial bans. 20 states allow exotic animals with a license or permit."
+    - "Texas requires a Certificate of Registration for 19 specified dangerous species, including lions, tigers, bears, baboons, chimpanzees, and gorillas. Florida uses a tiered permit system, with Class I animals (tigers, lions, bears, chimpanzees) requiring inspection and fees."
+    - "Virginia bans non-native predatory cats, wolves, bears, and crocodiles but places no state requirement on persons possessing non-human primates. Kansas bans big cats and bears under its Dangerous Regulated Animal statute but does not explicitly address primate ownership."
+
+  methodology: "Legal status reflects state statutes and administrative codes as of June 2026, compiled from Born Free USA state law summaries and individual state wildlife agency regulations, using the B, B*, L, N Born Free USA classification system, and animals in grandfathered possession before effective dates may be retained under applicable permits in several states. This page is for informational purposes only and does not constitute legal advice."
+
+  sources:
+    - name: "Born Free USA — Exotic Animal Laws by State"
+      url: "https://www.bornfreeusa.org/b4a2_exotic_animals_state.php"
+      description: "State-by-state exotic animal law summaries with B/B*/L/N classification for all 50 states"
+    - name: "USDA APHIS — Animal Welfare Act"
+      url: "https://www.aphis.usda.gov/animal-welfare"
+      description: "Federal licensing requirements for exhibitors and dealers of regulated animals, which apply alongside state law"
+
+map:
+  title: "Exotic Pet Laws by State 2026"
+  image: "/images/rankings/law/exotic-pet-laws/exotic-pet-laws-map.webp"
+  image_alt: "U.S. map showing exotic pet law status by state: dark red for 27 full-ban states, red for 2 partial-ban states, yellow for 20 permit-required states, and green for North Carolina"
+  caption: "27 states in dark red ban private ownership of big cats, bears, and primates. 20 yellow states allow exotic animals with a permit. North Carolina in green is the only state with no statewide restriction."
+  disclaimer: "This map is for informational purposes only and does not constitute legal advice. Federal law applies in all states under the Lacey Act and Animal Welfare Act."
+  metric_key: status_label
+  metric_label: "Legal Status"
+  name_key: state
+  summary_key: note
+  color_scheme: categorical
+  color_scale: categorical
+  color_map:
+    "Full Ban": "red-dark"
+    "Partial Ban": "red"
+    "License Required": "yellow"
+    "No Permit Required": "green-light"
+  detail_keys:
+    - big_cat_ownership
+    - primate_ownership
+    - bear_ownership
+  filters:
+    - key: status_label
+      label: "Filter by Legal Status"
+      use_colors: true
+    - key: big_cat_ownership
+      label: "Filter by Big Cats"
+      accent_color: "#b1135b"
+    - key: primate_ownership
+      label: "Filter by Primates"
+      accent_color: "#ff7a45"
+
+table:
+  caption: "2026 Exotic Pet Laws by State"
+  note: "Classification codes follow Born Free USA taxonomy: B = full ban on private ownership of non-domesticated felines, wolves, bears, reptiles, and non-human primates; B* = partial ban (allows some exotic species but prohibits listed ones); L = license or permit required; N = no permit required (some minor regulations may apply). Federal law under the Lacey Act applies in all states."
+  columns:
+    state: "State"
+    status_label: "Legal Status"
+    big_cat_ownership: "Big Cats"
+    primate_ownership: "Primates"
+    bear_ownership: "Bears"
+
+  metric_default: status_label
+  sort_default: desc
+
+  rows:
+    # ── FULL BAN — B (27 states) ──────────────────────────────────────────────
+    - state: "Alabama"
+      state_slug: "alabama"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Alabama bans black bears, mountain lions, bobcats, foxes, raccoons, skunks, wild rodents, cervids (deer, elk), and many other species. Possession of any live protected wild bird or mammal is unlawful."
+
+    - state: "California"
+      state_slug: "california"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "California bans all primates, all carnivores besides domestic cats and dogs, all elephants, all marsupials, all deer and elk, most rodents, and most reptiles and amphibians."
+
+    - state: "Colorado"
+      state_slug: "colorado"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Colorado prohibits all nonhuman primates, raccoons, skunks, prairie dogs, porcupines, squirrels, parakeets, and all cervids (deer, moose, caribou) without authorization from the Division."
+
+    - state: "Connecticut"
+      state_slug: "connecticut"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "All Felidae (lions, leopards, cheetahs), Canidae (wolves, coyotes), Ursidae (bears), and Hominidae (gorillas, chimpanzees, orangutans) are banned as potentially dangerous. Pythons, anacondas, Komodo dragons, and crocodilians are also prohibited."
+
+    - state: "Hawaii"
+      state_slug: "hawaii"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Hawaii prohibits introduction of most non-native live animals. All frogs, all snakes, bats, foxes, wild rabbits, and piranhas are among the many prohibited species. Most wildlife is restricted to research or government-approved facilities."
+
+    - state: "Illinois"
+      state_slug: "illinois"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Illinois prohibits possession of any animal on the state or federal endangered species list. The general framework effectively bars most exotic wild animals from private ownership."
+
+    - state: "Iowa"
+      state_slug: "iowa"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Iowa bans dangerous wild animals including wolves, lions, tigers, cougars, cheetahs, bears, rhinos, elephants, all primates, alligators, crocodiles, Gila monsters, vipers, and large constrictors such as pythons and anacondas."
+
+    - state: "Kansas"
+      state_slug: "kansas"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Unregulated"
+      bear_ownership: "Banned"
+      note: "Kansas bans lions, tigers, leopards, jaguars, cheetahs, mountain lions, bears, and all non-native venomous snakes under the Dangerous Regulated Animal statute. The law does not explicitly regulate primate ownership."
+
+    - state: "Kentucky"
+      state_slug: "kentucky"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Kentucky prohibits alligators, bears, cheetahs, crocodiles, elephants, Gila monsters, hippos, honey badgers, hyenas, all nonhuman primates, rhinos, leopards, wolverines, and venomous exotic snakes. Animals in possession before July 2005 may be retained but cannot be bred."
+
+    - state: "Louisiana"
+      state_slug: "louisiana"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Louisiana bans black, grizzly, and polar bears; red and gray wolves; all nonhuman primates; and tigers, lions, leopards, jaguars, cheetahs, cougars, and mountain lions. Big cats in possession before August 15, 2006 may be kept as one grandfathered animal with a permit."
+
+    - state: "Maryland"
+      state_slug: "maryland"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Maryland bans foxes, skunks, raccoons, bears, alligators, crocodiles, wild cats, wild dogs, all nonhuman primates, and venomous snakes from the families Hydrophidae, Elapidae, Viperidae, and Crotalidae."
+
+    - state: "Massachusetts"
+      state_slug: "massachusetts"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "A license is required to possess any undomesticated bird, mammal, reptile, or amphibian; animals on state or federal endangered lists may not be possessed. Licenses for dangerous exotic species are not issued for private pet ownership."
+
+    - state: "Michigan"
+      state_slug: "michigan"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Unregulated"
+      bear_ownership: "Banned"
+      note: "Michigan bans all large carnivores including lions, leopards, jaguars, tigers, cougars, panthers, cheetahs, and bears, and prohibits wolf-dog crosses. The law does not specifically regulate primate ownership."
+
+    - state: "Minnesota"
+      state_slug: "minnesota"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Minnesota bans all Felidae except domestic cats, all bears, and all nonhuman primates including lemurs, monkeys, chimpanzees, gorillas, and orangutans, plus any hybrids of these species."
+
+    - state: "Missouri"
+      state_slug: "missouri"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Missouri's Large Carnivore Act, effective January 1, 2012, prohibits private ownership of wild cats, bears, and other large carnivores. All wildlife must comply with state regulations; nonhuman primates are also covered under the dangerous animal framework."
+
+    - state: "Montana"
+      state_slug: "montana"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Prohibited species include all primates (marmosets, tamarins, night and spider monkeys, gibbons, and apes), hyenas, pythons, cobras, anacondas, and mambas. A permit is required to operate a wild animal menagerie."
+
+    - state: "Nebraska"
+      state_slug: "nebraska"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Nebraska bans wolves, skunks, and all Felidae and Ursidae not in possession before March 1, 1986. Certain wildlife such as foxes, bobcats, and raccoons may be kept under permit, but primates are not among the permitted species."
+
+    - state: "Nevada"
+      state_slug: "nevada"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Nevada prohibits importation and possession of alligators, crocodiles, piranhas, cobras, mambas, vipers, mongooses, meerkats, deer, elk, bats, coyotes, foxes, raccoons, skunks, and wild pigs, among many other species."
+
+    - state: "New Jersey"
+      state_slug: "new-jersey"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Non-human primates, non-domestic carnivores (bears, wild cats), venomous reptiles, and crocodilians may not be kept as pets. Permits for potentially dangerous animals may be issued only to zoos, research facilities, and similar institutions."
+
+    - state: "New Mexico"
+      state_slug: "new-mexico"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "New Mexico restricts the sale, purchase, and possession as pets of subhuman primates, skunks, raccoons, foxes, and other sylvatic carnivores. The regulation is administered by the health and environment department for public health protection."
+
+    - state: "Ohio"
+      state_slug: "ohio"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Ohio's Dangerous Wild Animal Act, effective January 1, 2014, bans hyenas, gray wolves, lions, tigers, jaguars, leopards, cheetahs, lynxes, cougars, bears, elephants, rhinos, hippos, Komodo dragons, alligators, crocodiles, and all nonhuman primates except lemurs."
+
+    - state: "South Carolina"
+      state_slug: "south-carolina"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "South Carolina bans importation, possession, breeding, or sale of large wild cats, non-native bears, and great apes. Animals in legal possession before January 1, 2018 may be retained with proper registration and veterinary records."
+
+    - state: "Tennessee"
+      state_slug: "tennessee"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Class I wildlife — all primates, wolves, bears, lions, tigers, leopards, jaguars, cheetahs, cougars, elephants, rhinos, hippos, African buffalos, all crocodilians, and venomous snakes — may only be possessed by zoos, circuses, and commercial propagators."
+
+    - state: "Utah"
+      state_slug: "utah"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Utah prohibits all Ursidae (bears), Canidae (all species), Felidae (all except domestic cats), all Mustelidae, and all nonhuman primates. Certificates of registration are available only to exhibitors and scientific or educational facilities."
+
+    - state: "Washington"
+      state_slug: "washington"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Washington bans potentially dangerous wild animals including all wild cats, wolves, all bears, hyenas, rhinos, all nonhuman primates, elephants, venomous snakes, and all crocodilians. Animals in legal possession before July 22, 2007 may be retained."
+
+    - state: "West Virginia"
+      state_slug: "west-virginia"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "West Virginia prohibits possession of dangerous wild animals, defined as any mammal, bird, reptile, amphibian, or aquatic animal dangerous to humans or the environment. Animals in possession before June 4, 2014 may be retained with a permit."
+
+    - state: "Wyoming"
+      state_slug: "wyoming"
+      status_label: "Full Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Unregulated"
+      bear_ownership: "Banned"
+      note: "Wyoming prohibits private ownership of big game animals (antelope, bighorn sheep, deer, elk, moose, mountain goat) and trophy game animals (black bear, grizzly bear, mountain lion), and bans wolves and wolf hybrids. The law does not specifically address primates or most other exotic species."
+
+    # ── PARTIAL BAN — B* (2 states) ───────────────────────────────────────────
+    - state: "Arkansas"
+      state_slug: "arkansas"
+      status_label: "Partial Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Banned"
+      bear_ownership: "Banned"
+      note: "Arkansas bans large carnivores (lions, tigers, bears) and specified primates (apes, baboons, macaques) as inherently dangerous. Alligator and elk possession or hunting requires a permit; some other exotic species may be kept."
+
+    - state: "Virginia"
+      state_slug: "virginia"
+      status_label: "Partial Ban"
+      big_cat_ownership: "Banned"
+      primate_ownership: "Unregulated"
+      bear_ownership: "Banned"
+      note: "Virginia bans non-native exotic animals classed as predatory or undesirable, including bears, wolves, coyotes, non-domesticated cats, alligators, and crocodiles. Virginia has no state requirement for persons possessing non-human primates."
+
+    # ── LICENSE REQUIRED — L (20 states) ──────────────────────────────────────
+    - state: "Alaska"
+      state_slug: "alaska"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "Permits are required for all game animals, including exotic species not classified as domestic. Propagation of chimpanzees is specifically prohibited. Wild cats and wolf hybrids each require separate permits."
+
+    - state: "Arizona"
+      state_slug: "arizona"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "All nonhuman primates, all Carnivora (bears, foxes, ocelots, raccoons, skunks, wolves, weasels), bats, hedgehogs, and all wild rodents are classified as restricted wildlife requiring a special license."
+
+    - state: "Delaware"
+      state_slug: "delaware"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A permit is required for any live wild mammal or hybrid and any live non-native reptile. Non-native venomous snakes posing a risk of serious injury or death may never be permitted."
+
+    - state: "Florida"
+      state_slug: "florida"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "Class I wildlife (chimpanzees, gorillas, tigers, lions, bears, rhinos, crocodiles) requires a permit with inspection. Class II wildlife (smaller monkeys, lynx, bobcats, alligators) requires a $140 annual permit."
+
+    - state: "Georgia"
+      state_slug: "georgia"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A wild animal license is required for all species inherently dangerous to humans, including all primates, all large carnivores (wolves, bears, lions, tigers, hyenas), and crocodilians. Licenses are issued only for wholesale, retail, or exhibition purposes."
+
+    - state: "Idaho"
+      state_slug: "idaho"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A captive wildlife permit is required for all wildlife, native or exotic. Deleterious exotic animals also require a possession permit and must be kept in accredited facilities with an exhibitor's license."
+
+    - state: "Indiana"
+      state_slug: "indiana"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "Class III permits cover dangerous animals including wolves, bears, and wild cats over 5 feet. Individuals may not possess exotic mammals including sloths, elephants, monkeys, kangaroos, giraffes, and rhinos."
+
+    - state: "Maine"
+      state_slug: "maine"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "Category I Restricted species require a permit and include wild cats, all primates, bears, wolves, elephants, rhinos, hippos, cobras, pythons, crocodilians, armadillos, kangaroos, and many others."
+
+    - state: "Mississippi"
+      state_slug: "mississippi"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A permit is required for inherently dangerous species including nonhuman primates, wolves, hyenas, lions, tigers, leopards, jaguars, cheetahs, elephants, rhinos, and hippos."
+
+    - state: "New Hampshire"
+      state_slug: "new-hampshire"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A permit is required for wolves, black and grizzly bears, bobcats, cougars, leopards, lions, jaguars, all primates, crocodilians, and venomous reptiles. Wolf hybrids require special licensing and proof of vaccination."
+
+    - state: "New York"
+      state_slug: "new-york"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A license is required to possess wild animals including all nonhuman primates, all wild cats, bears, venomous reptiles, pythons, anacondas, Komodo dragons, crocodilians, foxes, skunks, and raccoons."
+
+    - state: "North Dakota"
+      state_slug: "north-dakota"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "North Dakota requires permits for wild animals under state game and fish regulations. Most exotic wildlife requires licensing before possession; data for North Dakota was not included in the primary source."
+
+    - state: "Oklahoma"
+      state_slug: "oklahoma"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "All persons owning wildlife commercially or as pets must obtain a commercial wildlife breeder's license. This requirement applies to all exotic species regardless of whether possession is for commercial purposes."
+
+    - state: "Oregon"
+      state_slug: "oregon"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "Exotic animals (wild cats, nonhuman primates, non-wolf wild dogs, bears except black bears, and crocodilians) may only be kept with a state permit issued before January 1, 2010. Many additional species cannot be imported or possessed."
+
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "An exotic wildlife permit is required to possess bears, coyotes, lions, tigers, leopards, jaguars, cheetahs, cougars, wolves, all nonhuman primates, foxes, raccoons, and skunks."
+
+    - state: "Rhode Island"
+      state_slug: "rhode-island"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A department permit is required to import or possess wild animals from the orders Primates, Carnivora, Amphibia, and Reptilia, as well as Canidae and insects."
+
+    - state: "South Dakota"
+      state_slug: "south-dakota"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A permit is required for all nondomestic mammals from Felidae, Canidae, Ursidae, Mustelidae, and Hyaenidae families, as well as hippos, antelopes, deer, giraffes, rhinoceroses, elephants, and all primates."
+
+    - state: "Texas"
+      state_slug: "texas"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A Certificate of Registration is required for 19 specified dangerous wild animals including lions, tigers, ocelots, cougars, leopards, cheetahs, jaguars, bobcats, lynxes, servals, caracals, hyenas, bears, coyotes, jackals, baboons, chimpanzees, orangutans, and gorillas."
+
+    - state: "Vermont"
+      state_slug: "vermont"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A permit from the commissioner is required to bring into or possess any wild animal, defined as any mammal, bird, amphibian, or reptile excluding domestic species."
+
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      status_label: "License Required"
+      big_cat_ownership: "Permit Required"
+      primate_ownership: "Permit Required"
+      bear_ownership: "Permit Required"
+      note: "A license or approval is required for any live wild animal. Harmful wild animals — cougars, bears, and wild and feral swine — require specific departmental authorization and may not be possessed without it."
+
+    # ── NO PERMIT REQUIRED — N (1 state) ──────────────────────────────────────
+    - state: "North Carolina"
+      state_slug: "north-carolina"
+      status_label: "No Permit Required"
+      big_cat_ownership: "Legal"
+      primate_ownership: "Legal"
+      bear_ownership: "Legal"
+      note: "North Carolina has no statewide permit requirement for exotic animals. Counties and cities may enact ordinances restricting possession. A state veterinarian import permit is required only for foxes, skunks, raccoons, bobcats, coyotes, and brushtail possums entering the state."
+
+sections:
+  - id: "states-that-ban-big-cat-and-primate-ownership"
+    icon: "fa-solid fa-ban"
+    title: "States That Ban Big Cat and Primate Ownership"
+    paragraphs:
+      - "27 states impose outright bans on privately owned big cats, bears, and non-human primates. Ohio's Dangerous Wild Animal Act, effective January 1, 2014, covers hyenas, gray wolves, lions, tigers, jaguars, leopards, cheetahs, lynxes, cougars, bears, elephants, rhinos, hippos, Komodo dragons, alligators, crocodiles, and all nonhuman primates except lemurs."
+      - "Virginia and Arkansas hold partial bans. Virginia prohibits non-native predatory cats, wolves, bears, and crocodiles but places no state restriction on non-human primates. Arkansas bans large carnivores and specified primates (apes, baboons, macaques) but permits some other exotic species."
+
+  - id: "states-that-allow-exotic-pets-with-a-permit"
+    icon: "fa-solid fa-id-card"
+    title: "States That Allow Exotic Pets with a Permit"
+    paragraphs:
+      - "20 states allow exotic animal ownership under a license or permit system. Texas requires a Certificate of Registration for 19 specified dangerous species, including lions, tigers, bears, hyenas, baboons, chimpanzees, and gorillas. Florida uses a tiered permit system, with Class I animals requiring the most restrictive review and a $140 annual fee for Class II."
+      - "North Carolina is the only state with no statewide permit requirement for exotic animal ownership. Regulation falls to individual counties, and a state veterinarian import permit is required only for foxes, skunks, raccoons, bobcats, and coyotes crossing state lines."
+
+visual_assets:
+  - id: ohio-statehouse
+    src: /images/rankings/law/exotic-pet-laws/ohio-statehouse.jpg
+    alt: Ohio Statehouse in Columbus, Ohio, where the Dangerous Wild Animal Act took effect on January 1, 2014
+    caption: Ohio enacted the Dangerous Wild Animal Act effective January 1, 2014, after a 2011 incident in which a private owner released 56 exotic animals near Zanesville before taking his own life. The law bans 32 categories of animals including lions, tigers, bears, and nonhuman primates.
+    section: states-that-ban-big-cat-and-primate-ownership
+    layout: full-width-tall
+
+  - id: texas-state-capitol
+    src: /images/rankings/law/exotic-pet-laws/texas-state-capitol.jpg
+    alt: Texas State Capitol building in Austin, Texas
+    caption: Texas allows private ownership of lions, tigers, bears, baboons, chimpanzees, and 13 other specified dangerous species under a Certificate of Registration. Texas has one of the largest populations of privately owned tigers in the world.
+    section: states-that-allow-exotic-pets-with-a-permit
+    layout: full-width-tall
+
+faq:
+  - question: "Can you own a tiger in Texas?"
+    answer: "Yes, with a Certificate of Registration issued under Tex. Health & Safety Code § 822.101. Tigers are among 19 specified dangerous wild animals that may be privately owned in Texas with registration. Lions, leopards, cheetahs, jaguars, bears, hyenas, baboons, chimpanzees, orangutans, and gorillas are also on the list."
+
+  - question: "Which states allow you to own a monkey?"
+    answer: "20 states allow non-human primate ownership with a license or permit, including Texas, Florida, Pennsylvania, New York, and South Dakota. Virginia places no state-level restriction on primates. Kansas and Wyoming also do not explicitly regulate primate ownership. North Carolina has no statewide permit requirement for any exotic animal, including primates."
+
+  - question: "Which states ban big cat ownership?"
+    answer: "27 states ban private ownership of big cats outright, including California, Ohio, New York, Illinois, and Washington. Arkansas and Virginia add partial bans that include big cats. 20 states require a permit or license. North Carolina is the only state with no statewide prohibition or permit requirement for big cats."
+
+  - question: "Is it legal to own a bear in Florida?"
+    answer: "Bears are classified as Class I wildlife in Florida, requiring a permit from the Fish and Wildlife Conservation Commission. Class I permits are subject to inspection and are issued primarily for exhibitors and educational facilities. Private pet ownership of bears is effectively prohibited for most residents."
+
+  - question: "What is the most lenient state for exotic pet laws?"
+    answer: "North Carolina is the only state with no statewide permit or license requirement for exotic animals, leaving regulation to individual counties. Among permit states, Texas allows 19 specified dangerous species including tigers and chimpanzees under a Certificate of Registration."
+
+  - question: "Can you own a lion in California?"
+    answer: "No. California bans all carnivores besides domestic cats and dogs under Cal. Fish & Game Code § 2118. Lions belong to the family Felidae, which is entirely prohibited. A revocable nontransferable permit exists in law but is not issued for private pet possession."
+
+related:
+  - title: "Death Penalty by State"
+    url: "/rankings/law/death-penalty-by-state"
+  - title: "Marijuana Laws by State"
+    url: "/rankings/law/marijuana-legality-by-state"
+  - title: "Gun Laws by State — Concealed Carry"
+    url: "/rankings/law/gun-laws-concealed-carry"

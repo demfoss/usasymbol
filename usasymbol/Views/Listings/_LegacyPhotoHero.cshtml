@@ -1,0 +1,139 @@
+@*
+    Legacy photo hero for /symbols/{slug} listing pages, kept as a fallback stub.
+
+    This was the hero used before Listings/Detail.cshtml switched to the shared
+    _PageDataHero + PageDataHeroBuilder system (the same hero Rankings uses).
+    It is NOT wired into Detail.cshtml anymore -- if the data-driven hero ever
+    misbehaves for some listing type, swap the "_PageDataHero" partial call in
+    Detail.cshtml back to this one instead of rebuilding it from scratch.
+*@
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+@inject IImageUrlService Images
+
+@{
+    var content = Model.Content;
+    var categoryTitle = string.IsNullOrWhiteSpace(Model.CategoryTitle) ? "Symbols" : Model.CategoryTitle;
+
+    var heroAlt = content?.HeroImageAlt ?? content?.Page?.H1 ?? "USA state symbols";
+    var heroImage = content?.HeroImage;
+
+    if (string.IsNullOrWhiteSpace(heroImage))
+    {
+        heroImage = content?.VisualAssets?.FirstOrDefault(v =>
+            !string.IsNullOrWhiteSpace(v?.Src) &&
+            !string.Equals(v.Layout, "full-width", StringComparison.OrdinalIgnoreCase))?.Src;
+    }
+
+    if (string.IsNullOrWhiteSpace(heroImage) && content?.Table?.Rows?.Any() == true)
+    {
+        var firstRow = content.Table.Rows.First();
+        heroImage = new[]
+        {
+            firstRow.GetString("hero_image"),
+            firstRow.GetString("symbol_image"),
+            firstRow.GetString("image")
+        }.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+    }
+
+    var heroImageResolved = string.IsNullOrWhiteSpace(heroImage) ? "/images/og-default.webp" : heroImage!;
+    var heroImageSrc = Images.Hero(heroImageResolved);
+    var heroImageSrcSet = string.Join(", ", new[]
+    {
+        $"{Images.Hero(heroImageResolved, 480)} 480w",
+        $"{Images.Hero(heroImageResolved, 768)} 768w",
+        $"{Images.Hero(heroImageResolved, 1200)} 1200w"
+    });
+}
+
+<section class="mb-10 lg:mb-12">
+    <div class="relative overflow-hidden bg-[linear-gradient(180deg,#1b2230_0%,#1f2735_100%)] text-white">
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-amber-200/0"></div>
+        <div class="absolute right-8 top-14 hidden h-48 w-48 rounded-full bg-amber-300/10 blur-3xl lg:block"></div>
+        <div class="absolute left-1/3 top-0 hidden h-40 w-40 rounded-full bg-sky-200/10 blur-3xl lg:block"></div>
+
+        <div class="relative px-5 pb-7 pt-6 sm:px-6 lg:px-8 lg:pb-9 lg:pt-8 xl:px-10">
+            <div class="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(300px,420px)] xl:grid-cols-[minmax(0,1fr)_460px] lg:items-start xl:gap-10">
+                <div class="min-w-0 order-1 pt-2 lg:pt-6">
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">
+                        <span class="inline-flex items-center gap-2 text-white">
+                            <span class="block h-1.5 w-1.5 rounded-full bg-amber-300"></span>
+                            Guide
+                        </span>
+                        <span>Symbols</span>
+                        @if (!string.IsNullOrWhiteSpace(categoryTitle))
+                        {
+                            <span>@categoryTitle</span>
+                        }
+                        <span>Updated @(content?.DateModified?.ToString("MMMM d, yyyy") ?? DateTime.UtcNow.ToString("MMMM d, yyyy"))</span>
+                    </div>
+
+                    <div class="mt-6 max-w-4xl">
+                        <h1 class="max-w-4xl text-4xl font-bold tracking-tight text-white leading-[0.98] sm:text-5xl lg:text-[4.15rem]">
+                            @content?.Page?.H1
+                        </h1>
+
+                        @if (!string.IsNullOrWhiteSpace(content?.Page?.IntroTitle))
+                        {
+                            <p class="mt-4 max-w-2xl text-[1.05rem] sm:text-xl leading-snug text-white/75 font-medium">
+                                @content.Page.IntroTitle
+                            </p>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(content?.Seo?.Description))
+                        {
+                            <p class="mt-4 max-w-2xl text-[15px] leading-7 text-slate-300 hidden lg:block">
+                                @content.Seo.Description
+                            </p>
+                        }
+
+                        <div class="mt-7 hidden border-t border-white/12 pt-5 lg:flex lg:items-center lg:gap-3 lg:flex-wrap">
+                            @await Html.PartialAsync("_ShareButtons", Model)
+
+                            <a href="/about/artsiom-dusau"
+                               class="ml-auto flex items-center gap-2 text-[11px] text-slate-300 hover:text-white transition-colors">
+                                <img src="/images/profile/artsiom-dusau.png"
+                                     alt="Artsiom Dusau"
+                                     class="h-5 w-5 rounded-full object-cover opacity-80">
+                                <span>Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-2 lg:pt-5">
+                    <figure>
+                        <div class="relative aspect-[16/9] overflow-hidden bg-slate-100/10">
+                            <img src="@heroImageSrc"
+                                 srcset="@heroImageSrcSet"
+                                 sizes="(max-width: 1023px) 100vw, 460px"
+                                 alt="@heroAlt"
+                                 class="absolute inset-0 h-full w-full object-cover"
+                                 loading="eager"
+                                 fetchpriority="high" />
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(content?.HeroImageCaption))
+                        {
+                            <figcaption class="mt-3 border-t border-white/15 pt-3">
+                                <p class="text-sm font-semibold text-white">Image Note</p>
+                                <p class="mt-1 text-sm leading-6 text-slate-300">@content.HeroImageCaption</p>
+                            </figcaption>
+                        }
+                    </figure>
+
+                    <div class="mt-5 border-t border-white/12 pt-4 lg:hidden">
+                        @await Html.PartialAsync("_ShareButtons", Model)
+
+                        <a href="/about/artsiom-dusau"
+                           class="mt-3 flex items-center gap-2 text-[11px] text-slate-300">
+                            <img src="/images/profile/artsiom-dusau.png"
+                                 alt="Artsiom Dusau"
+                                 class="h-5 w-5 rounded-full object-cover opacity-80">
+                            <span>Reviewed by <strong class="font-semibold text-white">Artsiom Dusau</strong></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

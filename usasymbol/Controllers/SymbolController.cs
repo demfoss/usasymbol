@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using usasymbol.Models;
 using usasymbol.Services;
@@ -36,6 +37,7 @@ namespace USASymbol.Controllers
         private readonly ISoilService _soilService;
         private readonly IFossilService _fossilService;
         private readonly ISportService _sportService;
+        private readonly IInsectService _insectService;
         private readonly ILatestContentRailService _latestContentRailService;
         private readonly QuizService _quizService;
         private readonly ILogger<SymbolController> _logger;
@@ -63,7 +65,9 @@ namespace USASymbol.Controllers
             ["coats-of-arms"] = "fa-solid fa-shield-halved",
             ["soils"] = "fa-solid fa-mountain",
             ["fossils"] = "fa-solid fa-bone",
-            ["sports"] = "fa-solid fa-medal"
+            ["sports"] = "fa-solid fa-medal",
+            ["insects"] = "fa-solid fa-bug",
+            ["butterflies"] = "fa-solid fa-bug"
         };
 
         public SymbolController(
@@ -86,6 +90,7 @@ namespace USASymbol.Controllers
             ISoilService soilService,
             IFossilService fossilService,
             ISportService sportService,
+            IInsectService insectService,
             ILatestContentRailService latestContentRailService,
             QuizService quizService,
             ILogger<SymbolController> logger,
@@ -111,6 +116,7 @@ namespace USASymbol.Controllers
             _soilService = soilService;
             _fossilService = fossilService;
             _sportService = sportService;
+            _insectService = insectService;
             _latestContentRailService = latestContentRailService;
             _quizService = quizService;
             _logger = logger;
@@ -239,9 +245,20 @@ namespace USASymbol.Controllers
                 "state-seals" => symbol.Type == "state-seal",
                 "coats-of-arms" => symbol.Type == "coat-of-arms",
                 "sports" => symbol.Type == "sport",
+                "insects" => symbol.Type == "insect",
+                "butterflies" => symbol.Type == "insect" && IsButterfly(designation, name),
                 _ => false
             };
         }
+
+        private static bool IsButterfly(string designation, string name) =>
+            designation.Contains("butterfly", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("butterfly", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("swallowtail", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("fritillary", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("hairstreak", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("sulphur", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("longwing", StringComparison.OrdinalIgnoreCase);
 
         private static bool IsDog(string designation) =>
             designation.Contains("dog", StringComparison.OrdinalIgnoreCase);
@@ -375,6 +392,7 @@ namespace USASymbol.Controllers
             return RedirectPermanent(symbol.ToSymbolUrl(state.Slug));
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/bird/{birdSlug}")]
         public async Task<IActionResult> Bird(string stateSlug, string birdSlug)
         {
@@ -427,6 +445,7 @@ namespace USASymbol.Controllers
             return View(model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/mammal/{mammalSlug}")]
         public async Task<IActionResult> Mammal(string stateSlug, string mammalSlug)
         {
@@ -488,6 +507,7 @@ namespace USASymbol.Controllers
             return View("Mammal", model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/firearm/{firearmSlug}")]
         public async Task<IActionResult> Firearm(string stateSlug, string firearmSlug = "")
         {
@@ -544,6 +564,7 @@ namespace USASymbol.Controllers
             return View("Firearm", model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/dinosaur/{dinosaurSlug}")]
         public async Task<IActionResult> Dinosaur(string stateSlug, string dinosaurSlug)
         {
@@ -600,6 +621,7 @@ namespace USASymbol.Controllers
             return View("Dinosaur", model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/beverage/{beverageSlug}")]
         public async Task<IActionResult> Beverage(string stateSlug, string beverageSlug)
         {
@@ -658,6 +680,7 @@ namespace USASymbol.Controllers
             return View("Beverage", model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/license-plate/{sloganSlug}")]
         public async Task<IActionResult> LicensePlate(string stateSlug, string sloganSlug)
         {
@@ -716,6 +739,7 @@ namespace USASymbol.Controllers
             return View("LicensePlate", model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/motto/{mottoSlug}")]
         public async Task<IActionResult> Motto(string stateSlug, string mottoSlug)
         {
@@ -751,6 +775,7 @@ namespace USASymbol.Controllers
             return View(model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/nickname/{nicknameSlug}")]
         public async Task<IActionResult> Nickname(string stateSlug, string nicknameSlug)
         {
@@ -795,6 +820,7 @@ namespace USASymbol.Controllers
             return View(model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/flower/{flowerSlug}")]
         public async Task<IActionResult> Flower(string stateSlug, string flowerSlug)
         {
@@ -868,6 +894,7 @@ namespace USASymbol.Controllers
         }
 
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/flag/{flagSlug}")]
         public async Task<IActionResult> Flag(string stateSlug, string flagSlug)
         {
@@ -940,6 +967,7 @@ namespace USASymbol.Controllers
             return View(model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/tree/{treeSlug}")]
         public async Task<IActionResult> Tree(string stateSlug, string treeSlug)
         {
@@ -1012,6 +1040,7 @@ namespace USASymbol.Controllers
             return View(model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/color/{colorSlug}")]
         public async Task<IActionResult> Color(string stateSlug, string colorSlug)
         {
@@ -1082,6 +1111,7 @@ namespace USASymbol.Controllers
             return View(model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/state-seal/{sealSlug}")]
         public async Task<IActionResult> StateSeal(string stateSlug, string sealSlug)
         {
@@ -1145,6 +1175,7 @@ namespace USASymbol.Controllers
             return View("Seal", model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/coat-of-arms/{coatOfArmsSlug}")]
         public async Task<IActionResult> CoatOfArms(string stateSlug, string coatOfArmsSlug)
         {
@@ -1218,6 +1249,7 @@ namespace USASymbol.Controllers
             return View("Seal", model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/soil/{soilSlug}")]
         public async Task<IActionResult> StateSoil(string stateSlug, string soilSlug)
         {
@@ -1272,6 +1304,7 @@ namespace USASymbol.Controllers
             return View("Soil", model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/fossil/{fossilSlug}")]
         public async Task<IActionResult> StateFossil(string stateSlug, string fossilSlug)
         {
@@ -1319,6 +1352,7 @@ namespace USASymbol.Controllers
             return View("Fossil", model);
         }
 
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/sport/{sportSlug}")]
         public async Task<IActionResult> StateSport(string stateSlug, string sportSlug)
         {
@@ -1359,6 +1393,73 @@ namespace USASymbol.Controllers
             };
 
             return View("Sport", model);
+        }
+
+        [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/insect/{insectSlug}")]
+        public async Task<IActionResult> StateInsect(string stateSlug, string insectSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            // Try by slug first to correctly handle multi-insect states (Alabama, Delaware, Tennessee, etc.)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, insectSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "insect");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State insect symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(insectSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var yamlFileName = string.IsNullOrWhiteSpace(symbol.YamlPath)
+                ? "insect.yaml"
+                : Path.GetFileName(symbol.YamlPath);
+            var content = await _insectService.GetInsectContentAsync(stateSlug, yamlFileName);
+            if (content == null)
+                _logger.LogInformation("State insect YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State insect content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new InsectDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                InsectContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions
+            };
+
+            return View("Insect", model);
+        }
+
+        [Route("states/{stateSlug}/{symbolType}/{symbolSlug}")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept-Encoding")]
+        public async Task<IActionResult> LegacyDetail(string stateSlug, string symbolType, string symbolSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                return NotFound();
+            }
+
+            var symbol = await _symbolCanonicalService.ResolveCanonicalSymbolAsync(state, symbolType);
+            if (symbol == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectPermanent(symbol.ToSymbolUrl(state.Slug));
         }
 
         [Route("states/{stateSlug}/{symbolType}")]

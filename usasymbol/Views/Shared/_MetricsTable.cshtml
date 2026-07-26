@@ -1,0 +1,23 @@
+@model USASymbol.Models.ViewModels.IPlaceMetricsViewModel
+
+<div class="place-metrics-table-wrap">
+    <table class="place-metrics-table">
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Source</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var metric in Model.Metrics)
+            {
+                <tr>
+                    <td>@metric.Name</td>
+                    <td>@metric.DisplayValue</td>
+                    <td>@metric.SourceName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

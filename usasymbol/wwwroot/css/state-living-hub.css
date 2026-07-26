@@ -1,0 +1,116 @@
+.state-living-hub-page {
+    --slh-ink: #13233f;
+    --slh-blue: #1c507d;
+    --slh-gold: #e5bb64;
+    --slh-line: #dce4ec;
+    --slh-muted: #637286;
+    background: #f8f7f2;
+    color: var(--slh-ink);
+}
+
+.slh-container { width: min(1180px, calc(100% - 2rem)); margin-inline: auto; }
+.slh-breadcrumb { border-bottom: 1px solid var(--slh-line); background: #fff; font-size: .78rem; }
+.slh-breadcrumb .slh-container { display: flex; min-height: 42px; align-items: center; gap: .5rem; color: var(--slh-muted); }
+.slh-breadcrumb a { color: inherit; text-decoration: none; }
+.slh-breadcrumb a:hover { color: var(--slh-blue); }
+
+.slh-hero {
+    padding: clamp(3.2rem, 7vw, 6rem) 0;
+    background:
+        radial-gradient(circle at 82% 14%, rgba(86, 177, 174, .24), transparent 28rem),
+        linear-gradient(135deg, #10253e, #173e65 62%, #176b77);
+    color: #fff;
+}
+.slh-hero-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, .7fr); align-items: end; gap: clamp(2rem, 7vw, 5.5rem); }
+.slh-kicker, .slh-eyebrow { margin: 0 0 .6rem; color: #5f7e99; font-size: .7rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.slh-hero .slh-kicker { color: #a8d9d5; }
+.slh-hero h1 { max-width: 760px; margin: 0; color: #fff; font: 700 clamp(2.7rem, 7vw, 5.2rem)/1.02 "Libre Baskerville", Georgia, serif; letter-spacing: -.045em; }
+.slh-deck { max-width: 760px; margin: 1.15rem 0 0; color: #d8e6ef; font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1.7; }
+.slh-hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.5rem; }
+.slh-button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; gap: .5rem; padding: .75rem 1rem; border: 1px solid transparent; border-radius: .55rem; font-size: .8rem; font-weight: 800; text-decoration: none; }
+.slh-button-gold { background: var(--slh-gold); color: #14243d; }
+.slh-button-ghost { border-color: rgba(255,255,255,.34); background: rgba(255,255,255,.07); color: #fff; }
+.slh-hero-facts { overflow: hidden; border: 1px solid rgba(255,255,255,.17); border-radius: .85rem; background: rgba(4,20,38,.24); }
+.slh-hero-facts div { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1rem 1.1rem; border-bottom: 1px solid rgba(255,255,255,.12); }
+.slh-hero-facts div:last-child { border-bottom: 0; }
+.slh-hero-facts strong { color: #fff; font: 700 1.25rem/1 "Libre Baskerville", Georgia, serif; }
+.slh-hero-facts span { color: #bed0dc; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+
+.slh-explorer { padding: clamp(3rem, 7vw, 5rem) 0; }
+.slh-explorer-head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.4rem; }
+.slh-explorer h2, .slh-methodology h2 { margin: 0; color: var(--slh-ink); font: 700 clamp(1.7rem, 4vw, 2.5rem)/1.2 "Libre Baskerville", Georgia, serif; letter-spacing: -.03em; }
+.slh-explorer-head > p { max-width: 430px; margin: 0; color: var(--slh-muted); font-size: .8rem; line-height: 1.6; }
+.slh-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .75rem; padding: .8rem; border: 1px solid var(--slh-line); border-radius: .75rem; background: #fff; }
+.slh-search { position: relative; display: block; }
+.slh-search i { position: absolute; top: 50%; left: .9rem; color: #8290a0; font-size: .8rem; transform: translateY(-50%); }
+.slh-search input, .slh-sort select { width: 100%; min-height: 44px; border: 1px solid #d5dee7; border-radius: .5rem; background: #fff; color: var(--slh-ink); font-size: .82rem; outline: none; }
+.slh-search input { padding: .65rem .85rem .65rem 2.45rem; }
+.slh-search input:focus, .slh-sort select:focus { border-color: #6c91b0; box-shadow: 0 0 0 3px rgba(66,119,158,.12); }
+.slh-sort { display: flex; align-items: center; gap: .65rem; }
+.slh-sort span { color: var(--slh-muted); font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.slh-sort select { min-width: 210px; padding: .65rem .75rem; }
+.slh-filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+.slh-filters button { display: inline-flex; min-height: 38px; align-items: center; gap: .4rem; padding: .55rem .75rem; border: 1px solid var(--slh-line); border-radius: 999px; background: #fff; color: #43566d; font-size: .72rem; font-weight: 800; cursor: pointer; }
+.slh-filters button small { color: #8895a4; font-size: .61rem; font-weight: 700; }
+.slh-filters button:hover, .slh-filters button.is-active { border-color: #173e65; background: #173e65; color: #fff; }
+.slh-filters button.is-active small, .slh-filters button:hover small { color: #cbd9e3; }
+.slh-results-bar { display: flex; justify-content: space-between; gap: 1rem; margin: 1.6rem 0 .8rem; color: var(--slh-muted); font-size: .7rem; }
+.slh-results-bar strong { color: var(--slh-ink); text-transform: uppercase; letter-spacing: .08em; }
+
+.slh-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; }
+.slh-card { display: flex; min-width: 0; flex-direction: column; padding: 1.1rem; border: 1px solid var(--slh-line); border-radius: .8rem; background: #fff; box-shadow: 0 8px 24px rgba(17,39,61,.035); }
+.slh-card[hidden] { display: none; }
+.slh-card-head { display: flex; align-items: center; gap: .75rem; }
+.slh-card-head img { width: 64px; height: 42px; flex: 0 0 auto; object-fit: cover; border: 1px solid #d9dee4; border-radius: .25rem; }
+.slh-card-head p { margin: 0 0 .2rem; color: #7c8998; font-size: .59rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.slh-card-head h3 { margin: 0; font: 700 1rem/1.3 "Libre Baskerville", Georgia, serif; }
+.slh-card-head h3 a { color: var(--slh-ink); text-decoration: none; }
+.slh-card-head h3 a:hover { color: var(--slh-blue); text-decoration: underline; text-underline-offset: 3px; }
+.slh-card-summary { min-height: 3.7em; margin: .9rem 0; color: #526277; font-size: .76rem; line-height: 1.55; }
+.slh-card-metrics { display: grid; grid-template-columns: 1fr 1fr; margin: 0; border: 1px solid #e7ebef; border-radius: .55rem; }
+.slh-card-metrics div { min-width: 0; padding: .7rem; border-bottom: 1px solid #e7ebef; }
+.slh-card-metrics div:nth-child(odd) { border-right: 1px solid #e7ebef; }
+.slh-card-metrics div:nth-last-child(-n+2) { border-bottom: 0; }
+.slh-card-metrics dt { overflow: hidden; color: #758396; font-size: .57rem; font-weight: 800; letter-spacing: .06em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.slh-card-metrics dd { margin: .28rem 0 .12rem; color: var(--slh-ink); font-size: .86rem; font-weight: 850; }
+.slh-card-metrics small { display: block; overflow: hidden; color: #7e8b99; font-size: .59rem; text-overflow: ellipsis; white-space: nowrap; }
+.slh-card-links { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: auto; padding-top: .9rem; }
+.slh-card-links a { color: var(--slh-blue); font-size: .68rem; font-weight: 800; text-decoration: none; }
+.slh-card-links a:last-child { color: #748294; }
+.slh-card-links i { margin-left: .25rem; font-size: .58rem; }
+.slh-empty { padding: 4rem 1rem; text-align: center; }
+.slh-empty i { color: #96a3b1; font-size: 1.6rem; }
+.slh-empty h2 { margin-top: 1rem; font-size: 1.25rem; }
+.slh-empty p { color: var(--slh-muted); }
+
+.slh-methodology { padding: clamp(3rem, 7vw, 5rem) 0; border-top: 1px solid var(--slh-line); background: #fff; }
+.slh-method-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); gap: clamp(2rem, 7vw, 5rem); }
+.slh-method-grid > div:first-child > p:not(.slh-eyebrow) { color: #4f6074; font-size: .86rem; line-height: 1.75; }
+.slh-source-list { padding: 1.2rem; border: 1px solid var(--slh-line); border-radius: .75rem; background: #f8fafb; }
+.slh-source-list h3 { margin: 0 0 .7rem; font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; }
+.slh-source-list a { display: grid; gap: .15rem; padding: .65rem 0; border-bottom: 1px solid #e4e9ee; color: var(--slh-blue); font-size: .72rem; text-decoration: none; }
+.slh-source-list a span { color: var(--slh-muted); font-size: .65rem; }
+.slh-source-list p { margin: .8rem 0 0; color: #7b8897; font-size: .63rem; line-height: 1.5; }
+.slh-method-links { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--slh-line); }
+.slh-method-links a { padding: .65rem .8rem; border: 1px solid var(--slh-line); border-radius: .45rem; color: var(--slh-ink); font-size: .72rem; font-weight: 800; text-decoration: none; }
+.slh-method-links a:hover { border-color: var(--slh-blue); color: var(--slh-blue); }
+
+@media (max-width: 960px) {
+    .slh-hero-grid, .slh-method-grid { grid-template-columns: 1fr; }
+    .slh-hero-facts { max-width: 520px; }
+    .slh-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 680px) {
+    .slh-container { width: min(100% - 1.25rem, 1180px); }
+    .slh-explorer-head { display: block; }
+    .slh-explorer-head > p { margin-top: .65rem; }
+    .slh-controls { grid-template-columns: 1fr; }
+    .slh-sort { display: grid; grid-template-columns: auto 1fr; }
+    .slh-sort select { min-width: 0; }
+    .slh-grid { grid-template-columns: 1fr; }
+    .slh-results-bar span { display: none; }
+    .slh-hero-actions .slh-button { width: 100%; }
+    .slh-filters { flex-wrap: nowrap; overflow-x: auto; padding-bottom: .25rem; }
+    .slh-filters button { flex: 0 0 auto; }
+}
