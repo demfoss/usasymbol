@@ -1,0 +1,30 @@
+@model USASymbol.Models.ViewModels.MetricComparisonViewModel
+
+<div class="cmp2-sidebar-cards">
+    <div class="cmp2-sidebar-block">
+        <div class="cmp2-sidebar-heading">This Comparison</div>
+        <div class="cmp2-sidebar-list">
+            <a href="/compare/@Model.PairSlug" class="cmp2-side-card">
+                <div class="cmp2-side-card-top"></div>
+                <div class="cmp2-side-card-head">
+                    <div>
+                        <div class="cmp2-side-card-eyebrow">Full Comparison</div>
+                        <div class="cmp2-side-card-title">@Model.StateA.Name vs @Model.StateB.Name</div>
+                    </div>
+                    <div class="cmp2-side-card-icon">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                </div>
+                <div class="cmp2-side-card-body">
+                    <p class="cmp2-side-card-desc">See every category compared between @Model.StateA.Name and @Model.StateB.Name in one place.</p>
+                    <div class="cmp2-side-card-cta">
+                        <span>View Full Comparison</span>
+                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_CompareExploreCards")
+</div>

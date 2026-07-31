@@ -1,0 +1,87 @@
+schemaVersion: 1
+fips: "22015"
+parentFips: "22"
+state: louisiana
+name: "Bossier Parish"
+slug: bossier-parish
+published: true
+updatedOn: "2026-07-26"
+sources:
+  census_acs:
+    name: "U.S. Census Bureau — American Community Survey"
+    url: "https://www.census.gov/programs-surveys/acs/data/summary-file.html"
+    period: "2020–2024 ACS 5-year"
+  bls_laus:
+    name: "U.S. Bureau of Labor Statistics — Local Area Unemployment Statistics"
+    url: "https://www.bls.gov/lau/data-overview.htm"
+    period: "2025 annual average"
+  county_health_rankings:
+    name: "County Health Rankings & Roadmaps"
+    url: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation"
+    period: "2025 annual release"
+metrics:
+  population:
+    raw: 129789
+    unit: residents
+    direction: 0
+    sourceId: census_acs
+  medianHouseholdIncome:
+    raw: 69617
+    unit: usd
+    direction: 1
+    sourceId: census_acs
+  medianHomeValue:
+    raw: 227200
+    unit: usd
+    direction: -1
+    sourceId: census_acs
+  medianGrossRent:
+    raw: 1174
+    unit: usd_month
+    direction: -1
+    sourceId: census_acs
+  collegeEducatedRate:
+    raw: 28.4078077109
+    unit: percent
+    direction: 1
+    sourceId: census_acs
+  unemploymentRate:
+    raw: 4
+    unit: percent
+    direction: -1
+    sourceId: bls_laus
+  employment:
+    raw: 55474
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  laborForce:
+    raw: 57777
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  lifeExpectancy:
+    raw: 75.944593972
+    unit: years
+    direction: 1
+    sourceId: county_health_rankings
+  poorFairHealthRate:
+    raw: 19.7
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  uninsuredRate:
+    raw: 8.29689417
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  primaryCareRatio:
+    raw: 2117.1147541
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings
+  mentalHealthProviderRatio:
+    raw: 428.36633663
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings

@@ -1,0 +1,87 @@
+schemaVersion: 1
+fips: "37019"
+parentFips: "37"
+state: north-carolina
+name: "Brunswick County"
+slug: brunswick-county
+published: true
+updatedOn: "2026-07-26"
+sources:
+  census_acs:
+    name: "U.S. Census Bureau — American Community Survey"
+    url: "https://www.census.gov/programs-surveys/acs/data/summary-file.html"
+    period: "2020–2024 ACS 5-year"
+  bls_laus:
+    name: "U.S. Bureau of Labor Statistics — Local Area Unemployment Statistics"
+    url: "https://www.bls.gov/lau/data-overview.htm"
+    period: "2025 annual average"
+  county_health_rankings:
+    name: "County Health Rankings & Roadmaps"
+    url: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation"
+    period: "2025 annual release"
+metrics:
+  population:
+    raw: 152568
+    unit: residents
+    direction: 0
+    sourceId: census_acs
+  medianHouseholdIncome:
+    raw: 77024
+    unit: usd
+    direction: 1
+    sourceId: census_acs
+  medianHomeValue:
+    raw: 349800
+    unit: usd
+    direction: -1
+    sourceId: census_acs
+  medianGrossRent:
+    raw: 1351
+    unit: usd_month
+    direction: -1
+    sourceId: census_acs
+  collegeEducatedRate:
+    raw: 34.6666341867
+    unit: percent
+    direction: 1
+    sourceId: census_acs
+  unemploymentRate:
+    raw: 4.1
+    unit: percent
+    direction: -1
+    sourceId: bls_laus
+  employment:
+    raw: 63585
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  laborForce:
+    raw: 66276
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  lifeExpectancy:
+    raw: 77.058210536
+    unit: years
+    direction: 1
+    sourceId: county_health_rankings
+  poorFairHealthRate:
+    raw: 14.8
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  uninsuredRate:
+    raw: 10.2509465
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  primaryCareRatio:
+    raw: 2289.1269841
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings
+  mentalHealthProviderRatio:
+    raw: 795.84079602
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings

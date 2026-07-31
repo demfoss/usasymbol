@@ -1,0 +1,87 @@
+schemaVersion: 1
+fips: "49035"
+parentFips: "49"
+state: utah
+name: "Salt Lake County"
+slug: salt-lake-county
+published: true
+updatedOn: "2026-07-26"
+sources:
+  census_acs:
+    name: "U.S. Census Bureau — American Community Survey"
+    url: "https://www.census.gov/programs-surveys/acs/data/summary-file.html"
+    period: "2020–2024 ACS 5-year"
+  bls_laus:
+    name: "U.S. Bureau of Labor Statistics — Local Area Unemployment Statistics"
+    url: "https://www.bls.gov/lau/data-overview.htm"
+    period: "2025 annual average"
+  county_health_rankings:
+    name: "County Health Rankings & Roadmaps"
+    url: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation"
+    period: "2025 annual release"
+metrics:
+  population:
+    raw: 1196523
+    unit: residents
+    direction: 0
+    sourceId: census_acs
+  medianHouseholdIncome:
+    raw: 97494
+    unit: usd
+    direction: 1
+    sourceId: census_acs
+  medianHomeValue:
+    raw: 525700
+    unit: usd
+    direction: -1
+    sourceId: census_acs
+  medianGrossRent:
+    raw: 1592
+    unit: usd_month
+    direction: -1
+    sourceId: census_acs
+  collegeEducatedRate:
+    raw: 39.3500626899
+    unit: percent
+    direction: 1
+    sourceId: census_acs
+  unemploymentRate:
+    raw: 3.2
+    unit: percent
+    direction: -1
+    sourceId: bls_laus
+  employment:
+    raw: 671267
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  laborForce:
+    raw: 693444
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  lifeExpectancy:
+    raw: 78.550017052
+    unit: years
+    direction: 1
+    sourceId: county_health_rankings
+  poorFairHealthRate:
+    raw: 15.6
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  uninsuredRate:
+    raw: 10.39595081
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  primaryCareRatio:
+    raw: 1310.9624309
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings
+  mentalHealthProviderRatio:
+    raw: 170.59602935
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings

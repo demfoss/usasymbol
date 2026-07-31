@@ -16,7 +16,7 @@ public class StateLivingController : Controller
     public async Task<IActionResult> Hub()
     {
         var model = await _livingService.GetHubAsync();
-        ViewData["Title"] = "Living in the U.S.: Compare All 50 States";
+        ViewData["Title"] = "Living in the USA | Compare All 50 States";
         ViewData["Description"] = "Browse living guides for all 50 states. Filter by affordability, safety, warm climate, and quality of life using sourced statewide data.";
         ViewData["Canonical"] = "/states/living";
         ViewData["BodyClass"] = "state-living-hub-page";

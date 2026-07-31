@@ -1,0 +1,87 @@
+schemaVersion: 1
+fips: "33001"
+parentFips: "33"
+state: new-hampshire
+name: "Belknap County"
+slug: belknap-county
+published: false
+updatedOn: "2026-07-26"
+sources:
+  census_acs:
+    name: "U.S. Census Bureau — American Community Survey"
+    url: "https://www.census.gov/programs-surveys/acs/data/summary-file.html"
+    period: "2020–2024 ACS 5-year"
+  bls_laus:
+    name: "U.S. Bureau of Labor Statistics — Local Area Unemployment Statistics"
+    url: "https://www.bls.gov/lau/data-overview.htm"
+    period: "2025 annual average"
+  county_health_rankings:
+    name: "County Health Rankings & Roadmaps"
+    url: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation"
+    period: "2025 annual release"
+metrics:
+  population:
+    raw: 64659
+    unit: residents
+    direction: 0
+    sourceId: census_acs
+  medianHouseholdIncome:
+    raw: 92783
+    unit: usd
+    direction: 1
+    sourceId: census_acs
+  medianHomeValue:
+    raw: 374900
+    unit: usd
+    direction: -1
+    sourceId: census_acs
+  medianGrossRent:
+    raw: 1167
+    unit: usd_month
+    direction: -1
+    sourceId: census_acs
+  collegeEducatedRate:
+    raw: 33.5521384145
+    unit: percent
+    direction: 1
+    sourceId: census_acs
+  unemploymentRate:
+    raw: 2.4
+    unit: percent
+    direction: -1
+    sourceId: bls_laus
+  employment:
+    raw: 32456
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  laborForce:
+    raw: 33253
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  lifeExpectancy:
+    raw: 77.394070926
+    unit: years
+    direction: 1
+    sourceId: county_health_rankings
+  poorFairHealthRate:
+    raw: 14.6
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  uninsuredRate:
+    raw: 6.86254534
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  primaryCareRatio:
+    raw: 2079.3548387
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings
+  mentalHealthProviderRatio:
+    raw: 184.73579545
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings

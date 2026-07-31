@@ -1,0 +1,87 @@
+schemaVersion: 1
+fips: "51103"
+parentFips: "51"
+state: virginia
+name: "Lancaster County"
+slug: lancaster-county
+published: false
+updatedOn: "2026-07-26"
+sources:
+  census_acs:
+    name: "U.S. Census Bureau — American Community Survey"
+    url: "https://www.census.gov/programs-surveys/acs/data/summary-file.html"
+    period: "2020–2024 ACS 5-year"
+  bls_laus:
+    name: "U.S. Bureau of Labor Statistics — Local Area Unemployment Statistics"
+    url: "https://www.bls.gov/lau/data-overview.htm"
+    period: "2025 annual average"
+  county_health_rankings:
+    name: "County Health Rankings & Roadmaps"
+    url: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation"
+    period: "2025 annual release"
+metrics:
+  population:
+    raw: 10936
+    unit: residents
+    direction: 0
+    sourceId: census_acs
+  medianHouseholdIncome:
+    raw: 69713
+    unit: usd
+    direction: 1
+    sourceId: census_acs
+  medianHomeValue:
+    raw: 327000
+    unit: usd
+    direction: -1
+    sourceId: census_acs
+  medianGrossRent:
+    raw: 1033
+    unit: usd_month
+    direction: -1
+    sourceId: census_acs
+  collegeEducatedRate:
+    raw: 41.2705564316
+    unit: percent
+    direction: 1
+    sourceId: census_acs
+  unemploymentRate:
+    raw: 4.3
+    unit: percent
+    direction: -1
+    sourceId: bls_laus
+  employment:
+    raw: 4537
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  laborForce:
+    raw: 4741
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  lifeExpectancy:
+    raw: 75.273185383
+    unit: years
+    direction: 1
+    sourceId: county_health_rankings
+  poorFairHealthRate:
+    raw: 17.7
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  uninsuredRate:
+    raw: 10.28253821
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  primaryCareRatio:
+    raw: 2732
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings
+  mentalHealthProviderRatio:
+    raw: 987.18181818
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings

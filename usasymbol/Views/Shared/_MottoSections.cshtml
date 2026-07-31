@@ -62,7 +62,7 @@
 
         @if (IsOverviewSection(item.Id))
         {
-            <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            <div id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
                 <header class="mb-5">
                     <div class="flex items-center gap-2.5 mb-2">
                         @if (!string.IsNullOrWhiteSpace(item.Icon))
@@ -91,11 +91,11 @@
                 }
 
                 <div class="clear-both"></div>
-            </section>
+            </div>
         }
         else if (IsMeaningSection(item.Id))
         {
-            <section id="section-@item.Id" class="scroll-mt-28 content-divider">
+            <div id="section-@item.Id" class="scroll-mt-28 content-divider">
                 @await Html.PartialAsync("Components/Content/_SectionHeader", item)
 
                 @if (!string.IsNullOrWhiteSpace(translation) || !string.IsNullOrWhiteSpace(mottoWord))
@@ -143,11 +143,11 @@
                 }
 
                 <div class="clear-both"></div>
-            </section>
+            </div>
         }
         else if (IsWhereItAppearsSection(item.Id))
         {
-            <section id="section-@item.Id" class="scroll-mt-28 content-divider">
+            <div id="section-@item.Id" class="scroll-mt-28 content-divider">
                 @await Html.PartialAsync("Components/Content/_SectionHeader", item)
 
                 @if (sectionAssets.Any())
@@ -215,11 +215,11 @@
                 }
 
                 <div class="clear-both"></div>
-            </section>
+            </div>
         }
         else if (IsFactsSection(item.Id) && item.Facts?.Any() == true)
         {
-            <section id="section-@item.Id" class="scroll-mt-28 content-divider">
+            <div id="section-@item.Id" class="scroll-mt-28 content-divider">
                 @await Html.PartialAsync("Components/Content/_SectionHeader", item)
 
                 <ul class="mt-5">
@@ -233,11 +233,11 @@
                 </ul>
 
                 <div class="clear-both"></div>
-            </section>
+            </div>
         }
         else
         {
-            <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            <div id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
                 @await Html.PartialAsync("Components/Content/_SectionHeader", item)
 
                 @foreach (var asset in sectionAssets)
@@ -307,7 +307,7 @@
                 }
 
                 <div class="clear-both"></div>
-            </section>
+            </div>
         }
 
         @if (!statDone &&

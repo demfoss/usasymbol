@@ -562,13 +562,6 @@
             ].join("");
         }).join("");
 
-        var sources = [];
-        place.metrics.forEach(function (metricValue) {
-            if (!sources.some(function (item) { return item.name === metricValue.sourceName; })) {
-                sources.push({ name: metricValue.sourceName || "See comparison methodology", metric: metricValue.name });
-            }
-        });
-
         var overview = strongest
             ? place.name + " ranks #" + row.rank + " for your current priorities. Its strongest fit is " +
                 strongest.name.toLowerCase() + (weakest ? ", while " + weakest.name.toLowerCase() + " is the main trade-off in this result." : ".")
@@ -595,11 +588,6 @@
             '</div>',
             '<section class="sm-drawer-section"><h3>Why it matches</h3><p class="sm-overview">' + escapeHtml(overview) + '</p></section>',
             '<section class="sm-drawer-section"><h3>Where it stands · nationwide</h3>' + metricRows + '</section>',
-            '<section class="sm-drawer-section"><h3>Data sources</h3><div class="sm-source-list">',
-            sources.map(function (source) {
-                return '<div class="sm-source-row"><strong>' + escapeHtml(source.metric) + '</strong><span>' + escapeHtml(source.name) + '</span></div>';
-            }).join(""),
-            '</div></section>',
             '<div class="sm-drawer-actions">',
             '<a href="/states/' + encodeURIComponent(place.slug) + '/living">Living guide <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>',
             '<a href="/states/' + encodeURIComponent(place.slug) + '">Symbols & facts <i class="fa-solid fa-landmark" aria-hidden="true"></i></a>',

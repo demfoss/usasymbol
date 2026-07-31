@@ -1,0 +1,114 @@
+type: ranking
+slug: states-by-life-expectancy
+category: health
+url: /rankings/health/states-by-life-expectancy
+hero_image: "/images/rankings/health/states-by-life-expectancy/states-by-life-expectancy-hero.jpg"
+hero_image_alt: "People walking along a sunny path near water and palm trees"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Life Expectancy"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Life Expectancy by State 2026 | Map & Years"
+  description: "Hawaii has the longest life expectancy at 81.6 years, while Mississippi has the lowest at 71.9 years."
+
+page:
+  h1: "Life Expectancy by State"
+  quick_answer:
+    - "Hawaii has the longest life expectancy of any U.S. state at 81.6 years, attributed to low smoking rates, a diet high in fish and vegetables, near-universal health coverage, and strong community social bonds."
+    - "Mississippi has the lowest life expectancy at roughly 71.9 years, nearly a nine-year gap from Hawaii. West Virginia, Louisiana, Alabama, and Kentucky also rank near the bottom, reflecting higher rates of chronic disease, obesity, smoking, and limited access to health care."
+    - "The national average life expectancy at birth is approximately 76.4 years (CDC 2021), which is below many peer nations. The COVID-19 pandemic caused a two-year decline in U.S. life expectancy between 2019 and 2021."
+  methodology: "Life expectancy figures are from the CDC National Center for Health Statistics (NCHS), 2021 state-level estimates. Life expectancy at birth represents the average number of years a person born in that state could expect to live under current age-specific mortality rates. 2021 data reflects the first full year of COVID-19 mortality impact."
+  sources:
+    - name: "CDC National Center for Health Statistics — State Life Expectancy 2021"
+      url: "https://www.cdc.gov/nchs/data-analysis-tools/state-health-statistics.htm"
+      description: "State-level life expectancy at birth estimates"
+
+map:
+  title: "Life Expectancy by State 2026 Map"
+  image_alt: "U.S. map showing life expectancy at birth by state, darkest green for longest lifespans"
+  caption: "Hawaii and the Northeast cluster at the top. The Deep South and Appalachian states are the lightest -- a gap of nearly 9 years separates the best and worst states."
+  metric_key: life_expectancy
+  metric_label: "Years"
+  name_key: state
+  color_scheme: green
+  color_scale: linear
+
+computed_data:
+  field: life_expectancy_years
+  sort: desc
+  format: "F1"
+  label: "Life Expectancy (years)"
+  metric_key: life_expectancy
+
+compare:
+  metric_slug: life-expectancy
+  title: "Compare Life Expectancy Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of health, income, education, and quality of life."
+  icon: "fa-solid fa-heart-pulse"
+
+sections:
+  - id: "why_hawaii_leads"
+    icon: "fa-solid fa-heart-pulse"
+    title: "Why Hawaii Has the Longest Life Expectancy"
+    paragraphs:
+      - "Hawaii's 81.6-year life expectancy, more than two years above the next-ranked state, reflects a combination of diet, lifestyle, and access. The state has the lowest obesity rate in the country at 27% and a traditional diet higher in fish, vegetables, and rice than the typical American diet. Smoking rates are among the lowest nationally. Outdoor physical activity is accessible year-round due to the climate."
+      - "Hawaii also has the second-lowest uninsured rate in the country at 3.2%, behind only Massachusetts (2.6%), ensuring that most residents receive preventive care and manage chronic conditions before they become fatal. The state's relatively small and tightly connected communities maintain high rates of social engagement, which research consistently links to lower mortality. Connecticut (80.7) and Utah (80.4) are the only other states averaging above 80 years."
+
+  - id: "why_mississippi_lowest"
+    icon: "fa-solid fa-arrow-trend-down"
+    title: "Why Mississippi Has the Shortest Life Expectancy"
+    paragraphs:
+      - "Mississippi's 71.9-year life expectancy is nearly 10 years below Hawaii's and reflects overlapping disadvantages. The state has the second-highest obesity rate at 40.4% (West Virginia is highest at 41.4%), and the highest rates of diabetes, and high rates of heart disease and stroke. Poverty, at 18% of residents, limits access to nutritious food, preventive care, and safe environments for physical activity."
+      - "Mississippi has not expanded Medicaid under the Affordable Care Act, leaving a significant share of low-income adults without health coverage. Uninsured adults are less likely to receive cancer screenings, blood pressure management, or diabetes monitoring, all conditions that become fatal when untreated. West Virginia (72.8) and Louisiana (73.1) follow Mississippi for similar combinations of high poverty, high obesity, and limited healthcare access."
+
+  - id: "stroke_belt"
+    icon: "fa-solid fa-map"
+    title: "Why the Stroke Belt Has the Lowest Life Expectancy"
+    paragraphs:
+      - "Eight of the ten states with the shortest life expectancy are in the South: Mississippi, West Virginia, Louisiana, Alabama, Arkansas, Oklahoma, Kentucky, and Tennessee. Public health researchers have documented elevated rates of cardiovascular disease mortality in the region from eastern Arkansas through the Carolinas since the 1960s."
+      - "The geographic concentration reflects shared dietary patterns high in sodium and saturated fat, limited access to fresh produce in rural areas, high smoking rates, and historical gaps in healthcare infrastructure. The region also has lower rates of Medicaid expansion than the rest of the country, which limits preventive care for low-income residents."
+
+  - id: "utah_outlier"
+    icon: "fa-solid fa-circle-question"
+    title: "Utah Ranks 3rd Despite Not Being Wealthy or Coastal"
+    paragraphs:
+      - "Utah's 80.4-year life expectancy places it third nationally, ahead of Massachusetts and Minnesota. Utah is not a high-income state relative to those neighbors, its median household income is near the national average, and it lacks the coastal healthcare infrastructure of Massachusetts or Connecticut. The explanation is primarily behavioral."
+      - "About 62% of Utah residents are members of The Church of Jesus Christ of Latter-day Saints, a faith tradition that prohibits tobacco, alcohol, and illicit drug use. Utah has the lowest smoking rate in the country at around 9% and among the lowest alcohol consumption rates. These behaviors directly affect the leading causes of premature death. The state also has a young population median age, which raises life expectancy figures mechanically, though age-adjusted data still shows Utah performing well."
+
+visual_assets:
+  - id: hawaii-life-expectancy-placeholder
+    src: /images/rankings/health/states-by-life-expectancy/hawaii-life-expectancy-placeholder.jpg
+    alt: "People walking on a paved trail through a green park"
+    caption: "Daily walking in mild weather fits the kind of active routine often linked with longer life expectancy."
+    section: why_hawaii_leads
+    layout: right
+  - id: utah-life-expectancy-placeholder
+    src: /images/rankings/health/states-by-life-expectancy/utah-life-expectancy-placeholder.jpg
+    alt: "People hiking together on a wide trail in a dry mountain landscape"
+    caption: "Active outdoor routines are one of the lifestyle patterns often discussed when comparing long-lived states."
+    section: utah_outlier
+    layout: left
+
+faq:
+  - question: "Which state has the highest life expectancy?"
+    answer: "Hawaii has the highest life expectancy in the U.S. at 81.6 years. The state consistently tops national health rankings due to low smoking rates, an active outdoor lifestyle, a diet rich in fish and vegetables, and a diverse multicultural population that includes large Asian-American communities with above-average health outcomes."
+  - question: "Which state has the lowest life expectancy?"
+    answer: "Mississippi has the lowest life expectancy at approximately 71.9 years. The state has one of the highest poverty rates (18.0%), the second-highest obesity rate (40.4%), and high rates of tobacco use and cardiovascular disease. Limited access to preventive health care in rural areas compounds these factors."
+  - question: "Why did U.S. life expectancy drop in 2020–2021?"
+    answer: "U.S. life expectancy fell by 2.7 years between 2019 and 2021, the largest two-year decline since World War II. COVID-19 was the primary cause, accounting for roughly half the decrease. Drug overdoses, heart disease, and other factors contributed to the remainder. The gap between states widened significantly during the pandemic."
+  - question: "What factors most influence life expectancy at the state level?"
+    answer: "The strongest predictors of state-level life expectancy are smoking rates, obesity rates, poverty, educational attainment, and access to health insurance. States with high rates of preventive care access and low tobacco use tend to cluster at the top of life expectancy rankings."
+
+related:
+  - title: "States by Obesity Rate"
+    url: "/rankings/health/states-by-obesity-rate"
+  - title: "States by Uninsured Rate"
+    url: "/rankings/health/states-by-uninsured-rate"
+  - title: "States by Poverty Rate"
+    url: "/rankings/economy/states-by-poverty-rate"
+  - title: "States by K-12 Education Ranking"
+    url: "/rankings/education/states-by-k12-education"

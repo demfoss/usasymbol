@@ -1,0 +1,554 @@
+type: ranking
+slug: gun-laws-concealed-carry
+category: law
+url: /rankings/law/gun-laws-concealed-carry
+auto_link_phrases:
+  - "concealed carry laws by state"
+  - "constitutional carry states"
+  - "gun laws by state"
+  - "concealed carry reciprocity"
+  - "permitless carry states"
+  - "carry permit reciprocity map"
+extremes_mode: topOnly
+extremes_title: "States with Permitless Carry in 2026"
+hero_image: "/images/rankings/law/gun-laws-concealed-carry/gun-laws-concealed-carry-hero.jpg"
+hero_image_alt: "Holstered handgun and belt equipment photographed outdoors"
+hero_image_caption: "Concealed carry law is mostly a state-level question, and the map remains sharply divided in 2026. Twenty-nine states allow permitless carry, while a small group of coastal states still keeps stricter permit systems and limited reciprocity."
+
+author: "USA Symbol Team"
+date_published: "2026-06-20"
+date_modified: "2026-06-20"
+
+seo:
+  title: "Concealed Carry Laws by State 2026"
+  description: "Twenty-nine states allow permitless carry in 2026, while permit requirements and reciprocity rules vary by state."
+
+page:
+  h1: "Concealed Carry Laws by State"
+
+  quick_answer:
+    - "29 states allow concealed carry without a permit in 2026. Louisiana became the 29th on July 4, 2024. Vermont has never required a permit, predating all state systems since statehood in 1791."
+    - "Arizona, Texas, and Utah permits are each honored in 38 states, the highest reciprocity of any state. Hawaii's permit is recognized in only 4 states, the lowest count in the country."
+    - "Illinois is the only shall-issue state whose permit no other state recognizes. Vermont issues no permit at all, and residents obtain non-resident licenses from states like Utah or Florida for interstate carry."
+
+  methodology: "Carry status and reciprocity counts reflect state law as of June 2026 via USCCA and NRA-ILA attorney general reciprocity lists; counts exclude the issuing state and Vermont (which issues no permit) is listed at 0. This page is for informational purposes only and does not constitute legal advice."
+
+  sources:
+    - name: "USCCA Reciprocity & Gun Laws Map"
+      url: "https://www.usconcealedcarry.com/resources/ccw_reciprocity_map/"
+      description: "Interactive reciprocity map and state carry law summaries updated for 2026"
+    - name: "NRA-ILA State Gun Laws"
+      url: "https://www.nraila.org/gun-laws/state-gun-laws/"
+      description: "State-by-state concealed carry law summaries and permit requirements"
+    - name: "State Attorney General Offices"
+      url: ""
+      description: "Official reciprocity lists published by each state's attorney general or law enforcement agency"
+
+map:
+  title: "Concealed Carry Laws by State Map 2026"
+  image: "/images/rankings/law/gun-laws-concealed-carry/gun-laws-concealed-carry-map.webp"
+  image_alt: "U.S. map color-coded by concealed carry status: dark green for 29 permitless carry states, yellow for 15 shall issue states, red for 6 may issue states"
+  caption: "29 states are green for permitless carry. 15 yellow states require a permit but issue it to any qualified applicant. California, Hawaii, Maryland, Massachusetts, New Jersey, and New York — shown in red — retain significant permit restrictions."
+  disclaimer: "This map is for informational purposes only and does not constitute legal advice."
+  metric_key: concealed_carry_status
+  metric_label: "Carry Status"
+  name_key: state
+  summary_key: note
+  color_scheme: categorical
+  color_scale: categorical
+  color_map:
+    "Permitless": "green-dark"
+    "Shall Issue": "yellow"
+    "May Issue": "red"
+  detail_keys:
+    - reciprocity_count
+    - permit_required
+    - year_enacted
+  filters:
+    - key: concealed_carry_status
+      label: "Filter by Carry Status"
+      use_colors: true
+    - key: permit_required
+      label: "Filter by Permit Requirement"
+      accent_color: "#f6c64d"
+
+table:
+  caption: "2026 Concealed Carry Laws by State"
+  note: "All permitless carry states still issue optional permits for residents who need reciprocity in other states. Restrictions on specific locations — schools, government buildings, polling places, bars — apply in every state regardless of carry status. Always verify current law before crossing state lines."
+  columns:
+    state: "State"
+    concealed_carry_status: "Carry Status"
+    permit_required: "Permit Required"
+    year_enacted: "Law Enacted"
+    reciprocity_count: "Permit Honored In (States)"
+
+  metric_default: concealed_carry_status
+  sort_default: asc
+
+  rows:
+    # ── PERMITLESS CARRY (rank 1) ──────────────────────────────────────────────
+    - state: "Alabama"
+      state_slug: "alabama"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2023
+      reciprocity_count: 32
+      note: "SB 44 (2023), effective January 1, 2023. Optional pistol permit still available for out-of-state reciprocity."
+
+    - state: "Alaska"
+      state_slug: "alaska"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2003
+      reciprocity_count: 36
+      note: "SB 83 (2003). First state after Vermont to enact permitless carry. Optional permit still issued for reciprocity."
+
+    - state: "Arizona"
+      state_slug: "arizona"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2010
+      reciprocity_count: 38
+      note: "SB 1108 (2010), effective July 29, 2010. Arizona CCW permit recognized in 38 states, tied for highest in the nation."
+
+    - state: "Arkansas"
+      state_slug: "arkansas"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2017
+      reciprocity_count: 30
+      note: "Act 746 (2013) interpreted as permitless; Act 700 (2017) clarified permitless carry for all lawful carriers. CHCL still available."
+
+    - state: "Florida"
+      state_slug: "florida"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2023
+      reciprocity_count: 36
+      note: "HB 543 (2023), effective July 1, 2023. Florida still maintains an optional Concealed Weapon License (CWL), recognized in 36 states."
+
+    - state: "Georgia"
+      state_slug: "georgia"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2023
+      reciprocity_count: 34
+      note: "HB 218 (2023), effective April 12, 2023. Optional Georgia Weapons License (GWL) still issued for reciprocity."
+
+    - state: "Idaho"
+      state_slug: "idaho"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2016
+      reciprocity_count: 35
+      note: "HB 422 (2016). Applies to residents 18+ and expanded to all lawful U.S. residents. Enhanced permit available for higher reciprocity."
+
+    - state: "Indiana"
+      state_slug: "indiana"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2022
+      reciprocity_count: 33
+      note: "HEA 1296 (2022), effective July 1, 2022. Eliminated the handgun license requirement entirely."
+
+    - state: "Iowa"
+      state_slug: "iowa"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2021
+      reciprocity_count: 30
+      note: "SF 535 (2021), effective July 1, 2021. Professional permit still available for out-of-state carry."
+
+    - state: "Kansas"
+      state_slug: "kansas"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2015
+      reciprocity_count: 36
+      note: "SB 45 (2015), effective July 1, 2015. Optional CCHL still issued for interstate reciprocity."
+
+    - state: "Kentucky"
+      state_slug: "kentucky"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2019
+      reciprocity_count: 31
+      note: "HB 49 (2019), effective June 27, 2019. CCDW license still issued for out-of-state carry."
+
+    - state: "Louisiana"
+      state_slug: "louisiana"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2024
+      reciprocity_count: 32
+      note: "HB 1 (2024), effective July 4, 2024. The most recent state to adopt permitless carry. Optional concealed carry permit still available."
+
+    - state: "Maine"
+      state_slug: "maine"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2015
+      reciprocity_count: 25
+      note: "LD 652 (2015), effective October 15, 2015. State permit still issued for reciprocity in other states."
+
+    - state: "Mississippi"
+      state_slug: "mississippi"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2016
+      reciprocity_count: 34
+      note: "HB 786 (2016), effective July 1, 2016. Standard and enhanced concealed carry permits still issued."
+
+    - state: "Missouri"
+      state_slug: "missouri"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2017
+      reciprocity_count: 32
+      note: "SB 656 (2017), effective January 1, 2017. Optional CCW endorsement available for reciprocity."
+
+    - state: "Montana"
+      state_slug: "montana"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2021
+      reciprocity_count: 35
+      note: "SB 176 (2021), effective June 1, 2021. Extended permitless carry within city limits statewide. Permit still issued for out-of-state travel."
+
+    - state: "Nebraska"
+      state_slug: "nebraska"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2023
+      reciprocity_count: 30
+      note: "LB 77 (2023), effective September 2, 2023. Optional concealed handgun permit still available for interstate carry."
+
+    - state: "New Hampshire"
+      state_slug: "new-hampshire"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2017
+      reciprocity_count: 26
+      note: "HB 582 (2017), effective February 22, 2017. Pistol/Revolver License still issued for reciprocity."
+
+    - state: "North Dakota"
+      state_slug: "north-dakota"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2017
+      reciprocity_count: 34
+      note: "SB 2137 (2017), effective August 1, 2017. Permitless carry for state residents only; nonresidents must carry a valid permit from their home state. Class I and II permits still issued."
+
+    - state: "Ohio"
+      state_slug: "ohio"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2022
+      reciprocity_count: 34
+      note: "SB 215 (2022), effective June 12, 2022. Optional CHL (Concealed Handgun License) still issued for reciprocity."
+
+    - state: "Oklahoma"
+      state_slug: "oklahoma"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2019
+      reciprocity_count: 36
+      note: "SB 1212 (2019), effective November 1, 2019. Optional SDA (Self-Defense Act) license still available for out-of-state carry."
+
+    - state: "South Carolina"
+      state_slug: "south-carolina"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2024
+      reciprocity_count: 36
+      note: "SB 109, signed March 7, 2023, effective March 7, 2024. Optional CWP (Concealed Weapons Permit) still issued for interstate carry."
+
+    - state: "South Dakota"
+      state_slug: "south-dakota"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2019
+      reciprocity_count: 36
+      note: "HB 1212 (2019), effective July 1, 2019. Gold and enhanced permits still available for reciprocity."
+
+    - state: "Tennessee"
+      state_slug: "tennessee"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2021
+      reciprocity_count: 36
+      note: "SB 765 (2021), effective July 1, 2021. Enhanced HCP (Handgun Carry Permit) still issued for reciprocity."
+
+    - state: "Texas"
+      state_slug: "texas"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2021
+      reciprocity_count: 38
+      note: "HB 1927 (2021), effective September 1, 2021. Optional LTC (License to Carry) recognized in 38 states, tied for highest in the nation."
+
+    - state: "Utah"
+      state_slug: "utah"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2021
+      reciprocity_count: 38
+      note: "HB 60 (2021), effective May 5, 2021. Utah CFP (Concealed Firearms Permit) recognized in 38 states. Non-residents widely obtain Utah permits specifically for reciprocity."
+
+    - state: "Vermont"
+      state_slug: "vermont"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 1791
+      reciprocity_count: 0
+      note: "Vermont has never required a carry permit and issues no concealed carry license. Residents who want to carry in other states must obtain non-resident permits from states like Utah or Florida."
+
+    - state: "West Virginia"
+      state_slug: "west-virginia"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2016
+      reciprocity_count: 34
+      note: "SB 347 (2016), effective May 26, 2016. Optional WVCCL still issued for out-of-state travel."
+
+    - state: "Wyoming"
+      state_slug: "wyoming"
+      concealed_carry_status: "Permitless"
+      permit_required: "No"
+      year_enacted: 2011
+      reciprocity_count: 36
+      note: "SF 47 (2011), effective July 1, 2011. Applies to state residents 21+; nonresidents from most states may also carry. Optional permit still issued."
+
+    # ── SHALL ISSUE (rank 2) ───────────────────────────────────────────────────
+    - state: "Colorado"
+      state_slug: "colorado"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 2003
+      reciprocity_count: 35
+      note: "CRS 18-12-203. County sheriffs issue permits. Training or demonstrated competency required. Some home-rule cities impose additional restrictions."
+
+    - state: "Connecticut"
+      state_slug: "connecticut"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 1969
+      reciprocity_count: 16
+      note: "State Police SLFU issues pistol permits statewide. Fingerprinting, background check, and safety course required. Limited reciprocity."
+
+    - state: "Delaware"
+      state_slug: "delaware"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 1996
+      reciprocity_count: 25
+      note: "CCDW (Carry Concealed Deadly Weapons) license issued by Delaware Superior Court. Background check and safety training required."
+
+    - state: "Illinois"
+      state_slug: "illinois"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 2013
+      reciprocity_count: 0
+      note: "FOID card plus CCL (Concealed Carry License) required. 16-hour training requirement. Illinois residents only; Illinois honors no other state's permit and no other state recognizes the Illinois CCL."
+
+    - state: "Michigan"
+      state_slug: "michigan"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 2001
+      reciprocity_count: 36
+      note: "CPL (Concealed Pistol License) issued by county clerks. 8-hour safety course required. Michigan CPL honored in 36 states."
+
+    - state: "Minnesota"
+      state_slug: "minnesota"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 2003
+      reciprocity_count: 22
+      note: "Permit to Carry issued by county sheriffs under the Minnesota Citizens' Personal Protection Act. Firearms safety course required. Valid for 5 years."
+
+    - state: "Nevada"
+      state_slug: "nevada"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 1995
+      reciprocity_count: 30
+      note: "CCW permit issued by county sheriffs. Firearms safety training and background check required. Valid for 5 years."
+
+    - state: "New Mexico"
+      state_slug: "new-mexico"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 2003
+      reciprocity_count: 28
+      note: "CHL (Concealed Handgun License) issued by state DPS. 15-hour training course required. Valid for 4 years."
+
+    - state: "North Carolina"
+      state_slug: "north-carolina"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 1995
+      reciprocity_count: 36
+      note: "CHP (Concealed Handgun Permit) issued by county sheriffs. Approved handgun safety course required. NC permit honored in 36 states."
+
+    - state: "Oregon"
+      state_slug: "oregon"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 1990
+      reciprocity_count: 11
+      note: "CHL (Concealed Handgun License) issued by county sheriffs. Background check required; no mandatory training. Oregon CHL recognized in only 11 states, one of the lowest reciprocity counts among shall-issue states."
+
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 1989
+      reciprocity_count: 30
+      note: "LTCF (License to Carry Firearms) issued by county sheriffs or city police. No training requirement. Valid for 5 years."
+
+    - state: "Rhode Island"
+      state_slug: "rhode-island"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 1959
+      reciprocity_count: 14
+      note: "Attorney General issues state pistol permit on a shall-issue basis. Local police may also issue. Background check and safety course required."
+
+    - state: "Virginia"
+      state_slug: "virginia"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 1995
+      reciprocity_count: 30
+      note: "CHP (Concealed Handgun Permit) issued by circuit courts. Handgun training or demonstrated competency required. Valid for 5 years."
+
+    - state: "Washington"
+      state_slug: "washington"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 1961
+      reciprocity_count: 14
+      note: "CPL (Concealed Pistol License) issued by local police or county sheriffs. No safety training required by state law. Washington does not have formal reciprocity with other states."
+
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      concealed_carry_status: "Shall Issue"
+      permit_required: "Yes"
+      year_enacted: 2011
+      reciprocity_count: 30
+      note: "CCL (Concealed Carry License) issued by state DOJ. Training course required. Valid for 5 years."
+
+    # ── MAY ISSUE (rank 3) ────────────────────────────────────────────────────
+    - state: "California"
+      state_slug: "california"
+      concealed_carry_status: "May Issue"
+      permit_required: "Yes"
+      year_enacted: 1923
+      reciprocity_count: 10
+      note: "CCW issued by county sheriffs or police chiefs. Post-Bruen (2022) must issue to qualified applicants, but significant training hours, fees, and sensitive-place restrictions apply under AB 2 (2023). California honors no other state's permit."
+
+    - state: "Hawaii"
+      state_slug: "hawaii"
+      concealed_carry_status: "May Issue"
+      permit_required: "Yes"
+      year_enacted: 1988
+      reciprocity_count: 4
+      note: "License to Carry issued by county police chiefs. Hawaii's permit is recognized in only 4 states, the fewest of any state in the country. Hawaii honors no other state's permit."
+
+    - state: "Maryland"
+      state_slug: "maryland"
+      concealed_carry_status: "May Issue"
+      permit_required: "Yes"
+      year_enacted: 1972
+      reciprocity_count: 18
+      note: "HQL plus Wear and Carry Permit issued by Maryland State Police. Post-Bruen training and range qualification requirements enacted under HB 824 (2023). Maryland does not recognize any other state's carry permit."
+
+    - state: "Massachusetts"
+      state_slug: "massachusetts"
+      concealed_carry_status: "May Issue"
+      permit_required: "Yes"
+      year_enacted: 1998
+      reciprocity_count: 12
+      note: "LTC (License to Carry) issued by local police chiefs, who retain authority to add restrictions. Massachusetts honors no other state's concealed carry permit."
+
+    - state: "New Jersey"
+      state_slug: "new-jersey"
+      concealed_carry_status: "May Issue"
+      permit_required: "Yes"
+      year_enacted: 1966
+      reciprocity_count: 14
+      note: "Permit to Carry issued by superior court. Post-Bruen Bruen Response Law (P.L. 2022, c.131) created extensive sensitive-place restrictions subject to ongoing litigation. New Jersey honors no other state's permit."
+
+    - state: "New York"
+      state_slug: "new-york"
+      concealed_carry_status: "May Issue"
+      permit_required: "Yes"
+      year_enacted: 1911
+      reciprocity_count: 10
+      note: "Pistol License issued by local licensing officers. Concealed Carry Improvement Act (CCIA, 2022) added extensive sensitive-place restrictions after Bruen. New York City issues a separate local license. New York honors no other state's permit."
+
+sections:
+  - id: "permitless-carry-states-2026"
+    icon: "fa-solid fa-shield-check"
+    title: "States with Permitless Carry in 2026"
+    paragraphs:
+      - "29 states allow concealed carry without a permit as of 2026. Louisiana was the most recent addition, with permitless carry taking effect July 4, 2024 under HB 1. Ten of the 29 states joined between 2021 and 2024 alone."
+      - "Vermont has never required a carry permit, predating any state permit system since statehood in 1791. Alaska restored permitless carry in 2003, Wyoming in 2011, and Arizona in 2010. The pace accelerated after 2019, with 16 states enacting or expanding constitutional carry between 2019 and 2024."
+
+  - id: "concealed-carry-reciprocity-by-state"
+    icon: "fa-solid fa-route"
+    title: "Concealed Carry Reciprocity by State"
+    paragraphs:
+      - "Arizona, Texas, and Utah permits are each honored in 38 states, the highest reciprocity count in the nation. A carrier with any of those three licenses can legally carry concealed in 38 states, covering nearly all of the continental United States."
+      - "Michigan and North Carolina are the two shall-issue states with the highest reciprocity, at 36 states each. Their permits match the interstate reach of most permitless carry state licenses. Oregon's CHL, by contrast, is recognized in only 11 states."
+
+  - id: "may-issue-states-gun-laws"
+    icon: "fa-solid fa-lock"
+    title: "May Issue States With the Strictest Carry Laws"
+    paragraphs:
+      - "Six states retain May Issue classification in 2026: California, Hawaii, Maryland, Massachusetts, New Jersey, and New York. All six were affected by the U.S. Supreme Court's June 2022 Bruen decision, which struck down the 'proper cause' requirement for permit issuance."
+      - "Hawaii has the most restrictive system in practice. Its permit is recognized in only 4 states, the lowest of any issuing state. New York and California each honor zero other states' permits, and neither state's license is recognized in more than 10 states."
+
+visual_assets:
+  - id: arizona-concealed-carry
+    src: /images/rankings/law/gun-laws-concealed-carry/arizona-permitless-carry.jpg
+    alt: Arizona desert landscape with a road sign showing the state border
+    caption: Arizona adopted permitless carry in 2010. Its optional CCW permit is recognized in 38 states, tied for the most of any state.
+    section: permitless-carry-states-2026
+    layout: full-width-tall
+
+  - id: us-supreme-court-bruen
+    src: /images/rankings/law/gun-laws-concealed-carry/us-supreme-court.jpg
+    alt: United States Supreme Court building in Washington D.C.
+    caption: The Supreme Court's June 2022 Bruen decision struck down subjective permit requirements, reshaping concealed carry laws in New York, California, New Jersey, and several other states.
+    section: may-issue-states-gun-laws
+    layout: full-width-tall
+
+faq:
+  - question: "Which states allow concealed carry without a permit in 2026?"
+    answer: "29 states allow permitless concealed carry in 2026: Alabama, Alaska, Arizona, Arkansas, Florida, Georgia, Idaho, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Mississippi, Missouri, Montana, Nebraska, New Hampshire, North Dakota, Ohio, Oklahoma, South Carolina, South Dakota, Tennessee, Texas, Utah, Vermont, West Virginia, and Wyoming. Louisiana was the most recent addition, effective July 4, 2024."
+
+  - question: "What state has the most concealed carry reciprocity?"
+    answer: "Arizona, Texas, and Utah each lead with permits honored in 38 states. All three are permitless carry states that still issue optional permits for interstate travel. A Utah CFP or Arizona CCW provides carry rights in more states than any other single permit."
+
+  - question: "Does California honor concealed carry permits from other states?"
+    answer: "No. California does not recognize any other state's permit. Carrying concealed in California requires a California-issued CCW. California's permit is recognized in approximately 10 states."
+
+  - question: "What state has the strictest concealed carry laws?"
+    answer: "Hawaii has the most restrictive system in practice. Its permit is recognized in only 4 states, the fewest of any issuing state in the country. Hawaii honors no out-of-state permits. New York and California each recognize zero other states' permits and have permits honored in 10 states or fewer."
+
+  - question: "Can I carry in New York with a Texas License to Carry?"
+    answer: "No. New York does not recognize Texas or any other state's carry license. A Texas LTC is honored in 38 states, but New York is not among them. Carrying concealed in New York without a New York pistol license is a felony."
+
+  - question: "What is the difference between shall issue and may issue concealed carry?"
+    answer: "Shall Issue requires the licensing authority to issue a permit to any applicant who meets objective criteria such as a background check and training. May Issue gives the issuing authority discretion to deny qualified applicants based on subjective judgment. The U.S. Supreme Court's 2022 Bruen decision ruled that states cannot require applicants to demonstrate a specific need, but May Issue states like New York and Massachusetts have since added significant training, location, and administrative requirements."
+
+related:
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"
+  - title: "States by Violent Crime Rate"
+    url: "/rankings/safety/violent-crime-rate-by-state"
+  - title: "Minimum Wage by State"
+    url: "/rankings/economy/minimum-wage-by-state"

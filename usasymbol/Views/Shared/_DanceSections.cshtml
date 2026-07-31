@@ -1,0 +1,67 @@
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@model DanceDetailViewModel
+
+@{
+    var sections = Model.DanceContent?.Sections;
+    var visualAssets = Model.DanceContent?.VisualAssets ?? new List<VisualAsset>();
+}
+
+@if (sections?.Any() == true)
+{
+    foreach (var item in sections)
+    {
+        <div id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            @await Html.PartialAsync("Components/Content/_SectionHeader", (IContentSection)item)
+
+            @{
+                var sectionAssets = visualAssets
+                    .Where(v => !string.IsNullOrWhiteSpace(v.Section) &&
+                                string.Equals(v.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            @foreach (var asset in sectionAssets)
+            {
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+            }
+
+            @if (item.Paragraphs?.Any() == true)
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                    @for (var i = 0; i < item.Paragraphs.Count; i++)
+                    {
+                        <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                            @item.Paragraphs[i].RenderAutoLinks()
+                        </p>
+                    }
+                </div>
+            }
+
+            @if (item.Steps?.Any() == true)
+            {
+                @await Html.PartialAsync("Components/Widgets/_DanceSteps", item.Steps)
+            }
+
+            @if (item.Facts?.Any() == true)
+            {
+                @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+            }
+
+            <div class="clear-both"></div>
+        </div>
+    }
+
+    var orphanAssets = visualAssets
+        .Where(v => !string.IsNullOrWhiteSpace(v.Src) && string.IsNullOrWhiteSpace(v.Section))
+        .ToList();
+
+    @foreach (var asset in orphanAssets)
+    {
+        @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+    }
+}
+else
+{
+    <div class="text-sm text-slate-500">@Model.EmptySectionsMessage</div>
+}

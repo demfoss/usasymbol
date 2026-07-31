@@ -3,7 +3,7 @@
     var body = ViewData["Body"] as IHtmlContent;
     var extra = ViewData["Extra"] as IHtmlContent;
 }
-<section id="overview" class="mt-10">
+<div id="overview" class="mt-10">
     <div class="bg-stone-50 px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
         <h2 class="content-h2 mb-5">@heading</h2>
         @if (body != null)
@@ -17,4 +17,4 @@
             @extra
         }
     </div>
-</section>
+</div>

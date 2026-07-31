@@ -1,0 +1,227 @@
+type: ranking
+slug: states-bordering-canada
+category: geography
+url: /rankings/geography/states-bordering-canada
+auto_link_phrases:
+  - "states that border Canada"
+  - "US states bordering Canada"
+  - "which states share a border with Canada"
+  - "how many states border Canada"
+  - "states on the Canadian border"
+extremes_mode: both
+extremes_title: "Longest and Shortest U.S. State Borders with Canada"
+hero_image: "/images/rankings/geography/states-bordering-canada/states-bordering-canada-hero.jpg"
+hero_image_alt: "Map of the United States highlighting all 13 states that share a border with Canada"
+
+author: "USA Symbol Team"
+date_published: "2026-06-03"
+date_modified: "2026-06-03"
+
+seo:
+  title: "US States That Border Canada | Map, States & Length"
+  description: "Thirteen U.S. states border Canada, from Alaska and the Pacific Northwest to the Great Lakes and New England."
+
+page:
+  h1: "US States That Border Canada"
+
+  quick_answer:
+    - "13 U.S. states border Canada. Alaska has the longest border at 1,538 miles. Pennsylvania has the shortest at 42 miles, a Lake Erie water boundary at the state's northwest corner."
+    - "Michigan's 721-mile water border via the Great Lakes and connecting rivers is longer than Washington's 427-mile land border with British Columbia, making Michigan the second-longest border state even without a single land crossing into Canada."
+    - "Maine has the longest land border with Canada among the contiguous 48 states at 611 miles, touching both Quebec to the northwest and New Brunswick to the northeast."
+
+  methodology: "Border lengths are drawn from International Boundary Commission surveys and U.S. Census TIGER/Line boundary data. Water borders follow the international boundary centerline through the Great Lakes and connecting waterways, and all figures are approximate, rounded to the nearest mile."
+
+  sources:
+    - name: "International Boundary Commission"
+      url: "https://www.internationalboundarycommission.org/"
+      description: "Official U.S.-Canada joint body that surveys and maintains the international boundary"
+
+map:
+  title: "U.S. States Bordering Canada: Border Length Map"
+  image: "/images/rankings/geography/states-bordering-canada/states-bordering-canada-map.webp"
+  image_alt: "Choropleth map of the U.S. shaded by miles of border with Canada, showing Alaska as the longest and Pennsylvania as the shortest"
+  caption: "Alaska's 1,538-mile border dwarfs any contiguous state. Among the lower 48, Maine (611 mi) and Minnesota (547 mi) have the longest borders. Pennsylvania (42 mi) and Idaho (45 mi) are the shortest."
+  metric_key: border_mi
+  metric_label: "Border (mi)"
+  color_scheme: blue
+  color_scale: linear
+  tooltip_fields:
+    - key: state
+      label: "State"
+    - key: border_mi
+      label: "Border with Canada (mi)"
+    - key: border_type
+      label: "Border type"
+    - key: canadian_provinces
+      label: "Canadian provinces"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    border_mi: "Border (mi)"
+    border_type: "Type"
+    canadian_provinces: "Canadian Provinces / Territories"
+
+  metric_default: border_mi
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Alaska"
+      state_slug: "alaska"
+      border_mi: 1538
+      border_type: "Land"
+      canadian_provinces: "Yukon, British Columbia"
+
+    - rank: 2
+      state: "Michigan"
+      state_slug: "michigan"
+      border_mi: 721
+      border_type: "Water"
+      canadian_provinces: "Ontario"
+
+    - rank: 3
+      state: "Maine"
+      state_slug: "maine"
+      border_mi: 611
+      border_type: "Land"
+      canadian_provinces: "Quebec, New Brunswick"
+
+    - rank: 4
+      state: "Minnesota"
+      state_slug: "minnesota"
+      border_mi: 547
+      border_type: "Both"
+      canadian_provinces: "Ontario"
+
+    - rank: 5
+      state: "Montana"
+      state_slug: "montana"
+      border_mi: 545
+      border_type: "Land"
+      canadian_provinces: "British Columbia, Alberta, Saskatchewan"
+
+    - rank: 6
+      state: "New York"
+      state_slug: "new-york"
+      border_mi: 445
+      border_type: "Both"
+      canadian_provinces: "Ontario, Quebec"
+
+    - rank: 7
+      state: "Washington"
+      state_slug: "washington"
+      border_mi: 427
+      border_type: "Land"
+      canadian_provinces: "British Columbia"
+
+    - rank: 8
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      border_mi: 310
+      border_type: "Land"
+      canadian_provinces: "Saskatchewan, Manitoba"
+
+    - rank: 9
+      state: "Ohio"
+      state_slug: "ohio"
+      border_mi: 146
+      border_type: "Water"
+      canadian_provinces: "Ontario"
+
+    - rank: 10
+      state: "Vermont"
+      state_slug: "vermont"
+      border_mi: 90
+      border_type: "Land"
+      canadian_provinces: "Quebec"
+
+    - rank: 11
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      border_mi: 58
+      border_type: "Land"
+      canadian_provinces: "Quebec"
+
+    - rank: 12
+      state: "Idaho"
+      state_slug: "idaho"
+      border_mi: 45
+      border_type: "Land"
+      canadian_provinces: "British Columbia"
+
+    - rank: 13
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      border_mi: 42
+      border_type: "Water"
+      canadian_provinces: "Ontario"
+
+sections:
+  - id: "water-border-states"
+    icon: "fa-solid fa-water"
+    title: "States That Share Only a Water Border with Canada"
+    paragraphs:
+      - "Michigan (721 mi), Ohio (146 mi), and Pennsylvania (42 mi) border Canada entirely through the Great Lakes and connecting waterways, with no land boundary at any point. Michigan's water border runs through the St. Marys River, Lake Huron, the St. Clair River, Lake St. Clair, and the Detroit River. Every official crossing between Michigan and Ontario is a bridge or tunnel over water."
+      - "Pennsylvania's 42-mile Lake Erie segment is the least-known U.S. international border in the lower 48. The state's northwest corner meets Lake Erie at the city of Erie, and the international boundary follows the lake's centerline. Ohio's 146-mile Lake Erie border stretches from the Toledo area east to the Pennsylvania line, with Ontario visible from the Ohio shore on a clear day."
+
+  - id: "alaska-longest-border"
+    icon: "fa-solid fa-trophy"
+    title: "Alaska Has the Longest U.S. Border with Canada"
+    paragraphs:
+      - "Alaska's 1,538-mile land border is more than twice as long as Maine's 611-mile border, the longest among the contiguous 48 states. Alaska borders Yukon Territory along a straight surveyed line following the 141st meridian west, then curves southeast through the panhandle, where the boundary follows mountain ridges and coastal inlets along the Alaska-British Columbia line."
+      - "Large sections of the 1,538-mile boundary cross uninhabited wilderness with no roads and no ports of entry for hundreds of miles. The Alaska Boundary Tribunal of 1903 settled a long-running dispute between the U.S. and Britain over the panhandle alignment, producing the boundary still in use today."
+
+  - id: "shortest-canada-borders"
+    icon: "fa-solid fa-location-dot"
+    title: "States with the Shortest Borders with Canada"
+    paragraphs:
+      - "Pennsylvania (42 mi), Idaho (45 mi), and New Hampshire (58 mi) have the three shortest U.S. borders with Canada. Pennsylvania's border is entirely a Lake Erie water boundary at the state's northwest corner near the city of Erie. Idaho's 45-mile land border runs through the northern panhandle near Eastport, ID, one of the most remote official land crossings on the northern boundary."
+      - "New Hampshire borders Canada for just 58 miles along Quebec's southern edge, through dense forest in the state's far north. Vermont (90 mi) ranks tenth, touching only Quebec along its northern boundary for 90 miles. Both states combined add up to 148 miles, less than a quarter of Montana's 545-mile land border."
+
+visual_assets:
+  - id: alaska-canada-boundary-cleared
+    src: /images/rankings/geography/states-bordering-canada/alaska-canada-boundary.jpg
+    alt: Aerial view of the 141st meridian boundary between Alaska and Yukon visible as a cleared swath through boreal forest
+    caption: The Alaska-Canada boundary along the 141st meridian cuts 1,538 miles from the Arctic Ocean south through Yukon Territory, making Alaska the U.S. state with the longest border with Canada by a wide margin.
+    section: alaska-longest-border
+    layout: right
+
+  - id: michigan-ambassador-bridge
+    src: /images/rankings/geography/states-bordering-canada/ambassador-bridge-detroit.jpg
+    alt: Ambassador Bridge spanning the Detroit River between Detroit Michigan and Windsor Ontario
+    caption: The Ambassador Bridge crosses the Detroit River between Michigan and Ontario, part of Michigan's 721-mile water border with Canada, the longest of any water-only border state.
+    section: water-border-states
+    layout: left
+
+faq:
+  - question: "How many U.S. states border Canada?"
+    answer: "13 U.S. states border Canada: Alaska, Washington, Idaho, Montana, North Dakota, Minnesota, Michigan, Ohio, Pennsylvania, New York, Vermont, New Hampshire, and Maine. Three of them — Michigan, Ohio, and Pennsylvania — share only a water border through the Great Lakes, with no land crossing into Canada."
+
+  - question: "Name one state that borders Canada?"
+    answer: "Any of the 13 qualifying states is a correct answer: Maine, New Hampshire, Vermont, New York, Pennsylvania, Ohio, Michigan, Minnesota, North Dakota, Montana, Idaho, Washington, or Alaska. This is a common U.S. civics study question. Maine (611 mi) and Michigan (721 mi) are the most-cited answers, having the longest land and water borders respectively among the contiguous states."
+
+  - question: "Which state has the longest border with Canada?"
+    answer: "Alaska has the longest border with Canada at 1,538 miles, more than double Maine's 611-mile border, which is the longest among the contiguous 48 states. Alaska's boundary runs along the 141st meridian through Yukon Territory, then follows mountain ridges southeast through the panhandle along British Columbia."
+
+  - question: "Which state has the shortest border with Canada?"
+    answer: "Pennsylvania has the shortest U.S.-Canada border at approximately 42 miles, a Lake Erie water boundary at the state's northwest corner near Erie, PA. Idaho (45 miles) and New Hampshire (58 miles) rank second and third shortest."
+
+  - question: "Does Ohio border Canada?"
+    answer: "Yes. Ohio shares a 146-mile water border with Canada via Lake Erie. The international boundary runs along the centerline of Lake Erie, with Ontario on the north side and Ohio on the south. There is no land border between Ohio and Canada — all crossings between Ohio and Ontario go through Michigan."
+
+  - question: "What Canadian provinces and territories border U.S. states?"
+    answer: "Eight Canadian provinces and territories share a border with U.S. states: Yukon (Alaska), British Columbia (Alaska, Washington, Idaho, Montana), Alberta (Montana), Saskatchewan (Montana, North Dakota), Manitoba (North Dakota, Minnesota), Ontario (Minnesota, Michigan, Ohio, Pennsylvania, New York), Quebec (New York, Vermont, New Hampshire, Maine), and New Brunswick (Maine)."
+
+related:
+  - title: "U.S. States That Border Mexico"
+    url: "/rankings/geography/states-bordering-mexico"
+  - title: "U.S. States by Land Area"
+    url: "/rankings/geography/states-by-land-area"
+  - title: "States With the Most Neighboring States"
+    url: "/rankings/geography/states-neighboring-states"
+  - title: "U.S. States Ranked by Straight and Natural Borders"
+    url: "/rankings/geography/states-by-border-type"
+  - title: "Statehood Order and Dates"
+    url: "/rankings/government/states-order-of-succession"

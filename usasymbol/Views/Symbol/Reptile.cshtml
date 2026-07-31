@@ -1,0 +1,162 @@
+@model USASymbol.Models.ViewModels.ReptileDetailViewModel
+@using System.Globalization
+@using USASymbol.Extensions
+@using USASymbol.Models.ViewModels
+@inject IImageUrlService Images
+
+@{
+    ViewData["BodyClass"] = "reptile-detail-page";
+
+    var stateName = Model.State?.Name ?? "";
+    var adoptedYear = Model.ReptileContent?.AdoptedYear ?? Model.Symbol?.AdoptedYear ?? 0;
+
+    var designationRaw = (Model.Symbol?.Designation ?? Model.DefaultDesignation).Trim();
+    var designation = string.IsNullOrWhiteSpace(designationRaw)
+        ? Model.DefaultDesignation
+        : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+
+    var pageHeading = !string.IsNullOrWhiteSpace(Model.ReptileContent?.Name)
+        ? Model.ReptileContent!.Name
+        : $"{stateName} {designation}";
+
+    var descRaw = Model.ReptileContent?.SeoDescription ?? "";
+    ViewData["Title"] = Model.ReptileContent?.SeoTitle ?? pageHeading;
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {stateName}'s official {designation.ToLowerInvariant()} — its history, appearance, and where it is found."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+
+    var heroImage = Model.ReptileContent?.HeroImage;
+    if (string.IsNullOrWhiteSpace(heroImage)) heroImage = Model.Symbol?.ImageUrl;
+    if (string.IsNullOrWhiteSpace(heroImage))
+        heroImage = Model.ReptileContent?.VisualAssets?.FirstOrDefault()?.Src;
+
+    ViewData["OgImage"] = Images.Full(heroImage ?? Model.State?.FlagImageUrl);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+
+    var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+
+    var introText = Model.ReptileContent?.IntroText ?? string.Empty;
+    var overviewText = !string.IsNullOrWhiteSpace(introText)
+        ? introText
+        : adoptedYear > 0
+            ? $"The official {designation.ToLowerInvariant()} of {stateName} was adopted in <strong>{adoptedYear}</strong>."
+            : $"{stateName} recognizes {pageHeading} as its official {designation.ToLowerInvariant()}.";
+
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    var heroDescription = System.Net.WebUtility.HtmlDecode(
+        System.Text.RegularExpressions.Regex.Replace(
+            System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1"),
+            "<.*?>",
+            " "))
+        .Trim();
+
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#211708_0%,#2b1e0d_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-orange-200/0 via-orange-300/70 to-amber-200/0",
+        PrimaryGlowClass = "bg-orange-300/10",
+        SecondaryGlowClass = "bg-white/10",
+        AccentDotClass = "bg-orange-300",
+        MediaBackgroundClass = "bg-slate-100/10",
+        FallbackIconClass = Model.HeroFallbackIconClass,
+        Title = pageHeading,
+        Description = heroDescription,
+        LegalReference = Model.Legislation,
+        ImageUrl = heroImage,
+        ImageAlt = !string.IsNullOrWhiteSpace(Model.ReptileContent?.HeroImageAlt)
+            ? Model.ReptileContent.HeroImageAlt
+            : pageHeading,
+        ImageClass = "absolute inset-0 h-full w-full object-cover",
+        FigureTitle = pageHeading,
+        FigureSubtitle = $"Official {designation} of {stateName}",
+        ImageLinkUrl = heroImage,
+        EyebrowItems = new List<string>
+        {
+            stateName,
+            designation,
+            adoptedYear > 0 ? $"Adopted {adoptedYear}" : string.Empty
+        }
+    };
+}
+
+<nav class="bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="symbol-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <aside class="hidden xl:block relative h-full">
+                <div class="sticky top-24 pb-10">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                </div>
+            </aside>
+
+            <div class="min-w-0">
+                <div class="article-content site-content">
+                    @await Html.PartialAsync("_Overview", null, new ViewDataDictionary(ViewData) {
+                        { "Heading", $"{designation} of {stateName}" },
+                        { "Body", overviewText.RenderAutoLinks() }
+                    })
+
+                    @if (quickFacts.Any())
+                    {
+                        <div class="lg:hidden">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    }
+
+                    @await Html.PartialAsync("_ReptileSections", Model)
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_Faq", Model)
+                    </div>
+
+                    <section id="sources" class="content-divider">
+                        @await Html.PartialAsync("_Sources", Model)
+                    </section>
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+
+                    <div class="mt-12 lg:hidden">
+
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+
+                    </div>
+                </div>
+            </div>
+
+            <aside class="article-sidebar hidden lg:block" aria-label="Article sidebar">
+                <div class="sidebar-content space-y-10">
+                    @await Html.PartialAsync("_RelatedSymbols", Model)
+                    @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                </div>
+            </aside>
+        </div>
+
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+        {
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+            </div>
+        }
+    </article>
+</div>
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")

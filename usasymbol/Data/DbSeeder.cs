@@ -155,6 +155,14 @@ namespace USASymbol.Data
             return $"/images/soils/{stateSlug}/{stateSlug}-state-soil-hero.webp";
         }
 
+        private static string ResolveStateGeologyImage(string categoryPlural, string designationSlug, string stateSlug, string heroImage)
+        {
+            if (!string.IsNullOrWhiteSpace(heroImage))
+                return heroImage;
+
+            return $"/images/{categoryPlural}/{stateSlug}/{stateSlug}-state-{designationSlug}-hero.webp";
+        }
+
 
         public static async Task SeedAsync(AppDbContext context)
         {
@@ -261,7 +269,14 @@ namespace USASymbol.Data
             await SeedStateSoils(context, states);
             await SeedStateFossils(context, states);
             await SeedStateSports(context, states);
+            await SeedStateDances(context, states);
             await SeedStateInsects(context, states);
+            await SeedStateMinerals(context, states);
+            await SeedStateRocks(context, states);
+            await SeedStateGemstones(context, states);
+            await SeedStateAmphibians(context, states);
+            await SeedStateReptiles(context, states);
+            await SeedStateFoods(context, states);
 
 
             {
@@ -416,6 +431,13 @@ namespace USASymbol.Data
                     },
                     new SymbolCategory
                     {
+                        Type = "dances",
+                        Name = "State Dances",
+                        Description = "Explore official state dances, from square dance and clogging to hula and polka, adopted by U.S. states as folk and popular dance symbols.",
+                        ImageUrl = "/images/symbol-categories/dances.webp"
+                    },
+                    new SymbolCategory
+                    {
                         Type = "insects",
                         Name = "State Insects",
                         Description = "Discover official state insects, from monarch butterflies to honeybees, recognized by U.S. states.",
@@ -428,10 +450,94 @@ namespace USASymbol.Data
                         Description = "Explore official state butterflies, including monarchs, swallowtails, fritillaries, hairstreaks, and sulphurs.",
                         ImageUrl = "/images/insects/species/eastern-tiger-swallowtail-01.webp"
                     },
+                    new SymbolCategory
+                    {
+                        Type = "minerals",
+                        Name = "State Minerals",
+                        Description = "Explore the official state minerals of U.S. states, from hematite to quartz, and the mining history behind each one.",
+                        ImageUrl = "/images/symbol-categories/minerals.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "rocks",
+                        Name = "State Rocks & Stones",
+                        Description = "Discover the official state rocks and stones of U.S. states, the building stones and geological formations chosen to represent them.",
+                        ImageUrl = "/images/symbol-categories/rocks.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "gemstones",
+                        Name = "State Gemstones",
+                        Description = "Explore the official state gemstones of U.S. states, from opals to sapphires, and the deposits where they are found.",
+                        ImageUrl = "/images/symbol-categories/gemstones.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "amphibians",
+                        Name = "State Amphibians",
+                        Description = "Discover official state amphibians, from salamanders to frogs and toads, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/amphibians.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "reptiles",
+                        Name = "State Reptiles",
+                        Description = "Explore official state reptiles, from turtles to snakes and alligators, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/reptiles.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "fruits",
+                        Name = "State Fruits",
+                        Description = "Explore official state fruits and berries, from peaches to blackberries, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/fruits.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "vegetables",
+                        Name = "State Vegetables",
+                        Description = "Discover official state vegetables, from sweet potatoes to sweet onions, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/vegetables.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "nuts",
+                        Name = "State Nuts",
+                        Description = "Explore official state nuts, from pecans to almonds, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/nuts.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "desserts",
+                        Name = "State Desserts & Sweets",
+                        Description = "Discover official state cookies, cakes, pies, and other sweets recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/desserts.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "spirits",
+                        Name = "State Spirits & Drinks",
+                        Description = "Explore official state spirits, soft drinks, and other beverages recognized as food symbols by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/spirits.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "dishes",
+                        Name = "State Dishes & Snacks",
+                        Description = "Discover official state meals, cuisines, and signature dishes recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/dishes.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "crops",
+                        Name = "State Crops & Ingredients",
+                        Description = "Explore official state grains, beans, honeys, and other crops recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/crops.webp"
+                    },
 
                 };
 
-                var staleTypes = new[] { "state-soils" };
+                var staleTypes = new[] { "state-soils", "drinks" };
                 var stale = await context.SymbolCategories
                     .Where(c => staleTypes.Contains(c.Type))
                     .ToListAsync();
@@ -2053,6 +2159,177 @@ namespace USASymbol.Data
             await context.SaveChangesAsync();
         }
 
+        // Shared loader for State Mineral / State Rock (or Stone) / State Gemstone, one
+        // content file per designation (mineral.yaml / rock.yaml / gemstone.yaml), the same
+        // reuse pattern SeedStateSoils uses: read straight from YAML, no hardcoded data array.
+        private static async Task SeedStateGeologySymbols(
+            AppDbContext context,
+            List<State> states,
+            string symbolType,
+            string yamlFileName,
+            string defaultDesignation,
+            string categoryPlural)
+        {
+            var old = await context.Symbols.Where(s => s.Type == symbolType).ToListAsync();
+            if (old.Count > 0)
+            {
+                context.Symbols.RemoveRange(old);
+                await context.SaveChangesAsync();
+            }
+
+            var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
+            if (!Directory.Exists(contentRoot))
+                return;
+
+            var deserializer = new DeserializerBuilder().Build();
+            var symbols = new List<Symbol>();
+
+            foreach (var file in Directory.EnumerateFiles(contentRoot, yamlFileName, SearchOption.AllDirectories))
+            {
+                var stateSlug = new DirectoryInfo(Path.GetDirectoryName(file) ?? string.Empty).Name;
+                if (string.IsNullOrWhiteSpace(stateSlug))
+                    continue;
+
+                var state = states.FirstOrDefault(s => string.Equals(s.Slug, stateSlug, StringComparison.OrdinalIgnoreCase));
+                if (state == null)
+                    continue;
+
+                Dictionary<object, object>? data;
+                try { data = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(file)); }
+                catch { continue; }
+
+                if (data == null)
+                    continue;
+
+                var name = GetYamlString(data, "name");
+                if (string.IsNullOrWhiteSpace(name))
+                    name = $"{defaultDesignation} of {state.Name}";
+
+                var designation = GetYamlString(data, "designation_label");
+                if (string.IsNullOrWhiteSpace(designation))
+                    designation = defaultDesignation;
+
+                var heroImage = ResolveStateGeologyImage(categoryPlural, symbolType, state.Slug, GetYamlString(data, "hero_image"));
+
+                symbols.Add(new Symbol
+                {
+                    StateId = state.Id,
+                    Type = symbolType,
+                    Name = name,
+                    Slug = GenerateSlug(name),
+                    ScientificName = GetYamlString(data, "chemical_formula"),
+                    AdoptedYear = GetYamlInt(data, "adopted_year"),
+                    Status = GetYamlBool(data, "is_official") ? "Official" : null,
+                    Designation = designation,
+                    Legislation = GetYamlString(data, "legislation"),
+                    WikidataId = null,
+                    Meaning = GetYamlString(data, "meaning"),
+                    ImageUrl = heroImage,
+                    YamlPath = $"Content/states/{state.Slug}/{yamlFileName}"
+                });
+            }
+
+            if (symbols.Count == 0)
+                return;
+
+            context.Symbols.AddRange(symbols);
+            await context.SaveChangesAsync();
+        }
+
+        private static Task SeedStateMinerals(AppDbContext context, List<State> states)
+            => SeedStateGeologySymbols(context, states, "mineral", "mineral.yaml", "State Mineral", "minerals");
+
+        private static Task SeedStateRocks(AppDbContext context, List<State> states)
+            => SeedStateGeologySymbols(context, states, "rock", "rock.yaml", "State Rock", "rocks");
+
+        private static Task SeedStateGemstones(AppDbContext context, List<State> states)
+            => SeedStateGeologySymbols(context, states, "gemstone", "gemstone.yaml", "State Gemstone", "gemstones");
+
+        // Shared loader for State Amphibian / State Reptile, one or more content files per
+        // designation (amphibian*.yaml / reptile*.yaml, states can have more than one), the
+        // same wildcard-discovery pattern SeedStateInsects uses.
+        private static async Task SeedStateCreatureSymbols(
+            AppDbContext context,
+            List<State> states,
+            string symbolType,
+            string yamlFilePattern,
+            string defaultDesignation)
+        {
+            var old = await context.Symbols.Where(s => s.Type == symbolType).ToListAsync();
+            if (old.Count > 0)
+            {
+                context.Symbols.RemoveRange(old);
+                await context.SaveChangesAsync();
+            }
+
+            var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
+            if (!Directory.Exists(contentRoot))
+                return;
+
+            var deserializer = new DeserializerBuilder().Build();
+            var symbols = new List<Symbol>();
+
+            foreach (var file in Directory.EnumerateFiles(contentRoot, yamlFilePattern, SearchOption.AllDirectories))
+            {
+                var stateSlug = new DirectoryInfo(Path.GetDirectoryName(file) ?? string.Empty).Name;
+                if (string.IsNullOrWhiteSpace(stateSlug))
+                    continue;
+
+                var state = states.FirstOrDefault(s => string.Equals(s.Slug, stateSlug, StringComparison.OrdinalIgnoreCase));
+                if (state == null)
+                    continue;
+
+                Dictionary<object, object>? data;
+                try { data = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(file)); }
+                catch { continue; }
+
+                if (data == null)
+                    continue;
+
+                var name = GetYamlString(data, "name");
+                if (string.IsNullOrWhiteSpace(name))
+                    name = $"{defaultDesignation} of {state.Name}";
+
+                var designation = GetYamlString(data, "designation");
+                if (string.IsNullOrWhiteSpace(designation))
+                    designation = defaultDesignation;
+
+                symbols.Add(new Symbol
+                {
+                    StateId = state.Id,
+                    Type = symbolType,
+                    Name = name,
+                    Slug = GenerateSlug(name),
+                    ScientificName = GetYamlString(data, "binomial_name"),
+                    AdoptedYear = GetYamlInt(data, "adopted_year"),
+                    Status = GetYamlBool(data, "is_official") ? "Official" : null,
+                    Designation = designation,
+                    Legislation = GetYamlString(data, "legislation"),
+                    WikidataId = null,
+                    Meaning = GetYamlString(data, "meaning"),
+                    ImageUrl = GetYamlString(data, "hero_image"),
+                    YamlPath = $"Content/states/{state.Slug}/{Path.GetFileName(file)}"
+                });
+            }
+
+            if (symbols.Count == 0)
+                return;
+
+            context.Symbols.AddRange(symbols);
+            await context.SaveChangesAsync();
+        }
+
+        private static Task SeedStateAmphibians(AppDbContext context, List<State> states)
+            => SeedStateCreatureSymbols(context, states, "amphibian", "amphibian*.yaml", "State Amphibian");
+
+        private static Task SeedStateReptiles(AppDbContext context, List<State> states)
+            => SeedStateCreatureSymbols(context, states, "reptile", "reptile*.yaml", "State Reptile");
+
+        // States commonly have many food designations (State Cookie, State Nut, State Fruit,
+        // State Legume...), one YAML file per designation, e.g. food-cookie.yaml, food-nut.yaml.
+        private static Task SeedStateFoods(AppDbContext context, List<State> states)
+            => SeedStateCreatureSymbols(context, states, "food", "food*.yaml", "State Food");
+
         private static async Task SeedStateFossils(AppDbContext context, List<State> states)
         {
             var old = await context.Symbols.Where(s => s.Type == "fossil").ToListAsync();
@@ -2209,6 +2486,85 @@ namespace USASymbol.Data
                         Meaning = GetYamlString(data, "meaning"),
                         ImageUrl = GetYamlString(data, "hero_image"),
                         YamlPath = $"Content/states/{state.Slug}/sport/{slug}.yaml"
+                    });
+                }
+            }
+
+            if (symbols.Count == 0)
+                return;
+
+            context.Symbols.AddRange(symbols);
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedStateDances(AppDbContext context, List<State> states)
+        {
+            var old = await context.Symbols.Where(s => s.Type == "dance").ToListAsync();
+            if (old.Count > 0)
+            {
+                context.Symbols.RemoveRange(old);
+                await context.SaveChangesAsync();
+            }
+
+            var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
+            if (!Directory.Exists(contentRoot))
+                return;
+
+            var deserializer = new DeserializerBuilder().Build();
+            var symbols = new List<Symbol>();
+
+            var danceDirs = Directory.EnumerateDirectories(contentRoot, "dance", SearchOption.AllDirectories);
+
+            foreach (var danceDir in danceDirs)
+            {
+                var stateSlug = new DirectoryInfo(Path.GetDirectoryName(danceDir) ?? string.Empty).Name;
+                if (string.IsNullOrWhiteSpace(stateSlug))
+                    continue;
+
+                var state = states.FirstOrDefault(s => string.Equals(s.Slug, stateSlug, StringComparison.OrdinalIgnoreCase));
+                if (state == null)
+                    continue;
+
+                foreach (var file in Directory.EnumerateFiles(danceDir, "*.yaml", SearchOption.TopDirectoryOnly))
+                {
+                    var slug = Path.GetFileNameWithoutExtension(file);
+                    if (string.IsNullOrWhiteSpace(slug))
+                        continue;
+
+                    Dictionary<object, object>? data;
+                    try
+                    {
+                        data = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(file));
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    if (data == null)
+                        continue;
+
+                    var name = GetYamlString(data, "name");
+                    if (string.IsNullOrWhiteSpace(name))
+                        name = GetYamlString(data, "title");
+                    if (string.IsNullOrWhiteSpace(name))
+                        name = $"State Dance of {state.Name}";
+
+                    symbols.Add(new Symbol
+                    {
+                        StateId = state.Id,
+                        Type = "dance",
+                        Name = name,
+                        Slug = slug,
+                        ScientificName = null,
+                        AdoptedYear = GetYamlInt(data, "adopted_year"),
+                        Status = GetYamlBool(data, "is_official") ? "Official" : null,
+                        Designation = "State dance",
+                        Legislation = GetYamlString(data, "legislation"),
+                        WikidataId = null,
+                        Meaning = GetYamlString(data, "meaning"),
+                        ImageUrl = GetYamlString(data, "hero_image"),
+                        YamlPath = $"Content/states/{state.Slug}/dance/{slug}.yaml"
                     });
                 }
             }

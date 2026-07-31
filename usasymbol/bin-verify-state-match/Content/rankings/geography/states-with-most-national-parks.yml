@@ -1,0 +1,480 @@
+type: ranking
+slug: states-with-most-national-parks
+category: geography
+subcategory: "State Records & Trivia"
+url: /rankings/geography/states-with-most-national-parks
+auto_link_phrases:
+  - "states with the most national parks"
+  - "national parks by state"
+  - "which state has the most national parks"
+extremes_mode: both
+extremes_title: "States With the Most and Fewest National Parks"
+hero_image: "/images/parks/national/yosemite-national-park/01-overview-yosemite-valley-taft-point-sentinel-dome.jpg"
+hero_image_alt: "Yosemite Valley seen from Taft Point at dusk — California leads the nation with 9 national parks"
+hero_image_caption: "Yosemite National Park in California. California leads all 50 states with 9 national parks."
+
+author: "USASymbol Editorial Team"
+date_published: "2026-06-15"
+date_modified: "2026-06-15"
+
+seo:
+  title: "States With National Parks | Map, States & Counts"
+  description: "California has the most national parks of any U.S. state, with nine. Alaska has eight, and Utah has five."
+
+page:
+  h1: "States With the Most National Parks"
+
+  quick_answer:
+    - "California leads all 50 states with 9 national parks, Channel Islands, Death Valley, Joshua Tree, Kings Canyon, Lassen Volcanic, Pinnacles, Redwood, Sequoia, and Yosemite. Alaska ranks second with 8."
+    - "Utah ranks 3rd with 5 national parks: Arches, Bryce Canyon, Canyonlands, Capitol Reef, and Zion. Colorado is 4th with 4. Arizona, Florida, and Washington each have 3."
+    - "29 of 50 states have at least one national park. The remaining 21 states, including New York, Pennsylvania, Illinois, and Georgia, have none."
+
+  methodology: "Counts include only NPS units officially designated as national parks. Source: National Park Service, 2024."
+
+  sources:
+    - name: "National Park Service — Find a Park"
+      url: "https://www.nps.gov/findapark/index.htm"
+      description: "Official NPS list of all national park designations by state."
+
+map:
+  title: "National Parks by State Map"
+  image_alt: "Choropleth map of the United States showing national park count per state, with California and Alaska darkest"
+  caption: "California (9 parks) and Alaska (8 parks) are the only states with more than 5 national parks. Twenty-one states — including New York and Pennsylvania — have none."
+  metric_key: park_count
+  metric_label: "parks"
+  image_key: park_image
+  detail_keys: [parks]
+  color_scheme: green
+  color_scale: linear
+
+sections:
+  - id: most-parks
+    title: "California and Alaska Lead in National Parks"
+    paragraphs:
+      - "California has 9 national parks, the most of any state. Alaska has 8, the second-highest total. Together, those two states hold 17 of the 63 national parks in the United States."
+      - "California's 9 parks span deserts (Death Valley, Joshua Tree), coast (Channel Islands), ancient forests (Redwood, Sequoia, Kings Canyon), and volcanic terrain (Lassen Volcanic, Pinnacles). Alaska's 8 include Wrangell-St. Elias, the largest national park in the country at 13.2 million acres."
+
+  - id: multiple-parks
+    title: "States With 3 to 5 National Parks"
+    paragraphs:
+      - "Utah ranks 3rd with 5 parks, Arches, Bryce Canyon, Canyonlands, Capitol Reef, and Zion, all within the Colorado Plateau region. Colorado ranks 4th with 4: Black Canyon of the Gunnison, Great Sand Dunes, Mesa Verde, and Rocky Mountain."
+      - "Three states tie for 5th place with 3 parks each. Arizona has Grand Canyon, Petrified Forest, and Saguaro. Florida has Biscayne, Dry Tortugas, and Everglades. Washington has Mount Rainier, North Cascades, and Olympic."
+
+  - id: no-parks
+    title: "21 States Have No National Parks"
+    paragraphs:
+      - "21 of 50 states have no units officially designated as national parks by the NPS. They include populous states such as New York, Pennsylvania, Illinois, Georgia, Wisconsin, and Tennessee."
+      - "18 states have exactly 1 national park each, including Maine (Acadia), Montana (Glacier), Oregon (Crater Lake), and Wyoming (Grand Teton)."
+
+faq:
+  - question: "Which state has the most national parks?"
+    answer: "California has the most national parks of any state with 9: Channel Islands, Death Valley, Joshua Tree, Kings Canyon, Lassen Volcanic, Pinnacles, Redwood, Sequoia, and Yosemite."
+
+  - question: "How many national parks does Alaska have?"
+    answer: "Alaska has 8 national parks: Denali, Gates of the Arctic, Glacier Bay, Katmai, Kenai Fjords, Kobuk Valley, Lake Clark, and Wrangell-St. Elias. Alaska ranks 2nd among all 50 states."
+
+  - question: "What national parks are in Utah?"
+    answer: "Utah has 5 national parks: Arches, Bryce Canyon, Canyonlands, Capitol Reef, and Zion. Utah ranks 3rd among all 50 states, behind California (9) and Alaska (8)."
+
+  - question: "What national parks are in Colorado?"
+    answer: "Colorado has 4 national parks: Black Canyon of the Gunnison, Great Sand Dunes, Mesa Verde, and Rocky Mountain. Colorado ranks 4th with 4 parks."
+
+  - question: "Which states have 3 national parks?"
+    answer: "Three states each have 3 national parks: Arizona (Grand Canyon, Petrified Forest, Saguaro), Florida (Biscayne, Dry Tortugas, Everglades), and Washington (Mount Rainier, North Cascades, Olympic). All three share the rank of 5th."
+
+  - question: "How many states have no national parks?"
+    answer: "21 states have no national parks. They include New York, Pennsylvania, Illinois, Georgia, Tennessee, Wisconsin, Iowa, Kansas, Louisiana, Maryland, Massachusetts, Mississippi, Nebraska, New Hampshire, New Jersey, Oklahoma, Rhode Island, Vermont, Alabama, Connecticut, and Delaware."
+
+table:
+  title: "States With the Most National Parks"
+  metric_default: park_count
+  sort_default: desc
+  hidden_columns: [parks]
+
+  columns:
+    rank: "Rank"
+    park_image: "Park"
+    state: "State"
+    park_count: "National Parks"
+    parks: "Parks"
+    region: "Region"
+
+  rows:
+    - rank: 1
+      state: "California"
+      state_slug: "california"
+      park_count: 9
+      parks: "Channel Islands, Death Valley, Joshua Tree, Kings Canyon, Lassen Volcanic, Pinnacles, Redwood, Sequoia, Yosemite"
+      park_image: "/images/parks/national/yosemite-national-park/01-overview-yosemite-valley-taft-point-sentinel-dome.jpg"
+      region: "West"
+
+    - rank: 2
+      state: "Alaska"
+      state_slug: "alaska"
+      park_count: 8
+      parks: "Denali, Gates of the Arctic, Glacier Bay, Katmai, Kenai Fjords, Kobuk Valley, Lake Clark, Wrangell-St. Elias"
+      park_image: "/images/parks/national/denali-national-park-preserve/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 3
+      state: "Utah"
+      state_slug: "utah"
+      park_count: 5
+      parks: "Arches, Bryce Canyon, Canyonlands, Capitol Reef, Zion"
+      park_image: "/images/parks/national/arches-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 4
+      state: "Colorado"
+      state_slug: "colorado"
+      park_count: 4
+      parks: "Black Canyon of the Gunnison, Great Sand Dunes, Mesa Verde, Rocky Mountain"
+      park_image: "/images/parks/national/rocky-mountain-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 5
+      state: "Arizona"
+      state_slug: "arizona"
+      park_count: 3
+      parks: "Grand Canyon, Petrified Forest, Saguaro"
+      park_image: "/images/parks/national/grand-canyon-national-park/01-grand-canyon-mather-point-sunset-on-the-.jpg"
+      region: "West"
+
+    - rank: 5
+      state: "Florida"
+      state_slug: "florida"
+      park_count: 3
+      parks: "Biscayne, Dry Tortugas, Everglades"
+      park_image: "/images/parks/national/everglades-national-park/01-hero-image.jpg"
+      region: "South"
+
+    - rank: 5
+      state: "Washington"
+      state_slug: "washington"
+      park_count: 3
+      parks: "Mount Rainier, North Cascades, Olympic"
+      park_image: "/images/parks/national/olympic-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 8
+      state: "Hawaii"
+      state_slug: "hawaii"
+      park_count: 2
+      parks: "Haleakalā, Hawaiʻi Volcanoes"
+      park_image: "/images/parks/national/haleakal-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 8
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      park_count: 2
+      parks: "Carlsbad Caverns, White Sands"
+      park_image: "/images/parks/national/white-sands-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 8
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      park_count: 2
+      parks: "Badlands, Wind Cave"
+      park_image: "/images/parks/national/badlands-national-park/01-hero-image.jpg"
+      region: "Midwest"
+
+    - rank: 8
+      state: "Texas"
+      state_slug: "texas"
+      park_count: 2
+      parks: "Big Bend, Guadalupe Mountains"
+      park_image: "/images/parks/national/big-bend-national-park/01-hero-image.jpg"
+      region: "South"
+
+    - rank: 12
+      state: "Arkansas"
+      state_slug: "arkansas"
+      park_count: 1
+      parks: "Hot Springs"
+      park_image: "/images/parks/national/hot-springs-national-park/01-hero-image.jpg"
+      region: "South"
+
+    - rank: 12
+      state: "Idaho"
+      state_slug: "idaho"
+      park_count: 1
+      parks: "Yellowstone"
+      park_image: "/images/parks/national/yellowstone-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 12
+      state: "Indiana"
+      state_slug: "indiana"
+      park_count: 1
+      parks: "Indiana Dunes"
+      park_image: "/images/parks/national/indiana-dunes-national-park/01-hero-image.jpg"
+      region: "Midwest"
+
+    - rank: 12
+      state: "Kentucky"
+      state_slug: "kentucky"
+      park_count: 1
+      parks: "Mammoth Cave"
+      park_image: "/images/parks/national/mammoth-cave-national-park/01-hero-image.jpg"
+      region: "South"
+
+    - rank: 12
+      state: "Maine"
+      state_slug: "maine"
+      park_count: 1
+      parks: "Acadia"
+      park_image: "/images/parks/national/acadia-national-park/01-hero-image.jpg"
+      region: "Northeast"
+
+    - rank: 12
+      state: "Michigan"
+      state_slug: "michigan"
+      park_count: 1
+      parks: "Isle Royale"
+      park_image: "/images/parks/national/isle-royale-national-park/01-hero-image.jpg"
+      region: "Midwest"
+
+    - rank: 12
+      state: "Minnesota"
+      state_slug: "minnesota"
+      park_count: 1
+      parks: "Voyageurs"
+      park_image: "/images/parks/national/voyageurs-national-park/01-hero-image.jpg"
+      region: "Midwest"
+
+    - rank: 12
+      state: "Missouri"
+      state_slug: "missouri"
+      park_count: 1
+      parks: "Gateway Arch"
+      park_image: "/images/parks/national/gateway-arch-national-park/01-hero-image.jpg"
+      region: "Midwest"
+
+    - rank: 12
+      state: "Montana"
+      state_slug: "montana"
+      park_count: 1
+      parks: "Glacier"
+      park_image: "/images/parks/national/glacier-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 12
+      state: "Nevada"
+      state_slug: "nevada"
+      park_count: 1
+      parks: "Great Basin"
+      park_image: "/images/parks/national/great-basin-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 12
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      park_count: 1
+      parks: "Great Smoky Mountains"
+      park_image: "/images/parks/national/great-smoky-mountains-national-park/01-hero-image.jpg"
+      region: "South"
+
+    - rank: 12
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      park_count: 1
+      parks: "Theodore Roosevelt"
+      park_image: "/images/parks/national/theodore-roosevelt-national-park/01-hero-image.jpg"
+      region: "Midwest"
+
+    - rank: 12
+      state: "Ohio"
+      state_slug: "ohio"
+      park_count: 1
+      parks: "Cuyahoga Valley"
+      park_image: "/images/parks/national/cuyahoga-valley-national-park/01-hero-image.jpg"
+      region: "Midwest"
+
+    - rank: 12
+      state: "Oregon"
+      state_slug: "oregon"
+      park_count: 1
+      parks: "Crater Lake"
+      park_image: "/images/parks/national/crater-lake-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 12
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      park_count: 1
+      parks: "Congaree"
+      park_image: "/images/parks/national/congaree-national-park/01-hero-image.jpg"
+      region: "South"
+
+    - rank: 12
+      state: "Virginia"
+      state_slug: "virginia"
+      park_count: 1
+      parks: "Shenandoah"
+      park_image: "/images/parks/national/shenandoah-national-park/01-hero-image.jpg"
+      region: "South"
+
+    - rank: 12
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      park_count: 1
+      parks: "New River Gorge"
+      park_image: "/images/parks/national/new-river-gorge-national-park-preserve/01-hero-image.jpg"
+      region: "South"
+
+    - rank: 12
+      state: "Wyoming"
+      state_slug: "wyoming"
+      park_count: 1
+      parks: "Grand Teton"
+      park_image: "/images/parks/national/grand-teton-national-park/01-hero-image.jpg"
+      region: "West"
+
+    - rank: 30
+      state: "Alabama"
+      state_slug: "alabama"
+      park_count: 0
+      parks: ""
+      region: "South"
+
+    - rank: 30
+      state: "Connecticut"
+      state_slug: "connecticut"
+      park_count: 0
+      parks: ""
+      region: "Northeast"
+
+    - rank: 30
+      state: "Delaware"
+      state_slug: "delaware"
+      park_count: 0
+      parks: ""
+      region: "South"
+
+    - rank: 30
+      state: "Georgia"
+      state_slug: "georgia"
+      park_count: 0
+      parks: ""
+      region: "South"
+
+    - rank: 30
+      state: "Illinois"
+      state_slug: "illinois"
+      park_count: 0
+      parks: ""
+      region: "Midwest"
+
+    - rank: 30
+      state: "Iowa"
+      state_slug: "iowa"
+      park_count: 0
+      parks: ""
+      region: "Midwest"
+
+    - rank: 30
+      state: "Kansas"
+      state_slug: "kansas"
+      park_count: 0
+      parks: ""
+      region: "Midwest"
+
+    - rank: 30
+      state: "Louisiana"
+      state_slug: "louisiana"
+      park_count: 0
+      parks: ""
+      region: "South"
+
+    - rank: 30
+      state: "Maryland"
+      state_slug: "maryland"
+      park_count: 0
+      parks: ""
+      region: "South"
+
+    - rank: 30
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      park_count: 0
+      parks: ""
+      region: "Northeast"
+
+    - rank: 30
+      state: "Mississippi"
+      state_slug: "mississippi"
+      park_count: 0
+      parks: ""
+      region: "South"
+
+    - rank: 30
+      state: "Nebraska"
+      state_slug: "nebraska"
+      park_count: 0
+      parks: ""
+      region: "Midwest"
+
+    - rank: 30
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      park_count: 0
+      parks: ""
+      region: "Northeast"
+
+    - rank: 30
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      park_count: 0
+      parks: ""
+      region: "Northeast"
+
+    - rank: 30
+      state: "New York"
+      state_slug: "new-york"
+      park_count: 0
+      parks: ""
+      region: "Northeast"
+
+    - rank: 30
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      park_count: 0
+      parks: ""
+      region: "South"
+
+    - rank: 30
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      park_count: 0
+      parks: ""
+      region: "Northeast"
+
+    - rank: 30
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      park_count: 0
+      parks: ""
+      region: "Northeast"
+
+    - rank: 30
+      state: "Tennessee"
+      state_slug: "tennessee"
+      park_count: 0
+      parks: ""
+      region: "South"
+
+    - rank: 30
+      state: "Vermont"
+      state_slug: "vermont"
+      park_count: 0
+      parks: ""
+      region: "Northeast"
+
+    - rank: 30
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      park_count: 0
+      parks: ""
+      region: "Midwest"

@@ -420,6 +420,9 @@
         })();
     </script>
 
+    <div class="cmp2-page-shell max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-10">
+    <div class="min-w-0">
+
     @* ── 2. Decision module (priorities + consolidated calculator) ────── *@
     @await Html.PartialAsync("_DecisionModule", Model)
 
@@ -500,26 +503,6 @@
         </section>
     }
 
-    @* ── 6. Related comparisons ────────────────────────────────────────── *@
-    @if (Model.RelatedPairs.Any())
-    {
-        <section class="cmp2-block">
-            <div class="cmp2-shell">
-                <div class="cmp2-head"><h2 class="cmp2-title">Related comparisons</h2></div>
-                <div class="cmp2-related-grid">
-                    @foreach (var (pa, pb) in Model.RelatedPairs)
-                    {
-                        <a class="cmp2-related-card" href="/compare/@(pa.Slug)-vs-@(pb.Slug)">
-                            @if (pa.FlagImageUrl != null) { <img src="@Images.Card(pa.FlagImageUrl)" onerror="this.style.display='none'" alt="@pa.Name flag" /> }
-                            <span>@pa.Name vs @pb.Name</span>
-                            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-                        </a>
-                    }
-                </div>
-            </div>
-        </section>
-    }
-
     @if (faqItems.Any())
     {
         <script type="application/ld+json">@Html.Raw(faqSchemaJson)</script>
@@ -578,4 +561,16 @@
         </div>
     </section>
 
+    <div class="cmp2-shell mt-10 lg:hidden">
+        @await Html.PartialAsync("_CompareSidebar", Model)
+    </div>
+
+    </div>
+
+    <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_CompareSidebar", Model)
+        </div>
+    </aside>
+    </div>
 </div>

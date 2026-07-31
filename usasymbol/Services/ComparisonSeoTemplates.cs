@@ -1,22 +1,11 @@
 using USASymbol.Models.ViewModels;
-using System.Globalization;
 
 namespace USASymbol.Services;
 
 public static class ComparisonSeoTemplates
 {
-    public static string OverviewTitle(StatePairComparisonViewModel model)
-    {
-        var cost = model.MetricResults.FirstOrDefault(result => result.Metric.Slug == "cost-of-living");
-        if (cost?.NumericA is double valueA && cost.NumericB is double valueB)
-        {
-            return FitTitle(
-                $"{model.StateA.Name} vs {model.StateB.Name} Cost of Living: {valueA:0.#} vs {valueB:0.#} (2026)",
-                $"{model.StateA.Abbreviation} vs {model.StateB.Abbreviation} Cost of Living: {valueA:0.#} vs {valueB:0.#} (2026)");
-        }
-
-        return LimitTitle($"{model.StateA.Name} vs {model.StateB.Name}: Cost, Taxes & Living (2026)");
-    }
+    public static string OverviewTitle(StatePairComparisonViewModel model) =>
+        LimitTitle($"{model.StateA.Name} vs {model.StateB.Name} | Cost, Taxes & Living");
 
     public static string OverviewDescription(StatePairComparisonViewModel model)
     {
@@ -30,16 +19,7 @@ public static class ComparisonSeoTemplates
     public static string MetricTitle(MetricComparisonViewModel model)
     {
         var label = ShortMetricName(model.Metric.Slug, model.Metric.Name);
-        if (model.Result.NumericA is double valueA && model.Result.NumericB is double valueB)
-        {
-            var compactA = CompactValue(model.Metric.Slug, model.Metric.Unit, valueA);
-            var compactB = CompactValue(model.Metric.Slug, model.Metric.Unit, valueB);
-            return FitTitle(
-                $"{model.StateA.Name} vs {model.StateB.Name} {label}: {compactA} vs {compactB} (2026)",
-                $"{model.StateA.Abbreviation} vs {model.StateB.Abbreviation} {label}: {compactA} vs {compactB} (2026)");
-        }
-
-        return LimitTitle($"{model.StateA.Name} vs {model.StateB.Name}: {label} (2026)");
+        return LimitTitle($"{model.StateA.Name} vs {model.StateB.Name} | {label}");
     }
 
     public static string MetricDescription(MetricComparisonViewModel model)
@@ -72,7 +52,7 @@ public static class ComparisonSeoTemplates
     }
 
     public static string CategoryPairTitle(CompareCategoryPairViewModel model) =>
-        LimitTitle($"{model.Pair.StateA.Name} vs {model.Pair.StateB.Name}: {model.CategoryName} (2026)");
+        LimitTitle($"{model.Pair.StateA.Name} vs {model.Pair.StateB.Name} | {model.CategoryName}");
 
     private static string ShortMetricName(string slug, string defaultName) => slug switch
     {
@@ -86,40 +66,6 @@ public static class ComparisonSeoTemplates
         "aza-zoos" => "Accredited Zoos",
         _ => defaultName
     };
-
-    private static string CompactValue(string slug, string unit, double value) => unit switch
-    {
-        "%" => $"{value:0.##}%",
-        "USD" when slug == "gas-price" => $"${value:0.000}",
-        "USD" when slug is "owner-costs-with-mortgage" or "owner-costs-without-mortgage" or "median-rent"
-            => $"${value:N0}",
-        "USD" => Math.Abs(value) >= 1_000_000
-            ? $"${value / 1_000_000:0.#}M"
-            : Math.Abs(value) >= 1_000
-                ? $"${value / 1_000:0.#}K"
-                : $"${value:0.##}",
-        "people" => Math.Abs(value) >= 1_000_000
-            ? $"{value / 1_000_000:0.#}M"
-            : Math.Abs(value) >= 1_000
-                ? $"{value / 1_000:0.#}K"
-                : value.ToString("N0", CultureInfo.InvariantCulture),
-        "temp-f" => $"{value:0.#}°F",
-        "cents-kwh" => $"{value:0.##}¢/kWh",
-        "cents-gal" => $"{value:0.##}¢/gal",
-        "sq mi" => $"{value:N0} sq mi",
-        "per sq mi" => $"{value:0.#}/sq mi",
-        "per 100k" or "per 100,000" => $"{value:0.#}/100k",
-        "per 1,000" => $"{value:0.##}/1k",
-        "inches" => $"{value:0.#} in",
-        "mph" => $"{value:0.0} mph",
-        "ft" => $"{value:N0} ft",
-        "days" => $"{value:N0} days",
-        "years" => $"{value:0.#} yrs",
-        _ => value.ToString("0.##", CultureInfo.InvariantCulture)
-    };
-
-    private static string FitTitle(string full, string compact) =>
-        full.Length <= 68 ? full : LimitTitle(compact);
 
     private static string LimitTitle(string value) => LimitAtWord(value, 68);
 

@@ -1,0 +1,598 @@
+type: ranking
+slug: best-healthcare-by-state
+category: health
+url: /rankings/health/best-healthcare-by-state
+auto_link_phrases:
+  - "best healthcare by state"
+  - "best states for healthcare"
+  - "healthcare rankings by state"
+  - "states with best health care"
+extremes_mode: both
+extremes_title: "States with the Best and Worst Healthcare"
+hero_image: "/images/rankings/health/best-healthcare-by-state/best-healthcare-by-state-hero.jpg"
+hero_image_alt: "Doctor reviewing patient chart in a bright modern medical office"
+hero_image_caption: "Hawaii leads all 50 states with a Final Score of 87.6. Alaska ranks last at 27.8, a gap of nearly 60 points across outcomes, cost, and access metrics."
+
+author: "USA Symbol Team"
+date_published: "2026-06-21"
+date_modified: "2026-06-21"
+
+seo:
+  title: "Best Healthcare by State | Rankings & Map"
+  description: "Hawaii leads all states with a healthcare score of 87.6. Alaska ranks last at 27.8, with West Virginia and Mississippi also below 30."
+
+page:
+  h1: "Best Healthcare by State"
+
+  quick_answer:
+    - "Hawaii ranks first for healthcare with a Final Score of 87.6. New Hampshire (82.1) and Massachusetts (79.9) follow at second and third. Minnesota (76.7) and New Jersey (75.0) round out the top five."
+    - "Alaska ranks last at 27.8 with a Cost score of 6.9, second lowest in the table. West Virginia ranks 49th at 28.9 and holds the lowest Cost score at 0. Mississippi ranks 48th at 29.9 with an Outcomes score of 0."
+    - "New York holds an Outcomes score of 95.7, fourth best in the table, but its Cost score of 15.4 pulls it to 22nd overall with a Final Score of 57.4."
+
+  methodology: "Rankings and scores are from MoneyGeek's Best & Worst States for Health Care report. Final Score is a weighted composite of three pillars: Outcomes, Cost, and Access, each scaled from 0 to 100, with higher scores indicating better performance."
+
+  sources:
+    - name: "MoneyGeek — Best & Worst States for Health Care"
+      url: "https://www.moneygeek.com/health-insurance/best-and-worst-states-for-healthcare/"
+      description: "State healthcare rankings by Final Score with Outcomes, Cost, and Access pillar breakdowns"
+
+map:
+  title: "Best Healthcare by State Map"
+  image: "/images/rankings/health/best-healthcare-by-state/best-healthcare-by-state-map.webp"
+  image_alt: "U.S. map showing healthcare quality ranking by state, darkest green for top-ranked states like Hawaii, New Hampshire, and Massachusetts"
+  caption: "Hawaii leads at 87.6 and Alaska sits last at 27.8, a gap of nearly 60 points. West Virginia (28.9) and Mississippi (29.9) are the only other entries below 30."
+  metric_key: final_score
+  metric_label: "Score"
+  name_key: state
+  color_scheme: green
+  color_scale: linear
+
+computed_data:
+  field: final_score
+  sort: desc
+  format: "F1"
+  label: "Final Score"
+  metric_key: final_score
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    final_score: "Final Score"
+    outcomes_score: "Outcomes"
+    cost_score: "Cost"
+    access_score: "Access"
+
+  metric_default: final_score
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      final_score: 87.6
+      outcomes_score: 100
+      cost_score: 89.1
+      access_score: 73.8
+
+    - rank: 2
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      final_score: 82.1
+      outcomes_score: 86.9
+      cost_score: 93.1
+      access_score: 66.2
+
+    - rank: 3
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      final_score: 79.9
+      outcomes_score: 99.2
+      cost_score: 65.1
+      access_score: 75.5
+
+    - rank: 4
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      final_score: 76.7
+      outcomes_score: 76.9
+      cost_score: 85
+      access_score: 68.3
+
+    - rank: 5
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      final_score: 75
+      outcomes_score: 98.6
+      cost_score: 73.1
+      access_score: 53.3
+
+    - rank: 6
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      final_score: 74.9
+      outcomes_score: 78.7
+      cost_score: 100
+      access_score: 46.2
+
+    - rank: 7
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      final_score: 74.7
+      outcomes_score: 83.1
+      cost_score: 93.1
+      access_score: 47.8
+
+    - rank: 8
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      final_score: 74.6
+      outcomes_score: 73.7
+      cost_score: 81.7
+      access_score: 68.3
+
+    - rank: 9
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      final_score: 72
+      outcomes_score: 68.4
+      cost_score: 69.4
+      access_score: 78.2
+
+    - rank: 10
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      final_score: 71.6
+      outcomes_score: 90.5
+      cost_score: 73.7
+      access_score: 50.8
+
+    - rank: 11
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      final_score: 69.8
+      outcomes_score: 64.9
+      cost_score: 97.4
+      access_score: 47
+
+    - rank: 12
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      final_score: 67.8
+      outcomes_score: 63.8
+      cost_score: 79.9
+      access_score: 59.7
+
+    - rank: 13
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      final_score: 67.5
+      outcomes_score: 70.8
+      cost_score: 99.2
+      access_score: 32.5
+
+    - rank: 14
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      final_score: 67.2
+      outcomes_score: 71.2
+      cost_score: 73.9
+      access_score: 56.4
+
+    - rank: 15
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      final_score: 67.1
+      outcomes_score: 66.8
+      cost_score: 82.8
+      access_score: 51.7
+
+    - rank: 16
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      final_score: 66.8
+      outcomes_score: 87.3
+      cost_score: 51.9
+      access_score: 61.2
+
+    - rank: 17
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      final_score: 66.6
+      outcomes_score: 80.8
+      cost_score: 79.3
+      access_score: 39.9
+
+    - rank: 18
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      final_score: 65.5
+      outcomes_score: 67.8
+      cost_score: 72.9
+      access_score: 55.7
+
+    - rank: 19
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      final_score: 62.3
+      outcomes_score: 62.9
+      cost_score: 64.4
+      access_score: 59.7
+
+    - rank: 20
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      final_score: 62.2
+      outcomes_score: 57.9
+      cost_score: 66.7
+      access_score: 62
+
+    - rank: 21
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      final_score: 62.1
+      outcomes_score: 52.6
+      cost_score: 69.3
+      access_score: 64.2
+
+    - rank: 22
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      final_score: 57.4
+      outcomes_score: 95.7
+      cost_score: 15.4
+      access_score: 61.1
+
+    - rank: 23
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      final_score: 57.2
+      outcomes_score: 62.8
+      cost_score: 48.5
+      access_score: 60.1
+
+    - rank: 24
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      final_score: 56.8
+      outcomes_score: 53.5
+      cost_score: 58.1
+      access_score: 58.9
+
+    - rank: 25
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      final_score: 55.9
+      outcomes_score: 62.3
+      cost_score: 54.8
+      access_score: 50.4
+
+    - rank: 26
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      final_score: 55.8
+      outcomes_score: 40.3
+      cost_score: 69.8
+      access_score: 57.5
+
+    - rank: 27
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      final_score: 55.8
+      outcomes_score: 68.7
+      cost_score: 69.3
+      access_score: 29.3
+
+    - rank: 28
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      final_score: 55.7
+      outcomes_score: 57.1
+      cost_score: 46.4
+      access_score: 63.5
+
+    - rank: 29
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      final_score: 55.4
+      outcomes_score: 41.7
+      cost_score: 72.9
+      access_score: 51.6
+
+    - rank: 30
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      final_score: 54
+      outcomes_score: 53.7
+      cost_score: 57.6
+      access_score: 50.8
+
+    - rank: 31
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      final_score: 53.4
+      outcomes_score: 70.2
+      cost_score: 12.6
+      access_score: 77.3
+
+    - rank: 32
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      final_score: 50.4
+      outcomes_score: 55
+      cost_score: 51.3
+      access_score: 44.9
+
+    - rank: 33
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      final_score: 49.8
+      outcomes_score: 48.9
+      cost_score: 54.8
+      access_score: 45.7
+
+    - rank: 34
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      final_score: 48.5
+      outcomes_score: 55.2
+      cost_score: 66.2
+      access_score: 24.2
+
+    - rank: 35
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      final_score: 47.5
+      outcomes_score: 34.7
+      cost_score: 66.3
+      access_score: 41.6
+
+    - rank: 36
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      final_score: 47.5
+      outcomes_score: 68.3
+      cost_score: 44.2
+      access_score: 30
+
+    - rank: 37
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      final_score: 46.6
+      outcomes_score: 45
+      cost_score: 59.5
+      access_score: 35.4
+
+    - rank: 38
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      final_score: 46.4
+      outcomes_score: 19.8
+      cost_score: 61.1
+      access_score: 58.2
+
+    - rank: 39
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      final_score: 46.3
+      outcomes_score: 60.9
+      cost_score: 45.3
+      access_score: 32.7
+
+    - rank: 40
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      final_score: 45.1
+      outcomes_score: 26.9
+      cost_score: 47.2
+      access_score: 61.1
+
+    - rank: 41
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      final_score: 44.4
+      outcomes_score: 26.2
+      cost_score: 57
+      access_score: 50
+
+    - rank: 42
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      final_score: 41.2
+      outcomes_score: 65.5
+      cost_score: 17.8
+      access_score: 40.3
+
+    - rank: 43
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      final_score: 40.4
+      outcomes_score: 28.5
+      cost_score: 50.7
+      access_score: 42.1
+
+    - rank: 44
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      final_score: 36.9
+      outcomes_score: 43.7
+      cost_score: 43.5
+      access_score: 23.4
+
+    - rank: 45
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      final_score: 35.6
+      outcomes_score: 56
+      cost_score: 51.1
+      access_score: 0
+
+    - rank: 46
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      final_score: 35.2
+      outcomes_score: 19.5
+      cost_score: 41
+      access_score: 45.2
+
+    - rank: 47
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      final_score: 30.9
+      outcomes_score: 13.1
+      cost_score: 54.8
+      access_score: 24.9
+
+    - rank: 48
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      final_score: 29.9
+      outcomes_score: 0
+      cost_score: 49.8
+      access_score: 39.8
+
+    - rank: 49
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      final_score: 28.9
+      outcomes_score: 21.1
+      cost_score: 0
+      access_score: 65.6
+
+    - rank: 50
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      final_score: 27.8
+      outcomes_score: 48.5
+      cost_score: 6.9
+      access_score: 28
+
+compare:
+  metric_slug: best-healthcare
+  title: "Compare Healthcare Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of health, income, education, and quality of life."
+  button_text: "Compare healthcare"
+  icon: "fa-solid fa-heart-pulse"
+  default_state_a: hawaii
+  default_state_b: alaska
+
+sections:
+  - id: "best-healthcare-states"
+    icon: "fa-solid fa-heart-pulse"
+    title: "States with the Best Healthcare"
+    paragraphs:
+      - "Hawaii leads all 50 states with a Final Score of 87.6, the only entry above 85. New Hampshire ranks second at 82.1 and Massachusetts third at 79.9. Minnesota (76.7) and New Jersey (75.0) round out the top five."
+      - "Massachusetts holds an Outcomes score of 99.2, second only to Hawaii at 100. New Jersey ranks 6th overall at 75.0 with an Outcomes score of 98.6, third best in the table. Washington state holds the highest Cost score at 100 and ranks 7th overall at 74.9."
+
+  - id: "worst-healthcare-states"
+    icon: "fa-solid fa-arrow-trend-down"
+    title: "States with the Worst Healthcare"
+    paragraphs:
+      - "Alaska ranks last at 27.8 with a Cost score of 6.9, second lowest in the table. West Virginia ranks 49th at 28.9 and holds the lowest Cost score of any entry at 0. Mississippi ranks 48th at 29.9 with an Outcomes score of 0, the lowest for health results."
+      - "Oklahoma ranks 47th at 30.9 with an Outcomes score of 13.1, second lowest after Mississippi. Texas ranks 45th at 35.6 and holds the lowest Access score at 0. Arkansas (35.2) ranks 46th with an Outcomes score of 19.5."
+
+  - id: "healthcare-cost-by-state"
+    icon: "fa-solid fa-dollar-sign"
+    title: "States with the Highest Healthcare Costs"
+    paragraphs:
+      - "West Virginia has the lowest Cost score in the table at 0, the worst cost performance of any entry. Alaska follows at 6.9 and Vermont at 12.6. Vermont's ACA benchmark Silver premium of $1,223 per month is the highest in the country."
+      - "New York holds a Cost score of 15.4, pulling its Final Score to 57.4 despite an Outcomes score of 95.7, fourth best in the table. Wyoming's Cost score of 17.8 reflects a benchmark premium of $1,114 per month. Washington state, by contrast, holds the highest Cost score at 100."
+
+visual_assets:
+  - id: best-healthcare-states
+    src: /images/rankings/health/best-healthcare-by-state/best-healthcare-states.jpg
+    alt: Bright modern hospital corridor with clean clinical design
+    caption: The highest-ranked healthcare systems combine strong outcomes, broad access, and manageable costs rather than excelling in only one category. Hawaii, New Hampshire, Massachusetts, and Minnesota all score well across multiple dimensions at once.
+    section: best-healthcare-states
+    layout: full-width-tall
+
+  - id: worst-healthcare-states
+    src: /images/rankings/health/best-healthcare-by-state/worst-healthcare-states.jpg
+    alt: Small rural medical clinic building
+    caption: Lower-ranked states tend to struggle with a mix of weak access, poorer outcomes, or very high costs. Alaska, West Virginia, Mississippi, Oklahoma, and Texas each land near the bottom for different combinations of those pressures.
+    section: worst-healthcare-states
+    layout: full-width-tall
+
+  - id: healthcare-cost-by-state
+    src: /images/rankings/health/best-healthcare-by-state/healthcare-cost-by-state.jpg
+    alt: Medical bills, paperwork, and a calculator on a desk
+    caption: Healthcare affordability can pull down an otherwise strong overall system. States like New York and Vermont post excellent outcomes in some areas but lose ground when premiums and other costs rise too high.
+    section: healthcare-cost-by-state
+    layout: full-width-tall
+
+faq:
+  - question: "What state has the best healthcare?"
+    answer: "Hawaii has the highest Final Score at 87.6, more than 5 points ahead of second-ranked New Hampshire at 82.1. No other state scores above 80 in the table."
+
+  - question: "What state has the worst healthcare?"
+    answer: "Alaska ranks last at 27.8. West Virginia (28.9) and Mississippi (29.9) are the only other entries below 30. All three score below 7 on Cost performance or hold a Cost score of zero."
+
+  - question: "Which state has the best healthcare outcomes?"
+    answer: "Hawaii holds an Outcomes score of 100, the maximum in the table. Massachusetts follows at 99.2 and New Jersey at 98.6. Hawaii's combination of top Outcomes and a Cost score of 89.1 drives its first-place finish at 87.6."
+
+  - question: "Which state has the best healthcare access?"
+    answer: "North Dakota has the highest Access score at 78.2, the best healthcare access among states in this table. Vermont ranks second at 77.3 and Massachusetts third at 75.5. North Dakota ranks 9th overall with a Final Score of 72.0."
+
+  - question: "Which state has the best cost performance for healthcare?"
+    answer: "Washington state has the highest Cost score at 100, leading all entries on affordability and cost efficiency. Idaho follows at 99.2 and Maryland at 97.4. Washington ranks 7th overall with a Final Score of 74.9."
+
+  - question: "How does California rank for healthcare?"
+    answer: "California ranks 11th overall with a Final Score of 71.6. Its Outcomes score of 90.5 is fifth best in the table, ahead of several states ranked higher overall."
+
+related:
+  - title: "Life Expectancy by State"
+    url: "/rankings/health/states-by-life-expectancy"
+  - title: "States by Obesity Rate"
+    url: "/rankings/health/states-by-obesity-rate"
+  - title: "States by Uninsured Rate"
+    url: "/rankings/health/states-by-uninsured-rate"

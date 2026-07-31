@@ -28,7 +28,7 @@
 
         var hasSites = item.Sites?.Any() == true;
 
-        <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+        <div id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
             @await Html.PartialAsync("Components/Content/_SectionHeader", (IContentSection)item)
 
             @{
@@ -149,7 +149,7 @@
             }
 
             <div class="clear-both"></div>
-        </section>
+        </div>
     }
 
     @if (!renderedInlineFacts && inlineFactsSection?.Facts?.Any() == true && !hasAboutSection)

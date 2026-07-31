@@ -35,7 +35,7 @@
     {
         var section = item as FirearmSection;
 
-        <section id="section-@item.Id" class="scroll-mt-28 py-4 lg:py-5 border-t border-slate-100 first:border-t-0">
+        <div id="section-@item.Id" class="scroll-mt-28 py-4 lg:py-5 border-t border-slate-100 first:border-t-0">
 
             @await Html.PartialAsync("Components/Content/_SectionHeader", item)
 
@@ -84,7 +84,7 @@
             }
 
             <div class="clear-both"></div>
-        </section>
+        </div>
 
         @if (!quoteDone &&
             !string.IsNullOrWhiteSpace(quoteAfterSectionId) &&

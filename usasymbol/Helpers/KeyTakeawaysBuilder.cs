@@ -63,30 +63,33 @@ namespace Usasymbol.Helpers
         private static readonly Regex NumberTokenPattern = new(@"\b\d[\d,]*(?:\.\d+)?\b", RegexOptions.Compiled);
         private static readonly Regex BareYearPattern = new(@"^(?:1[5-9]\d{2}|20\d{2})$", RegexOptions.Compiled);
 
-        // Prefers a currency amount, then a percentage, then the first plain number that
-        // doesn't look like a bare year (e.g. skips "2026" in "... by State 2026 puts Texas
-        // first with 290 units" so it picks up "290" instead).
+        // Finds the first number-like token in reading order (currency, percent, or plain
+        // number), skipping bare years (e.g. skips "2026" in "... by State 2026 puts Texas
+        // first with 290 units" so it picks up "290" instead). Position in the sentence,
+        // not token type, decides the winner: "... at 13.3%, ... over $1 million" correctly
+        // resolves to 13.3% because it appears first, even though a dollar amount follows.
         private static Match? FindHeadlineNumber(string plain)
         {
-            var currency = CurrencyPattern.Match(plain);
-            if (currency.Success)
-            {
-                return currency;
-            }
+            var candidates = new List<Match>();
+            candidates.AddRange(CurrencyPattern.Matches(plain).Cast<Match>());
+            candidates.AddRange(PercentPattern.Matches(plain).Cast<Match>());
+            candidates.AddRange(NumberTokenPattern.Matches(plain).Cast<Match>());
 
-            var percent = PercentPattern.Match(plain);
-            if (percent.Success)
-            {
-                return percent;
-            }
-
-            var tokens = NumberTokenPattern.Matches(plain).Cast<Match>().ToList();
-            if (tokens.Count == 0)
+            if (candidates.Count == 0)
             {
                 return null;
             }
 
-            return tokens.FirstOrDefault(t => !LooksLikeBareYear(t.Value)) ?? tokens[0];
+            // Several patterns can match at the same starting index (a percent match like
+            // "13.3%" contains an embedded plain-number match "13.3"); keep the longest
+            // match per position so the richer token (with $ or %) wins over its own substring.
+            var ordered = candidates
+                .GroupBy(m => m.Index)
+                .Select(g => g.OrderByDescending(m => m.Length).First())
+                .OrderBy(m => m.Index)
+                .ToList();
+
+            return ordered.FirstOrDefault(t => !LooksLikeBareYear(t.Value)) ?? ordered.FirstOrDefault();
         }
 
         private static bool LooksLikeBareYear(string token)
@@ -121,7 +124,7 @@ namespace Usasymbol.Helpers
                     continue;
                 }
 
-                var subject = FindState(plain);
+                var subject = FindState(plain, numberMatch.Index);
 
                 results.Add(new BigNumberStory
                 {
@@ -285,22 +288,61 @@ namespace Usasymbol.Helpers
             return string.IsNullOrWhiteSpace(prefix) ? "Key fact" : prefix;
         }
 
-        private static (string Name, string Slug) FindState(string? text)
+        // Finds the state name that "owns" the number at numberIndex: the closest state
+        // mentioned before it, since English almost always states the subject first (e.g.
+        // "New York (10.9%), ... New Jersey (10.75%)" correctly attributes 10.9% to New
+        // York, not to New Jersey just because "New Jersey" is the longer name). Pass
+        // numberIndex = -1 to just take the first state mentioned, used when there's no
+        // specific number to anchor against.
+        private static (string Name, string Slug) FindState(string? text, int numberIndex = -1)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
                 return ("", "");
             }
 
-            foreach (var state in States.OrderByDescending(s => s.Name.Length))
+            var matches = new List<(string Name, string Slug, int Index)>();
+            foreach (var state in States)
             {
-                if (Regex.IsMatch(text, $@"\b{Regex.Escape(state.Name)}\b", RegexOptions.IgnoreCase))
+                foreach (Match m in Regex.Matches(text, $@"\b{Regex.Escape(state.Name)}\b", RegexOptions.IgnoreCase))
                 {
-                    return state;
+                    // "Washington, D.C." / "Washington D.C." names the district, not the
+                    // state of Washington -- skip a match immediately followed by a D.C. marker.
+                    if (string.Equals(state.Name, "Washington", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var tail = text.Substring(m.Index + m.Length);
+                        if (Regex.IsMatch(tail, @"^,?\s*D\.?C\.?\b", RegexOptions.IgnoreCase))
+                        {
+                            continue;
+                        }
+                    }
+
+                    matches.Add((state.Name, state.Slug, m.Index));
                 }
             }
 
-            return ("", "");
+            if (matches.Count == 0)
+            {
+                return ("", "");
+            }
+
+            if (numberIndex < 0)
+            {
+                var first = matches.OrderBy(m => m.Index).First();
+                return (first.Name, first.Slug);
+            }
+
+            // English sentences almost always name the subject before its value ("Texas
+            // requires 60 days", "New York (10.9%)"), so a state mentioned before the number
+            // wins even if a different state sits closer in raw character count after it
+            // (e.g. a trailing clause like "..., less than a tenth of Indiana's 90-day
+            // requirement" shouldn't steal the subject from an earlier, correct state).
+            var before = matches.Where(m => m.Index < numberIndex).ToList();
+            var pick = before.Count > 0
+                ? before.OrderBy(m => numberIndex - m.Index).First()
+                : matches.OrderBy(m => m.Index - numberIndex).First();
+
+            return (pick.Name, pick.Slug);
         }
 
         private static string StripMarkdown(string value)

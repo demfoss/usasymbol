@@ -1,0 +1,190 @@
+@model USASymbol.Models.ViewModels.DanceDetailViewModel
+@using System.Globalization
+@using USASymbol.Extensions
+@using USASymbol.Models.ViewModels
+@inject IImageUrlService Images
+
+@{
+    ViewData["BodyClass"] = "dance-detail-page";
+
+    var stateName = Model.State?.Name ?? "";
+    var adoptedYear = Model.DanceContent?.AdoptedYear ?? Model.Symbol?.AdoptedYear ?? 0;
+
+    var designationRaw = (Model.Symbol?.Designation ?? Model.DefaultDesignation).Trim();
+    var designation = string.IsNullOrWhiteSpace(designationRaw)
+        ? Model.DefaultDesignation
+        : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
+
+    var pageHeading = !string.IsNullOrWhiteSpace(Model.DanceContent?.Name)
+        ? Model.DanceContent!.Name
+        : $"{stateName} {designation}";
+
+    var descRaw = Model.DanceContent?.SeoDescription ?? "";
+    ViewData["Title"] = Model.DanceContent?.SeoTitle ?? pageHeading;
+    ViewData["Description"] = string.IsNullOrWhiteSpace(descRaw)
+        ? $"Learn about {stateName}'s official {designation.ToLowerInvariant()} and why it became part of the state's identity."
+        : System.Net.WebUtility.HtmlDecode(descRaw);
+
+    var heroImage = Model.DanceContent?.HeroImage;
+    if (string.IsNullOrWhiteSpace(heroImage)) heroImage = Model.Symbol?.ImageUrl;
+    if (string.IsNullOrWhiteSpace(heroImage))
+        heroImage = Model.DanceContent?.VisualAssets?.FirstOrDefault()?.Src;
+
+    ViewData["OgImage"] = Images.Full(heroImage ?? Model.State?.FlagImageUrl);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+
+    var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
+        .Where(x => !string.IsNullOrWhiteSpace(x?.Value))
+        .ToList();
+
+    var introText = Model.DanceContent?.IntroText ?? string.Empty;
+    var overviewText = !string.IsNullOrWhiteSpace(introText)
+        ? introText
+        : adoptedYear > 0
+            ? $"The official {designation.ToLowerInvariant()} of {stateName} was adopted in <strong>{adoptedYear}</strong>."
+            : $"{stateName} recognizes {pageHeading} as its official {designation.ToLowerInvariant()}.";
+
+    var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw) ? descRaw : introText;
+    var heroDescription = System.Net.WebUtility.HtmlDecode(
+        System.Text.RegularExpressions.Regex.Replace(
+            System.Text.RegularExpressions.Regex.Replace(heroDescriptionSource, @"\[(.*?)\]\((.*?)\)", "$1"),
+            "<.*?>",
+            " "))
+        .Trim();
+
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#2a1626_0%,#111827_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-pink-200/0 via-pink-300/70 to-sky-200/0",
+        PrimaryGlowClass = "bg-pink-300/10",
+        SecondaryGlowClass = "bg-white/10",
+        AccentDotClass = "bg-pink-300",
+        MediaBackgroundClass = "bg-slate-100/10",
+        FallbackIconClass = Model.HeroFallbackIconClass,
+        Title = pageHeading,
+        Description = heroDescription,
+        LegalReference = Model.Legislation,
+        ImageUrl = heroImage,
+        ImageAlt = !string.IsNullOrWhiteSpace(Model.DanceContent?.HeroImageAlt)
+            ? Model.DanceContent.HeroImageAlt
+            : pageHeading,
+        ImageClass = "absolute inset-0 h-full w-full object-cover",
+        FigureTitle = pageHeading,
+        FigureSubtitle = $"Official {designation} of {stateName}",
+        ImageLinkUrl = heroImage,
+        EyebrowItems = new List<string>
+        {
+            stateName,
+            designation,
+            adoptedYear > 0 ? $"Adopted {adoptedYear}" : string.Empty
+        }
+    };
+}
+
+@section Styles {
+    <style>
+        .dance-detail-page [class*="rounded"],
+        .dance-detail-page [class*="rounded-"] {
+            border-radius: 0 !important;
+        }
+
+        .dance-detail-page .rounded-full,
+        .dance-detail-page [class*="rounded-full"] {
+            border-radius: 9999px !important;
+        }
+
+        .dance-detail-page [style*="border-radius"] {
+            border-radius: 0 !important;
+        }
+
+        .dance-detail-page .js-visual-lightbox,
+        .dance-detail-page .toc-link,
+        .dance-detail-page .toc-mobile-link,
+        .dance-detail-page button,
+        .dance-detail-page a {
+            border-radius: 0;
+        }
+    </style>
+}
+
+<nav class="bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="symbol-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <aside class="hidden xl:block relative h-full">
+                <div class="sticky top-24 pb-10">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                </div>
+            </aside>
+
+            <div class="min-w-0">
+                <div class="article-content site-content">
+                    @await Html.PartialAsync("_Overview", null, new ViewDataDictionary(ViewData) {
+                        { "Heading", $"{designation} of {stateName}" },
+                        { "Body", overviewText.RenderAutoLinks() }
+                    })
+
+                    @if (!string.IsNullOrWhiteSpace(Model.VideoUrl))
+                    {
+                        @await Html.PartialAsync("Components/Widgets/_VideoEmbed", (Model.VideoUrl, Model.VideoTitle, Model.VideoCaption))
+                    }
+
+                    @if (quickFacts.Any())
+                    {
+                        <div class="lg:hidden">
+                            @await Html.PartialAsync("_QuickFacts", quickFacts)
+                        </div>
+                    }
+
+                    @await Html.PartialAsync("_DanceSections", Model)
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_Faq", Model)
+                    </div>
+
+                    <section id="sources" class="content-divider">
+                        @await Html.PartialAsync("_Sources", Model)
+                    </section>
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+
+                    <div class="mt-12 lg:hidden">
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                    </div>
+                </div>
+            </div>
+
+            <aside class="article-sidebar hidden lg:block" aria-label="Article sidebar">
+                <div class="sidebar-content space-y-10">
+                    @await Html.PartialAsync("_RelatedSymbols", Model)
+                    @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+                </div>
+            </aside>
+        </div>
+
+        @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
+        {
+            <div class="mt-14">
+                @await Html.PartialAsync("_LatestContentRail", latestContentRail)
+            </div>
+        }
+    </article>
+</div>
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")

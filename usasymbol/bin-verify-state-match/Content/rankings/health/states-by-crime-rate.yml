@@ -1,0 +1,114 @@
+type: ranking
+slug: states-by-crime-rate
+category: health
+url: /rankings/health/states-by-crime-rate
+hero_image: "/images/rankings/health/states-by-crime-rate/states-by-crime-rate-hero.jpg"
+hero_image_alt: "Blurred police lights on a dark city street at night"
+extremes_mode: both
+extremes_title: "Safest and Most Dangerous States by Violent Crime Rate"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Violent Crime Rate by State 2026 | Map & Rates"
+  description: "New Mexico and Alaska have the highest violent crime rates, while Maine and New Hampshire have the lowest."
+
+page:
+  h1: "Violent Crime Rate by State"
+  quick_answer:
+    - "Alaska has the highest violent crime rate in the U.S. at 837.8 per 100,000 residents, driven by geographic isolation, high alcohol consumption, and limited law enforcement reach in remote communities. New Mexico (779.0) follows closely."
+    - "Maine, New Hampshire, and Connecticut have the lowest violent crime rates, all below 200 per 100,000. These states combine low poverty, high educational attainment, cohesive communities, and well-funded local law enforcement."
+    - "Violent crime includes murder and non-negligent manslaughter, rape, robbery, and aggravated assault, as defined by the FBI Uniform Crime Reporting program. The national rate is approximately 380 incidents per 100,000 residents."
+  methodology: "Violent crime rates are per 100,000 residents using FBI Unified Crime Reporting (UCR) 2022 data, the most recent year with complete state-level coverage. Violent crime includes murder and non-negligent manslaughter, rape (revised definition), robbery, and aggravated assault. Not all agencies report to the UCR; states with lower coverage rates may have estimates adjusted by the FBI."
+  sources:
+    - name: "FBI Crime Data Explorer — Uniform Crime Reporting 2022"
+      url: "https://cde.ucr.cjis.gov"
+      description: "State-level violent crime counts and rates per 100,000 residents"
+
+map:
+  title: "Violent Crime Rate by State 2026 Map"
+  image_alt: "U.S. map showing violent crime rate per 100,000 residents by state, darkest red for highest crime"
+  caption: "New Mexico and Alaska are the clear outliers. The Northeast and Upper Midwest run lightest. Maine, New Hampshire, and Vermont are among the safest states in the country."
+  metric_key: crime_rate
+  metric_label: "Per 100k"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
+computed_data:
+  field: violent_crime_rate_per_100k
+  sort: desc
+  format: "F0"
+  label: "Violent Crime Rate (per 100k)"
+  metric_key: crime_rate
+
+compare:
+  metric_slug: violent-crime
+  title: "Compare Crime Rates Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of safety, health, income, and quality of life."
+  icon: "fa-solid fa-shield-halved"
+
+sections:
+  - id: "why_new_england_safest"
+    icon: "fa-solid fa-shield-halved"
+    title: "Why New England Has the Lowest Crime Rates"
+    paragraphs:
+      - "Maine (109.8 per 100,000), New Hampshire (164.4), and Vermont (187.6) consistently record the lowest violent crime rates in the country. All three share structural characteristics associated with low crime: high median household incomes, low poverty rates, high educational attainment, and relatively small and socially cohesive communities. Maine's largest city, Portland, has a population under 70,000, limiting the concentration of poverty-linked crime that larger cities generate."
+      - "New Jersey (188.9) and Connecticut (178.0) achieve low rates despite being densely populated states with major urban centers. Both states invest heavily in law enforcement and have relatively low rates of gun violence compared to their regional peers. Connecticut's violent crime rate has fallen by more than 40% since the early 1990s, tracking national trends but from an already lower baseline."
+
+  - id: "why_alaska_highest"
+    icon: "fa-solid fa-triangle-exclamation"
+    title: "Why Alaska Has the Highest Violent Crime Rate"
+    paragraphs:
+      - "Alaska's 837.8 per 100,000 violent crime rate, more than double the national average, is driven by geographic isolation, high alcohol consumption, and limited law enforcement reach. Many Alaska communities are accessible only by air or water, which means law enforcement response times can be measured in hours rather than minutes. Crimes that might be interrupted quickly in connected communities go unaddressed longer."
+      - "Alaska has the highest per-capita alcohol consumption in the United States, and alcohol is implicated in a large share of violent offenses including assault and domestic violence. Native Alaskan communities, many in remote villages, experience violent crime rates several times higher than statewide averages. State funding for village public safety officers, a program for communities too small to support full police departments, has been inconsistent, leaving some villages without any law enforcement presence."
+
+  - id: "new_mexico_outlier"
+    icon: "fa-solid fa-circle-question"
+    title: "Why New Mexico Ranks Near the Bottom for Crime"
+    paragraphs:
+      - "New Mexico's 779.0 per 100,000 violent crime rate places it second-worst nationally. Albuquerque, the state's largest city with about 560,000 people in its metro area, has recorded one of the highest property and violent crime rates of any major U.S. city for multiple consecutive years. Auto theft in Albuquerque has been among the highest per capita of any American city."
+      - "Poverty explains much of New Mexico's position. At 17.8%, New Mexico has one of the three highest poverty rates in the country. Rural poverty on Native American reservations, combined with chronic underfunding of behavioral health services and law enforcement infrastructure, keeps crime rates elevated across large portions of the state."
+
+  - id: "reporting_caveat"
+    icon: "fa-solid fa-magnifying-glass"
+    title: "Crime Rates Reflect Reported Crimes, Not All Crime"
+    paragraphs:
+      - "Violent crime statistics are compiled from law enforcement agencies that voluntarily report to the FBI's Uniform Crime Reporting program. Not all agencies report, and participation rates vary by state. Some states have gaps in local agency participation that cause statewide rates to appear lower than the true figure."
+      - "Domestic violence, sexual assault, and crimes in rural areas are systematically underreported across all states. States with better victim advocacy programs and higher reporting rates may show higher crime numbers not because they have more crime, but because more victims come forward. Comparing rates across states requires awareness that the data reflects reported incidents, not a complete census of criminal acts."
+
+visual_assets:
+  - id: alaska-crime-placeholder
+    src: /images/rankings/health/states-by-crime-rate/alaska-crime-placeholder.jpg
+    alt: "Patrol vehicle parked along a long road in a sparsely settled landscape"
+    caption: "Distance, sparse settlement, and long travel corridors can complicate public safety in places far from dense urban service networks."
+    section: why_alaska_highest
+    layout: left
+  - id: new-england-crime-placeholder
+    src: /images/rankings/health/states-by-crime-rate/new-england-crime-placeholder.jpg
+    alt: "Calm small-town street with storefronts, trees, and parked cars"
+    caption: "Compact towns and smaller urban networks are part of the low-crime profile often associated with northern New England."
+    section: why_new_england_safest
+    layout: right
+
+faq:
+  - question: "Which state has the highest violent crime rate?"
+    answer: "Alaska has the highest violent crime rate among U.S. states, at 837.8 per 100,000 residents. Geographic isolation, high alcohol consumption, and limited law enforcement reach in remote communities are the primary drivers. New Mexico (779.0) ranks second."
+  - question: "Which states are the safest from violent crime?"
+    answer: "Maine, New Hampshire, and Vermont consistently have the lowest violent crime rates in the U.S., all well below 200 per 100,000. These states share low poverty rates, high social trust, predominantly rural or small-city populations, and low rates of drug trafficking."
+  - question: "What counts as violent crime in FBI data?"
+    answer: "The FBI defines violent crime as offenses that involve force or the threat of force: murder and non-negligent manslaughter, rape, robbery, and aggravated assault. Property crimes (burglary, theft, arson) are tracked separately. Only incidents reported to law enforcement and submitted to the FBI are included."
+  - question: "Does a low violent crime rate mean a state is truly safe?"
+    answer: "Not entirely — violent crime rates capture reported offenses but miss unreported crimes, property crime, fraud, cybercrime, and traffic fatalities. States with high violent crime can have low property crime, and vice versa. The FBI and BJS publish separate measures for property crime, drug offenses, and other categories."
+
+related:
+  - title: "States by Life Expectancy"
+    url: "/rankings/health/states-by-life-expectancy"
+  - title: "States by Poverty Rate"
+    url: "/rankings/economy/states-by-poverty-rate"
+  - title: "States by Unemployment Rate"
+    url: "/rankings/economy/states-by-unemployment"
+  - title: "States by K-12 Education Ranking"
+    url: "/rankings/education/states-by-k12-education"

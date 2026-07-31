@@ -1,0 +1,114 @@
+type: ranking
+slug: states-by-home-value
+category: economy
+url: /rankings/economy/states-by-home-value
+hero_image: "/images/rankings/economy/states-by-home-value/states-by-home-value-hero.jpg"
+hero_image_alt: "Large homes clustered along a sunny coastal hillside"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Median Home Values"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Median Home Value by State 2026 | Map & Prices"
+  description: "Hawaii has the highest median home value, above $800,000, while West Virginia is the most affordable at about $125,000."
+
+page:
+  h1: "Median Home Value by State 2026"
+  quick_answer:
+    - "Hawaii has the highest median home value in the U.S. at over $800,000, followed by California ($693,700) and Washington ($528,300). Limited land, restricted zoning, and high demand in coastal metros drive prices far above the national median."
+    - "West Virginia has the lowest median home value at around $125,000, roughly one-sixth of Hawaii's figure. Mississippi and Oklahoma also rank among the most affordable states for homebuyers."
+    - "The national median home value is approximately $308,000 (U.S. Census Bureau, 2023 ACS). Twenty-six states fall below that national median."
+  methodology: "Figures are 2023 one-year estimates from the U.S. Census Bureau American Community Survey (ACS), Table B25077 (Median Value of Owner-Occupied Housing Units). Values reflect owner-occupied units only and are in nominal dollars."
+  sources:
+    - name: "U.S. Census Bureau — American Community Survey 2023"
+      url: "https://data.census.gov"
+      description: "1-year ACS estimates, Table B25077"
+
+map:
+  title: "Median Home Value by State 2026 Map"
+  image_alt: "U.S. map showing median home value by state, color-coded from lightest for lowest values to darkest blue for highest"
+  caption: "Hawaii and California are the clear outliers above $600,000. The Mountain West and Northeast follow. West Virginia, Mississippi, and Arkansas anchor the most affordable end under $160,000."
+  metric_key: home_value
+  metric_label: "Median Value"
+  name_key: state
+  color_scheme: blue
+  color_scale: linear
+
+computed_data:
+  field: median_home_value
+  sort: desc
+  format: "C0"
+  label: "Median Home Value"
+  metric_key: home_value
+
+compare:
+  metric_slug: home-value
+  title: "Compare Housing Costs Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of home values, income, cost of living, and more."
+  icon: "fa-solid fa-house"
+
+sections:
+  - id: "why_hawaii_leads"
+    icon: "fa-solid fa-mountain-sun"
+    title: "Why Hawaii Has the Highest Home Values"
+    paragraphs:
+      - "Hawaii's median home value of $814,500 reflects two constraints that reinforce each other: limited land and persistent demand. The islands are volcanic and mostly mountainous, leaving a small percentage of land usable for residential development. Oahu, home to Honolulu and nearly two-thirds of the state's population, has less than 600 square miles of total area."
+      - "Demand comes from multiple directions simultaneously: local workers who need to live near their jobs, mainland buyers seeking vacation properties, and retirees attracted by the climate. Zoning restrictions and environmental regulations limit new construction, so each category of demand competes for the same fixed supply. California ($693,700) follows Hawaii for similar supply-constraint reasons in coastal metro areas like Los Angeles and San Francisco."
+
+  - id: "why_west_virginia_cheapest"
+    icon: "fa-solid fa-arrow-trend-down"
+    title: "Why West Virginia Has the Lowest Home Values"
+    paragraphs:
+      - "West Virginia's median home value of $124,800, less than one-sixth of Hawaii's, reflects sustained population decline. The state has lost residents in most census periods since the 1950s as coal and manufacturing employment contracted. Fewer buyers competing for housing means prices stay low. In some counties, home values have declined in nominal terms over decades."
+      - "Low incomes reinforce low home values. West Virginia's median household income of $52,480 is among the three lowest in the country. When local wages are low, buyers cannot afford higher prices, which caps what sellers can charge. The result is a self-reinforcing cycle: low wages, low demand, low prices."
+
+  - id: "western_surge"
+    icon: "fa-solid fa-chart-line"
+    title: "Home Values Rose Fastest in the West After 2020"
+    paragraphs:
+      - "Washington ($528,300) and Colorado ($493,100) both rank in the national top five despite not being Hawaii or California. Both states attracted large inflows of remote workers after 2020, particularly from California's Bay Area and Seattle's tech sector. Home prices in Seattle, Denver, and Boise rose faster between 2020 and 2023 than in almost any other major market in the country."
+      - "Colorado's median home value doubled from roughly $247,000 in 2015 to $493,100 by 2023. Idaho, just below the top 10, saw similar appreciation from a lower base. The Mountain West's combination of outdoor lifestyle access and remote-work compatibility drove demand from higher-cost coastal markets into states that were previously considered affordable."
+
+  - id: "value_vs_affordability"
+    icon: "fa-solid fa-circle-question"
+    title: "High Home Values Don't Always Mean High Cost"
+    paragraphs:
+      - "California has the second-highest median home value at $693,700 but also one of the highest median household incomes at $84,097. West Virginia has the lowest home values, but its $52,480 income means even cheap homes require a high share of local earnings. Affordability depends on the income-to-price ratio, not the price alone."
+      - "Owner costs as a share of income capture this better. West Virginia homeowners spend about 14.6% of income on housing, lower than California's 21%, but only because values are so low relative to income. Colorado shows a different problem: rapidly rising values have pushed the ratio above 19% despite incomes well above the national average. See [states by cost of living](/rankings/economy/states-by-cost-of-living) for a broader affordability comparison."
+
+visual_assets:
+  - id: hawaii-home-value-placeholder
+    src: /images/rankings/economy/states-by-home-value/hawaii-home-value-placeholder.jpg
+    alt: "Rows of hillside homes overlooking water"
+    caption: "Limited land and strong demand often push scenic housing markets far above national home-value averages."
+    section: why_hawaii_leads
+    layout: right
+  - id: western-home-value-placeholder
+    src: /images/rankings/economy/states-by-home-value/western-home-value-placeholder.jpg
+    alt: "New homes spreading across a dry foothill landscape"
+    caption: "Fast-growing Western housing markets often combine new construction with strong migration-driven demand."
+    section: western_surge
+    layout: left
+
+faq:
+  - question: "Which state has the most expensive housing?"
+    answer: "Hawaii has the highest median home value in the U.S. at over $800,000. The combination of limited buildable land on the islands, high construction costs due to imported materials, and strong demand from both residents and investors keeps prices at the top of every national ranking."
+  - question: "Which state has the cheapest housing?"
+    answer: "West Virginia has the lowest median home value of any U.S. state at around $125,000. The state has a rural economy with limited high-wage employment, which suppresses housing demand and keeps prices well below the national average."
+  - question: "How does median home value compare to median home price?"
+    answer: "The Census Bureau's median home value is self-reported by homeowners and reflects estimated market value of owner-occupied units. Median home price (from Redfin, Zillow, or NAR) reflects actual sales transaction prices and may differ due to sampling differences and market timing. Both measures show similar trends across states."
+  - question: "Which states have the best home value relative to income?"
+    answer: "States where home values are low relative to median household income offer the best affordability. Mississippi, West Virginia, and Oklahoma typically score well on home-value-to-income ratios. California, Hawaii, and Massachusetts have the worst ratios — buyers in those states need 10x or more their annual income to purchase a median-priced home."
+
+related:
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"
+  - title: "States by Property Tax Rate"
+    url: "/rankings/economy/states-by-property-tax"
+  - title: "States by Unemployment Rate"
+    url: "/rankings/economy/states-by-unemployment"

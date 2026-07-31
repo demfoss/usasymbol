@@ -101,9 +101,9 @@
 
             @if (content?.Map != null)
             {
-                <section class="page-map-stage @(Model.HasQuickAnswer ? "page-map-stage--after-qa" : "")">
+                <div class="page-map-stage @(Model.HasQuickAnswer ? "page-map-stage--after-qa" : "")">
                     @await Html.RenderMapBlockAsync(content.Map, content?.Table)
-                </section>
+                </div>
             }
 
             @if (Model.HasQuickAnswer && content?.Map == null)
@@ -111,7 +111,7 @@
                 <div class="my-8 md:my-10 h-px bg-slate-200"></div>
             }
 
-            <section id="listing-table" class="scroll-mt-24 page-flow-content">
+            <div id="listing-table" class="scroll-mt-24 page-flow-content">
                 <div class="flex items-baseline justify-between gap-4">
                     @{
                         var slugRaw = (content?.Slug ?? "").Trim();
@@ -141,14 +141,14 @@
                     @await Html.PartialAsync("Components/Tables/_Cards", tableVM)
                     @await Html.PartialAsync("Components/Tables/_Table", tableVM)
                 </div>
-            </section>
+            </div>
 
             <div class="article-content min-w-0">
                 <div class="my-8 md:my-10 h-px bg-slate-200"></div>
 
-                <section id="sections" class="scroll-mt-24">
+                <div id="sections" class="scroll-mt-24">
                     @await Html.PartialAsync("Pages/_Sections", Model)
-                </section>
+                </div>
 
                 @if (hasFaq)
                 {
@@ -161,14 +161,14 @@
                 {
                     <div class="my-8 md:my-10 h-px bg-slate-200"></div>
 
-                    <section id="sources" class="scroll-mt-24">
+                    <div id="sources" class="scroll-mt-24">
                         @await Html.PartialAsync("Pages/_MethodologySources", Model)
-                    </section>
+                    </div>
                 }
 
-                <section id="author" class="scroll-mt-24 mt-8">
+                <div id="author" class="scroll-mt-24 mt-8">
                     @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
-                </section>
+                </div>
             </div>
 
             <div class="mt-10 border-t border-slate-200 pt-6">
@@ -185,8 +185,8 @@
             </div>
         </div>
 
-        <aside class="hidden lg:block relative self-start" aria-label="Explore more">
-            <div>
+        <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+            <div class="sidebar-content">
                 @await Html.PartialAsync("_GuidesAndRankingsSidebar")
             </div>
         </aside>

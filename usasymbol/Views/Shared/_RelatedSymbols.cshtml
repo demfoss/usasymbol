@@ -16,20 +16,18 @@
     var allSymbolsLabel = string.IsNullOrWhiteSpace(stateName) ? "View all state symbols" : $"View all {stateName} state symbols";
 
     var desktopItems = allItems.Take(5).ToList();
-    var mobilePrimary = allItems.Take(3).ToList();
-    var mobileRest = allItems.Skip(3).Take(2).ToList();
 }
 
 @if (allItems.Any())
 {
-    <aside class="hidden lg:block">
+    <section>
         <h2 class="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#13231D]">
             @heading
         </h2>
 
         <div class="mt-3 h-px bg-slate-300/80"></div>
 
-        <section class="mt-6 space-y-4">
+        <div class="mt-6 space-y-4">
             @foreach (var symbol in desktopItems)
             {
                 var imageUrl = ResolveRelatedImageUrl(symbol);
@@ -39,7 +37,7 @@
 
                 <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
                    class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
-                    <div class="h-[4.4rem] w-[4.4rem] shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+                    <div class="h-[4.4rem] w-[4.4rem] shrink-0 overflow-hidden bg-slate-100">
                         @if (!string.IsNullOrWhiteSpace(imageUrl))
                         {
                             <img src="@Images.Card(imageUrl)"
@@ -62,103 +60,7 @@
                     </div>
                 </a>
             }
-        </section>
-
-        <div class="mt-6">
-            <a href="@allSymbolsUrl"
-               class="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
-                <span>@allSymbolsLabel</span>
-                <i class="fa-solid fa-arrow-right text-xs"></i>
-            </a>
         </div>
-    </aside>
-
-    <section class="lg:hidden mt-12" data-nosnippet>
-        <h2 class="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#13231D]">
-            @heading
-        </h2>
-
-        <div class="mt-3 h-px bg-slate-300/80"></div>
-
-        <div class="mt-6 space-y-4">
-            @foreach (var symbol in mobilePrimary)
-            {
-                var imageUrl = ResolveRelatedImageUrl(symbol);
-                var imageClass = string.Equals(symbol.Type, "state-seal", StringComparison.OrdinalIgnoreCase) || string.Equals(symbol.Type, "coat-of-arms", StringComparison.OrdinalIgnoreCase)
-                    ? "h-full w-full object-contain p-1"
-                    : "h-full w-full object-cover";
-
-                <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
-                   class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
-                    <div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
-                        @if (!string.IsNullOrWhiteSpace(imageUrl))
-                        {
-                            <img src="@Images.Card(imageUrl)"
-                                 alt="@symbol.Name"
-                                 class="@imageClass"
-                                 loading="lazy" />
-                        }
-                        else
-                        {
-                            <div class="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600">
-                                <span class="text-base font-semibold">@GetSymbolInitial(symbol.Name)</span>
-                            </div>
-                        }
-                    </div>
-
-                    <div class="min-w-0 pt-0.5">
-                        <div class="text-base font-semibold leading-7 text-slate-900 line-clamp-3">
-                            @symbol.Name
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
-
-        @if (mobileRest.Any())
-        {
-            <details class="mt-5">
-                <summary class="cursor-pointer select-none inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-slate-700 transition">
-                    <span>Show more</span>
-                    <span class="text-[11px] text-slate-500">(@mobileRest.Count)</span>
-                </summary>
-
-                <div class="mt-4 space-y-4">
-                    @foreach (var symbol in mobileRest)
-                    {
-                        var imageUrl = ResolveRelatedImageUrl(symbol);
-                        var imageClass = string.Equals(symbol.Type, "state-seal", StringComparison.OrdinalIgnoreCase) || string.Equals(symbol.Type, "coat-of-arms", StringComparison.OrdinalIgnoreCase)
-                            ? "h-full w-full object-contain p-1"
-                            : "h-full w-full object-cover";
-
-                        <a href="@symbol.ToSymbolUrl(Model.State.Slug)"
-                           class="group flex items-start gap-4 text-slate-900 transition-opacity hover:opacity-85">
-                            <div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
-                                @if (!string.IsNullOrWhiteSpace(imageUrl))
-                                {
-                                    <img src="@Images.Card(imageUrl)"
-                                         alt="@symbol.Name"
-                                         class="@imageClass"
-                                         loading="lazy" />
-                                }
-                                else
-                                {
-                                    <div class="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600">
-                                        <span class="text-base font-semibold">@GetSymbolInitial(symbol.Name)</span>
-                                    </div>
-                                }
-                            </div>
-
-                            <div class="min-w-0 pt-0.5">
-                                <div class="text-base font-semibold leading-7 text-slate-900 line-clamp-3">
-                                    @symbol.Name
-                                </div>
-                            </div>
-                        </a>
-                    }
-                </div>
-            </details>
-        }
 
         <div class="mt-6">
             <a href="@allSymbolsUrl"

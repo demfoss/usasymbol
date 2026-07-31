@@ -1,0 +1,107 @@
+type: collection
+slug: states-that-have-an-x-in-their-name
+category: geography
+url: /collections/geography/states-that-have-an-x-in-their-name
+auto_link_phrases:
+  - "states with x in their name"
+  - "states that have an x"
+  - "US states containing x"
+  - "state names with the letter x"
+
+author: "USA Symbol Team"
+date_published: "2026-07-24"
+date_modified: "2026-07-24"
+
+seo:
+  title: "States With an X in Their Name"
+  description: "New Mexico and Texas are the only two U.S. states with the letter X in their names."
+
+hero_image: "/images/collections/geography/letters/letter-x.svg"
+hero_image_alt: "Large white capital letter X on a dark background"
+hero_image_caption: "Texas and New Mexico are the only two state names that contain X."
+
+page:
+  h1: "States That Have an X in Their Name"
+  intro_title: "Two State Names Contain X"
+  quick_answer:
+    - "New Mexico and Texas are the only U.S. states with the letter X in their names."
+    - "Each name contains X exactly once. New Mexico has 9 letters without its space, and Texas has 5."
+    - "Both states are in the West or South regions of the project's state table and share a border."
+  methodology: "State names come from the project's seeded 50-state table in Data/DbSeeder.cs. The names were grouped by whether the letter X appears anywhere in the common name."
+  sources:
+    - name: "USA Symbol state table"
+      url: "/states"
+      description: "Project state list used for names, abbreviations, capitals, and regions"
+
+big_stat:
+  number: "2"
+  description: "U.S. state names contain the letter X."
+
+table:
+  title: "States With X in Their Name"
+  searchable: false
+  sortable: true
+  columns:
+    state: "State"
+    postal_code: "Abbreviation"
+    capital: "Capital"
+    region: "Region"
+    x_count: "Number of X Letters"
+  rows:
+    - { state: "New Mexico", state_slug: "new-mexico", postal_code: "NM", capital: "Santa Fe", region: "West", x_count: 1 }
+    - { state: "Texas", state_slug: "texas", postal_code: "TX", capital: "Austin", region: "South", x_count: 1 }
+
+sections:
+  - id: "states-with-x"
+    icon: "fa-solid fa-x"
+    style: "law-cards"
+    title: "All States With X in Their Name"
+    subsections:
+      - subtitle: "New Mexico"
+        text: |
+          **Abbreviation:** NM
+          **Capital:** Santa Fe
+
+          New Mexico contains one X in the word Mexico. The project table places the state in the West region.
+
+          That single X is the exact reason New Mexico belongs in this two-state group.
+      - subtitle: "Texas"
+        text: |
+          **Abbreviation:** TX
+          **Capital:** Austin
+
+          Texas contains one X as its third letter. The project table places the state in the South region.
+
+          That X qualifies Texas and makes it the shorter of the two matching state names.
+
+visual_assets:
+  - id: "new-mexico-with-x"
+    src: "/images/flags/new-mexico/flag.webp"
+    alt: "New Mexico state flag"
+    caption: "New Mexico contains one X and has Santa Fe as its capital."
+    section: "states-with-x::new-mexico"
+    layout: left
+  - id: "texas-with-x"
+    src: "/images/flags/texas/flag.webp"
+    alt: "Texas state flag"
+    caption: "Texas contains one X and has Austin as its capital."
+    section: "states-with-x::texas"
+    layout: right
+
+faq:
+  - question: "What states have an X in their name?"
+    answer: "New Mexico and Texas are the only U.S. states with an X in their names."
+  - question: "How many states contain the letter X?"
+    answer: "Two of the 50 state names contain X."
+  - question: "How many X letters are in New Mexico?"
+    answer: "New Mexico contains one X, in the word Mexico."
+  - question: "How many X letters are in Texas?"
+    answer: "Texas contains one X, which is the third letter of the name."
+
+related:
+  - title: "States That End in S"
+    url: "/collections/geography/states-that-end-in-s"
+  - title: "States That Start with A"
+    url: "/collections/geography/states-that-start-with-a"
+  - title: "States by Starting Letter"
+    url: "/rankings/geography/states-by-starting-letter"

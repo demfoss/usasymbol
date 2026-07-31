@@ -157,14 +157,16 @@
                         @await Html.PartialAsync("_Sources", Model)
                     </section>
 
-                    <div class="mt-10 space-y-8 lg:hidden" data-nosnippet>
-                        @await Html.PartialAsync("_RelatedSymbols", Model)
-                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
-                        @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
-                    </div>
-
                     <div class="content-divider">
                         @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+
+                    <div class="mt-12 lg:hidden">
+
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+
                     </div>
                 </div>
             </div>

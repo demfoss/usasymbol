@@ -1,0 +1,643 @@
+type: ranking
+slug: school-spending-by-state
+category: education
+url: /rankings/education/school-spending-by-state
+auto_link_phrases:
+  - "school spending by state"
+  - "per pupil spending by state"
+  - "education spending by state"
+  - "school funding rankings"
+  - "school spending adjusted for cost of living"
+extremes_mode: both
+extremes_title: "States That Spend the Most and Least Per Student"
+hero_image: "/images/rankings/education/school-spending-by-state/school-spending-by-state-hero.jpg"
+hero_image_alt: "Elementary school classroom with desks and a chalkboard"
+hero_image_caption: "New York spends the most per student at $30,012 a year. Idaho spends the least at $11,056."
+
+author: "USA Symbol Team"
+date_published: "2026-07-19"
+date_modified: "2026-07-19"
+
+seo:
+  title: "School Spending by State 2026 | Per-Pupil Map & Data"
+  description: "New York spends the most per student at $30,012 a year. Idaho spends the least at $11,056. The national average is $17,619."
+
+page:
+  h1: "School Spending by State"
+
+  quick_answer:
+    - "New York spends the most per student at $30,012 a year, nearly triple Idaho's $11,056, the lowest in the country."
+    - "Vermont ($28,818) and New Jersey ($26,280) rank second and third nationally. The national average is $17,619 per student, up 6.61% from the prior year."
+    - "Adjusted for cost of living, Vermont overtakes New York for the top spot, and Hawaii falls from 5th nationally to 45th, since its cost of living is nearly double the national norm."
+
+  methodology: "Per-pupil spending is World Population Review's 2025 state education finance data. Cost-of-living-adjusted spending divides nominal spending by each state's MERIC cost-of-living index, where 100 equals the U.S. average."
+
+  sources:
+    - name: "World Population Review — Per Pupil Spending by State"
+      url: "https://worldpopulationreview.com/state-rankings/per-pupil-spending-by-state"
+      description: "2025 per-pupil K-12 spending by state and spending as a percentage of taxpayer income"
+    - name: "EducationData.org — Public Education Spending Statistics"
+      url: "https://educationdata.org/public-education-spending-statistics"
+      description: "National federal, state, and local funding shares for K-12 public education"
+    - name: "Missouri Economic Research and Information Center (MERIC) — Cost of Living Index"
+      url: "https://meric.mo.gov/data/cost-living-data-series"
+      description: "Annual average composite cost of living index by state, used to adjust nominal spending"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    per_pupil_spending: "Per Pupil Spending"
+    pct_taxpayer_income: "% of Taxpayer Income"
+    col_adjusted_spending: "COL-Adjusted Spending"
+    notes: "Notes"
+
+  metric_default: per_pupil_spending
+  sort_default: desc
+  column_formats:
+    per_pupil_spending: "C0"
+    pct_taxpayer_income: "0.00'%'"
+    col_adjusted_spending: "C0"
+
+  rows:
+    - rank: 1
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      per_pupil_spending: 30012
+      pct_taxpayer_income: 4.73
+      col_adjusted_spending: 22616
+      notes: "Highest nominal per-pupil spending of any state; drops to 3rd once adjusted for cost of living"
+    - rank: 2
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      per_pupil_spending: 28818
+      pct_taxpayer_income: 5.34
+      col_adjusted_spending: 24505
+      notes: "Highest cost-of-living-adjusted spending of any state; also the largest share of taxpayer income"
+    - rank: 3
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      per_pupil_spending: 26280
+      pct_taxpayer_income: 4.83
+      col_adjusted_spending: 21594
+    - rank: 4
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      per_pupil_spending: 25801
+      pct_taxpayer_income: 3.75
+      col_adjusted_spending: 22813
+    - rank: 5
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      per_pupil_spending: 23878
+      pct_taxpayer_income: 3.96
+      col_adjusted_spending: 12783
+      notes: "Falls to 45th once adjusted for cost of living, the largest drop of any state"
+    - rank: 6
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      per_pupil_spending: 22978
+      pct_taxpayer_income: 3.09
+      col_adjusted_spending: 19623
+    - rank: 7
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      per_pupil_spending: 22947
+      pct_taxpayer_income: 3.40
+      col_adjusted_spending: 15421
+      notes: "Ranks first nationally for K-12 outcomes despite ranking only 7th in nominal spending"
+    - rank: 8
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      per_pupil_spending: 22201
+      pct_taxpayer_income: 3.85
+      col_adjusted_spending: 21513
+    - rank: 9
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      per_pupil_spending: 22110
+      pct_taxpayer_income: 3.74
+      col_adjusted_spending: 19193
+    - rank: 10
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      per_pupil_spending: 21091
+      pct_taxpayer_income: 3.88
+      col_adjusted_spending: 20738
+    - rank: 11
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      per_pupil_spending: 20521
+      pct_taxpayer_income: 3.68
+      col_adjusted_spending: 20439
+    - rank: 12
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      per_pupil_spending: 20340
+      pct_taxpayer_income: 5.00
+      col_adjusted_spending: 16169
+    - rank: 13
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      per_pupil_spending: 20253
+      pct_taxpayer_income: 4.19
+      col_adjusted_spending: 21274
+      notes: "Climbs to 6th once adjusted for cost of living"
+    - rank: 14
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      per_pupil_spending: 20233
+      pct_taxpayer_income: 3.21
+      col_adjusted_spending: 14609
+    - rank: 15
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      per_pupil_spending: 20208
+      pct_taxpayer_income: 3.63
+      col_adjusted_spending: 16605
+    - rank: 16
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      per_pupil_spending: 19962
+      pct_taxpayer_income: 3.65
+      col_adjusted_spending: 18098
+    - rank: 17
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      per_pupil_spending: 18564
+      pct_taxpayer_income: 3.00
+      col_adjusted_spending: 16101
+    - rank: 18
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      per_pupil_spending: 18314
+      pct_taxpayer_income: 3.53
+      col_adjusted_spending: 19993
+      notes: "Climbs to 9th once adjusted for cost of living, one of the largest gains in the country"
+    - rank: 19
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      per_pupil_spending: 17844
+      pct_taxpayer_income: 4.17
+      col_adjusted_spending: 19166
+    - rank: 20
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      per_pupil_spending: 17257
+      pct_taxpayer_income: 3.54
+      col_adjusted_spending: 18964
+    - rank: 21
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      per_pupil_spending: 17161
+      pct_taxpayer_income: 3.44
+      col_adjusted_spending: 14655
+    - rank: 22
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      per_pupil_spending: 17104
+      pct_taxpayer_income: 3.17
+      col_adjusted_spending: 16494
+    - rank: 23
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      per_pupil_spending: 17102
+      pct_taxpayer_income: 3.59
+      col_adjusted_spending: 17257
+    - rank: 24
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      per_pupil_spending: 17098
+      pct_taxpayer_income: 3.25
+      col_adjusted_spending: 17184
+    - rank: 25
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      per_pupil_spending: 16147
+      pct_taxpayer_income: 3.65
+      col_adjusted_spending: 17609
+    - rank: 26
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      per_pupil_spending: 15897
+      pct_taxpayer_income: 2.73
+      col_adjusted_spending: 14426
+    - rank: 27
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      per_pupil_spending: 15833
+      pct_taxpayer_income: 3.84
+      col_adjusted_spending: 16952
+    - rank: 28
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      per_pupil_spending: 15790
+      pct_taxpayer_income: 3.25
+      col_adjusted_spending: 16534
+    - rank: 29
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      per_pupil_spending: 15060
+      pct_taxpayer_income: 3.36
+      col_adjusted_spending: 15639
+    - rank: 30
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      per_pupil_spending: 14847
+      pct_taxpayer_income: 3.87
+      col_adjusted_spending: 16460
+    - rank: 31
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      per_pupil_spending: 14645
+      pct_taxpayer_income: 3.47
+      col_adjusted_spending: 15953
+    - rank: 32
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      per_pupil_spending: 14596
+      pct_taxpayer_income: 3.62
+      col_adjusted_spending: 16586
+    - rank: 33
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      per_pupil_spending: 14575
+      pct_taxpayer_income: 3.93
+      col_adjusted_spending: 17434
+      notes: "Climbs to 16th once adjusted for cost of living, the lowest cost-of-living index of any state"
+    - rank: 34
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      per_pupil_spending: 14369
+      pct_taxpayer_income: 3.47
+      col_adjusted_spending: 15790
+    - rank: 35
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      per_pupil_spending: 14241
+      pct_taxpayer_income: 3.11
+      col_adjusted_spending: 15823
+    - rank: 36
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      per_pupil_spending: 13873
+      pct_taxpayer_income: 3.49
+      col_adjusted_spending: 15837
+    - rank: 37
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      per_pupil_spending: 13656
+      pct_taxpayer_income: 2.69
+      col_adjusted_spending: 12981
+    - rank: 38
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      per_pupil_spending: 13622
+      pct_taxpayer_income: 3.05
+      col_adjusted_spending: 14920
+    - rank: 39
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      per_pupil_spending: 13598
+      pct_taxpayer_income: 3.48
+      col_adjusted_spending: 15348
+    - rank: 40
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      per_pupil_spending: 12995
+      pct_taxpayer_income: 2.51
+      col_adjusted_spending: 13480
+    - rank: 41
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      per_pupil_spending: 12828
+      pct_taxpayer_income: 2.63
+      col_adjusted_spending: 12867
+    - rank: 42
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      per_pupil_spending: 12689
+      pct_taxpayer_income: 2.16
+      col_adjusted_spending: 12626
+    - rank: 43
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      per_pupil_spending: 12444
+      pct_taxpayer_income: 2.93
+      col_adjusted_spending: 13196
+    - rank: 44
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      per_pupil_spending: 12197
+      pct_taxpayer_income: 2.71
+      col_adjusted_spending: 13258
+    - rank: 45
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      per_pupil_spending: 12162
+      pct_taxpayer_income: 3.03
+      col_adjusted_spending: 13727
+    - rank: 46
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      per_pupil_spending: 12093
+      pct_taxpayer_income: 3.62
+      col_adjusted_spending: 14144
+    - rank: 47
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      per_pupil_spending: 12003
+      pct_taxpayer_income: 2.19
+      col_adjusted_spending: 11642
+    - rank: 48
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      per_pupil_spending: 11673
+      pct_taxpayer_income: 2.32
+      col_adjusted_spending: 11289
+    - rank: 49
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      per_pupil_spending: 11342
+      pct_taxpayer_income: 2.96
+      col_adjusted_spending: 10580
+    - rank: 50
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      per_pupil_spending: 11056
+      pct_taxpayer_income: 2.55
+      col_adjusted_spending: 10703
+      notes: "Lowest nominal per-pupil spending of any state"
+
+map:
+  title: "School Spending by State Map"
+  image_alt: "Map of the United States shaded by per-pupil K-12 education spending in each state"
+  caption: "New York carries the darkest shade at $30,012 per student. Idaho carries the lightest shade at $11,056, less than half the New York figure."
+  metric_key: per_pupil_spending
+  metric_label: "Per Pupil Spending"
+  tooltip_label: state
+  color_scheme: teal
+  color_scale: linear
+  detail_keys:
+    - pct_taxpayer_income
+    - col_adjusted_spending
+  summary_key: notes
+
+compare:
+  metric_slug: school-spending
+  title: "Compare School Spending Between Two States"
+  description: "Choose two states and compare per-pupil K-12 education spending."
+  button_text: "Compare school spending"
+  icon: "fa-solid fa-school"
+  default_state_a: new-york
+  default_state_b: idaho
+
+sections:
+  - id: "states-that-spend-the-most-per-student"
+    icon: "fa-solid fa-arrow-up-wide-short"
+    title: "States That Spend the Most Per Student"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        per_pupil_spending: "Per Pupil Spending"
+        pct_taxpayer_income: "% of Taxpayer Income"
+      rows:
+        - rank: 1
+          state: "New York"
+          state_slug: "new-york"
+          per_pupil_spending: "$30,012"
+          pct_taxpayer_income: "4.73%"
+        - rank: 2
+          state: "Vermont"
+          state_slug: "vermont"
+          per_pupil_spending: "$28,818"
+          pct_taxpayer_income: "5.34%"
+        - rank: 3
+          state: "New Jersey"
+          state_slug: "new-jersey"
+          per_pupil_spending: "$26,280"
+          pct_taxpayer_income: "4.83%"
+        - rank: 4
+          state: "Connecticut"
+          state_slug: "connecticut"
+          per_pupil_spending: "$25,801"
+          pct_taxpayer_income: "3.75%"
+        - rank: 5
+          state: "Hawaii"
+          state_slug: "hawaii"
+          per_pupil_spending: "$23,878"
+          pct_taxpayer_income: "3.96%"
+        - rank: 6
+          state: "New Hampshire"
+          state_slug: "new-hampshire"
+          per_pupil_spending: "$22,978"
+          pct_taxpayer_income: "3.09%"
+        - rank: 7
+          state: "Massachusetts"
+          state_slug: "massachusetts"
+          per_pupil_spending: "$22,947"
+          pct_taxpayer_income: "3.40%"
+        - rank: 8
+          state: "Delaware"
+          state_slug: "delaware"
+          per_pupil_spending: "$22,201"
+          pct_taxpayer_income: "3.85%"
+        - rank: 9
+          state: "Rhode Island"
+          state_slug: "rhode-island"
+          per_pupil_spending: "$22,110"
+          pct_taxpayer_income: "3.74%"
+        - rank: 10
+          state: "Pennsylvania"
+          state_slug: "pennsylvania"
+          per_pupil_spending: "$21,091"
+          pct_taxpayer_income: "3.88%"
+    paragraphs:
+      - "New York spends the most per student at $30,012 a year, followed by Vermont at $28,818 and New Jersey at $26,280. All three exceed the $17,619 national average by more than $9,000."
+      - "Connecticut ($25,801) and Hawaii ($23,878) round out the top five. New York's spending equals 4.73% of taxpayer income, while Vermont's share is higher still at 5.34%, the largest burden of any state."
+
+  - id: "states-that-spend-the-least-per-student"
+    icon: "fa-solid fa-arrow-down-wide-short"
+    title: "States That Spend the Least Per Student"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        per_pupil_spending: "Per Pupil Spending"
+        pct_taxpayer_income: "% of Taxpayer Income"
+      rows:
+        - rank: 50
+          state: "Idaho"
+          state_slug: "idaho"
+          per_pupil_spending: "$11,056"
+          pct_taxpayer_income: "2.55%"
+        - rank: 49
+          state: "Utah"
+          state_slug: "utah"
+          per_pupil_spending: "$11,342"
+          pct_taxpayer_income: "2.96%"
+        - rank: 48
+          state: "Nevada"
+          state_slug: "nevada"
+          per_pupil_spending: "$11,673"
+          pct_taxpayer_income: "2.32%"
+        - rank: 47
+          state: "Arizona"
+          state_slug: "arizona"
+          per_pupil_spending: "$12,003"
+          pct_taxpayer_income: "2.19%"
+        - rank: 46
+          state: "Mississippi"
+          state_slug: "mississippi"
+          per_pupil_spending: "$12,093"
+          pct_taxpayer_income: "3.62%"
+        - rank: 45
+          state: "Oklahoma"
+          state_slug: "oklahoma"
+          per_pupil_spending: "$12,162"
+          pct_taxpayer_income: "3.03%"
+        - rank: 44
+          state: "Tennessee"
+          state_slug: "tennessee"
+          per_pupil_spending: "$12,197"
+          pct_taxpayer_income: "2.71%"
+        - rank: 43
+          state: "Texas"
+          state_slug: "texas"
+          per_pupil_spending: "$12,444"
+          pct_taxpayer_income: "2.93%"
+        - rank: 42
+          state: "Florida"
+          state_slug: "florida"
+          per_pupil_spending: "$12,689"
+          pct_taxpayer_income: "2.16%"
+        - rank: 41
+          state: "South Dakota"
+          state_slug: "south-dakota"
+          per_pupil_spending: "$12,828"
+          pct_taxpayer_income: "2.63%"
+    paragraphs:
+      - "Idaho spends the least per student at $11,056 a year, followed by Utah at $11,342 and Nevada at $11,673. All three fall more than $5,900 below the national average of $17,619."
+      - "Arizona ($12,003) and Mississippi ($12,093) round out the bottom five. Idaho's spending equals just 2.55% of taxpayer income, one of the smaller shares in the country despite ranking last in dollar terms."
+
+  - id: "school-spending-adjusted-for-cost-of-living"
+    icon: "fa-solid fa-scale-balanced"
+    title: "School Spending Adjusted for Cost of Living"
+    table:
+      columns:
+        state: "State"
+        per_pupil_spending: "Nominal Spending"
+        col_adjusted_spending: "COL-Adjusted Spending"
+      rows:
+        - state: "Vermont"
+          state_slug: "vermont"
+          per_pupil_spending: "$28,818"
+          col_adjusted_spending: "$24,505"
+        - state: "Connecticut"
+          state_slug: "connecticut"
+          per_pupil_spending: "$25,801"
+          col_adjusted_spending: "$22,813"
+        - state: "New York"
+          state_slug: "new-york"
+          per_pupil_spending: "$30,012"
+          col_adjusted_spending: "$22,616"
+        - state: "Michigan"
+          state_slug: "michigan"
+          per_pupil_spending: "$18,314"
+          col_adjusted_spending: "$19,993"
+        - state: "Hawaii"
+          state_slug: "hawaii"
+          per_pupil_spending: "$23,878"
+          col_adjusted_spending: "$12,783"
+    paragraphs:
+      - "Vermont overtakes New York for the top spot once spending is adjusted for cost of living, rising from $28,818 nominal to $24,505 adjusted, just ahead of New York's $22,616. Hawaii falls the furthest, from $23,878 nominal, 5th in the country, to $12,783 adjusted, 45th, because its cost-of-living index of 186.8 is the highest of any state."
+      - "Michigan climbs from 18th nominally to 9th adjusted, and West Virginia rises from 33rd to 16th, both helped by cost-of-living indexes well below the national average. Massachusetts, ranked first nationally for K-12 outcomes, spends just 7th most nominally and drops to 32nd once adjusted, a reminder that spending and results don't move together."
+
+visual_assets:
+  - id: new-york-classroom-placeholder
+    src: /images/rankings/education/school-spending-by-state/new-york-classroom-placeholder.jpg
+    alt: "Well-resourced classroom representing New York's high per-pupil spending"
+    caption: "New York spends $30,012 per student, the highest nominal figure in the country."
+    section: states-that-spend-the-most-per-student
+    layout: right
+  - id: idaho-classroom-placeholder
+    src: /images/rankings/education/school-spending-by-state/idaho-classroom-placeholder.jpg
+    alt: "Rural classroom representing Idaho's low per-pupil spending"
+    caption: "Idaho spends $11,056 per student, the lowest in the country."
+    section: states-that-spend-the-least-per-student
+    layout: left
+
+faq:
+  - question: "Which state spends the most per student?"
+    answer: "New York spends the most per student at $30,012 a year. Vermont ($28,818) and New Jersey ($26,280) rank second and third."
+  - question: "Which state spends the least per student?"
+    answer: "Idaho spends the least per student at $11,056 a year. Utah ($11,342) and Nevada ($11,673) rank second and third lowest."
+  - question: "What is the average school spending per student?"
+    answer: "Nationally, per-pupil spending averages $17,619, a 6.61% increase from the prior year. Twenty-six states spend above that figure and 24 spend below it."
+  - question: "How is school spending split between federal, state, and local government?"
+    answer: "Nationally, the federal government provides about 8% of K-12 funding, state governments provide roughly 47%, and local governments, mainly through property taxes, contribute about 45%."
+  - question: "Does higher school spending mean better student outcomes?"
+    answer: "Not necessarily. New York spends the most per student in the country but does not rank first for K-12 outcomes, so the two measures should be compared separately rather than assumed to move together."
+  - question: "How much does Texas spend per student?"
+    answer: "Texas spends $12,444 per student, ranking 43rd nationally. That equals 2.93% of taxpayer income, and adjusted for cost of living, Texas spending rises slightly to $13,196."
+
+related:
+  - title: "Best States for K-12 Education"
+    url: "/rankings/education/states-by-k12-education"
+  - title: "Public School Rankings by State"
+    url: "/rankings/education/public-school-rankings-by-state"
+  - title: "Teacher Salary by State"
+    url: "/rankings/education/teacher-salary-by-state"
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"

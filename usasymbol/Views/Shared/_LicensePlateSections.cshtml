@@ -40,7 +40,7 @@
 
     foreach (var item in displaySections)
     {
-        <section id="section-@item.Id" class="scroll-mt-24 py-10 lg:py-12 flow-root border-t border-slate-200/70 first:border-t-0 first:pt-0">
+        <div id="section-@item.Id" class="scroll-mt-24 py-10 lg:py-12 flow-root border-t border-slate-200/70 first:border-t-0 first:pt-0">
             <header class="mb-5 lg:mb-6">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="text-[11px] font-semibold tracking-widest uppercase text-gray-500">
@@ -153,7 +153,7 @@
             }
 
             <div class="clear-both"></div>
-        </section>
+        </div>
 
         @if (!statDone &&
             !string.IsNullOrWhiteSpace(statAfterSectionId) &&

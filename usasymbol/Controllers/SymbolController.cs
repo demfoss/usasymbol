@@ -37,7 +37,12 @@ namespace USASymbol.Controllers
         private readonly ISoilService _soilService;
         private readonly IFossilService _fossilService;
         private readonly ISportService _sportService;
+        private readonly IDanceService _danceService;
         private readonly IInsectService _insectService;
+        private readonly IMineralService _mineralService;
+        private readonly IAmphibianService _amphibianService;
+        private readonly IReptileService _reptileService;
+        private readonly IFoodService _foodService;
         private readonly ILatestContentRailService _latestContentRailService;
         private readonly QuizService _quizService;
         private readonly ILogger<SymbolController> _logger;
@@ -66,8 +71,21 @@ namespace USASymbol.Controllers
             ["soils"] = "fa-solid fa-mountain",
             ["fossils"] = "fa-solid fa-bone",
             ["sports"] = "fa-solid fa-medal",
+            ["dances"] = "fa-solid fa-music",
             ["insects"] = "fa-solid fa-bug",
-            ["butterflies"] = "fa-solid fa-bug"
+            ["butterflies"] = "fa-solid fa-bug",
+            ["minerals"] = "fa-solid fa-cube",
+            ["rocks"] = "fa-solid fa-mountain",
+            ["gemstones"] = "fa-solid fa-gem",
+            ["amphibians"] = "fa-solid fa-frog",
+            ["reptiles"] = "fa-solid fa-turtle",
+            ["fruits"] = "fa-solid fa-apple-whole",
+            ["vegetables"] = "fa-solid fa-carrot",
+            ["nuts"] = "fa-solid fa-seedling",
+            ["desserts"] = "fa-solid fa-cookie-bite",
+            ["spirits"] = "fa-solid fa-wine-bottle",
+            ["dishes"] = "fa-solid fa-bowl-food",
+            ["crops"] = "fa-solid fa-wheat-awn"
         };
 
         public SymbolController(
@@ -90,7 +108,12 @@ namespace USASymbol.Controllers
             ISoilService soilService,
             IFossilService fossilService,
             ISportService sportService,
+            IDanceService danceService,
             IInsectService insectService,
+            IMineralService mineralService,
+            IAmphibianService amphibianService,
+            IReptileService reptileService,
+            IFoodService foodService,
             ILatestContentRailService latestContentRailService,
             QuizService quizService,
             ILogger<SymbolController> logger,
@@ -116,7 +139,12 @@ namespace USASymbol.Controllers
             _soilService = soilService;
             _fossilService = fossilService;
             _sportService = sportService;
+            _danceService = danceService;
             _insectService = insectService;
+            _mineralService = mineralService;
+            _amphibianService = amphibianService;
+            _reptileService = reptileService;
+            _foodService = foodService;
             _latestContentRailService = latestContentRailService;
             _quizService = quizService;
             _logger = logger;
@@ -245,10 +273,42 @@ namespace USASymbol.Controllers
                 "state-seals" => symbol.Type == "state-seal",
                 "coats-of-arms" => symbol.Type == "coat-of-arms",
                 "sports" => symbol.Type == "sport",
+                "dances" => symbol.Type == "dance",
                 "insects" => symbol.Type == "insect",
                 "butterflies" => symbol.Type == "insect" && IsButterfly(designation, name),
+                "minerals" => symbol.Type == "mineral",
+                "rocks" => symbol.Type == "rock",
+                "gemstones" => symbol.Type == "gemstone",
+                "amphibians" => symbol.Type == "amphibian",
+                "reptiles" => symbol.Type == "reptile",
+                "fruits" => symbol.Type == "food" && GetFoodBucket(designation) == "fruits",
+                "vegetables" => symbol.Type == "food" && GetFoodBucket(designation) == "vegetables",
+                "nuts" => symbol.Type == "food" && GetFoodBucket(designation) == "nuts",
+                "desserts" => symbol.Type == "food" && GetFoodBucket(designation) == "desserts",
+                "spirits" => symbol.Type == "food" && GetFoodBucket(designation) == "spirits",
+                "dishes" => symbol.Type == "food" && GetFoodBucket(designation) == "dishes",
+                "crops" => symbol.Type == "food" && GetFoodBucket(designation) == "crops",
                 _ => false
             };
+        }
+
+        // State food designations vary wildly by name (State Cookie, State Nut, State Tree Fruit,
+        // State Legume, State Cuisine...). Symbol.Type is the shared "food" value for all of them;
+        // this buckets the specific designation into a broad, browsable listing category.
+        private static string GetFoodBucket(string designation)
+        {
+            var d = designation ?? string.Empty;
+
+            bool Has(params string[] keywords) =>
+                keywords.Any(k => d.Contains(k, StringComparison.OrdinalIgnoreCase));
+
+            if (Has("fruit", "berry")) return "fruits";
+            if (Has("vegetable", "squash", "pepper")) return "vegetables";
+            if (Has("nut")) return "nuts";
+            if (Has("cookie", "cake", "pie", "dessert", "muffin", "doughnut", "treat", "pastry", "candy")) return "desserts";
+            if (Has("spirit", "drink", "pop", "soda")) return "spirits";
+            if (Has("meal", "cuisine", "dish", "sandwich", "bread", "snack", "steak", "cobbler")) return "dishes";
+            return "crops";
         }
 
         private static bool IsButterfly(string designation, string name) =>
@@ -1396,6 +1456,49 @@ namespace USASymbol.Controllers
         }
 
         [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/dance/{danceSlug}")]
+        public async Task<IActionResult> StateDance(string stateSlug, string danceSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var symbol = await _symbolService.GetSymbolAsync(state.Id, "dance");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State dance symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(danceSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var content = await _danceService.GetDanceContentAsync(stateSlug, danceSlug);
+            if (content == null)
+                _logger.LogInformation("State dance YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State dance content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new DanceDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                DanceContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions
+            };
+
+            return View("Dance", model);
+        }
+
+        [OutputCache(PolicyName = "SymbolDetail")]
         [Route("states/{stateSlug}/insect/{insectSlug}")]
         public async Task<IActionResult> StateInsect(string stateSlug, string insectSlug)
         {
@@ -1441,6 +1544,320 @@ namespace USASymbol.Controllers
             };
 
             return View("Insect", model);
+        }
+
+        [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/mineral/{mineralSlug}")]
+        public async Task<IActionResult> StateMineral(string stateSlug, string mineralSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var symbol = await _symbolService.GetSymbolAsync(state.Id, "mineral");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State mineral symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(mineralSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var content = await _mineralService.GetMineralContentAsync(stateSlug, "mineral.yaml");
+            if (content == null)
+                _logger.LogInformation("State mineral YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State mineral content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new MineralDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                MineralContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions
+            };
+
+            return View("Mineral", model);
+        }
+
+        [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/rock/{rockSlug}")]
+        public async Task<IActionResult> StateRock(string stateSlug, string rockSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var symbol = await _symbolService.GetSymbolAsync(state.Id, "rock");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State rock symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(rockSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var content = await _mineralService.GetMineralContentAsync(stateSlug, "rock.yaml");
+            if (content == null)
+                _logger.LogInformation("State rock YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State rock content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new MineralDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                MineralContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions,
+                SymbolTypeName = "State Rock",
+                SymbolTypeSlug = "rock",
+                SymbolTypePlural = "rocks",
+                SymbolTypeIcon = "🪨",
+                DefaultDesignation = "State Rock",
+                HeroFallbackIconClass = "fa-solid fa-mountain",
+                OverviewIconClass = "fa-solid fa-mountain",
+                AssetBasePath = "/images/rocks",
+                EmptySectionsMessage = "No sections rendered yet for this state rock."
+            };
+
+            return View("Mineral", model);
+        }
+
+        [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/gemstone/{gemstoneSlug}")]
+        public async Task<IActionResult> StateGemstone(string stateSlug, string gemstoneSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var symbol = await _symbolService.GetSymbolAsync(state.Id, "gemstone");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State gemstone symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(gemstoneSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var content = await _mineralService.GetMineralContentAsync(stateSlug, "gemstone.yaml");
+            if (content == null)
+                _logger.LogInformation("State gemstone YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State gemstone content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new MineralDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                MineralContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions,
+                SymbolTypeName = "State Gemstone",
+                SymbolTypeSlug = "gemstone",
+                SymbolTypePlural = "gemstones",
+                SymbolTypeIcon = "💎",
+                DefaultDesignation = "State Gemstone",
+                HeroFallbackIconClass = "fa-solid fa-gem",
+                OverviewIconClass = "fa-solid fa-gem",
+                AssetBasePath = "/images/gemstones",
+                EmptySectionsMessage = "No sections rendered yet for this state gemstone."
+            };
+
+            return View("Mineral", model);
+        }
+
+        [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/amphibian/{amphibianSlug}")]
+        public async Task<IActionResult> StateAmphibian(string stateSlug, string amphibianSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            // Try by slug first to correctly handle multi-amphibian states
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, amphibianSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "amphibian");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State amphibian symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(amphibianSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var yamlFileName = string.IsNullOrWhiteSpace(symbol.YamlPath)
+                ? "amphibian.yaml"
+                : Path.GetFileName(symbol.YamlPath);
+            var content = await _amphibianService.GetAmphibianContentAsync(stateSlug, yamlFileName);
+            if (content == null)
+                _logger.LogInformation("State amphibian YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State amphibian content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new AmphibianDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                AmphibianContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions
+            };
+
+            return View("Amphibian", model);
+        }
+
+        [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/reptile/{reptileSlug}")]
+        public async Task<IActionResult> StateReptile(string stateSlug, string reptileSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            // Try by slug first to correctly handle multi-reptile states
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, reptileSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "reptile");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State reptile symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(reptileSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var yamlFileName = string.IsNullOrWhiteSpace(symbol.YamlPath)
+                ? "reptile.yaml"
+                : Path.GetFileName(symbol.YamlPath);
+            var content = await _reptileService.GetReptileContentAsync(stateSlug, yamlFileName);
+            if (content == null)
+                _logger.LogInformation("State reptile YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State reptile content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new ReptileDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                ReptileContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions
+            };
+
+            return View("Reptile", model);
+        }
+
+        private static readonly Dictionary<string, (string Name, string Plural, string Icon, string FaIcon)> FoodBucketInfo = new()
+        {
+            ["fruits"] = ("State Fruit", "fruits", "🍎", "fa-solid fa-apple-whole"),
+            ["vegetables"] = ("State Vegetable", "vegetables", "🥕", "fa-solid fa-carrot"),
+            ["nuts"] = ("State Nut", "nuts", "🥜", "fa-solid fa-seedling"),
+            ["desserts"] = ("State Dessert", "desserts", "🍪", "fa-solid fa-cookie-bite"),
+            ["spirits"] = ("State Drink", "spirits", "🥃", "fa-solid fa-wine-bottle"),
+            ["dishes"] = ("State Dish", "dishes", "🍲", "fa-solid fa-bowl-food"),
+            ["crops"] = ("State Crop", "crops", "🌾", "fa-solid fa-wheat-awn")
+        };
+
+        [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/food/{foodSlug}")]
+        public async Task<IActionResult> StateFood(string stateSlug, string foodSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            // Try by slug first to correctly handle multi-food states (most states have several)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, foodSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "food");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State food symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(foodSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var yamlFileName = string.IsNullOrWhiteSpace(symbol.YamlPath)
+                ? "food.yaml"
+                : Path.GetFileName(symbol.YamlPath);
+            var content = await _foodService.GetFoodContentAsync(stateSlug, yamlFileName);
+            if (content == null)
+                _logger.LogInformation("State food YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State food content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var bucket = GetFoodBucket(content?.Designation ?? symbol.Designation ?? "");
+            var bucketInfo = FoodBucketInfo.TryGetValue(bucket, out var info) ? info : FoodBucketInfo["crops"];
+
+            var model = new FoodDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                FoodContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions,
+                SymbolTypeName = bucketInfo.Name,
+                SymbolTypeSlug = bucket,
+                SymbolTypePlural = bucketInfo.Plural,
+                SymbolTypeIcon = bucketInfo.Icon,
+                DefaultDesignation = bucketInfo.Name,
+                HeroFallbackIconClass = bucketInfo.FaIcon,
+                OverviewIconClass = bucketInfo.FaIcon,
+                AssetBasePath = "/images/foods",
+                EmptySectionsMessage = "No sections rendered yet for this state food."
+            };
+
+            return View("Food", model);
         }
 
         [Route("states/{stateSlug}/{symbolType}/{symbolSlug}")]

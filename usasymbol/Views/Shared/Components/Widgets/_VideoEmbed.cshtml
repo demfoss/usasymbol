@@ -1,0 +1,69 @@
+@model (string Url, string? Title, string? Caption)
+
+@{
+    string? ExtractYouTubeId(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return null;
+
+        var match = System.Text.RegularExpressions.Regex.Match(
+            url,
+            @"(?:youtube\.com/(?:watch\?v=|embed/|shorts/)|youtu\.be/)([A-Za-z0-9_-]{6,})");
+
+        return match.Success ? match.Groups[1].Value : null;
+    }
+
+    var videoId = ExtractYouTubeId(Model.Url);
+    if (string.IsNullOrWhiteSpace(videoId)) { return; }
+
+    var title = string.IsNullOrWhiteSpace(Model.Title) ? "Video overview" : Model.Title;
+    var embedId = "video-" + Guid.NewGuid().ToString("N")[..8];
+}
+
+<figure class="my-8 clear-both" id="@embedId">
+    <div class="relative aspect-video w-full overflow-hidden border border-slate-200 bg-slate-900 js-video-embed"
+         data-video-id="@videoId" data-video-title="@title" role="button" tabindex="0"
+         aria-label="Play video: @title">
+        <img src="https://img.youtube.com/vi/@videoId/hqdefault.jpg"
+             alt="@title"
+             class="absolute inset-0 h-full w-full object-cover opacity-90" loading="lazy" />
+        <div class="absolute inset-0 bg-black/25"></div>
+        <span class="absolute inset-0 flex items-center justify-center">
+            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-white/95 shadow-lg transition-transform group-hover:scale-105">
+                <i class="fa-solid fa-play text-xl text-slate-900 translate-x-0.5" aria-hidden="true"></i>
+            </span>
+        </span>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+    {
+        <figcaption class="mt-2 text-sm text-slate-500">@Model.Caption</figcaption>
+    }
+</figure>
+
+<script>
+(function () {
+    var wrap = document.querySelector('#@embedId .js-video-embed');
+    if (!wrap || wrap.dataset.bound === '1') return;
+    wrap.dataset.bound = '1';
+
+    function play() {
+        var id = wrap.getAttribute('data-video-id');
+        var title = wrap.getAttribute('data-video-title') || 'Video';
+        var iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&rel=0';
+        iframe.title = title;
+        iframe.className = 'absolute inset-0 h-full w-full';
+        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', '');
+        wrap.innerHTML = '';
+        wrap.appendChild(iframe);
+    }
+
+    wrap.addEventListener('click', play);
+    wrap.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            play();
+        }
+    });
+})();
+</script>

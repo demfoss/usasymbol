@@ -1,0 +1,114 @@
+type: ranking
+slug: states-by-poverty-rate
+category: economy
+url: /rankings/economy/states-by-poverty-rate
+hero_image: "/images/rankings/economy/states-by-poverty-rate/states-by-poverty-rate-hero.jpg"
+hero_image_alt: "Modest residential neighborhood with closely spaced homes"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Poverty Rates"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Poverty Rate by State 2026 | Map & Data"
+  description: "Louisiana has the highest poverty rate among U.S. states at 18.9%, while New Hampshire and Maryland have the lowest rates."
+
+page:
+  h1: "Poverty Rate by State 2026"
+  quick_answer:
+    - "Louisiana has the highest poverty rate of any U.S. state at 18.9%, followed by Mississippi (18.0%), New Mexico (17.8%), and West Virginia (16.7%), all sharing low incomes, high rural poverty, and limited high-wage employment."
+    - "New Hampshire and Maryland consistently have the lowest poverty rates, both below 8%. These states combine high median incomes with strong labor markets and above-average access to education and public services."
+    - "The national poverty rate is approximately 12.9% (U.S. Census Bureau, 2023 ACS). The federal poverty line for a family of four in 2023 was $30,000."
+  methodology: "Poverty rates are 2023 one-year estimates from the U.S. Census Bureau American Community Survey (ACS). The official poverty measure compares pre-tax cash income to federal poverty thresholds, which vary by family size and composition but not by geographic location or cost of living."
+  sources:
+    - name: "U.S. Census Bureau — American Community Survey 2023"
+      url: "https://data.census.gov"
+      description: "1-year ACS estimates, Table B17001"
+
+map:
+  title: "Poverty Rate by State 2026 Map"
+  image_alt: "U.S. map showing poverty rate by state, darkest red for states with the highest poverty"
+  caption: "Mississippi, Louisiana, and New Mexico are the deepest red. New Hampshire and Maryland anchor the low end. The South and Southwest form a distinct high-poverty belt across the map."
+  metric_key: poverty_rate
+  metric_label: "Poverty Rate"
+  name_key: state
+  color_scheme: red
+  color_scale: linear
+
+computed_data:
+  field: poverty_rate_pct
+  sort: desc
+  format: "F1"
+  label: "Poverty Rate (%)"
+  metric_key: poverty_rate
+
+compare:
+  metric_slug: poverty-rate
+  title: "Compare Poverty Rates Between Two States"
+  description: "Pick two states to see a full side-by-side breakdown of income, poverty, employment, and economic data."
+  icon: "fa-solid fa-chart-line"
+
+sections:
+  - id: "why_louisiana_highest"
+    icon: "fa-solid fa-arrow-trend-up"
+    title: "Why Louisiana Has the Highest Poverty Rate"
+    paragraphs:
+      - "Louisiana's 18.9% poverty rate reflects multiple structural disadvantages. The state economy depends heavily on oil and gas extraction and petrochemical refining, which are cyclically volatile. Between oil price downturns and hurricane disruptions, Katrina in 2005 and Ida in 2021, economic shocks have repeatedly set back household income gains for low-wage workers."
+      - "Louisiana also has one of the lowest college attainment rates in the country at 27%, limiting access to professional-sector jobs. New Orleans, the largest metro, has a large service and hospitality economy with below-median wages. Rural parishes in northern Louisiana have poverty rates exceeding 25%. Mississippi (18.0%) and New Mexico (17.8%) follow for similar combinations of low attainment, limited industry diversity, and concentrated rural poverty."
+
+  - id: "why_new_hampshire_lowest"
+    icon: "fa-solid fa-award"
+    title: "Why New Hampshire Has the Lowest Poverty Rate"
+    paragraphs:
+      - "New Hampshire's 7.2% poverty rate is the lowest of any state. The combination of a high-education workforce (41% with college degrees), near-full employment (3.1% unemployment), and no state income or sales tax produces households with more disposable income relative to local prices. The state also has one of the smallest shares of uninsured residents, which reduces the medical financial shocks that push households into poverty."
+      - "New Hampshire benefits from proximity to Boston without absorbing Boston's cost of living. Workers in the state's southern tier commute to Massachusetts employers and earn wages competitive with the Boston labor market while paying lower housing costs. Utah (9.0%) and Colorado (9.3%) follow for different reasons: both have young, growing populations with diversified tech and energy economies that generate job growth across income levels."
+
+  - id: "southern_poverty_belt"
+    icon: "fa-solid fa-map"
+    title: "The Poverty Belt Runs Through the Deep South"
+    paragraphs:
+      - "Eight of the ten states with the highest poverty rates are in the South: Louisiana, Mississippi, New Mexico, Kentucky, West Virginia, Alabama, Arkansas, and Georgia. The concentration reflects a historical pattern tied to lower industrialization, persistent income gaps, and limited public investment in education and social services relative to the national average."
+      - "New Mexico ranks third-highest at 17.8%, driven partly by poverty rates above 40% on several Native American reservations in the state, including portions of the Navajo Nation. Geographic isolation, limited infrastructure, and exclusion from mainstream labor markets compound poverty in reservation communities in ways that pull state averages significantly upward."
+
+  - id: "poverty_line_caveat"
+    icon: "fa-solid fa-circle-exclamation"
+    title: "Why the Poverty Line Ignores Cost of Living"
+    paragraphs:
+      - "The federal poverty line is the same in every state: $15,060 for a single adult and $30,900 for a family of four in 2024. That means Mississippi's poverty rate and Massachusetts' poverty rate are measured against identical income thresholds, even though a dollar buys very different amounts in each state. A household just above the poverty line in San Francisco is not comparable to one just above it in rural Alabama."
+      - "The Census Bureau's Supplemental Poverty Measure adjusts for geographic cost differences and government assistance. Under that measure, California's poverty rate rises significantly, high housing costs push more households below the adjusted threshold, while Southern states' rates drop modestly due to lower cost of living. Looking at both measures together gives a more accurate picture of economic hardship by state."
+
+visual_assets:
+  - id: louisiana-poverty-placeholder
+    src: /images/rankings/economy/states-by-poverty-rate/louisiana-poverty-placeholder.jpg
+    alt: "Industrial refinery complex with pipes, towers, and storage tanks"
+    caption: "Heavy industry can dominate a state economy without spreading high wages evenly across nearby communities."
+    section: why_louisiana_highest
+    layout: right
+  - id: new-hampshire-poverty-placeholder
+    src: /images/rankings/economy/states-by-poverty-rate/new-hampshire-poverty-placeholder.jpg
+    alt: "Well-kept New England main street with brick buildings and local shops"
+    caption: "Stable local business districts often reflect the stronger household earnings found in low-poverty states."
+    section: why_new_hampshire_lowest
+    layout: left
+
+faq:
+  - question: "Which state has the highest poverty rate?"
+    answer: "Louisiana has the highest poverty rate in the U.S. at 18.9%. The state has ranked last or near last on this measure due to oil-cycle volatility, repeated hurricane disruptions, and low college attainment that limits access to professional-sector employment."
+  - question: "Which state has the lowest poverty rate?"
+    answer: "New Hampshire consistently records the lowest poverty rate of any U.S. state, typically below 7–8%. The state has a highly educated workforce, low unemployment, no state income tax on wages, and a strong technology and manufacturing economy."
+  - question: "What is the federal poverty level?"
+    answer: "The federal poverty level (FPL) is a set of income thresholds published annually by the Department of Health and Human Services. In 2023, the poverty line was $14,580 for one person and $30,000 for a family of four. It does not vary by geographic location, which critics argue understates poverty in high-cost states."
+  - question: "Does the poverty rate capture all forms of economic hardship?"
+    answer: "No. The official poverty measure counts only pre-tax cash income and does not include non-cash benefits like SNAP, Medicaid, or housing assistance. The Supplemental Poverty Measure (SPM), which does account for these factors, produces somewhat different state rankings and generally shows a lower poverty rate nationwide."
+
+related:
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"
+  - title: "States by Unemployment Rate"
+    url: "/rankings/economy/states-by-unemployment"
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"
+  - title: "States by K-12 Education Ranking"
+    url: "/rankings/education/states-by-k12-education"

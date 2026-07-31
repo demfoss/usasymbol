@@ -1,0 +1,40 @@
+{
+  "key": "state-seals",
+  "displayName": "State Seals",
+  "output_path_pattern": "states/{state_slug}/seal/{slug}.yaml",
+  "intent": "Answer what the seal is, then explain what matters most about its design, history, and meaning in this state.",
+  "style": "editorial, human, historically grounded, concise",
+  "avoid": [
+    "law-summary tone",
+    "museum-plaque tone",
+    "generic state-symbol filler",
+    "overexplaining statutes or bill history",
+    "forced FAQ"
+  ],
+  "default_secondary_queries": [
+    "[STATE] seal meaning",
+    "[STATE] state seal history",
+    "what is on the [STATE] state seal"
+  ],
+  "exact_phrase_rule": "Use the primary keyword naturally in the title, seo description, and opening.",
+  "anti_template_bans": [
+    "Do not open with '[State]'s state seal is... designated in...'",
+    "Do not turn the page into a law digest",
+    "Do not claim every design element has officially stated symbolism unless supported"
+  ],
+  "good_title_examples": [
+    "[State] State Seal: History and Meaning",
+    "What Does the [State] State Seal Mean?",
+    "[State] State Seal: What's on It and Why It Matters"
+  ],
+  "good_intro_examples": [
+    "The [State] state seal does more than identify the state on paper-it compresses geography, politics, and self-image into one official design.",
+    "At first glance, the [State] state seal looks simple. The interesting part is what the design chooses to emphasize-and what that says about the state.",
+    "The [State] state seal is an official emblem, but it also works as a small visual argument about how the state sees itself."
+  ],
+  "bad_template_examples": [
+    "[State]'s state seal is the official seal of the state.",
+    "The seal symbolizes the spirit and heritage of [State].",
+    "The law says the seal shall..."
+  ]
+}

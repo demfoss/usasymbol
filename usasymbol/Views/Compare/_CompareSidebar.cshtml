@@ -1,0 +1,44 @@
+@model USASymbol.Models.ViewModels.StatePairComparisonViewModel
+@inject IImageUrlService Images
+
+<div class="cmp2-sidebar-cards">
+    @await Html.PartialAsync("_CompareExploreCards")
+
+    @if (Model.RelatedPairs.Any())
+    {
+        <div class="cmp2-sidebar-block">
+            <div class="cmp2-sidebar-heading">Related Comparisons</div>
+            <div class="cmp2-sidebar-list">
+                @foreach (var (pa, pb) in Model.RelatedPairs)
+                {
+                    <a href="/compare/@(pa.Slug)-vs-@(pb.Slug)" class="cmp2-side-card">
+                        <div class="cmp2-side-card-top"></div>
+                        <div class="cmp2-side-card-head">
+                            <div>
+                                <div class="cmp2-side-card-eyebrow">Compare</div>
+                                <div class="cmp2-side-card-title">@pa.Name vs @pb.Name</div>
+                            </div>
+                            <div class="cmp2-side-card-icon">
+                                @if (!string.IsNullOrWhiteSpace(pa.FlagImageUrl))
+                                {
+                                    <img src="@Images.Card(pa.FlagImageUrl)" alt="@pa.Name flag" onerror="this.style.display='none'" />
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-flag"></i>
+                                }
+                            </div>
+                        </div>
+                        <div class="cmp2-side-card-body">
+                            <p class="cmp2-side-card-desc">Side-by-side data on cost of living, taxes, housing, and more.</p>
+                            <div class="cmp2-side-card-cta">
+                                <span>View Comparison</span>
+                                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>

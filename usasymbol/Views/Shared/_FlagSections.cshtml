@@ -40,7 +40,7 @@
         var isFeatureFlagSymbol = string.Equals(item.Id, "symbols", StringComparison.OrdinalIgnoreCase);
         var isFeatureFlagFacts = string.Equals(item.Id, "facts", StringComparison.OrdinalIgnoreCase);
 
-        <section id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+        <div id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
             @if (isFeatureFlagHistory || isFeatureFlagSymbol)
             {
                 <header class="mb-6 lg:mb-8">
@@ -252,7 +252,7 @@
         }
 
         <div class="clear-both"></div>
-        </section>
+        </div>
 
         @if (string.Equals(item.Id, "history", StringComparison.OrdinalIgnoreCase))
         {

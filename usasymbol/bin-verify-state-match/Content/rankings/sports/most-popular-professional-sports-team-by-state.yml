@@ -1,0 +1,539 @@
+type: ranking
+slug: most-popular-professional-sports-team-by-state
+category: sports
+url: /rankings/sports/most-popular-professional-sports-team-by-state
+auto_link_phrases:
+  - "most popular sports team by state"
+  - "favorite professional sports team by state"
+  - "most followed sports team by state"
+  - "top sports team in each state"
+extremes_mode: none
+hero_image: "/images/rankings/sports/most-popular-professional-sports-team-by-state/most-popular-professional-sports-team-by-state.png"
+hero_image_alt: "Map of the United States showing the most popular professional sports team in every state, color-coded by league"
+
+author: "USA Symbol Team"
+date_published: "2026-04-26"
+date_modified: "2026-04-26"
+
+seo:
+  title: "Most Popular Pro Team by State | NFL, NBA, MLB & NHL"
+  description: "Thirteen states have no major pro sports franchise. Fans there root for out-of-state teams shaped by geography, TV markets, and history."
+
+page:
+  h1: "Most Popular Pro Team by State"
+
+  quick_answer:
+    - "The most popular professional sports team in every state is a best-fit fan map, not an official ranking, since popularity depends on location, league, and regional loyalty. A handful of states have no major pro team at all."
+    - "NFL teams lead the most states because football has the largest national fanbase. MLB, NBA, NHL, and MLS teams lead where local or regional loyalty is unusually strong. For states without a Big Four or MLS franchise, the closest or most culturally dominant regional team is listed, with a note explaining why."
+
+  methodology: "Selections use search interest, team proximity, league popularity, media reach, attendance, and regional identity. Close calls are labeled."
+
+  sources:
+    - name: "Google Trends"
+      url: "https://trends.google.com/"
+      description: "Used to assess relative search interest by team and state as one signal of fan geography"
+    - name: "ESPN"
+      url: "https://www.espn.com/"
+      description: "Broad league and team context, including market presence and franchise history"
+    - name: "Sports Media Watch"
+      url: "https://www.sportsmediawatch.com/"
+      description: "TV audience and broadcast market data used to assess regional reach"
+
+map:
+  title: "Most Popular Pro Team by State Map"
+  image: "/images/rankings/sports/most-popular-professional-sports-team-by-state/most-popular-professional-sports-team-by-state-map.webp"
+  image_alt: "Map of the United States color-coded by the league of the most popular professional sports team in each state, with blue for NFL, green for MLB, and orange for NBA"
+  caption: "NFL teams lead in the majority of states because football draws the broadest national fanbase. MLB teams hold regional strongholds in New England and the Southeast. NBA teams lead where iconic franchises have few competing local options. States near a border with no in-state team often adopt the closest NFL franchise as their regional favorite."
+  metric_key: league
+  metric_label: "league"
+  tooltip_label: team
+  detail_keys:
+    - team
+  color_scheme: categorical
+  color_categories:
+    NFL: "#1a6bb5"
+    MLB: "#2e8b57"
+    NBA: "#e07b20"
+    NHL: "#5bc0de"
+    MLS: "#7b4fa6"
+    Mixed: "#888888"
+  color_scale: categorical
+
+table:
+  columns:
+    rank: "#"
+    state: "State"
+    team: "Team"
+    league: "League"
+    why: "Why"
+
+  metric_default: state
+  sort_default: asc
+
+  rows:
+    - rank: 1
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      team: "Atlanta Braves"
+      league: "MLB"
+      why: "Longtime regional TV footprint"
+
+    - rank: 2
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      team: "Seattle Seahawks"
+      league: "NFL"
+      why: "Closest NFL franchise; Pacific Northwest market"
+
+    - rank: 3
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      team: "Arizona Cardinals"
+      league: "NFL"
+      why: "State's primary NFL franchise"
+
+    - rank: 4
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      team: "Dallas Cowboys"
+      league: "NFL"
+      why: "Regional reach; no in-state major pro team"
+
+    - rank: 5
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      team: "Los Angeles Dodgers"
+      league: "MLB"
+      why: "Close call; statewide broadcast reach and name recognition"
+
+    - rank: 6
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      team: "Denver Broncos"
+      league: "NFL"
+      why: "Statewide football identity since the Super Bowl era"
+
+    - rank: 7
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      team: "New England Patriots"
+      league: "NFL"
+      why: "Close call; Patriots lead search interest over Yankees and Red Sox"
+
+    - rank: 8
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      team: "Philadelphia Eagles"
+      league: "NFL"
+      why: "Philadelphia market covers the state"
+
+    - rank: 9
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      team: "Miami Dolphins"
+      league: "NFL"
+      why: "Historic Florida NFL franchise; close call with Buccaneers"
+
+    - rank: 10
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      team: "Atlanta Braves"
+      league: "MLB"
+      why: "Deep regional baseball identity and broadcast footprint"
+
+    - rank: 11
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      team: "Los Angeles Lakers"
+      league: "NBA"
+      why: "Pacific market; Lakers broadcast reach is strongest"
+
+    - rank: 12
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      team: "Seattle Seahawks"
+      league: "NFL"
+      why: "Pacific Northwest regional market"
+
+    - rank: 13
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      team: "Chicago Bears"
+      league: "NFL"
+      why: "Deep statewide football identity"
+
+    - rank: 14
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      team: "Indianapolis Colts"
+      league: "NFL"
+      why: "State's primary NFL franchise"
+
+    - rank: 15
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      team: "Green Bay Packers"
+      league: "NFL"
+      why: "Regional split; Packers lead in eastern Iowa TV markets"
+
+    - rank: 16
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      team: "Kansas City Chiefs"
+      league: "NFL"
+      why: "KC straddles the border; Chiefs are the hometown team"
+
+    - rank: 17
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      team: "Cincinnati Bengals"
+      league: "NFL"
+      why: "Closest NFL franchise; close call with Cardinals"
+
+    - rank: 18
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      team: "New Orleans Saints"
+      league: "NFL"
+      why: "Deep cultural identity; Who Dat nation statewide"
+
+    - rank: 19
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      team: "New England Patriots"
+      league: "NFL"
+      why: "Part of the Patriots' six-state New England market"
+
+    - rank: 20
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      team: "Baltimore Ravens"
+      league: "NFL"
+      why: "Maryland's NFL franchise with strong statewide pull"
+
+    - rank: 21
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      team: "Boston Red Sox"
+      league: "MLB"
+      why: "Historic statewide fanbase"
+
+    - rank: 22
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      team: "Detroit Lions"
+      league: "NFL"
+      why: "Statewide NFL identity; close call with Red Wings"
+
+    - rank: 23
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      team: "Minnesota Vikings"
+      league: "NFL"
+      why: "Statewide NFL identity across the Upper Midwest"
+
+    - rank: 24
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      team: "New Orleans Saints"
+      league: "NFL"
+      why: "Gulf Coast proximity and deep regional loyalty"
+
+    - rank: 25
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      team: "Kansas City Chiefs"
+      league: "NFL"
+      why: "Recent dynasty boosted statewide pull; close call with Cardinals"
+
+    - rank: 26
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      team: "Denver Broncos"
+      league: "NFL"
+      why: "No in-state team; Denver is the closest major NFL market"
+
+    - rank: 27
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      team: "Kansas City Chiefs"
+      league: "NFL"
+      why: "No in-state team; Chiefs are the closest major franchise"
+
+    - rank: 28
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      team: "Las Vegas Raiders"
+      league: "NFL"
+      why: "Close call; Raiders relocated to Vegas; Golden Knights also strong"
+
+    - rank: 29
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      team: "New England Patriots"
+      league: "NFL"
+      why: "Deep in the Patriots' six-state New England market"
+
+    - rank: 30
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      team: "New York Giants"
+      league: "NFL"
+      why: "Close call; Giants play in NJ and lead historically"
+
+    - rank: 31
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      team: "Dallas Cowboys"
+      league: "NFL"
+      why: "No in-state team; Cowboys dominate the Southwest"
+
+    - rank: 32
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      team: "New York Yankees"
+      league: "MLB"
+      why: "Close call; Yankees have the broadest statewide name recognition"
+
+    - rank: 33
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      team: "Carolina Panthers"
+      league: "NFL"
+      why: "Close call; Panthers lead over Hurricanes and Hornets"
+
+    - rank: 34
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      team: "Minnesota Vikings"
+      league: "NFL"
+      why: "No in-state team; Vikings are the regional market anchor"
+
+    - rank: 35
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      team: "Cleveland Browns"
+      league: "NFL"
+      why: "Close call; Browns hold the longest statewide NFL identity"
+
+    - rank: 36
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      team: "Oklahoma City Thunder"
+      league: "NBA"
+      why: "Local NBA franchise; close call with Cowboys and Chiefs pull"
+
+    - rank: 37
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      team: "Portland Trail Blazers"
+      league: "NBA"
+      why: "Oregon's only major pro team and a fierce local identity"
+
+    - rank: 38
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      team: "Philadelphia Eagles"
+      league: "NFL"
+      why: "Close call with Steelers country"
+
+    - rank: 39
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      team: "New England Patriots"
+      league: "NFL"
+      why: "Firmly inside the Patriots' regional fanbase"
+
+    - rank: 40
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      team: "Carolina Panthers"
+      league: "NFL"
+      why: "Regional NFL team; Panthers share the Carolinas market"
+
+    - rank: 41
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      team: "Minnesota Vikings"
+      league: "NFL"
+      why: "No in-state team; Vikings pull across both Dakotas"
+
+    - rank: 42
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      team: "Tennessee Titans"
+      league: "NFL"
+      why: "Close call; Titans lead over Predators and Grizzlies"
+
+    - rank: 43
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      team: "Dallas Cowboys"
+      league: "NFL"
+      why: "National brand, statewide reach"
+
+    - rank: 44
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      team: "Utah Jazz"
+      league: "NBA"
+      why: "State's primary major pro franchise"
+
+    - rank: 45
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      team: "New England Patriots"
+      league: "NFL"
+      why: "Patriots country; close second is Boston Red Sox"
+
+    - rank: 46
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      team: "Washington Commanders"
+      league: "NFL"
+      why: "Close call; Northern VA in DC market, no single team dominates"
+
+    - rank: 47
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      team: "Seattle Seahawks"
+      league: "NFL"
+      why: "Dominant statewide NFL identity"
+
+    - rank: 48
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      team: "Pittsburgh Steelers"
+      league: "NFL"
+      why: "No in-state team; Steelers Nation is strong statewide"
+
+    - rank: 49
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      team: "Green Bay Packers"
+      league: "NFL"
+      why: "Iconic statewide identity; community-owned franchise"
+
+    - rank: 50
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      team: "Denver Broncos"
+      league: "NFL"
+      why: "No in-state team; Denver is the closest NFL market"
+
+sections:
+  - id: "why-some-states-root-for-out-of-state-teams"
+    icon: "fa-solid fa-location-dot"
+    title: "Why Some States Root for Out-of-State Teams"
+    paragraphs:
+      - "Thirteen states have no NFL, MLB, NBA, NHL, or MLS franchise. The companion [states with no Big 4 sports teams](/rankings/sports/states-no-big-4-sports-teams) list explains those gaps by physical franchise location. In those states, fandom follows geography, media markets, and broadcast history rather than a hometown identity. Montana and Wyoming fans grew up watching Denver Broncos games on local affiliates, and West Virginia fans have watched Pittsburgh Steelers games for generations."
+      - "TV market boundaries matter more than state lines for professional sports. A fan in western Kansas watches Kansas City Chiefs games the same way a fan in Kansas City does. A fan in southern Mississippi is inside the New Orleans Saints' broadcast footprint and often develops the same regional loyalty as a Louisiana resident."
+      - "Distance to an arena also shapes which league wins. In Alaska and Hawaii, where driving to a game is not an option regardless of which team you choose, name recognition and national broadcast availability carry more weight. The Seattle Seahawks reach Alaska through Pacific Northwest media, and the Los Angeles Lakers are the NBA's most broadcast team in Pacific markets."
+
+  - id: "nfl-mlb-nba-nhl-mls-fan-geography"
+    icon: "fa-solid fa-chart-bar"
+    title: "NFL, MLB, NBA, NHL, and MLS Fan Geography"
+    paragraphs:
+      - "The NFL leads in more states than any other league because football is also the [most popular sport in many states](/rankings/sports/most-popular-sport-by-state), with the broadest national fanbase and the fewest games per season. NFL teams in Dallas, New England, and Pittsburgh have fanbases that extend well beyond their home states because of decades of championship runs and national television exposure."
+      - "MLB teams hold their strongest regional roots in New England, the Southeast, and parts of the Midwest, where franchises like the Boston Red Sox, Atlanta Braves, and St. Louis Cardinals built decades of local broadcast relationships before cable fragmented the market. Baseball's 162-game season means daily local radio and TV coverage that NFL teams simply cannot match for local habit formation."
+      - "NBA teams tend to lead in states where a single iconic franchise has few competing local sports options, such as Utah (Jazz), Oklahoma (Thunder), and Oregon (Trail Blazers). For women's pro basketball, the [WNBA teams by state](/rankings/sports/wnba-teams-by-state) page shows a smaller but fast-growing footprint. No state on this map leads with an NHL franchise, and MLS fanbases are growing but have not yet topped a state over a major NFL, MLB, or NBA franchise."
+
+  - id: "close-call-states-and-split-fanbases"
+    icon: "fa-solid fa-scale-balanced"
+    title: "Close-Call States and Split Fanbases"
+    paragraphs:
+      - "Pennsylvania is the sharpest geographic split in American sports. The Philadelphia Eagles own the southeastern half of the state and Delaware, while the Pittsburgh Steelers own the western half and most of West Virginia. The two fanbases rarely overlap, and no single Pennsylvania team can claim a statewide majority with confidence."
+      - "California has the most teams of any state but no clear winner. The Los Angeles Dodgers have the deepest statewide name recognition thanks to Spanish-language broadcasting and decades of Southern California cultural identity, but the San Francisco 49ers, Golden State Warriors, and Los Angeles Lakers all have legitimate statewide claims. Any California answer depends on which part of the state you measure."
+      - "Missouri splits between Kansas City Chiefs fans in the west and St. Louis Cardinals baseball fans across much of the rest of the state. The Chiefs' back-to-back Super Bowl wins in 2023 and 2024 have pulled statewide search interest toward Kansas City, but Cardinals baseball has a 50-year head start in eastern Missouri and southern Illinois. New York, Ohio, Nevada, Connecticut, New Jersey, North Carolina, Tennessee, Virginia, Iowa, Nebraska, and Oklahoma all carry close-call notes in the table above for similar reasons."
+
+visual_assets:
+  - id: lumen-field-seattle-seahawks
+    src: /images/rankings/sports/most-popular-professional-sports-team-by-state/lumen-field-seattle-seahawks.jpg
+    alt: Lumen Field in Seattle with the city skyline behind the stadium
+    caption: Seattle's NFL stadium sits beside downtown and anchors a Pacific Northwest fan market that stretches far beyond Washington state.
+    section: why-some-states-root-for-out-of-state-teams
+    layout: full-width-wide
+
+  - id: fenway-park-boston-red-sox
+    src: /images/rankings/sports/most-popular-professional-sports-team-by-state/fenway-park-boston-red-sox.jpg
+    alt: Fenway Park baseball field and stands during a Boston Red Sox game
+    caption: Fenway Park opened in 1912 and remains Major League Baseball's oldest active ballpark, giving the Red Sox a regional identity built over more than a century.
+    section: nfl-mlb-nba-nhl-mls-fan-geography
+    layout: right
+
+faq:
+  - question: "What is the most popular professional sports team in every state?"
+    answer: "The most popular professional sports team in every state is listed in the table above, based on a best-fit mix of fan interest, team geography, media markets, and historic loyalty. NFL teams lead in most states because football has the largest national fanbase, but MLB, NBA, and NHL teams lead where local or regional loyalty is stronger."
+
+  - question: "What is the most popular sports team in every U.S. state?"
+    answer: "NFL teams lead in the most U.S. states because of football's broad national reach. MLB teams lead in states with deep baseball identity, such as Massachusetts (Red Sox) and Georgia (Braves). NBA teams lead where a single franchise has few competing local options, such as Utah (Jazz) and Oregon (Trail Blazers)."
+
+  - question: "Why do some states have out-of-state teams listed?"
+    answer: "Several states have no major professional sports team, so nearby franchises become the strongest regional favorite. West Virginia fans follow the Pittsburgh Steelers, Montana and Wyoming fans follow the Denver Broncos, and Mississippi fans follow the New Orleans Saints because of TV market geography and broadcast history, not state borders."
+
+  - question: "Which professional league has the most popular teams by state?"
+    answer: "The NFL leads the most states on this list because football has the largest national fanbase and the most even geographic spread of franchises. No other league comes close to NFL dominance across state-by-state fandom, though MLB, NBA, and NHL teams lead in a meaningful number of states."
+
+  - question: "Why is this not an official ranking?"
+    answer: "Team popularity can be measured by search interest, TV ratings, attendance, merchandise sales, media market reach, and historic loyalty, and those signals sometimes point in different directions for the same state. No league or government body tracks official statewide fandom, so close calls are unavoidable and are labeled as such throughout this page."
+
+  - question: "Can a college team be more popular than a pro team in some states?"
+    answer: "Yes, especially in states such as Alabama, Nebraska, and Kentucky, where college football or college basketball consistently draws more statewide passion than any professional franchise. This page only ranks professional teams, so those states still show the strongest available pro team with a note that college fandom may be stronger overall."
+
+related:
+  - title: "States With No Professional Sports Teams"
+    url: "/rankings/sports/states-no-big-4-sports-teams"
+  - title: "WNBA Teams by State"
+    url: "/rankings/sports/wnba-teams-by-state"
+  - title: "List of U.S. State Capitals"
+    url: "/rankings/geography/states-capital-cities"

@@ -191,7 +191,6 @@
     };
 }
 
-
 <nav class="bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
     <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
         @await Html.PartialAsync("_Breadcrumbs", Model)
@@ -460,14 +459,16 @@
                         @await Html.PartialAsync("_Sources", Model)
                     </section>
 
-                    <div class="mt-10 space-y-8 lg:hidden" data-nosnippet>
-                        @await Html.PartialAsync("_RelatedSymbols", Model)
-                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
-                        @*@await Html.PartialAsync("_GuidesAndRankingsSidebar")*@
-                    </div>
-
                     <div class="content-divider">
                         @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+
+                    <div class="mt-12 lg:hidden">
+
+                        @await Html.PartialAsync("_RelatedSymbols", Model)
+
+                        @await Html.PartialAsync("_RelatedStatesSidebar", Model)
+
                     </div>
                 </div>
             </div>

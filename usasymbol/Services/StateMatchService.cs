@@ -23,15 +23,15 @@ namespace USASymbol.Services
 
         private static readonly IReadOnlyList<MetricBinding> Bindings = new[]
         {
-            new MetricBinding("cost", "cost-of-living", "Affordability", "Lower everyday costs", "Cost-of-living index where 100 is the national average.", "fa-solid fa-cart-shopping", 60),
-            new MetricBinding("income", "median-income", "Income", "Higher household income", "Median household income before taxes.", "fa-solid fa-sack-dollar", 55),
-            new MetricBinding("jobs", "unemployment-rate", "Jobs", "Lower unemployment", "State unemployment rate; lower values score better.", "fa-solid fa-briefcase", 50),
-            new MetricBinding("housing", "home-value", "Housing", "Lower home prices", "Median residential home value.", "fa-solid fa-house", 55),
-            new MetricBinding("safety", "violent-crime", "Safety", "Lower violent crime", "Violent crime incidents per 100,000 residents.", "fa-solid fa-shield-halved", 60),
-            new MetricBinding("health", "best-healthcare", "Healthcare", "Better quality and access", "Composite healthcare score covering outcomes, cost, and access.", "fa-solid fa-briefcase-medical", 50),
-            new MetricBinding("education", "public-school-rank", "Education", "Stronger public schools", "Public school system ranking; a lower rank is better.", "fa-solid fa-graduation-cap", 45),
-            new MetricBinding("warmth", "average-temperature", "Warm climate", "Higher annual temperature", "Average annual statewide temperature.", "fa-solid fa-sun", 35),
-            new MetricBinding("taxes", "tax-burden", "Low taxes", "Lower total tax burden", "State and local tax burden as a share of personal income.", "fa-solid fa-scale-balanced", 45)
+            new MetricBinding("cost", "cost-of-living", "Affordability", "Lower everyday costs", "Cost-of-living index where 100 is the national average.", "fa-solid fa-cart-shopping", 15),
+            new MetricBinding("income", "median-income", "Income", "Higher household income", "Median household income before taxes.", "fa-solid fa-sack-dollar", 15),
+            new MetricBinding("jobs", "unemployment-rate", "Jobs", "Lower unemployment", "State unemployment rate; lower values score better.", "fa-solid fa-briefcase", 15),
+            new MetricBinding("housing", "home-value", "Housing", "Lower home prices", "Median residential home value.", "fa-solid fa-house", 15),
+            new MetricBinding("safety", "violent-crime", "Safety", "Lower violent crime", "Violent crime incidents per 100,000 residents.", "fa-solid fa-shield-halved", 15),
+            new MetricBinding("health", "best-healthcare", "Healthcare", "Better quality and access", "Composite healthcare score covering outcomes, cost, and access.", "fa-solid fa-briefcase-medical", 15),
+            new MetricBinding("education", "public-school-rank", "Education", "Stronger public schools", "Public school system ranking; a lower rank is better.", "fa-solid fa-graduation-cap", 10),
+            new MetricBinding("warmth", "average-temperature", "Warm climate", "Higher annual temperature", "Average annual statewide temperature.", "fa-solid fa-sun", 10),
+            new MetricBinding("taxes", "tax-burden", "Low taxes", "Lower total tax burden", "State and local tax burden as a share of personal income.", "fa-solid fa-scale-balanced", 10)
         };
 
         private readonly IStateService _stateService;

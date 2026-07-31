@@ -1,0 +1,172 @@
+@using USASymbol.Models.Content
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+@model MineralDetailViewModel
+
+@{
+    var sections = Model.MineralContent?.Sections;
+    var visualAssets = Model.MineralContent?.VisualAssets ?? new List<VisualAsset>();
+    var factsEyebrow = Model.SymbolTypeName ?? "State mineral";
+    var inlineFactsSection = sections?.FirstOrDefault(item =>
+        item.Facts?.Any() == true &&
+        (string.Equals(item.Id, "facts", StringComparison.OrdinalIgnoreCase) ||
+         item.Title.Contains("Facts", StringComparison.OrdinalIgnoreCase)));
+    var hasWhatIsSection = sections?.Any(item => string.Equals(item.Id, "what-is", StringComparison.OrdinalIgnoreCase)) == true;
+    var renderedInlineFacts = false;
+}
+
+@if (sections?.Any() == true)
+{
+    foreach (var item in sections)
+    {
+        var isInlineFactsSection = inlineFactsSection != null &&
+            string.Equals(item.Id, inlineFactsSection.Id, StringComparison.OrdinalIgnoreCase);
+
+        if (isInlineFactsSection)
+        {
+            continue;
+        }
+
+        var hasSites = item.Sites?.Any() == true;
+
+        <div id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            @await Html.PartialAsync("Components/Content/_SectionHeader", (IContentSection)item)
+
+            @{
+                var sectionAssets = visualAssets
+                    .Where(v => !string.IsNullOrEmpty(v.Section) &&
+                                string.Equals(v.Section, item.Id, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            @foreach (var asset in sectionAssets)
+            {
+                @await Html.PartialAsync("Components/VisualAsset/_VisualAssetRenderer", asset)
+            }
+
+            @if (item.Paragraphs?.Any() == true)
+            {
+                <div class="prose prose-slate prose-base lg:prose-lg max-w-none text-slate-800">
+                    @for (var i = 0; i < item.Paragraphs.Count; i++)
+                    {
+                        <p class="@(i == 0 ? "text-[1.12rem] font-medium leading-8 text-slate-900" : "")">
+                            @item.Paragraphs[i].RenderAutoLinks()
+                        </p>
+                    }
+                </div>
+            }
+
+            @if (item.Facts?.Any() == true)
+            {
+                @await Html.PartialAsync("Components/Widgets/_FactsCarousel", (IEnumerable<string>)item.Facts)
+            }
+
+            @if (!renderedInlineFacts &&
+                inlineFactsSection?.Facts?.Any() == true &&
+                string.Equals(item.Id, "what-is", StringComparison.OrdinalIgnoreCase))
+            {
+                renderedInlineFacts = true;
+
+                @await Html.PartialAsync(
+                    "Components/Widgets/_FactsCarousel",
+                    (IEnumerable<string>)inlineFactsSection.Facts,
+                    new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(ViewData)
+                    {
+                        ["FactsTitle"] = inlineFactsSection.Title,
+                        ["FactsEyebrow"] = factsEyebrow,
+                        ["FactsAccent"] = "amber"
+                    })
+            }
+
+            @* ── Mine/quarry/deposit sites Leaflet map (location section only, optional) ─── *@
+            @if (hasSites)
+            {
+                var itemName = Model.MineralContent?.Name ?? Model.SymbolTypeName;
+                var mapId = $"mineral-map-{item.Id}";
+                var primarySite = item.Sites.FirstOrDefault(s =>
+                    string.Equals(s.Type, "primary", StringComparison.OrdinalIgnoreCase))
+                    ?? item.Sites.First();
+
+                var lat = primarySite.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                var lng = primarySite.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+                <div class="mt-8" data-nosnippet>
+                    <div class="overflow-hidden border border-slate-200/60 bg-white/55">
+                        <div id="@mapId" class="w-full" style="height:340px;" aria-label="@itemName sites map"></div>
+                        <div id="@($"{mapId}-fallback")" class="hidden px-5 py-4 text-sm text-slate-600 border-t border-slate-100">
+                            The interactive map is temporarily unavailable.
+                        </div>
+                    </div>
+                </div>
+
+                <link rel="stylesheet" href="~/vendor/leaflet/leaflet.css" />
+                <script src="~/vendor/leaflet/leaflet.js"></script>
+                <script>
+                (function () {
+                    var mapEl = document.getElementById('@mapId');
+                    var fallback = document.getElementById('@($"{mapId}-fallback")');
+                    if (!mapEl) return;
+                    if (typeof window.L === 'undefined') {
+                        mapEl.classList.add('hidden');
+                        if (fallback) fallback.classList.remove('hidden');
+                        return;
+                    }
+
+                    var map = L.map('@mapId', { zoomControl: true, scrollWheelZoom: false })
+                        .setView([@lat, @lng], 7);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="nofollow noopener noreferrer">OpenStreetMap</a> contributors',
+                        maxZoom: 18
+                    }).addTo(map);
+
+                    var sites = [
+                        @foreach (var site in item.Sites)
+                        {
+                            var siteLat = site.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                            var siteLng = site.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                            var isPrimary = string.Equals(site.Type, "primary", StringComparison.OrdinalIgnoreCase);
+                            <text>
+                        { lat: @siteLat, lng: @siteLng, name: @Json.Serialize(site.Name), note: @Json.Serialize(site.Note), primary: @(isPrimary ? "true" : "false") },
+                            </text>
+                        }
+                    ];
+
+                    sites.forEach(function (s) {
+                        var size = s.primary ? 36 : 28;
+                        var bg = s.primary ? '#475569' : '#1e293b';
+                        var icon = L.divIcon({
+                            html: '<div style="background:' + bg + ';color:#fff;border-radius:50%;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;font-size:' + Math.round(size * 0.4) + 'px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"><i class="fa-solid fa-gem"></i></div>',
+                            className: '',
+                            iconSize: [size, size],
+                            iconAnchor: [size / 2, size / 2]
+                        });
+                        var popup = '<strong>' + s.name + '</strong>' + (s.note ? '<br><span style="font-size:12px;color:#64748b">' + s.note + '</span>' : '');
+                        L.marker([s.lat, s.lng], { icon: icon })
+                            .bindPopup(popup)
+                            .addTo(map);
+                    });
+                }());
+                </script>
+            }
+
+            <div class="clear-both"></div>
+        </div>
+    }
+
+    @if (!renderedInlineFacts && inlineFactsSection?.Facts?.Any() == true && !hasWhatIsSection)
+    {
+        @await Html.PartialAsync(
+            "Components/Widgets/_FactsCarousel",
+            (IEnumerable<string>)inlineFactsSection.Facts,
+            new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(ViewData)
+            {
+                ["FactsTitle"] = inlineFactsSection.Title,
+                ["FactsEyebrow"] = factsEyebrow,
+                ["FactsAccent"] = "amber"
+            })
+    }
+}
+else
+{
+    <div class="text-sm text-slate-500">@Model.EmptySectionsMessage</div>
+}
