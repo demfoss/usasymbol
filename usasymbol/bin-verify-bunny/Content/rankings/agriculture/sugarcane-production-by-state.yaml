@@ -1,0 +1,131 @@
+type: ranking
+slug: sugarcane-production-by-state
+category: agriculture
+url: /rankings/agriculture/sugarcane-production-by-state
+auto_link_phrases:
+  - "sugarcane production by state"
+  - "states that grow sugarcane"
+  - "which state produces the most sugarcane"
+  - "sugarcane by state"
+extremes_mode: both
+extremes_title: "States With the Most and Least Sugarcane Production"
+hero_image: "/images/rankings/agriculture/sugarcane-production-by-state/sugarcane-production-by-state-hero.jpg"
+hero_image_alt: "Sugarcane harvest in a Florida field"
+hero_image_caption: "Florida grows the most sugarcane in the country at 17,700,000 tons, narrowly ahead of Louisiana's 16,000,000 tons."
+
+author: "USA Symbol Team"
+date_published: "2026-08-13"
+date_modified: "2026-08-13"
+
+seo:
+  title: "Sugarcane Production by State | Map, States & Tons"
+  description: "Florida grows the most sugarcane in the country at 17,700,000 tons, narrowly ahead of Louisiana's 16,000,000 tons."
+
+page:
+  h1: "Sugarcane Production by State"
+
+  quick_answer:
+    - "Florida grows the most sugarcane in the country at 17,700,000 tons, narrowly ahead of Louisiana's 16,000,000 tons."
+    - "Texas is the only other state with recorded sugarcane production, an estimated 368,000 tons, far below Florida and Louisiana."
+    - "Florida and Louisiana together account for nearly 99% of the roughly 34,068,000 tons produced across the three ranked states."
+
+  methodology: "Florida and Louisiana figures are sourced from the USDA/NASS QuickStats Ad-Hoc Query Tool, reported in tons. Texas is an estimated figure cited in narrative form. Only states with recorded or estimated sugarcane production are listed."
+
+  sources:
+    - name: "USDA National Agricultural Statistics Service. QuickStats"
+      url: "https://quickstats.nass.usda.gov/"
+      description: "State-by-state sugarcane production in tons"
+
+table:
+  caption: "Sugarcane Production by State"
+  note: "Florida and Louisiana figures are reported production in tons. Texas is an estimated figure."
+  columns:
+    rank: "Rank"
+    state: "State"
+    production_tons: "Sugarcane Production (tons)"
+    notes: "Notes"
+
+  metric_default: production_tons
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      production_tons: 17700000
+      notes: "The most sugarcane production of any state, 51.96% of the three-state total."
+
+    - rank: 2
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      production_tons: 16000000
+      notes: "46.97% of the three-state total, close behind Florida."
+
+    - rank: 3
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      production_tons: 368000
+      notes: "The least sugarcane production of the three ranked states, an estimated 1.08% of the total."
+
+map:
+  title: "Sugarcane Production by State Map"
+  image_alt: "U.S. map shaded by sugarcane production, from Florida's 17,700,000 tons down to Texas's estimated 368,000 tons"
+  caption: "Florida's 17,700,000 tons of sugarcane is the darkest shade on the map, narrowly ahead of Louisiana. Texas's estimated 368,000 tons is the lightest among the three ranked states."
+  metric_key: production_tons
+  metric_label: "Sugarcane Production (tons)"
+  color_scheme: amber
+  color_scale: log
+
+sections:
+  - id: "florida-and-louisiana-lead-sugarcane-production"
+    icon: "fa-solid fa-wheat-awn"
+    title: "Which States Grow the Most Sugarcane"
+    paragraphs:
+      - "Florida edges out Louisiana for the top spot, 17,700,000 tons to 16,000,000 tons, a gap of just 1,700,000 tons. Texas trails far behind at an estimated 368,000 tons."
+      - "Only three states report sugarcane production at all, and Florida and Louisiana together supply 98.92% of the three-state total."
+    table:
+      columns:
+        state: "State"
+        production_tons: "Sugarcane Production (tons)"
+      rows:
+        - state: "Florida"
+          production_tons: "17,700,000"
+        - state: "Louisiana"
+          production_tons: "16,000,000"
+        - state: "Texas"
+          production_tons: "368,000 (est.)"
+
+visual_assets:
+  - id: "florida-and-louisiana-lead-sugarcane-production-visual"
+    src: "/images/rankings/agriculture/sugarcane-production-by-state/florida-and-louisiana-lead-sugarcane-production.jpg"
+    alt: "Sugarcane harvest in Florida representing states with the most sugarcane production"
+    caption: "Florida and Louisiana together supply 98.92% of sugarcane production among the three ranked states."
+    section: "florida-and-louisiana-lead-sugarcane-production"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state produces the most sugarcane?"
+    answer: "Florida produces the most sugarcane in the country at 17,700,000 tons, 51.96% of the three-state total."
+
+  - question: "Which state produces the least sugarcane?"
+    answer: "Texas produces the least among the three ranked states, an estimated 368,000 tons."
+
+  - question: "How much sugarcane does Louisiana produce?"
+    answer: "Louisiana produces 16,000,000 tons of sugarcane, just 1,700,000 tons behind top-ranked Florida."
+
+  - question: "How many states grow sugarcane commercially?"
+    answer: "Three states report sugarcane production: Florida, Louisiana, and Texas."
+
+  - question: "What is total US sugarcane production?"
+    answer: "The three ranked states produced roughly 34,068,000 tons of sugarcane combined."
+
+related:
+  - title: "Sugarbeet Production by State"
+    url: "/rankings/agriculture/sugarbeet-production-by-state"
+  - title: "Sunflower Production by State"
+    url: "/rankings/agriculture/sunflower-production-by-state"
+  - title: "Farms by State"
+    url: "/rankings/food/farms-by-state"

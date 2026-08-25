@@ -1,0 +1,651 @@
+type: ranking
+slug: dui-strictness-by-state
+category: law
+url: /rankings/law/dui-strictness-by-state
+auto_link_phrases:
+  - "DUI laws by state"
+  - "DUI penalties by state"
+  - "strictest DUI states"
+  - "first time DUI by state"
+  - "DUI license suspension by state"
+  - "zero tolerance DUI states"
+extremes_mode: topOnly
+extremes_title: "States with Mandatory Jail for a First DUI"
+hero_image: "/images/rankings/law/dui-strictness-by-state/dui-strictness-by-state-hero.jpg"
+hero_image_alt: "Police officer conducting a roadside sobriety checkpoint at night in the United States"
+hero_image_caption: "Alaska mandates 72 hours of jail for a first DUI — the longest mandatory minimum of any state. Wisconsin is the only state where a standard first offense is a civil infraction, not a crime. All states set the BAC limit at 0.08%; Utah is the exception at 0.05%."
+
+author: "USA Symbol Team"
+date_published: "2026-06-22"
+date_modified: "2026-06-22"
+
+seo:
+  title: "DUI Laws by State | Penalties, Map & Strictness"
+  description: "Alaska requires 72 hours mandatory jail for a first DUI. Arizona requires 10 days. Utah has the country's lowest BAC limit at 0.05%."
+
+page:
+  h1: "DUI Penalties by State"
+
+  quick_answer:
+    - "Alaska mandates 72 hours of jail for a first DUI, the longest mandatory minimum of any state. Arizona mandates 10 days, though 9 may be served as home detention with an ignition interlock installed."
+    - "Wisconsin is the only state where a first DUI offense is a civil infraction rather than a crime. The maximum fine is $300 and no jail time is imposed. Maryland and Connecticut suspend a first offender's license for just 45 days, the shortest of any state."
+    - "Utah sets the lowest BAC limit in the country at 0.05%, below the 0.08% standard used by all other states. 6 states require mandatory jail time for a standard first offense with no community service substitution: Alaska, Arizona, Georgia, Montana, Tennessee, and Utah."
+
+  methodology: "Penalties shown reflect a standard first-offense DUI conviction at 0.08% BAC (0.05% for Utah) with no aggravating factors, though actual sentences vary by court, per the National Highway Traffic Safety Administration and state motor vehicle statutes as of June 2026. This page is for informational purposes only and does not constitute legal advice."
+
+  sources:
+    - name: "NHTSA — State Impaired Driving Laws"
+      url: "https://www.nhtsa.gov/risky-driving/drunk-driving"
+      description: "Federal drunk driving law summaries and state-by-state penalty data"
+    - name: "NCSL — Drunk Driving State Laws"
+      url: "https://www.ncsl.org/transportation/drunk-driving-state-laws"
+      description: "National Conference of State Legislatures DUI law tracker"
+    - name: "Governors Highway Safety Association"
+      url: "https://www.ghsa.org/state-laws/issues/impaired%20driving"
+      description: "State impaired driving law database including BAC limits and ignition interlock requirements"
+
+map:
+  title: "DUI Penalty Strictness by State 2026"
+  image: "/images/rankings/law/dui-strictness-by-state/dui-strictness-by-state-map.webp"
+  image_alt: "U.S. map showing DUI penalty strictness by state in 2026: dark red for 6 states with mandatory jail, red for strict states, yellow for moderate, and light green for lenient states"
+  caption: "6 states in dark red require mandatory jail for a first DUI: Alaska, Arizona, Georgia, Montana, Tennessee, and Utah. Wisconsin in light green is the only state where a first offense is a civil infraction."
+  disclaimer: "This map reflects typical first-offense penalties at standard BAC levels and is for informational purposes only. It does not constitute legal advice."
+  metric_key: strictness_tier
+  metric_label: "Strictness"
+  name_key: state
+  summary_key: note
+  color_scheme: categorical
+  color_scale: categorical
+  color_map:
+    "Very Strict": "red-dark"
+    "Strict": "red"
+    "Moderate": "yellow"
+    "Lenient": "green-light"
+  detail_keys:
+    - mandatory_jail_days
+    - license_suspension_days
+    - max_fine_usd
+  filters:
+    - key: strictness_tier
+      label: "Filter by Strictness"
+      use_colors: true
+    - key: ignition_interlock_first
+      label: "Filter by Ignition Interlock"
+      accent_color: "#b1135b"
+
+table:
+  caption: "2026 DUI Penalties by State — First Offense"
+  note: "Penalties reflect a standard first-offense DUI conviction at 0.08% BAC with no aggravating factors. Mandatory jail days of 0 indicates no mandatory incarceration, though community service or probation may be required. Fines shown are statutory maximums; base fines are often lower before court costs and surcharges. Always consult an attorney for advice specific to your situation."
+  columns:
+    state: "State"
+    strictness_tier: "Strictness"
+    mandatory_jail_days: "Mandatory Jail (Days)"
+    license_suspension_days: "License Suspension (Days)"
+    max_fine_usd: "Max Fine (USD)"
+    bac_limit: "BAC Limit"
+    ignition_interlock_first: "Interlock Required"
+
+  metric_default: strictness_tier
+  sort_default: desc
+
+  rows:
+    # ── VERY STRICT — mandatory jail required, no community service substitution ─
+    - state: "Alaska"
+      state_slug: "alaska"
+      strictness_tier: "Very Strict"
+      mandatory_jail_days: 3
+      license_suspension_days: 90
+      max_fine_usd: 1500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "Yes"
+      note: "72 hours of mandatory jail is required for a first conviction — no community service substitution. An ignition interlock is required for 6 months after the license is reinstated."
+
+    - state: "Arizona"
+      state_slug: "arizona"
+      strictness_tier: "Very Strict"
+      mandatory_jail_days: 1
+      license_suspension_days: 90
+      max_fine_usd: 1500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "Yes"
+      note: "10 days mandatory. A court may convert 9 of those days to home detention with an ignition interlock installed, but 1 day in jail is always required. Ignition interlock required for 12 months on all first convictions."
+
+    - state: "Georgia"
+      state_slug: "georgia"
+      strictness_tier: "Very Strict"
+      mandatory_jail_days: 1
+      license_suspension_days: 365
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "24 hours mandatory jail is the minimum sentence for a first conviction, with a maximum of 12 months. License suspension runs 12 months; 120-day suspension with limited permit available."
+
+    - state: "Montana"
+      state_slug: "montana"
+      strictness_tier: "Very Strict"
+      mandatory_jail_days: 1
+      license_suspension_days: 180
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "24 hours of mandatory jail is required for a first conviction. Fine of $600–$1,000. License suspended for 6 months."
+
+    - state: "Tennessee"
+      state_slug: "tennessee"
+      strictness_tier: "Very Strict"
+      mandatory_jail_days: 2
+      license_suspension_days: 365
+      max_fine_usd: 1500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "48 hours mandatory jail required for a first conviction, with a maximum of 11 months and 29 days. License revoked for 1 year. Fine $350–$1,500."
+
+    - state: "Utah"
+      state_slug: "utah"
+      strictness_tier: "Very Strict"
+      mandatory_jail_days: 2
+      license_suspension_days: 120
+      max_fine_usd: 700
+      bac_limit: "0.05%"
+      ignition_interlock_first: "Yes"
+      note: "Utah is the only state with a 0.05% BAC limit, lowered from 0.08% in December 2018. First offense carries 48 hours mandatory jail, a $700 minimum fine, and 120-day suspension. Ignition interlock required."
+
+    # ── STRICT ────────────────────────────────────────────────────────────────
+    - state: "Alabama"
+      state_slug: "alabama"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 2100
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum jail for a first offense, but fines range from $600 to $2,100. Up to 1 year jail is possible. 90-day license suspension."
+
+    - state: "Hawaii"
+      state_slug: "hawaii"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 365
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory jail, but a first offense carries a 1-year license revocation — the longest of any state without mandatory incarceration. Community service of 72 hours is required."
+
+    - state: "Illinois"
+      state_slug: "illinois"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 365
+      max_fine_usd: 2500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "Yes"
+      note: "No mandatory jail for a standard first offense, but license suspended for 12 months and an ignition interlock is required as a condition of driving during suspension. Fine up to $2,500."
+
+    - state: "Iowa"
+      state_slug: "iowa"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 1250
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "48 hours of jail or 30 days of community service is required for a first conviction. License revoked for 180 days. Fine $625–$1,250."
+
+    - state: "Kansas"
+      state_slug: "kansas"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 30
+      max_fine_usd: 1500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "48 hours of jail or 100 hours of community service required for a first conviction. Fine $750–$1,500. License suspended 30 days, followed by ignition interlock period."
+
+    - state: "Louisiana"
+      state_slug: "louisiana"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "Yes"
+      note: "No mandatory jail for a first offense; up to 6 months possible. Ignition interlock required for all first convictions statewide since 2015. License suspended 90 days."
+
+    - state: "Massachusetts"
+      state_slug: "massachusetts"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 365
+      max_fine_usd: 5000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum, but fines up to $5,000 and a 1-year license suspension apply. A first offense is a misdemeanor carrying up to 2.5 years in a house of correction."
+
+    - state: "Mississippi"
+      state_slug: "mississippi"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "48 hours of jail or 10 days of community service required for a first conviction. Fine $250–$1,000. License suspended 90 days."
+
+    - state: "Nevada"
+      state_slug: "nevada"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "2 days of jail or 96 hours of community service required for a first conviction. Fine $400–$1,000. License revoked 90 days."
+
+    - state: "New Mexico"
+      state_slug: "new-mexico"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 365
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "Yes"
+      note: "No mandatory jail for a standard first offense, but ignition interlock is required for all first-offense DWI convictions. License revoked 1 year. Fine up to $1,000."
+
+    - state: "Oregon"
+      state_slug: "oregon"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 365
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "Yes"
+      note: "No mandatory jail, but ignition interlock is required for all first-offense DUII convictions. License suspended 1 year. Fine up to $1,000."
+
+    - state: "Texas"
+      state_slug: "texas"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 2000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense, but fines up to $2,000 plus a $3,000 state surcharge on a first conviction. Up to 180 days in jail is possible. License suspended 90–365 days."
+
+    - state: "Virginia"
+      state_slug: "virginia"
+      strictness_tier: "Strict"
+      mandatory_jail_days: 0
+      license_suspension_days: 365
+      max_fine_usd: 2500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum jail for a standard first offense, but fines up to $2,500 and a 12-month license suspension apply. Completion of the Virginia Alcohol Safety Action Program (VASAP) is required."
+
+    # ── MODERATE ──────────────────────────────────────────────────────────────
+    - state: "Arkansas"
+      state_slug: "arkansas"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory jail for a first offense. Up to 1 year in jail possible. Fine up to $1,000. License suspended 6 months."
+
+    - state: "California"
+      state_slug: "california"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory jail for a standard first offense. Fine $390–$1,000 (base). License suspended 6 months. A DUI school of 3 to 9 months is required."
+
+    - state: "Colorado"
+      state_slug: "colorado"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 270
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a standard first DUI. Fine $600–$1,000. License suspended up to 9 months. Colorado also penalizes DWAI (driving while ability impaired) at 0.05% BAC."
+
+    - state: "Delaware"
+      state_slug: "delaware"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 1500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine $500–$1,500. License revoked 3 months."
+
+    - state: "Florida"
+      state_slug: "florida"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a standard first offense. Fine $500–$1,000. License suspended 6–12 months. Up to 50 hours of community service may be required."
+
+    - state: "Idaho"
+      state_slug: "idaho"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine up to $1,000. License suspended 90 days. Up to 6 months in jail is possible."
+
+    - state: "Indiana"
+      state_slug: "indiana"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a standard first offense. Fine up to $500. License suspended 90 days. First offense is a Class C misdemeanor."
+
+    - state: "Maine"
+      state_slug: "maine"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 150
+      max_fine_usd: 500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine $500 minimum. License suspended 150 days."
+
+    - state: "Michigan"
+      state_slug: "michigan"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine $100–$500. License suspended 6 months. Up to 93 days in jail is possible."
+
+    - state: "Minnesota"
+      state_slug: "minnesota"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense at standard BAC. Fine up to $1,000. License revoked 90 days. First offense is a misdemeanor."
+
+    - state: "Missouri"
+      state_slug: "missouri"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 30
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine up to $1,000. License suspended 30 days. Up to 6 months in jail possible."
+
+    - state: "Nebraska"
+      state_slug: "nebraska"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 60
+      max_fine_usd: 500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "Yes"
+      note: "No mandatory jail for a first offense. Fine up to $500. License revoked 60 days. Ignition interlock required for all first-offense convictions in Nebraska."
+
+    - state: "New Hampshire"
+      state_slug: "new-hampshire"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory jail for a first offense. Fine of $500 minimum plus a $150 penalty assessment. License suspended 9 months (reduced to 6 months with interlock)."
+
+    - state: "New York"
+      state_slug: "new-york"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory jail for a standard first DWI. Fine $500–$1,000. License revoked at least 6 months. A DWAI (0.05–0.07%) is a lesser traffic infraction."
+
+    - state: "North Carolina"
+      state_slug: "north-carolina"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 60
+      max_fine_usd: 200
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "A Level 5 DWI (least severe) carries a minimum of 24 hours in jail or 24 hours of community service, plus a fine up to $200. License revoked 60 days."
+
+    - state: "North Dakota"
+      state_slug: "north-dakota"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 91
+      max_fine_usd: 1500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine up to $1,500. License suspended 91 days. Up to 30 days in jail possible."
+
+    - state: "Ohio"
+      state_slug: "ohio"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 1075
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "Minimum 3 days in jail, a driver intervention program, or a combination for a first offense. Fine $375–$1,075. License suspended 90 days to 3 years."
+
+    - state: "Oklahoma"
+      state_slug: "oklahoma"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a standard first offense. Fine up to $1,000. License revoked 180 days. Up to 1 year in jail possible."
+
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 365
+      max_fine_usd: 300
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "Tier 1 first offense (0.08–0.099% BAC): fine $300, no mandatory jail, 12-month license suspension. Most first-time offenders complete the ARD (Accelerated Rehabilitative Disposition) program, which avoids conviction and license suspension."
+
+    - state: "Rhode Island"
+      state_slug: "rhode-island"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 91
+      max_fine_usd: 500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine $100–$500. License suspended 91 days. Community service of 10–60 hours required."
+
+    - state: "South Carolina"
+      state_slug: "south-carolina"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a standard first offense. Fine $400–$1,000. License suspended 6 months. A 48-hour minimum applies only if the judge does not suspend the sentence."
+
+    - state: "South Dakota"
+      state_slug: "south-dakota"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 30
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine up to $1,000. License suspended 30 days. Up to 1 year in jail possible."
+
+    - state: "Vermont"
+      state_slug: "vermont"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 750
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine up to $750. License suspended 90 days. Up to 2 years in jail is possible under Vermont law."
+
+    - state: "Washington"
+      state_slug: "washington"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 5000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a standard first offense. Fine up to $5,000 (gross misdemeanor maximum), though typical court-imposed fines are lower. License suspended 90 days."
+
+    - state: "West Virginia"
+      state_slug: "west-virginia"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "Yes"
+      note: "No mandatory minimum for a first offense. Fine $100–$500. License revoked 6 months. Ignition interlock required for the revocation period on first convictions."
+
+    - state: "Wyoming"
+      state_slug: "wyoming"
+      strictness_tier: "Moderate"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 750
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine up to $750. License suspended 90 days. Up to 6 months in jail possible."
+
+    # ── LENIENT ───────────────────────────────────────────────────────────────
+    - state: "Connecticut"
+      state_slug: "connecticut"
+      strictness_tier: "Lenient"
+      mandatory_jail_days: 0
+      license_suspension_days: 45
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine $500–$1,000. License suspended 45 days — one of the shortest suspensions in the country."
+
+    - state: "Kentucky"
+      state_slug: "kentucky"
+      strictness_tier: "Lenient"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 500
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first DUI. Fine $200–$500. License suspended 30–120 days. Up to 30 days in jail possible."
+
+    - state: "Maryland"
+      state_slug: "maryland"
+      strictness_tier: "Lenient"
+      mandatory_jail_days: 0
+      license_suspension_days: 45
+      max_fine_usd: 1000
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory minimum for a first offense. Fine up to $1,000. License suspended 45 days — tied with Connecticut for the shortest first-offense suspension."
+
+    - state: "New Jersey"
+      state_slug: "new-jersey"
+      strictness_tier: "Lenient"
+      mandatory_jail_days: 0
+      license_suspension_days: 90
+      max_fine_usd: 400
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "No mandatory jail for a first offense. Fine $250–$400. License suspended 90 days. A $1,000/year surcharge applies for 3 years after conviction."
+
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      strictness_tier: "Lenient"
+      mandatory_jail_days: 0
+      license_suspension_days: 180
+      max_fine_usd: 300
+      bac_limit: "0.08%"
+      ignition_interlock_first: "No"
+      note: "Wisconsin is the only state where a standard first OWI offense is a civil forfeiture, not a criminal charge. Fine $150–$300. License suspended 6–9 months. No jail time imposed."
+
+sections:
+  - id: "states-with-mandatory-jail-for-first-dui"
+    icon: "fa-solid fa-gavel"
+    title: "States with Mandatory Jail for a First DUI"
+    paragraphs:
+      - "6 states require actual jail time for a standard first DUI with no community service substitution: Alaska (72 hours), Tennessee and Utah (48 hours each), Arizona (minimum 1 day), and Georgia and Montana (24 hours each). Alaska's 72-hour requirement is the longest mandatory minimum of any state."
+      - "Utah doubles as the strictest state on BAC limits: its 0.05% threshold, the only sub-0.08% limit in the country, took effect December 30, 2018. A driver at 0.05% in Utah faces the same mandatory 48-hour jail minimum as one at 0.08%."
+
+  - id: "states-with-the-lowest-dui-penalties"
+    icon: "fa-solid fa-check-circle"
+    title: "States with the Lowest DUI Penalties"
+    paragraphs:
+      - "Wisconsin is the only state where a standard first OWI offense is a civil forfeiture rather than a criminal charge. The maximum fine is $300 and no jail time is imposed. Connecticut and Maryland tie for the shortest license suspension in the country at 45 days each."
+      - "Kentucky and New Jersey cap the base fine for a first offense at $500 and $400 respectively. New Jersey adds a $1,000 annual surcharge for 3 years after conviction, raising the total cost significantly above the face fine."
+
+visual_assets:
+  - id: sobriety-checkpoint-roadside
+    src: /images/rankings/law/dui-strictness-by-state/sobriety-checkpoint-roadside.jpg
+    alt: Law enforcement officer conducting a sobriety checkpoint at night in the United States
+    caption: Alaska requires 72 hours of mandatory jail for a first DUI conviction. Arizona requires 10 days, of which 9 may be served as home detention with an ignition interlock installed.
+    section: states-with-mandatory-jail-for-first-dui
+    layout: full-width-tall
+
+  - id: utah-highway-sign
+    src: /images/rankings/law/dui-strictness-by-state/utah-highway-sign.jpg
+    alt: Highway sign in Utah showing speed limits and road conditions
+    caption: Utah lowered its BAC limit to 0.05% in December 2018, making it the only state below the federal 0.08% standard. A first offense at 0.05% carries 48 hours mandatory jail and a $700 minimum fine.
+    section: states-with-mandatory-jail-for-first-dui
+    layout: full-width-tall
+
+faq:
+  - question: "What state has the strictest DUI laws?"
+    answer: "Alaska requires 72 hours of mandatory jail for a first DUI — the longest mandatory minimum of any state. Arizona requires 10 days (minimum 1 day in jail with 9 days of home detention available). Utah is the strictest on BAC limits, at 0.05% versus the 0.08% standard everywhere else."
+
+  - question: "What is the penalty for a first DUI in Texas?"
+    answer: "Texas carries no mandatory minimum jail time for a standard first DUI. The maximum fine is $2,000, plus a $3,000 state surcharge applied on first convictions. License suspension runs 90 to 365 days, and up to 180 days in jail is possible at the judge's discretion."
+
+  - question: "Which state has the lowest BAC limit for DUI?"
+    answer: "Utah is the only state with a BAC limit below 0.08%. Utah lowered its limit to 0.05% effective December 30, 2018. A driver at 0.05% in Utah faces the same 48-hour mandatory jail minimum as one at the standard 0.08% threshold."
+
+  - question: "What happens if you get a DUI in Wisconsin?"
+    answer: "A first OWI in Wisconsin is a civil forfeiture, not a criminal offense. The maximum fine is $300. License is suspended 6 to 9 months, but no jail time is imposed. A second offense in Wisconsin is treated as a criminal misdemeanor."
+
+  - question: "Which states require an ignition interlock for a first DUI?"
+    answer: "Alaska, Arizona, Illinois, Louisiana, Nebraska, New Mexico, Oregon, Utah, and West Virginia require an ignition interlock device for all first-offense DUI convictions, regardless of BAC level. Most other states require interlock only for high-BAC or repeat offenses."
+
+  - question: "What is the license suspension for a first DUI in California?"
+    answer: "California suspends a first DUI offender's license for 180 days. No mandatory jail time applies for a standard first offense. The base fine is $390, though total costs including penalty assessments typically reach $1,500 to $2,000. A DUI school of 3 to 9 months is required."
+
+related:
+  - title: "Marijuana Laws by State"
+    url: "/rankings/law/marijuana-legality-by-state"
+  - title: "Gun Laws by State — Concealed Carry"
+    url: "/rankings/law/gun-laws-concealed-carry"
+  - title: "Abortion Laws by State"
+    url: "/rankings/law/abortion-laws-by-state"

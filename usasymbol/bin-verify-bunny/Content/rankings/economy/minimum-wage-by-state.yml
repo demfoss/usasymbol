@@ -1,0 +1,609 @@
+type: ranking
+slug: minimum-wage-by-state
+category: economy
+url: /rankings/economy/minimum-wage-by-state
+auto_link_phrases:
+  - "minimum wage by state"
+  - "state minimum wage list"
+  - "highest minimum wage by state"
+  - "current minimum wage each state"
+extremes_mode: topOnly
+extremes_title: "States with the Highest Minimum Wages"
+hero_image: "/images/rankings/economy/minimum-wage-by-state/minimum-wage-by-state.webp"
+hero_image_alt: "Map showing the 2026 minimum wage in each U.S. state"
+
+author: "USA Symbol Team"
+date_published: "2026-05-10"
+date_modified: "2026-05-10"
+
+seo:
+  title: "Minimum Wage by State 2026 | Rates, Tips & Increases"
+  description: "Washington has the highest minimum wage at $16.66, while 20 states remain at the $7.25 federal minimum."
+
+page:
+  h1: "Minimum Wage by State 2026"
+
+  quick_answer:
+    - "The 2026 minimum wage by state ranges from $7.25, the federal rate applied in 20 states with no higher state law, to $16.66 in Washington. Thirty states set minimum wages above the federal floor."
+    - "Washington ($16.66), California ($16.50), and New York ($16.50) have the highest minimum wages in 2026. Missouri, Nebraska, and Virginia all reached $15.00 on January 1, 2026, joining Massachusetts, Illinois, Maryland, and Rhode Island."
+    - "Five states have no state minimum wage law: Alabama, Louisiana, Mississippi, South Carolina, and Tennessee. The federal rate of $7.25 applies in all five."
+
+  methodology: "Rates reflect effective statewide minimums as of January 1, 2026, or the most recent effective date, with CPI-indexed states showing the last confirmed rate. Local rates in cities or counties may be higher, and tipped minimum wages show the required cash wage before tips."
+
+  sources:
+    - name: "Economic Policy Institute — Minimum Wage Tracker"
+      url: "https://www.epi.org/minimum-wage-tracker/"
+      description: "State-by-state tracker of current rates and scheduled increases"
+
+map:
+  title: "2026 Minimum Wage by State Map"
+  image: "/images/rankings/economy/minimum-wage-by-state/minimum-wage-by-state-map.webp"
+  image_alt: "U.S. map showing the 2026 minimum wage in each state, color-coded from darkest for highest wages to lightest for the federal minimum"
+  caption: "Twenty states remain at the $7.25 federal minimum. Fourteen states pay $15.00 or more. The gap between Washington ($16.66) and states still at $7.25 is $9.41 per hour."
+  metric_key: min_wage
+  metric_label: "$/hr"
+  name_key: state
+  color_scheme: green
+  color_scale: linear
+  detail_keys:
+    - tipped_wage
+    - next_increase
+
+table:
+  caption: "2026 Minimum Wage Rates by State"
+  note: "Rates can vary by city, county, industry, employer size, and employee type. Local minimum wages may be higher than the statewide rate."
+  columns:
+    rank: "Rank"
+    state: "State"
+    min_wage: "2026 Min. Wage"
+    tipped_wage: "Tipped Min. Wage"
+    next_increase: "Next Increase"
+    effective_date: "Eff. Date"
+
+  metric_default: min_wage
+  sort_default: desc
+  column_formats:
+    min_wage: "C2"
+    tipped_wage: "C2"
+
+  rows:
+    - rank: 1
+      state: "Washington"
+      state_slug: "washington"
+      min_wage: 16.66
+      tipped_wage: 16.66
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2026-01-01"
+      note: "No tip credit; tipped workers receive full minimum wage"
+
+    - rank: 2
+      state: "California"
+      state_slug: "california"
+      min_wage: 16.50
+      tipped_wage: 16.50
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: "No tip credit; fast-food workers covered by separate $20/hr sector standard (AB 1228)"
+
+    - rank: 2
+      state: "New York"
+      state_slug: "new-york"
+      min_wage: 16.50
+      tipped_wage: 10.00
+      next_increase: "Indexed; Jan 1, 2027"
+      effective_date: "2026-01-01"
+      note: "NYC minimum is $17.00 by local law; tipped rate shown is for food service workers statewide"
+
+    - rank: 3
+      state: "Connecticut"
+      state_slug: "connecticut"
+      min_wage: 16.35
+      tipped_wage: 6.38
+      next_increase: "None scheduled"
+      effective_date: "2025-06-01"
+      note: "Bartenders: $8.23/hr; food service workers: $6.38/hr"
+
+    - rank: 4
+      state: "Hawaii"
+      state_slug: "hawaii"
+      min_wage: 16.00
+      tipped_wage: 16.00
+      next_increase: "$18.00 on Jan 1, 2028"
+      effective_date: "2026-01-01"
+      note: "No tip credit; Act 114 (2022) schedule: $16.00 (2026), $18.00 (2028)"
+
+    - rank: 5
+      state: "Oregon"
+      state_slug: "oregon"
+      min_wage: 15.95
+      tipped_wage: 15.95
+      next_increase: "Indexed annually; Jul 1, 2027"
+      effective_date: "2025-07-01"
+      note: "No tip credit; Portland metro: $17.70; rural counties: $14.20 (2025 rates)"
+
+    - rank: 6
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      min_wage: 15.49
+      tipped_wage: 5.62
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: ""
+
+    - rank: 7
+      state: "Illinois"
+      state_slug: "illinois"
+      min_wage: 15.00
+      tipped_wage: 9.00
+      next_increase: "None scheduled"
+      effective_date: "2025-01-01"
+      note: ""
+
+    - rank: 7
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      min_wage: 15.00
+      tipped_wage: 6.75
+      next_increase: "None scheduled"
+      effective_date: "2023-01-01"
+      note: ""
+
+    - rank: 7
+      state: "Maryland"
+      state_slug: "maryland"
+      min_wage: 15.00
+      tipped_wage: 3.63
+      next_increase: "None scheduled"
+      effective_date: "2024-01-01"
+      note: ""
+
+    - rank: 7
+      state: "Missouri"
+      state_slug: "missouri"
+      min_wage: 15.00
+      tipped_wage: 7.50
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2026-01-01"
+      note: "Amendment 3 (2024) completed phased increase to $15.00; tipped minimum is 50% of standard"
+
+    - rank: 7
+      state: "Nebraska"
+      state_slug: "nebraska"
+      min_wage: 15.00
+      tipped_wage: 2.13
+      next_increase: "None scheduled"
+      effective_date: "2026-01-01"
+      note: "Initiative 433 (2022) phased schedule completed Jan 1, 2026"
+
+    - rank: 7
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      min_wage: 15.00
+      tipped_wage: 3.89
+      next_increase: "None scheduled"
+      effective_date: "2025-01-01"
+      note: ""
+
+    - rank: 7
+      state: "Virginia"
+      state_slug: "virginia"
+      min_wage: 15.00
+      tipped_wage: 2.13
+      next_increase: "None scheduled"
+      effective_date: "2026-01-01"
+      note: "2020 Minimum Wage Act schedule completed; further increases require legislative action"
+
+    - rank: 8
+      state: "Colorado"
+      state_slug: "colorado"
+      min_wage: 14.81
+      tipped_wage: 11.79
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: "Tip credit capped at $3.02/hr; rate indexed annually under COMPS Order"
+
+    - rank: 9
+      state: "Maine"
+      state_slug: "maine"
+      min_wage: 14.65
+      tipped_wage: 7.33
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: "Tipped minimum is 50% of standard rate"
+
+    - rank: 10
+      state: "Arizona"
+      state_slug: "arizona"
+      min_wage: 14.35
+      tipped_wage: 11.35
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: "Tip credit capped at $3.00/hr; indexed under Prop 206 (2016)"
+
+    - rank: 11
+      state: "Vermont"
+      state_slug: "vermont"
+      min_wage: 14.01
+      tipped_wage: 7.01
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: "Tipped minimum is 50% of standard rate"
+
+    - rank: 12
+      state: "Florida"
+      state_slug: "florida"
+      min_wage: 14.00
+      tipped_wage: 10.98
+      next_increase: "$15.00 on Sep 30, 2026"
+      effective_date: "2025-09-30"
+      note: "Amendment 2 (2020) raises rate $1/yr on Sep 30; tip credit is $3.02/hr"
+
+    - rank: 13
+      state: "Delaware"
+      state_slug: "delaware"
+      min_wage: 13.25
+      tipped_wage: 2.23
+      next_increase: "None scheduled"
+      effective_date: "2025-01-01"
+      note: ""
+
+    - rank: 14
+      state: "Alaska"
+      state_slug: "alaska"
+      min_wage: 13.00
+      tipped_wage: 13.00
+      next_increase: "$14.00 on Jul 1, 2026"
+      effective_date: "2025-01-01"
+      note: "No tip credit; Prop 2 (2024): $14.00 on Jul 1, 2026; $15.00 on Jul 1, 2027"
+
+    - rank: 15
+      state: "Michigan"
+      state_slug: "michigan"
+      min_wage: 12.48
+      tipped_wage: 4.74
+      next_increase: "Scheduled increase Feb 21, 2027; reaches $15.00 by 2028"
+      effective_date: "2025-02-21"
+      note: "One Fair Wage schedule restored by Michigan Supreme Court (2023); rate increases each Feb 21"
+
+    - rank: 16
+      state: "Nevada"
+      state_slug: "nevada"
+      min_wage: 12.00
+      tipped_wage: 12.00
+      next_increase: "None scheduled"
+      effective_date: "2024-07-01"
+      note: "No tip credit; two-tier system eliminated Jul 1, 2024"
+
+    - rank: 16
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      min_wage: 12.00
+      tipped_wage: 3.00
+      next_increase: "None scheduled"
+      effective_date: "2023-01-01"
+      note: ""
+
+    - rank: 17
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      min_wage: 11.20
+      tipped_wage: 5.60
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: "Tipped minimum is 50% of standard; indexed under Amendment E (2014)"
+
+    - rank: 18
+      state: "Arkansas"
+      state_slug: "arkansas"
+      min_wage: 11.00
+      tipped_wage: 2.13
+      next_increase: "None scheduled"
+      effective_date: "2024-01-01"
+      note: "Issue 5 (2018) completed phased increase to $11.00"
+
+    - rank: 19
+      state: "Minnesota"
+      state_slug: "minnesota"
+      min_wage: 10.85
+      tipped_wage: 10.85
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: "No tip credit; large employer rate (gross revenue $500K+); small employer: $8.85"
+
+    - rank: 20
+      state: "Montana"
+      state_slug: "montana"
+      min_wage: 10.55
+      tipped_wage: 10.55
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: "No tip credit; indexed under I-170 (2006)"
+
+    - rank: 21
+      state: "Ohio"
+      state_slug: "ohio"
+      min_wage: 10.45
+      tipped_wage: 5.23
+      next_increase: "CPI-indexed; Jan 1, 2027"
+      effective_date: "2025-01-01"
+      note: "Tipped minimum is 50% of standard; employers with gross receipts under $385K: $7.25"
+
+    - rank: 22
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      min_wage: 8.75
+      tipped_wage: 2.62
+      next_increase: "None scheduled"
+      effective_date: "2016-01-01"
+      note: "State minimum has not increased since 2016"
+
+    - rank: 23
+      state: "Alabama"
+      state_slug: "alabama"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: "No state minimum wage law; federal $7.25 applies"
+
+    - rank: 23
+      state: "Georgia"
+      state_slug: "georgia"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: "State minimum is $5.15; federal $7.25 applies to most covered workers"
+
+    - rank: 23
+      state: "Idaho"
+      state_slug: "idaho"
+      min_wage: 7.25
+      tipped_wage: 3.35
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: ""
+
+    - rank: 23
+      state: "Indiana"
+      state_slug: "indiana"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: ""
+
+    - rank: 23
+      state: "Iowa"
+      state_slug: "iowa"
+      min_wage: 7.25
+      tipped_wage: 4.35
+      next_increase: "None"
+      effective_date: "2008-01-01"
+      note: "Tipped minimum is 60% of standard minimum wage"
+
+    - rank: 23
+      state: "Kansas"
+      state_slug: "kansas"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2010-01-01"
+      note: ""
+
+    - rank: 23
+      state: "Kentucky"
+      state_slug: "kentucky"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: ""
+
+    - rank: 23
+      state: "Louisiana"
+      state_slug: "louisiana"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: "No state minimum wage law; federal $7.25 applies"
+
+    - rank: 23
+      state: "Mississippi"
+      state_slug: "mississippi"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: "No state minimum wage law; federal $7.25 applies"
+
+    - rank: 23
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      min_wage: 7.25
+      tipped_wage: 3.27
+      next_increase: "None"
+      effective_date: "2015-09-28"
+      note: "Tipped minimum is 45% of standard rate"
+
+    - rank: 23
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: ""
+
+    - rank: 23
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: ""
+
+    - rank: 23
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: "Businesses with fewer than 10 employees or under $100K gross revenue may pay $2.00/hr"
+
+    - rank: 23
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      min_wage: 7.25
+      tipped_wage: 2.83
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: "PA minimum wage unchanged since 2009"
+
+    - rank: 23
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: "No state minimum wage law; federal $7.25 applies"
+
+    - rank: 23
+      state: "Tennessee"
+      state_slug: "tennessee"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: "No state minimum wage law; federal $7.25 applies"
+
+    - rank: 23
+      state: "Texas"
+      state_slug: "texas"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: ""
+
+    - rank: 23
+      state: "Utah"
+      state_slug: "utah"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: ""
+
+    - rank: 23
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      min_wage: 7.25
+      tipped_wage: 2.33
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: ""
+
+    - rank: 23
+      state: "Wyoming"
+      state_slug: "wyoming"
+      min_wage: 7.25
+      tipped_wage: 2.13
+      next_increase: "None"
+      effective_date: "2009-07-24"
+      note: "State minimum is $5.15; federal $7.25 applies to most covered workers"
+
+compare:
+  metric_slug: minimum-wage
+  title: "Compare Minimum Wage Between States"
+  description: "Choose two states and see how their minimum wage rates stack up, with income and cost-of-living context."
+  button_text: "Compare minimum wages"
+  icon: "fa-solid fa-wallet"
+  default_state_a: washington
+  default_state_b: texas
+
+sections:
+  - id: "highest-minimum-wage"
+    icon: "fa-solid fa-arrow-trend-up"
+    title: "States With the Highest Minimum Wage in 2026"
+    paragraphs:
+      - "Washington leads at $16.66, indexed annually under Initiative 1433 (2016). California ($16.50) and New York ($16.50) follow, California under a CPI-indexed schedule, New York under a legislated increase that brought the statewide rate to $16.50 on January 1, 2026."
+      - "Connecticut ($16.35), Hawaii ($16.00), and Oregon ($15.95) round out the top six. Hawaii's $16.00 rate is the fourth step of Act 114 (2022), which scales the state to $18.00 by January 1, 2028."
+      - "Fourteen states now pay $15.00 or more. Missouri and Nebraska both completed multi-year ballot measure schedules on January 1, 2026. Virginia also reached $15.00 on the same date, completing its 2020 Minimum Wage Act schedule."
+
+  - id: "federal-minimum-wage-states"
+    icon: "fa-solid fa-landmark"
+    title: "States Still Using the Federal Minimum Wage"
+    paragraphs:
+      - "Twenty states are effectively at $7.25, the federal minimum unchanged since July 24, 2009. Five have no state minimum wage law at all: Alabama, Louisiana, Mississippi, South Carolina, and Tennessee. The federal rate applies by default in each."
+      - "Thirteen others match $7.25 by their own state statute, including Texas, Indiana, Kansas, Pennsylvania, and Wisconsin. Georgia and Wyoming set state minimums of $5.15, below the federal floor, so the Fair Labor Standards Act's $7.25 applies to most covered workers in both states."
+      - "Texas and Pennsylvania are the most populous states still at $7.25. Neither has raised its minimum wage since adopting the federal floor in 2009. Pennsylvania's legislature has debated increases multiple times without passing one."
+
+  - id: "tipped-minimum-wage"
+    icon: "fa-solid fa-utensils"
+    title: "Tipped Minimum Wage by State"
+    paragraphs:
+      - "Eight states require tipped workers to receive the full standard minimum wage: Alaska, California, Hawaii, Minnesota, Montana, Nevada, Oregon, and Washington. Tips in those states are extra income, not a wage offset."
+      - "The federal tip credit allows employers to pay as little as $2.13 per hour to tipped workers, provided tips bring them to at least $7.25. Twenty-three states apply this federal floor. Others set higher cash minimums: New York requires $10.00 per hour for food service workers, Illinois $9.00, and Florida $10.98 (the standard rate minus a $3.02 credit)."
+      - "A server in Texas earns a $2.13 cash wage before tips. The same job in Washington pays $16.66 per hour before any tip. The gap in tipped cash wages across states is wider than the gap in standard wages."
+
+  - id: "minimum-wage-increases-2026"
+    icon: "fa-solid fa-calendar-check"
+    title: "Minimum Wage Increases in 2026"
+    paragraphs:
+      - "Missouri, Nebraska, Virginia, and Hawaii all saw their minimum wages increase to $15.00 or higher on January 1, 2026. Missouri and Nebraska completed multi-year ballot initiative schedules. Virginia completed the final step of its 2020 Minimum Wage Act."
+      - "Alaska increases from $13.00 to $14.00 on July 1, 2026, under Proposition 2 (2024). Florida moves from $14.00 to $15.00 on September 30, 2026, the final step in Amendment 2's annual $1 increase schedule that began in October 2021."
+      - "Several CPI-indexed states adjusted upward on January 1, 2026: Washington (to $16.66), Arizona, Colorado, Maine, Minnesota, Montana, Ohio, South Dakota, and Vermont. Michigan is scheduled to increase again on February 21, 2027, with $15.00 targeted by 2028."
+
+  - id: "federal-vs-state"
+    icon: "fa-solid fa-scale-balanced"
+    title: "Federal Minimum Wage vs State Minimum Wage"
+    paragraphs:
+      - "The federal minimum wage of $7.25 per hour has not changed since July 24, 2009, the longest gap since the Fair Labor Standards Act first established a national floor in 1938. The act requires employers to pay whichever rate is higher: federal or state."
+      - "Local minimum wages can exceed the state rate where state law permits. Seattle ($20.29 per hour in 2026), San Francisco ($18.67), and New York City ($17.00) all set rates above their state minimums. Employers in those cities must pay the local rate."
+      - "Some states prohibit local minimum wage ordinances entirely. Arkansas, Tennessee, and Wisconsin have preemption laws that bar cities and counties from setting rates above the state floor. In those states, the statewide rate is the ceiling as well as the floor."
+
+visual_assets:
+  - id: washington-state-capitol
+    src: /images/rankings/economy/minimum-wage-by-state/washington-state-capitol.jpg
+    alt: Washington State Capitol building in Olympia with its domed legislative building
+    caption: Washington's Legislative Building in Olympia anchors the state government that oversees one of the nation's most frequently indexed wage floors.
+    section: highest-minimum-wage
+    layout: right
+  - id: us-department-of-labor-headquarters
+    src: /images/rankings/economy/minimum-wage-by-state/us-department-of-labor-headquarters.jpg
+    alt: Frances Perkins Building in Washington, D.C., headquarters of the U.S. Department of Labor
+    caption: The Frances Perkins Building houses the U.S. Department of Labor, whose Wage and Hour Division administers federal minimum-wage rules under the Fair Labor Standards Act.
+    section: federal-vs-state
+    layout: left
+
+faq:
+  - question: "What is the federal minimum wage in 2026?"
+    answer: "The federal minimum wage is $7.25 per hour in 2026. It has not changed since July 24, 2009 — the longest period without an increase since the Fair Labor Standards Act established a national minimum in 1938. States may set higher rates, and 30 states do."
+
+  - question: "Which state has the highest minimum wage in 2026?"
+    answer: "Washington has the highest minimum wage in 2026 at $16.66 per hour, effective January 1, 2026. California and New York follow at $16.50 each. Washington's rate is indexed to the Consumer Price Index and adjusts each January 1 under Initiative 1433 (2016)."
+
+  - question: "Which states still use the $7.25 minimum wage?"
+    answer: "Twenty states are effectively at the $7.25 federal minimum in 2026. Five states have no state minimum wage law: Alabama, Louisiana, Mississippi, South Carolina, and Tennessee. Thirteen others match $7.25 by state statute. Georgia and Wyoming have state rates of $5.15, below the federal floor, so $7.25 applies under federal law."
+
+  - question: "What is the tipped minimum wage by state?"
+    answer: "Eight states require the full minimum wage for tipped workers with no tip credit: Alaska, California, Hawaii, Minnesota, Montana, Nevada, Oregon, and Washington. The federal cash minimum for tipped workers is $2.13 per hour. State cash minimums elsewhere range from $2.13 to $10.98 (Florida) and $10.00 (New York food service workers)."
+
+  - question: "Which states are raising their minimum wage in 2026?"
+    answer: "Missouri, Nebraska, Virginia, and Hawaii all increased to $15.00 or higher on January 1, 2026. Alaska increases from $13.00 to $14.00 on July 1, 2026. Florida increases from $14.00 to $15.00 on September 30, 2026. Several CPI-indexed states also adjusted upward in January 2026."
+
+  - question: "Can cities have a higher minimum wage than the state?"
+    answer: "Yes, where state preemption law allows it. Seattle ($20.29/hr), San Francisco ($18.67/hr), and New York City ($17.00/hr) all exceed their state rates. Arkansas, Tennessee, and Wisconsin bar local minimum wage ordinances, so the state rate is the ceiling in those states."
+
+related:
+  - title: "Most Common Job by State"
+    url: "/rankings/economy/most-common-job-by-state"
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"
+  - title: "States by Population Density"
+    url: "/rankings/demographics/states-by-population-density"

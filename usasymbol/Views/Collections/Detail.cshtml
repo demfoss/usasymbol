@@ -34,6 +34,12 @@
             groupTitle = Model.CategoryTitle;
             groupUrl = $"/collections/{groupSlug}";
         }
+        else if (parts.Length >= 2 && parts[0].Equals("most-dangerous-cities", StringComparison.OrdinalIgnoreCase))
+        {
+            groupSlug = "crime";
+            groupTitle = "Crime";
+            groupUrl = "/collections/crime";
+        }
     }
 
     var heroImage = content?.HeroImage;
@@ -208,6 +214,14 @@
                 {
                     <section class="page-map-stage @(Model.HasQuickAnswer ? "page-map-stage--after-qa" : "")">
                         @await Html.RenderMapBlockAsync(content.Map, content?.Table)
+                    </section>
+                }
+
+                @if (content?.PointMap?.Markers?.Any(marker =>
+                    marker.Latitude is >= -90 and <= 90 && marker.Longitude is >= -180 and <= 180) == true)
+                {
+                    <section class="page-map-stage @(Model.HasQuickAnswer ? "page-map-stage--after-qa" : "")">
+                        @await Html.PartialAsync("_PointMap", content.PointMap)
                     </section>
                 }
 

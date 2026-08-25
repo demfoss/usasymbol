@@ -44,7 +44,10 @@
     var heroImageResolved = string.IsNullOrWhiteSpace(heroImage) ? "/images/og-default.webp" : heroImage!;
     ViewData["OgImage"] = Images.Full(heroImageResolved);
 
-    var categoryUrl = "/symbols";
+    var isNationalSymbol = content?.Url?.StartsWith("/national-symbols/", StringComparison.OrdinalIgnoreCase) == true;
+    var hubLabel = isNationalSymbol ? "National Symbols" : "Symbols";
+    var hubUrl = isNationalSymbol ? "/national-symbols" : "/symbols";
+    var categoryUrl = hubUrl;
 
     if (!string.IsNullOrWhiteSpace(content?.Url))
     {
@@ -65,9 +68,9 @@
 
     var dataHero = PageDataHeroBuilder.Build(
         Model,
-        "Symbols",
-        "/symbols",
-        categoryTitle,
+        hubLabel,
+        hubUrl,
+        isNationalSymbol ? string.Empty : categoryTitle,
         categoryUrl,
         "#listing-table");
 }
@@ -85,6 +88,17 @@
 
 <div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
     @await Html.PartialAsync("_PageDataHero", dataHero)
+
+    @if (!string.IsNullOrWhiteSpace(content?.AudioUrl))
+    {
+        <section class="mt-6 border border-slate-200 bg-white p-5 shadow-sm" aria-label="Listen">
+            <p class="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Listen</p>
+            <audio controls preload="metadata" class="w-full">
+                <source src="@content.AudioUrl" type="audio/ogg" />
+                Your browser does not support embedded audio.
+            </audio>
+        </section>
+    }
 
     <div class="page-flow-shell lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-8 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[240px_minmax(0,900px)_300px] 2xl:gap-4">
         <aside class="hidden xl:block relative h-full" aria-label="Article sidebar">
@@ -111,6 +125,8 @@
                 <div class="my-8 md:my-10 h-px bg-slate-200"></div>
             }
 
+            @if (Model.HasRows && Model.HasColumns)
+            {
             <div id="listing-table" class="scroll-mt-24 page-flow-content">
                 <div class="flex items-baseline justify-between gap-4">
                     @{
@@ -142,6 +158,7 @@
                     @await Html.PartialAsync("Components/Tables/_Table", tableVM)
                 </div>
             </div>
+            }
 
             <div class="article-content min-w-0">
                 <div class="my-8 md:my-10 h-px bg-slate-200"></div>
@@ -173,10 +190,10 @@
 
             <div class="mt-10 border-t border-slate-200 pt-6">
                 <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Browse More</p>
-                <a href="/symbols"
+                <a href="@hubUrl"
                    class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-slate-700">
                     <i class="fa-solid fa-arrow-left text-xs"></i>
-                    <span>Back to all symbols</span>
+                    <span>@(isNationalSymbol ? "Back to national symbols" : "Back to all symbols")</span>
                 </a>
             </div>
 

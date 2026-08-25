@@ -38,6 +38,7 @@ namespace USASymbol.Controllers
         private readonly IFossilService _fossilService;
         private readonly ISportService _sportService;
         private readonly IDanceService _danceService;
+        private readonly ISongService _songService;
         private readonly IInsectService _insectService;
         private readonly IMineralService _mineralService;
         private readonly IAmphibianService _amphibianService;
@@ -72,6 +73,7 @@ namespace USASymbol.Controllers
             ["fossils"] = "fa-solid fa-bone",
             ["sports"] = "fa-solid fa-medal",
             ["dances"] = "fa-solid fa-music",
+            ["songs"] = "fa-solid fa-compact-disc",
             ["insects"] = "fa-solid fa-bug",
             ["butterflies"] = "fa-solid fa-bug",
             ["minerals"] = "fa-solid fa-cube",
@@ -109,6 +111,7 @@ namespace USASymbol.Controllers
             IFossilService fossilService,
             ISportService sportService,
             IDanceService danceService,
+            ISongService songService,
             IInsectService insectService,
             IMineralService mineralService,
             IAmphibianService amphibianService,
@@ -140,6 +143,7 @@ namespace USASymbol.Controllers
             _fossilService = fossilService;
             _sportService = sportService;
             _danceService = danceService;
+            _songService = songService;
             _insectService = insectService;
             _mineralService = mineralService;
             _amphibianService = amphibianService;
@@ -274,6 +278,7 @@ namespace USASymbol.Controllers
                 "coats-of-arms" => symbol.Type == "coat-of-arms",
                 "sports" => symbol.Type == "sport",
                 "dances" => symbol.Type == "dance",
+                "songs" => symbol.Type == "song",
                 "insects" => symbol.Type == "insect",
                 "butterflies" => symbol.Type == "insect" && IsButterfly(designation, name),
                 "minerals" => symbol.Type == "mineral",
@@ -460,7 +465,8 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var birdSymbol = await _symbolService.GetSymbolAsync(state.Id, "bird");
+            var birdSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, birdSlug)
+                             ?? await _symbolService.GetSymbolAsync(state.Id, "bird");
             if (birdSymbol == null)
                 return NotFound();
 
@@ -575,7 +581,8 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var firearmSymbol = await _symbolService.GetSymbolAsync(state.Id, "firearm");
+            var firearmSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, firearmSlug)
+                                ?? await _symbolService.GetSymbolAsync(state.Id, "firearm");
             if (firearmSymbol == null)
                 return NotFound();
 
@@ -632,7 +639,8 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var dinosaurSymbol = await _symbolService.GetSymbolAsync(state.Id, "dinosaur");
+            var dinosaurSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, dinosaurSlug)
+                                ?? await _symbolService.GetSymbolAsync(state.Id, "dinosaur");
             if (dinosaurSymbol == null)
                 return NotFound();
 
@@ -807,7 +815,8 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var mottoSymbol = await _symbolService.GetSymbolAsync(state.Id, "motto");
+            var mottoSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, mottoSlug)
+                             ?? await _symbolService.GetSymbolAsync(state.Id, "motto");
             if (mottoSymbol == null)
                 return NotFound();
 
@@ -846,7 +855,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var nicknameSymbol = await _symbolService.GetSymbolAsync(state.Id, "nickname");
+            var nicknameSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, nicknameSlug)
+                                ?? await _symbolService.GetSymbolAsync(state.Id, "nickname");
             if (nicknameSymbol == null)
             {
                 _logger.LogWarning("Nickname symbol not found for state: {StateSlug}, slug: {NicknameSlug}", stateSlug, nicknameSlug);
@@ -891,7 +901,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var flowerSymbol = await _symbolService.GetSymbolAsync(state.Id, "flower");
+            var flowerSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, flowerSlug)
+                              ?? await _symbolService.GetSymbolAsync(state.Id, "flower");
             if (flowerSymbol == null)
             {
                 _logger.LogWarning("Flower symbol not found for state: {StateSlug}", stateSlug);
@@ -965,7 +976,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var flagSymbol = await _symbolService.GetSymbolAsync(state.Id, "flag");
+            var flagSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, flagSlug)
+                            ?? await _symbolService.GetSymbolAsync(state.Id, "flag");
             if (flagSymbol == null)
             {
                 _logger.LogWarning("Flag symbol not found for state: {StateSlug}", stateSlug);
@@ -1038,7 +1050,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var treeSymbol = await _symbolService.GetSymbolAsync(state.Id, "tree");
+            var treeSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, treeSlug)
+                            ?? await _symbolService.GetSymbolAsync(state.Id, "tree");
             if (treeSymbol == null)
             {
                 _logger.LogWarning("Tree symbol not found for state: {StateSlug}", stateSlug);
@@ -1111,7 +1124,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var colorSymbol = await _symbolService.GetSymbolAsync(state.Id, "color");
+            var colorSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, colorSlug)
+                             ?? await _symbolService.GetSymbolAsync(state.Id, "color");
             if (colorSymbol == null)
             {
                 _logger.LogWarning("Color symbol not found for state: {StateSlug}", stateSlug);
@@ -1182,7 +1196,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var sealSymbol = await _symbolService.GetSymbolAsync(state.Id, "state-seal");
+            var sealSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, sealSlug)
+                            ?? await _symbolService.GetSymbolAsync(state.Id, "state-seal");
             if (sealSymbol == null)
             {
                 _logger.LogWarning("State seal symbol not found for state: {StateSlug}", stateSlug);
@@ -1246,7 +1261,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolAsync(state.Id, "coat-of-arms");
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, coatOfArmsSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "coat-of-arms");
             if (symbol == null)
             {
                 _logger.LogWarning("State coat of arms symbol not found for state: {StateSlug}", stateSlug);
@@ -1320,7 +1336,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolAsync(state.Id, "soil");
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, soilSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "soil");
             if (symbol == null)
             {
                 _logger.LogWarning("State soil symbol not found for state: {StateSlug}", stateSlug);
@@ -1423,7 +1440,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolAsync(state.Id, "sport");
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, sportSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "sport");
             if (symbol == null)
             {
                 _logger.LogWarning("State sport symbol not found for state: {StateSlug}", stateSlug);
@@ -1466,7 +1484,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolAsync(state.Id, "dance");
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, danceSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "dance");
             if (symbol == null)
             {
                 _logger.LogWarning("State dance symbol not found for state: {StateSlug}", stateSlug);
@@ -1496,6 +1515,50 @@ namespace USASymbol.Controllers
             };
 
             return View("Dance", model);
+        }
+
+        [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/song/{songSlug}")]
+        public async Task<IActionResult> StateSong(string stateSlug, string songSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, songSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "song");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State song symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(songSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var content = await _songService.GetSongContentAsync(stateSlug, songSlug);
+            if (content == null)
+                _logger.LogInformation("State song YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State song content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new SongDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                SongContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions
+            };
+
+            return View("Song", model);
         }
 
         [OutputCache(PolicyName = "SymbolDetail")]
@@ -1557,7 +1620,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolAsync(state.Id, "mineral");
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, mineralSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "mineral");
             if (symbol == null)
             {
                 _logger.LogWarning("State mineral symbol not found for state: {StateSlug}", stateSlug);
@@ -1600,7 +1664,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolAsync(state.Id, "rock");
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, rockSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "rock");
             if (symbol == null)
             {
                 _logger.LogWarning("State rock symbol not found for state: {StateSlug}", stateSlug);
@@ -1652,7 +1717,8 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolAsync(state.Id, "gemstone");
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, gemstoneSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "gemstone");
             if (symbol == null)
             {
                 _logger.LogWarning("State gemstone symbol not found for state: {StateSlug}", stateSlug);

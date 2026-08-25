@@ -1,0 +1,114 @@
+type: ranking
+slug: states-by-median-income
+category: economy
+url: /rankings/economy/states-by-median-income
+hero_image: "/images/rankings/economy/states-by-median-income/states-by-median-income-hero.jpg"
+hero_image_alt: "Downtown skyline with office towers and apartment buildings at sunset"
+extremes_mode: both
+extremes_title: "Highest and Lowest Median Household Income by State"
+
+author: "USA Symbol Team"
+date_published: "2026-05-31"
+date_modified: "2026-05-31"
+
+seo:
+  title: "Median Household Income by State 2026 | Map & Data"
+  description: "Maryland has the highest median household income among U.S. states, at more than $98,000."
+
+page:
+  h1: "Median Household Income by State 2026"
+  quick_answer:
+    - "Maryland has the highest median household income of any U.S. state at around $98,000, driven by proximity to federal government jobs in the Washington, D.C., metro area. New Jersey, Massachusetts, New Hampshire, and Washington round out the top five."
+    - "Mississippi has the lowest median household income at roughly $50,000. West Virginia, Arkansas, and New Mexico cluster near the bottom. The gap between the top and bottom state is approximately $48,000 per year."
+    - "The national median household income is approximately $77,540 (U.S. Census Bureau, 2023 American Community Survey). Twenty-one states fall below that threshold."
+  methodology: "Figures are 2023 one-year estimates from the U.S. Census Bureau American Community Survey (ACS), representing the midpoint income for all households, including wages, salaries, self-employment income, and transfer payments. Values are nominal dollars, not adjusted for cost of living."
+  sources:
+    - name: "U.S. Census Bureau — American Community Survey 2023"
+      url: "https://data.census.gov"
+      description: "One-year ACS estimates, Table B19013"
+
+map:
+  title: "Median Household Income by State 2026 Map"
+  image_alt: "U.S. map showing median household income by state, color-coded from lightest for lowest income to darkest green for highest"
+  caption: "Maryland, New Jersey, and Massachusetts anchor the top — all above $85,000. Mississippi anchors the bottom at roughly $50,000. The Northeast and West Coast dominate the top half of the map."
+  metric_key: income
+  metric_label: "Median Income"
+  name_key: state
+  color_scheme: green
+  color_scale: linear
+
+computed_data:
+  field: median_household_income
+  sort: desc
+  format: "C0"
+  label: "Median Household Income"
+  metric_key: income
+
+compare:
+  metric_slug: median-income
+  title: "Compare Household Income Between Two States"
+  description: "Pick any two states to see a full side-by-side breakdown of income, cost of living, taxes, and more."
+  icon: "fa-solid fa-coins"
+
+sections:
+  - id: "why_maryland_leads"
+    icon: "fa-solid fa-landmark-dome"
+    title: "Why Maryland Has the Highest Household Income"
+    paragraphs:
+      - "Maryland's $98,461 median household income is anchored by the Washington, D.C., metropolitan area. Montgomery and Prince George's counties border the capital and contain large concentrations of federal workers and defense contractors. Agencies headquartered in Maryland include the National Institutes of Health in Bethesda, the National Security Agency in Fort Meade, and the Social Security Administration in Baltimore."
+      - "Montgomery County alone has a median household income above $120,000. Federal salaries are set above most private-sector equivalents at similar education levels, and the contractor ecosystem surrounding federal agencies adds a second tier of high-earning households. New Jersey and Massachusetts follow for similar structural reasons: proximity to New York City finance jobs and Boston's biomedical sector."
+
+  - id: "why_mississippi_lags"
+    icon: "fa-solid fa-arrow-trend-down"
+    title: "Why Mississippi Has the Lowest Household Income"
+    paragraphs:
+      - "Mississippi's $49,111 median reflects an economy built largely on agriculture, catfish farming, and low-wage manufacturing. Only 25.5% of Mississippi adults hold a bachelor's degree, the lowest college attainment rate in the country. That limits access to the professional and managerial roles that push income higher in other states."
+      - "Mississippi has no major metro area with a population above 300,000. Jackson, the capital and largest city, has fewer than 150,000 residents. Without an urban core generating high concentrations of white-collar employment, wage competition stays low. The gap between Maryland and Mississippi is roughly $49,000 per year."
+
+  - id: "northeast_income_pattern"
+    icon: "fa-solid fa-map-location-dot"
+    title: "Why the Northeast Leads in Household Income"
+    paragraphs:
+      - "Eight of the ten highest-income states are in the Northeast or Pacific Northwest. Maryland, New Jersey, Massachusetts, New Hampshire, Washington, Connecticut, Colorado, and California all exceed $84,000. These states share high concentrations of tech, finance, federal government, and healthcare employment, sectors that pay above-average wages."
+      - "Six of the ten lowest-income states are in the South: Mississippi, Arkansas, West Virginia, Alabama, Louisiana, and Oklahoma. Lower college attainment, fewer large metro areas, and historically lower unionization rates keep wages below the national median. Cost of living is also lower in these states, but the income gap is wider than the cost gap for most households. See [states by cost of living](/rankings/economy/states-by-cost-of-living) for the full picture."
+
+  - id: "new_hampshire_outlier"
+    icon: "fa-solid fa-circle-question"
+    title: "New Hampshire Ranks 4th With No Income or Sales Tax"
+    paragraphs:
+      - "New Hampshire's $90,845 median household income places it 4th nationally, despite having no state income tax and no state sales tax. The explanation is geographic: New Hampshire borders Massachusetts, and a substantial share of its residents commute to Boston-area employers in biotech, finance, and software. They earn Massachusetts wages while living across the border."
+      - "About 41% of New Hampshire adults hold a college degree, among the highest in the country. That demographic profile, educated, Boston-adjacent commuters, inflates the state's household income figure independently of state tax policy. The income is imported from the Massachusetts economy."
+
+visual_assets:
+  - id: maryland-income-placeholder
+    src: /images/rankings/economy/states-by-median-income/maryland-income-placeholder.jpg
+    alt: "Modern office buildings and a landscaped campus"
+    caption: "A dense office campus suggests the kind of high-salary professional work that lifts household incomes in government-centered regions."
+    section: why_maryland_leads
+    layout: right
+  - id: new-hampshire-income-placeholder
+    src: /images/rankings/economy/states-by-median-income/new-hampshire-income-placeholder.jpg
+    alt: "Quiet suburban neighborhood with tree-lined streets and detached homes"
+    caption: "Commuter suburbs often benefit from nearby metro wages while keeping a distinct small-state housing pattern."
+    section: new_hampshire_outlier
+    layout: left
+
+faq:
+  - question: "Which state has the highest median household income?"
+    answer: "Maryland has the highest median household income in the U.S. at approximately $98,000, according to the 2023 American Community Survey. The state benefits from a large share of high-paying federal government and defense contractor jobs in the Washington, D.C., metropolitan area."
+  - question: "Which state has the lowest median household income?"
+    answer: "Mississippi has the lowest median household income of any U.S. state at around $50,000. The state has historically ranked last or near last on this measure due to a lower cost of living paired with a lower-wage economy dominated by agriculture, manufacturing, and service industries."
+  - question: "How does median household income differ from average income?"
+    answer: "Median household income is the midpoint value — half of households earn more and half earn less. Average (mean) income is pulled upward by very high earners at the top. The median is a better measure of what a typical household actually earns, which is why economists and policymakers prefer it."
+  - question: "Does high median income mean a state is more affordable?"
+    answer: "Not necessarily. States like Hawaii and Massachusetts have high incomes but also very high costs of living, which erodes purchasing power. Comparing median income alongside cost-of-living indexes gives a more accurate picture of real living standards. See our states-by-cost-of-living and purchasing-power rankings."
+
+related:
+  - title: "States by Cost of Living"
+    url: "/rankings/economy/states-by-cost-of-living"
+  - title: "States by Poverty Rate"
+    url: "/rankings/economy/states-by-poverty-rate"
+  - title: "States by Unemployment Rate"
+    url: "/rankings/economy/states-by-unemployment"
+  - title: "Purchasing Power by State"
+    url: "/rankings/economy/purchasing-power-by-state"

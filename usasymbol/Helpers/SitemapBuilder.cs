@@ -16,6 +16,7 @@ namespace USASymbol.Services
         private readonly IRankingsContentService _rankingsService;
         private readonly IListingsContentService _listingsService;
         private readonly ICollectionsContentService _collectionsService;
+        private readonly INationalSymbolsContentService _nationalSymbolsService;
         private readonly IBorderService _borderService;
         private readonly ISurnamesService _surnamesService;
         private readonly IParkService _parkService;
@@ -31,6 +32,7 @@ namespace USASymbol.Services
             IRankingsContentService rankingsService,
             IListingsContentService listingsService,
             ICollectionsContentService collectionsService,
+            INationalSymbolsContentService nationalSymbolsService,
             IBorderService borderService,
             ISurnamesService surnamesService,
             IParkService parkService,
@@ -45,6 +47,7 @@ namespace USASymbol.Services
             _rankingsService    = rankingsService;
             _listingsService    = listingsService;
             _collectionsService = collectionsService;
+            _nationalSymbolsService = nationalSymbolsService;
             _borderService      = borderService;
             _surnamesService    = surnamesService;
             _parkService        = parkService;
@@ -67,9 +70,23 @@ namespace USASymbol.Services
             urls.Add("/states");
             urls.Add("/states/living");
             urls.Add("/state-match");
+            urls.Add("/tools");
+            urls.Add("/tools/random-zip-code-generator");
+            urls.Add("/tools/zip-code-lookup");
+            urls.Add("/tools/random-city-generator");
+            urls.Add("/tools/county-finder");
+            urls.Add("/tools/state-abbreviation-finder");
+            urls.Add("/tools/state-capital-flashcards");
+            urls.Add("/tools/timezone-finder");
+            urls.Add("/tools/distance-calculator");
+            urls.Add("/tools/area-code-lookup");
+            urls.Add("/tools/random-address-generator");
+            urls.Add("/tools/population-lookup");
+            urls.Add("/tools/nearest-national-parks");
             urls.Add("/county-match");
             urls.Add("/county-rankings");
             urls.Add("/symbols");
+            urls.Add("/national-symbols");
             urls.Add("/rankings");
             urls.Add("/guides");
             urls.Add("/guides/state-abbreviations");
@@ -155,6 +172,10 @@ namespace USASymbol.Services
             foreach (var cat in listingCategories)
                 foreach (var item in cat.Items)
                     urls.Add(item.Url);
+
+            var nationalSymbols = await _nationalSymbolsService.GetAllAsync();
+            foreach (var item in nationalSymbols)
+                urls.Add(item.Url);
 
 
 

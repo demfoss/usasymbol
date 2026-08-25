@@ -1,0 +1,182 @@
+type: ranking
+slug: asparagus-production-by-state
+category: agriculture
+url: /rankings/agriculture/asparagus-production-by-state
+auto_link_phrases:
+  - "asparagus production by state"
+  - "asparagus by state"
+  - "states that grow asparagus"
+  - "which state grows the most asparagus"
+  - "asparagus farming by state"
+extremes_mode: both
+extremes_title: "States With the Most and Least Asparagus Production"
+hero_image: "/images/rankings/agriculture/asparagus-production-by-state/asparagus-production-by-state-hero.jpg"
+hero_image_alt: "Rows of asparagus spears growing in a commercial field"
+hero_image_caption: "Michigan produced 273,000 cwt of asparagus in 2025, more than double Washington's 136,000 cwt. New Jersey trails at 64,600 cwt."
+
+author: "USA Symbol Team"
+date_published: "2026-08-13"
+date_modified: "2026-08-13"
+
+seo:
+  title: "Asparagus Production by State | Map, States & Facts"
+  description: "Michigan grows the most asparagus in the US at 273,000 cwt in 2025, ahead of Washington's 136,000 cwt and New Jersey's 64,600 cwt."
+
+page:
+  h1: "Asparagus Production by State"
+
+  quick_answer:
+    - "Michigan grows the most asparagus in the country, producing 273,000 cwt in 2025, more than double Washington's 136,000 cwt."
+    - "Washington posts the highest asparagus yield per acre at 68.0 cwt, nearly double Michigan's 35.0 cwt and New Jersey's 34.0 cwt."
+    - "New Jersey commands the highest price per cwt at $310.00, nearly triple Washington's $103.00 average."
+
+  methodology: "Area, yield, production, and price figures are 2025 marketing-year data on record from USDA NASS's Vegetables 2025 Summary (February 2026), covering asparagus grown in the open for fresh market and processing. Only Michigan, New Jersey, and Washington had published state-level totals for 2025."
+
+  sources:
+    - name: "USDA NASS. Vegetables 2025 Summary"
+      url: "https://esmis.nal.usda.gov/sites/default/release-files/795772/vegean26.pdf"
+      description: "State-level asparagus area planted and harvested, yield, production, price, and value, 2023-2025"
+
+table:
+  caption: "Asparagus Production by State"
+  note: "Production and price figures are 2025 marketing-year totals. California's asparagus estimates were discontinued by USDA starting in 2024, so it is not included."
+  columns:
+    rank: "Rank"
+    state: "State"
+    production_cwt: "Production (cwt)"
+    acres_harvested: "Acres Harvested"
+    yield_per_acre: "Yield (cwt/acre)"
+    price_per_cwt: "Price per cwt"
+
+  metric_default: production_cwt
+  sort_default: desc
+
+  column_formats:
+    price_per_cwt: "C2"
+
+  rows:
+    - rank: 1
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      production_cwt: 273000
+      acres_harvested: 7800
+      yield_per_acre: 35.0
+      price_per_cwt: 119.00
+
+    - rank: 2
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      production_cwt: 136000
+      acres_harvested: 2000
+      yield_per_acre: 68.0
+      price_per_cwt: 103.00
+
+    - rank: 3
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      production_cwt: 64600
+      acres_harvested: 1900
+      yield_per_acre: 34.0
+      price_per_cwt: 310.00
+
+map:
+  title: "Asparagus Production by State Map"
+  image_alt: "U.S. map shaded by asparagus production, from Michigan's 273,000 cwt high down to New Jersey's 64,600 cwt"
+  caption: "Michigan's 273,000 cwt of asparagus is the darkest shade on the map. Washington follows at 136,000 cwt, and New Jersey trails at 64,600 cwt."
+  metric_key: production_cwt
+  metric_label: "Asparagus Production (cwt)"
+  color_scheme: green
+  color_scale: linear
+
+sections:
+  - id: "states-that-grow-the-most-asparagus"
+    icon: "fa-solid fa-seedling"
+    title: "States That Grow the Most Asparagus"
+    paragraphs:
+      - "Michigan produced 273,000 cwt of asparagus in 2025, the most in the table and more than double Washington's 136,000 cwt. New Jersey ranks third at 64,600 cwt, a little over a quarter of Michigan's total."
+    table:
+      columns:
+        state: "State"
+        production_cwt: "Production (cwt)"
+      rows:
+        - state: "Michigan"
+          production_cwt: "273,000"
+        - state: "Washington"
+          production_cwt: "136,000"
+        - state: "New Jersey"
+          production_cwt: "64,600"
+
+  - id: "asparagus-yield-per-acre-by-state"
+    icon: "fa-solid fa-chart-column"
+    title: "Asparagus Yield per Acre by State"
+    paragraphs:
+      - "Washington's asparagus yields 68.0 cwt per acre, well above Michigan's 35.0 cwt and New Jersey's 34.0 cwt. That per-acre figure is nearly double the other two states, despite Washington ranking second in total production at 136,000 cwt."
+    table:
+      columns:
+        state: "State"
+        yield_per_acre: "Yield (cwt/acre)"
+      rows:
+        - state: "Washington"
+          yield_per_acre: "68.0"
+        - state: "Michigan"
+          yield_per_acre: "35.0"
+        - state: "New Jersey"
+          yield_per_acre: "34.0"
+
+  - id: "why-california-no-longer-ranks-in-asparagus-production"
+    icon: "fa-solid fa-circle-question"
+    title: "Why California No Longer Ranks in Asparagus Production"
+    paragraphs:
+      - "California's asparagus data was withheld in 2023 to protect individual operations, and USDA discontinued separate estimates for the state entirely starting in 2024, on agency record. Michigan, New Jersey, and Washington are the only states with published 2025 totals, together accounting for the full US total of 473,600 cwt."
+
+visual_assets:
+  - id: "states-that-grow-the-most-asparagus-visual"
+    src: "/images/rankings/agriculture/asparagus-production-by-state/states-that-grow-the-most-asparagus.jpg"
+    alt: "Worker harvesting asparagus spears in a Michigan field"
+    caption: "Michigan produced 273,000 cwt of asparagus in 2025, more than double Washington's 136,000 cwt."
+    section: "states-that-grow-the-most-asparagus"
+    layout: "full-width-tall"
+
+  - id: "asparagus-yield-per-acre-by-state-visual"
+    src: "/images/rankings/agriculture/asparagus-production-by-state/asparagus-yield-per-acre-by-state.jpg"
+    alt: "Dense rows of asparagus spears in a Washington state field"
+    caption: "Washington's asparagus yields 68.0 cwt per acre, nearly double Michigan's and New Jersey's yields."
+    section: "asparagus-yield-per-acre-by-state"
+    layout: "full-width-tall"
+
+  - id: "why-california-no-longer-ranks-in-asparagus-production-visual"
+    src: "/images/rankings/agriculture/asparagus-production-by-state/why-california-no-longer-ranks.jpg"
+    alt: "Empty former asparagus field in California"
+    caption: "USDA discontinued separate California asparagus estimates starting in 2024."
+    section: "why-california-no-longer-ranks-in-asparagus-production"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state produces the most asparagus?"
+    answer: "Michigan produces the most asparagus in the country, growing 273,000 cwt in 2025 on 7,800 harvested acres."
+
+  - question: "How much asparagus does Washington produce?"
+    answer: "Washington produced 136,000 cwt of asparagus in 2025. Its yield of 68.0 cwt per acre is the highest of any ranked state."
+
+  - question: "Which state has the highest asparagus yield per acre?"
+    answer: "Washington has the highest yield at 68.0 cwt per acre, nearly double Michigan's 35.0 cwt and New Jersey's 34.0 cwt."
+
+  - question: "How much asparagus does New Jersey produce?"
+    answer: "New Jersey produced 64,600 cwt in 2025. Growers there also received the highest price of the three states, $310.00 per cwt."
+
+  - question: "Why doesn't California appear in asparagus production rankings?"
+    answer: "California's 2023 asparagus figures were withheld to protect individual operations, and USDA discontinued separate state estimates for California starting in 2024."
+
+  - question: "What is total US asparagus production?"
+    answer: "US asparagus production totaled 473,600 cwt in 2025, up 3% from 461,800 cwt in 2024."
+
+related:
+  - title: "Apricot Production by State"
+    url: "/rankings/agriculture/apricot-production-by-state"
+  - title: "Farms by State"
+    url: "/rankings/food/farms-by-state"
+  - title: "Golf Courses by State"
+    url: "/rankings/sports/golf-courses-by-state"

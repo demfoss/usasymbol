@@ -1,0 +1,528 @@
+type: ranking
+slug: veterans-by-state
+category: government
+url: /rankings/government/veterans-by-state
+auto_link_phrases:
+  - "veterans by state"
+  - "states with the most veterans"
+  - "veteran population by state"
+  - "veterans per capita by state"
+  - "which state has the most veterans"
+extremes_mode: both
+extremes_title: "States With the Most and Fewest Veterans Per Capita"
+hero_image: "/images/rankings/government/veterans-by-state/veterans-by-state-hero.jpg"
+hero_image_alt: "U.S. military veteran saluting in front of an American flag"
+hero_image_caption: "Alaska has the most veterans per capita at 7,804 per 100,000 residents. Texas has the most veterans overall, with 1,402,360."
+
+author: "USA Symbol Team"
+date_published: "2026-07-22"
+date_modified: "2026-07-22"
+
+seo:
+  title: "Veterans by State | Map, Rates & Totals"
+  description: "Alaska has the most veterans per capita at 7,804 per 100,000 residents. Texas has the most veterans overall, with 1,402,360."
+
+page:
+  h1: "Veterans by State"
+
+  quick_answer:
+    - "Alaska leads the veterans by state ranking on a per-capita basis, with 7,804 per 100,000 residents. Virginia ranks second at 7,137, and Montana third at 6,976."
+    - "New Jersey has the fewest veterans per capita at 2,872 per 100,000, just below New York's 2,909. Alaska's rate is roughly 2.7 times New Jersey's."
+    - "Texas has the most veterans overall at 1,402,360, ahead of Florida's 1,327,070 and California's 1,305,450. Despite that, Texas ranks 42nd and California 47th out of 50 on the per-capita rate."
+
+  methodology: "Counts and per-100,000 rates use World Population Review's 2024 table. Washington, D.C. and the national total are excluded from the 50-state ranking."
+
+  sources:
+    - name: "World Population Review. Veterans by State"
+      url: "https://worldpopulationreview.com/state-rankings/veterans-by-state"
+      description: "Veteran totals and per-100,000-resident rates for 2024"
+
+map:
+  title: "Veterans Per Capita by State Map"
+  image: "/images/maps/veterans-by-state.png"
+  image_alt: "U.S. map shaded by veterans per 100,000 residents, darkest in Alaska and Virginia, lightest in New Jersey and New York"
+  caption: "Alaska (7,804) and Virginia (7,137) hold the darkest shade at the top of the scale. New Jersey (2,872) and New York (2,909) carry the lightest shade at the bottom."
+  metric_key: veterans_per_100k
+  metric_label: "Veterans per 100,000 Residents"
+  color_scheme: green
+  color_scale: linear
+
+visual_assets:
+  - id: top-veterans-per-capita
+    src: "/images/rankings/government/veterans-by-state/top-veterans-per-capita.jpg"
+    alt: "Veterans memorial scene with American flags outdoors"
+    caption: "Alaska, Virginia, and Montana lead the table on a per-capita basis, showing how veteran-heavy some lower-population states remain."
+    section: "states-with-the-most-veterans-per-capita"
+    layout: right
+
+  - id: fewest-veterans-per-capita
+    src: "/images/rankings/government/veterans-by-state/fewest-veterans-per-capita.jpg"
+    alt: "Dense residential street with American flags in an urban setting"
+    caption: "New Jersey and New York sit at the bottom of the per-capita list despite having large veteran populations in raw numbers."
+    section: "states-with-the-fewest-veterans-per-capita"
+    layout: left
+
+  - id: most-veterans-overall
+    src: "/images/rankings/government/veterans-by-state/most-veterans-overall.jpg"
+    alt: "Large patriotic gathering with American flags representing states with the biggest veteran totals"
+    caption: "Texas, Florida, and California dominate the table for total veterans, even though their per-capita rates sit much lower."
+    section: "states-with-the-most-veterans-overall"
+    layout: right
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    veterans_per_100k: "Veterans (per 100k)"
+    veterans: "Veterans"
+
+  metric_default: veterans_per_100k
+  sort_default: desc
+  column_formats:
+    veterans_per_100k: "N0"
+    veterans: "N0"
+
+  rows:
+    - rank: 1
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      veterans_per_100k: 7804
+      veterans: 57477
+
+    - rank: 2
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      veterans_per_100k: 7137
+      veterans: 629500
+
+    - rank: 3
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      veterans_per_100k: 6976
+      veterans: 79357
+
+    - rank: 4
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      veterans_per_100k: 6861
+      veterans: 40253
+
+    - rank: 5
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      veterans_per_100k: 6746
+      veterans: 95013
+
+    - rank: 6
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      veterans_per_100k: 6262
+      veterans: 343824
+
+    - rank: 7
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      veterans_per_100k: 6157
+      veterans: 86727
+
+    - rank: 8
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      veterans_per_100k: 6129
+      veterans: 130343
+
+    - rank: 9
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      veterans_per_100k: 6111
+      veterans: 87697
+
+    - rank: 10
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      veterans_per_100k: 6025
+      veterans: 196013
+
+    - rank: 11
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      veterans_per_100k: 5991
+      veterans: 452729
+
+    - rank: 12
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      veterans_per_100k: 5968
+      veterans: 473124
+
+    - rank: 13
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      veterans_per_100k: 5938
+      veterans: 104941
+
+    - rank: 14
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      veterans_per_100k: 5880
+      veterans: 240929
+
+    - rank: 15
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      veterans_per_100k: 5874
+      veterans: 303253
+
+    - rank: 16
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      veterans_per_100k: 5834
+      veterans: 116723
+
+    - rank: 17
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      veterans_per_100k: 5813
+      veterans: 53890
+
+    - rank: 18
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      veterans_per_100k: 5774
+      veterans: 246300
+
+    - rank: 19
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      veterans_per_100k: 5716
+      veterans: 342276
+
+    - rank: 20
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      veterans_per_100k: 5704
+      veterans: 1327070
+
+    - rank: 21
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      veterans_per_100k: 5671
+      veterans: 59557
+
+    - rank: 22
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      veterans_per_100k: 5600
+      veterans: 173377
+
+    - rank: 23
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      veterans_per_100k: 5569
+      veterans: 615509
+
+    - rank: 24
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      veterans_per_100k: 5566
+      veterans: 347543
+
+    - rank: 25
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      veterans_per_100k: 5514
+      veterans: 399814
+
+    - rank: 26
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      veterans_per_100k: 5367
+      veterans: 601304
+
+    - rank: 27
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      veterans_per_100k: 5342
+      veterans: 42380
+
+    - rank: 28
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      veterans_per_100k: 5244
+      veterans: 327493
+
+    - rank: 29
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      veterans_per_100k: 5144
+      veterans: 151757
+
+    - rank: 30
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      veterans_per_100k: 5121
+      veterans: 102710
+
+    - rank: 31
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      veterans_per_100k: 5112
+      veterans: 151597
+
+    - rank: 32
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      veterans_per_100k: 5108
+      veterans: 605840
+
+    - rank: 33
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      veterans_per_100k: 5060
+      veterans: 32714
+
+    - rank: 34
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      veterans_per_100k: 4989
+      veterans: 228692
+
+    - rank: 35
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      veterans_per_100k: 4971
+      veterans: 160571
+
+    - rank: 36
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      veterans_per_100k: 4846
+      veterans: 632183
+
+    - rank: 37
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      veterans_per_100k: 4836
+      veterans: 288078
+
+    - rank: 38
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      veterans_per_100k: 4736
+      veterans: 328414
+
+    - rank: 39
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      veterans_per_100k: 4612
+      veterans: 212834
+
+    - rank: 40
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      veterans_per_100k: 4562
+      veterans: 460783
+
+    - rank: 41
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      veterans_per_100k: 4485
+      veterans: 259988
+
+    - rank: 42
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      veterans_per_100k: 4478
+      veterans: 1402360
+
+    - rank: 43
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      veterans_per_100k: 4089
+      veterans: 45406
+
+    - rank: 44
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      veterans_per_100k: 3764
+      veterans: 478196
+
+    - rank: 45
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      veterans_per_100k: 3654
+      veterans: 134265
+
+    - rank: 46
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      veterans_per_100k: 3412
+      veterans: 243596
+
+    - rank: 47
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      veterans_per_100k: 3316
+      veterans: 1305450
+
+    - rank: 48
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      veterans_per_100k: 3190
+      veterans: 111760
+
+    - rank: 49
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      veterans_per_100k: 2909
+      veterans: 581776
+
+    - rank: 50
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      veterans_per_100k: 2872
+      veterans: 273031
+
+sections:
+  - id: "states-with-the-most-veterans-per-capita"
+    icon: "fa-solid fa-medal"
+    title: "States With the Most Veterans Per Capita"
+    paragraphs:
+      - "Alaska leads with 7,804 veterans per 100,000 residents, the only state above 7,500. Virginia follows at 7,137 and Montana at 6,976. Wyoming (6,861) and Maine (6,746) round out the top five, each more than double New Jersey's rate at the bottom of the table."
+    table:
+      numbered: true
+      columns:
+        state: "State"
+        veterans_per_100k: "Veterans per 100k"
+      rows:
+        - state: "Alaska"
+          veterans_per_100k: "7,804"
+        - state: "Virginia"
+          veterans_per_100k: "7,137"
+        - state: "Montana"
+          veterans_per_100k: "6,976"
+        - state: "Wyoming"
+          veterans_per_100k: "6,861"
+        - state: "Maine"
+          veterans_per_100k: "6,746"
+
+  - id: "states-with-the-fewest-veterans-per-capita"
+    icon: "fa-solid fa-arrow-down-wide-short"
+    title: "States With the Fewest Veterans Per Capita"
+    paragraphs:
+      - "New Jersey has the lowest rate in the table at 2,872 veterans per 100,000 residents, just below New York's 2,909. Utah (3,190), California (3,316), and Massachusetts (3,412) fill out the bottom five, each under half of Alaska's leading rate."
+    table:
+      numbered: true
+      columns:
+        state: "State"
+        veterans_per_100k: "Veterans per 100k"
+      rows:
+        - state: "New Jersey"
+          veterans_per_100k: "2,872"
+        - state: "New York"
+          veterans_per_100k: "2,909"
+        - state: "Utah"
+          veterans_per_100k: "3,190"
+        - state: "California"
+          veterans_per_100k: "3,316"
+        - state: "Massachusetts"
+          veterans_per_100k: "3,412"
+
+  - id: "states-with-the-most-veterans-overall"
+    icon: "fa-solid fa-users"
+    title: "States With the Most Veterans Overall"
+    paragraphs:
+      - "Texas has the largest veteran population at 1,402,360, ahead of Florida's 1,327,070 and California's 1,305,450. Texas ranks 42nd by rate at 4,478 per 100,000, while California ranks 47th at 3,316."
+    table:
+      numbered: true
+      columns:
+        state: "State"
+        veterans: "Veterans"
+      rows:
+        - state: "Texas"
+          veterans: "1,402,360"
+        - state: "Florida"
+          veterans: "1,327,070"
+        - state: "California"
+          veterans: "1,305,450"
+        - state: "Pennsylvania"
+          veterans: "632,183"
+        - state: "Virginia"
+          veterans: "629,500"
+
+faq:
+  - question: "Which state has the most veterans per capita?"
+    answer: "Alaska, at 7,804 veterans per 100,000 residents. Virginia is second at 7,137, and Montana is third at 6,976."
+
+  - question: "Which state has the fewest veterans per capita?"
+    answer: "New Jersey, at 2,872 veterans per 100,000 residents. New York is the next lowest at 2,909."
+
+  - question: "Which state has the most veterans overall?"
+    answer: "Texas, with 1,402,360 veterans. Florida is second with 1,327,070, and California is third with 1,305,450."
+
+  - question: "How many veterans live in California?"
+    answer: "California has 1,305,450 veterans, the third-most of any state. Its rate of 3,316 per 100,000 residents ranks 47th out of 50."
+
+  - question: "How many veterans live in Virginia?"
+    answer: "Virginia has 629,500 veterans, the fifth-most overall, and its rate of 7,137 per 100,000 residents ranks second. Only Alaska's rate of 7,804 is higher."
+
+  - question: "What is the difference between the highest and lowest veteran rates by state?"
+    answer: "Alaska's 7,804 veterans per 100,000 residents is roughly 2.7 times New Jersey's 2,872, the widest gap in the table."
+
+related:
+  - title: "Military Bases by State"
+    url: "/rankings/government/military-bases-by-state"
+  - title: "Police Officers Per Capita"
+    url: "/rankings/government/police-officers-per-capita"
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"

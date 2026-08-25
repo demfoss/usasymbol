@@ -1,0 +1,677 @@
+type: ranking
+slug: median-age-by-state
+category: demographics
+url: /rankings/demographics/median-age-by-state
+auto_link_phrases:
+  - "median age by state"
+  - "oldest states"
+  - "youngest states"
+extremes_mode: both
+extremes_title: "Oldest and Youngest States by Median Age"
+hero_image: "/images/rankings/demographics/median-age-by-state/median-age-by-state-hero.jpg"
+hero_image_alt: "Multigenerational group of people walking together on a neighborhood street"
+hero_image_caption: "Maine has the oldest median age in the country at 44.8 years. Utah is the youngest state at 32.0."
+
+author: "USA Symbol Team"
+date_published: "2026-07-19"
+date_modified: "2026-07-19"
+
+seo:
+  title: "Median Age by State | Map, Rankings & 65+ Data"
+  description: "Maine has the oldest median age in the country at 44.8 years. Utah is the youngest state at 32.0, nearly 13 years lower."
+
+page:
+  h1: "Median Age by State"
+
+  quick_answer:
+    - "Maine has the highest median age in the nation at 44.8 years, more than a decade above Utah at 32.0, the youngest state."
+    - "New Hampshire ranks second at 43.3 years, and Vermont is third at 43.1. Texas ranks 49th at 35.6, while Alaska ranks 48th at 35.8."
+    - "Maine also has the largest share of residents 65 and older at 21.84%, compared with just 11.25% in Utah, the lowest share of any state."
+
+  methodology: "Median age and age-group shares are 2024 estimates from World Population Review, based on U.S. Census Bureau data. Figures cover total population by state, with separate shares for residents 65 and older and 85 and older."
+
+  sources:
+    - name: "World Population Review, Median Age by State"
+      url: "https://worldpopulationreview.com/state-rankings/median-age-by-state"
+      description: "2024 median age estimates by state, with male/female splits and 65+, 75+, and 85+ population shares"
+
+map:
+  title: "Median Age by State Map"
+  image_alt: "U.S. map showing median age by state, darkest for the oldest states"
+  caption: "Maine has the highest median age at 44.8, followed by New Hampshire at 43.3 and Vermont at 43.1. Utah is lowest at 32.0."
+  metric_key: median_age
+  metric_label: "Median Age"
+  name_key: state
+  color_scheme: purple
+  color_scale: linear
+
+table:
+  searchable: true
+  sortable: true
+  metric_default: median_age
+  sort_default: desc
+
+  columns:
+    rank: "Rank"
+    state: "State"
+    median_age: "Median Age"
+    pct_65_plus: "65 and Older"
+    pct_85_plus: "85 and Older"
+
+  column_formats:
+    pct_65_plus: "0.00'%'"
+    pct_85_plus: "0.00'%'"
+
+  rows:
+    - rank: 1
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      median_age: 44.8
+      pct_65_plus: 21.84
+      pct_85_plus: 2.21
+      notes: "Median age (male): 43.5. Median age (female): 46.0. Population 75 and older: 8.73%."
+
+    - rank: 2
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      median_age: 43.3
+      pct_65_plus: 19.75
+      pct_85_plus: 1.99
+      notes: "Median age (male): 42.2. Median age (female): 44.5. Population 75 and older: 7.76%."
+
+    - rank: 3
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      median_age: 43.1
+      pct_65_plus: 21.57
+      pct_85_plus: 2.17
+      notes: "Median age (male): 42.0. Median age (female): 44.2. Population 75 and older: 8.52%."
+
+    - rank: 4
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      median_age: 42.7
+      pct_65_plus: 21.2
+      pct_85_plus: 2.08
+      notes: "Median age (male): 41.5. Median age (female): 44.1. Population 75 and older: 8.51%."
+
+    - rank: 5
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      median_age: 42.6
+      pct_65_plus: 20.21
+      pct_85_plus: 2.42
+      notes: "Median age (male): 41.3. Median age (female): 43.9. Population 75 and older: 9.09%."
+
+    - rank: 6
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      median_age: 41.6
+      pct_65_plus: 19.64
+      pct_85_plus: 1.92
+      notes: "Median age (male): 40.1. Median age (female): 43.0. Population 75 and older: 7.71%."
+
+    - rank: 7
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      median_age: 41.1
+      pct_65_plus: 18.11
+      pct_85_plus: 2.38
+      notes: "Median age (male): 39.8. Median age (female): 42.5. Population 75 and older: 7.68%."
+
+    - rank: 8
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      median_age: 40.9
+      pct_65_plus: 19.39
+      pct_85_plus: 2.4
+      notes: "Median age (male): 39.8. Median age (female): 42.2. Population 75 and older: 8.06%."
+
+    - rank: 9
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      median_age: 40.9
+      pct_65_plus: 20.66
+      pct_85_plus: 2.78
+      notes: "Median age (male): 39.5. Median age (female): 42.4. Population 75 and older: 9.13%."
+
+    - rank: 10
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      median_age: 40.6
+      pct_65_plus: 18.44
+      pct_85_plus: 2.17
+      notes: "Median age (male): 39.1. Median age (female): 41.9. Population 75 and older: 7.64%."
+
+    - rank: 11
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      median_age: 40.4
+      pct_65_plus: 18.94
+      pct_85_plus: 2.04
+      notes: "Median age (male): 39.5. Median age (female): 41.3. Population 75 and older: 7.54%."
+
+    - rank: 12
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      median_age: 40.4
+      pct_65_plus: 19.51
+      pct_85_plus: 1.83
+      notes: "Median age (male): 39.6. Median age (female): 41.3. Population 75 and older: 7.52%."
+
+    - rank: 13
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      median_age: 40.2
+      pct_65_plus: 18.3
+      pct_85_plus: 2.08
+      notes: "Median age (male): 39.4. Median age (female): 41.1. Population 75 and older: 7.25%."
+
+    - rank: 14
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      median_age: 40.2
+      pct_65_plus: 17.69
+      pct_85_plus: 1.66
+      notes: "Median age (male): 38.9. Median age (female): 41.5. Population 75 and older: 6.96%."
+
+    - rank: 15
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      median_age: 40.2
+      pct_65_plus: 18.47
+      pct_85_plus: 2.05
+      notes: "Median age (male): 39.0. Median age (female): 41.3. Population 75 and older: 7.32%."
+
+    - rank: 16
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      median_age: 40.1
+      pct_65_plus: 16.74
+      pct_85_plus: 2.01
+      notes: "Median age (male): 38.9. Median age (female): 41.4. Population 75 and older: 7.02%."
+
+    - rank: 17
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      median_age: 40.0
+      pct_65_plus: 17.55
+      pct_85_plus: 2.13
+      notes: "Median age (male): 38.9. Median age (female): 41.1. Population 75 and older: 7.24%."
+
+    - rank: 18
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      median_age: 39.8
+      pct_65_plus: 17.77
+      pct_85_plus: 2.23
+      notes: "Median age (male): 38.5. Median age (female): 41.0. Population 75 and older: 7.5%."
+
+    - rank: 19
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      median_age: 39.7
+      pct_65_plus: 18.05
+      pct_85_plus: 2.05
+      notes: "Median age (male): 38.4. Median age (female): 40.9. Population 75 and older: 7.24%."
+
+    - rank: 20
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      median_age: 39.4
+      pct_65_plus: 19.22
+      pct_85_plus: 2.02
+      notes: "Median age (male): 38.2. Median age (female): 40.7. Population 75 and older: 7.77%."
+
+    - rank: 21
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      median_age: 39.4
+      pct_65_plus: 16.45
+      pct_85_plus: 1.88
+      notes: "Median age (male): 38.1. Median age (female): 40.6. Population 75 and older: 6.71%."
+
+    - rank: 22
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      median_age: 39.3
+      pct_65_plus: 17.31
+      pct_85_plus: 1.68
+      notes: "Median age (male): 38.0. Median age (female): 40.6. Population 75 and older: 6.93%."
+
+    - rank: 23
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      median_age: 39.1
+      pct_65_plus: 18.26
+      pct_85_plus: 1.73
+      notes: "Median age (male): 38.6. Median age (female): 39.8. Population 75 and older: 6.9%."
+
+    - rank: 24
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      median_age: 39.1
+      pct_65_plus: 16.27
+      pct_85_plus: 1.64
+      notes: "Median age (male): 37.8. Median age (female): 40.4. Population 75 and older: 6.5%."
+
+    - rank: 25
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      median_age: 39.1
+      pct_65_plus: 16.33
+      pct_85_plus: 1.44
+      notes: "Median age (male): 38.6. Median age (female): 39.7. Population 75 and older: 6.42%."
+
+    - rank: 26
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      median_age: 39.1
+      pct_65_plus: 16.95
+      pct_85_plus: 1.63
+      notes: "Median age (male): 37.9. Median age (female): 40.3. Population 75 and older: 6.66%."
+
+    - rank: 27
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      median_age: 39.0
+      pct_65_plus: 16.26
+      pct_85_plus: 1.68
+      notes: "Median age (male): 37.9. Median age (female): 40.1. Population 75 and older: 6.63%."
+
+    - rank: 28
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      median_age: 39.0
+      pct_65_plus: 17.59
+      pct_85_plus: 1.98
+      notes: "Median age (male): 37.9. Median age (female): 40.2. Population 75 and older: 7.18%."
+
+    - rank: 29
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      median_age: 39.0
+      pct_65_plus: 16.93
+      pct_85_plus: 2.03
+      notes: "Median age (male): 38.0. Median age (female): 40.0. Population 75 and older: 6.93%."
+
+    - rank: 30
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      median_age: 39.0
+      pct_65_plus: 18.17
+      pct_85_plus: 1.86
+      notes: "Median age (male): 37.8. Median age (female): 40.2. Population 75 and older: 7.8%."
+
+    - rank: 31
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      median_age: 38.9
+      pct_65_plus: 16.34
+      pct_85_plus: 1.55
+      notes: "Median age (male): 37.7. Median age (female): 40.0. Population 75 and older: 6.46%."
+
+    - rank: 32
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      median_age: 38.8
+      pct_65_plus: 16.93
+      pct_85_plus: 2.06
+      notes: "Median age (male): 38.1. Median age (female): 39.5. Population 75 and older: 6.9%."
+
+    - rank: 33
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      median_age: 38.6
+      pct_65_plus: 17.1
+      pct_85_plus: 1.66
+      notes: "Median age (male): 37.1. Median age (female): 39.9. Population 75 and older: 6.76%."
+
+    - rank: 34
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      median_age: 38.6
+      pct_65_plus: 17.93
+      pct_85_plus: 2.3
+      notes: "Median age (male): 37.8. Median age (female): 39.6. Population 75 and older: 7.47%."
+
+    - rank: 35
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      median_age: 38.5
+      pct_65_plus: 17.1
+      pct_85_plus: 1.76
+      notes: "Median age (male): 37.3. Median age (female): 39.7. Population 75 and older: 7.04%."
+
+    - rank: 36
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      median_age: 38.3
+      pct_65_plus: 16.09
+      pct_85_plus: 1.72
+      notes: "Median age (male): 37.5. Median age (female): 39.2. Population 75 and older: 6.33%."
+
+    - rank: 37
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      median_age: 38.1
+      pct_65_plus: 16.37
+      pct_85_plus: 1.82
+      notes: "Median age (male): 37.0. Median age (female): 39.1. Population 75 and older: 6.54%."
+
+    - rank: 38
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      median_age: 38.0
+      pct_65_plus: 17.32
+      pct_85_plus: 2.03
+      notes: "Median age (male): 37.3. Median age (female): 38.8. Population 75 and older: 6.74%."
+
+    - rank: 39
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      median_age: 38.0
+      pct_65_plus: 16.71
+      pct_85_plus: 1.72
+      notes: "Median age (male): 37.0. Median age (female): 39.1. Population 75 and older: 6.51%."
+
+    - rank: 40
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      median_age: 37.9
+      pct_65_plus: 15.65
+      pct_85_plus: 1.89
+      notes: "Median age (male): 37.0. Median age (female): 38.8. Population 75 and older: 6.48%."
+
+    - rank: 41
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      median_age: 37.7
+      pct_65_plus: 15.14
+      pct_85_plus: 1.54
+      notes: "Median age (male): 37.0. Median age (female): 38.5. Population 75 and older: 5.78%."
+
+    - rank: 42
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      median_age: 37.6
+      pct_65_plus: 14.36
+      pct_85_plus: 1.36
+      notes: "Median age (male): 36.3. Median age (female): 38.8. Population 75 and older: 5.58%."
+
+    - rank: 43
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      median_age: 37.4
+      pct_65_plus: 16.72
+      pct_85_plus: 2.01
+      notes: "Median age (male): 36.4. Median age (female): 38.5. Population 75 and older: 6.8%."
+
+    - rank: 44
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      median_age: 37.3
+      pct_65_plus: 15.96
+      pct_85_plus: 1.51
+      notes: "Median age (male): 36.7. Median age (female): 37.9. Population 75 and older: 6.22%."
+
+    - rank: 45
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      median_age: 37.2
+      pct_65_plus: 16.29
+      pct_85_plus: 1.96
+      notes: "Median age (male): 36.4. Median age (female): 38.0. Population 75 and older: 6.62%."
+
+    - rank: 46
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      median_age: 37.0
+      pct_65_plus: 15.85
+      pct_85_plus: 1.58
+      notes: "Median age (male): 36.0. Median age (female): 38.1. Population 75 and older: 6.43%."
+
+    - rank: 47
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      median_age: 35.9
+      pct_65_plus: 16.12
+      pct_85_plus: 2.15
+      notes: "Median age (male): 35.2. Median age (female): 36.5. Population 75 and older: 6.79%."
+
+    - rank: 48
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      median_age: 35.8
+      pct_65_plus: 13.78
+      pct_85_plus: 0.93
+      notes: "Median age (male): 35.4. Median age (female): 36.3. Population 75 and older: 4.59%."
+
+    - rank: 49
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      median_age: 35.6
+      pct_65_plus: 12.64
+      pct_85_plus: 1.27
+      notes: "Median age (male): 34.8. Median age (female): 36.4. Population 75 and older: 4.91%."
+
+    - rank: 50
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      median_age: 32.0
+      pct_65_plus: 11.25
+      pct_85_plus: 1.1
+      notes: "Median age (male): 31.5. Median age (female): 32.5. Population 75 and older: 4.35%."
+
+sections:
+  - id: "oldest-states-by-median-age"
+    icon: "fa-solid fa-arrow-up"
+    title: "States With the Oldest Median Age"
+    paragraphs:
+      - "Maine has the oldest population in the country, with a median age of 44.8 years. New Hampshire follows at 43.3, and Vermont ranks third at 43.1."
+      - "West Virginia ranks fourth at 42.7, and Florida is fifth at 42.6. Each of these five states also reports a female median age above 43.9, led by Maine's 46.0."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        median_age: "Median Age"
+        pct_65_plus: "65 and Older"
+      rows:
+        - rank: 1
+          state: "Maine"
+          state_slug: "maine"
+          median_age: "44.8"
+          pct_65_plus: "21.84%"
+        - rank: 2
+          state: "New Hampshire"
+          state_slug: "new-hampshire"
+          median_age: "43.3"
+          pct_65_plus: "19.75%"
+        - rank: 3
+          state: "Vermont"
+          state_slug: "vermont"
+          median_age: "43.1"
+          pct_65_plus: "21.57%"
+        - rank: 4
+          state: "West Virginia"
+          state_slug: "west-virginia"
+          median_age: "42.7"
+          pct_65_plus: "21.20%"
+        - rank: 5
+          state: "Florida"
+          state_slug: "florida"
+          median_age: "42.6"
+          pct_65_plus: "20.21%"
+
+  - id: "youngest-states-by-median-age"
+    icon: "fa-solid fa-arrow-down"
+    title: "States With the Youngest Median Age"
+    paragraphs:
+      - "Utah has the youngest population in the country, with a median age of 32.0 years, nearly six years below Texas, the next-youngest state at 35.6."
+      - "Alaska ranks third-youngest at 35.8, North Dakota fourth at 35.9, and Oklahoma fifth at 37.0. Utah also has the smallest share of residents 65 and older, at 11.25%."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        median_age: "Median Age"
+        pct_65_plus: "65 and Older"
+      rows:
+        - rank: 50
+          state: "Utah"
+          state_slug: "utah"
+          median_age: "32.0"
+          pct_65_plus: "11.25%"
+        - rank: 49
+          state: "Texas"
+          state_slug: "texas"
+          median_age: "35.6"
+          pct_65_plus: "12.64%"
+        - rank: 48
+          state: "Alaska"
+          state_slug: "alaska"
+          median_age: "35.8"
+          pct_65_plus: "13.78%"
+        - rank: 47
+          state: "North Dakota"
+          state_slug: "north-dakota"
+          median_age: "35.9"
+          pct_65_plus: "16.12%"
+        - rank: 46
+          state: "Oklahoma"
+          state_slug: "oklahoma"
+          median_age: "37.0"
+          pct_65_plus: "15.85%"
+
+  - id: "elderly-population-by-state"
+    icon: "fa-solid fa-user"
+    title: "Largest 65+ Population Shares by State"
+    paragraphs:
+      - "Maine has the largest share of residents 65 and older at 21.84%, followed by Vermont at 21.57% and West Virginia at 21.20%. Hawaii is fourth at 20.66%, and Florida is fifth at 20.21%."
+      - "Utah has the smallest 65-and-older share at 11.25%, followed by Texas at 12.64% and Alaska at 13.78%. Georgia is the only other state under 15%, at 14.36%."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        pct_65_plus: "65 and Older"
+      rows:
+        - rank: 1
+          state: "Maine"
+          state_slug: "maine"
+          pct_65_plus: "21.84%"
+        - rank: 2
+          state: "Vermont"
+          state_slug: "vermont"
+          pct_65_plus: "21.57%"
+        - rank: 3
+          state: "West Virginia"
+          state_slug: "west-virginia"
+          pct_65_plus: "21.20%"
+        - rank: 4
+          state: "Hawaii"
+          state_slug: "hawaii"
+          pct_65_plus: "20.66%"
+        - rank: 5
+          state: "Florida"
+          state_slug: "florida"
+          pct_65_plus: "20.21%"
+
+visual_assets:
+  - id: oldest-states-by-median-age
+    src: /images/rankings/demographics/median-age-by-state/oldest-states-by-median-age.jpg
+    alt: "Retirees walking along a coastal boardwalk in Maine"
+    caption: "Maine leads the country with a median age of 44.8, followed by New Hampshire, Vermont, West Virginia, and Florida."
+    section: oldest-states-by-median-age
+    layout: full-width-tall
+
+  - id: youngest-states-by-median-age
+    src: /images/rankings/demographics/median-age-by-state/youngest-states-by-median-age.jpg
+    alt: "Young adults walking on a college campus in Utah"
+    caption: "Utah has the youngest median age in the country at 32.0, nearly six years below Texas, the next-youngest state."
+    section: youngest-states-by-median-age
+    layout: full-width-tall
+
+  - id: elderly-population-by-state
+    src: /images/rankings/demographics/median-age-by-state/elderly-population-by-state.jpg
+    alt: "Group of older adults socializing at a community center"
+    caption: "Maine has the largest share of residents 65 and older at 21.84%. Utah has the smallest share, at 11.25%."
+    section: elderly-population-by-state
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the oldest median age?"
+    answer: "Maine has the oldest median age in the country at 44.8 years. New Hampshire is second at 43.3, and Vermont is third at 43.1."
+
+  - question: "Which state has the youngest median age?"
+    answer: "Utah has the youngest median age at 32.0 years, nearly six years below Texas, the next-youngest state at 35.6."
+
+  - question: "Which state has the largest share of residents 65 and older?"
+    answer: "Maine has the largest 65-and-older share at 21.84%. Vermont follows at 21.57%, and West Virginia is third at 21.20%."
+
+  - question: "What is the median age in Florida?"
+    answer: "Florida's median age is 42.6 years, the fifth-highest in the country. Its share of residents 65 and older is 20.21%."
+
+  - question: "Is there a gender gap in median age by state?"
+    answer: "Yes. Maine's median age is 43.5 for men and 46.0 for women, a 2.5-year gap. Alaska's figures are 35.4 for men and 36.3 for women, a difference of 0.9 years."
+
+  - question: "Where does California rank for median age?"
+    answer: "California's median age is 37.9 years, ranking 40th nationally. Its share of residents 65 and older is 15.65%."
+
+related:
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"
+  - title: "States by Population Density"
+    url: "/rankings/demographics/states-by-population-density"
+  - title: "Highest Divorce Rates"
+    url: "/rankings/demographics/highest-divorce-rates"
+  - title: "Domestic Migration by State"
+    url: "/rankings/demographics/domestic-migration-by-state"

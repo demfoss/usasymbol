@@ -1,0 +1,589 @@
+type: ranking
+slug: electric-vehicle-charging-deserts
+category: infrastructure
+url: /rankings/infrastructure/electric-vehicle-charging-deserts
+auto_link_phrases:
+  - "ev charging deserts by state"
+  - "worst states for ev charging"
+  - "evs per charging station by state"
+  - "ev charging access by state"
+extremes_mode: both
+extremes_title: "States With the Worst EV Charging Access"
+hero_image: "/images/rankings/infrastructure/electric-vehicle-charging-deserts/hero-electric-vehicle-charging-deserts.jpg"
+hero_image_alt: "Electric vehicle waiting behind another car at a crowded public charging station"
+hero_image_caption: "Hawaii has 24.3 registered EVs for every public charging port, the worst ratio of any state. Wyoming has the best access at 3.4 EVs per port."
+
+author: "USA Symbol Team"
+date_published: "2026-08-25"
+date_modified: "2026-08-25"
+
+seo:
+  title: "EV Charging Deserts by State | Map, Ratios & Facts"
+  description: "Hawaii has 24.3 registered EVs per charging port, the worst ratio of any state. Wyoming has the best access at 3.4 EVs per port."
+
+page:
+  h1: "EV Charging Deserts by State"
+
+  quick_answer:
+    - "Hawaii has the worst EV charging access of any state, 24.3 registered EVs for every public charging port, well above the national average of 13.7 EVs per port."
+    - "New Jersey ranks second worst at 21.3 EVs per port, with 134,753 registered EVs sharing just 6,336 ports. California and Arizona follow near 18.6, even though California operates 67,685 ports, more than any other state."
+    - "Wyoming has the best charging access nationally at 3.4 EVs per port, followed closely by North Dakota at 3.5, though both states have fewer than 1,500 registered EVs total."
+
+  methodology: "EVs per port divides AFDC-Experian EV registration counts, dated December 31, 2023, by AFDC public charging port counts by state, updated August 8, 2026. A higher ratio means more registered EVs compete for each port, and DC is excluded from state ranks."
+
+  sources:
+    - name: "U.S. Department of Energy — Alternative Fuels Data Center"
+      url: "https://afdc.energy.gov/data/widgets/10962"
+      description: "Electric vehicle registration counts by state, sourced from Experian Information Solutions, dated December 31, 2023"
+    - name: "U.S. Department of Energy — Alternative Fuels Data Center"
+      url: "https://afdc.energy.gov/stations/states"
+      description: "Public EV charging port counts by state, updated August 8, 2026"
+
+table:
+  searchable: true
+  sortable: true
+  metric_default: evs_per_port
+  sort_default: desc
+  columns:
+    rank: "Rank"
+    state: "State"
+    evs_per_port: "EVs per Port"
+    registered_evs: "Registered EVs"
+    ports: "Charging Ports"
+
+  rows:
+    - rank: 1
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      evs_per_port: 24.3
+      registered_evs: 25565
+      ports: 1053
+    - rank: 2
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      evs_per_port: 21.3
+      registered_evs: 134753
+      ports: 6336
+    - rank: 3
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      evs_per_port: 18.6
+      registered_evs: 1256646
+      ports: 67685
+    - rank: 4
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      evs_per_port: 18.6
+      registered_evs: 89798
+      ports: 4837
+    - rank: 5
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      evs_per_port: 18.1
+      registered_evs: 230125
+      ports: 12728
+    - rank: 6
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      evs_per_port: 17.0
+      registered_evs: 47361
+      ports: 2783
+    - rank: 7
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      evs_per_port: 16.9
+      registered_evs: 152101
+      ports: 8996
+    - rank: 8
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      evs_per_port: 16.6
+      registered_evs: 254878
+      ports: 15386
+    - rank: 9
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      evs_per_port: 16.5
+      registered_evs: 99573
+      ports: 6050
+    - rank: 10
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      evs_per_port: 15.4
+      registered_evs: 84936
+      ports: 5498
+    - rank: 11
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      evs_per_port: 14.7
+      registered_evs: 64361
+      ports: 4379
+    - rank: 12
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      evs_per_port: 14.0
+      registered_evs: 22843
+      ports: 1634
+    - rank: 13
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      evs_per_port: 13.4
+      registered_evs: 37050
+      ports: 2764
+    - rank: 14
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      evs_per_port: 12.8
+      registered_evs: 2697
+      ports: 210
+    - rank: 15
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      evs_per_port: 12.8
+      registered_evs: 72139
+      ports: 5631
+    - rank: 16
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      evs_per_port: 12.3
+      registered_evs: 39998
+      ports: 3260
+    - rank: 17
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      evs_per_port: 12.0
+      registered_evs: 92368
+      ports: 7701
+    - rank: 18
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      evs_per_port: 11.9
+      registered_evs: 70164
+      ports: 5896
+    - rank: 19
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      evs_per_port: 11.7
+      registered_evs: 70154
+      ports: 5977
+    - rank: 20
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      evs_per_port: 11.7
+      registered_evs: 26101
+      ports: 2234
+    - rank: 21
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      evs_per_port: 11.7
+      registered_evs: 8501
+      ports: 729
+    - rank: 22
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      evs_per_port: 11.6
+      registered_evs: 9861
+      ports: 847
+    - rank: 23
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      evs_per_port: 11.5
+      registered_evs: 90083
+      ports: 7825
+    - rank: 24
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      evs_per_port: 11.3
+      registered_evs: 8435
+      ports: 749
+    - rank: 25
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      evs_per_port: 10.6
+      registered_evs: 24943
+      ports: 2350
+    - rank: 26
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      evs_per_port: 10.6
+      registered_evs: 33221
+      ports: 3144
+    - rank: 27
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      evs_per_port: 9.8
+      registered_evs: 20873
+      ports: 2134
+    - rank: 28
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      evs_per_port: 9.7
+      registered_evs: 4608
+      ports: 475
+    - rank: 29
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      evs_per_port: 9.5
+      registered_evs: 11617
+      ports: 1224
+    - rank: 30
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      evs_per_port: 9.4
+      registered_evs: 50393
+      ports: 5361
+    - rank: 31
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      evs_per_port: 9.1
+      registered_evs: 8150
+      ports: 894
+    - rank: 32
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      evs_per_port: 8.9
+      registered_evs: 6920
+      ports: 776
+    - rank: 33
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      evs_per_port: 8.8
+      registered_evs: 50284
+      ports: 5730
+    - rank: 34
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      evs_per_port: 8.2
+      registered_evs: 10276
+      ports: 1253
+    - rank: 35
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      evs_per_port: 8.1
+      registered_evs: 11271
+      ports: 1398
+    - rank: 36
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      evs_per_port: 7.9
+      registered_evs: 26861
+      ports: 3419
+    - rank: 37
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      evs_per_port: 7.3
+      registered_evs: 13047
+      ports: 1782
+    - rank: 38
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      evs_per_port: 7.2
+      registered_evs: 6396
+      ports: 885
+    - rank: 39
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      evs_per_port: 6.8
+      registered_evs: 9031
+      ports: 1327
+    - rank: 40
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      evs_per_port: 6.4
+      registered_evs: 73768
+      ports: 11538
+    - rank: 41
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      evs_per_port: 6.4
+      registered_evs: 31557
+      ports: 4953
+    - rank: 42
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      evs_per_port: 6.3
+      registered_evs: 7108
+      ports: 1136
+    - rank: 43
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      evs_per_port: 6.0
+      registered_evs: 131250
+      ports: 21762
+    - rank: 44
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      evs_per_port: 5.3
+      registered_evs: 7816
+      ports: 1473
+    - rank: 45
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      evs_per_port: 5.1
+      registered_evs: 3590
+      ports: 707
+    - rank: 46
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      evs_per_port: 4.8
+      registered_evs: 1675
+      ports: 346
+    - rank: 47
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      evs_per_port: 4.7
+      registered_evs: 2758
+      ports: 583
+    - rank: 48
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      evs_per_port: 4.4
+      registered_evs: 7377
+      ports: 1678
+    - rank: 49
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      evs_per_port: 3.5
+      registered_evs: 959
+      ports: 276
+    - rank: 50
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      evs_per_port: 3.4
+      registered_evs: 1139
+      ports: 336
+
+map:
+  title: "EV Charging Deserts by State Map"
+  image_alt: "U.S. map color-coded by EVs per charging port, darkest red for Hawaii and lightest for Wyoming"
+  caption: "Hawaii shades darkest at 24.3 EVs per charging port. Wyoming and North Dakota shade lightest, both near 3.4 EVs per port."
+  metric_key: evs_per_port
+  metric_label: "EVs per Charging Port"
+  color_scheme: red
+  color_scale: linear
+  detail_keys: [evs_per_port, registered_evs, ports]
+
+sections:
+  - id: "states-with-the-worst-ev-charging-access"
+    icon: "fa-solid fa-triangle-exclamation"
+    title: "States With the Worst EV Charging Access"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        evs_per_port: "EVs per Port"
+        registered_evs: "Registered EVs"
+      rows:
+        - rank: 1
+          state: "Hawaii"
+          state_slug: "hawaii"
+          evs_per_port: "24.3"
+          registered_evs: "25,565"
+        - rank: 2
+          state: "New Jersey"
+          state_slug: "new-jersey"
+          evs_per_port: "21.3"
+          registered_evs: "134,753"
+        - rank: 3
+          state: "California"
+          state_slug: "california"
+          evs_per_port: "18.6"
+          registered_evs: "1,256,646"
+        - rank: 4
+          state: "Arizona"
+          state_slug: "arizona"
+          evs_per_port: "18.6"
+          registered_evs: "89,798"
+        - rank: 5
+          state: "Texas"
+          state_slug: "texas"
+          evs_per_port: "18.1"
+          registered_evs: "230,125"
+        - rank: 6
+          state: "Nevada"
+          state_slug: "nevada"
+          evs_per_port: "17.0"
+          registered_evs: "47,361"
+        - rank: 7
+          state: "Washington"
+          state_slug: "washington"
+          evs_per_port: "16.9"
+          registered_evs: "152,101"
+        - rank: 8
+          state: "Florida"
+          state_slug: "florida"
+          evs_per_port: "16.6"
+          registered_evs: "254,878"
+        - rank: 9
+          state: "Illinois"
+          state_slug: "illinois"
+          evs_per_port: "16.5"
+          registered_evs: "99,573"
+        - rank: 10
+          state: "Virginia"
+          state_slug: "virginia"
+          evs_per_port: "15.4"
+          registered_evs: "84,936"
+    paragraphs:
+      - "Hawaii has 24.3 registered EVs for every public charging port, the worst ratio in the country, on just 1,053 ports serving 25,565 EVs. New Jersey follows at 21.3, with 134,753 EVs sharing 6,336 ports."
+      - "California and Arizona sit tied at 18.6 EVs per port. California operates 67,685 ports, more than any other state, but its 1,256,646 registered EVs still outpace supply. Texas ranks fifth worst at 18.1, and Nevada is sixth at 17.0."
+
+  - id: "states-with-the-best-ev-charging-access"
+    icon: "fa-solid fa-charging-station"
+    title: "States With the Best EV Charging Access"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        evs_per_port: "EVs per Port"
+        registered_evs: "Registered EVs"
+      rows:
+        - rank: 1
+          state: "Wyoming"
+          state_slug: "wyoming"
+          evs_per_port: "3.4"
+          registered_evs: "1,139"
+        - rank: 2
+          state: "North Dakota"
+          state_slug: "north-dakota"
+          evs_per_port: "3.5"
+          registered_evs: "959"
+        - rank: 3
+          state: "Maine"
+          state_slug: "maine"
+          evs_per_port: "4.4"
+          registered_evs: "7,377"
+        - rank: 4
+          state: "West Virginia"
+          state_slug: "west-virginia"
+          evs_per_port: "4.7"
+          registered_evs: "2,758"
+        - rank: 5
+          state: "South Dakota"
+          state_slug: "south-dakota"
+          evs_per_port: "4.8"
+          registered_evs: "1,675"
+        - rank: 6
+          state: "Mississippi"
+          state_slug: "mississippi"
+          evs_per_port: "5.1"
+          registered_evs: "3,590"
+        - rank: 7
+          state: "Vermont"
+          state_slug: "vermont"
+          evs_per_port: "5.3"
+          registered_evs: "7,816"
+        - rank: 8
+          state: "New York"
+          state_slug: "new-york"
+          evs_per_port: "6.0"
+          registered_evs: "131,250"
+        - rank: 9
+          state: "Arkansas"
+          state_slug: "arkansas"
+          evs_per_port: "6.3"
+          registered_evs: "7,108"
+        - rank: 10
+          state: "Connecticut"
+          state_slug: "connecticut"
+          evs_per_port: "6.4"
+          registered_evs: "31,557"
+    paragraphs:
+      - "Wyoming has the best charging access in the country, 3.4 EVs per port, with just 1,139 registered EVs sharing 336 ports. North Dakota is close behind at 3.5, and Maine ranks third at 4.4."
+      - "New York breaks the small-state pattern at eighth, 6.0 EVs per port, despite 131,250 registered EVs, the fourth-highest total in the nation, spread across 21,762 ports. Arkansas and Connecticut round out the top ten at 6.3 and 6.4."
+
+visual_assets:
+  - id: worst-ev-charging-access
+    src: /images/rankings/infrastructure/electric-vehicle-charging-deserts/worst-ev-charging-access.jpg
+    alt: "Line of electric vehicles waiting to charge at a crowded public station"
+    caption: "Hawaii has 24.3 registered EVs for every charging port, the worst ratio in the country, followed by New Jersey at 21.3."
+    section: states-with-the-worst-ev-charging-access
+    layout: full-width-tall
+
+  - id: best-ev-charging-access
+    src: /images/rankings/infrastructure/electric-vehicle-charging-deserts/best-ev-charging-access.jpg
+    alt: "Single electric vehicle charging at an open rural station with no line"
+    caption: "Wyoming has just 3.4 registered EVs per charging port, the best ratio nationally, with North Dakota close behind at 3.5."
+    section: states-with-the-best-ev-charging-access
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the worst EV charging access?"
+    answer: "Hawaii has the worst ratio of any state, 24.3 registered EVs for every public charging port. Its 25,565 EVs share just 1,053 ports."
+
+  - question: "Which state has the best EV charging access?"
+    answer: "Wyoming has the best ratio nationally at 3.4 EVs per charging port. North Dakota is next at 3.5, and both states have fewer than 1,500 registered EVs."
+
+  - question: "What is the average number of EVs per charging port nationally?"
+    answer: "The 50 states average 13.7 registered EVs per public charging port, based on 3,547,379 registered EVs and 258,128 charging ports."
+
+  - question: "Is California an EV charging desert despite having the most chargers?"
+    answer: "California operates 67,685 charging ports, more than any other state, but its 1,256,646 registered EVs give it 18.6 EVs per port, tied with Arizona for third worst nationally."
+
+  - question: "How does New Jersey rank for EV charging access?"
+    answer: "New Jersey ranks second worst in the country at 21.3 EVs per port. Its 134,753 registered EVs share only 6,336 ports."
+
+  - question: "How is EVs per charging port calculated?"
+    answer: "It divides a state's registered EV count, reported by AFDC using Experian data as of December 31, 2023, by its AFDC public charging port count, updated August 8, 2026. A higher number means more EVs compete for each port."
+
+related:
+  - title: "EV Charging Stations by State"
+    url: "/rankings/infrastructure/ev-charging-stations-by-state"
+  - title: "Renewable Energy by State"
+    url: "/rankings/infrastructure/renewable-energy-by-state"
+  - title: "Road Quality by State"
+    url: "/rankings/infrastructure/road-quality-by-state"
+  - title: "Gas Tax by State"
+    url: "/rankings/economy/gas-tax-by-state"
+  - title: "Compare States"
+    url: "/compare-states"

@@ -1,0 +1,76 @@
+@using System.Text.Json
+@using USASymbol.Services.Content
+
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var statesJson = JsonSerializer.Serialize(UsStatesReference.All(), jsonOptions);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">County Finder</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>County <em>Finder</em></h1>
+            <p class="tl-lede">
+                Find which U.S. county a ZIP code or city belongs to.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="zg-panel" id="county-finder" data-lookup-url="/tools/county-finder/lookup">
+            <div class="tl-lookup-form tl-mode-row" id="cf-tabs">
+                <div class="zg-field">
+                    <label for="cf-mode">Search by</label>
+                    <select id="cf-mode">
+                        <option value="zip">ZIP code</option>
+                        <option value="city">City</option>
+                    </select>
+                </div>
+            </div>
+            <form class="tl-lookup-form" id="cf-form">
+                <div class="zg-field" id="cf-zip-field">
+                    <label for="cf-zip">ZIP code</label>
+                    <input type="text" id="cf-zip" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="e.g. 30301" autocomplete="off" />
+                </div>
+                <div class="zg-field hidden" id="cf-city-field">
+                    <label for="cf-city">City</label>
+                    <input type="text" id="cf-city" placeholder="e.g. Atlanta" autocomplete="off" />
+                </div>
+                <div class="zg-field hidden" id="cf-state-field">
+                    <label for="cf-state">State (optional)</label>
+                    <select id="cf-state"><option value="">Any state</option></select>
+                </div>
+                <div class="zg-actions">
+                    <button type="submit" class="zg-btn zg-btn-primary">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Find County
+                    </button>
+                </div>
+            </form>
+            <p class="zg-status" id="cf-status" role="status" aria-live="polite"></p>
+            <div id="cf-result"></div>
+        </div>
+    </section>
+</div>
+
+<script>
+    window.countyFinderStates = @Html.Raw(statesJson);
+</script>
+
+@section Scripts {
+    <script defer src="~/js/county-finder.js" asp-append-version="true"></script>
+}

@@ -54,6 +54,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddScoped<IStateService, StateService>();
+builder.Services.AddSingleton<IZipCodeService, ZipCodeService>();
+builder.Services.AddSingleton<IAreaCodeService, AreaCodeService>();
 builder.Services.AddScoped<IStateHubContentService, StateHubContentService>();
 builder.Services.AddScoped<ISymbolCanonicalService, SymbolCanonicalService>();
 
@@ -72,6 +74,7 @@ builder.Services.AddScoped<ISoilService, SoilService>();
 builder.Services.AddScoped<IFossilService, FossilService>();
 builder.Services.AddScoped<ISportService, SportService>();
 builder.Services.AddScoped<IDanceService, DanceService>();
+builder.Services.AddScoped<ISongService, SongService>();
 builder.Services.AddScoped<IInsectService, InsectService>();
 builder.Services.AddScoped<IMineralService, MineralService>();
 builder.Services.AddScoped<IAmphibianService, AmphibianService>();
@@ -88,6 +91,7 @@ builder.Services.AddScoped<ISurnamesService, SurnamesService>();
 builder.Services.AddScoped<IRankingsContentService, RankingsContentService>();
 builder.Services.AddScoped<IListingsContentService, ListingsContentService>();
 builder.Services.AddScoped<ICollectionsContentService, CollectionsContentService>();
+builder.Services.AddScoped<INationalSymbolsContentService, NationalSymbolsContentService>();
 builder.Services.AddScoped<ILatestContentRailService, LatestContentRailService>();
 builder.Services.AddScoped<USASymbol.Services.Interface.IParkService, USASymbol.Services.Content.ParkService>();
 
@@ -141,6 +145,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var isImageSyncCommand = args.Any(x =>
     string.Equals(x, "--sync-bunny-images", StringComparison.OrdinalIgnoreCase));
+var rebuildBunnyImageManifest = args.Any(x =>
+    string.Equals(x, "--rebuild-bunny-image-manifest", StringComparison.OrdinalIgnoreCase));
 
 var app = builder.Build();
 
@@ -148,7 +154,7 @@ if (isImageSyncCommand)
 {
     using var scope = app.Services.CreateScope();
     var runner = scope.ServiceProvider.GetRequiredService<BunnyImageSyncRunner>();
-    var exitCode = await runner.RunAsync(CancellationToken.None);
+    var exitCode = await runner.RunAsync(rebuildBunnyImageManifest, CancellationToken.None);
     Environment.ExitCode = exitCode;
     return;
 }

@@ -24,7 +24,7 @@
                 .ToList());
 }
 
-@if (pick?.Any() == true)
+@if (!(ViewData["HideRelatedStates"] as bool? ?? false) && pick?.Any() == true)
 {
     <section class="related-states-minimal">
         <h2 class="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#13231D]">

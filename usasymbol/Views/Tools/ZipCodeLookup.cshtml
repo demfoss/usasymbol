@@ -1,0 +1,49 @@
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">ZIP Code Lookup</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>ZIP Code <em>Lookup</em></h1>
+            <p class="tl-lede">
+                Enter any 5-digit U.S. ZIP code to find its city, county, state, and flag.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="zg-panel" id="zip-lookup" data-lookup-url="/tools/zip-code-lookup/lookup">
+            <form class="tl-lookup-form" id="zl-form">
+                <div class="zg-field">
+                    <label for="zl-zip">ZIP code</label>
+                    <input type="text" id="zl-zip" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="e.g. 90210" autocomplete="off" />
+                </div>
+                <div class="zg-actions">
+                    <button type="submit" class="zg-btn zg-btn-primary">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Look Up
+                    </button>
+                </div>
+            </form>
+            <p class="zg-status" id="zl-status" role="status" aria-live="polite"></p>
+            <div id="zl-result"></div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script defer src="~/js/zip-code-lookup.js" asp-append-version="true"></script>
+}

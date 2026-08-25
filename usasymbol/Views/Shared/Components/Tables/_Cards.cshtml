@@ -11,6 +11,7 @@
 
     var cardsFirstTable = Model.Tables.FirstOrDefault();
     var cardsQuickFilter = TableFilterHelper.GetQuickFilterColumn(cardsFirstTable);
+    var isFlagListing = string.Equals(Model.DetailType, "flag", StringComparison.OrdinalIgnoreCase);
 }
 
 @if (Model.Tables.Any())
@@ -135,13 +136,19 @@
                         if (row.Data.TryGetValue(col.Key, out var sv3)) searchParts.Add(sv3?.ToString());
                     }
                     var cardSearchText = string.Join(" ", searchParts.Where(s => !string.IsNullOrEmpty(s))).ToLowerInvariant();
+                    var flagDesignFamily = row.GetString("design_family") ?? "";
+                    var flagHasSeal = row.GetString("has_seal") ?? "";
+                    var flagHasText = row.GetString("has_text") ?? "";
+                    var flagDominantColor = row.GetString("dominant_color") ?? "";
+                    var flagDesign = row.GetString("design") ?? "Not specified";
+                    var flagMeaning = row.GetString("meaning") ?? "Not specified";
 
-    <a href="@(string.IsNullOrWhiteSpace(primaryUrl) ? null : primaryUrl)"
-       class="rankingCard group block rounded-2xl border border-slate-200/80 bg-white
-              hover:border-slate-300 hover:shadow-md transition-all duration-200 overflow-hidden"
-       data-state="@stateName.ToLowerInvariant()"
-       data-search="@cardSearchText"
-       @if (tableQuickFilter != null) { <text>data-chip-value="@TableFilterHelper.GetQuickFilterValue(tableQuickFilter, row)"</text> }>
+    <article class="rankingCard group block overflow-hidden rounded-2xl border border-slate-200/80 bg-white transition-all duration-200 hover:border-slate-300 hover:shadow-md"
+             data-state="@stateName.ToLowerInvariant()"
+             data-search="@cardSearchText"
+             @if (isFlagListing) { <text>data-design-family="@flagDesignFamily" data-seal="@flagHasSeal" data-text="@flagHasText" data-dominant-color="@flagDominantColor"</text> }
+             @if (tableQuickFilter != null) { <text>data-chip-value="@TableFilterHelper.GetQuickFilterValue(tableQuickFilter, row)"</text> }>
+        <a href="@(string.IsNullOrWhiteSpace(primaryUrl) ? null : primaryUrl)" class="block">
 
         <!-- ── Top section ──────────────────────────────────── -->
         <div class="p-4 md:p-5">
@@ -219,7 +226,7 @@
                             return !string.IsNullOrEmpty(v);
                         });
                     }
-                    @if (hasChips)
+                    @if (hasChips && !isFlagListing)
                     {
                         <div class="mt-2.5 flex flex-wrap gap-1.5">
                             @if (!string.IsNullOrEmpty(yearVal))
@@ -249,7 +256,7 @@
         </div>
 
         <!-- ── Bottom section: long-text fields ────────────────────────── -->
-        @if (longCols.Any())
+        @if (longCols.Any() && !isFlagListing)
         {
             <div class="border-t border-slate-100 px-4 md:px-5 py-3 space-y-2">
                 @foreach (var lc in longCols)
@@ -266,7 +273,27 @@
             </div>
         }
 
-    </a>
+        </a>
+        @if (isFlagListing)
+        {
+            <details class="group border-t border-slate-100 px-4 py-3 md:px-5">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-3 rounded-md text-sm font-semibold text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-200">
+                    <span>Design and meaning</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] transition-transform group-open:rotate-180" aria-hidden="true"></i>
+                </summary>
+                <div class="mt-3 space-y-2 text-[13px] leading-5 text-slate-600">
+                    <p><strong class="text-slate-800">Design:</strong> @flagDesign</p>
+                    <p><strong class="text-slate-800">Meaning:</strong> @flagMeaning</p>
+                    <div class="flex flex-wrap gap-1.5 pt-1" aria-label="Flag characteristics">
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5">@flagDesignFamily</span>
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5">@(flagHasSeal == "Yes" ? "Seal or arms" : "No seal or arms")</span>
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5">@(flagHasText == "Yes" ? "Visible text" : "No visible text")</span>
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5">@flagDominantColor field</span>
+                    </div>
+                </div>
+            </details>
+        }
+    </article>
                 }
             }
         </div>

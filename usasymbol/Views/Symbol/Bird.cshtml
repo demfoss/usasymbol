@@ -73,7 +73,7 @@
         : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
     var overviewHeading = $"{designation} of {stateName}";
 
-    var h1 = $"{stateName} {designation}: {birdName}";
+    var h1 = Model.IsNationalSymbol ? birdName : $"{stateName} {designation}: {birdName}";
 
     ViewData["Title"] = Model.BirdContent?.SeoTitle ?? h1;
 
@@ -84,7 +84,7 @@
 
     ViewData["OgImage"] = Images.Full(Model.Symbol.ImageUrl ?? Model.State.FlagImageUrl);
     ViewData["OgType"] = "article";
-    ViewData["Canonical"] = Model.Symbol.ToSymbolUrl(Model.State.Slug);
+    ViewData["Canonical"] = Model.CanonicalUrl ?? Model.Symbol.ToSymbolUrl(Model.State.Slug);
 
     var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
         .Where(x => !string.IsNullOrWhiteSpace(x?.Value))

@@ -1,0 +1,566 @@
+type: ranking
+slug: road-quality-by-state
+category: infrastructure
+url: /rankings/infrastructure/road-quality-by-state
+auto_link_phrases:
+  - "road quality by state"
+  - "states with the worst roads"
+  - "best roads by state"
+extremes_mode: both
+extremes_title: "Best and Worst Roads by State"
+hero_image: "/images/rankings/infrastructure/road-quality-by-state/road-quality-by-state-hero.jpg"
+hero_image_alt: "Cracked asphalt highway stretching toward the horizon with repair patches"
+hero_image_caption: "New Hampshire tops the road quality ranking, while Hawaii sits last. Nationally, 13.1% of major roads were in poor condition in 2024, up from 11.8% in 2000."
+
+author: "USA Symbol Team"
+date_published: "2026-07-10"
+date_modified: "2026-07-10"
+
+seo:
+  title: "Road Quality by State | Map, Best & Worst Roads"
+  description: "New Hampshire has the best roads in the U.S. and Hawaii the worst. Rhode Island has 37.2% of major roads in poor condition, the most of any state."
+
+page:
+  h1: "Road Quality by State"
+
+  quick_answer:
+    - "Road quality by state is highest in New Hampshire, ranked first with 8% rough urban pavement and 3% rural. Minnesota and Vermont follow in second and third."
+    - "Hawaii ranks last at 50th, with 26% of urban and 16% of rural pavement rated rough. Rhode Island sits 49th, and 37.2% of its major roads are in poor condition, the largest share nationally."
+    - "California's 44% rough urban pavement is the highest in the country, against just 5% on its rural roads. Nationally, 13.1% of major roads were in poor condition in 2024, up from 11.8% in 2000."
+
+  methodology: "Rankings use the ConsumerAffairs 2023 road conditions study, with the share of rough urban and rural pavement per state. Poor-pavement, spending, and fatality figures come from FHWA data and the Reason Foundation Annual Highway Report."
+
+  sources:
+    - name: "World Population Review — Road Quality by State"
+      url: "https://worldpopulationreview.com/state-rankings/road-quality-by-state"
+      description: "State road quality ranks with urban and rural pavement roughness, 2023"
+    - name: "Construction Coverage — U.S. States With the Worst Roads"
+      url: "https://constructioncoverage.com/research/states-with-the-worst-roads"
+      description: "Share of major roads in poor condition by state, FHWA data"
+    - name: "Reason Foundation — 29th Annual Highway Report"
+      url: "https://reason.org/highway-report/29th-annual-highway-report/executive-summary/"
+      description: "Highway performance, spending per lane-mile, and fatality rates"
+
+map:
+  title: "Road Quality by State Map"
+  image_alt: "U.S. map showing the share of rough urban pavement in each state, shaded from light for smooth roads to dark orange for the roughest"
+  caption: "California has the roughest urban pavement at 44%, followed by Rhode Island at 41% and Massachusetts at 35%. Maryland's 1% is the lowest in the country."
+  metric_key: urban
+  metric_label: "% Rough Urban Pavement"
+  name_key: state
+  color_scheme: orange
+  color_scale: linear
+
+table:
+  searchable: true
+  sortable: true
+  metric_default: rank
+  sort_default: asc
+
+  columns:
+    rank: "Rank"
+    state: "State"
+    urban_rough: "Rough Urban Pavement"
+    rural_rough: "Rough Rural Pavement"
+
+  rows:
+    - rank: 1
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      urban: 8
+      urban_rough: "8%"
+      rural_rough: "3%"
+
+    - rank: 2
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      urban: 5
+      urban_rough: "5%"
+      rural_rough: "3%"
+
+    - rank: 3
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      urban: 9
+      urban_rough: "9%"
+      rural_rough: "4%"
+
+    - rank: 4
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      urban: 5
+      urban_rough: "5%"
+      rural_rough: "1%"
+
+    - rank: 5
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      urban: 11
+      urban_rough: "11%"
+      rural_rough: "5%"
+
+    - rank: 6
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      urban: 10
+      urban_rough: "10%"
+      rural_rough: "1%"
+
+    - rank: 7
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      urban: 5
+      urban_rough: "5%"
+      rural_rough: "1%"
+
+    - rank: 8
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      urban: 5
+      urban_rough: "5%"
+      rural_rough: "1%"
+
+    - rank: 9
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      urban: 9
+      urban_rough: "9%"
+      rural_rough: "1%"
+
+    - rank: 10
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      urban: 6
+      urban_rough: "6%"
+      rural_rough: "2%"
+
+    - rank: 11
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      urban: 7
+      urban_rough: "7%"
+      rural_rough: "2%"
+
+    - rank: 12
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      urban: 9
+      urban_rough: "9%"
+      rural_rough: "2%"
+
+    - rank: 13
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      urban: 10
+      urban_rough: "10%"
+      rural_rough: "1%"
+
+    - rank: 14
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      urban: 1
+      urban_rough: "1%"
+      rural_rough: "3%"
+
+    - rank: 15
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      urban: 14
+      urban_rough: "14%"
+      rural_rough: "2%"
+
+    - rank: 16
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      urban: 10
+      urban_rough: "10%"
+      rural_rough: "2%"
+
+    - rank: 17
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      urban: 16
+      urban_rough: "16%"
+      rural_rough: "2%"
+
+    - rank: 18
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      urban: 13
+      urban_rough: "13%"
+      rural_rough: "6%"
+
+    - rank: 19
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      urban: 8
+      urban_rough: "8%"
+      rural_rough: "1%"
+
+    - rank: 20
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      urban: 7
+      urban_rough: "7%"
+      rural_rough: "2%"
+
+    - rank: 21
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      urban: 15
+      urban_rough: "15%"
+      rural_rough: "2%"
+
+    - rank: 22
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      urban: 13
+      urban_rough: "13%"
+      rural_rough: "2%"
+
+    - rank: 23
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      urban: 14
+      urban_rough: "14%"
+      rural_rough: "4%"
+
+    - rank: 24
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      urban: 27
+      urban_rough: "27%"
+      rural_rough: "5%"
+
+    - rank: 25
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      urban: 21
+      urban_rough: "21%"
+      rural_rough: "4%"
+
+    - rank: 26
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      urban: 14
+      urban_rough: "14%"
+      rural_rough: "4%"
+
+    - rank: 27
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      urban: 12
+      urban_rough: "12%"
+      rural_rough: "2%"
+
+    - rank: 28
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      urban: 15
+      urban_rough: "15%"
+      rural_rough: "3%"
+
+    - rank: 29
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      urban: 16
+      urban_rough: "16%"
+      rural_rough: "3%"
+
+    - rank: 30
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      urban: 11
+      urban_rough: "11%"
+      rural_rough: "6%"
+
+    - rank: 31
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      urban: 25
+      urban_rough: "25%"
+      rural_rough: "3%"
+
+    - rank: 32
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      urban: 9
+      urban_rough: "9%"
+      rural_rough: "16%"
+
+    - rank: 33
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      urban: 30
+      urban_rough: "30%"
+      rural_rough: "4%"
+
+    - rank: 34
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      urban: 23
+      urban_rough: "23%"
+      rural_rough: "5%"
+
+    - rank: 35
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      urban: 12
+      urban_rough: "12%"
+      rural_rough: "4%"
+
+    - rank: 36
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      urban: 19
+      urban_rough: "19%"
+      rural_rough: "2%"
+
+    - rank: 37
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      urban: 12
+      urban_rough: "12%"
+      rural_rough: "7%"
+
+    - rank: 38
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      urban: 21
+      urban_rough: "21%"
+      rural_rough: "6%"
+
+    - rank: 39
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      urban: 35
+      urban_rough: "35%"
+      rural_rough: "4%"
+
+    - rank: 40
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      urban: 26
+      urban_rough: "26%"
+      rural_rough: "16%"
+
+    - rank: 41
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      urban: 20
+      urban_rough: "20%"
+      rural_rough: "6%"
+
+    - rank: 42
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      urban: 10
+      urban_rough: "10%"
+      rural_rough: "3%"
+
+    - rank: 43
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      urban: 18
+      urban_rough: "18%"
+      rural_rough: "5%"
+
+    - rank: 44
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      urban: 15
+      urban_rough: "15%"
+      rural_rough: "6%"
+
+    - rank: 45
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      urban: 15
+      urban_rough: "15%"
+      rural_rough: "3%"
+
+    - rank: 46
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      urban: 29
+      urban_rough: "29%"
+      rural_rough: "6%"
+
+    - rank: 47
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      urban: 44
+      urban_rough: "44%"
+      rural_rough: "5%"
+
+    - rank: 48
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      urban: 25
+      urban_rough: "25%"
+      rural_rough: "7%"
+
+    - rank: 49
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      urban: 41
+      urban_rough: "41%"
+      rural_rough: "17%"
+
+    - rank: 50
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      urban: 26
+      urban_rough: "26%"
+      rural_rough: "16%"
+
+sections:
+  - id: "best-roads"
+    icon: "fa-solid fa-road"
+    title: "States with the Best Roads"
+    paragraphs:
+      - "New Hampshire ranks first, with 8% of urban pavement and 3% of rural pavement rated rough. Minnesota follows in second at 5% urban, and it also posts the country's best urban fatality rate."
+      - "Alabama, Florida, Georgia, Kansas, Missouri, Nevada, and North Carolina keep rural roughness at just 1%. Reason Foundation's cost-effectiveness ranking puts Virginia and Georgia at the top nationally."
+
+  - id: "worst-roads"
+    icon: "fa-solid fa-triangle-exclamation"
+    title: "States with the Worst Roads"
+    paragraphs:
+      - "Hawaii ranks 50th, with 26% of urban and 16% of rural pavement rated rough. Rhode Island at 49th combines 41% rough urban pavement with 17% rural, the worst rural figure in the country."
+      - "Rhode Island also leads the FHWA poor-pavement measure, with 37.2% of its major roads in poor condition. Massachusetts follows at 27%, California at 26.6%, and Hawaii at 26.5%, against a national average of 13.1%."
+
+  - id: "urban-vs-rural-roads"
+    icon: "fa-solid fa-city"
+    title: "Urban vs Rural Road Conditions"
+    paragraphs:
+      - "California shows the widest urban-rural gap, with 44% of urban pavement rated rough, the highest share in the country, against just 5% on rural roads. New York runs 30% urban versus 4% rural."
+      - "Alaska and Maryland reverse the pattern. Alaska's rural roads are rougher at 16% versus 9% urban, and Maryland pairs the nation's best urban figure of 1% with 3% rural."
+
+  - id: "highway-spending"
+    icon: "fa-solid fa-sack-dollar"
+    title: "Highway Spending by State"
+    paragraphs:
+      - "Massachusetts, New York, and New Jersey each spent more than $250,000 per lane-mile, the highest rates in the Reason Foundation report. Missouri, South Carolina, West Virginia, North Dakota, and South Dakota spent less than $30,000."
+      - "Money alone does not buy smooth pavement. Massachusetts ranks 39th for road quality despite its top-tier spending, while low-spending Missouri sits 13th."
+
+  - id: "road-fatalities"
+    icon: "fa-solid fa-car-burst"
+    title: "Road Fatalities by State"
+    paragraphs:
+      - "Alaska, South Carolina, and Hawaii post the highest rural fatality rates, each above 1.80 deaths per 100 million vehicle-miles. Half the states exceed 1.0 on urban roads, including New Mexico, Wyoming, and Mississippi."
+      - "Minnesota records the best urban fatality rate in the country, and Maryland has the lowest rural rate. Both states also place in the top 15 for pavement quality."
+
+visual_assets:
+  - id: worst-roads
+    src: /images/rankings/infrastructure/road-quality-by-state/worst-roads.jpg
+    alt: "Pothole-scarred city street with faded lane markings"
+    caption: "Rhode Island has 37.2% of its major roads in poor condition, the largest share in the country. Hawaii ranks last overall, with rough pavement on 26% of urban and 16% of rural roads."
+    section: worst-roads
+    layout: full-width-tall
+
+  - id: best-roads
+    src: /images/rankings/infrastructure/road-quality-by-state/best-roads.jpg
+    alt: "Smooth two-lane highway running through forested hills"
+    caption: "New Hampshire tops the ranking with 8% rough urban pavement and 3% rural. Seven states keep rural roughness at just 1%."
+    section: best-roads
+    layout: full-width-tall
+
+  - id: urban-vs-rural-roads
+    src: /images/rankings/infrastructure/road-quality-by-state/urban-vs-rural-roads.jpg
+    alt: "Aerial view of multilane urban highway traffic and surrounding city streets"
+    caption: "California shows the widest urban-rural gap, with 44% rough urban pavement versus just 5% on rural roads. Alaska and Maryland are rare exceptions where rural pavement rates rougher."
+    section: urban-vs-rural-roads
+    layout: full-width-tall
+
+  - id: highway-spending
+    src: /images/rankings/infrastructure/road-quality-by-state/highway-spending.jpg
+    alt: "Hands reviewing charts and budget figures on a laptop during a planning meeting"
+    caption: "Massachusetts, New York, and New Jersey spent more than $250,000 per lane-mile, yet Massachusetts still ranks 39th for road quality. Missouri pairs low spending with a much stronger road rank of 13th."
+    section: highway-spending
+    layout: full-width-tall
+
+  - id: road-fatalities
+    src: /images/rankings/infrastructure/road-quality-by-state/road-fatalities.jpg
+    alt: "Emergency warning triangle placed on a roadway at night after a traffic incident"
+    caption: "Alaska, South Carolina, and Hawaii post the highest rural fatality rates, all above 1.80 deaths per 100 million vehicle-miles. Minnesota and Maryland lead on the safety side while also ranking well for pavement quality."
+    section: road-fatalities
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the worst roads?"
+    answer: "Hawaii ranks 50th overall, with 26% of urban and 16% of rural pavement rated rough. By share of major roads in poor condition, Rhode Island is worst at 37.2%."
+
+  - question: "Which state has the best roads?"
+    answer: "New Hampshire ranks first. Only 8% of its urban pavement and 3% of its rural pavement rate as rough, and Minnesota and Vermont follow close behind."
+
+  - question: "What percentage of US roads are in poor condition?"
+    answer: "13.1% of major roads were in poor condition in 2024, up from 11.8% in 2000. FHWA rates a road as poor when its roughness index exceeds 170 inches per mile."
+
+  - question: "Which states spend the most on roads?"
+    answer: "Massachusetts, New York, and New Jersey each spent more than $250,000 per lane-mile of highway. Five states, Missouri, South Carolina, West Virginia, North Dakota, and South Dakota, spent under $30,000."
+
+  - question: "Which state has the highest road fatality rate?"
+    answer: "Alaska, South Carolina, and Hawaii have the highest rural fatality rates, above 1.80 deaths per 100 million vehicle-miles. Minnesota posts the best urban rate and Maryland the lowest rural rate."
+
+  - question: "Are roads worse in cities or rural areas?"
+    answer: "Urban pavement is rougher in almost every state. California shows the extreme, 44% rough urban pavement against 5% rural, while Alaska and Maryland are the rare states where rural roads rate worse."
+
+related:
+  - title: "Longest Commute by State"
+    url: "/rankings/infrastructure/longest-commute-by-state"
+  - title: "Railroad Miles by State"
+    url: "/rankings/infrastructure/railroad-miles-by-state"
+  - title: "Largest Airport by State"
+    url: "/rankings/infrastructure/largest-airport-by-state"
+  - title: "States by Gas Price"
+    url: "/rankings/economy/states-by-gas-price"

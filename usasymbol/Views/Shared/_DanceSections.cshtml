@@ -38,6 +38,13 @@
                 </div>
             }
 
+            @if (string.Equals(item.Id, "how-to-dance", StringComparison.OrdinalIgnoreCase) &&
+                 !string.IsNullOrWhiteSpace(Model.TutorialUrl))
+            {
+                <h3 class="mt-2 mb-4 text-lg font-semibold text-slate-900">Step-by-Step Tutorial</h3>
+                @await Html.PartialAsync("Components/Widgets/_VideoEmbed", (Model.TutorialUrl!, Model.TutorialTitle, Model.TutorialCaption))
+            }
+
             @if (item.Steps?.Any() == true)
             {
                 @await Html.PartialAsync("Components/Widgets/_DanceSteps", item.Steps)

@@ -1,0 +1,205 @@
+type: ranking
+slug: banana-production-by-state
+category: agriculture
+url: /rankings/agriculture/banana-production-by-state
+auto_link_phrases:
+  - "banana production by state"
+  - "bananas by state"
+  - "which state grows the most bananas"
+  - "hawaii banana production"
+  - "banana farming in the united states"
+extremes_mode: top
+extremes_title: "The Only States With Commercial Banana Production"
+hero_image: "/images/rankings/agriculture/banana-production-by-state/banana-production-by-state-hero.jpg"
+hero_image_alt: "Rows of banana plants growing on a commercial farm in Hawaii"
+hero_image_caption: "Hawaii is the only US state with official commercial banana production statistics, harvesting 4.72 million pounds worth $6.69 million in 2024."
+
+author: "USA Symbol Team"
+date_published: "2026-08-13"
+date_modified: "2026-08-13"
+
+seo:
+  title: "Banana Production by State | Map & Facts"
+  description: "Hawaii is the only US state with official commercial banana production, harvesting 4.72 million pounds worth $6.69 million in 2024."
+
+page:
+  h1: "Banana Production by State"
+
+  quick_answer:
+    - "Hawaii is the only US state with official commercial banana production, harvesting 4.72 million pounds worth $6.69 million in 2024."
+    - "Florida grows bananas commercially on about 500 acres worth roughly $2 million, focused on Thai and cooking varieties rather than the Cavendish and apple bananas grown in Hawaii."
+    - "Hawaii's banana production has fallen sharply from 29 million pounds in 2000 to 4.72 million pounds in 2024, even as the crop's value hit a record $6.69 million that year."
+
+  methodology: "Hawaii figures come from the Hawaii Department of Agriculture and Biosecurity's 2024 banana statistics report, compiled with USDA NASS. Florida figures are published acreage and value estimates. No other state reports commercial banana production to USDA."
+
+  sources:
+    - name: "Hawaii Department of Agriculture and Biosecurity, in cooperation with USDA NASS Pacific Region. Statistics on Bananas, State of Hawai'i, 2024"
+      url: "https://dab.hawaii.gov/add/files/2025/10/Banana-Stats-2024_SOH_10.23.25_R.pdf"
+      description: "Acreage, production, yield, value, price, and county-level banana statistics for Hawaii, 2019-2024"
+    - name: "Wikipedia. Banana Production in the United States"
+      url: "https://en.wikipedia.org/wiki/Banana_production_in_the_United_States"
+      description: "Florida banana acreage and value estimates, historical Hawaii production figures, and US banana-growing climate limits"
+
+table:
+  caption: "Banana Production by State"
+  note: "Hawaii is the only state with USDA-linked commercial banana production statistics. Florida figures reflect published acreage and value estimates. No other state reports commercial banana production."
+  columns:
+    rank: "Rank"
+    state: "State"
+    acres_planted: "Acres Planted"
+    value_usd: "Production Value"
+    notes: "Notes"
+
+  metric_default: value_usd
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      acres_planted: 339
+      value_usd: 6693000
+      notes: "Utilized production totaled 4.72 million pounds in 2024 at a record price of $1.42 per pound."
+
+    - rank: 2
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      acres_planted: 500
+      value_usd: 2000000
+      notes: "Grows mainly Thai and cooking (Bluggoe-type) bananas; no official USDA production volume is reported."
+
+  column_formats:
+    value_usd: "C0"
+
+map:
+  title: "Banana Production by State Map"
+  image_alt: "US map highlighting Hawaii and Florida, the only states with documented commercial banana production, with Hawaii shaded darkest"
+  caption: "Hawaii's banana industry was worth $6.69 million in 2024, more than triple Florida's estimated $2 million. No other state reports commercial banana production to USDA."
+  metric_key: value_usd
+  metric_label: "Production Value"
+  color_scheme: green
+
+sections:
+  - id: "why-hawaii-grows-most-us-bananas"
+    icon: "fa-solid fa-leaf"
+    title: "Why Hawaii Produces Most US Bananas"
+    paragraphs:
+      - "Hawaii accounts for nearly all documented commercial banana production in the United States, harvesting 4.72 million pounds worth $6.69 million in 2024. Bananas need warm, humid, frost-free conditions year-round, a climate Hawaii's islands provide but the mainland largely does not. Florida is the only other state with a notable banana industry, growing about 500 acres of Thai and cooking varieties worth roughly $2 million."
+    table:
+      columns:
+        state: "State"
+        value_usd: "Production Value"
+      rows:
+        - state: "Hawaii"
+          value_usd: "$6,693,000"
+        - state: "Florida"
+          value_usd: "$2,000,000"
+
+  - id: "hawaii-banana-production-by-county"
+    icon: "fa-solid fa-map-location-dot"
+    title: "Banana Production by County in Hawaii"
+    paragraphs:
+      - "Hawaii County, home to the Big Island, produced 3.25 million pounds of bananas in 2024, about 69% of the state's total. Honolulu followed with 941,000 pounds, then Kauai at 338,000 pounds and Maui at 191,000 pounds."
+    table:
+      columns:
+        county: "County"
+        production_lbs: "2024 Production (lbs)"
+      rows:
+        - county: "Hawaii (Big Island)"
+          production_lbs: "3,252,000"
+        - county: "Honolulu (Oahu)"
+          production_lbs: "941,000"
+        - county: "Kauai"
+          production_lbs: "338,000"
+        - county: "Maui"
+          production_lbs: "191,000"
+
+  - id: "hawaii-banana-production-trends"
+    icon: "fa-solid fa-chart-line"
+    title: "Hawaii Banana Production by Year"
+    paragraphs:
+      - "Hawaii's banana value reached a record $6.69 million in 2024, up from $6.29 million in 2023, even as production held nearly flat at 4.72 million pounds. Yield per acre fell 7% to 13.9 thousand pounds because of the Banana Bunchy Top Virus reported by several major producers, despite planted acreage growing to 339 acres, the most since at least 2019."
+    table:
+      columns:
+        year: "Year"
+        acres_planted: "Acres Planted"
+        production_lbs: "Production (lbs)"
+        value_usd: "Value"
+      rows:
+        - year: "2019"
+          acres_planted: 246
+          production_lbs: "4,052,000"
+          value_usd: "$4,659,000"
+        - year: "2020"
+          acres_planted: 263
+          production_lbs: "4,032,000"
+          value_usd: "$4,643,000"
+        - year: "2021"
+          acres_planted: 318
+          production_lbs: "3,730,000"
+          value_usd: "$4,010,000"
+        - year: "2022"
+          acres_planted: 332
+          production_lbs: "5,143,000"
+          value_usd: "$5,885,000"
+        - year: "2023"
+          acres_planted: 317
+          production_lbs: "4,726,000"
+          value_usd: "$6,289,000"
+        - year: "2024"
+          acres_planted: 339
+          production_lbs: "4,722,000"
+          value_usd: "$6,693,000"
+
+visual_assets:
+  - id: "why-hawaii-grows-most-us-bananas-visual"
+    src: "/images/rankings/agriculture/banana-production-by-state/why-hawaii-grows-most-us-bananas.jpg"
+    alt: "Apple banana plants growing on a farm on the Big Island of Hawaii"
+    caption: "Hawaii's warm, humid climate supports year-round banana growing that most of the mainland US cannot match."
+    section: "why-hawaii-grows-most-us-bananas"
+    layout: "full-width-tall"
+
+  - id: "hawaii-banana-production-by-county-visual"
+    src: "/images/rankings/agriculture/banana-production-by-state/hawaii-banana-production-by-county.jpg"
+    alt: "Banana farm on Hawaii County, the Big Island, which produces most of the state's bananas"
+    caption: "Hawaii County produced 3.25 million pounds of bananas in 2024, about 69% of the state's total."
+    section: "hawaii-banana-production-by-county"
+    layout: "full-width-tall"
+
+  - id: "hawaii-banana-production-trends-visual"
+    src: "/images/rankings/agriculture/banana-production-by-state/hawaii-banana-production-trends.jpg"
+    alt: "Banana harvest crates on a Hawaii farm representing the state's growing banana production value"
+    caption: "Hawaii's banana crop was worth a record $6.69 million in 2024, up from $4.66 million in 2019."
+    section: "hawaii-banana-production-trends"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state produces the most bananas?"
+    answer: "Hawaii produces the most bananas of any US state, harvesting 4.72 million pounds in 2024. It is the only state with official commercial banana production statistics."
+
+  - question: "Does Florida grow bananas commercially?"
+    answer: "Florida grows bananas on about 500 acres worth roughly $2 million, mainly Thai and cooking (Bluggoe-type) varieties rather than the Cavendish grown in Hawaii."
+
+  - question: "Why does Hawaii grow almost all US bananas?"
+    answer: "Bananas require warm, humid, frost-free conditions year-round. Hawaii's islands provide that climate, while most of the mainland US does not, which is why commercial production is concentrated there."
+
+  - question: "How much is Hawaii's banana industry worth?"
+    answer: "Hawaii's banana production was worth a record $6.69 million in 2024, up 6% from $6.29 million in 2023."
+
+  - question: "Which Hawaiian island produces the most bananas?"
+    answer: "Hawaii County, home to the Big Island, produced 3.25 million pounds in 2024, about 69% of the state's total. Honolulu was next at 941,000 pounds."
+
+  - question: "Why did Hawaii's banana yield drop in 2024?"
+    answer: "Yield per acre fell 7%, from 15.0 thousand pounds to 13.9 thousand pounds, because of the Banana Bunchy Top Virus reported by several major producers. Planted acreage still grew to 339 acres, the most since at least 2019."
+
+related:
+  - title: "Apple Production by State"
+    url: "/rankings/agriculture/apple-production-by-state"
+  - title: "Apricot Production by State"
+    url: "/rankings/agriculture/apricot-production-by-state"
+  - title: "Farms by State"
+    url: "/rankings/food/farms-by-state"
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"

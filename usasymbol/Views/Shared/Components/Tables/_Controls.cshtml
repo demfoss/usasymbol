@@ -9,6 +9,7 @@
     var defaultSortKey = firstTable?.DefaultColumn ?? sortColumns.FirstOrDefault()?.Key;
 
     var quickFilter = TableFilterHelper.GetQuickFilterColumn(firstTable);
+    var isFlagListing = string.Equals(Model.DetailType, "flag", StringComparison.OrdinalIgnoreCase);
 }
 
 <div class="ranking-controls" aria-label="Table controls">
@@ -101,6 +102,59 @@
                     </button>
                 }
             </div>
+        }
+
+        @if (isFlagListing)
+        {
+            <fieldset id="flagListingFilters" class="border-0 p-0" aria-label="Filter state flags by design">
+                <legend class="sr-only">State flag design filters</legend>
+                <div class="flex flex-wrap items-end gap-3 border-t border-slate-200 px-3 py-3 sm:px-4">
+                    <label class="min-w-[150px] flex-1 text-xs font-semibold text-slate-600 sm:flex-none">
+                        <span class="mb-1 block">Design family</span>
+                        <select data-flag-filter="designFamily" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100">
+                            <option value="">All designs</option>
+                            <option value="Seal or arms">Seal or arms</option>
+                            <option value="Bold geometry">Bold geometry</option>
+                            <option value="Single emblem">Single emblem</option>
+                            <option value="Stripes and canton">Stripes and canton</option>
+                            <option value="Heraldry">Heraldry</option>
+                            <option value="Constellation">Constellation</option>
+                            <option value="Two-sided">Two-sided</option>
+                        </select>
+                    </label>
+                    <label class="min-w-[125px] flex-1 text-xs font-semibold text-slate-600 sm:flex-none">
+                        <span class="mb-1 block">Seal or arms</span>
+                        <select data-flag-filter="seal" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100">
+                            <option value="">Either</option>
+                            <option value="Yes">Has seal/arms</option>
+                            <option value="No">No seal/arms</option>
+                        </select>
+                    </label>
+                    <label class="min-w-[120px] flex-1 text-xs font-semibold text-slate-600 sm:flex-none">
+                        <span class="mb-1 block">Visible text</span>
+                        <select data-flag-filter="text" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100">
+                            <option value="">Either</option>
+                            <option value="Yes">Has text</option>
+                            <option value="No">No text</option>
+                        </select>
+                    </label>
+                    <label class="min-w-[135px] flex-1 text-xs font-semibold text-slate-600 sm:flex-none">
+                        <span class="mb-1 block">Dominant field</span>
+                        <select data-flag-filter="dominantColor" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100">
+                            <option value="">All colors</option>
+                            <option value="Blue">Blue</option>
+                            <option value="Red">Red</option>
+                            <option value="White">White</option>
+                            <option value="Yellow/Gold">Yellow/Gold</option>
+                            <option value="Green">Green</option>
+                            <option value="Multicolor">Multicolor</option>
+                        </select>
+                    </label>
+                    <button id="clearFlagFilters" type="button" class="hidden rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-200">
+                        Clear filters
+                    </button>
+                </div>
+            </fieldset>
         }
     </div>
 </div>

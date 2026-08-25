@@ -1,0 +1,446 @@
+type: ranking
+slug: most-dangerous-cities-by-state
+category: crime
+url: /rankings/crime/most-dangerous-cities-by-state
+auto_link_phrases:
+- most dangerous city in every state
+- most dangerous cities by state
+- which city is the most dangerous in each state
+- highest crime city by state
+extremes_mode: topOnly
+extremes_title: The Most Dangerous City in Each State
+hero_image: /images/rankings/crime/most-dangerous-cities-by-state/most-dangerous-cities-by-state-hero.jpg
+hero_image_alt: Downtown Memphis, Tennessee, the city with the highest violent crime rate of any state's most dangerous city
+hero_image_caption: Memphis logs 2,508.0 violent crimes per 100,000 residents, the highest rate of any state's most dangerous city. Saginaw, Michigan follows at 2,210.8.
+author: USA Symbol Team
+date_published: '2026-08-13'
+date_modified: '2026-08-13'
+seo:
+  title: Most Dangerous City in Each State | Map & Data
+  description: Memphis has the highest violent crime rate among cities of 25,000-plus at 2,508.0 per 100,000. Saginaw, Michigan follows at 2,210.8.
+page:
+  h1: Most Dangerous City in Each State
+  quick_answer:
+  - Memphis, Tennessee has the highest violent crime rate of any state's most dangerous city at 2,508.0 per 100,000 residents, among cities with at least 25,000 people.
+  - Saginaw, Michigan ranks second at 2,210.8, followed by Oakland, California at 1,925.3 and Little Rock, Arkansas at 1,672.5.
+  - Portland, Maine has the lowest rate among the 49 states with reporting data, at 266.9 per 100,000. Hawaii is excluded because its cities have not transitioned to FBI incident-based reporting.
+  methodology: For each state, the city with at least 25,000 residents and the highest FBI-reported violent crime rate per 100,000 was selected, using the most recent 12-month data submitted to the FBI Crime Data Explorer. Hawaii is excluded for lack of reporting.
+  sources:
+  - name: FBI Crime Data Explorer
+    url: https://cde.ucr.cjis.gov/LATEST/webapp/#/pages/explorer/crime/crime-trend
+    description: Agency-level violent crime counts and population data, aggregated by CrimeByCity from FBI submissions
+  - name: CrimeByCity, Most Dangerous Cities by State
+    url: https://crimebycity.com/most-dangerous-cities
+    description: State-by-state city violent crime rate tables compiled from FBI Uniform Crime Reporting data
+map:
+  title: Most Dangerous City in Each State
+  image: /images/rankings/crime/most-dangerous-cities-by-state/most-dangerous-cities-by-state-map.webp
+  image_alt: U.S. map shaded by the violent crime rate of each state's most dangerous city, from Memphis's 2,508.0 to Portland, Maine's 266.9
+  caption: Memphis has the highest rate among state leaders at 2,508.0 per 100,000, followed by Saginaw, Michigan at 2,210.8. Portland, Maine is lowest at 266.9.
+  metric_key: violent_crime_rate
+  metric_label: Violent crime rate (per 100,000)
+  name_key: state
+  detail_keys:
+  - city
+  - city_population
+  color_scheme: red
+  color_scale: linear
+table:
+  caption: The Most Dangerous City in Each State, by Violent Crime Rate
+  note: Only cities with at least 25,000 residents are eligible. Hawaii has no city on this list because its jurisdictions have not transitioned to FBI incident-based reporting.
+  columns:
+    rank: Rank
+    state: State
+    city: Most Dangerous City
+    violent_crime_rate: Violent Crime Rate
+    city_population: City Population
+  metric_default: violent_crime_rate
+  sort_default: desc
+  rows:
+  - rank: 1
+    state: Tennessee
+    state_slug: tennessee
+    postal_code: TN
+    city: Memphis
+    violent_crime_rate: 2508.0
+    city_population: 613207
+  - rank: 2
+    state: Michigan
+    state_slug: michigan
+    postal_code: MI
+    city: Saginaw
+    violent_crime_rate: 2210.8
+    city_population: 42880
+  - rank: 3
+    state: California
+    state_slug: california
+    postal_code: CA
+    city: Oakland
+    violent_crime_rate: 1925.3
+    city_population: 435042
+  - rank: 4
+    state: Arkansas
+    state_slug: arkansas
+    postal_code: AR
+    city: Little Rock
+    violent_crime_rate: 1672.5
+    city_population: 204247
+  - rank: 5
+    state: Maryland
+    state_slug: maryland
+    postal_code: MD
+    city: Baltimore
+    violent_crime_rate: 1606.2
+    city_population: 566632
+  - rank: 6
+    state: Ohio
+    state_slug: ohio
+    postal_code: OH
+    city: Cleveland
+    violent_crime_rate: 1561.1
+    city_population: 362762
+  - rank: 7
+    state: Missouri
+    state_slug: missouri
+    postal_code: MO
+    city: Kansas City
+    violent_crime_rate: 1547.4
+    city_population: 511437
+  - rank: 8
+    state: Wisconsin
+    state_slug: wisconsin
+    postal_code: WI
+    city: Milwaukee
+    violent_crime_rate: 1434.3
+    city_population: 560416
+  - rank: 9
+    state: Colorado
+    state_slug: colorado
+    postal_code: CO
+    city: Pueblo
+    violent_crime_rate: 1425.9
+    city_population: 110805
+  - rank: 10
+    state: Illinois
+    state_slug: illinois
+    postal_code: IL
+    city: Peoria
+    violent_crime_rate: 1344.9
+    city_population: 109677
+  - rank: 11
+    state: Alabama
+    state_slug: alabama
+    postal_code: AL
+    city: Birmingham
+    violent_crime_rate: 1247.6
+    city_population: 195418
+  - rank: 12
+    state: Louisiana
+    state_slug: louisiana
+    postal_code: LA
+    city: Shreveport
+    violent_crime_rate: 1229.6
+    city_population: 175092
+  - rank: 13
+    state: Georgia
+    state_slug: georgia
+    postal_code: GA
+    city: East Point
+    violent_crime_rate: 1203.5
+    city_population: 38222
+  - rank: 14
+    state: New Mexico
+    state_slug: new-mexico
+    postal_code: NM
+    city: Albuquerque
+    violent_crime_rate: 1182.1
+    city_population: 558745
+  - rank: 15
+    state: Minnesota
+    state_slug: minnesota
+    postal_code: MN
+    city: Minneapolis
+    violent_crime_rate: 1161.6
+    city_population: 423282
+  - rank: 16
+    state: Texas
+    state_slug: texas
+    postal_code: TX
+    city: Beaumont
+    violent_crime_rate: 1137.3
+    city_population: 111320
+  - rank: 17
+    state: Delaware
+    state_slug: delaware
+    postal_code: DE
+    city: Wilmington
+    violent_crime_rate: 1127.1
+    city_population: 71958
+  - rank: 18
+    state: South Carolina
+    state_slug: south-carolina
+    postal_code: SC
+    city: Sumter
+    violent_crime_rate: 1097.5
+    city_population: 42551
+  - rank: 19
+    state: Washington
+    state_slug: washington
+    postal_code: WA
+    city: Tacoma
+    violent_crime_rate: 1063.0
+    city_population: 223980
+  - rank: 20
+    state: Kansas
+    state_slug: kansas
+    postal_code: KS
+    city: Kansas City
+    violent_crime_rate: 1048.5
+    city_population: 153363
+  - rank: 21
+    state: Virginia
+    state_slug: virginia
+    postal_code: VA
+    city: Petersburg
+    violent_crime_rate: 1043.6
+    city_population: 33538
+  - rank: 22
+    state: Alaska
+    state_slug: alaska
+    postal_code: AK
+    city: Anchorage
+    violent_crime_rate: 1015.5
+    city_population: 286958
+  - rank: 23
+    state: Oklahoma
+    state_slug: oklahoma
+    postal_code: OK
+    city: Muskogee
+    violent_crime_rate: 989.2
+    city_population: 36898
+  - rank: 24
+    state: New York
+    state_slug: new-york
+    postal_code: NY
+    city: Newburgh
+    violent_crime_rate: 983.6
+    city_population: 28061
+  - rank: 25
+    state: West Virginia
+    state_slug: west-virginia
+    postal_code: WV
+    city: Wheeling
+    violent_crime_rate: 982.6
+    city_population: 25951
+  - rank: 26
+    state: Florida
+    state_slug: florida
+    postal_code: FL
+    city: Riviera Beach
+    violent_crime_rate: 943.1
+    city_population: 39021
+  - rank: 27
+    state: North Carolina
+    state_slug: north-carolina
+    postal_code: NC
+    city: Greensboro
+    violent_crime_rate: 923.7
+    city_population: 304306
+  - rank: 28
+    state: Pennsylvania
+    state_slug: pennsylvania
+    postal_code: PA
+    city: Philadelphia
+    violent_crime_rate: 910.3
+    city_population: 1549259
+  - rank: 29
+    state: Massachusetts
+    state_slug: massachusetts
+    postal_code: MA
+    city: Springfield
+    violent_crime_rate: 892.7
+    city_population: 155491
+  - rank: 30
+    state: Indiana
+    state_slug: indiana
+    postal_code: IN
+    city: Indianapolis
+    violent_crime_rate: 878.3
+    city_population: 890685
+  - rank: 31
+    state: Utah
+    state_slug: utah
+    postal_code: UT
+    city: Salt Lake City
+    violent_crime_rate: 864.2
+    city_population: 212675
+  - rank: 32
+    state: Arizona
+    state_slug: arizona
+    postal_code: AZ
+    city: Phoenix
+    violent_crime_rate: 800.0
+    city_population: 1662809
+  - rank: 33
+    state: Montana
+    state_slug: montana
+    postal_code: MT
+    city: Billings
+    violent_crime_rate: 748.5
+    city_population: 122105
+  - rank: 34
+    state: Oregon
+    state_slug: oregon
+    postal_code: OR
+    city: Portland
+    violent_crime_rate: 720.5
+    city_population: 623066
+  - rank: 35
+    state: Kentucky
+    state_slug: kentucky
+    postal_code: KY
+    city: Louisville Metro
+    violent_crime_rate: 708.6
+    city_population: 676843
+  - rank: 36
+    state: Iowa
+    state_slug: iowa
+    postal_code: IA
+    city: Davenport
+    violent_crime_rate: 582.4
+    city_population: 99926
+  - rank: 37
+    state: Connecticut
+    state_slug: connecticut
+    postal_code: CT
+    city: New Haven
+    violent_crime_rate: 536.3
+    city_population: 137243
+  - rank: 38
+    state: Nevada
+    state_slug: nevada
+    postal_code: NV
+    city: Reno
+    violent_crime_rate: 530.0
+    city_population: 278313
+  - rank: 39
+    state: South Dakota
+    state_slug: south-dakota
+    postal_code: SD
+    city: Sioux Falls
+    violent_crime_rate: 526.7
+    city_population: 210926
+  - rank: 40
+    state: North Dakota
+    state_slug: north-dakota
+    postal_code: ND
+    city: Fargo
+    violent_crime_rate: 498.2
+    city_population: 135682
+  - rank: 41
+    state: Vermont
+    state_slug: vermont
+    postal_code: VT
+    city: Burlington
+    violent_crime_rate: 479.1
+    city_population: 44456
+  - rank: 42
+    state: Idaho
+    state_slug: idaho
+    postal_code: ID
+    city: Caldwell
+    violent_crime_rate: 452.8
+    city_population: 71115
+  - rank: 43
+    state: New Jersey
+    state_slug: new-jersey
+    postal_code: NJ
+    city: Plainfield
+    violent_crime_rate: 410.9
+    city_population: 55975
+  - rank: 44
+    state: Nebraska
+    state_slug: nebraska
+    postal_code: NE
+    city: Omaha
+    violent_crime_rate: 372.5
+    city_population: 480235
+  - rank: 45
+    state: New Hampshire
+    state_slug: new-hampshire
+    postal_code: NH
+    city: Manchester
+    violent_crime_rate: 336.9
+    city_population: 115464
+  - rank: 46
+    state: Wyoming
+    state_slug: wyoming
+    postal_code: WY
+    city: Cheyenne
+    violent_crime_rate: 328.5
+    city_population: 65143
+  - rank: 47
+    state: Mississippi
+    state_slug: mississippi
+    postal_code: MS
+    city: Southaven
+    violent_crime_rate: 314.6
+    city_population: 57537
+  - rank: 48
+    state: Rhode Island
+    state_slug: rhode-island
+    postal_code: RI
+    city: Pawtucket
+    violent_crime_rate: 307.6
+    city_population: 76400
+  - rank: 49
+    state: Maine
+    state_slug: maine
+    postal_code: ME
+    city: Portland
+    violent_crime_rate: 266.9
+    city_population: 69310
+sections:
+- id: states-with-the-most-dangerous-city-leaders
+  icon: fa-solid fa-triangle-exclamation
+  title: States With the Highest-Crime City Leaders
+  paragraphs:
+  - Memphis posts 2,508.0 violent crimes per 100,000 residents, the highest rate of any state's most dangerous city. Saginaw, Michigan follows at 2,210.8, despite a population of just 42,880.
+  - Oakland ranks third at 1,925.3, and Little Rock is fourth at 1,672.5. Baltimore rounds out the top five at 1,606.2.
+- id: states-with-the-lowest-crime-city-leaders
+  icon: fa-solid fa-arrow-trend-down
+  title: States Where the Most Dangerous City Still Ranks Low
+  paragraphs:
+  - Portland, Maine has the lowest rate among all state leaders at 266.9 per 100,000, even though it tops its own state's list. Pawtucket, Rhode Island is second-lowest at 307.6.
+  - Southaven, Mississippi follows at 314.6, and Cheyenne, Wyoming is fifth-lowest at 328.5. Each still ranks first within its own state.
+visual_assets:
+- id: states-with-the-most-dangerous-city-leaders-visual
+  src: /images/rankings/crime/most-dangerous-cities-by-state/states-with-the-most-dangerous-city-leaders.jpg
+  alt: Urban street scene in Memphis, Tennessee, representing the state with the highest violent crime rate among state leaders
+  caption: Memphis, Saginaw, Oakland, Little Rock, and Baltimore post the five highest violent crime rates among each state's most dangerous city.
+  section: states-with-the-most-dangerous-city-leaders
+  layout: full-width-tall
+- id: states-with-the-lowest-crime-city-leaders-visual
+  src: /images/rankings/crime/most-dangerous-cities-by-state/states-with-the-lowest-crime-city-leaders.jpg
+  alt: States Where the Most Dangerous City Still Ranks Low related to Most Dangerous City in Each State
+  caption: States Where the Most Dangerous City Still Ranks Low on Most Dangerous City in Each State.
+  section: states-with-the-lowest-crime-city-leaders
+  layout: full-width-tall
+faq:
+- question: What is the most dangerous city in the United States?
+  answer: Memphis, Tennessee has the highest violent crime rate among cities with 25,000 or more residents, at 2,508.0 per 100,000, the highest of any state's leading city.
+- question: What is the most dangerous city in Texas?
+  answer: Beaumont has the highest violent crime rate among Texas cities with 25,000 or more residents, at 1,137.3 per 100,000, ranking 16th nationally among state leaders.
+- question: What is the most dangerous city in California?
+  answer: Oakland has the highest violent crime rate in California at 1,925.3 per 100,000, the third-highest rate among all state leaders.
+- question: Why isn't there a most dangerous city listed for Hawaii?
+  answer: Hawaii's law enforcement agencies have not transitioned to the FBI's incident-based reporting system, so no comparable violent crime rate is available for its cities.
+- question: Which state's most dangerous city has the lowest crime rate?
+  answer: Portland, Maine has the lowest violent crime rate among all 49 state leaders at 266.9 per 100,000, well below Memphis's 2,508.0.
+related:
+- title: Safest Cities by State
+  url: /rankings/crime/safest-cities-by-state
+- title: Crime Rate by State
+  url: /rankings/crime/crime-rate-by-state
+- title: Murder Rate by State
+  url: /rankings/crime/murder-rate-by-state

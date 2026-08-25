@@ -1,0 +1,340 @@
+type: ranking
+slug: rush-hour-length-by-state
+category: infrastructure
+url: /rankings/infrastructure/rush-hour-length-by-state
+auto_link_phrases:
+  - "rush hour length by state"
+  - "longest rush hour by state"
+  - "how long is rush hour in each state"
+  - "hours lost to rush hour traffic by state"
+  - "rush hour congestion duration by state"
+extremes_mode: top
+extremes_title: "States With the Longest Rush-Hour Delays"
+hero_image: "/images/rankings/infrastructure/rush-hour-length-by-state/rush-hour-length-by-state-hero.jpg"
+hero_image_alt: "Long line of cars backed up on an urban expressway during evening rush hour"
+hero_image_caption: "Chicago gives Illinois the longest rush hour of any state, 112 hours lost a year. Oregon is shortest among measured states at 41 hours in Portland."
+
+author: "USA Symbol Team"
+date_published: "2026-08-25"
+date_modified: "2026-08-25"
+
+seo:
+  title: "Rush Hour Length by State | Map, Hours & Cost"
+  description: "Illinois has the longest rush hour of any state, 112 hours lost a year in Chicago. Oregon is shortest among measured states at 41 hours."
+
+page:
+  h1: "Rush Hour Length by State"
+
+  quick_answer:
+    - "Illinois has the longest rush hour of any state. Chicago drivers lose 112 hours a year to peak-period congestion, the most of any metro area in the INRIX 2025 ranking."
+    - "New York follows at 102 hours in New York City, and Pennsylvania is third at 101 hours in Philadelphia, a tight cluster within 11 hours of Illinois's total."
+    - "Oregon has the shortest rush hour among the measured states, 41 hours in Portland, 71 hours below Illinois and well under the 49-hour national average."
+
+  methodology: "Ranking uses the INRIX 2025 Global Traffic Scorecard's U.S. impact ranking of the most congested metro areas, measured in hours lost per driver to congestion during peak commute periods. Each state is represented by its highest-ranked city in that top-tier list; states with no city in INRIX's top rankings are omitted, not assigned a zero."
+
+  sources:
+    - name: "INRIX. 2025 Global Traffic Scorecard"
+      url: "https://inrix.com/scorecard/"
+      description: "Annual U.S. ranking of the most congested metro areas by hours lost per driver and cost of congestion"
+    - name: "INRIX. 2025 Global Traffic Scorecard, United States Press Release"
+      url: "https://inrix.com/press-releases/2025-global-traffic-scorecard-us/"
+      description: "National figures for average hours lost and total cost of congestion in 2025"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    city: "City Measured"
+    hours_lost: "Hours Lost/Year"
+    cost_usd: "Cost per Driver"
+
+  metric_default: hours_lost
+  sort_default: desc
+  column_formats:
+    cost_usd: "C0"
+
+  rows:
+    - rank: 1
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      city: "Chicago"
+      hours_lost: 112
+      cost_usd: 2063
+
+    - rank: 2
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      city: "New York City"
+      hours_lost: 102
+      cost_usd: 1879
+
+    - rank: 3
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      city: "Philadelphia"
+      hours_lost: 101
+      cost_usd: 1860
+
+    - rank: 4
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      city: "Los Angeles"
+      hours_lost: 87
+      cost_usd: 1602
+
+    - rank: 5
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      city: "Boston"
+      hours_lost: 83
+      cost_usd: 1529
+
+    - rank: 6
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      city: "Miami"
+      hours_lost: 75
+      cost_usd: 1381
+
+    - rank: 7
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      city: "Atlanta"
+      hours_lost: 75
+      cost_usd: 1381
+
+    - rank: 8
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      city: "Houston"
+      hours_lost: 70
+      cost_usd: 1289
+
+    - rank: 9
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      city: "Seattle"
+      hours_lost: 68
+      cost_usd: 1252
+
+    - rank: 10
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      city: "Nashville"
+      hours_lost: 65
+      cost_usd: 1197
+
+    - rank: 11
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      city: "Baltimore"
+      hours_lost: 63
+      cost_usd: 1160
+
+    - rank: 12
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      city: "Stamford"
+      hours_lost: 53
+      cost_usd: 976
+
+    - rank: 13
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      city: "Denver"
+      hours_lost: 51
+      cost_usd: 939
+
+    - rank: 14
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      city: "Honolulu"
+      hours_lost: 49
+      cost_usd: 903
+
+    - rank: 15
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      city: "Charlotte"
+      hours_lost: 48
+      cost_usd: 884
+
+    - rank: 16
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      city: "Phoenix"
+      hours_lost: 42
+      cost_usd: 774
+
+    - rank: 17
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      city: "Portland"
+      hours_lost: 41
+      cost_usd: 755
+
+map:
+  title: "Rush Hour Length by State Map"
+  image_alt: "U.S. map shaded by annual hours lost per driver to rush-hour congestion in each state's measured city"
+  caption: "Chicago gives Illinois the longest rush hour at 112 hours a year, followed by New York City at 102 and Philadelphia at 101. Portland keeps Oregon lowest among measured states at 41 hours."
+  metric_key: hours_lost
+  metric_label: "Hours Lost/Year"
+  detail_keys: [city, cost_usd]
+  color_scheme: orange
+  color_scale: linear
+
+sections:
+  - id: "states-where-rush-hour-costs-drivers-the-most-time"
+    icon: "fa-solid fa-hourglass-half"
+    title: "States Where Rush Hour Costs Drivers the Most Time"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        city: "City"
+        hours_lost: "Hours Lost/Year"
+      rows:
+        - rank: 1
+          state: "Illinois"
+          state_slug: "illinois"
+          city: "Chicago"
+          hours_lost: 112
+        - rank: 2
+          state: "New York"
+          state_slug: "new-york"
+          city: "New York City"
+          hours_lost: 102
+        - rank: 3
+          state: "Pennsylvania"
+          state_slug: "pennsylvania"
+          city: "Philadelphia"
+          hours_lost: 101
+        - rank: 4
+          state: "California"
+          state_slug: "california"
+          city: "Los Angeles"
+          hours_lost: 87
+        - rank: 5
+          state: "Massachusetts"
+          state_slug: "massachusetts"
+          city: "Boston"
+          hours_lost: 83
+    paragraphs:
+      - "Chicago drivers lose 112 hours a year to rush-hour congestion, the most of any metro area in the INRIX ranking and 63 hours above the 49-hour national average. New York City follows at 102 hours, and Philadelphia trails close behind at 101."
+      - "Los Angeles and Boston round out the top five at 87 and 83 hours. Miami and Atlanta tie for sixth at 75 hours each, and Houston ranks eighth at 70 hours."
+
+  - id: "states-with-the-shortest-rush-hour-delays"
+    icon: "fa-solid fa-road"
+    title: "States With the Shortest Rush-Hour Delays"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        city: "City"
+        hours_lost: "Hours Lost/Year"
+      rows:
+        - rank: 17
+          state: "Oregon"
+          state_slug: "oregon"
+          city: "Portland"
+          hours_lost: 41
+        - rank: 16
+          state: "Arizona"
+          state_slug: "arizona"
+          city: "Phoenix"
+          hours_lost: 42
+        - rank: 15
+          state: "North Carolina"
+          state_slug: "north-carolina"
+          city: "Charlotte"
+          hours_lost: 48
+        - rank: 14
+          state: "Hawaii"
+          state_slug: "hawaii"
+          city: "Honolulu"
+          hours_lost: 49
+        - rank: 13
+          state: "Colorado"
+          state_slug: "colorado"
+          city: "Denver"
+          hours_lost: 51
+    paragraphs:
+      - "Portland posts the lowest rush-hour toll among the measured states, 41 hours a year, 71 hours below Illinois. Phoenix is next at 42 hours in Arizona."
+      - "Charlotte drivers lose 48 hours in North Carolina, and Honolulu drivers lose 49 in Hawaii, both still short trips next to the leaders. Denver sits at 51 hours in Colorado, just above that cluster."
+
+  - id: "why-new-yorks-rush-hour-held-steady"
+    icon: "fa-solid fa-circle-info"
+    title: "Why New York's Rush Hour Held Steady"
+    paragraphs:
+      - "New York City's congestion stayed flat at 102 hours in 2025, a 0% change, while Chicago's climbed 10% to overtake it as the nation's most congested metro. INRIX ties New York's plateau to its new congestion pricing policy, which now covers Manhattan's most heavily traveled corridors."
+      - "Philadelphia saw the sharpest jump among the top five states, up 31%, to reach 101 hours. Baltimore posted the same 31% increase, pushing Maryland to 63 hours."
+
+visual_assets:
+  - id: "states-where-rush-hour-costs-drivers-the-most-time-visual"
+    src: "/images/rankings/infrastructure/rush-hour-length-by-state/states-where-rush-hour-costs-drivers-the-most-time.jpg"
+    alt: "Dense highway traffic at a standstill during evening rush hour in a major city"
+    caption: "Chicago leads at 112 hours lost a year for Illinois, with New York City at 102 for New York and Philadelphia at 101 for Pennsylvania."
+    section: "states-where-rush-hour-costs-drivers-the-most-time"
+    layout: "full-width-tall"
+
+  - id: "states-with-the-shortest-rush-hour-delays-visual"
+    src: "/images/rankings/infrastructure/rush-hour-length-by-state/states-with-the-shortest-rush-hour-delays.jpg"
+    alt: "Light evening traffic moving freely on a city street"
+    caption: "Portland is lowest at 41 hours a year for Oregon, with Phoenix at 42 for Arizona and Charlotte at 48 for North Carolina."
+    section: "states-with-the-shortest-rush-hour-delays"
+    layout: "full-width-tall"
+
+  - id: "why-new-yorks-rush-hour-held-steady-visual"
+    src: "/images/rankings/infrastructure/rush-hour-length-by-state/why-new-yorks-rush-hour-held-steady.jpg"
+    alt: "Traffic moving past a tolling gantry on a Manhattan avenue"
+    caption: "New York City held flat at 102 hours in 2025 while Chicago's total climbed 10% to take the top spot, a gap INRIX links to New York's congestion pricing policy."
+    section: "why-new-yorks-rush-hour-held-steady"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state has the longest rush hour?"
+    answer: "Illinois has the longest rush hour of any state. Chicago drivers lose 112 hours a year to peak-period congestion, 63 hours above the 49-hour national average."
+
+  - question: "Which state has the shortest rush hour?"
+    answer: "Oregon has the shortest rush hour among the measured states, 41 hours a year in Portland. Arizona is next at 42 hours in Phoenix."
+
+  - question: "How much time do rush-hour delays cost drivers nationally?"
+    answer: "The average U.S. driver lost 49 hours to congestion in 2025, up from 43 hours the year before. INRIX put the average cost at $894 per driver and $85.8 billion nationwide."
+
+  - question: "How long is rush hour in New York?"
+    answer: "New York City drivers lose 102 hours a year to congestion, second most of any metro measured. That figure held flat in 2025, a change INRIX links to the city's congestion pricing policy."
+
+  - question: "Which state has the highest cost per driver from rush-hour congestion?"
+    answer: "Illinois has the highest cost per driver, $2,063 a year in Chicago. New York is next at $1,879, and Pennsylvania is third at $1,860."
+
+  - question: "How many states are included in this rush-hour ranking?"
+    answer: "Seventeen states have a city in INRIX's top-tier 2025 congestion ranking. The other 33 states have no metro area in that list and are left out rather than scored as zero."
+
+related:
+  - title: "Traffic Congestion by State"
+    url: "/rankings/infrastructure/traffic-congestion-by-state"
+  - title: "Average Commute Time by State"
+    url: "/rankings/infrastructure/longest-commute-by-state"
+  - title: "Largest Airport by State"
+    url: "/rankings/infrastructure/largest-airport-by-state"
+  - title: "Road Quality by State"
+    url: "/rankings/infrastructure/road-quality-by-state"
+  - title: "Compare States"
+    url: "/compare-states"

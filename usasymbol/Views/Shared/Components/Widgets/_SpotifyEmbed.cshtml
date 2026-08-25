@@ -1,0 +1,30 @@
+@model (string Url, string? Caption)
+
+@{
+    string? ExtractSpotifyEmbedPath(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return null;
+
+        var match = System.Text.RegularExpressions.Regex.Match(
+            url,
+            @"open\.spotify\.com/(track|album|playlist)/([A-Za-z0-9]+)");
+
+        return match.Success ? $"{match.Groups[1].Value}/{match.Groups[2].Value}" : null;
+    }
+
+    var embedPath = ExtractSpotifyEmbedPath(Model.Url);
+    if (string.IsNullOrWhiteSpace(embedPath)) { return; }
+}
+
+<figure class="my-6 clear-both">
+    <iframe
+        src="https://open.spotify.com/embed/@embedPath?utm_source=generator&theme=0"
+        width="100%" height="152" frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+        class="w-full border border-slate-200"></iframe>
+    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+    {
+        <figcaption class="mt-2 text-sm text-slate-500">@Model.Caption</figcaption>
+    }
+</figure>

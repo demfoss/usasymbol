@@ -1,0 +1,116 @@
+@model USASymbol.Models.ViewModels.NationalCivicDetailViewModel
+@using USASymbol.Extensions
+@using USASymbol.Models.ViewModels
+@inject IImageUrlService Images
+
+@{
+    var content = Model.PageModel.Content;
+    var pageHeading = content.Page.H1;
+    var introText = content.Page.IntroParagraphs.FirstOrDefault() ?? content.Seo.Description;
+    var description = System.Net.WebUtility.HtmlDecode(
+        System.Text.RegularExpressions.Regex.Replace(
+            System.Text.RegularExpressions.Regex.Replace(content.Seo.Description ?? introText, @"\[(.*?)\]\((.*?)\)", "$1"),
+            "<.*?>",
+            " "))
+        .Trim();
+
+    ViewData["BodyClass"] = "national-civic-detail-page";
+    ViewData["Title"] = content.Seo.Title;
+    ViewData["Description"] = content.Seo.Description;
+    ViewData["OgImage"] = Images.Full(content.HeroImage);
+    ViewData["OgType"] = "article";
+    ViewData["Canonical"] = content.Url;
+    ViewData["HideRelatedStates"] = true;
+
+    var heroModel = new SymbolHeroViewModel
+    {
+        PageModel = Model,
+        BackgroundClass = "bg-[linear-gradient(180deg,#111d2c_0%,#17263a_100%)]",
+        TopRuleClass = "bg-gradient-to-r from-amber-200/0 via-amber-300/70 to-sky-200/0",
+        PrimaryGlowClass = "bg-amber-300/10",
+        SecondaryGlowClass = "bg-sky-200/10",
+        AccentDotClass = "bg-amber-300",
+        MediaBackgroundClass = "bg-slate-100/10",
+        FallbackIconClass = "fa-solid fa-landmark",
+        Title = pageHeading,
+        Description = description,
+        ImageUrl = content.HeroImage,
+        ImageAlt = string.IsNullOrWhiteSpace(content.HeroImageAlt) ? pageHeading : content.HeroImageAlt,
+        ImageClass = "absolute inset-0 h-full w-full object-cover",
+        FigureTitle = pageHeading,
+        FigureSubtitle = "National symbols of the United States",
+        ImageLinkUrl = content.HeroImage,
+        HeroLabel = "United States national guide",
+        EyebrowItems = new List<string>
+        {
+            "United States",
+            "National Symbols"
+        }
+    };
+}
+
+<nav class="bg-white/90 shadow-[0_14px_34px_-30px_rgba(15,23,42,0.24)] backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+    <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
+        @await Html.PartialAsync("_Breadcrumbs", Model)
+    </div>
+</nav>
+
+<div id="top"></div>
+
+<div class="max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-6 lg:py-10">
+    <article class="symbol-editorial w-full">
+        <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12 relative">
+            @await Html.PartialAsync("_SymbolHero", heroModel)
+
+            <aside class="hidden xl:block relative h-full">
+                <div class="sticky top-24 pb-10">
+                    @await Html.PartialAsync("_TocSidebar", Model)
+                </div>
+            </aside>
+
+            <div class="min-w-0">
+                <div class="article-content site-content">
+                    @await Html.PartialAsync("_Overview", null, new ViewDataDictionary(ViewData)
+                    {
+                        { "Heading", pageHeading },
+                        { "Body", introText.RenderAutoLinks() }
+                    })
+
+                    @await Html.PartialAsync("Pages/_Sections", Model.PageModel)
+
+                    @if (Model.HasFaq)
+                    {
+                        <div class="content-divider">
+                            @await Html.PartialAsync("_Faq", Model)
+                        </div>
+                    }
+
+                    @if (Model.HasSources)
+                    {
+                        <section id="sources" class="content-divider">
+                            @await Html.PartialAsync("_Sources", Model)
+                        </section>
+                    }
+
+                    <div class="content-divider">
+                        @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
+                    </div>
+
+                    <div class="mt-12 lg:hidden">
+                        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                    </div>
+                </div>
+            </div>
+
+            <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+                <div class="sidebar-content">
+                    @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                </div>
+            </aside>
+        </div>
+    </article>
+</div>
+
+@await Html.PartialAsync("_TocMobileFab", Model)
+@await Html.PartialAsync("_StructuredData", Model)
+@await Html.PartialAsync("_Scripts")

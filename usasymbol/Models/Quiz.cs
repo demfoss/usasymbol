@@ -9,6 +9,8 @@ namespace usasymbol.Models
         public string Slug { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Difficulty { get; set; } = string.Empty;
+        public string AnswerMode { get; set; } = "multiple-choice";
+        public int QuestionsPerRound { get; set; }
         public List<string> Tags { get; set; } = new();
 
         public QuizSeo? Seo { get; set; }

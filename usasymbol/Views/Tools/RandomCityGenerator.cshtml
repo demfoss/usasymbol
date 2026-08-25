@@ -1,0 +1,80 @@
+@using System.Text.Json
+@using USASymbol.Models
+
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+
+    var initialCities = (List<ZipCodeResult>)(ViewBag.InitialCities ?? new List<ZipCodeResult>());
+    var states = (List<StateSummary>)(ViewBag.States ?? new List<StateSummary>());
+
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var initialCitiesJson = JsonSerializer.Serialize(initialCities, jsonOptions);
+    var statesJson = JsonSerializer.Serialize(states, jsonOptions);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">Random City &amp; State Generator</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>Random City &amp; State <em>Generator</em></h1>
+            <p class="tl-lede">
+                Pick a count and generate real U.S. cities with their state instantly. Filter
+                by state, copy any result, or download the full list as a .txt file.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="zg-panel" id="city-generator" data-generate-url="/tools/random-city-generator/generate">
+            <div class="zg-controls">
+                <div class="zg-field">
+                    <label for="cg-count">Count</label>
+                    <input type="number" id="cg-count" min="1" max="100" step="1" value="20" />
+                </div>
+                <div class="zg-field">
+                    <label for="cg-state">State</label>
+                    <select id="cg-state">
+                        <option value="">All states</option>
+                        @foreach (var state in states)
+                        {
+                            <option value="@state.Code">@state.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="zg-actions">
+                    <button type="button" class="zg-btn zg-btn-primary" id="cg-generate">
+                        <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Get New Cities
+                    </button>
+                    <button type="button" class="zg-btn zg-btn-secondary" id="cg-download">
+                        <i class="fa-solid fa-download" aria-hidden="true"></i> Download .txt
+                    </button>
+                </div>
+            </div>
+            <p class="zg-status" id="cg-status" role="status" aria-live="polite"></p>
+            <div class="zg-grid" id="cg-grid"></div>
+        </div>
+    </section>
+</div>
+
+<script>
+    window.cityGeneratorData = {
+        initialResults: @Html.Raw(initialCitiesJson),
+        states: @Html.Raw(statesJson)
+    };
+</script>
+
+@section Scripts {
+    <script defer src="~/js/random-city-generator.js" asp-append-version="true"></script>
+}

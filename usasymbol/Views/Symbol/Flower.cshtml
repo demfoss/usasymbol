@@ -18,7 +18,7 @@
         : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
     var overviewHeading = $"{designation} of {stateName}";
 
-    var pageHeading = $"{stateName} {designation}: {flowerName}";
+    var pageHeading = Model.IsNationalSymbol ? flowerName : $"{stateName} {designation}: {flowerName}";
 
     var descRaw = Model.FlowerContent?.SeoDescription ?? "";
     ViewData["Title"] = Model.FlowerContent?.SeoTitle ?? pageHeading;
@@ -27,7 +27,7 @@
         : System.Net.WebUtility.HtmlDecode(descRaw);
     ViewData["OgImage"] = Images.Full(Model.Symbol?.ImageUrl ?? Model.State?.FlagImageUrl);
     ViewData["OgType"] = "article";
-    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+    ViewData["Canonical"] = Model.CanonicalUrl ?? Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
 
     var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
         .Where(x => !string.IsNullOrWhiteSpace(x?.Value))

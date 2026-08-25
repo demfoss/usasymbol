@@ -1,0 +1,684 @@
+type: ranking
+slug: unemployment-benefits-by-state
+category: government
+url: /rankings/government/unemployment-benefits-by-state
+auto_link_phrases:
+  - "unemployment benefits by state"
+  - "maximum unemployment benefits by state"
+  - "unemployment benefits comparison"
+  - "weekly unemployment payments"
+  - "unemployment benefits ranked"
+extremes_mode: both
+extremes_title: "States With the Highest and Lowest Unemployment Benefits"
+hero_image: "/images/rankings/government/unemployment-benefits-by-state/unemployment-benefits-by-state-hero.jpg"
+hero_image_alt: "Unemployment office signage representing state unemployment insurance benefits"
+hero_image_caption: "Massachusetts pays the highest maximum weekly unemployment benefit at $1,033. Mississippi pays the lowest at $235."
+
+author: "USA Symbol Team"
+date_published: "2026-07-19"
+date_modified: "2026-07-19"
+
+seo:
+  title: "Unemployment Benefits by State 2026 | Map & Rates"
+  description: "Massachusetts pays the highest maximum weekly unemployment benefit at $1,033, and Mississippi pays the lowest at $235."
+
+page:
+  h1: "Unemployment Benefits by State"
+
+  quick_answer:
+    - "Massachusetts has the highest maximum weekly unemployment benefit at $1,033, nearly double the national average of $532."
+    - "Mississippi has the lowest maximum weekly benefit at $235. Four states, Alabama, Florida, Louisiana, and Tennessee, share the next lowest amount at $275."
+    - "Duration ranges from 12 weeks in Florida and North Carolina to 28 weeks in Montana, against a national average of 24 weeks. Fifteen states exempt unemployment benefits from state income tax entirely, including California, New Jersey, and Pennsylvania."
+
+  methodology: "Maximum weekly benefit, duration, and waiting week figures are IndeedFlex's 2026 state comparison data, current as of April 2026. Tax exemption and dependent allowance status are compiled from Kiplinger and the National Employment Law Project."
+
+  sources:
+    - name: "IndeedFlex, Unemployment Benefits by State"
+      url: "https://indeedflex.com/career-hub/unemployment-benefits"
+      description: "2026 comparison of maximum and minimum weekly unemployment benefits, duration, and waiting week rules by state"
+    - name: "Kiplinger, Is Unemployment Taxable in Your State?"
+      url: "https://www.kiplinger.com/taxes/state-tax-on-unemployment-benefits"
+      description: "State-by-state guide to which states tax unemployment compensation and which exempt it"
+    - name: "National Employment Law Project, Dependent Allowance"
+      url: "https://www.nelp.org/insights-research/dependent-allowance/"
+      description: "List of states that pay an additional weekly allowance per dependent on top of the base unemployment benefit"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    max_weekly: "Max Weekly Benefit"
+    duration_weeks: "Max Duration (Weeks)"
+    waiting_week: "Waiting Week"
+
+  metric_default: max_weekly
+  sort_default: desc
+  column_formats:
+    max_weekly: "C0"
+    duration_weeks: "N0"
+
+  rows:
+    - rank: 1
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      max_weekly: 1033
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Highest maximum weekly benefit of any state; pays a dependent allowance of $25 per child"
+    - rank: 2
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      max_weekly: 999
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "No state income tax, so benefits are not taxed at the state level"
+    - rank: 3
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      max_weekly: 867
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Pays a dependent allowance equal to 5% of the weekly benefit per dependent"
+    - rank: 4
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      max_weekly: 857
+      duration_weeks: 26
+      waiting_week: "No"
+    - rank: 5
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      max_weekly: 854
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Exempts unemployment benefits from state income tax; dependent allowance adds 7% for the first dependent"
+    - rank: 6
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      max_weekly: 823
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 6
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      max_weekly: 823
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 8
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      max_weekly: 759
+      duration_weeks: 26
+      waiting_week: "No"
+      notes: "Pays a dependent allowance on top of the base weekly benefit"
+    - rank: 9
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      max_weekly: 733
+      duration_weeks: 26
+      waiting_week: "No"
+    - rank: 10
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      max_weekly: 707
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Pays a dependent allowance on top of the base weekly benefit"
+    - rank: 11
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      max_weekly: 673
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 12
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      max_weekly: 668
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 13
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      max_weekly: 604
+      duration_weeks: 28
+      waiting_week: "Yes"
+      notes: "Longest maximum duration of any state, at 28 weeks; also exempts benefits from state income tax"
+    - rank: 14
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      max_weekly: 594
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Exempts unemployment benefits from state income tax; pays up to $8 a week in dependent allowance"
+    - rank: 15
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      max_weekly: 591
+      duration_weeks: 26
+      waiting_week: "No"
+      notes: "Pays a dependent allowance on top of the base weekly benefit"
+    - rank: 16
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      max_weekly: 589
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Pays $10 per dependent child, capped at half the weekly benefit"
+    - rank: 16
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      max_weekly: 589
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 18
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      max_weekly: 569
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 19
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      max_weekly: 563
+      duration_weeks: 26
+      waiting_week: "No"
+      notes: "No state income tax, so benefits are not taxed at the state level"
+    - rank: 20
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      max_weekly: 561
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Dependent allowance on a sliding scale up to $155 a week"
+    - rank: 21
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      max_weekly: 560
+      duration_weeks: 16
+      waiting_week: "Yes"
+    - rank: 21
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      max_weekly: 560
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "No state income tax, so benefits are not taxed at the state level"
+    - rank: 23
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      max_weekly: 552
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 24
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      max_weekly: 539
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 25
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      max_weekly: 532
+      duration_weeks: 20
+      waiting_week: "Yes"
+    - rank: 26
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      max_weekly: 531
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Pays a dependent allowance on top of the base weekly benefit"
+    - rank: 27
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      max_weekly: 517
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "No state income tax, so benefits are not taxed at the state level"
+    - rank: 28
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      max_weekly: 504
+      duration_weeks: 26
+      waiting_week: "No"
+    - rank: 29
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      max_weekly: 487
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "No state income tax, so benefits are not taxed at the state level"
+    - rank: 30
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      max_weekly: 451
+      duration_weeks: 16
+      waiting_week: "Yes"
+    - rank: 31
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      max_weekly: 450
+      duration_weeks: 26
+      waiting_week: "No"
+      notes: "Exempts unemployment benefits from state income tax despite having one of the highest state income tax rates"
+    - rank: 32
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      max_weekly: 430
+      duration_weeks: 26
+      waiting_week: "No"
+      notes: "Pays a dependent allowance on top of the base weekly benefit"
+    - rank: 33
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      max_weekly: 427
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "No state income tax, so benefits are not taxed at the state level"
+    - rank: 34
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      max_weekly: 424
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 35
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      max_weekly: 400
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 36
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      max_weekly: 390
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 37
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      max_weekly: 378
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Exempts unemployment benefits from state income tax"
+    - rank: 38
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      max_weekly: 370
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "No state income tax; pays a dependent allowance on top of the base weekly benefit"
+    - rank: 38
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      max_weekly: 370
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 40
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      max_weekly: 365
+      duration_weeks: 14
+      waiting_week: "Yes"
+    - rank: 41
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      max_weekly: 362
+      duration_weeks: 20
+      waiting_week: "Yes"
+      notes: "Pays a dependent allowance on top of the base weekly benefit"
+    - rank: 42
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      max_weekly: 350
+      duration_weeks: 12
+      waiting_week: "Yes"
+      notes: "Tied for shortest maximum duration of any state, at 12 weeks"
+    - rank: 43
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      max_weekly: 326
+      duration_weeks: 20
+      waiting_week: "Yes"
+    - rank: 44
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      max_weekly: 320
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 44
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      max_weekly: 320
+      duration_weeks: 20
+      waiting_week: "Yes"
+    - rank: 46
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      max_weekly: 275
+      duration_weeks: 14
+      waiting_week: "Yes"
+      notes: "Exempts unemployment benefits from state income tax"
+    - rank: 46
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      max_weekly: 275
+      duration_weeks: 12
+      waiting_week: "Yes"
+      notes: "Tied for shortest maximum duration of any state, at 12 weeks; no state income tax"
+    - rank: 46
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      max_weekly: 275
+      duration_weeks: 26
+      waiting_week: "Yes"
+    - rank: 46
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      max_weekly: 275
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "No state income tax, so benefits are not taxed at the state level"
+    - rank: 50
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      max_weekly: 235
+      duration_weeks: 26
+      waiting_week: "Yes"
+      notes: "Lowest maximum weekly benefit of any state"
+
+map:
+  title: "Unemployment Benefits by State Map"
+  image_alt: "Map of the United States shaded by maximum weekly unemployment benefit in each state"
+  caption: "Massachusetts has the highest maximum weekly benefit at $1,033, nearly double the national average of $532. Mississippi has the lowest at $235."
+  metric_key: max_weekly
+  metric_label: "Max Weekly Benefit"
+  tooltip_label: state
+  color_scheme: green
+  color_scale: linear
+  detail_keys:
+    - duration_weeks
+    - waiting_week
+  summary_key: notes
+
+compare:
+  metric_slug: unemployment-benefit
+  title: "Compare Unemployment Benefits Between Two States"
+  description: "Choose two states and compare maximum weekly unemployment benefits."
+  button_text: "Compare unemployment benefits"
+  icon: "fa-solid fa-hand-holding-dollar"
+  default_state_a: massachusetts
+  default_state_b: mississippi
+
+sections:
+  - id: "states-with-the-highest-unemployment-benefits"
+    icon: "fa-solid fa-arrow-up-wide-short"
+    title: "States With the Highest Unemployment Benefits"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        max_weekly: "Max Weekly Benefit"
+        duration_weeks: "Max Duration (Weeks)"
+      rows:
+        - rank: 1
+          state: "Massachusetts"
+          state_slug: "massachusetts"
+          max_weekly: "$1,033"
+          duration_weeks: 26
+        - rank: 2
+          state: "Washington"
+          state_slug: "washington"
+          max_weekly: "$999"
+          duration_weeks: 26
+        - rank: 3
+          state: "Rhode Island"
+          state_slug: "rhode-island"
+          max_weekly: "$867"
+          duration_weeks: 26
+        - rank: 4
+          state: "Minnesota"
+          state_slug: "minnesota"
+          max_weekly: "$857"
+          duration_weeks: 26
+        - rank: 5
+          state: "New Jersey"
+          state_slug: "new-jersey"
+          max_weekly: "$854"
+          duration_weeks: 26
+        - rank: 6
+          state: "Colorado"
+          state_slug: "colorado"
+          max_weekly: "$823"
+          duration_weeks: 26
+        - rank: 6
+          state: "Hawaii"
+          state_slug: "hawaii"
+          max_weekly: "$823"
+          duration_weeks: 26
+        - rank: 8
+          state: "Connecticut"
+          state_slug: "connecticut"
+          max_weekly: "$759"
+          duration_weeks: 26
+        - rank: 9
+          state: "Oregon"
+          state_slug: "oregon"
+          max_weekly: "$733"
+          duration_weeks: 26
+        - rank: 10
+          state: "Illinois"
+          state_slug: "illinois"
+          max_weekly: "$707"
+          duration_weeks: 26
+    paragraphs:
+      - "Massachusetts pays the highest maximum weekly unemployment benefit at $1,033, nearly double the $532 national average. Washington follows at $999, and Rhode Island ranks third at $867."
+      - "Minnesota ranks fourth at $857, and New Jersey is fifth at $854. New Jersey adds 7% per child, while Pennsylvania adds up to $8 a week for dependents."
+
+  - id: "states-with-the-lowest-unemployment-benefits"
+    icon: "fa-solid fa-arrow-down-wide-short"
+    title: "States With the Lowest Unemployment Benefits"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        max_weekly: "Max Weekly Benefit"
+        duration_weeks: "Max Duration (Weeks)"
+      rows:
+        - rank: 50
+          state: "Mississippi"
+          state_slug: "mississippi"
+          max_weekly: "$235"
+          duration_weeks: 26
+        - rank: 46
+          state: "Alabama"
+          state_slug: "alabama"
+          max_weekly: "$275"
+          duration_weeks: 14
+        - rank: 46
+          state: "Florida"
+          state_slug: "florida"
+          max_weekly: "$275"
+          duration_weeks: 12
+        - rank: 46
+          state: "Louisiana"
+          state_slug: "louisiana"
+          max_weekly: "$275"
+          duration_weeks: 26
+        - rank: 46
+          state: "Tennessee"
+          state_slug: "tennessee"
+          max_weekly: "$275"
+          duration_weeks: 26
+        - rank: 44
+          state: "Arizona"
+          state_slug: "arizona"
+          max_weekly: "$320"
+          duration_weeks: 26
+        - rank: 44
+          state: "Missouri"
+          state_slug: "missouri"
+          max_weekly: "$320"
+          duration_weeks: 20
+        - rank: 43
+          state: "South Carolina"
+          state_slug: "south-carolina"
+          max_weekly: "$326"
+          duration_weeks: 20
+        - rank: 42
+          state: "North Carolina"
+          state_slug: "north-carolina"
+          max_weekly: "$350"
+          duration_weeks: 12
+        - rank: 41
+          state: "Michigan"
+          state_slug: "michigan"
+          max_weekly: "$362"
+          duration_weeks: 20
+    paragraphs:
+      - "Mississippi pays the lowest maximum weekly benefit at $235, less than a quarter of Massachusetts's rate. Four states, Alabama, Florida, Louisiana, and Tennessee, tie for the next lowest at $275."
+      - "Florida and North Carolina also pay benefits for just 12 weeks, the shortest duration in the country, while Montana pays for 28 weeks, the longest. Georgia and Alabama limit benefits to 14 weeks, tied for second shortest."
+
+  - id: "is-unemployment-taxable-by-state"
+    icon: "fa-solid fa-scale-balanced"
+    title: "States That Do Not Tax Unemployment Benefits"
+    table:
+      columns:
+        state: "State"
+        reason: "Reason"
+      rows:
+        - state: "Alaska"
+          state_slug: "alaska"
+          reason: "No state income tax"
+        - state: "Florida"
+          state_slug: "florida"
+          reason: "No state income tax"
+        - state: "Nevada"
+          state_slug: "nevada"
+          reason: "No state income tax"
+        - state: "New Hampshire"
+          state_slug: "new-hampshire"
+          reason: "No state income tax"
+        - state: "South Dakota"
+          state_slug: "south-dakota"
+          reason: "No state income tax"
+        - state: "Tennessee"
+          state_slug: "tennessee"
+          reason: "No state income tax"
+        - state: "Texas"
+          state_slug: "texas"
+          reason: "No state income tax"
+        - state: "Washington"
+          state_slug: "washington"
+          reason: "No state income tax"
+        - state: "Wyoming"
+          state_slug: "wyoming"
+          reason: "No state income tax"
+        - state: "Alabama"
+          state_slug: "alabama"
+          reason: "Has state income tax but exempts unemployment benefits"
+        - state: "California"
+          state_slug: "california"
+          reason: "Has state income tax but exempts unemployment benefits"
+        - state: "Montana"
+          state_slug: "montana"
+          reason: "Has state income tax but exempts unemployment benefits"
+        - state: "New Jersey"
+          state_slug: "new-jersey"
+          reason: "Has state income tax but exempts unemployment benefits"
+        - state: "Pennsylvania"
+          state_slug: "pennsylvania"
+          reason: "Has state income tax but exempts unemployment benefits"
+        - state: "Virginia"
+          state_slug: "virginia"
+          reason: "Has state income tax but exempts unemployment benefits"
+    paragraphs:
+      - "Fifteen states do not tax unemployment benefits at the state level. Nine of them, Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming, have no state income tax at all."
+      - "The other six, Alabama, California, Montana, New Jersey, Pennsylvania, and Virginia, do collect state income tax but specifically exempt unemployment compensation. The remaining 35 states tax unemployment benefits as ordinary income, and the federal government taxes them in every state."
+
+visual_assets:
+  - id: massachusetts-unemployment-office-placeholder
+    src: /images/rankings/government/unemployment-benefits-by-state/massachusetts-unemployment-office-placeholder.jpg
+    alt: "Unemployment claims office representing Massachusetts's high weekly benefit"
+    caption: "Massachusetts pays a maximum weekly unemployment benefit of $1,033, the highest in the country."
+    section: states-with-the-highest-unemployment-benefits
+    layout: full-width-tall
+  - id: mississippi-office-placeholder
+    src: /images/rankings/government/unemployment-benefits-by-state/mississippi-office-placeholder.jpg
+    alt: "State workforce office representing Mississippi's low weekly unemployment benefit"
+    caption: "Mississippi pays a maximum weekly unemployment benefit of $235, the lowest in the country."
+    section: states-with-the-lowest-unemployment-benefits
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the highest unemployment benefit?"
+    answer: "Massachusetts tops the country at $1,033 a week. Washington ($999) and Rhode Island ($867) rank second and third."
+  - question: "Which state has the lowest unemployment benefit?"
+    answer: "Mississippi's $235 maximum is the lowest in the country, less than a quarter of Massachusetts's rate. Alabama, Florida, Louisiana, and Tennessee tie for the next lowest at $275."
+  - question: "How long do unemployment benefits last?"
+    answer: "Most states pay benefits for 26 weeks. Montana offers the longest duration at 28 weeks, while Florida and North Carolina cap benefits at just 12 weeks, the shortest in the country."
+  - question: "Is unemployment compensation taxable?"
+    answer: "The federal government taxes unemployment benefits as ordinary income in every state. Fifteen states exempt benefits from state income tax, including nine with no state income tax at all and six, Alabama, California, Montana, New Jersey, Pennsylvania, and Virginia, that tax income generally but carve out an exemption for unemployment."
+  - question: "Which states pay a dependent allowance for unemployment?"
+    answer: "Thirteen states pay an extra weekly amount per dependent: Alaska, Connecticut, Illinois, Iowa, Maine, Maryland, Massachusetts, Michigan, New Jersey, New Mexico, Ohio, Pennsylvania, and Rhode Island. Massachusetts pays $25 per child, and Maine pays $10 per child, capped at half the weekly benefit."
+  - question: "What is the maximum unemployment benefit in California?"
+    answer: "California's maximum weekly unemployment benefit is $450, ranking 31st in the country. California has no waiting week before benefits start and exempts unemployment compensation from state income tax."
+
+related:
+  - title: "State Income Tax Rates"
+    url: "/rankings/taxes/states-by-income-tax"
+  - title: "States by Unemployment Rate"
+    url: "/rankings/economy/states-by-unemployment"
+  - title: "Minimum Wage by State"
+    url: "/rankings/economy/minimum-wage-by-state"
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"

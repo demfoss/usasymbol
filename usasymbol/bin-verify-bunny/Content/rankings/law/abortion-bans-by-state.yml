@@ -1,0 +1,476 @@
+type: ranking
+slug: abortion-bans-by-state
+category: law
+url: /rankings/law/abortion-bans-by-state
+auto_link_phrases:
+  - "abortion bans by state"
+  - "states that ban abortion"
+  - "abortion exceptions by state"
+  - "states with no rape exception abortion"
+  - "functional abortion ban states"
+hero_image: "/images/rankings/law/abortion-bans-by-state/abortion-bans-by-state-hero.jpg"
+hero_image_alt: "Gavel resting on a legal document, representing the divide between states that ban abortion and states where it remains legal in 2026"
+hero_image_caption: "13 states ban abortion outright in 2026, and 8 of them allow no exception for rape or incest. Nine other jurisdictions require no documented reason for an abortion at any stage of pregnancy."
+
+author: "USA Symbol Team"
+date_published: "2026-07-25"
+date_modified: "2026-07-25"
+
+seo:
+  title: "Abortion Bans by State 2026 | Map & Exceptions"
+  description: "13 states ban abortion outright in 2026. 8 of them allow no exception for rape or incest. Map of ban, restricted, and legal states."
+
+page:
+  h1: "Abortion Bans by State"
+
+  quick_answer:
+    - "13 states ban abortion outright in 2026: Alabama, Arkansas, Idaho, Indiana, Kentucky, Louisiana, Mississippi, North Dakota, Oklahoma, South Dakota, Tennessee, Texas, and West Virginia."
+    - "Eight of those 13 ban states allow no exception for rape or incest: Alabama, Arkansas, Kentucky, Louisiana, Oklahoma, South Dakota, Tennessee, and Texas. The remaining five, Mississippi, Indiana, West Virginia, Idaho, and North Dakota, permit one."
+    - "Ten jurisdictions require no documented reason for an abortion at all: Alaska, Arizona, Colorado, Maryland, Minnesota, New Jersey, New Mexico, Oregon, Vermont, and Washington, DC. Nine of them also place no gestational limit; Arizona's limit is viability."
+
+  methodology: "Ban tier (Illegal, Functional Ban, Very Restrictive, Legal), gestational limits, and legal exceptions reflect state abortion law on record for 2026. This page is for informational purposes only and does not constitute legal advice."
+
+  sources:
+    - name: "World Population Review — Abortion Bans by State"
+      url: "https://worldpopulationreview.com/state-rankings/abortion-bans-by-state"
+      description: "State-by-state abortion ban status, gestational limits, and legal exceptions"
+
+map:
+  title: "Abortion Bans by State 2026"
+  image_alt: "U.S. map color-coded by abortion ban status in 2026, from dark red for 13 total-ban states to green for legal states"
+  caption: "13 states, shown in dark red, ban abortion outright. Florida, Georgia, and South Carolina enforce a functional ban at six weeks. Legal-status states, in green, range from a 22-week limit to no limit at all."
+  disclaimer: "This map is for informational purposes only and does not constitute legal advice."
+  metric_key: status
+  metric_label: "Ban Status"
+  name_key: state
+  summary_key: notes
+  color_scheme: categorical
+  color_scale: categorical
+  color_map:
+    "Illegal": "red-dark"
+    "Functional Ban": "red"
+    "Very Restrictive": "orange"
+    "Legal": "green"
+  detail_keys:
+    - gestational_limit
+    - exceptions
+  filters:
+    - key: status
+      label: "Filter by Ban Status"
+      use_colors: true
+
+table:
+  caption: "2026 Abortion Bans by State"
+  note: "Gestational limits are on-demand limits; exceptions listed apply beyond that point or, in ban states, carve out narrow circumstances where abortion remains legal. Laws are subject to ongoing litigation."
+  columns:
+    state: "State"
+    status: "Ban Status"
+    gestational_limit: "Gestational Limit"
+    exceptions: "Exceptions Allowed"
+    notes: "Notes"
+
+  metric_default: status
+  sort_default: asc
+
+  rows:
+    # ── ILLEGAL — banned at fertilization (13) ─────────────────────────────
+    - state: "Alabama"
+      state_slug: "alabama"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Life of the mother, fatal fetal anomaly"
+      notes: "Abortion is banned in almost all circumstances."
+
+    - state: "Arkansas"
+      state_slug: "arkansas"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Life of the mother"
+      notes: "Abortion is banned in almost all circumstances."
+
+    - state: "Idaho"
+      state_slug: "idaho"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Rape, incest, life of the mother"
+      notes: "The Idaho Supreme Court ruled in 2023 that the state constitution contains no right to an abortion."
+
+    - state: "Indiana"
+      state_slug: "indiana"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Rape, incest, life of the mother, religious reasons"
+      notes: "The Indiana Supreme Court ruled in 2023 that the state's abortion ban did not violate the state constitution."
+
+    - state: "Kentucky"
+      state_slug: "kentucky"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Life of the mother, physical health"
+      notes: "Voters rejected a 2022 ballot measure that would have amended the constitution to say it contains no right to an abortion."
+
+    - state: "Louisiana"
+      state_slug: "louisiana"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Life of the mother, physical health, fatal fetal anomaly"
+      notes: "Abortion is banned in almost all circumstances."
+
+    - state: "Mississippi"
+      state_slug: "mississippi"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Rape, life of the mother"
+      notes: "Mississippi's 15-week ban was the subject of Dobbs v. Jackson Women's Health Organization before its trigger law banned abortion at fertilization."
+
+    - state: "North Dakota"
+      state_slug: "north-dakota"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Rape, incest, life of the mother"
+      notes: "Abortion is banned in almost all circumstances."
+
+    - state: "Oklahoma"
+      state_slug: "oklahoma"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Life of the mother"
+      notes: "Abortion is banned in almost all circumstances."
+
+    - state: "South Dakota"
+      state_slug: "south-dakota"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Life of the mother"
+      notes: "Abortion is banned in almost all circumstances."
+
+    - state: "Tennessee"
+      state_slug: "tennessee"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Life of the mother"
+      notes: "Abortion is banned in almost all circumstances."
+
+    - state: "Texas"
+      state_slug: "texas"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Life of the mother, physical health"
+      notes: "Private citizens can sue abortion providers and anyone who assists a patient seeking an abortion after about six weeks of pregnancy."
+
+    - state: "West Virginia"
+      state_slug: "west-virginia"
+      status: "Illegal"
+      gestational_limit: "Banned"
+      exceptions: "Rape, incest, life of the mother, physical health, fatal fetal anomaly"
+      notes: "Rape and incest exceptions apply only up to eight weeks for adults and 14 weeks for those under 18."
+
+    # ── FUNCTIONAL BAN — 6 weeks (3) ────────────────────────────────────────
+    - state: "Florida"
+      state_slug: "florida"
+      status: "Functional Ban"
+      gestational_limit: "6 weeks"
+      exceptions: "Rape, incest, life of the mother, physical health, fatal fetal anomaly"
+      notes: "The Florida Supreme Court ruled in 2024 that the state constitution's privacy protections do not extend to abortion, allowing the six-week ban to take effect."
+
+    - state: "Georgia"
+      state_slug: "georgia"
+      status: "Functional Ban"
+      gestational_limit: "6 weeks"
+      exceptions: "Rape, incest, life of the mother, physical health, fatal fetal anomaly"
+      notes: "The state Supreme Court reversed a lower court's ruling that had voided the six-week ban in 2023."
+
+    - state: "South Carolina"
+      state_slug: "south-carolina"
+      status: "Functional Ban"
+      gestational_limit: "6 weeks"
+      exceptions: "Rape, incest, life of the mother, physical health, fatal fetal anomaly"
+      notes: "The South Carolina Supreme Court upheld the six-week ban in 2023 after striking down a similar 2021 version."
+
+    # ── VERY RESTRICTIVE — 6 to 18 weeks (4) ────────────────────────────────
+    - state: "Iowa"
+      state_slug: "iowa"
+      status: "Very Restrictive"
+      gestational_limit: "6 weeks"
+      exceptions: "Rape, incest, life of the mother, physical health"
+      notes: "A district court temporarily blocked the six-week ban after it passed in July 2023; the ban took effect in July 2024."
+
+    - state: "Nebraska"
+      state_slug: "nebraska"
+      status: "Very Restrictive"
+      gestational_limit: "12 weeks"
+      exceptions: "Life of the mother, physical health, rape, incest"
+      notes: "Gov. Jim Pillen signed the 12-week ban in 2023 after a six-week version failed in the unicameral Legislature."
+
+    - state: "North Carolina"
+      state_slug: "north-carolina"
+      status: "Very Restrictive"
+      gestational_limit: "13 weeks"
+      exceptions: "Life of the mother, physical health, fatal fetal anomaly"
+      notes: "A federal judge temporarily blocked a provision that providers said could have limited access to the abortion pill in early pregnancy."
+
+    - state: "Utah"
+      state_slug: "utah"
+      status: "Very Restrictive"
+      gestational_limit: "18 weeks"
+      exceptions: "Life of the mother, physical health, fatal fetal anomaly"
+      notes: "A separate near-total ban remains blocked pending a State Supreme Court ruling."
+
+    # ── LEGAL (31, including Washington, DC) ────────────────────────────────
+    - state: "Alaska"
+      state_slug: "alaska"
+      status: "Legal"
+      gestational_limit: "No limit"
+      exceptions: "None needed"
+      notes: "The state may require patients to undergo counseling."
+
+    - state: "Arizona"
+      state_slug: "arizona"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "None needed"
+      notes: "A 2024 constitutional amendment protects abortion rights; litigation ended enforcement of the state's earlier 15-week ban."
+
+    - state: "California"
+      state_slug: "california"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical or mental health"
+      notes: "Voters enshrined abortion protections in the state constitution in 2022."
+
+    - state: "Colorado"
+      state_slug: "colorado"
+      status: "Legal"
+      gestational_limit: "No limit"
+      exceptions: "None needed"
+      notes: "Minors must notify a parent of intent to obtain an abortion."
+
+    - state: "Connecticut"
+      state_slug: "connecticut"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical or mental health, fatal fetal anomaly"
+      notes: "2022 and 2023 laws shield providers and patients from out-of-state lawsuits."
+
+    - state: "Delaware"
+      state_slug: "delaware"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical or mental health, fatal fetal anomaly"
+      notes: "Minors must notify a parent of intent to obtain an abortion."
+
+    - state: "District of Columbia"
+      state_slug: "district-of-columbia"
+      status: "Legal"
+      gestational_limit: "No limit"
+      exceptions: "None needed"
+      notes: "Congress prohibits the use of taxpayer funds to cover the cost of most abortions in the city."
+
+    - state: "Hawaii"
+      state_slug: "hawaii"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical and mental health"
+      notes: "A 2023 law shields those seeking or providing abortions in Hawaii from laws in other states."
+
+    - state: "Illinois"
+      state_slug: "illinois"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical and mental health"
+      notes: "A 2023 law shields those seeking or providing abortions in Illinois from laws in other states."
+
+    - state: "Kansas"
+      state_slug: "kansas"
+      status: "Legal"
+      gestational_limit: "22 weeks"
+      exceptions: "Life of the mother, physical health"
+      notes: "Voters rejected a 2022 ballot measure that would have removed a state constitutional right to abortion recognized by the Kansas Supreme Court in 2019."
+
+    - state: "Maine"
+      state_slug: "maine"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother"
+      notes: "A 2023 law allows abortion past viability if a doctor decides it is medically necessary."
+
+    - state: "Maryland"
+      state_slug: "maryland"
+      status: "Legal"
+      gestational_limit: "No limit"
+      exceptions: "None needed"
+      notes: "Unless abuse is a concern, minors must notify a parent of intent to obtain an abortion."
+
+    - state: "Massachusetts"
+      state_slug: "massachusetts"
+      status: "Legal"
+      gestational_limit: "27 weeks"
+      exceptions: "Life of the mother, physical or mental health, severe fetal anomaly"
+      notes: "Minors must obtain parental permission to obtain an abortion."
+
+    - state: "Michigan"
+      state_slug: "michigan"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Medically indicated based on factors relevant to the pregnant person's well-being, including age and physical, emotional, psychological, and family considerations"
+      notes: "Voters enshrined abortion protections in the state constitution in November 2022."
+
+    - state: "Minnesota"
+      state_slug: "minnesota"
+      status: "Legal"
+      gestational_limit: "No limit"
+      exceptions: "None needed"
+      notes: "Minors must notify a parent of intent to obtain an abortion."
+
+    - state: "Missouri"
+      state_slug: "missouri"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical or mental health"
+      notes: "Amendment 3 (November 2024) added abortion rights to the state constitution up to viability, reversing a near-total ban that had been in effect since Dobbs."
+
+    - state: "Montana"
+      state_slug: "montana"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical health"
+      notes: "Minors must notify a parent of intent to obtain an abortion."
+
+    - state: "Nevada"
+      state_slug: "nevada"
+      status: "Legal"
+      gestational_limit: "26 weeks"
+      exceptions: "Life of the mother, physical and mental health"
+      notes: "State funds cannot be used to cover the cost of most abortions."
+
+    - state: "New Hampshire"
+      state_slug: "new-hampshire"
+      status: "Legal"
+      gestational_limit: "24 weeks"
+      exceptions: "Life of the mother, physical health, fatal fetal anomaly"
+      notes: "Minors must obtain parental permission. The state repealed a pre-Roe abortion ban in 1997."
+
+    - state: "New Jersey"
+      state_slug: "new-jersey"
+      status: "Legal"
+      gestational_limit: "No limit"
+      exceptions: "None needed"
+      notes: "State law protects abortion throughout pregnancy."
+
+    - state: "New Mexico"
+      state_slug: "new-mexico"
+      status: "Legal"
+      gestational_limit: "No limit"
+      exceptions: "None needed"
+      notes: "New Mexico has become a destination for patients traveling from neighboring ban states."
+
+    - state: "New York"
+      state_slug: "new-york"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical and mental health"
+      notes: "State law protects abortion; 2022 laws shield patients and providers from laws in other states."
+
+    - state: "Ohio"
+      state_slug: "ohio"
+      status: "Legal"
+      gestational_limit: "22 weeks"
+      exceptions: "Life of the mother, physical health"
+      notes: "Voters enshrined abortion protections in the state constitution in 2023; courts are still deciding how the amendment affects an existing six-week ban."
+
+    - state: "Oregon"
+      state_slug: "oregon"
+      status: "Legal"
+      gestational_limit: "No limit"
+      exceptions: "None needed"
+      notes: "A 2023 law shields those seeking or providing abortions in Oregon from laws in other states."
+
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      status: "Legal"
+      gestational_limit: "24 weeks"
+      exceptions: "Life of the mother, physical health"
+      notes: "Counseling and parental permission are required; state funds cannot be used to cover the cost of most abortions."
+
+    - state: "Rhode Island"
+      state_slug: "rhode-island"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother"
+      notes: "Minors must obtain parental permission to obtain an abortion."
+
+    - state: "Vermont"
+      state_slug: "vermont"
+      status: "Legal"
+      gestational_limit: "No limit"
+      exceptions: "None needed"
+      notes: "Voters enshrined abortion protections in the state constitution in November 2022."
+
+    - state: "Virginia"
+      state_slug: "virginia"
+      status: "Legal"
+      gestational_limit: "28 weeks"
+      exceptions: "Life of the mother, physical health"
+      notes: "Abortion is not expressly protected by state law, and state funds cannot be used to cover the cost of most abortions."
+
+    - state: "Washington"
+      state_slug: "washington"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical health"
+      notes: "A 2023 law shields those seeking or providing abortions in Washington from laws in other states."
+
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      status: "Legal"
+      gestational_limit: "22 weeks"
+      exceptions: "Life of the mother, physical health"
+      notes: "A 2023 court ruling found the state's 1849 law, long interpreted as an abortion ban, does not apply to abortion."
+
+    - state: "Wyoming"
+      state_slug: "wyoming"
+      status: "Legal"
+      gestational_limit: "Viability"
+      exceptions: "Life of the mother, physical and mental health"
+      notes: "A judge blocked Wyoming's abortion bans in August 2024; the bans remain indefinitely blocked, and the state limits public funding for abortion."
+
+sections:
+  - id: "ban-states-with-no-exception-for-rape-or-incest"
+    icon: "fa-solid fa-gavel"
+    title: "Ban States With No Exception for Rape or Incest"
+    paragraphs:
+      - "Eight of the 13 states that ban abortion outright allow no exception for rape or incest: Alabama, Arkansas, Kentucky, Louisiana, Oklahoma, South Dakota, Tennessee, and Texas. Arkansas, Oklahoma, South Dakota, and Tennessee permit an abortion only to save the mother's life. Alabama adds an exception for fatal fetal anomaly; Kentucky, Louisiana, and Texas add one for the mother's physical health."
+      - "The remaining five ban states permit an exception for rape or incest: Mississippi, Indiana, West Virginia, Idaho, and North Dakota. West Virginia limits that exception to the first eight weeks of pregnancy for adults and 14 weeks for those under 18. Indiana also allows an exception for religious reasons."
+
+  - id: "states-where-abortion-requires-no-legal-reason"
+    icon: "fa-solid fa-circle-check"
+    title: "States Where Abortion Requires No Legal Reason"
+    paragraphs:
+      - "Ten Legal-status jurisdictions require no documented reason at all for an abortion: Alaska, Arizona, Colorado, Maryland, Minnesota, New Jersey, New Mexico, Oregon, Vermont, and Washington, DC. Nine of the ten, all but Arizona, also place no gestational limit on the procedure. Arizona's limit is viability, since a 2024 constitutional amendment ended enforcement of its earlier 15-week ban."
+
+faq:
+  - question: "How many states ban abortion in 2026?"
+    answer: "13 states ban abortion outright in 2026: Alabama, Arkansas, Idaho, Indiana, Kentucky, Louisiana, Mississippi, North Dakota, Oklahoma, South Dakota, Tennessee, Texas, and West Virginia. Three more, Florida, Georgia, and South Carolina, enforce a functional ban at six weeks of pregnancy."
+
+  - question: "Which states allow no exception for rape or incest?"
+    answer: "Alabama, Arkansas, Kentucky, Louisiana, Oklahoma, South Dakota, Tennessee, and Texas ban abortion with no rape or incest exception. Arkansas, Oklahoma, South Dakota, and Tennessee permit the procedure only to save the mother's life."
+
+  - question: "Is abortion legal in Texas?"
+    answer: "No. Texas bans abortion in almost all circumstances, with an exception only for the mother's life and physical health. Private citizens can sue abortion providers and anyone who assists a patient seeking an abortion after about six weeks of pregnancy."
+
+  - question: "What states have no gestational limit on abortion?"
+    answer: "Nine jurisdictions place no gestational limit on abortion: Alaska, Colorado, Maryland, Minnesota, New Jersey, New Mexico, Oregon, Vermont, and Washington, DC. None of the nine require a documented reason, such as rape or a health risk, at any stage of pregnancy."
+
+  - question: "Does Missouri ban abortion?"
+    answer: "No. Missouri allows abortion up to viability after voters approved Amendment 3 in November 2024, reversing the near-total ban that had been in effect since the Dobbs ruling."
+
+  - question: "What is a functional abortion ban?"
+    answer: "A functional ban restricts abortion so early, typically six weeks, that most patients do not yet know they are pregnant. Florida, Georgia, South Carolina, and Iowa enforce six-week limits, alongside 12-, 13-, and 18-week limits in Nebraska, North Carolina, and Utah."
+
+related:
+  - title: "Abortion Laws by State"
+    url: "/rankings/law/abortion-laws-by-state"
+  - title: "Marijuana Laws by State"
+    url: "/rankings/law/marijuana-legality-by-state"
+  - title: "Concealed Carry Laws by State"
+    url: "/rankings/law/gun-laws-concealed-carry"

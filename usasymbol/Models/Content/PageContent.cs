@@ -117,7 +117,9 @@ namespace USASymbol.Models.Content
         public string? HeroImage { get; set; }
         public string? HeroImageAlt { get; set; }
         public string? HeroImageCaption { get; set; }
+        public string? AudioUrl { get; set; }
         public PageMap? Map { get; set; }
+        public PagePointMap? PointMap { get; set; }
         public PageHeatmap? Heatmap { get; set; }
         public List<VisualAsset> VisualAssets { get; set; } = new();
         public RankingCompareData? Compare { get; set; }
@@ -171,7 +173,7 @@ namespace USASymbol.Models.Content
         public List<PageSource> Sources { get; set; } = new();
     }
 
-    public class PageSection
+    public class PageSection : IContentSection
     {
         public string Id { get; set; } = "";
         public string Icon { get; set; } = "";
@@ -182,8 +184,12 @@ namespace USASymbol.Models.Content
         public List<string> Paragraphs { get; set; } = new();
         public List<PageSubsection>? Subsections { get; set; }
         public List<string>? Facts { get; set; }
+        public List<string>? ListItems { get; set; }
         public PageSectionTable? Table { get; set; }
         public List<PageHighlight>? Highlights { get; set; }
+
+        List<IContentSubsection>? IContentSection.Subsections =>
+            Subsections?.Cast<IContentSubsection>().ToList();
     }
 
     public class PageHighlight
@@ -211,12 +217,14 @@ namespace USASymbol.Models.Content
         public List<string> Cells { get; set; } = new();
     }
 
-    public class PageSubsection
+    public class PageSubsection : IContentSubsection
     {
+        public string Id { get; set; } = "";
         public string Subtitle { get; set; } = "";
         public string Status { get; set; } = "";
         public string Text { get; set; } = "";
         public LinkData? Link { get; set; }
+        public List<string>? ListItems { get; set; }
         public List<string>? AnchorPhrases { get; set; }
         public string? Image { get; set; }
         public string? ImageCaption { get; set; }
@@ -229,7 +237,7 @@ namespace USASymbol.Models.Content
         public string Description { get; set; } = "";
     }
 
-    public class PageFaq
+    public class PageFaq : IFaqItem
     {
         public string Question { get; set; } = "";
         public string Answer { get; set; } = "";
@@ -269,6 +277,30 @@ namespace USASymbol.Models.Content
         public string Style { get; set; } = "chips";
         public string? AccentColor { get; set; }
         public bool UseColors { get; set; } = false;
+    }
+
+    public class PagePointMap
+    {
+        public string Title { get; set; } = "";
+        public string ImageAlt { get; set; } = "";
+        public string? Caption { get; set; }
+        public int MaxZoom { get; set; } = 10;
+        public List<PagePointMarker> Markers { get; set; } = new();
+    }
+
+    public class PagePointMarker
+    {
+        public int Rank { get; set; }
+        public string Slug { get; set; } = "";
+        public string? Anchor { get; set; }
+        public string Name { get; set; } = "";
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double? TotalCrimeRate { get; set; }
+        public double? ViolentCrimeRate { get; set; }
+        public double? PropertyCrimeRate { get; set; }
+        public int? CoveragePopulation { get; set; }
+        public string? PopupText { get; set; }
     }
 
     public class PageHeatmap

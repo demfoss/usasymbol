@@ -1,0 +1,73 @@
+@using USASymbol.Services.Content
+
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+
+    var states = (List<UsStateRef>)(ViewBag.States ?? new List<UsStateRef>());
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">Time Zone Finder</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>Time Zone <em>Finder</em></h1>
+            <p class="tl-lede">
+                Find which U.S. time zone a state or ZIP code falls in, with standard and
+                daylight-saving UTC offsets.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="zg-panel" id="tz-finder" data-lookup-url="/tools/timezone-finder/lookup">
+            <div class="tl-lookup-form tl-mode-row" id="tz-tabs">
+                <div class="zg-field">
+                    <label for="tz-mode">Search by</label>
+                    <select id="tz-mode">
+                        <option value="state">State</option>
+                        <option value="zip">ZIP code</option>
+                    </select>
+                </div>
+            </div>
+            <form class="tl-lookup-form" id="tz-form">
+                <div class="zg-field" id="tz-state-field">
+                    <label for="tz-state">State</label>
+                    <select id="tz-state">
+                        <option value="">Select a state…</option>
+                        @foreach (var state in states)
+                        {
+                            <option value="@state.Code">@state.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="zg-field hidden" id="tz-zip-field">
+                    <label for="tz-zip">ZIP code</label>
+                    <input type="text" id="tz-zip" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="e.g. 60601" autocomplete="off" />
+                </div>
+                <div class="zg-actions">
+                    <button type="submit" class="zg-btn zg-btn-primary">
+                        <i class="fa-solid fa-clock" aria-hidden="true"></i> Find Time Zone
+                    </button>
+                </div>
+            </form>
+            <p class="zg-status" id="tz-status" role="status" aria-live="polite"></p>
+            <div id="tz-result"></div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script defer src="~/js/timezone-finder.js" asp-append-version="true"></script>
+}

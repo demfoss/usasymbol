@@ -28,7 +28,7 @@
         : System.Net.WebUtility.HtmlDecode(descRaw);
     ViewData["OgImage"] = Images.Full(Model.Symbol?.ImageUrl ?? Model.State?.FlagImageUrl);
     ViewData["OgType"] = "article";
-    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+    ViewData["Canonical"] = Model.CanonicalUrl ?? Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
 
     var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
         .Where(x => !string.IsNullOrWhiteSpace(x?.Value))

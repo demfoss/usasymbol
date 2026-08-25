@@ -1,0 +1,78 @@
+@using System.Text.Json
+@using USASymbol.Services.Content
+
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+
+    var states = (List<UsStateRef>)(ViewBag.States ?? new List<UsStateRef>());
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">Population Lookup</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>Population <em>Lookup</em></h1>
+            <p class="tl-lede">
+                Look up the population of any U.S. ZIP code, or a city's combined population
+                across all of its ZIP codes. Based on U.S. Census ZIP Code Tabulation Area data.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="zg-panel" id="pop-lookup" data-lookup-url="/tools/population-lookup/lookup">
+            <div class="tl-lookup-form tl-mode-row" id="pl-tabs">
+                <div class="zg-field">
+                    <label for="pl-mode">Search by</label>
+                    <select id="pl-mode">
+                        <option value="zip">ZIP code</option>
+                        <option value="city">City</option>
+                    </select>
+                </div>
+            </div>
+            <form class="tl-lookup-form" id="pl-form">
+                <div class="zg-field" id="pl-zip-field">
+                    <label for="pl-zip">ZIP code</label>
+                    <input type="text" id="pl-zip" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="e.g. 60601" autocomplete="off" />
+                </div>
+                <div class="zg-field hidden" id="pl-city-field">
+                    <label for="pl-city">City</label>
+                    <input type="text" id="pl-city" placeholder="e.g. Chicago" autocomplete="off" />
+                </div>
+                <div class="zg-field hidden" id="pl-state-field">
+                    <label for="pl-state">State</label>
+                    <select id="pl-state">
+                        <option value="">Select a state…</option>
+                        @foreach (var state in states)
+                        {
+                            <option value="@state.Code">@state.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="zg-actions">
+                    <button type="submit" class="zg-btn zg-btn-primary">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Look Up
+                    </button>
+                </div>
+            </form>
+            <p class="zg-status" id="pl-status" role="status" aria-live="polite"></p>
+            <div id="pl-result"></div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script defer src="~/js/population-lookup.js" asp-append-version="true"></script>
+}

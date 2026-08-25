@@ -1,0 +1,59 @@
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">Distance Calculator</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>ZIP Code Distance <em>Calculator</em></h1>
+            <p class="tl-lede">
+                Enter two U.S. ZIP codes to calculate the straight-line ("as the crow flies")
+                distance between them in miles and kilometers.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="zg-panel" id="distance-calc" data-calculate-url="/tools/distance-calculator/calculate">
+            <form id="dc-form">
+                <div class="tl-distance-grid">
+                    <div class="zg-field">
+                        <label for="dc-from">From ZIP code</label>
+                        <input type="text" id="dc-from" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="e.g. 10001" autocomplete="off" />
+                    </div>
+                    <button type="button" class="tl-distance-swap" id="dc-swap" aria-label="Swap ZIP codes" title="Swap">
+                        <i class="fa-solid fa-right-left" aria-hidden="true"></i>
+                    </button>
+                    <div class="zg-field">
+                        <label for="dc-to">To ZIP code</label>
+                        <input type="text" id="dc-to" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="e.g. 90001" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="zg-actions tl-distance-actions">
+                    <button type="submit" class="zg-btn zg-btn-primary">
+                        <i class="fa-solid fa-ruler" aria-hidden="true"></i> Calculate Distance
+                    </button>
+                </div>
+            </form>
+            <p class="zg-status" id="dc-status" role="status" aria-live="polite"></p>
+            <div id="dc-result"></div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script defer src="~/js/distance-calculator.js" asp-append-version="true"></script>
+}

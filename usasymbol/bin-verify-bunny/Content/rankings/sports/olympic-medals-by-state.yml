@@ -1,0 +1,200 @@
+type: ranking
+slug: olympic-medals-by-state
+category: sports
+url: /rankings/sports/olympic-medals-by-state
+auto_link_phrases:
+  - "Olympic medals by state"
+  - "which state has the most Olympic medals"
+  - "Olympic gold medals by state"
+  - "states with the most Olympians"
+extremes_mode: none
+hero_image: "/images/rankings/sports/olympic-medals-by-state/olympic-medals-by-state.png"
+hero_image_alt: "Map of the United States color-coded by all-time individual Olympic gold medals by state of birth, led by California"
+
+author: "USA Symbol Team"
+date_published: "2026-08-12"
+date_modified: "2026-08-12"
+
+seo:
+  title: "Olympic Medals by State | Map, Gold Count & Athletes"
+  description: "California has won 127 individual Olympic gold medals, more than any other state. New York ranks second with 70, and Ohio third with 44."
+
+page:
+  h1: "Olympic Medals by State"
+
+  quick_answer:
+    - "California has produced more Olympic gold medalists than any other state, 127 individual gold medals dating back to 1896, well ahead of second-place New York's 70."
+    - "Ohio ranks third with 44 individual golds, ahead of Illinois (40) and Texas (34). Pennsylvania and Maryland are tied for sixth at 31 each, with New Jersey close behind at 23."
+    - "At the 2024 Paris Olympics, California again sent the most athletes of any state, 143, while Wyoming and North Dakota sent none."
+
+  methodology: "Counts individual Olympic gold medals by athlete birth state for the Summer Games, 1896 through 2020; team-sport medals are excluded because they cannot be attributed to a single state. The 2024 figures track the home state of each Team USA athlete, a separate measure from the all-time gold count."
+
+  sources:
+    - name: "The Sports Geek. US Olympic Medals by State"
+      url: "https://www.thesportsgeek.com/blog/us-olympic-medals-by-state/"
+      description: "All-time individual Olympic gold medal count by athlete birth state, 1896 through Tokyo 2020"
+    - name: "KGW / TEGNA. 2024 Paris Olympics: States With the Most Team USA Athletes"
+      url: "https://www.kgw.com/article/sports/olympics/2024-paris-olympics-states-team-usa-states-most-olympians/507-ad798a6f-1734-4c1e-bf9b-d559e2012db8"
+      description: "State-by-state breakdown of Team USA athlete home states for the 2024 Paris Olympics"
+
+map:
+  title: "All-Time Olympic Gold Medals by State"
+  image: "/images/rankings/sports/olympic-medals-by-state/olympic-medals-by-state-map.webp"
+  image_alt: "Map of the United States shaded by all-time individual Olympic gold medal count by birth state, from California's 127 to New Jersey's 23"
+  caption: "California's 127 individual gold medals are the most of any state, more than the next 3 states combined. New York (70) and Ohio (44) round out the top three."
+  metric_key: gold_medals
+  metric_label: "gold medals"
+  color_scheme: amber
+  color_scale: linear
+
+table:
+  note: "Figures count individual gold medals only. Team-sport medals, such as basketball or relay victories, are excluded because a single state cannot claim them."
+  columns:
+    rank: "#"
+    state: "State"
+    gold_medals: "Gold Medals"
+
+  metric_default: gold_medals
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      gold_medals: 127
+
+    - rank: 2
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      gold_medals: 70
+
+    - rank: 3
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      gold_medals: 44
+
+    - rank: 4
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      gold_medals: 40
+
+    - rank: 5
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      gold_medals: 34
+
+    - rank: 6
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      gold_medals: 31
+
+    - rank: 6
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      gold_medals: 31
+
+    - rank: 8
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      gold_medals: 23
+
+sections:
+  - id: "states-with-the-most-olympic-gold-medals"
+    icon: "fa-solid fa-medal"
+    title: "States With the Most Olympic Gold Medals"
+    paragraphs:
+      - "California's 127 individual Olympic gold medals are more than New York (70), Ohio (44), and Illinois (40) combined. No other state comes within 50 golds of California's total."
+      - "Pennsylvania and Maryland are tied for sixth place with 31 golds each, and New Jersey rounds out the group with 23. The next Summer Olympics, in 2028, will be hosted in Los Angeles, California."
+    table:
+      numbered: true
+      columns:
+        state: "State"
+        gold_medals: "Gold Medals"
+      rows:
+        - state: "California"
+          gold_medals: 127
+        - state: "New York"
+          gold_medals: 70
+        - state: "Ohio"
+          gold_medals: 44
+        - state: "Illinois"
+          gold_medals: 40
+        - state: "Texas"
+          gold_medals: 34
+        - state: "Pennsylvania"
+          gold_medals: 31
+        - state: "Maryland"
+          gold_medals: 31
+        - state: "New Jersey"
+          gold_medals: 23
+
+  - id: "why-california-leads-all-states-in-olympic-gold-medals"
+    icon: "fa-solid fa-star"
+    title: "Why California Leads All States in Olympic Gold Medals"
+    paragraphs:
+      - "Part of California's 127-gold total traces to a single athlete: swimmer Mark Spitz, born in Modesto, won 7 individual golds at the 1972 Munich Games alone, a haul larger than New Jersey's entire all-time state total of 23."
+      - "California's lead also reflects decades of sustained output rather than one performance. Its 127 golds stretch across the full 1896-2020 span this count covers, more than double Ohio's third-place total of 44."
+
+  - id: "which-states-sent-the-most-athletes-to-the-2024-olympics"
+    icon: "fa-solid fa-flag-usa"
+    title: "Which States Sent the Most Athletes to the 2024 Olympics"
+    paragraphs:
+      - "California sent 143 athletes to the 2024 Paris Olympics, more than any other state and roughly triple Texas's 43. Florida sent 42, and Illinois, Pennsylvania, and Georgia each sent 27."
+      - "New York sent 31 athletes and New Jersey 23, while Connecticut sent 11. Wyoming and North Dakota were the only 2 states that sent no athletes to Paris at all."
+
+visual_assets:
+  - id: states-with-the-most-olympic-gold-medals
+    src: /images/rankings/sports/olympic-medals-by-state/states-with-the-most-olympic-gold-medals.jpg
+    alt: "Olympic gold medals arranged on a dark surface"
+    caption: "California's gold-medal total still stands far above every other state."
+    section: states-with-the-most-olympic-gold-medals
+    layout: full-width-tall
+
+  - id: why-california-leads-all-states-in-olympic-gold-medals
+    src: /images/rankings/sports/olympic-medals-by-state/why-california-leads-all-states-in-olympic-gold-medals.jpg
+    alt: "Olympic swimmer diving into a pool at competition"
+    caption: "California's lead reflects both stars like Mark Spitz and a long pipeline of elite athletes."
+    section: why-california-leads-all-states-in-olympic-gold-medals
+    layout: full-width-tall
+
+  - id: which-states-sent-the-most-athletes-to-the-2024-olympics
+    src: /images/rankings/sports/olympic-medals-by-state/which-states-sent-the-most-athletes-to-the-2024-olympics.jpg
+    alt: "Track athletes carrying Team USA gear in a stadium tunnel"
+    caption: "California also led the way in Team USA athlete count for the 2024 Paris Olympics."
+    section: which-states-sent-the-most-athletes-to-the-2024-olympics
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has won the most Olympic gold medals?"
+    answer: "California has won the most individual Olympic gold medals of any state, 127 dating back to 1896. New York ranks second with 70."
+
+  - question: "How many Olympic gold medals does New York have?"
+    answer: "New York has 70 individual Olympic gold medals, second among all states behind California's 127 and ahead of third-place Ohio's 44."
+
+  - question: "Which states are tied for Olympic gold medals?"
+    answer: "Pennsylvania and Maryland are tied for sixth place with 31 individual gold medals each."
+
+  - question: "Which state sent the most athletes to the 2024 Olympics?"
+    answer: "California sent 143 athletes to the 2024 Paris Olympics, the most of any state. Texas was second with 43, and Florida third with 42."
+
+  - question: "Did every state send an athlete to the 2024 Olympics?"
+    answer: "No. Wyoming and North Dakota were the only 2 states that sent no athletes to the 2024 Paris Olympics."
+
+  - question: "Where are the next Summer Olympics?"
+    answer: "The next Summer Olympics are scheduled for 2028 in Los Angeles, California, the state with the most all-time individual gold medals."
+
+related:
+  - title: "Most Popular Sport by State"
+    url: "/rankings/sports/most-popular-sport-by-state"
+  - title: "NCAA Division 1 Schools by State"
+    url: "/rankings/sports/ncaa-division-1-schools-by-state"
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"

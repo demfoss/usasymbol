@@ -1,0 +1,56 @@
+@using USASymbol.Models.Content
+@using USASymbol.Extensions
+@model SongContent
+
+@{
+    var hasVerses = (Model.LyricsIsPublicDomain || Model.LyricsIsUserProvided)
+        && Model.LyricsVerses?.Any(v => !string.IsNullOrWhiteSpace(v)) == true;
+    var songName = string.IsNullOrWhiteSpace(Model.Name) ? "this song" : Model.Name;
+}
+
+<div class="lyrics-block my-6 clear-both border border-indigo-100 bg-indigo-50/40">
+    <div class="flex items-center gap-2 border-b border-indigo-100 px-5 py-3 sm:px-6">
+        <i class="fa-solid fa-quote-left text-indigo-500 text-sm" aria-hidden="true"></i>
+        <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600">Lyrics</span>
+    </div>
+
+    @if (hasVerses)
+    {
+        <div class="grid gap-6 px-5 py-6 sm:grid-cols-2 sm:px-6 sm:py-8">
+            @foreach (var verse in Model.LyricsVerses!.Where(v => !string.IsNullOrWhiteSpace(v)))
+            {
+                <p class="font-serif italic leading-8 text-slate-800 whitespace-pre-line">@verse.Trim()</p>
+            }
+        </div>
+        @if (Model.LyricsIsUserProvided || !string.IsNullOrWhiteSpace(Model.LyricsSourceUrl))
+        {
+            <div class="border-t border-indigo-100 px-5 py-3 text-sm text-slate-500 sm:px-6">
+                @(Model.LyricsIsPublicDomain ? "Public domain lyrics." : "Lyrics supplied by the site editor.")
+                @if (!string.IsNullOrWhiteSpace(Model.LyricsSourceUrl))
+                {
+                    <a href="@Model.LyricsSourceUrl" target="_blank" rel="noopener noreferrer" class="text-indigo-700 underline underline-offset-2">
+                        @(string.IsNullOrWhiteSpace(Model.LyricsSourceName) ? "Source" : Model.LyricsSourceName)
+                    </a>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div class="px-5 py-6 sm:px-6">
+            <p class="text-sm leading-6 text-slate-700">
+                @(string.IsNullOrWhiteSpace(Model.LyricsNote)
+                    ? $"{songName} remains under copyright, so its full lyrics are not reproduced here."
+                    : Model.LyricsNote.RenderAutoLinks())
+            </p>
+            @if (!string.IsNullOrWhiteSpace(Model.LyricsSourceUrl))
+            {
+                <a href="@Model.LyricsSourceUrl" target="_blank" rel="noopener noreferrer"
+                   class="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-700 underline underline-offset-2">
+                    Read the full lyrics
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs" aria-hidden="true"></i>
+                </a>
+            }
+        </div>
+    }
+</div>

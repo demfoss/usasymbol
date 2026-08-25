@@ -1,0 +1,545 @@
+type: ranking
+slug: voter-registration-rate-by-state
+category: government
+url: /rankings/government/voter-registration-rate-by-state
+auto_link_phrases:
+  - "voter registration rate by state"
+  - "voter registration by state"
+  - "percentage of registered voters by state"
+  - "states with the highest voter registration"
+  - "CPS voter registration rate"
+extremes_mode: both
+extremes_title: "Highest and Lowest Voter Registration Rates by State"
+hero_image: "/images/rankings/government/voter-registration-rate-by-state/voter-registration-rate-by-state-hero.jpg"
+hero_image_alt: "Person filling out a voter registration form at a table"
+hero_image_caption: "Minnesota has the highest voter registration rate of any state at 83.6% of the citizen voting-age population, while Arkansas ranks last at 64.7%."
+
+author: "USA Symbol Team"
+date_published: "2026-08-25"
+date_modified: "2026-08-25"
+
+seo:
+  title: "Voter Registration Rate by State | Map & 2024 Data"
+  description: "Minnesota has the highest voter registration rate at 83.6% of the citizen voting-age population. Arkansas ranks last at 64.7%."
+
+page:
+  h1: "Voter Registration Rate by State"
+
+  quick_answer:
+    - "Minnesota has the highest voter registration rate of any state, 83.6% of the citizen voting-age population registered for the 2024 election. Oregon follows at 83.0%, and New Jersey ranks third at 81.9%."
+    - "Arkansas ranks last at 64.7% registered, the only state below 65% and 18.9 points behind Minnesota. Louisiana (66.0%) and New York (66.2%) are the next-lowest states."
+    - "The national voter registration rate is 73.6%. Eighteen states fall below that figure, including Texas (69.1%), Florida (67.0%), and California (72.9%)."
+
+  methodology: "Registration rates measure the share of the citizen voting-age population registered to vote, as reported in the Current Population Survey Voting and Registration Supplement for November 2024. Figures are self-reported survey estimates, not administrative voter-roll counts, and are distinct from this site's separate ranking of voter turnout, which measures ballots actually cast."
+
+  sources:
+    - name: "U.S. Census Bureau — Current Population Survey, Voting and Registration Supplement, November 2024"
+      url: "https://www.census.gov/data/tables/time-series/demo/voting-and-registration/p20-590.html"
+      description: "Survey-based registration rate estimates for the citizen voting-age population, by state"
+    - name: "KFF State Health Facts — Number of Voters and Voter Registration as a Share of the Voter Population"
+      url: "https://www.kff.org/state-health-policy-data/state-indicator/number-of-voters-and-voter-registration-in-thousands-as-a-share-of-the-voter-population/"
+      description: "State-by-state compilation of Census CPS registration-rate data"
+    - name: "National Conference of State Legislatures — Same Day Voter Registration"
+      url: "https://www.ncsl.org/elections-and-campaigns/same-day-voter-registration"
+      description: "State-by-state listing of same-day and automatic voter registration laws"
+    - name: "National Conference of State Legislatures — Online Voter Registration"
+      url: "https://www.ncsl.org/elections-and-campaigns/online-voter-registration-in-the-states"
+      description: "State-by-state listing of online voter registration availability"
+
+map:
+  title: "Voter Registration Rate by State Map"
+  image_alt: "U.S. map showing 2024 voter registration rate by state using a teal gradient; Minnesota and Oregon are darkest and Arkansas appears lightest"
+  caption: "Minnesota (83.6%) and Oregon (83.0%) anchor the top of the map in deep teal. Arkansas (64.7%) is the only state below 65% and appears lightest on the scale."
+  metric_key: registration_pct
+  metric_label: "Registration Rate"
+  color_scheme: teal
+  color_scale: linear
+  detail_keys: [registration_pct]
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    registration_pct: "Registration Rate"
+
+  metric_default: registration_pct
+  sort_default: desc
+
+  column_formats:
+    registration_pct: "0.0'%'"
+
+  rows:
+    - rank: 1
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      registration_pct: 83.6
+
+    - rank: 2
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      registration_pct: 83.0
+
+    - rank: 3
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      registration_pct: 81.9
+
+    - rank: 4
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      registration_pct: 81.0
+
+    - rank: 5
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      registration_pct: 80.8
+
+    - rank: 6
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      registration_pct: 80.6
+
+    - rank: 7
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      registration_pct: 80.5
+
+    - rank: 8
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      registration_pct: 80.4
+
+    - rank: 9
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      registration_pct: 79.8
+
+    - rank: 10
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      registration_pct: 79.6
+
+    - rank: 11
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      registration_pct: 79.5
+      notes: "Tied with Rhode Island"
+
+    - rank: 12
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      registration_pct: 79.5
+      notes: "Tied with Missouri"
+
+    - rank: 13
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      registration_pct: 78.6
+
+    - rank: 14
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      registration_pct: 78.3
+
+    - rank: 15
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      registration_pct: 78.1
+
+    - rank: 16
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      registration_pct: 77.4
+
+    - rank: 17
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      registration_pct: 77.2
+
+    - rank: 18
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      registration_pct: 77.1
+
+    - rank: 19
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      registration_pct: 76.8
+
+    - rank: 20
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      registration_pct: 76.3
+
+    - rank: 21
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      registration_pct: 76.1
+
+    - rank: 22
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      registration_pct: 75.7
+
+    - rank: 23
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      registration_pct: 75.4
+
+    - rank: 24
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      registration_pct: 75.1
+      notes: "Tied with Tennessee"
+
+    - rank: 25
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      registration_pct: 75.1
+      notes: "Tied with Ohio"
+
+    - rank: 26
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      registration_pct: 74.7
+
+    - rank: 27
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      registration_pct: 74.0
+
+    - rank: 28
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      registration_pct: 73.8
+      notes: "Tied with Montana, Nebraska, and West Virginia"
+
+    - rank: 29
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      registration_pct: 73.8
+      notes: "Tied with Colorado, Nebraska, and West Virginia"
+
+    - rank: 30
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      registration_pct: 73.8
+      notes: "Tied with Colorado, Montana, and West Virginia"
+
+    - rank: 31
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      registration_pct: 73.8
+      notes: "Tied with Colorado, Montana, and Nebraska"
+
+    - rank: 32
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      registration_pct: 73.7
+
+    - rank: 33
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      registration_pct: 73.5
+
+    - rank: 34
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      registration_pct: 73.3
+
+    - rank: 35
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      registration_pct: 72.9
+
+    - rank: 36
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      registration_pct: 72.2
+
+    - rank: 37
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      registration_pct: 71.2
+
+    - rank: 38
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      registration_pct: 70.8
+
+    - rank: 39
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      registration_pct: 70.7
+
+    - rank: 40
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      registration_pct: 70.5
+
+    - rank: 41
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      registration_pct: 69.8
+
+    - rank: 42
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      registration_pct: 69.3
+
+    - rank: 43
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      registration_pct: 69.1
+
+    - rank: 44
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      registration_pct: 69.0
+
+    - rank: 45
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      registration_pct: 68.9
+
+    - rank: 46
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      registration_pct: 67.6
+
+    - rank: 47
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      registration_pct: 67.0
+
+    - rank: 48
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      registration_pct: 66.2
+
+    - rank: 49
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      registration_pct: 66.0
+
+    - rank: 50
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      registration_pct: 64.7
+
+sections:
+  - id: "highest-voter-registration-states"
+    icon: "fa-solid fa-arrow-trend-up"
+    title: "States with the Highest Voter Registration Rate"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        registration_pct: "Registration Rate"
+      rows:
+        - rank: 1
+          state: "Minnesota"
+          state_slug: "minnesota"
+          registration_pct: "83.6%"
+        - rank: 2
+          state: "Oregon"
+          state_slug: "oregon"
+          registration_pct: "83.0%"
+        - rank: 3
+          state: "New Jersey"
+          state_slug: "new-jersey"
+          registration_pct: "81.9%"
+        - rank: 4
+          state: "Mississippi"
+          state_slug: "mississippi"
+          registration_pct: "81.0%"
+        - rank: 5
+          state: "Michigan"
+          state_slug: "michigan"
+          registration_pct: "80.8%"
+        - rank: 6
+          state: "Iowa"
+          state_slug: "iowa"
+          registration_pct: "80.6%"
+        - rank: 7
+          state: "Kentucky"
+          state_slug: "kentucky"
+          registration_pct: "80.5%"
+        - rank: 8
+          state: "Maryland"
+          state_slug: "maryland"
+          registration_pct: "80.4%"
+        - rank: 9
+          state: "Kansas"
+          state_slug: "kansas"
+          registration_pct: "79.8%"
+        - rank: 10
+          state: "Virginia"
+          state_slug: "virginia"
+          registration_pct: "79.6%"
+    paragraphs:
+      - "Minnesota registers 83.6% of its citizen voting-age population, the highest rate in the country and half a point ahead of second-place Oregon (83.0%). New Jersey (81.9%), Mississippi (81.0%), and Michigan (80.8%) round out the top five."
+      - "Eight states clear 80% registration: Minnesota, Oregon, New Jersey, Mississippi, Michigan, Iowa (80.6%), Kentucky (80.5%), and Maryland (80.4%). Kansas (79.8%) and Virginia (79.6%) are the next closest, just under that mark."
+
+  - id: "lowest-voter-registration-states"
+    icon: "fa-solid fa-arrow-trend-down"
+    title: "States with the Lowest Voter Registration Rate"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        registration_pct: "Registration Rate"
+      rows:
+        - rank: 50
+          state: "Arkansas"
+          state_slug: "arkansas"
+          registration_pct: "64.7%"
+        - rank: 49
+          state: "Louisiana"
+          state_slug: "louisiana"
+          registration_pct: "66.0%"
+        - rank: 48
+          state: "New York"
+          state_slug: "new-york"
+          registration_pct: "66.2%"
+        - rank: 47
+          state: "Florida"
+          state_slug: "florida"
+          registration_pct: "67.0%"
+        - rank: 46
+          state: "Hawaii"
+          state_slug: "hawaii"
+          registration_pct: "67.6%"
+        - rank: 45
+          state: "Alabama"
+          state_slug: "alabama"
+          registration_pct: "68.9%"
+        - rank: 44
+          state: "Arizona"
+          state_slug: "arizona"
+          registration_pct: "69.0%"
+        - rank: 43
+          state: "Texas"
+          state_slug: "texas"
+          registration_pct: "69.1%"
+        - rank: 42
+          state: "Wyoming"
+          state_slug: "wyoming"
+          registration_pct: "69.3%"
+        - rank: 41
+          state: "North Carolina"
+          state_slug: "north-carolina"
+          registration_pct: "69.8%"
+    paragraphs:
+      - "Arkansas ranks last at 64.7%, the only state below 65% and 18.9 points behind Minnesota. Louisiana (66.0%) and New York (66.2%) are the next-lowest, both under 67%."
+      - "Florida (67.0%) and Hawaii (67.6%) complete the bottom five. Texas (69.1%), the second-most-populous state, and Arizona (69.0%) both sit just below the 70% mark alongside Alabama (68.9%)."
+
+  - id: "why-minnesota-leads-registration"
+    icon: "fa-solid fa-clipboard-check"
+    title: "Why Minnesota Has the Highest Voter Registration Rate"
+    paragraphs:
+      - "Minnesota's 83.6% rate coincides with same-day voter registration, which lets residents register at the polling place with proof of residency, and with automatic voter registration the state adopted in 2023 for people who interact with state government agencies. Oregon, the second-highest state at 83.0%, also runs an automatic registration system."
+      - "Arkansas's last-place 64.7% rate coincides with its status as one of the few states without online voter registration, a gap not shared by any state in the top ten, all of which offer it."
+
+visual_assets:
+  - id: registration-form-signup
+    src: /images/rankings/government/voter-registration-rate-by-state/registration-form-signup.jpg
+    alt: Voter filling out a registration card at a community registration drive
+    caption: Minnesota leads the nation with 83.6% of its citizen voting-age population registered, followed by Oregon at 83.0%. Eight states clear the 80% mark.
+    section: highest-voter-registration-states
+    layout: full-width-tall
+
+  - id: empty-voting-booth
+    src: /images/rankings/government/voter-registration-rate-by-state/empty-voting-booth.jpg
+    alt: Row of empty voting booths inside a polling location
+    caption: Arkansas has the lowest voter registration rate at 64.7%, with Louisiana, New York, Florida, and Hawaii rounding out the bottom five.
+    section: lowest-voter-registration-states
+    layout: full-width-tall
+
+  - id: minnesota-state-capitol
+    src: /images/rankings/government/voter-registration-rate-by-state/minnesota-state-capitol.jpg
+    alt: Minnesota State Capitol building under a clear sky
+    caption: Same-day registration and automatic voter registration, adopted in Minnesota in 2023, coincide with the state's nation-leading 83.6% registration rate.
+    section: why-minnesota-leads-registration
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the highest voter registration rate?"
+    answer: "Minnesota has the highest voter registration rate at 83.6% of the citizen voting-age population. Oregon ranks second at 83.0%, and New Jersey third at 81.9%."
+
+  - question: "Which state has the lowest voter registration rate?"
+    answer: "Arkansas has the lowest voter registration rate at 64.7%, the only state below 65%. Louisiana (66.0%) and New York (66.2%) rank second- and third-lowest."
+
+  - question: "What is the national voter registration rate?"
+    answer: "The national voter registration rate is 73.6% of the citizen voting-age population. Eighteen states fall below that figure, including Texas (69.1%), Florida (67.0%), and California (72.9%)."
+
+  - question: "How is voter registration rate different from voter turnout?"
+    answer: "Registration rate measures the share of the citizen voting-age population registered to vote. Turnout measures the share of the eligible population that actually cast a ballot. A state can rank differently on each measure; this ranking covers registration only."
+
+  - question: "What percentage of California residents are registered to vote?"
+    answer: "California's voter registration rate is 72.9%, ranking 35th among the 50 states and just below the national rate of 73.6%."
+
+  - question: "Which states have voter registration rates above 80%?"
+    answer: "Eight states: Minnesota (83.6%), Oregon (83.0%), New Jersey (81.9%), Mississippi (81.0%), Michigan (80.8%), Iowa (80.6%), Kentucky (80.5%), and Maryland (80.4%)."
+
+related:
+  - title: "Voter Turnout by State"
+    url: "/rankings/government/voter-turnout-by-state"
+  - title: "Red and Blue States 2024"
+    url: "/rankings/government/red-and-blue-states"
+  - title: "Electoral Votes by State"
+    url: "/rankings/government/electoral-votes-by-state"
+  - title: "U.S. States by Population"
+    url: "/rankings/demographics/states-by-population"
+  - title: "Compare States"
+    url: "/compare-states"

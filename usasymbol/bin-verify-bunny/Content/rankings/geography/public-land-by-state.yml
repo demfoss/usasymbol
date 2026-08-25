@@ -1,0 +1,558 @@
+type: ranking
+slug: public-land-by-state
+category: geography
+url: /rankings/geography/public-land-by-state
+auto_link_phrases:
+  - "public land by state"
+  - "federal land by state"
+  - "public land percentage by state"
+extremes_mode: both
+extremes_title: "States with the Most and Least Public Land"
+hero_image: "/images/rankings/geography/public-land-by-state/public-land-by-state-hero.jpg"
+hero_image_alt: "Desert canyon and open rangeland under a wide western sky"
+hero_image_caption: "Federal agencies manage 80.1% of Nevada, the highest share of any state. Alaska holds the largest area of public land at 222.7 million acres."
+
+author: "USA Symbol Team"
+date_published: "2026-07-10"
+date_modified: "2026-07-10"
+
+seo:
+  title: "Public Land by State | Map, Acres & Federal Percentages"
+  description: "Nevada has the highest share of public land at 80.1%. Alaska holds the most acres at 222.7 million. Connecticut and Iowa have the least at 0.3%."
+
+page:
+  h1: "Public Land by State"
+
+  quick_answer:
+    - "Public land by state peaks in Nevada, where federal agencies manage 80.1% of all land. Utah follows at 63.1% and Idaho at 61.9%."
+    - "Alaska holds the largest area of public land at 222.7 million acres, 60.9% of the state and nearly four times Nevada's 56.3 million."
+    - "Connecticut and Iowa have the smallest shares at 0.3% each. Rhode Island holds the fewest acres, about 4,500."
+
+  methodology: "Figures are 2018 federal land data from Library of Congress sources, counting BLM, Forest Service, FWS, NPS, and DoD acreage. State and local public lands are not included."
+
+  sources:
+    - name: "World Population Review — Public Land by State"
+      url: "https://worldpopulationreview.com/state-rankings/public-land-by-state"
+      description: "Federal land acres and share of state area, 2018"
+    - name: "CRS — Federal Land Ownership: Overview and Data (R42346)"
+      url: "https://www.congress.gov/crs-product/R42346"
+      description: "Federal acreage by managing agency, updated 2020"
+
+map:
+  title: "Public Land by State Map"
+  image_alt: "U.S. map showing the percentage of each state managed as federal public land, shaded from light for the least to dark green for the most"
+  caption: "Nevada leads with 80.1% of its land under federal management, followed by Utah at 63.1% and Idaho at 61.9%. Every state east of the Rockies falls below 15%."
+  metric_key: pct
+  metric_label: "% Public Land"
+  name_key: state
+  color_scheme: green
+  color_scale: linear
+
+table:
+  searchable: true
+  sortable: true
+  metric_default: percent
+  sort_default: desc
+
+  columns:
+    rank: "Rank"
+    state: "State"
+    percent: "Public Land %"
+    land_acres: "Public Land (Acres)"
+
+  rows:
+    - rank: 1
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      pct: 80.1
+      percent: "80.1%"
+      land_acres: 56300000
+
+    - rank: 2
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      pct: 63.1
+      percent: "63.1%"
+      land_acres: 33300000
+
+    - rank: 3
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      pct: 61.9
+      percent: "61.9%"
+      land_acres: 32800000
+
+    - rank: 4
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      pct: 60.9
+      percent: "60.9%"
+      land_acres: 222700000
+
+    - rank: 5
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      pct: 52.3
+      percent: "52.3%"
+      land_acres: 32200000
+
+    - rank: 6
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      pct: 46.7
+      percent: "46.7%"
+      land_acres: 29100000
+
+    - rank: 7
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      pct: 45.4
+      percent: "45.4%"
+      land_acres: 45500000
+
+    - rank: 8
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      pct: 38.6
+      percent: "38.6%"
+      land_acres: 28100000
+
+    - rank: 9
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      pct: 36.2
+      percent: "36.2%"
+      land_acres: 24100000
+
+    - rank: 10
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      pct: 31.7
+      percent: "31.7%"
+      land_acres: 24700000
+
+    - rank: 11
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      pct: 29.0
+      percent: "29.0%"
+      land_acres: 27100000
+
+    - rank: 12
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      pct: 28.6
+      percent: "28.6%"
+      land_acres: 12200000
+
+    - rank: 13
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      pct: 20.2
+      percent: "20.2%"
+      land_acres: 829800
+
+    - rank: 14
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      pct: 14.0
+      percent: "14.0%"
+      land_acres: 805500
+
+    - rank: 15
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      pct: 12.9
+      percent: "12.9%"
+      land_acres: 4500000
+
+    - rank: 16
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      pct: 10.0
+      percent: "10.0%"
+      land_acres: 3600000
+
+    - rank: 17
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      pct: 9.4
+      percent: "9.4%"
+      land_acres: 3200000
+
+    - rank: 18
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      pct: 9.3
+      percent: "9.3%"
+      land_acres: 2400000
+
+    - rank: 19
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      pct: 7.8
+      percent: "7.8%"
+      land_acres: 2400000
+
+    - rank: 20
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      pct: 7.8
+      percent: "7.8%"
+      land_acres: 465900
+
+    - rank: 21
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      pct: 7.4
+      percent: "7.4%"
+      land_acres: 1100000
+
+    - rank: 22
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      pct: 6.8
+      percent: "6.8%"
+      land_acres: 3500000
+
+    - rank: 23
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      pct: 5.4
+      percent: "5.4%"
+      land_acres: 2600000
+
+    - rank: 24
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      pct: 5.3
+      percent: "5.3%"
+      land_acres: 1900000
+
+    - rank: 25
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      pct: 5.2
+      percent: "5.2%"
+      land_acres: 1900000
+
+    - rank: 26
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      pct: 5.1
+      percent: "5.1%"
+      land_acres: 1600000
+
+    - rank: 27
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      pct: 4.8
+      percent: "4.8%"
+      land_acres: 1300000
+
+    - rank: 28
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      pct: 4.7
+      percent: "4.7%"
+      land_acres: 1400000
+
+    - rank: 29
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      pct: 4.5
+      percent: "4.5%"
+      land_acres: 875300
+
+    - rank: 30
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      pct: 4.3
+      percent: "4.3%"
+      land_acres: 1100000
+
+    - rank: 31
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      pct: 3.9
+      percent: "3.9%"
+      land_acres: 1700000
+
+    - rank: 32
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      pct: 3.8
+      percent: "3.8%"
+      land_acres: 1700000
+
+    - rank: 33
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      pct: 3.6
+      percent: "3.6%"
+      land_acres: 172000
+
+    - rank: 34
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      pct: 3.2
+      percent: "3.2%"
+      land_acres: 205400
+
+    - rank: 35
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      pct: 2.7
+      percent: "2.7%"
+      land_acres: 880200
+
+    - rank: 36
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      pct: 2.4
+      percent: "2.4%"
+      land_acres: 29900
+
+    - rank: 37
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      pct: 2.2
+      percent: "2.2%"
+      land_acres: 622200
+
+    - rank: 38
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      pct: 1.9
+      percent: "1.9%"
+      land_acres: 3200000
+
+    - rank: 39
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      pct: 1.7
+      percent: "1.7%"
+      land_acres: 384700
+
+    - rank: 40
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      pct: 1.5
+      percent: "1.5%"
+      land_acres: 301500
+
+    - rank: 41
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      pct: 1.5
+      percent: "1.5%"
+      land_acres: 683300
+
+    - rank: 42
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      pct: 1.2
+      percent: "1.2%"
+      land_acres: 423800
+
+    - rank: 43
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      pct: 1.2
+      percent: "1.2%"
+      land_acres: 62700
+
+    - rank: 44
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      pct: 1.2
+      percent: "1.2%"
+      land_acres: 305500
+
+    - rank: 45
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      pct: 1.1
+      percent: "1.1%"
+      land_acres: 546900
+
+    - rank: 46
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      pct: 0.8
+      percent: "0.8%"
+      land_acres: 231000
+
+    - rank: 47
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      pct: 0.7
+      percent: "0.7%"
+      land_acres: 4500
+
+    - rank: 48
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      pct: 0.5
+      percent: "0.5%"
+      land_acres: 253900
+
+    - rank: 49
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      pct: 0.3
+      percent: "0.3%"
+      land_acres: 9100
+
+    - rank: 50
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      pct: 0.3
+      percent: "0.3%"
+      land_acres: 97500
+
+compare:
+  metric_slug: land-area
+  title: "Compare Public Land Between Two States"
+  description: "Pick any two states to see a side-by-side comparison of land area, geography, and more."
+  button_text: "Compare states"
+  icon: "fa-solid fa-mountain-sun"
+  default_state_a: nevada
+  default_state_b: connecticut
+
+sections:
+  - id: "most-public-land"
+    icon: "fa-solid fa-arrow-up"
+    title: "States with the Most Public Land"
+    paragraphs:
+      - "Nevada has the highest share, with federal agencies managing 80.1% of the state, some 56.3 million acres. Utah at 63.1%, Idaho at 61.9%, and Alaska at 60.9% follow."
+      - "Alaska dwarfs every other state in raw acreage. Its 222.7 million acres of public land amount to nearly four times Nevada's total and more than the next four states combined."
+
+  - id: "federal-land-by-agency"
+    icon: "fa-solid fa-tree"
+    title: "Federal Land by Agency"
+    paragraphs:
+      - "The federal government owns about 640 million acres, roughly 28% of all U.S. land. The Bureau of Land Management is the largest manager at 244.4 million acres, ahead of the Forest Service at 192.9 million, the Fish and Wildlife Service at 89.2 million, and the National Park Service at 79.9 million."
+      - "BLM land sits almost entirely in the West, with 99.8% of its acreage in 12 western states. Nearly half of the total lies in just two, Alaska with 29% and Nevada with 19%."
+
+  - id: "least-public-land"
+    icon: "fa-solid fa-arrow-down"
+    title: "States with the Least Public Land"
+    paragraphs:
+      - "Connecticut and Iowa share the smallest percentage at 0.3%, followed by Kansas at 0.5% and Rhode Island at 0.7%. Rhode Island's roughly 4,500 acres are the fewest of any state."
+      - "Texas is the outlier among big states. Despite its size, only 1.9% of Texas is federal public land, about 3.2 million acres, because the state kept its public domain when it joined the Union."
+
+  - id: "public-land-changes"
+    icon: "fa-solid fa-chart-line"
+    title: "Public Land Change by State"
+    paragraphs:
+      - "Alaska recorded the largest decline, losing about 23 million acres of federal land between 1990 and 2018, a 9.4% drop. Nevada shed 3.7 million acres over the same period, down 6.2%."
+      - "Rhode Island moved the other way, growing its small federal footprint by 45.1% since 1990. California's holdings slipped just 1.5%."
+
+visual_assets:
+  - id: most-public-land
+    src: /images/rankings/geography/public-land-by-state/most-public-land.jpg
+    alt: "Open sagebrush basin and distant mountain ranges in Nevada"
+    caption: "Federal agencies manage 80.1% of Nevada, the highest share in the country. Utah, Idaho, and Alaska all exceed 60%."
+    section: most-public-land
+    layout: full-width-tall
+
+  - id: federal-land-by-agency
+    src: /images/rankings/geography/public-land-by-state/federal-land-by-agency.jpg
+    alt: "National forest trail winding through tall pines toward snow-capped peaks"
+    caption: "The BLM manages 244.4 million acres and the Forest Service 192.9 million, together holding most of the country's 640 million federal acres. Almost all BLM land lies in 12 western states."
+    section: federal-land-by-agency
+    layout: full-width-tall
+
+  - id: least-public-land
+    src: /images/rankings/geography/public-land-by-state/least-public-land.jpg
+    alt: "Patchwork of Midwestern farm fields stretching across a flat landscape"
+    caption: "Connecticut and Iowa have the smallest federal land shares at 0.3%, while Kansas sits at 0.5%. Texas remains a major outlier, with just 1.9% federally owned despite its vast size."
+    section: least-public-land
+    layout: full-width-tall
+
+  - id: public-land-changes
+    src: /images/rankings/geography/public-land-by-state/public-land-changes.jpg
+    alt: "Team reviewing charts and maps around a laptop during a planning meeting"
+    caption: "Alaska lost about 23 million acres of federal land between 1990 and 2018, the biggest decline of any state. Rhode Island moved the other way, growing its small federal footprint by 45.1%."
+    section: public-land-changes
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the most public land?"
+    answer: "Nevada by percentage, with 80.1% of the state under federal management. Alaska by area, with 222.7 million acres."
+
+  - question: "Which state has the least public land?"
+    answer: "Connecticut and Iowa by share, at 0.3% each. Rhode Island holds the fewest acres, about 4,500, less than a tenth of Delaware's 29,900."
+
+  - question: "How much land does the federal government own?"
+    answer: "About 640 million acres, roughly 28% of the 2.27 billion acres in the United States. Most of it concentrates in Alaska and 11 western states."
+
+  - question: "Which state has the most BLM land?"
+    answer: "Alaska, which holds about 29% of the BLM's 244.4 million acres. Nevada follows with 19%, and the 12 western states together contain 99.8% of all BLM land."
+
+  - question: "What percent of Texas is public land?"
+    answer: "Just 1.9%, about 3.2 million acres. Texas retained its public domain as a condition of statehood, so it ranks 38th despite being the second-largest state."
+
+  - question: "Does public land include state parks?"
+    answer: "Not in this table. The figures count federal land managed by the BLM, Forest Service, Fish and Wildlife Service, National Park Service, and Department of Defense. State parks, state forests, and local preserves add public acreage on top of these numbers."
+
+related:
+  - title: "States with the Most National Parks"
+    url: "/rankings/geography/states-with-most-national-parks"
+  - title: "States by Land Area"
+    url: "/rankings/geography/states-by-land-area"
+  - title: "Highest Point by State"
+    url: "/rankings/geography/highest-point-by-state"
+  - title: "West States"
+    url: "/rankings/geography/west-states"

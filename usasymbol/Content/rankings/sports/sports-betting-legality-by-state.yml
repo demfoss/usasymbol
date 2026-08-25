@@ -1,0 +1,541 @@
+type: ranking
+slug: sports-betting-legality-by-state
+category: sports
+url: /rankings/sports/sports-betting-legality-by-state
+auto_link_phrases:
+  - "sports betting by state"
+  - "is sports betting legal in my state"
+  - "states where sports betting is legal"
+  - "sports betting handle by state"
+extremes_mode: none
+hero_image: "/images/rankings/sports/sports-betting-legality-by-state/sports-betting-legality-by-state.png"
+hero_image_alt: "Map of the United States color-coded by sports betting legal status in 2026, showing states with online betting, retail-only betting, and no legal sports betting"
+
+author: "USA Symbol Team"
+date_published: "2026-08-12"
+date_modified: "2026-08-12"
+
+seo:
+  title: "Sports Betting by State | Legal Status, Map & Handle"
+  description: "Sports betting is legal in 38 states. New York leads with $26.3 billion wagered in 2025, and 12 states still ban it entirely."
+
+page:
+  h1: "Sports Betting Legality by State"
+
+  quick_answer:
+    - "New York leads all states with $26.3 billion in legal sports betting handle in 2025, the largest regulated market in the country."
+    - "Illinois ranks second at $15.5 billion and New Jersey third at $12.2 billion, both trailing New York by double-digit billions despite full statewide mobile access."
+    - "12 states, including California, Texas, and Georgia, still have no legal sports betting of any kind. Missouri is the newest market, launching December 1, 2025 and taking in $350 million in its first month."
+
+  methodology: "Legal status reflects each state's regulatory framework as of 2026. Handle figures are full 2025 calendar-year totals reported by state regulators and industry trackers; Missouri covers December 2025 only, its first month of legal wagering."
+
+  sources:
+    - name: "American Gaming Association"
+      url: "https://www.americangaming.org/resources/commercial-gaming-revenue-tracker/"
+      description: "National tracker of commercial sports betting handle, revenue, and tax collection by state"
+    - name: "Legal Sports Report"
+      url: "https://www.legalsportsreport.com/sports-betting/states/"
+      description: "State-by-state legal status and legislative tracker for sports betting"
+
+map:
+  title: "Sports Betting Legal Status by State 2026"
+  image: "/images/rankings/sports/sports-betting-legality-by-state/sports-betting-legality-by-state-map.webp"
+  image_alt: "Map of the United States showing sports betting legal status by state: green for legal online statewide, amber for retail or tribal casino only, and grey for not legal"
+  caption: "31 states allow full statewide mobile betting, shown in green. 7 more, including Washington and Wisconsin, limit betting to tribal casino property. 12 states, shown in grey, have no legal sports betting at all."
+  disclaimer: "This map is for informational purposes only and does not constitute legal advice."
+  metric_key: status
+  metric_label: "Legal Status"
+  color_scheme: amber
+  color_scale: categorical
+  color_map:
+    "Legal Online": "green"
+    "Retail/Tribal Only": "amber"
+    "Not Legal": "grey"
+  detail_keys:
+    - handle_billions
+    - first_legal_year
+
+table:
+  note: "Handle figures are full calendar-year 2025 totals in billions of dollars, shown only where individually reported. Missouri covers December 2025 only. States without a reported figure are omitted from the handle column, not assigned a zero."
+  columns:
+    rank: "#"
+    state: "State"
+    status: "Legal Status"
+    first_legal_year: "First Legal"
+    handle_billions: "2025 Handle ($B)"
+    notes: "Notes"
+
+  metric_default: handle_billions
+  sort_default: desc
+  column_formats:
+    handle_billions: "C2"
+
+  rows:
+    # ── LEGAL ONLINE STATEWIDE, ranked by known 2025 handle ─────────────────
+    - rank: 1
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      status: "Legal Online"
+      first_legal_year: 2022
+      handle_billions: 26.30
+
+    - rank: 2
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      status: "Legal Online"
+      first_legal_year: 2020
+      handle_billions: 15.50
+
+    - rank: 3
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      status: "Legal Online"
+      first_legal_year: 2018
+      handle_billions: 12.20
+
+    - rank: 4
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      status: "Legal Online"
+      first_legal_year: 2023
+      handle_billions: 9.50
+
+    - rank: 5
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      status: "Legal Online"
+      first_legal_year: 2018
+      handle_billions: 9.00
+
+    - rank: 6
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      status: "Legal Online"
+      first_legal_year: 2021
+      handle_billions: 8.80
+
+    - rank: 7
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      status: "Legal Online"
+      first_legal_year: 2021
+      handle_billions: 8.40
+
+    - rank: 8
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      status: "Legal Online"
+      first_legal_year: 2024
+      handle_billions: 8.10
+      notes: "Retail-only at tribal casinos until statewide mobile launched in March 2024."
+
+    - rank: 9
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      status: "Legal Online"
+      first_legal_year: 2023
+      handle_billions: 7.90
+
+    - rank: 10
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      status: "Legal Online"
+      first_legal_year: 1949
+      handle_billions: 7.70
+      notes: "Nation's original legal market; retail sportsbooks have operated statewide since 1949."
+
+    - rank: 11
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      status: "Legal Online"
+      first_legal_year: 2020
+      handle_billions: 7.00
+
+    - rank: 12
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      status: "Legal Online"
+      first_legal_year: 2021
+      handle_billions: 6.40
+
+    - rank: 13
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      status: "Legal Online"
+      first_legal_year: 2020
+      handle_billions: 5.90
+
+    - rank: 14
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      status: "Legal Online"
+      first_legal_year: 2022
+      handle_billions: 5.90
+
+    - rank: 15
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      status: "Legal Online"
+      first_legal_year: 2019
+      handle_billions: 5.30
+
+    - rank: 16
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      status: "Legal Online"
+      first_legal_year: 2021
+      handle_billions: 4.20
+
+    - rank: 17
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      status: "Legal Online"
+      first_legal_year: 2023
+      handle_billions: 3.20
+
+    - rank: 18
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      status: "Legal Online"
+      first_legal_year: 2022
+      handle_billions: 3.00
+
+    - rank: 19
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      status: "Legal Online"
+      first_legal_year: 2019
+      handle_billions: 2.90
+
+    - rank: 20
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      status: "Legal Online"
+      first_legal_year: 2021
+      handle_billions: 2.30
+
+    - rank: 21
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      status: "Legal Online"
+      first_legal_year: 2025
+      handle_billions: 0.35
+      notes: "First month of legal wagering only; the market launched December 1, 2025."
+
+    # ── LEGAL ONLINE STATEWIDE, no individually reported 2025 figure ────────
+    - rank: 22
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      status: "Legal Online"
+      first_legal_year: 2022
+
+    - rank: 23
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      status: "Legal Online"
+      first_legal_year: 2018
+
+    - rank: 24
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      status: "Legal Online"
+      first_legal_year: 2023
+      notes: "Single-operator monopoly under the Seminole Tribe's Hard Rock Bet, exclusive through at least 2051."
+
+    - rank: 25
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      status: "Legal Online"
+      first_legal_year: 2023
+
+    - rank: 26
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      status: "Legal Online"
+      first_legal_year: 2019
+      notes: "Single-operator monopoly; DraftKings has run New Hampshire's mobile market since 2019."
+
+    - rank: 27
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      status: "Legal Online"
+      first_legal_year: 2019
+      notes: "Single-operator monopoly; DraftKings has run Oregon's mobile market since January 2022."
+
+    - rank: 28
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      status: "Legal Online"
+      first_legal_year: 2019
+      notes: "Single-operator monopoly; Bally Bet is the only licensed mobile sportsbook."
+
+    - rank: 29
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      status: "Legal Online"
+      first_legal_year: 2024
+
+    - rank: 30
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      status: "Legal Online"
+      first_legal_year: 2018
+
+    - rank: 31
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      status: "Legal Online"
+      first_legal_year: 2021
+
+    # ── LEGAL, RETAIL OR TRIBAL CASINO PROPERTY ONLY ─────────────────────────
+    - rank: 32
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      status: "Retail/Tribal Only"
+      first_legal_year: 2018
+
+    - rank: 33
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      status: "Retail/Tribal Only"
+      first_legal_year: 2020
+      notes: "Runs through the state lottery; the app only works at licensed Sports Bet Montana locations."
+
+    - rank: 34
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      status: "Retail/Tribal Only"
+      first_legal_year: 2018
+
+    - rank: 35
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      status: "Retail/Tribal Only"
+      first_legal_year: 2021
+
+    - rank: 36
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      status: "Retail/Tribal Only"
+      first_legal_year: 2021
+
+    - rank: 37
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      status: "Retail/Tribal Only"
+      first_legal_year: 2020
+
+    - rank: 38
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      status: "Retail/Tribal Only"
+      first_legal_year: 2021
+      notes: "Legislature authorized statewide mobile wagering in April 2026; still awaiting new tribal compacts to launch."
+
+    # ── NOT LEGAL ─────────────────────────────────────────────────────────
+    - rank: 39
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      status: "Not Legal"
+
+    - rank: 40
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      status: "Not Legal"
+
+    - rank: 41
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      status: "Not Legal"
+
+    - rank: 42
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      status: "Not Legal"
+
+    - rank: 43
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      status: "Not Legal"
+
+    - rank: 44
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      status: "Not Legal"
+
+    - rank: 45
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      status: "Not Legal"
+
+    - rank: 46
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      status: "Not Legal"
+
+    - rank: 47
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      status: "Not Legal"
+
+    - rank: 48
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      status: "Not Legal"
+
+    - rank: 49
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      status: "Not Legal"
+
+    - rank: 50
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      status: "Not Legal"
+
+sections:
+  - id: "states-with-the-highest-sports-betting-handle"
+    icon: "fa-solid fa-chart-column"
+    title: "States With the Highest Sports Betting Handle"
+    paragraphs:
+      - "New York took in $26.3 billion in sports betting handle in 2025, more than any other state and well ahead of second-place Illinois at $15.5 billion. New Jersey ranks third at $12.2 billion, the state that first challenged the federal sports betting ban at the Supreme Court in 2018."
+      - "Ohio and Pennsylvania round out the top five at $9.5 billion and $9.0 billion. The remaining legal markets, roughly 18 states and jurisdictions with smaller or tribal-only operations, combined for about $6.6 billion, each too small individually to crack the top 20."
+    table:
+      numbered: true
+      columns:
+        state: "State"
+        handle: "2025 Handle"
+      rows:
+        - state: "New York"
+          handle: "$26.3B"
+        - state: "Illinois"
+          handle: "$15.5B"
+        - state: "New Jersey"
+          handle: "$12.2B"
+        - state: "Ohio"
+          handle: "$9.5B"
+        - state: "Pennsylvania"
+          handle: "$9.0B"
+        - state: "Arizona"
+          handle: "$8.8B"
+        - state: "Virginia"
+          handle: "$8.4B"
+        - state: "North Carolina"
+          handle: "$8.1B"
+        - state: "Massachusetts"
+          handle: "$7.9B"
+        - state: "Nevada"
+          handle: "$7.7B"
+
+  - id: "why-tennessee-has-online-only-sports-betting"
+    icon: "fa-solid fa-mobile-screen"
+    title: "Why Tennessee Has Online-Only Sports Betting"
+    paragraphs:
+      - "Tennessee legalized sports betting in 2020 without a single retail sportsbook, because the state has no commercial or tribal casinos to host one. Every dollar of its $5.9 billion 2025 handle moved through a mobile app instead, a legal structure no other top-20 state uses."
+      - "Wyoming built the same online-only model for a different reason: a small population made a retail sportsbook network commercially unworkable, so its 2021 launch skipped brick-and-mortar betting entirely."
+
+  - id: "states-where-one-app-has-a-sports-betting-monopoly"
+    icon: "fa-solid fa-lock"
+    title: "States Where One App Has a Sports Betting Monopoly"
+    paragraphs:
+      - "Florida, New Hampshire, Oregon, and Rhode Island each license only one mobile sportsbook statewide. Florida's exclusive belongs to the Seminole Tribe's Hard Rock Bet under a compact that runs through at least 2051, the longest exclusivity window of any state."
+      - "DraftKings holds the monopoly in New Hampshire since 2019 and in Oregon since January 2022, while Bally Bet is the only licensed operator in Rhode Island. Every other online state licenses multiple competing sportsbooks."
+
+visual_assets:
+  - id: states-with-the-highest-sports-betting-handle
+    src: /images/rankings/sports/sports-betting-legality-by-state/states-with-the-highest-sports-betting-handle.jpg
+    alt: "Sports betting app and game odds shown on a phone screen"
+    caption: "New York, Illinois, and New Jersey account for the biggest legal sports betting handle in the country."
+    section: states-with-the-highest-sports-betting-handle
+    layout: full-width-tall
+
+  - id: why-tennessee-has-online-only-sports-betting
+    src: /images/rankings/sports/sports-betting-legality-by-state/why-tennessee-has-online-only-sports-betting.jpg
+    alt: "Person placing a mobile sports bet on a smartphone"
+    caption: "Tennessee built a fully online market with no retail sportsbooks at all."
+    section: why-tennessee-has-online-only-sports-betting
+    layout: full-width-tall
+
+  - id: states-where-one-app-has-a-sports-betting-monopoly
+    src: /images/rankings/sports/sports-betting-legality-by-state/states-where-one-app-has-a-sports-betting-monopoly.jpg
+    alt: "Single sportsbook app logo displayed alone on a phone"
+    caption: "A small group of states still runs with just one legal sportsbook app statewide."
+    section: states-where-one-app-has-a-sports-betting-monopoly
+    layout: full-width-tall
+
+faq:
+  - question: "Which states don't have legal sports betting?"
+    answer: "12 states have no legal sports betting: Alabama, Alaska, California, Georgia, Hawaii, Idaho, Minnesota, Nebraska, Oklahoma, South Carolina, Texas, and Utah."
+
+  - question: "Which state has the most sports betting handle?"
+    answer: "New York leads with $26.3 billion in 2025 handle. Illinois is second at $15.5 billion, and New Jersey is third at $12.2 billion."
+
+  - question: "How many states allow online sports betting?"
+    answer: "31 states allow full statewide mobile sports betting as of 2026. Seven more, including Mississippi, Montana, and Washington, limit wagering to tribal casino property."
+
+  - question: "Which states only allow retail sports betting?"
+    answer: "Mississippi, Montana, New Mexico, North Dakota, South Dakota, Washington, and Wisconsin restrict betting to tribal casino property, with no statewide mobile access. Wisconsin's legislature authorized mobile wagering in April 2026, but it has not launched."
+
+  - question: "What is the newest state to legalize sports betting?"
+    answer: "Missouri is the most recent state to launch, going live December 1, 2025. It took in $350 million in handle during its first month."
+
+  - question: "Do any states have only one sports betting app?"
+    answer: "Florida, New Hampshire, Oregon, and Rhode Island each license a single mobile sportsbook statewide instead of allowing multiple operators to compete."
+
+related:
+  - title: "Most Popular Pro Team by State"
+    url: "/rankings/sports/most-popular-professional-sports-team-by-state"
+  - title: "Casinos by State"
+    url: "/rankings/culture/casinos-by-state"
+  - title: "Marijuana Laws by State"
+    url: "/rankings/law/marijuana-legality-by-state"

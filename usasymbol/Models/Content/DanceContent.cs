@@ -21,6 +21,9 @@ namespace USASymbol.Models.Content
         public string HeroImageAlt { get; set; } = string.Empty;
         public string HeroImageCaption { get; set; } = string.Empty;
         public string IntroText { get; set; } = string.Empty;
+        public string TutorialUrl { get; set; } = string.Empty;
+        public string TutorialTitle { get; set; } = string.Empty;
+        public string TutorialCaption { get; set; } = string.Empty;
         public string VideoUrl { get; set; } = string.Empty;
         public string VideoTitle { get; set; } = string.Empty;
         public string VideoCaption { get; set; } = string.Empty;

@@ -1,0 +1,549 @@
+type: ranking
+slug: counties-by-state
+category: geography
+url: /rankings/geography/counties-by-state
+auto_link_phrases:
+  - "counties by state"
+  - "number of counties by state"
+  - "how many counties in each state"
+extremes_mode: both
+extremes_title: "States With the Most and Fewest Counties"
+hero_image: "/images/rankings/geography/counties-by-state/counties-by-state-hero.jpg"
+hero_image_alt: "Aerial view of a rural county courthouse square in the United States"
+hero_image_caption: "Texas has 254 counties, more than any other state. Delaware has just 3, the fewest in the country."
+
+author: "USA Symbol Team"
+date_published: "2026-07-19"
+date_modified: "2026-07-19"
+
+seo:
+  title: "Counties by State | Map, Count & Full List"
+  description: "Texas has the most counties of any state at 254. Delaware has the fewest, with just 3."
+
+page:
+  h1: "Counties by State"
+
+  quick_answer:
+    - "Texas has the most counties of any state at 254, which is 95 more than Georgia's 159. Delaware has the fewest, with only 3."
+    - "Georgia ranks second with 159 counties, and Virginia is third with 133, a total that includes 95 counties and 38 independent cities."
+    - "Louisiana uses 64 parishes instead of counties, and Alaska has no counties at all, splitting instead into 19 boroughs and 11 census areas."
+
+  methodology: "Counts follow U.S. Census Bureau classifications. Louisiana parishes, Alaska boroughs and census areas, independent cities, and Connecticut planning regions count as county-equivalents."
+
+  sources:
+    - name: "Wikipedia, List of Counties by U.S. State and Territory"
+      url: "https://en.wikipedia.org/wiki/List_of_counties_by_U.S._state_and_territory"
+      description: "County and county-equivalent counts and classifications for all 50 states"
+    - name: "TheFactFile, US States & Counties"
+      url: "https://thefactfile.org/us-states-counties/"
+      description: "State-by-state county count reference"
+
+map:
+  title: "Number of Counties by State Map"
+  image_alt: "U.S. map showing the number of counties in each state, darkest for states with the most counties"
+  caption: "Texas leads with 254 counties, Georgia follows with 159, and Delaware has the fewest at just 3."
+  metric_key: county_count
+  metric_label: "Number of Counties"
+  name_key: state
+  color_scheme: orange
+  color_scale: log
+
+table:
+  searchable: true
+  sortable: true
+  metric_default: county_count
+  sort_default: desc
+
+  columns:
+    rank: "Rank"
+    state: "State"
+    county_count: "Number of Counties"
+    unit_type: "Type"
+
+  rows:
+    - rank: 1
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      county_count: 254
+      unit_type: "Counties"
+      notes: "The most counties of any state in the country."
+
+    - rank: 2
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      county_count: 159
+      unit_type: "Counties"
+      notes: "The second-most counties of any state."
+
+    - rank: 3
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      county_count: 133
+      unit_type: "Counties & Independent Cities"
+      notes: "Total includes 95 counties and 38 independent cities, the most of any state, counted as county-equivalents."
+
+    - rank: 4
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      county_count: 120
+      unit_type: "Counties"
+
+    - rank: 5
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      county_count: 115
+      unit_type: "Counties & Independent Cities"
+      notes: "Total includes 114 counties and the independent city of St. Louis."
+
+    - rank: 6
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      county_count: 105
+      unit_type: "Counties"
+
+    - rank: 7
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      county_count: 102
+      unit_type: "Counties"
+
+    - rank: 8
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      county_count: 100
+      unit_type: "Counties"
+
+    - rank: 9
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      county_count: 99
+      unit_type: "Counties"
+
+    - rank: 10
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      county_count: 95
+      unit_type: "Counties"
+
+    - rank: 11
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      county_count: 93
+      unit_type: "Counties"
+
+    - rank: 12
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      county_count: 92
+      unit_type: "Counties"
+
+    - rank: 13
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      county_count: 88
+      unit_type: "Counties"
+
+    - rank: 14
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      county_count: 87
+      unit_type: "Counties"
+
+    - rank: 15
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      county_count: 83
+      unit_type: "Counties"
+
+    - rank: 16
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      county_count: 82
+      unit_type: "Counties"
+
+    - rank: 17
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      county_count: 77
+      unit_type: "Counties"
+
+    - rank: 18
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      county_count: 75
+      unit_type: "Counties"
+
+    - rank: 19
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      county_count: 72
+      unit_type: "Counties"
+
+    - rank: 20
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      county_count: 67
+      unit_type: "Counties"
+
+    - rank: 21
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      county_count: 67
+      unit_type: "Counties"
+
+    - rank: 22
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      county_count: 67
+      unit_type: "Counties"
+
+    - rank: 23
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      county_count: 66
+      unit_type: "Counties"
+
+    - rank: 24
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      county_count: 64
+      unit_type: "Parishes"
+      notes: "Uses parishes instead of counties, a term dating to the state's French and Spanish colonial period."
+
+    - rank: 25
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      county_count: 64
+      unit_type: "Counties"
+
+    - rank: 26
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      county_count: 62
+      unit_type: "Counties"
+
+    - rank: 27
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      county_count: 58
+      unit_type: "Counties"
+
+    - rank: 28
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      county_count: 56
+      unit_type: "Counties"
+
+    - rank: 29
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      county_count: 55
+      unit_type: "Counties"
+
+    - rank: 30
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      county_count: 53
+      unit_type: "Counties"
+
+    - rank: 31
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      county_count: 46
+      unit_type: "Counties"
+
+    - rank: 32
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      county_count: 44
+      unit_type: "Counties"
+
+    - rank: 33
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      county_count: 39
+      unit_type: "Counties"
+
+    - rank: 34
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      county_count: 36
+      unit_type: "Counties"
+
+    - rank: 35
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      county_count: 33
+      unit_type: "Counties"
+
+    - rank: 36
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      county_count: 30
+      unit_type: "Boroughs & Census Areas"
+      notes: "Total includes 19 organized boroughs and 11 census areas within the Unorganized Borough. Alaska has no counties."
+
+    - rank: 37
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      county_count: 29
+      unit_type: "Counties"
+
+    - rank: 38
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      county_count: 24
+      unit_type: "Counties & Independent Cities"
+      notes: "Total includes 23 counties and the independent city of Baltimore."
+
+    - rank: 39
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      county_count: 23
+      unit_type: "Counties"
+
+    - rank: 40
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      county_count: 21
+      unit_type: "Counties"
+
+    - rank: 41
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      county_count: 17
+      unit_type: "Counties & Independent Cities"
+      notes: "Total includes 16 counties and the independent city of Carson City."
+
+    - rank: 42
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      county_count: 16
+      unit_type: "Counties"
+
+    - rank: 43
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      county_count: 15
+      unit_type: "Counties"
+
+    - rank: 44
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      county_count: 14
+      unit_type: "Counties"
+
+    - rank: 45
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      county_count: 14
+      unit_type: "Counties"
+
+    - rank: 46
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      county_count: 10
+      unit_type: "Counties"
+
+    - rank: 47
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      county_count: 9
+      unit_type: "Planning Regions"
+      notes: "Connecticut's 8 historical counties were replaced by 9 planning regions as county-equivalents in 2022."
+
+    - rank: 48
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      county_count: 5
+      unit_type: "Counties"
+      notes: "Tied with Hawaii for the second-fewest counties of any state."
+
+    - rank: 49
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      county_count: 5
+      unit_type: "Counties"
+      notes: "Tied with Rhode Island for the second-fewest counties of any state."
+
+    - rank: 50
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      county_count: 3
+      unit_type: "Counties"
+      notes: "The fewest counties of any state."
+
+sections:
+  - id: "states-with-the-most-counties"
+    icon: "fa-solid fa-arrow-up"
+    title: "States With the Most Counties"
+    paragraphs:
+      - "Texas has 254 counties, more than double Georgia's 159 in second place. Virginia ranks third with 133 county-equivalents, a total that combines 95 counties and 38 independent cities."
+      - "Kentucky is fourth with 120 counties, and Missouri fifth with 115, a count that includes the independent city of St. Louis."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        county_count: "Counties"
+      rows:
+        - rank: 1
+          state: "Texas"
+          state_slug: "texas"
+          county_count: 254
+        - rank: 2
+          state: "Georgia"
+          state_slug: "georgia"
+          county_count: 159
+        - rank: 3
+          state: "Virginia"
+          state_slug: "virginia"
+          county_count: 133
+        - rank: 4
+          state: "Kentucky"
+          state_slug: "kentucky"
+          county_count: 120
+        - rank: 5
+          state: "Missouri"
+          state_slug: "missouri"
+          county_count: 115
+
+  - id: "states-with-the-fewest-counties"
+    icon: "fa-solid fa-arrow-down"
+    title: "States With the Fewest Counties"
+    paragraphs:
+      - "Delaware has just 3 counties, the fewest of any state. Hawaii and Rhode Island tie for second-fewest at 5 each."
+      - "Connecticut counts 9 planning regions in place of counties, and New Hampshire has 10 counties, rounding out the five states with the smallest totals."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        county_count: "Counties"
+      rows:
+        - rank: 50
+          state: "Delaware"
+          state_slug: "delaware"
+          county_count: 3
+        - rank: 49
+          state: "Hawaii"
+          state_slug: "hawaii"
+          county_count: 5
+        - rank: 48
+          state: "Rhode Island"
+          state_slug: "rhode-island"
+          county_count: 5
+        - rank: 47
+          state: "Connecticut"
+          state_slug: "connecticut"
+          county_count: 9
+        - rank: 46
+          state: "New Hampshire"
+          state_slug: "new-hampshire"
+          county_count: 10
+
+  - id: "parishes-boroughs-and-independent-cities"
+    icon: "fa-solid fa-building-columns"
+    title: "County Equivalents by State"
+    paragraphs:
+      - "Louisiana has 64 parishes, a term dating to the state's French and Spanish colonial period. Alaska has no counties, using 19 organized boroughs and 11 census areas for 30 county-equivalents."
+      - "Virginia's 133 county-equivalents include 38 independent cities, more than any other state. Missouri, Maryland, and Nevada each add one independent city, St. Louis, Baltimore, and Carson City, to their county totals."
+
+visual_assets:
+  - id: states-with-the-most-counties
+    src: /images/rankings/geography/counties-by-state/states-with-the-most-counties.jpg
+    alt: "Rural county road sign in Texas with wide open landscape"
+    caption: "Texas has 254 counties, more than double Georgia's 159. Virginia is third with 133 county-equivalents."
+    section: states-with-the-most-counties
+    layout: full-width-tall
+
+  - id: states-with-the-fewest-counties
+    src: /images/rankings/geography/counties-by-state/states-with-the-fewest-counties.jpg
+    alt: "Small-town main street in Delaware"
+    caption: "Delaware has just 3 counties, the fewest of any state. Hawaii and Rhode Island tie for second-fewest at 5 each."
+    section: states-with-the-fewest-counties
+    layout: full-width-tall
+
+  - id: parishes-boroughs-and-independent-cities
+    src: /images/rankings/geography/counties-by-state/parishes-boroughs-and-independent-cities.jpg
+    alt: "Historic parish courthouse in Louisiana"
+    caption: "Louisiana's 64 parishes and Alaska's 30 boroughs and census areas count as county-equivalents. Virginia has 38 independent cities, more than any other state."
+    section: parishes-boroughs-and-independent-cities
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the most counties?"
+    answer: "Texas has the most counties of any state, with 254. Georgia is second with 159, and Virginia is third with 133."
+
+  - question: "Which state has the fewest counties?"
+    answer: "Delaware has the fewest, with just 3 counties. Hawaii and Rhode Island tie for second-fewest at 5 each."
+
+  - question: "Why does Louisiana have parishes instead of counties?"
+    answer: "Louisiana has 64 parishes, a term dating to the state's French and Spanish colonial period. They count as county-equivalents in the state total."
+
+  - question: "How many boroughs does Alaska have?"
+    answer: "Alaska has 19 organized boroughs plus 11 census areas within its Unorganized Borough, for 30 county-equivalents total. It has no counties at all."
+
+  - question: "How many independent cities does Virginia have?"
+    answer: "Virginia has 38 independent cities, counted as county-equivalents alongside the state's 95 counties, for 133 total, more independent cities than any other state. Missouri, Maryland, and Nevada each add just one, St. Louis, Baltimore, and Carson City respectively."
+
+  - question: "How many counties does Connecticut have?"
+    answer: "Connecticut has 9 planning regions counted as county-equivalents. They replaced the state's 8 historical counties in 2022."
+
+related:
+  - title: "States by Land Area"
+    url: "/rankings/geography/states-by-land-area"
+  - title: "Public Land by State"
+    url: "/rankings/geography/public-land-by-state"
+  - title: "States by Border Type"
+    url: "/rankings/geography/states-by-border-type"
+  - title: "States Capital Cities"
+    url: "/rankings/geography/states-capital-cities"

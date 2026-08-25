@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initViewToggle();
     initSearch();
     initFilterChips();
+    initFlagListingFilters();
     initSort();
     initSortBySelect();
     initMetricToggle();
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Active quick-filter chip value, shared between search and chip filtering
 let activeChipValue = '';
+const activeFlagFilters = {};
 
 // Sort state per table, shared between header clicks and the Sort-by select
 const sortStateByTable = new WeakMap();
@@ -150,7 +152,10 @@ function applyFilters() {
         const searchText = (el.dataset.search || el.dataset.state || '').toLowerCase();
         const searchOk = searchText.includes(query);
         const chipOk = !activeChipValue || el.dataset.chipValue === undefined || el.dataset.chipValue === activeChipValue;
-        return searchOk && chipOk;
+        const flagFiltersOk = Object.entries(activeFlagFilters).every(([key, value]) => {
+            return !value || (el.dataset[key] || '') === value;
+        });
+        return searchOk && chipOk && flagFiltersOk;
     }
 
     let visibleCount = 0;
@@ -171,7 +176,42 @@ function applyFilters() {
     if (resultsCounter) {
         const total = allRows.length || cards.length;
         resultsCounter.textContent =
-            (query === '' && !activeChipValue) ? `Showing all ${total} entries` : `Found ${visibleCount} of ${total} entries`;
+            (query === '' && !activeChipValue && !Object.values(activeFlagFilters).some(Boolean))
+                ? `Showing all ${total} entries`
+                : `Found ${visibleCount} of ${total} entries`;
+    }
+}
+
+function initFlagListingFilters() {
+    const controls = document.querySelectorAll('#flagListingFilters [data-flag-filter]');
+    if (!controls.length) return;
+
+    const clearButton = document.getElementById('clearFlagFilters');
+
+    function syncClearButton() {
+        if (!clearButton) return;
+        clearButton.classList.toggle('hidden', !Object.values(activeFlagFilters).some(Boolean));
+    }
+
+    controls.forEach(control => {
+        activeFlagFilters[control.dataset.flagFilter] = control.value || '';
+        control.addEventListener('change', function () {
+            activeFlagFilters[this.dataset.flagFilter] = this.value || '';
+            syncClearButton();
+            applyFilters();
+        });
+    });
+
+    if (clearButton) {
+        clearButton.addEventListener('click', function () {
+            controls.forEach(control => {
+                control.value = '';
+                activeFlagFilters[control.dataset.flagFilter] = '';
+            });
+            syncClearButton();
+            applyFilters();
+            controls[0].focus();
+        });
     }
 }
 

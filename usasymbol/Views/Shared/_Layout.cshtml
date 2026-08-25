@@ -20,11 +20,12 @@
 
     bool isHome = currentPath == "/";
     bool isStates = currentPath.StartsWith("/states");
-    bool isSymbols = currentPath.StartsWith("/symbols");
+    bool isSymbols = currentPath.StartsWith("/symbols") || currentPath.StartsWith("/national-symbols");
     bool isAbout = currentPath.StartsWith("/about");
     bool isCompare = currentPath.StartsWith("/compare");
     bool isStateMatch = currentPath.StartsWith("/state-match");
     bool isParks = currentPath.StartsWith("/national-parks");
+    bool isTools = currentPath.StartsWith("/tools");
     bool isSymbolDetail = System.Text.RegularExpressions.Regex.IsMatch(
         currentPath,
         @"^/states/[^/]+/(bird|mammal|firearm|dinosaur|beverage|motto|nickname|flower|flag|tree|color|license-plate)(/[^/]+)?$");
@@ -134,6 +135,7 @@
                         <a asp-controller="Symbol" asp-action="Categories" class="@(isSymbols ? "nav-link is-active nav-cta" : "nav-link nav-cta")">Symbols</a>
                         <a href="/national-parks" class="@(isParks ? "nav-link is-active" : "nav-link")">Parks</a>
                         <a href="/compare-states" class="@(isCompare ? "nav-link is-active" : "nav-link")">Compare</a>
+                        <a href="/tools" class="@(isTools ? "nav-link is-active" : "nav-link")">Tools</a>
                         <a asp-controller="Home" asp-action="About" class="@(isAbout ? "nav-link is-active" : "nav-link")">About</a>
                     </div>
 
@@ -170,6 +172,10 @@
                             <span>Compare States</span>
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
+                        <a href="/tools" class="@(isTools ? "mobile-menu-link is-active" : "mobile-menu-link")">
+                            <span>Tools</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
                         <a asp-controller="Home" asp-action="About" class="@(isAbout ? "mobile-menu-link is-active" : "mobile-menu-link")">
                             <span>About</span>
                             <i class="fa-solid fa-arrow-right text-xs"></i>
@@ -191,6 +197,14 @@
                         <p>
                             A cleaner, more visual reference for official state symbols across all 50 states, from flags and flowers to birds, trees, and quick facts.
                         </p>
+                        <a href="/national-symbols" class="site-footer-national">
+                            <i class="fa-solid fa-flag-usa" aria-hidden="true"></i>
+                            <span>
+                                <strong>National Symbols</strong>
+                                <small>Flag, seal, anthem, documents and more</small>
+                            </span>
+                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        </a>
                         <a href="/contact" data-email-user="contact" data-email-domain="usasymbol.com" class="site-footer-email">
                             <i class="fa-solid fa-envelope"></i>
                             <span>contact@usasymbol.com</span>
@@ -216,7 +230,9 @@
                             <li><a href="/county-match">Find Your County</a></li>
                             <li><a href="/county-rankings">County Rankings</a></li>
                             <li><a asp-controller="Symbol" asp-action="Categories">Browse Symbols</a></li>
+                            <li><a href="/national-symbols">National Symbols</a></li>
                             <li><a href="/compare-states">Compare States</a></li>
+                            <li><a href="/tools">Free Tools</a></li>
                             <li><a asp-controller="Quiz" asp-action="Index">Take a Quiz</a></li>
                             <li><a asp-controller="StateGuides" asp-action="Index">State Borders</a></li>
                             <li><a asp-controller="Rankings" asp-action="Index">Rankings</a></li>

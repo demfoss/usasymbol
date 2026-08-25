@@ -1,0 +1,217 @@
+type: ranking
+slug: mlb-teams-by-state
+category: sports
+url: /rankings/sports/mlb-teams-by-state
+auto_link_phrases:
+  - "MLB teams by state"
+  - "which states have MLB teams"
+  - "MLB team locations by state"
+  - "how many states have MLB teams"
+extremes_mode: none
+hero_image: "/images/rankings/sports/mlb-teams-by-state/mlb-teams-by-state-hero.jpg"
+hero_image_alt: "Map showing which U.S. states have MLB teams"
+hero_image_caption: "California leads with 5 MLB teams, more than any other state. 17 states host at least one of the league's 30 franchises."
+
+author: "USA Symbol Team"
+date_published: "2026-08-12"
+date_modified: "2026-08-12"
+
+seo:
+  title: "MLB Teams by State | Map, Cities & Ballparks"
+  description: "California has the most MLB teams with five, including the Dodgers, Padres, Giants, Angels, and Athletics. Seven states have two teams each."
+
+page:
+  h1: "MLB Teams by State"
+
+  quick_answer:
+    - "California has the most MLB teams of any state with 5: the Los Angeles Angels, Los Angeles Dodgers, Athletics, San Diego Padres, and San Francisco Giants."
+    - "Seven states have 2 teams each: Florida, Illinois, Missouri, New York, Ohio, Pennsylvania, and Texas. Illinois splits Chicago between the Cubs and White Sox."
+    - "28 MLB clubs play across 17 states. The Washington Nationals play in the nation's capital, and the Toronto Blue Jays play in Canada, so neither counts toward a state total."
+
+  methodology: "Teams are grouped by the U.S. state of their current home ballpark. The Athletics, playing at Sutter Health Park in West Sacramento for the 2025-2027 seasons before a planned move to Las Vegas, are counted under California. The Washington Nationals and Toronto Blue Jays are not assigned to a state. Data reflects the 2025 MLB season."
+
+  sources:
+    - name: "Wikipedia. Major League Baseball"
+      url: "https://en.wikipedia.org/wiki/Major_League_Baseball"
+      description: "Current MLB franchise roster, division alignment, and ballpark data"
+    - name: "MLB.com. Sutter Health Park"
+      url: "https://www.mlb.com/news/featured/sutter-health-park-guide-capacity-seating-chart-parking-and-more"
+      description: "Details on the Athletics' temporary home in West Sacramento for the 2025-2027 seasons"
+
+map:
+  title: "MLB Teams by State Map"
+  image: "/images/rankings/sports/mlb-teams-by-state/mlb-teams-by-state-map.webp"
+  image_alt: "Map of the United States showing MLB team locations by state"
+  caption: "California leads with 5 MLB teams. Florida, Illinois, Missouri, New York, Ohio, Pennsylvania, and Texas each have 2. 17 states have at least one franchise."
+  metric_key: team_count
+  metric_label: "teams"
+  color_scheme: red
+  color_scale: linear
+
+table:
+  columns:
+    state: "State"
+    team_count: "#"
+    teams: "MLB Team(s)"
+    ballpark: "Ballpark"
+
+  metric_default: team_count
+  sort_default: desc
+
+  rows:
+    - state: "California"
+      state_slug: "california"
+      team_count: 5
+      teams: "Los Angeles Angels, Los Angeles Dodgers, Athletics, San Diego Padres, San Francisco Giants"
+      ballpark: "Angel Stadium (Anaheim), Dodger Stadium (Los Angeles), Sutter Health Park (West Sacramento), Petco Park (San Diego), Oracle Park (San Francisco)"
+
+    - state: "Florida"
+      state_slug: "florida"
+      team_count: 2
+      teams: "Miami Marlins, Tampa Bay Rays"
+      ballpark: "loanDepot Park (Miami), George M. Steinbrenner Field (Tampa)"
+
+    - state: "Illinois"
+      state_slug: "illinois"
+      team_count: 2
+      teams: "Chicago Cubs, Chicago White Sox"
+      ballpark: "Wrigley Field (Chicago), Rate Field (Chicago)"
+
+    - state: "Missouri"
+      state_slug: "missouri"
+      team_count: 2
+      teams: "Kansas City Royals, St. Louis Cardinals"
+      ballpark: "Kauffman Stadium (Kansas City), Busch Stadium (St. Louis)"
+
+    - state: "New York"
+      state_slug: "new-york"
+      team_count: 2
+      teams: "New York Mets, New York Yankees"
+      ballpark: "Citi Field (Queens), Yankee Stadium (Bronx)"
+
+    - state: "Ohio"
+      state_slug: "ohio"
+      team_count: 2
+      teams: "Cincinnati Reds, Cleveland Guardians"
+      ballpark: "Great American Ball Park (Cincinnati), Progressive Field (Cleveland)"
+
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      team_count: 2
+      teams: "Philadelphia Phillies, Pittsburgh Pirates"
+      ballpark: "Citizens Bank Park (Philadelphia), PNC Park (Pittsburgh)"
+
+    - state: "Texas"
+      state_slug: "texas"
+      team_count: 2
+      teams: "Houston Astros, Texas Rangers"
+      ballpark: "Daikin Park (Houston), Globe Life Field (Arlington)"
+
+    - state: "Arizona"
+      state_slug: "arizona"
+      team_count: 1
+      teams: "Arizona Diamondbacks"
+      ballpark: "Chase Field (Phoenix)"
+
+    - state: "Colorado"
+      state_slug: "colorado"
+      team_count: 1
+      teams: "Colorado Rockies"
+      ballpark: "Coors Field (Denver)"
+
+    - state: "Georgia"
+      state_slug: "georgia"
+      team_count: 1
+      teams: "Atlanta Braves"
+      ballpark: "Truist Park (Atlanta)"
+
+    - state: "Maryland"
+      state_slug: "maryland"
+      team_count: 1
+      teams: "Baltimore Orioles"
+      ballpark: "Oriole Park at Camden Yards (Baltimore)"
+
+    - state: "Massachusetts"
+      state_slug: "massachusetts"
+      team_count: 1
+      teams: "Boston Red Sox"
+      ballpark: "Fenway Park (Boston)"
+
+    - state: "Michigan"
+      state_slug: "michigan"
+      team_count: 1
+      teams: "Detroit Tigers"
+      ballpark: "Comerica Park (Detroit)"
+
+    - state: "Minnesota"
+      state_slug: "minnesota"
+      team_count: 1
+      teams: "Minnesota Twins"
+      ballpark: "Target Field (Minneapolis)"
+
+    - state: "Washington"
+      state_slug: "washington"
+      team_count: 1
+      teams: "Seattle Mariners"
+      ballpark: "T-Mobile Park (Seattle)"
+
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      team_count: 1
+      teams: "Milwaukee Brewers"
+      ballpark: "American Family Field (Milwaukee)"
+
+sections:
+  - id: "states-with-the-most-mlb-teams"
+    icon: "fa-solid fa-baseball"
+    title: "States With the Most MLB Teams"
+    paragraphs:
+      - "California has 5 MLB teams, more than any other state: the Angels, Dodgers, Athletics, Padres, and Giants. Seven states follow with 2 each, Florida, Illinois, Missouri, New York, Ohio, Pennsylvania, and Texas."
+      - "Illinois and New York each split their pair inside one city. Chicago hosts the Cubs and White Sox, while the Mets and Yankees both play in New York City."
+
+  - id: "where-the-athletics-play-now"
+    icon: "fa-solid fa-location-dot"
+    title: "Where the Athletics Play Now"
+    paragraphs:
+      - "The Athletics, who left Oakland after the 2024 season, play at Sutter Health Park in West Sacramento for the 2025-2027 seasons. That keeps the franchise in California even though it dropped a city name from its identity, ahead of a planned move to Las Vegas, Nevada."
+
+visual_assets:
+  - id: "states-with-the-most-mlb-teams-visual"
+    src: "/images/rankings/sports/mlb-teams-by-state/states-with-the-most-mlb-teams.jpg"
+    alt: "Baseball player at bat during an MLB game"
+    caption: "California fields 5 MLB teams, the most of any state."
+    section: "states-with-the-most-mlb-teams"
+    layout: "full-width-tall"
+  - id: "where-the-athletics-play-now-visual"
+    src: "/images/rankings/sports/mlb-teams-by-state/where-the-athletics-play-now.jpg"
+    alt: "Baseball stadium grandstand at dusk"
+    caption: "The Athletics remain in California for now while playing in West Sacramento."
+    section: "where-the-athletics-play-now"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state has the most MLB teams?"
+    answer: "California has 5 MLB teams, the most of any state: the Angels, Dodgers, Athletics, Padres, and Giants."
+
+  - question: "How many MLB teams does Ohio have?"
+    answer: "Ohio has 2 MLB teams, the Cincinnati Reds at Great American Ball Park and the Cleveland Guardians at Progressive Field."
+
+  - question: "Where do the Athletics play now?"
+    answer: "The Athletics play at Sutter Health Park in West Sacramento, California, for the 2025-2027 seasons, ahead of a planned relocation to Las Vegas."
+
+  - question: "How many states have an MLB team?"
+    answer: "17 states have at least one MLB franchise, out of the 28 teams assigned to a state."
+
+  - question: "Does Florida have more than one MLB team?"
+    answer: "Yes. Florida has 2 MLB teams, the Miami Marlins at loanDepot Park and the Tampa Bay Rays at George M. Steinbrenner Field."
+
+  - question: "How many MLB teams are in Missouri?"
+    answer: "Missouri has 2 MLB teams, the Kansas City Royals at Kauffman Stadium and the St. Louis Cardinals at Busch Stadium."
+
+related:
+  - title: "NFL Teams by State"
+    url: "/rankings/sports/nfl-teams-by-state"
+  - title: "Minor League Baseball Teams by State"
+    url: "/rankings/sports/minor-league-baseball-teams-by-state"
+  - title: "NHL Teams by State"
+    url: "/rankings/sports/nhl-teams-by-state"

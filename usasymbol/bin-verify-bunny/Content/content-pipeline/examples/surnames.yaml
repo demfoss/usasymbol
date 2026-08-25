@@ -1,0 +1,130 @@
+type: surnames
+state: [STATE_NAME]
+state_slug: [state-slug] # lowercase, hyphenated: new-york, not New York
+population: [POPULATION] # integer, no commas
+data_year: [YEAR] # integer: 2010
+
+seo:
+  title: "[SEO_TITLE]" # 55-60 chars. Include state name + "last names" or "surnames". Use title_examples as style references. Do not copy page.h1 exactly.
+  description: "[SEO_DESCRIPTION]" # 140-155 chars. Start with direct answer or keyword. Add one concrete state-specific fact.
+
+page:
+  h1: "Most Common Last Names in [STATE_NAME]" # do not change this pattern
+  intro: "[INTRO_PARAGRAPH]"
+  # INTRO RULES:
+  # - First sentence names the top 3 surnames + one state-specific reason they rank that way
+  # - No warmup. No "[STATE_NAME] is a state with a rich..." opener
+  # - 40-70 words max
+  # - Must be specific to this state, not interchangeable with any other state page
+  heritage_title: "[HERITAGE_TITLE]" # short and specific, not "[STATE_NAME] Name Heritage"
+  heritage_body: "[HERITAGE_BODY]"
+  # HERITAGE RULES:
+  # - 3-5 sentences, state-specific migration/settlement history only
+  # - Name real counties, decades, routes, events where supported
+  # - No generic "waves of immigrants came to America" filler
+  fun_fact: "[FUN_FACT]"
+  # FUN FACT RULES:
+  # - One surname, one specific fact: geography, concentration, origin story
+  # - Must be verifiable and state-specific
+  # - No "interestingly" or "it is worth noting"
+
+surnames:
+  - rank: 1
+    name: [SURNAME_1]
+    count: [COUNT_1] # integer, no commas: 39600
+    ratio: [RATIO_1] # integer only, N in "1 in every N residents". NEVER percent or decimal.
+    origin: [ORIGIN_1]
+    # ORIGIN: one lowercase word only
+    # examples: english, german, spanish, czech, himalayan, other
+    # new origins are OK when accurate. NEVER: "english/scottish" "Scots-Irish" "English (Norman)" - no slashes, no spaces, no capitals, no combos
+    type: [TYPE_1]
+    # TYPE: one value only - Occupational, Patronymic, Descriptive, Habitational, Topographic
+    # NEVER: two types, "Patronymic/Occupational", ancestry labels
+    meaning: "[MEANING_1]"
+    # MEANING RULES:
+    # - Start with etymology (Old English / Latin / Norman origin of the root word)
+    # - Add state-specific context: county, decade, migration route, historical event
+    # - 2-4 sentences. No em dashes. No "it is worth noting".
+    # - If no state-specific angle exists, keep to 1-2 sentences etymology only
+
+  - rank: 2
+    name: [SURNAME_2]
+    count: [COUNT_2] # integer
+    ratio: [RATIO_2] # integer
+    origin: [ORIGIN_2] # one lowercase word, no slashes
+    type: [TYPE_2] # one type only
+    meaning: "[MEANING_2]"
+
+  # ... repeat pattern for ranks 3-20
+
+unique_surnames:
+  - name: [UNIQUE_SURNAME_1]
+    state_rank: [STATE_RANK_1] # integer
+    national_rank: [NATIONAL_RANK_1]
+    # integer; use 0 if unknown. NEVER leave blank, NEVER write "unknown" or "N/A"
+    # add "# UNVERIFIED" comment if estimated
+    origin: [UNIQUE_ORIGIN_1] # one lowercase word, no slashes
+    why: "[WHY_UNIQUE_1]"
+    # WHY RULES:
+    # - Pick true state-signature surnames, not merely common surnames that rank a little higher in this state.
+    # - Use rank gap / concentration only to choose candidates, not as the main story.
+    # - Strong examples: Louisiana Guidry/Fontenot/Boudreaux; Kentucky Mattingly/Slone/Caudill; Illinois Kowalski/Kaminski/Novak.
+    # - Avoid generic high-rank names when stronger state-signature options exist: Johnson, Brown, Hall, Baker.
+    # - Broad names such as Ramirez or Sullivan are acceptable when the explanation ties them to a distinctive state community and local geography.
+    # - Start with meaning/origin, then explain why this state specifically: ethnic community, county/parish/neighborhood, migration route, industry, or settlement era.
+    # - Good style: "Ramirez means 'son of Ramiro'... Chicago's Mexican-American community in Pilsen and Little Village is the primary reason."
+    # - Good style: "Sullivan anglicizes Irish Ó Súilleabháin... Famine-era migration brought Sullivans into Chicago's canal and railroad labor force."
+    # - 2-4 sentences. Human, historical, place-specific. Do not lead with percentages unless the percentage itself is the story.
+
+  # ... repeat for unique_surnames 2-5
+
+etymology_groups:
+  - type: "Occupational Names"
+    icon: "fa-solid fa-hammer" # Font Awesome class string only. NEVER emoji or unicode
+    description: "[GROUP_DESCRIPTION_1]"
+    # - How many of top 20 fall in this category + which ones
+    # - State-specific pattern: why more/fewer than national average
+    # - 2-3 sentences
+    examples:
+      - Smith (metalworker) # format: Name (meaning)
+      - Taylor (tailor)
+      - Wright (cartwright)
+
+  - type: "Patronymic Names"
+    icon: "fa-solid fa-person"
+    description: "[GROUP_DESCRIPTION_2]"
+    examples:
+      - Williams (son of William)
+      - Johnson (son of John)
+      - Anderson (son of Anders)
+
+  - type: "Descriptive or Place-Based Names"
+    icon: "fa-solid fa-map-location-dot"
+    description: "[GROUP_DESCRIPTION_3]"
+    examples:
+      - Moore (near a moor)
+      - Brown (brown hair or complexion)
+      - King (royal household)
+
+faq:
+  - question: "[FAQ_QUESTION_1]"
+    # Real search queries only: "What is the most common last name in [STATE_NAME]?"
+    # NEVER: "What makes [STATE_NAME] surnames unique?" or other non-search questions
+    answer: "[FAQ_ANSWER_1]"
+    # 2-4 sentences. Direct answer first. One concrete fact.
+
+  - question: "[FAQ_QUESTION_2]"
+    answer: "[FAQ_ANSWER_2]"
+
+sources:
+  - name: "[SOURCE_NAME_1]"
+    url: "[SOURCE_URL_1]"
+    description: "[SOURCE_DESCRIPTION_1]"
+
+  - name: "[SOURCE_NAME_2]"
+    url: "[SOURCE_URL_2]"
+    description: "[SOURCE_DESCRIPTION_2]"
+
+  - name: "[SOURCE_NAME_3]"
+    url: "[SOURCE_URL_3]"
+    description: "[SOURCE_DESCRIPTION_3]"

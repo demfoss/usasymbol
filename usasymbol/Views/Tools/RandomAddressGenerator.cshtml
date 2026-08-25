@@ -1,0 +1,76 @@
+@using System.Text.Json
+@using USASymbol.Models
+
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+
+    var states = (List<StateSummary>)(ViewBag.States ?? new List<StateSummary>());
+    var initialAddress = (FakeAddressResult)(ViewBag.InitialAddress ?? new FakeAddressResult());
+
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var initialAddressJson = JsonSerializer.Serialize(initialAddress, jsonOptions);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">Random Address Generator</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>Random Address <em>Generator</em></h1>
+            <p class="tl-lede">
+                Generate a random U.S.-style street address — a real city, state, and ZIP
+                code paired with a made-up street — for testing forms, QA, or sample data.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="zg-panel" id="address-generator" data-generate-url="/tools/random-address-generator/generate">
+            <div class="zg-controls">
+                <div class="zg-field">
+                    <label for="ag-state">State</label>
+                    <select id="ag-state">
+                        <option value="">Any state</option>
+                        @foreach (var state in states)
+                        {
+                            <option value="@state.Code">@state.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="zg-actions">
+                    <button type="button" class="zg-btn zg-btn-primary" id="ag-generate">
+                        <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Get New Address
+                    </button>
+                    <button type="button" class="zg-btn zg-btn-secondary" id="ag-copy">
+                        <i class="fa-regular fa-copy" aria-hidden="true"></i> Copy
+                    </button>
+                </div>
+            </div>
+            <p class="zg-status" id="ag-status" role="status" aria-live="polite"></p>
+            <div id="ag-result"></div>
+            <p class="tl-note">
+                This is a randomly generated, non-deliverable address for testing and sample
+                data only — it does not correspond to a real mailing address.
+            </p>
+        </div>
+    </section>
+</div>
+
+<script>
+    window.addressGeneratorData = { initial: @Html.Raw(initialAddressJson) };
+</script>
+
+@section Scripts {
+    <script defer src="~/js/random-address-generator.js" asp-append-version="true"></script>
+}

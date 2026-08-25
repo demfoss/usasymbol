@@ -23,7 +23,7 @@
     var overviewHeading = $"{designation} of {stateName}";
 
     var pageHeading = !string.IsNullOrWhiteSpace(treeName)
-        ? $"{stateName} {designation}: {treeName}"
+        ? Model.IsNationalSymbol ? treeName : $"{stateName} {designation}: {treeName}"
         : $"{stateName} {designation}";
 
     var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
@@ -49,7 +49,7 @@
         : System.Net.WebUtility.HtmlDecode(descRaw);
     ViewData["OgImage"] = Images.Full(Model.Symbol?.ImageUrl ?? Model.State?.FlagImageUrl);
     ViewData["OgType"] = "article";
-    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+    ViewData["Canonical"] = Model.CanonicalUrl ?? Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
 
     var hasMeaning = !string.IsNullOrWhiteSpace(Model.Meaning);
     var introText = Model.TreeContent?.IntroText ?? string.Empty;

@@ -248,6 +248,43 @@ namespace USASymbol.Services
                         : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
                 };
 
+            if (raw.TryGetValue("point_map", out var pointMapObj) && pointMapObj is Dictionary<object, object> pointMapD)
+            {
+                content.PointMap = new PagePointMap
+                {
+                    Title = Str(pointMapD, "title"),
+                    ImageAlt = Str(pointMapD, "image_alt"),
+                    Caption = pointMapD.ContainsKey("caption") ? Str(pointMapD, "caption") : null,
+                    MaxZoom = Math.Clamp(Int(pointMapD, "max_zoom") ?? 10, 5, 12),
+                };
+
+                if (pointMapD.TryGetValue("markers", out var markersObj) && markersObj is List<object> markers)
+                {
+                    foreach (var marker in markers.OfType<Dictionary<object, object>>())
+                    {
+                        var latitude = Double(marker, "latitude");
+                        var longitude = Double(marker, "longitude");
+                        if (latitude == null || longitude == null)
+                            continue;
+
+                        content.PointMap.Markers.Add(new PagePointMarker
+                        {
+                            Rank = Int(marker, "rank") ?? content.PointMap.Markers.Count + 1,
+                            Slug = Str(marker, "slug"),
+                            Anchor = marker.ContainsKey("anchor") ? Str(marker, "anchor") : null,
+                            Name = Str(marker, "name"),
+                            Latitude = latitude.Value,
+                            Longitude = longitude.Value,
+                            TotalCrimeRate = Double(marker, "total_crime_rate"),
+                            ViolentCrimeRate = Double(marker, "violent_crime_rate"),
+                            PropertyCrimeRate = Double(marker, "property_crime_rate"),
+                            CoveragePopulation = Int(marker, "coverage_population"),
+                            PopupText = marker.ContainsKey("popup_text") ? Str(marker, "popup_text") : null,
+                        });
+                    }
+                }
+            }
+
             if (raw.TryGetValue("heatmap", out var hmObj) && hmObj is Dictionary<object, object> hmD)
                 content.Heatmap = new PageHeatmap
                 {
@@ -506,9 +543,25 @@ namespace USASymbol.Services
                     sect.Subsections = new List<PageSubsection>();
                     foreach (var sub in subL.OfType<Dictionary<object, object>>())
                     {
-                        var pageSub = new PageSubsection { Subtitle = Str(sub, "subtitle"), Text = Str(sub, "text") };
+                        var pageSub = new PageSubsection
+                        {
+                            Id = Str(sub, "id"),
+                            Subtitle = Str(sub, "subtitle"),
+                            Status = Str(sub, "status"),
+                            Text = Str(sub, "text"),
+                            Image = Str(sub, "image"),
+                            ImageCaption = Str(sub, "image_caption"),
+                        };
+
+                        if (sub.TryGetValue("anchor_phrases", out var anchorObj) && anchorObj is List<object> anchorL)
+                            pageSub.AnchorPhrases = anchorL.Select(x => x?.ToString() ?? "").Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+
+                        if (sub.TryGetValue("list_items", out var listObj) && listObj is List<object> listL)
+                            pageSub.ListItems = listL.Select(x => x?.ToString() ?? "").Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+
                         if (sub.TryGetValue("link", out var linkObj) && linkObj is Dictionary<object, object> linkD)
                             pageSub.Link = new LinkData { Label = Str(linkD, "label"), Url = Str(linkD, "url") };
+
                         sect.Subsections.Add(pageSub);
                     }
                 }
@@ -523,13 +576,21 @@ namespace USASymbol.Services
                 {
                     sect.Highlights = new List<PageHighlight>();
                     foreach (var h in hlL.OfType<Dictionary<object, object>>())
-                        sect.Highlights.Add(new PageHighlight
+                    {
+                        var highlight = new PageHighlight
                         {
                             Name        = Str(h, "name"),
                             State       = h.ContainsKey("state") ? Str(h, "state") : "",
+                            Status      = h.ContainsKey("status") ? Str(h, "status") : "",
                             Image       = h.ContainsKey("image") ? Str(h, "image") : "",
                             Description = h.ContainsKey("description") ? Str(h, "description") : "",
-                        });
+                        };
+
+                        if (h.TryGetValue("anchor_phrases", out var anchorsObj) && anchorsObj is List<object> anchors)
+                            highlight.AnchorPhrases = anchors.Select(x => x?.ToString() ?? "").Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+
+                        sect.Highlights.Add(highlight);
+                    }
                 }
 
                 content.Sections.Add(sect);
@@ -803,6 +864,7 @@ namespace USASymbol.Services
         private static string FormatCategoryTitle(string id) => id switch
         {
             "geography"     => "Geography",
+            "agriculture"   => "Agriculture",
             "demographics"  => "Demographics",
             "government"    => "Government & Politics",
             "history"       => "History",
@@ -827,6 +889,7 @@ namespace USASymbol.Services
         private static string GetCategoryIcon(string id) => id switch
         {
             "geography"     => "fa-solid fa-globe",
+            "agriculture"   => "fa-solid fa-tractor",
             "demographics"  => "fa-solid fa-users",
             "government"    => "fa-solid fa-landmark",
             "history"       => "fa-solid fa-clock-rotate-left",
@@ -844,12 +907,14 @@ namespace USASymbol.Services
             "taxes"         => "fa-solid fa-receipt",
             "capitals"      => "fa-solid fa-building-columns",
             "flags"         => "fa-solid fa-flag",
+            "crime"         => "fa-solid fa-shield-halved",
             _               => "fa-solid fa-list",
         };
 
         private static string GetCategoryDescription(string id) => id switch
         {
             "geography"      => "Land area, climate, terrain, and natural features compared across all 50 states.",
+            "agriculture"    => "Crop production, farmland value, livestock, and ranching rankings by state.",
             "demographics"   => "Population, age, race, language, and household trends by state.",
             "government"     => "Elections, political makeup, public policy, and civic structure by state.",
             "history"        => "Founding dates, statehood order, and historical milestones by state.",
@@ -867,12 +932,14 @@ namespace USASymbol.Services
             "taxes"          => "Income, sales, property, and gas tax rates compared by state.",
             "capitals"       => "Facts and history behind every U.S. state capital.",
             "flags"          => "Design, symbolism, and history behind every U.S. state flag.",
+            "crime"          => "Crime rates, gun violence, prisons, and public safety statistics by state.",
             _ => "",
         };
 
         private static string? GetCategoryImage(string id) => id switch
         {
             "culture"        => "/images/rankings/culture/state-fairs-by-state/hero-fair-midway.jpg",
+            "agriculture"    => "/images/rankings/food/farms-by-state/farms-by-state-hero.jpg",
             "demographics"   => "/images/rankings/demographics/states-by-population-map.webp",
             "economy"        => "/images/rankings/economy/states-by-cost-of-living/states-by-cost-of-living-hero.jpg",
             "education"      => "/images/rankings/education/states-by-k12-education/states-by-k12-education-hero.jpg",
@@ -889,6 +956,7 @@ namespace USASymbol.Services
             "capitals"       => "/images/collections/capitals/state-capitals-named-after-presidents.webp",
             "flags"          => "/images/collections/flags/flag-of-the-united-states.webp",
             "laws"           => "/images/collections/laws/texas-state-capitol.webp",
+            "crime"          => "/images/rankings/health/states-by-crime-rate/states-by-crime-rate-hero.jpg",
             _ => null,
         };
 
@@ -896,6 +964,22 @@ namespace USASymbol.Services
 
         private static string Str(Dictionary<object, object> d, string key)
             => d.TryGetValue(key, out var v) ? v?.ToString() ?? "" : "";
+
+        private static int? Int(Dictionary<object, object> d, string key)
+            => d.TryGetValue(key, out var value) && int.TryParse(
+                value?.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed)
+                    ? parsed
+                    : null;
+
+        private static double? Double(Dictionary<object, object> d, string key)
+        {
+            if (!d.TryGetValue(key, out var value) || !double.TryParse(
+                    value?.ToString(), NumberStyles.Float | NumberStyles.AllowThousands,
+                    CultureInfo.InvariantCulture, out var parsed))
+                return null;
+
+            return double.IsFinite(parsed) ? parsed : null;
+        }
 
         private static string Str(Dictionary<string, object> d, string key)
             => d.TryGetValue(key, out var v) ? v?.ToString() ?? "" : "";

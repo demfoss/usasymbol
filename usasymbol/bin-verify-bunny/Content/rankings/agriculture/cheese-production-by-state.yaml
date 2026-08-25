@@ -1,0 +1,218 @@
+type: ranking
+slug: cheese-production-by-state
+category: agriculture
+url: /rankings/agriculture/cheese-production-by-state
+auto_link_phrases:
+  - "cheese production by state"
+  - "states that produce the most cheese"
+  - "which state produces the most cheese"
+  - "cheese production statistics"
+extremes_mode: both
+extremes_title: "States With the Most and Least Cheese Production"
+hero_image: "/images/rankings/agriculture/cheese-production-by-state/cheese-production-by-state-hero.jpg"
+hero_image_alt: "Wheels of cheese stacked at a dairy production facility"
+hero_image_caption: "Wisconsin produces the most cheese of any state at 307,830,000 pounds. New Jersey produces the least in the data at 9,211,000 pounds."
+
+author: "USA Symbol Team"
+date_published: "2026-08-13"
+date_modified: "2026-08-13"
+
+seo:
+  title: "Cheese Production by State | Map, States & Facts"
+  description: "Wisconsin produces the most cheese of any state at 307,830,000 pounds, followed by California at 205,392,000 pounds."
+
+page:
+  h1: "Cheese Production by State"
+
+  quick_answer:
+    - "Wisconsin produces the most cheese of any state at 307,830,000 pounds, nearly 50% more than second-place California's 205,392,000 pounds."
+    - "Idaho ranks third at 91,794,000 pounds, less than half of California's total and more than double fourth-place New York's 77,952,000 pounds."
+    - "New Jersey has the smallest output in the tracked data at 9,211,000 pounds, just behind Illinois at 9,786,000 pounds."
+
+  methodology: "Cheese production figures cover the 12 states with published state-level totals on record with USDA NASS. States without separately reported figures are excluded rather than shown as zero."
+
+  sources:
+    - name: "USDA NASS QuickStats"
+      url: "https://quickstats.nass.usda.gov/"
+      description: "State-level cheese production totals, pounds produced"
+
+table:
+  caption: "Cheese Production by State"
+  note: "Figures are pounds of cheese produced. Only states with published totals on record are shown."
+  columns:
+    rank: "Rank"
+    state: "State"
+    production_lbs: "Cheese Production (lbs)"
+    notes: "Notes"
+
+  metric_default: production_lbs
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      production_lbs: 307830000
+      notes: "The most cheese production in the table, 32.11% of the tracked total."
+    - rank: 2
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      production_lbs: 205392000
+      notes: "21.43% of the tracked total."
+    - rank: 3
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      production_lbs: 91794000
+      notes: "9.58% of the tracked total."
+    - rank: 4
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      production_lbs: 77952000
+      notes: "8.13% of the tracked total."
+    - rank: 5
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      production_lbs: 74999000
+      notes: "7.82% of the tracked total."
+    - rank: 6
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      production_lbs: 73455000
+      notes: "7.66% of the tracked total."
+    - rank: 7
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      production_lbs: 40058000
+      notes: "4.18% of the tracked total."
+    - rank: 8
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      production_lbs: 33460000
+      notes: "3.49% of the tracked total."
+    - rank: 9
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      production_lbs: 21465000
+      notes: "2.24% of the tracked total."
+    - rank: 10
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      production_lbs: 13225000
+      notes: "1.38% of the tracked total."
+    - rank: 11
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      production_lbs: 9786000
+      notes: "1.02% of the tracked total."
+    - rank: 12
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      production_lbs: 9211000
+      notes: "The least cheese production in the table, 0.96% of the tracked total."
+
+map:
+  title: "Cheese Production by State Map"
+  image_alt: "U.S. map shaded by cheese production in pounds, from Wisconsin's 307,830,000-pound high down to New Jersey's 9,211,000-pound low"
+  caption: "Wisconsin's 307,830,000 pounds is the darkest shade on the map. New Jersey's 9,211,000 pounds is the lightest, while California ranks second at 205,392,000 pounds."
+  metric_key: production_lbs
+  metric_label: "Cheese Production (lbs)"
+  color_scheme: amber
+  color_scale: log
+
+sections:
+  - id: "top-cheese-producing-states"
+    icon: "fa-solid fa-cheese"
+    title: "States That Produce the Most Cheese"
+    paragraphs:
+      - "Wisconsin leads all states at 307,830,000 pounds, 32.11% of the tracked total. California follows at 205,392,000 pounds, and Idaho is third at 91,794,000 pounds. New York (77,952,000) and New Mexico (74,999,000) round out the top five."
+    table:
+      columns:
+        state: "State"
+        production_lbs: "Cheese Production (lbs)"
+      rows:
+        - state: "Wisconsin"
+          production_lbs: "307,830,000"
+        - state: "California"
+          production_lbs: "205,392,000"
+        - state: "Idaho"
+          production_lbs: "91,794,000"
+        - state: "New York"
+          production_lbs: "77,952,000"
+        - state: "New Mexico"
+          production_lbs: "74,999,000"
+        - state: "Minnesota"
+          production_lbs: "73,455,000"
+
+  - id: "smallest-cheese-producers"
+    icon: "fa-solid fa-chart-column"
+    title: "States With the Least Cheese Production"
+    paragraphs:
+      - "New Jersey has the smallest output in the table at 9,211,000 pounds, just behind Illinois at 9,786,000 pounds. Vermont (13,225,000), Ohio (21,465,000), and Iowa (33,460,000) also trail well behind the leaders."
+    table:
+      columns:
+        state: "State"
+        production_lbs: "Cheese Production (lbs)"
+      rows:
+        - state: "New Jersey"
+          production_lbs: "9,211,000"
+        - state: "Illinois"
+          production_lbs: "9,786,000"
+        - state: "Vermont"
+          production_lbs: "13,225,000"
+        - state: "Ohio"
+          production_lbs: "21,465,000"
+        - state: "Iowa"
+          production_lbs: "33,460,000"
+
+visual_assets:
+  - id: "top-cheese-producing-states-visual"
+    src: "/images/rankings/agriculture/cheese-production-by-state/top-cheese-producing-states.jpg"
+    alt: "Dairy processing plant representing states with the most cheese production"
+    caption: "Wisconsin produces the most cheese of any state at 307,830,000 pounds."
+    section: "top-cheese-producing-states"
+    layout: "full-width-tall"
+
+  - id: "smallest-cheese-producers-visual"
+    src: "/images/rankings/agriculture/cheese-production-by-state/smallest-cheese-producers.jpg"
+    alt: "Small-scale dairy operation representing states with the least cheese production"
+    caption: "New Jersey has the smallest cheese output in the table at 9,211,000 pounds."
+    section: "smallest-cheese-producers"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state produces the most cheese?"
+    answer: "Wisconsin produces the most cheese in the tracked data at 307,830,000 pounds, 32.11% of the total."
+
+  - question: "Which state produces the least cheese?"
+    answer: "New Jersey has the smallest output at 9,211,000 pounds, just behind Illinois at 9,786,000 pounds."
+
+  - question: "How much cheese does California produce?"
+    answer: "California produces 205,392,000 pounds of cheese, the second-highest total in the data at 21.43% of the tracked amount."
+
+  - question: "How does Idaho's cheese production compare to New York's?"
+    answer: "Idaho produces 91,794,000 pounds, about 13.8 million pounds more than New York's 77,952,000 pounds."
+
+  - question: "Which Midwest states produce the most cheese?"
+    answer: "Wisconsin (307,830,000 pounds), Minnesota (73,455,000 pounds), Iowa (33,460,000 pounds), Ohio (21,465,000 pounds), and Illinois (9,786,000 pounds) are the Midwest states in the data."
+
+related:
+  - title: "Farms by State"
+    url: "/rankings/food/farms-by-state"
+  - title: "Corn Production by State"
+    url: "/rankings/agriculture/corn-production-by-state"
+  - title: "Chicken Production by State"
+    url: "/rankings/agriculture/chicken-production-by-state"
+  - title: "Christmas Tree Production by State"
+    url: "/rankings/agriculture/christmas-tree-production-by-state"

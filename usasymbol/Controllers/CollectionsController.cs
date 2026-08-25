@@ -80,6 +80,13 @@ namespace USASymbol.Controllers
                     return NotFound();
                 }
 
+                if (group.Equals("crime", System.StringComparison.OrdinalIgnoreCase) &&
+                    Request.Path.StartsWithSegments("/collections/crime") &&
+                    content.Url.StartsWith("/most-dangerous-cities/", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return RedirectPermanent(content.Url);
+                }
+
                 var vm = new PageDetailViewModel { Content = content };
 
                 ViewData["Title"]       = content.Seo?.Title;
@@ -106,6 +113,13 @@ namespace USASymbol.Controllers
                 throw;
             }
         }
+
+        [HttpGet("/most-dangerous-cities")]
+        public IActionResult MostDangerousCitiesHub() => RedirectPermanent("/collections/crime");
+
+        [HttpGet("/most-dangerous-cities/{state}")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept-Encoding")]
+        public Task<IActionResult> MostDangerousCitiesByState(string state) => Detail("crime", state);
 
         private static PageCategoryViewModel BuildCategoryViewModel(PageCategory cat)
         {

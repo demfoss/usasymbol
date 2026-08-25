@@ -18,8 +18,8 @@
         ? "State Motto"
         : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
 
-    var pageHeading = $"{stateName} {designation}: {mottoText}";
-    var heroHeading = $"{stateName} {designation}";
+    var pageHeading = Model.IsNationalSymbol ? mottoText : $"{stateName} {designation}: {mottoText}";
+    var heroHeading = Model.IsNationalSymbol ? mottoText : $"{stateName} {designation}";
     var descRaw = Model.MottoContent?.SeoDescription ?? "";
     var hasIntroText = !string.IsNullOrWhiteSpace(Model.MottoContent?.IntroText);
     var quickAnswerQuestion = $"What is {stateName}'s state motto?";
@@ -49,7 +49,7 @@
         : System.Net.WebUtility.HtmlDecode(descRaw);
     ViewData["OgImage"] = Images.Full(Model.Symbol?.ImageUrl ?? $"/images/seals/{Model.State?.Slug}-seal.webp");
     ViewData["OgType"] = "article";
-    ViewData["Canonical"] = Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
+    ViewData["Canonical"] = Model.CanonicalUrl ?? Model.Symbol?.ToSymbolUrl(Model.State?.Slug ?? string.Empty);
 
     var quickFacts = (Model.QuickFacts ?? Array.Empty<QuickFactItem>())
         .Where(x => !string.IsNullOrWhiteSpace(x?.Value))

@@ -22,6 +22,9 @@ namespace USASymbol.Models.ViewModels
         public virtual string? Author => null;
         public virtual DateTime? DateModified => null;
 
+        public bool IsNationalSymbol { get; set; }
+        public string? CanonicalUrl { get; set; }
+
         public AuthorBox AuthorBox => new AuthorBox
         {
             DateModified = DateModified,

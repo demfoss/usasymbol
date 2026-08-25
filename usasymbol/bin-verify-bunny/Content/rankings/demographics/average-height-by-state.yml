@@ -1,0 +1,566 @@
+type: ranking
+slug: average-height-by-state
+category: demographics
+url: /rankings/demographics/average-height-by-state
+auto_link_phrases:
+  - "average height by state"
+  - "tallest states in America"
+  - "average male height by state"
+extremes_mode: both
+extremes_title: "Tallest and Shortest U.S. States by Average Height"
+hero_image: "/images/rankings/demographics/average-height-by-state/average-height-by-state-hero.jpg"
+hero_image_alt: "Group of adults standing together outdoors"
+hero_image_caption: "Average adult height varies only modestly across states, but clear regional patterns still show up in the data. Northern Plains and Mountain states cluster near the top, while Hawaii and the Southwest sit lower."
+
+author: "USA Symbol Team"
+date_published: "2026-06-21"
+date_modified: "2026-06-21"
+
+seo:
+  title: "Average Height by State | Tallest and Shortest States"
+  description: "Montana men are the tallest in the U.S. at 5'10.7\" and shortest in Hawaii at 5'9.0\". Male and female averages are listed for all 50 states."
+
+page:
+  h1: "Average Height by State"
+
+  quick_answer:
+    - "Montana men average 5'10.7\", the tallest in the country. South Dakota ties that mark. Utah and Montana share the women's lead at 5'4.7\"."
+    - "Hawaii ranks last for both. Men average 5'9.0\" there, women 5'3.5\". The spread from Montana to Hawaii is 1.7 inches for men and 1.2 inches for women."
+    - "Utah places third for men at 5'10.6\" and ties Montana for women at 5'4.7\". No other state ranks in the top three for both."
+
+  methodology: "Data comes from the CDC BRFSS 2017, a telephone survey of approximately 450,000 adults. Heights are self-reported and consistent across all 50 states, making cross-state comparisons valid."
+
+  sources:
+    - name: "CDC Behavioral Risk Factor Surveillance System (BRFSS) 2017"
+      url: "https://www.cdc.gov/brfss/"
+      description: "Self-reported height data by state and sex, ~450,000 respondents"
+
+map:
+  title: "Average Height by U.S. State Map"
+  image: "/images/rankings/demographics/average-height-by-state-map.webp"
+  image_alt: "Choropleth map of the United States shaded from pale to deep teal by average male height per state"
+  caption: "Montana (#1) leads with men at 5'10.7\". Hawaii (#50) sits 0.6 inches below California (#49) at 5'9.0\", the largest single-step drop in the table. Northern Plains states shade darkest."
+  metric_key: avg_male_height_in
+  metric_label: "in (men)"
+  color_scheme: teal
+  color_scale: linear
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    avg_male_height_ft: "Men"
+    avg_female_height_ft: "Women"
+    avg_male_height_in: "Men (in)"
+    avg_female_height_in: "Women (in)"
+
+  metric_default: avg_male_height_in
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      avg_male_height_in: 70.668
+      avg_male_height_ft: "5'10.7\""
+      avg_female_height_in: 64.680
+      avg_female_height_ft: "5'4.7\""
+
+    - rank: 2
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      avg_male_height_in: 70.656
+      avg_male_height_ft: "5'10.7\""
+      avg_female_height_in: 64.680
+      avg_female_height_ft: "5'4.7\""
+
+    - rank: 3
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      avg_male_height_in: 70.632
+      avg_male_height_ft: "5'10.6\""
+      avg_female_height_in: 64.692
+      avg_female_height_ft: "5'4.7\""
+
+    - rank: 4
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      avg_male_height_in: 70.608
+      avg_male_height_ft: "5'10.6\""
+      avg_female_height_in: 64.644
+      avg_female_height_ft: "5'4.6\""
+
+    - rank: 5
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      avg_male_height_in: 70.596
+      avg_male_height_ft: "5'10.6\""
+      avg_female_height_in: 64.584
+      avg_female_height_ft: "5'4.6\""
+
+    - rank: 6
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      avg_male_height_in: 70.572
+      avg_male_height_ft: "5'10.6\""
+      avg_female_height_in: 64.464
+      avg_female_height_ft: "5'4.5\""
+
+    - rank: 7
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      avg_male_height_in: 70.536
+      avg_male_height_ft: "5'10.5\""
+      avg_female_height_in: 64.500
+      avg_female_height_ft: "5'4.5\""
+
+    - rank: 8
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      avg_male_height_in: 70.524
+      avg_male_height_ft: "5'10.5\""
+      avg_female_height_in: 64.572
+      avg_female_height_ft: "5'4.6\""
+
+    - rank: 9
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      avg_male_height_in: 70.464
+      avg_male_height_ft: "5'10.5\""
+      avg_female_height_in: 64.428
+      avg_female_height_ft: "5'4.4\""
+
+    - rank: 10
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      avg_male_height_in: 70.452
+      avg_male_height_ft: "5'10.5\""
+      avg_female_height_in: 64.584
+      avg_female_height_ft: "5'4.6\""
+
+    - rank: 11
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      avg_male_height_in: 70.452
+      avg_male_height_ft: "5'10.5\""
+      avg_female_height_in: 64.464
+      avg_female_height_ft: "5'4.5\""
+
+    - rank: 12
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      avg_male_height_in: 70.404
+      avg_male_height_ft: "5'10.4\""
+      avg_female_height_in: 64.464
+      avg_female_height_ft: "5'4.5\""
+
+    - rank: 13
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      avg_male_height_in: 70.392
+      avg_male_height_ft: "5'10.4\""
+      avg_female_height_in: 64.356
+      avg_female_height_ft: "5'4.4\""
+
+    - rank: 14
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      avg_male_height_in: 70.392
+      avg_male_height_ft: "5'10.4\""
+      avg_female_height_in: 64.380
+      avg_female_height_ft: "5'4.4\""
+
+    - rank: 15
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      avg_male_height_in: 70.380
+      avg_male_height_ft: "5'10.4\""
+      avg_female_height_in: 64.452
+      avg_female_height_ft: "5'4.5\""
+
+    - rank: 16
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      avg_male_height_in: 70.368
+      avg_male_height_ft: "5'10.4\""
+      avg_female_height_in: 64.392
+      avg_female_height_ft: "5'4.4\""
+
+    - rank: 17
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      avg_male_height_in: 70.368
+      avg_male_height_ft: "5'10.4\""
+      avg_female_height_in: 64.356
+      avg_female_height_ft: "5'4.4\""
+
+    - rank: 18
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      avg_male_height_in: 70.356
+      avg_male_height_ft: "5'10.4\""
+      avg_female_height_in: 64.404
+      avg_female_height_ft: "5'4.4\""
+
+    - rank: 19
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      avg_male_height_in: 70.332
+      avg_male_height_ft: "5'10.3\""
+      avg_female_height_in: 64.452
+      avg_female_height_ft: "5'4.5\""
+
+    - rank: 20
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      avg_male_height_in: 70.320
+      avg_male_height_ft: "5'10.3\""
+      avg_female_height_in: 64.584
+      avg_female_height_ft: "5'4.6\""
+
+    - rank: 21
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      avg_male_height_in: 70.320
+      avg_male_height_ft: "5'10.3\""
+      avg_female_height_in: 64.500
+      avg_female_height_ft: "5'4.5\""
+
+    - rank: 22
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      avg_male_height_in: 70.308
+      avg_male_height_ft: "5'10.3\""
+      avg_female_height_in: 64.320
+      avg_female_height_ft: "5'4.3\""
+
+    - rank: 23
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      avg_male_height_in: 70.296
+      avg_male_height_ft: "5'10.3\""
+      avg_female_height_in: 64.632
+      avg_female_height_ft: "5'4.6\""
+
+    - rank: 24
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      avg_male_height_in: 70.296
+      avg_male_height_ft: "5'10.3\""
+      avg_female_height_in: 64.188
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 25
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      avg_male_height_in: 70.272
+      avg_male_height_ft: "5'10.3\""
+      avg_female_height_in: 64.176
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 26
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      avg_male_height_in: 70.260
+      avg_male_height_ft: "5'10.3\""
+      avg_female_height_in: 64.248
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 27
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      avg_male_height_in: 70.260
+      avg_male_height_ft: "5'10.3\""
+      avg_female_height_in: 64.308
+      avg_female_height_ft: "5'4.3\""
+
+    - rank: 28
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      avg_male_height_in: 70.236
+      avg_male_height_ft: "5'10.2\""
+      avg_female_height_in: 64.332
+      avg_female_height_ft: "5'4.3\""
+
+    - rank: 29
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      avg_male_height_in: 70.224
+      avg_male_height_ft: "5'10.2\""
+      avg_female_height_in: 64.296
+      avg_female_height_ft: "5'4.3\""
+
+    - rank: 30
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      avg_male_height_in: 70.212
+      avg_male_height_ft: "5'10.2\""
+      avg_female_height_in: 64.176
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 31
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      avg_male_height_in: 70.176
+      avg_male_height_ft: "5'10.2\""
+      avg_female_height_in: 64.284
+      avg_female_height_ft: "5'4.3\""
+
+    - rank: 32
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      avg_male_height_in: 70.164
+      avg_male_height_ft: "5'10.2\""
+      avg_female_height_in: 64.416
+      avg_female_height_ft: "5'4.4\""
+
+    - rank: 33
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      avg_male_height_in: 70.152
+      avg_male_height_ft: "5'10.2\""
+      avg_female_height_in: 64.284
+      avg_female_height_ft: "5'4.3\""
+
+    - rank: 34
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      avg_male_height_in: 70.104
+      avg_male_height_ft: "5'10.1\""
+      avg_female_height_in: 64.284
+      avg_female_height_ft: "5'4.3\""
+
+    - rank: 35
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      avg_male_height_in: 70.092
+      avg_male_height_ft: "5'10.1\""
+      avg_female_height_in: 64.188
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 36
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      avg_male_height_in: 70.044
+      avg_male_height_ft: "5'10.0\""
+      avg_female_height_in: 64.212
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 37
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      avg_male_height_in: 70.032
+      avg_male_height_ft: "5'10.0\""
+      avg_female_height_in: 64.416
+      avg_female_height_ft: "5'4.4\""
+
+    - rank: 38
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      avg_male_height_in: 70.032
+      avg_male_height_ft: "5'10.0\""
+      avg_female_height_in: 64.236
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 39
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      avg_male_height_in: 69.996
+      avg_male_height_ft: "5'10.0\""
+      avg_female_height_in: 64.020
+      avg_female_height_ft: "5'4.0\""
+
+    - rank: 40
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      avg_male_height_in: 69.984
+      avg_male_height_ft: "5'10.0\""
+      avg_female_height_in: 64.224
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 41
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      avg_male_height_in: 69.984
+      avg_male_height_ft: "5'10.0\""
+      avg_female_height_in: 64.176
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 42
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      avg_male_height_in: 69.948
+      avg_male_height_ft: "5'9.9\""
+      avg_female_height_in: 64.176
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 43
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      avg_male_height_in: 69.768
+      avg_male_height_ft: "5'9.8\""
+      avg_female_height_in: 64.080
+      avg_female_height_ft: "5'4.1\""
+
+    - rank: 44
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      avg_male_height_in: 69.768
+      avg_male_height_ft: "5'9.8\""
+      avg_female_height_in: 63.912
+      avg_female_height_ft: "5'3.9\""
+
+    - rank: 45
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      avg_male_height_in: 69.756
+      avg_male_height_ft: "5'9.8\""
+      avg_female_height_in: 64.068
+      avg_female_height_ft: "5'4.1\""
+
+    - rank: 46
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      avg_male_height_in: 69.732
+      avg_male_height_ft: "5'9.7\""
+      avg_female_height_in: 64.104
+      avg_female_height_ft: "5'4.1\""
+
+    - rank: 47
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      avg_male_height_in: 69.720
+      avg_male_height_ft: "5'9.7\""
+      avg_female_height_in: 63.816
+      avg_female_height_ft: "5'3.8\""
+
+    - rank: 48
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      avg_male_height_in: 69.696
+      avg_male_height_ft: "5'9.7\""
+      avg_female_height_in: 63.684
+      avg_female_height_ft: "5'3.7\""
+
+    - rank: 49
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      avg_male_height_in: 69.588
+      avg_male_height_ft: "5'9.6\""
+      avg_female_height_in: 64.152
+      avg_female_height_ft: "5'4.2\""
+
+    - rank: 50
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      avg_male_height_in: 68.976
+      avg_male_height_ft: "5'9.0\""
+      avg_female_height_in: 63.456
+      avg_female_height_ft: "5'3.5\""
+
+sections:
+  - id: "tallest-states-men"
+    icon: "fa-solid fa-arrow-up"
+    title: "States with the Tallest Average Height"
+    paragraphs:
+      - "Montana leads at 5'10.7\", followed by South Dakota at 5'10.7\". Both sit above Utah (#3) at 5'10.6\". All 11 states in ranks 1 through 11 average 5'10.4\" or above for men."
+      - "For women the top state shifts. Utah leads at 5'4.7\", with Montana and South Dakota 0.012 inches behind at the same value. Nebraska (#4 for men) and Idaho (#8) also rank in the women's top nine."
+
+  - id: "hawaii-outlier"
+    icon: "fa-solid fa-arrow-down"
+    title: "State with the Shortest Average Height"
+    paragraphs:
+      - "Hawaii ranks last with men at 5'9.0\" and women at 5'3.5\". California (#49) has men at 5'9.6\", placing Hawaii 0.612 inches below the next-lowest state. That drop is the widest between any two adjacent ranks in the table."
+      - "The total spread from Montana (#1) to Hawaii (#50) is 1.7 inches for men and 1.2 inches for women. New Mexico (#48 at 5'9.7\") and California (#49 at 5'9.6\") are the only other states with men averaging below 5'9.7\"."
+
+visual_assets:
+  - id: tallest-states-men
+    src: /images/rankings/demographics/average-height-by-state/tallest-states-men.jpg
+    alt: Tall adults walking together on a city street
+    caption: Montana, South Dakota, and Utah lead the ranking, with men averaging around 5'10.6\" to 5'10.7\". The tallest states are concentrated in the Northern Plains and Mountain West rather than on the coasts.
+    section: tallest-states-men
+    layout: full-width-tall
+
+  - id: hawaii-outlier
+    src: /images/rankings/demographics/average-height-by-state/hawaii-outlier.jpg
+    alt: People walking along a beach promenade in Hawaii
+    caption: Hawaii stands apart at the bottom of the table, with the lowest average male and female height in the country. Its 0.612-inch drop below California is the largest single-step gap between adjacent states in the ranking.
+    section: hawaii-outlier
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the tallest average height for men?"
+    answer: "Montana ranks first at 5'10.7\" per CDC BRFSS 2017. All 11 states in ranks 1 through 11 average 5'10.4\" or above. South Dakota is 0.012 inches behind Montana at 5'10.7\", and Utah is third at 5'10.6\"."
+
+  - question: "Which state has the tallest average height for women?"
+    answer: "Utah leads for women at 5'4.7\", 0.012 inches ahead of Montana and South Dakota. Nebraska (#4 overall) ranks fourth for women at 5'4.6\"."
+
+  - question: "Which state has the shortest average height?"
+    answer: "Hawaii ranks 50th. The 0.612-inch gap between California (#49 at 5'9.6\") and Hawaii (#50 at 5'9.0\") is the widest between any two consecutive ranks in the table. For women, Hawaii (5'3.5\") sits 1.2 inches below Utah (#1)."
+
+  - question: "What is the average height in Texas?"
+    answer: "Texas ranks 44th. Men average 5'9.8\" and women 5'3.9\"."
+
+  - question: "What is the average height in California?"
+    answer: "California ranks 49th with men at 5'9.6\" and women at 5'4.2\". It is the second-shortest state for men, above only Hawaii."
+
+  - question: "How much does average height vary from state to state?"
+    answer: "The range is 1.7 inches for men, from 5'9.0\" in Hawaii to 5'10.7\" in Montana. For women the spread is 1.2 inches, from 5'3.5\" in Hawaii to 5'4.7\" in Utah and Montana. Most states cluster within 0.5 inches of each other."
+
+related:
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"
+  - title: "States by Population Density"
+    url: "/rankings/demographics/states-by-population-density"
+  - title: "Most Spoken Language After English by State"
+    url: "/rankings/demographics/most-spoken-language-after-english-by-state"

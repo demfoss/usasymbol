@@ -253,8 +253,9 @@
         var pageDescription = System.Net.WebUtility.HtmlDecode(content?.Seo?.Description ?? "");
         var datePublished = content?.DatePublished?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd");
         var dateModified = content?.DateModified?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd");
-        var topLevelName = pageModel.IsRanking ? "Rankings" : pageModel.IsCollection ? "Collections" : "Symbols";
-        var topLevelUrl = pageModel.IsRanking ? "/rankings" : pageModel.IsCollection ? "/collections" : "/symbols";
+        var isNationalSymbol = content?.Url?.StartsWith("/national-symbols/", StringComparison.OrdinalIgnoreCase) == true;
+        var topLevelName = pageModel.IsRanking ? "Rankings" : pageModel.IsCollection ? "Collections" : isNationalSymbol ? "National Symbols" : "Symbols";
+        var topLevelUrl = pageModel.IsRanking ? "/rankings" : pageModel.IsCollection ? "/collections" : isNationalSymbol ? "/national-symbols" : "/symbols";
         var categoryUrl = topLevelUrl;
 
         if (!string.IsNullOrWhiteSpace(content?.Url))
@@ -265,6 +266,31 @@
                 categoryUrl = $"/{parts[0]}/{parts[1]}";
             }
         }
+
+        var breadcrumbItems = new List<Dictionary<string, object?>>
+        {
+            new() { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{baseUrl}/" },
+            new() { ["@type"] = "ListItem", ["position"] = 2, ["name"] = topLevelName, ["item"] = $"{baseUrl}{topLevelUrl}" }
+        };
+
+        if (!string.Equals(categoryUrl, topLevelUrl, StringComparison.OrdinalIgnoreCase))
+        {
+            breadcrumbItems.Add(new Dictionary<string, object?>
+            {
+                ["@type"] = "ListItem",
+                ["position"] = breadcrumbItems.Count + 1,
+                ["name"] = pageModel.CategoryTitle,
+                ["item"] = $"{baseUrl}{categoryUrl}"
+            });
+        }
+
+        breadcrumbItems.Add(new Dictionary<string, object?>
+        {
+            ["@type"] = "ListItem",
+            ["position"] = breadcrumbItems.Count + 1,
+            ["name"] = pageTitle,
+            ["item"] = pageUrl
+        });
 
         schemas.Add(new Dictionary<string, object?>
         {
@@ -300,13 +326,7 @@
             ["@context"] = "https://schema.org",
             ["@type"] = "BreadcrumbList",
             ["@id"] = $"{pageUrl}#breadcrumb",
-            ["itemListElement"] = new object[]
-            {
-                new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{baseUrl}/" },
-                new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 2, ["name"] = topLevelName, ["item"] = $"{baseUrl}{topLevelUrl}" },
-                new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 3, ["name"] = pageModel.CategoryTitle, ["item"] = $"{baseUrl}{categoryUrl}" },
-                new Dictionary<string, object?> { ["@type"] = "ListItem", ["position"] = 4, ["name"] = pageTitle, ["item"] = pageUrl }
-            }
+            ["itemListElement"] = breadcrumbItems
         });
 
         if (content?.Faq?.Any() == true)
@@ -486,18 +506,27 @@
             ? ""
             : char.ToUpper(symbolModel.SymbolTypePlural[0]) + symbolModel.SymbolTypePlural.Substring(1).Replace("-", " ");
 
-        schemas.Add(new Dictionary<string, object?>
-        {
-            ["@context"] = "https://schema.org",
-            ["@type"] = "BreadcrumbList",
-            ["@id"] = $"{currentUrl}#breadcrumb",
-            ["itemListElement"] = new List<Dictionary<string, object?>>
+        var symbolBreadcrumbs = symbolModel.IsNationalSymbol
+            ? new List<Dictionary<string, object?>>
+            {
+                new() { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{baseUrl}/" },
+                new() { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "National Symbols", ["item"] = $"{baseUrl}/national-symbols" },
+                new() { ["@type"] = "ListItem", ["position"] = 3, ["name"] = symbolModel.ContentTitle ?? symbolModel.Symbol?.Name, ["item"] = currentUrl }
+            }
+            : new List<Dictionary<string, object?>>
             {
                 new() { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = $"{baseUrl}/" },
                 new() { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "State Symbols", ["item"] = $"{baseUrl}/symbols" },
                 new() { ["@type"] = "ListItem", ["position"] = 3, ["name"] = pluralName, ["item"] = $"{baseUrl}/symbols/{symbolModel.SymbolTypePlural}" },
                 new() { ["@type"] = "ListItem", ["position"] = 4, ["name"] = $"{symbolModel.State.Name} {symbolModel.SymbolTypeName}", ["item"] = currentUrl }
-            }
+            };
+
+        schemas.Add(new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "BreadcrumbList",
+            ["@id"] = $"{currentUrl}#breadcrumb",
+            ["itemListElement"] = symbolBreadcrumbs
         });
 
         if (symbolModel.HasFaq && symbolModel.Faq != null && symbolModel.Faq.Any())

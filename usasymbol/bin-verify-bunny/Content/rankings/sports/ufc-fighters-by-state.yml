@@ -1,0 +1,193 @@
+type: ranking
+slug: ufc-fighters-by-state
+category: sports
+url: /rankings/sports/ufc-fighters-by-state
+auto_link_phrases:
+  - "UFC fighters by state"
+  - "which state produces the most UFC fighters"
+  - "UFC fighters birthplace by state"
+  - "states with no UFC fighters"
+extremes_mode: none
+hero_image: "/images/rankings/sports/ufc-fighters-by-state/ufc-fighters-by-state-hero.jpg"
+hero_image_alt: "Map showing which U.S. states have produced the most current UFC roster fighters"
+hero_image_caption: "California has produced 34 current UFC roster fighters by birthplace, more than double Texas's 14."
+
+author: "USA Symbol Team"
+date_published: "2026-08-12"
+date_modified: "2026-08-12"
+
+seo:
+  title: "UFC Fighters by State | Birthplace Map & Top States"
+  description: "California has produced 34 current UFC fighters by birthplace, more than double Texas's 14. 11 states have never produced one."
+
+page:
+  h1: "UFC Fighters by State"
+
+  quick_answer:
+    - "California has produced more current UFC roster fighters than any other state, 34 by birthplace, more than double Texas's 14."
+    - "New York (13) and Missouri (11) round out the top four, followed by Colorado with 9. No other state reaches double digits."
+    - "11 states have never produced a current UFC roster fighter: Alaska, Delaware, Kentucky, Maine, New Hampshire, North Dakota, Rhode Island, South Dakota, Vermont, West Virginia, and Wyoming."
+
+  methodology: "Counts reflect fighters on the UFC's current roster grouped by U.S. birth state, based on Wikipedia's UFC roster and analyzed by Verdict MMA in August 2025. The table lists every state with a confirmed count of 2 or more; 11 states are confirmed at zero. States not shown were not individually broken out in the source data."
+
+  sources:
+    - name: "Verdict MMA. American UFC Presence by State"
+      url: "https://verdictmma.com/fight-forum/american-ufc-presence-by-state-tggej"
+      description: "State-by-state breakdown of current UFC roster fighters by birthplace, published August 2025"
+    - name: "Wikipedia. List of current UFC fighters"
+      url: "https://en.wikipedia.org/wiki/List_of_current_UFC_fighters"
+      description: "Current UFC roster used as the base dataset for the state-by-state count"
+
+map:
+  title: "UFC Fighters by State Map"
+  image: "/images/rankings/sports/ufc-fighters-by-state/ufc-fighters-by-state-map.webp"
+  image_alt: "Map of the United States color-coded by number of current UFC roster fighters born in each state"
+  caption: "California leads with 34 current UFC fighters by birthplace, followed by Texas (14), New York (13), and Missouri (11). 11 states have produced none."
+  metric_key: fighter_count
+  metric_label: "fighters"
+  color_scheme: red
+  color_scale: log
+
+table:
+  columns:
+    state: "State"
+    fighter_count: "#"
+    notable_fighter: "Notable Fighter"
+
+  metric_default: fighter_count
+  sort_default: desc
+
+  rows:
+    - state: "California"
+      state_slug: "california"
+      fighter_count: 34
+      notable_fighter: "Nate Diaz and Nick Diaz (Stockton)"
+
+    - state: "Texas"
+      state_slug: "texas"
+      fighter_count: 14
+      notable_fighter: "Jared Cannonier (Dallas)"
+
+    - state: "New York"
+      state_slug: "new-york"
+      fighter_count: 13
+      notable_fighter: "Jon Jones (Rochester)"
+
+    - state: "Missouri"
+      state_slug: "missouri"
+      fighter_count: 11
+      notable_fighter: "Joaquin Buckley (St. Louis)"
+
+    - state: "Colorado"
+      state_slug: "colorado"
+      fighter_count: 9
+      notable_fighter: "Donald Cerrone (Denver)"
+
+    - state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      fighter_count: 8
+
+    - state: "Washington"
+      state_slug: "washington"
+      fighter_count: 8
+
+    - state: "Florida"
+      state_slug: "florida"
+      fighter_count: 7
+
+    - state: "Illinois"
+      state_slug: "illinois"
+      fighter_count: 7
+      notable_fighter: "Matt Hughes (Hillsboro)"
+
+    - state: "Arizona"
+      state_slug: "arizona"
+      fighter_count: 6
+
+    - state: "Georgia"
+      state_slug: "georgia"
+      fighter_count: 6
+
+    - state: "North Carolina"
+      state_slug: "north-carolina"
+      fighter_count: 6
+
+    - state: "Wisconsin"
+      state_slug: "wisconsin"
+      fighter_count: 6
+      notable_fighter: "Anthony Pettis (Milwaukee)"
+
+    - state: "Kansas"
+      state_slug: "kansas"
+      fighter_count: 5
+
+    - state: "Virginia"
+      state_slug: "virginia"
+      fighter_count: 5
+
+    - state: "Hawaii"
+      state_slug: "hawaii"
+      fighter_count: 4
+      notable_fighter: "B.J. Penn (Kailua)"
+
+    - state: "New Mexico"
+      state_slug: "new-mexico"
+      fighter_count: 3
+      notable_fighter: "Holly Holm (Albuquerque)"
+
+    - state: "Montana"
+      state_slug: "montana"
+      fighter_count: 2
+
+sections:
+  - id: states-that-produce-the-most-ufc-fighters
+    icon: "fa-solid fa-hand-fist"
+    title: "States That Produce the Most UFC Fighters"
+    paragraphs:
+      - "California has produced 34 current UFC roster fighters by birthplace, more than double Texas's 14 and well ahead of New York's 13. Stockton, California alone gave the sport Nate Diaz and Nick Diaz."
+      - "Missouri (11) and Colorado (9) round out the top five. No state outside these five reaches double digits; Pennsylvania and Washington are next at 8 each."
+
+  - id: states-with-no-current-ufc-fighters
+    icon: "fa-solid fa-circle-xmark"
+    title: "States With No Current UFC Fighters"
+    paragraphs:
+      - "11 states have never produced a fighter on the current UFC roster: Alaska, Delaware, Kentucky, Maine, New Hampshire, North Dakota, Rhode Island, South Dakota, Vermont, West Virginia, and Wyoming. Every one of them sits outside the country's largest population centers."
+
+visual_assets:
+  - id: states-that-produce-the-most-ufc-fighters-visual
+    src: "/images/rankings/sports/ufc-fighters-by-state/states-that-produce-the-most-ufc-fighters.jpg"
+    alt: "Mixed martial arts fighters competing in a cage during a match"
+    caption: "California has produced 34 current UFC roster fighters, more than double Texas's 14."
+    section: "states-that-produce-the-most-ufc-fighters"
+    layout: "full-width-tall"
+  - id: states-with-no-current-ufc-fighters-visual
+    src: "/images/rankings/sports/ufc-fighters-by-state/states-with-no-current-ufc-fighters.jpg"
+    alt: "Empty MMA training cage under gym lights"
+    caption: "Eleven states currently have no fighter on the UFC roster."
+    section: "states-with-no-current-ufc-fighters"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state produces the most UFC fighters?"
+    answer: "California produces the most, 34 current UFC roster fighters by birthplace, more than double any other state."
+
+  - question: "How many UFC fighters are from Texas?"
+    answer: "Texas has produced 14 current UFC roster fighters, second most of any state, including Dallas-born Jared Cannonier."
+
+  - question: "Which states have never produced a UFC fighter?"
+    answer: "11 states have no fighter on the current UFC roster: Alaska, Delaware, Kentucky, Maine, New Hampshire, North Dakota, Rhode Island, South Dakota, Vermont, West Virginia, and Wyoming."
+
+  - question: "How many UFC fighters were born in New York?"
+    answer: "New York has produced 13 current UFC roster fighters, third most of any state, including two-time light heavyweight champion Jon Jones, born in Rochester."
+
+  - question: "Does Missouri produce a lot of UFC talent?"
+    answer: "Yes. Missouri has produced 11 current UFC roster fighters, fourth most of any state, including St. Louis-born Joaquin Buckley."
+
+  - question: "What state ranks fifth for UFC fighters?"
+    answer: "Colorado ranks fifth with 9 current UFC roster fighters, including Denver-born Donald Cerrone."
+
+related:
+  - title: "NFL Teams by State"
+    url: "/rankings/sports/nfl-teams-by-state"
+  - title: "Minor League Baseball Teams by State"
+    url: "/rankings/sports/minor-league-baseball-teams-by-state"

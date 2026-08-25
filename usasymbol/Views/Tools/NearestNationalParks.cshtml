@@ -1,0 +1,50 @@
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">Nearest National Park Finder</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>Nearest National Park <em>Finder</em></h1>
+            <p class="tl-lede">
+                Enter your ZIP code to find the closest U.S. national parks, ranked by
+                straight-line distance, with a map link to each one.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="zg-panel" id="park-finder" data-find-url="/tools/nearest-national-parks/find">
+            <form class="tl-lookup-form" id="np-form">
+                <div class="zg-field">
+                    <label for="np-zip">Your ZIP code</label>
+                    <input type="text" id="np-zip" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="e.g. 80202" autocomplete="off" />
+                </div>
+                <div class="zg-actions">
+                    <button type="submit" class="zg-btn zg-btn-primary">
+                        <i class="fa-solid fa-tree" aria-hidden="true"></i> Find Nearest Parks
+                    </button>
+                </div>
+            </form>
+            <p class="zg-status" id="np-status" role="status" aria-live="polite"></p>
+            <div id="np-result"></div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script defer src="~/js/nearest-national-parks.js" asp-append-version="true"></script>
+}

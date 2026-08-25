@@ -15,6 +15,10 @@
     var imageLicensePageUrl = $"{origin}/contact";
 
     var questionsCount = Model.Questions?.Count ?? 0;
+    var isTypedAnswer = string.Equals(Model.AnswerMode, "typed", StringComparison.OrdinalIgnoreCase);
+    var questionsPerRound = Model.QuestionsPerRound > 0
+        ? Math.Min(Model.QuestionsPerRound, questionsCount)
+        : Math.Min(10, questionsCount);
     var estimated = string.IsNullOrWhiteSpace(Model.EstimatedTime) ? "5–10 minutes" : Model.EstimatedTime;
     var mode = (Context.Request.Query["mode"].ToString() ?? "classic").ToLowerInvariant();
     if (string.IsNullOrWhiteSpace(mode)) mode = "classic";
@@ -129,8 +133,8 @@
     var modeBlurb = mode switch
     {
         "timed" => "60 seconds, answer as many as you can.",
-        "practice" => "10 questions, no timer, steady points.",
-        _ => "10 questions, 20 seconds per question, speed-based points."
+        "practice" => $"{questionsPerRound} questions, no timer, steady points.",
+        _ => $"{questionsPerRound} questions, 20 seconds per question, speed-based points."
     };
 }
 
@@ -472,7 +476,7 @@
 
                     <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-600">
                         <span class="rounded-full bg-white/85 border border-slate-200 px-3 py-1">Randomized rounds</span>
-                        <span class="rounded-full bg-white/85 border border-slate-200 px-3 py-1">Instant answer reveal</span>
+                        <span class="rounded-full bg-white/85 border border-slate-200 px-3 py-1">@(isTypedAnswer ? "Type every answer" : "Instant answer reveal")</span>
                         <span class="rounded-full bg-white/85 border border-slate-200 px-3 py-1">Replay for a cleaner streak</span>
                     </div>
 
@@ -526,8 +530,29 @@
 
                 <div id="answers" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
 
+                @if (isTypedAnswer)
+                {
+                    <form id="typedAnswerForm" class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]" novalidate>
+                        <label for="typedAnswerInput" class="sr-only">Type the state name</label>
+                        <input id="typedAnswerInput"
+                               type="text"
+                               inputmode="text"
+                               autocomplete="off"
+                               autocapitalize="words"
+                               spellcheck="false"
+                               aria-describedby="feedbackText typedAnswerHint"
+                               placeholder="Type the state name"
+                               class="min-h-12 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base font-semibold text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" />
+                        <button id="typedAnswerSubmit" type="submit"
+                                class="min-h-12 rounded-2xl bg-slate-900 px-6 py-3 font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300">
+                            Submit answer
+                        </button>
+                        <p id="typedAnswerHint" class="text-sm text-slate-500 sm:col-span-2">Press Enter or use the button to submit.</p>
+                    </form>
+                }
+
                 <div class="mt-5 md:mt-6 min-h-[56px] rounded-2xl border border-slate-100 bg-slate-50 p-4 flex items-center justify-center">
-                    <div id="feedbackText" class="text-sm md:text-base font-semibold text-slate-800 text-center"></div>
+                    <div id="feedbackText" role="status" aria-live="polite" class="text-sm md:text-base font-semibold text-slate-800 text-center"></div>
                 </div>
             </div>
             </div>
@@ -674,10 +699,12 @@
       // ===== MODE =====
       const params = new URLSearchParams(window.location.search);
       const mode = (params.get("mode") || "classic").toLowerCase();
+      const typedAnswerMode = @Html.Raw(isTypedAnswer ? "true" : "false");
+      const quizQuestionLimit = @questionsPerRound;
 
       const MODES = {
-        classic:  { uiName: "Classic",  questionLimit: 10,        perQuestionSeconds: 20, sessionSeconds: 0,  speedWindowSeconds: 20 },
-        practice: { uiName: "Practice", questionLimit: 10,        perQuestionSeconds: 0,  sessionSeconds: 0,  speedWindowSeconds: 0  },
+        classic:  { uiName: "Classic",  questionLimit: quizQuestionLimit, perQuestionSeconds: 20, sessionSeconds: 0,  speedWindowSeconds: 20 },
+        practice: { uiName: "Practice", questionLimit: quizQuestionLimit, perQuestionSeconds: 0,  sessionSeconds: 0,  speedWindowSeconds: 0  },
         timed:    { uiName: "Timed",    questionLimit: Infinity,  perQuestionSeconds: 0,  sessionSeconds: 60, speedWindowSeconds: 15 }
       };
 
@@ -689,7 +716,14 @@
       if (!allQuestions.length) return;
 
       // helpers
-      const norm = (v) => (v ?? "").toString().trim();
+      const norm = (v) => (v ?? "")
+        .toString()
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLocaleLowerCase("en-US");
+      const escapeHtml = (v) => (v ?? "").toString().replace(/[&<>'"]/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+      })[char]);
 
       function shuffle(arr) {
         const a = [...arr];
@@ -710,6 +744,9 @@
       const questionText = document.getElementById("questionText");
       const questionImage = document.getElementById("questionImage");
       const answersBox = document.getElementById("answers");
+      const typedAnswerForm = document.getElementById("typedAnswerForm");
+      const typedAnswerInput = document.getElementById("typedAnswerInput");
+      const typedAnswerSubmit = document.getElementById("typedAnswerSubmit");
       const feedbackText = document.getElementById("feedbackText");
       const quizApp = document.getElementById("quizApp");
       const startScreen = document.getElementById("quizStartScreen");
@@ -744,6 +781,7 @@
       let maxStreak = 0;
       let answered = 0; // total answered (incl wrong/timeouts)
       let misses = [];
+      let answerLocked = false;
 
       let hasStarted = false;
       let startedAt = 0;
@@ -767,6 +805,8 @@
 
       function disableButtons() {
         [...answersBox.children].forEach(btn => { btn.disabled = true; });
+        if (typedAnswerInput) typedAnswerInput.disabled = true;
+        if (typedAnswerSubmit) typedAnswerSubmit.disabled = true;
       }
 
       function queueNextQuestion(delay = 1500) {
@@ -905,6 +945,7 @@
         const q = getCurrentQuestion();
         if (!q) return showResult();
 
+        answerLocked = true;
         answered++;
         streak = 0;
 
@@ -924,6 +965,10 @@
             btn.className = "quiz-answer-btn rounded-2xl border border-emerald-200 bg-emerald-600 px-4 py-3 text-left font-semibold text-white";
           }
         });
+
+        if (typedAnswerInput) {
+          typedAnswerInput.className = "min-h-12 w-full rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-base font-semibold text-slate-900 shadow-sm outline-none";
+        }
 
         queueNextQuestion();
       }
@@ -951,6 +996,7 @@
         if (questionNumEl) questionNumEl.innerText = (cfg.sessionSeconds ? answered + 1 : index + 1);
 
         if (feedbackText) feedbackText.innerText = "";
+        answerLocked = false;
 
         if (questionText) questionText.innerText = q.question || "Which state is this?";
 
@@ -972,7 +1018,15 @@
 
         answersBox.innerHTML = "";
 
-        choices.forEach(choice => {
+        if (typedAnswerMode && typedAnswerForm && typedAnswerInput && typedAnswerSubmit) {
+          typedAnswerInput.value = "";
+          typedAnswerInput.disabled = false;
+          typedAnswerSubmit.disabled = false;
+          typedAnswerInput.className = "min-h-12 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base font-semibold text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+          window.setTimeout(() => typedAnswerInput.focus({ preventScroll: true }), 0);
+        }
+
+        if (!typedAnswerMode) choices.forEach(choice => {
           const btn = document.createElement("button");
           btn.className = "quiz-answer-btn rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left font-semibold text-slate-900 hover:bg-slate-50";
           btn.innerText = choice;
@@ -982,6 +1036,62 @@
 
         // classic timer only
         startClassicTimerIfNeeded();
+      }
+
+      function handleTypedAnswer(event) {
+        event.preventDefault();
+        if (!typedAnswerMode || answerLocked || !typedAnswerInput) return;
+
+        const submittedAnswer = typedAnswerInput.value;
+        if (!norm(submittedAnswer)) {
+          if (feedbackText) feedbackText.textContent = "Type a state name before submitting.";
+          typedAnswerInput.focus();
+          return;
+        }
+
+        const q = getCurrentQuestion();
+        if (!q) return showResult();
+
+        answerLocked = true;
+        stopClassicTimer();
+        disableButtons();
+        answered++;
+
+        const correctAnswer = q.correct_answer || q.correctAnswer;
+        const isCorrect = norm(submittedAnswer) === norm(correctAnswer);
+
+        if (isCorrect) {
+          const add = calcPointsForCorrect();
+          points += add;
+          correct++;
+          streak++;
+          maxStreak = Math.max(maxStreak, streak);
+          typedAnswerInput.className = "min-h-12 w-full rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-base font-semibold text-emerald-900 shadow-sm outline-none";
+
+          if (feedbackText) {
+            const bonusPart = add > 100 ? ` <span class="text-slate-700 font-semibold">(bonus +${add - 100})</span>` : "";
+            feedbackText.innerHTML = `<div class="text-emerald-700">✓ Correct: ${correctAnswer}
+              <div class="mt-1 text-slate-700 font-extrabold">+${add} points${bonusPart}</div>
+              ${q.explanation ? `<div class="mt-2 text-slate-700 font-medium">${q.explanation}</div>` : ""}
+            </div>`;
+          }
+
+          spawnPointsPop(typedAnswerInput, add);
+          updateScoreUi();
+        } else {
+          streak = 0;
+          addMiss(q, correctAnswer, q.explanation, "Miss");
+          typedAnswerInput.className = "min-h-12 w-full rounded-2xl border border-red-300 bg-red-50 px-4 py-3 text-base font-semibold text-red-900 shadow-sm outline-none";
+
+          if (feedbackText) {
+            feedbackText.innerHTML = `<div class="text-red-700">✗ You entered “${escapeHtml(submittedAnswer.trim())}”
+              <div class="mt-1 text-slate-700 font-medium">Correct answer: ${correctAnswer}</div>
+              ${q.explanation ? `<div class="mt-2 text-slate-700 font-medium">${q.explanation}</div>` : ""}
+            </div>`;
+          }
+        }
+
+        queueNextQuestion(cfg.sessionSeconds ? 1200 : 1500);
       }
 
       function handleAnswer(button, correctAnswer, explanation) {
@@ -1424,5 +1534,6 @@
       }
 
       startBtn.addEventListener("click", startQuiz);
+      typedAnswerForm?.addEventListener("submit", handleTypedAnswer);
     });
 </script>

@@ -1,0 +1,121 @@
+type: ranking
+slug: strawberry-production-by-state
+category: agriculture
+url: /rankings/agriculture/strawberry-production-by-state
+auto_link_phrases:
+  - "strawberry production by state"
+  - "states that grow strawberries"
+  - "which state produces the most strawberries"
+  - "strawberry by state"
+extremes_mode: both
+extremes_title: "States With the Most and Least Strawberry Production"
+hero_image: "/images/rankings/agriculture/strawberry-production-by-state/strawberry-production-by-state-hero.jpg"
+hero_image_alt: "Rows of strawberry plants being harvested in California"
+hero_image_caption: "California grows the most strawberries in the country at 27,700,000 CWT. Florida grows the least among ranked states at 3,570,000 CWT."
+
+author: "USA Symbol Team"
+date_published: "2026-08-13"
+date_modified: "2026-08-13"
+
+seo:
+  title: "Strawberry Production by State | Map, States & CWT"
+  description: "California grows the most strawberries in the country at 27,700,000 CWT, about 88.5% of the two-state total."
+
+page:
+  h1: "Strawberry Production by State"
+
+  quick_answer:
+    - "California grows the most strawberries in the country at 27,700,000 CWT, about 88.5% of the two-state total."
+    - "Only two states report standalone strawberry production figures. Florida ranks second at 3,570,000 CWT, 11.4% of the total."
+    - "California's 27,700,000 CWT is more than seven times Florida's 3,570,000 CWT."
+
+  methodology: "Figures are 2025 strawberry production reported in CWT (hundredweight, 100 pounds), sourced from the USDA/NASS QuickStats Ad-Hoc Query Tool. Only states with recorded standalone production figures are listed."
+
+  sources:
+    - name: "USDA National Agricultural Statistics Service. QuickStats"
+      url: "https://quickstats.nass.usda.gov/"
+      description: "State-by-state strawberry production in CWT, 2025"
+
+table:
+  caption: "Strawberry Production by State"
+  note: "Figures are 2025 strawberry production in CWT (hundredweight, 100 pounds). Only states with recorded standalone figures are shown."
+  columns:
+    rank: "Rank"
+    state: "State"
+    production_cwt: "Strawberry Production (CWT)"
+    notes: "Notes"
+
+  metric_default: production_cwt
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      production_cwt: 27700000
+      notes: "The most strawberry production of any state, about 88.5% of the two-state total."
+
+    - rank: 2
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      production_cwt: 3570000
+      notes: "The least of the two ranked states, about 11.4% of the total."
+
+map:
+  title: "Strawberry Production by State Map"
+  image_alt: "U.S. map shaded by strawberry production, showing California's 27,700,000 CWT and Florida's 3,570,000 CWT"
+  caption: "California's 27,700,000 CWT of strawberries is the darkest shade on the map. Florida's 3,570,000 CWT is the only other state with a standalone total."
+  metric_key: production_cwt
+  metric_label: "Strawberry Production (CWT)"
+  color_scheme: red
+  color_scale: log
+
+sections:
+  - id: "california-dominates-strawberry-production"
+    icon: "fa-solid fa-apple-whole"
+    title: "Which State Grows the Most Strawberries"
+    paragraphs:
+      - "California produces 27,700,000 CWT of strawberries, more than seven times Florida's 3,570,000 CWT. The two states account for the full two-state total of roughly 31,270,000 CWT, with California alone supplying about 88.5% of it."
+    table:
+      columns:
+        state: "State"
+        production_cwt: "Strawberry Production (CWT)"
+      rows:
+        - state: "California"
+          production_cwt: "27,700,000"
+        - state: "Florida"
+          production_cwt: "3,570,000"
+
+visual_assets:
+  - id: "california-dominates-strawberry-production-visual"
+    src: "/images/rankings/agriculture/strawberry-production-by-state/california-dominates-strawberry-production.jpg"
+    alt: "Strawberry harvest in California representing the state with the most strawberry production"
+    caption: "California produces 27,700,000 CWT of strawberries, about 88.5% of the two-state total."
+    section: "california-dominates-strawberry-production"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state produces the most strawberries?"
+    answer: "California produces the most strawberries in the country at 27,700,000 CWT, about 88.5% of the two-state total."
+
+  - question: "Which state produces the least strawberries?"
+    answer: "Florida produces the least among the two ranked states at 3,570,000 CWT."
+
+  - question: "How much bigger is California's strawberry production than Florida's?"
+    answer: "California's 27,700,000 CWT is more than seven times Florida's 3,570,000 CWT."
+
+  - question: "What is total US strawberry production?"
+    answer: "California and Florida together account for roughly 31,270,000 CWT of strawberries in the table."
+
+  - question: "How many states grow strawberries commercially at large scale?"
+    answer: "Two states report standalone strawberry production figures: California and Florida."
+
+related:
+  - title: "Squash Production by State"
+    url: "/rankings/agriculture/squash-production-by-state"
+  - title: "Spinach Production by State"
+    url: "/rankings/agriculture/spinach-production-by-state"
+  - title: "Farms by State"
+    url: "/rankings/food/farms-by-state"

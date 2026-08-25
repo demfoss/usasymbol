@@ -19,7 +19,7 @@
         : System.Net.WebUtility.HtmlDecode(descRaw);
     ViewData["OgImage"] = Images.Full(Model.Symbol.ImageUrl ?? Model.State.FlagImageUrl);
     ViewData["OgType"] = "article";
-    ViewData["Canonical"] = Model.Symbol.ToSymbolUrl(Model.State.Slug);
+    ViewData["Canonical"] = Model.CanonicalUrl ?? Model.Symbol.ToSymbolUrl(Model.State.Slug);
 
     // Dynamic gradient for hero background
     var colorHexCodes = Model.ColorContent?.ColorData?.Select(c => c.Hex).ToList() ?? new List<string>();

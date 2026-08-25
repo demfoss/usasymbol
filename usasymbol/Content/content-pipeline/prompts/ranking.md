@@ -21,10 +21,10 @@ FACTS — hard rules
 - Every sentence must cite a specific value from the table (number, rank, state, name). Cut any sentence that doesn't.
 - If the payload does not contain a fact, do not write about it.
 
-WHY IT RANKS THAT WAY (optional, payload-only)
-- If the payload's notes or sources give an actual reason behind a #1 or last-place result (geographic, geological, climate, historical, legal), add ONE short clause or sentence surfacing it. This is the most interesting part of the page when it exists, so do not bury it or cut it for space.
+WHY IT RANKS THAT WAY (MANDATORY whenever the payload supports it)
+- If the payload's notes or sources give an actual reason behind a #1 or last-place result (geographic, geological, climate, historical, legal, methodological — e.g. "counted by state of occurrence, not residence"), you MUST surface it. This is the most interesting part of the page when it exists; skipping it is a defect, not a stylistic choice. Only skip if the payload genuinely gives no reason anywhere — never invent one to fill the requirement.
 - Example shape: "Hawaii logs the most X, a result tied to [reason from payload]." Never write the reason if it is not explicitly in the payload; a plausible-sounding guess is an invented fact and is banned.
-- Best home for this: the relevant top-10 section paragraph, under its own H2 (e.g. "Why [State] Has the Most/Least [Topic]"). Prefer this over a FAQ entry — the section reads more naturally as the page's editorial payoff, and the H2 itself absorbs the same "why does [state] have the most/least [topic]" search phrasing. Only fall back to a FAQ entry if no section paragraph can naturally carry it.
+- Mandatory home: its own H2 section (e.g. "Why [State] Has the Most/Least [Topic]"), not a FAQ entry and never the table's notes key. A notes hover-chip is for a short label, not the explanation itself — readers should not have to hover to find the most interesting fact on the page. Only fall back to a FAQ entry if no section paragraph can naturally carry it.
 - One reason per page is enough. Do not stretch it across multiple sections, and never repeat it in both a section and the FAQ.
 
 SECTIONS
@@ -82,6 +82,7 @@ METHODOLOGY
 
 TABLE & MAP — hard rules
 - Main table: max 6 display columns (rank + state + 3–4 data columns). Extra per-row facts go into a "notes" row key (renders as a hover chip), NOT into more columns.
+- Do not add the "notes" key just to flag the #1 and last-place rows with a label like "Highest X of any state" — that's a whole column key added for two rows, and it duplicates what the rank number and quick_answer already say. Only use "notes" for a genuinely per-row fact that doesn't fit elsewhere (ties, a real anomaly specific to that row, a data caveat). Never put the "why it ranks that way" explanation in notes — that always belongs in its own H2 section (see WHY IT RANKS THAT WAY above).
 - Never mix "None"/"N/A"/0 placeholders into name or height columns — omit the key entirely for states without data.
 - Every ranking MUST have a map block: metric_key pointing at the main numeric column, a metric_label, and a non-blue color_scheme (green, teal, orange, amber, purple, red, red-green). Use color_scale: log when the top value is 20x+ the bottom.
 - Each key data angle (per capita, largest X, oldest X, prices) gets its own section with a small top-10 table under a searchable H2 — never extra columns in the main table.

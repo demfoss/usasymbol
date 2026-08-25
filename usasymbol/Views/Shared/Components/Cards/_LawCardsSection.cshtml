@@ -164,17 +164,25 @@
     {
         foreach (var sub in section.Subsections)
         {
-            var subsectionAssetKey = $"{section.Id}::{SlugifyKey(sub.Subtitle)}";
+            var subsectionAssetKeys = new[]
+            {
+                !string.IsNullOrWhiteSpace(sub.Id) ? $"{section.Id}::{sub.Id}" : string.Empty,
+                $"{section.Id}::{SlugifyKey(sub.Subtitle)}"
+            }
+            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
             var subsectionImage = visualAssets.FirstOrDefault(v =>
                 !string.IsNullOrWhiteSpace(v.Section) &&
-                string.Equals(v.Section, subsectionAssetKey, StringComparison.OrdinalIgnoreCase));
+                subsectionAssetKeys.Contains(v.Section));
 
             cards.Add(new LawCardItem
             {
                 Title = sub.Subtitle,
                 Status = sub.Status,
                 Body = sub.Text,
-                Image = subsectionImage?.Src ?? string.Empty,
+                Image = !string.IsNullOrWhiteSpace(subsectionImage?.Src) ? subsectionImage!.Src : (sub.Image ?? string.Empty),
                 ImageAlt = subsectionImage?.Alt ?? sub.Subtitle,
                 Link = sub.Link
             });
@@ -191,7 +199,10 @@
             var metaItems = ExtractLeadingMeta(card.Body, out var cardBody);
             var bodyParagraphs = SplitParagraphs(cardBody);
             var cardId = $"{section.Id}-{SlugifyKey(card.Title)}";
-            var fallbackIcon = "fa-solid fa-file-circle-question";
+            var isFlagImage = card.Image.StartsWith("/images/flags/", StringComparison.OrdinalIgnoreCase);
+            var fallbackIcon = card.Status.Contains("FBI", StringComparison.OrdinalIgnoreCase)
+                ? "fa-solid fa-location-dot"
+                : "fa-solid fa-file-circle-question";
 
             if (string.Equals(badge.Label, "Verified", StringComparison.OrdinalIgnoreCase))
             {
@@ -210,10 +221,10 @@
                 <div class="law-card__layout">
                     @if (!string.IsNullOrWhiteSpace(card.Image))
                     {
-                        <div class="law-card__media">
+                        <div class="law-card__media @(isFlagImage ? "law-card__media--flag" : string.Empty)">
                             <img src="@Images.Card(card.Image)"
                                  alt="@card.ImageAlt"
-                                 class="law-card__image"
+                                 class="law-card__image @(isFlagImage ? "law-card__image--flag" : string.Empty)"
                                  loading="lazy"
                                  decoding="async" />
                         </div>

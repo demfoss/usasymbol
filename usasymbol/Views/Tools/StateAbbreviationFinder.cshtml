@@ -1,0 +1,61 @@
+@using System.Text.Json
+@using USASymbol.Services.Content
+
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+
+    var states = (List<UsStateRef>)(ViewBag.States ?? new List<UsStateRef>());
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var statesJson = JsonSerializer.Serialize(states, jsonOptions);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">State Abbreviation Finder</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>State Abbreviation <em>Finder</em></h1>
+            <p class="tl-lede">
+                Search any of the 50 states to find its official two-letter postal
+                abbreviation, or search an abbreviation to find the state.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <input type="text" id="abbr-search" class="tl-abbr-search" placeholder="Search a state or abbreviation…" autocomplete="off" />
+
+        <div class="tl-abbr-table-wrap">
+            <table class="tl-abbr-table" id="abbr-table">
+                <thead>
+                    <tr>
+                        <th>State</th>
+                        <th>Abbreviation</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="abbr-tbody"></tbody>
+            </table>
+            <div class="tl-abbr-no-match hidden" id="abbr-no-match">No states match your search.</div>
+        </div>
+    </section>
+</div>
+
+<script>
+    window.stateAbbreviationData = @Html.Raw(statesJson);
+</script>
+
+@section Scripts {
+    <script defer src="~/js/state-abbreviation-finder.js" asp-append-version="true"></script>
+}

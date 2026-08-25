@@ -1,0 +1,71 @@
+@model USASymbol.Models.ViewModels.NationalSymbolsHubViewModel
+@inject IImageUrlService Images
+
+@{
+    ViewData["Title"] = "National Symbols of the United States";
+    ViewData["Description"] = "Explore official and civic symbols of the United States, including the flag, seal, anthem, founding documents, national animals, plants, motto, and pledge.";
+    ViewData["Canonical"] = "/national-symbols";
+}
+
+<nav class="national-hub-breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a><span>/</span><strong>National Symbols</strong>
+</nav>
+
+<main class="national-hub">
+    <header class="national-hub-hero">
+        <div class="national-hub-hero__content">
+            <p class="national-hub-hero__eyebrow">United States of America</p>
+            <h1>National Symbols of the United States</h1>
+            <p class="national-hub-hero__lead">
+                Explore the emblems, founding documents, living symbols, and civic traditions that help tell the story of the United States.
+            </p>
+            <p class="national-hub-hero__note">
+                Their status is not identical: some are named by federal law, while others are foundational documents, official emblems, or widely recognized civic traditions.
+            </p>
+            <span class="national-hub-hero__count">@Model.Items.Count complete guides</span>
+        </div>
+        <div class="national-hub-hero__mark" aria-hidden="true"><i class="fa-solid fa-star"></i></div>
+    </header>
+
+    @if (Model.Items.Count > 0)
+    {
+        <section class="national-hub-guides" aria-labelledby="national-symbol-guides">
+            <div class="national-hub-guides__heading">
+                <div>
+                    <p>Reference library</p>
+                    <h2 id="national-symbol-guides">Browse National Symbols</h2>
+                </div>
+                <span>Official status, history, meaning, timelines and sources</span>
+            </div>
+            <div class="national-hub-grid">
+                @foreach (var item in Model.Items)
+                {
+                    <a href="@item.Url" class="national-hub-card">
+                        <div class="national-hub-card__media">
+                            @if (!string.IsNullOrWhiteSpace(item.Image))
+                            {
+                                <img src="@Images.Card(item.Image)"
+                                     srcset="@Images.CardSrcSet(item.Image, 320, 480, 640)"
+                                     sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                                     alt="@(string.IsNullOrWhiteSpace(item.ImageAlt) ? item.Title : item.ImageAlt)"
+                                     loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="national-hub-card__fallback" aria-hidden="true"><i class="fa-solid fa-landmark"></i></div>
+                            }
+                        </div>
+                        <div class="national-hub-card__body">
+                            <h3>@item.Title</h3>
+                            @if (!string.IsNullOrWhiteSpace(item.Description))
+                            {
+                                <p>@item.Description</p>
+                            }
+                            <span>Read the complete guide <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                        </div>
+                    </a>
+                }
+            </div>
+        </section>
+    }
+</main>

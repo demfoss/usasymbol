@@ -137,7 +137,14 @@
 
                     @if (!string.IsNullOrWhiteSpace(Model.VideoUrl))
                     {
-                        @await Html.PartialAsync("Components/Widgets/_VideoEmbed", (Model.VideoUrl, Model.VideoTitle, Model.VideoCaption))
+                        <section id="dance-videos" class="content-divider" aria-labelledby="dance-videos-title">
+                            <h2 id="dance-videos-title" class="text-2xl font-bold tracking-tight text-slate-900">
+                                Watch @pageHeading
+                            </h2>
+
+                            <h3 class="mt-6 text-xl font-semibold text-slate-900">Dance Performance</h3>
+                            @await Html.PartialAsync("Components/Widgets/_VideoEmbed", (Model.VideoUrl, Model.VideoTitle, Model.VideoCaption))
+                        </section>
                     }
 
                     @if (quickFacts.Any())

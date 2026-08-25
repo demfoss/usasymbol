@@ -270,6 +270,7 @@ namespace USASymbol.Data
             await SeedStateFossils(context, states);
             await SeedStateSports(context, states);
             await SeedStateDances(context, states);
+            await SeedStateSongs(context, states);
             await SeedStateInsects(context, states);
             await SeedStateMinerals(context, states);
             await SeedStateRocks(context, states);
@@ -438,6 +439,13 @@ namespace USASymbol.Data
                     },
                     new SymbolCategory
                     {
+                        Type = "songs",
+                        Name = "State Songs",
+                        Description = "Explore official state songs, anthems, and ballads, with their composers, lyricists, and adoption years across U.S. states.",
+                        ImageUrl = "/images/symbol-categories/songs.webp"
+                    },
+                    new SymbolCategory
+                    {
                         Type = "insects",
                         Name = "State Insects",
                         Description = "Discover official state insects, from monarch butterflies to honeybees, recognized by U.S. states.",
@@ -515,13 +523,6 @@ namespace USASymbol.Data
                     },
                     new SymbolCategory
                     {
-                        Type = "spirits",
-                        Name = "State Spirits & Drinks",
-                        Description = "Explore official state spirits, soft drinks, and other beverages recognized as food symbols by U.S. states.",
-                        ImageUrl = "/images/symbol-categories/spirits.webp"
-                    },
-                    new SymbolCategory
-                    {
                         Type = "dishes",
                         Name = "State Dishes & Snacks",
                         Description = "Discover official state meals, cuisines, and signature dishes recognized by U.S. states.",
@@ -537,7 +538,7 @@ namespace USASymbol.Data
 
                 };
 
-                var staleTypes = new[] { "state-soils", "drinks" };
+                var staleTypes = new[] { "state-soils", "drinks", "spirits" };
                 var stale = await context.SymbolCategories
                     .Where(c => staleTypes.Contains(c.Type))
                     .ToListAsync();
@@ -2565,6 +2566,85 @@ namespace USASymbol.Data
                         Meaning = GetYamlString(data, "meaning"),
                         ImageUrl = GetYamlString(data, "hero_image"),
                         YamlPath = $"Content/states/{state.Slug}/dance/{slug}.yaml"
+                    });
+                }
+            }
+
+            if (symbols.Count == 0)
+                return;
+
+            context.Symbols.AddRange(symbols);
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedStateSongs(AppDbContext context, List<State> states)
+        {
+            var old = await context.Symbols.Where(s => s.Type == "song").ToListAsync();
+            if (old.Count > 0)
+            {
+                context.Symbols.RemoveRange(old);
+                await context.SaveChangesAsync();
+            }
+
+            var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
+            if (!Directory.Exists(contentRoot))
+                return;
+
+            var deserializer = new DeserializerBuilder().Build();
+            var symbols = new List<Symbol>();
+
+            var songDirs = Directory.EnumerateDirectories(contentRoot, "song", SearchOption.AllDirectories);
+
+            foreach (var songDir in songDirs)
+            {
+                var stateSlug = new DirectoryInfo(Path.GetDirectoryName(songDir) ?? string.Empty).Name;
+                if (string.IsNullOrWhiteSpace(stateSlug))
+                    continue;
+
+                var state = states.FirstOrDefault(s => string.Equals(s.Slug, stateSlug, StringComparison.OrdinalIgnoreCase));
+                if (state == null)
+                    continue;
+
+                foreach (var file in Directory.EnumerateFiles(songDir, "*.yaml", SearchOption.TopDirectoryOnly))
+                {
+                    var slug = Path.GetFileNameWithoutExtension(file);
+                    if (string.IsNullOrWhiteSpace(slug))
+                        continue;
+
+                    Dictionary<object, object>? data;
+                    try
+                    {
+                        data = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(file));
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    if (data == null)
+                        continue;
+
+                    var name = GetYamlString(data, "name");
+                    if (string.IsNullOrWhiteSpace(name))
+                        name = GetYamlString(data, "title");
+                    if (string.IsNullOrWhiteSpace(name))
+                        name = $"State Song of {state.Name}";
+
+                    symbols.Add(new Symbol
+                    {
+                        StateId = state.Id,
+                        Type = "song",
+                        Name = name,
+                        Slug = slug,
+                        ScientificName = null,
+                        AdoptedYear = GetYamlInt(data, "adopted_year"),
+                        Status = GetYamlBool(data, "is_official") ? "Official" : null,
+                        Designation = "State song",
+                        Legislation = GetYamlString(data, "legislation"),
+                        WikidataId = null,
+                        Meaning = GetYamlString(data, "meaning"),
+                        ImageUrl = GetYamlString(data, "hero_image"),
+                        YamlPath = $"Content/states/{state.Slug}/song/{slug}.yaml"
                     });
                 }
             }

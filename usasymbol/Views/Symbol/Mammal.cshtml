@@ -19,7 +19,7 @@
         ? "State Symbol"
         : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(designationRaw.ToLowerInvariant());
 
-    var h1 = $"{stateName} {designation}: {mammalName}";
+    var h1 = Model.IsNationalSymbol ? mammalName : $"{stateName} {designation}: {mammalName}";
     var descRaw = Model.MammalContent?.SeoDescription ?? "";
     var introText = Model.MammalContent?.IntroText ?? string.Empty;
     var heroDescriptionSource = !string.IsNullOrWhiteSpace(descRaw)
@@ -62,7 +62,7 @@
         : System.Net.WebUtility.HtmlDecode(descRaw);
     ViewData["OgImage"] = Images.Full(Model.Symbol.ImageUrl ?? Model.State.FlagImageUrl);
     ViewData["OgType"] = "article";
-    ViewData["Canonical"] = Model.Symbol.ToSymbolUrl(Model.State.Slug);
+    ViewData["Canonical"] = Model.CanonicalUrl ?? Model.Symbol.ToSymbolUrl(Model.State.Slug);
 
     var quickFacts = (Model.MammalContent?.QuickFacts ?? new List<QuickFactItem>())
         .Where(x => !string.IsNullOrWhiteSpace(x?.Value))

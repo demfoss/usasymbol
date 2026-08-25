@@ -1,0 +1,597 @@
+type: ranking
+slug: longest-commute-by-state
+category: infrastructure
+url: /rankings/infrastructure/longest-commute-by-state
+auto_link_phrases:
+  - "average commute time by state"
+  - "longest commute by state"
+  - "states with the longest commute times"
+  - "commute time map by state"
+  - "how long is the average commute in each state"
+extremes_mode: both
+extremes_title: "States With the Longest and Shortest Commutes"
+hero_image: "/images/rankings/infrastructure/longest-commute-by-state/longest-commute-by-state-hero.jpg"
+hero_image_alt: "Cars moving slowly on a crowded highway during rush hour"
+hero_image_caption: "New York has the longest average commute at 33.5 minutes. South Dakota is shortest at 17.3 minutes."
+
+author: "USA Symbol Team"
+date_published: "2026-07-04"
+date_modified: "2026-07-04"
+
+seo:
+  title: "Average Commute Time by State | Map, States & Facts"
+  description: "New York has the longest average commute at 33.5 minutes. South Dakota is shortest at 17.3 minutes, and New Jersey is next highest at 32.0."
+
+page:
+  h1: "Average Commute Time by State"
+
+  quick_answer:
+    - "Average commute time by state is highest in New York at 33.5 minutes one way."
+    - "South Dakota is lowest at 17.3 minutes. New York commuters spend 16.2 more minutes getting to work than South Dakota commuters."
+    - "New York also has the highest public transit share at 28.0%, while Alabama has the highest drive solo share at 86.3%. Hawaii has the top carpool share at 14.7%."
+
+  methodology: "Average commute time, carpool share, drive solo share, and public transit share use the World Population Review 2026 state table shown from recent U.S. Census Bureau commuting data. The District of Columbia appears in the source table but is excluded here because this page ranks the 50 states only."
+
+  sources:
+    - name: "World Population Review. Commute Time by State 2026"
+      url: "https://worldpopulationreview.com/state-rankings/commute-time-by-state"
+      description: "State table with average commute time, carpool share, drive solo share, and public transit share"
+    - name: "U.S. Census Bureau. Commuting, Journey to Work"
+      url: "https://www.census.gov/topics/employment/commuting.html"
+      description: "Official Census topic page for travel time to work and commuting mode data"
+    - name: "U.S. Census Bureau. United States Commuting At A Glance"
+      url: "https://www.census.gov/topics/employment/commuting/guidance/acs-1yr.html"
+      description: "2024 ACS summary showing a U.S. mean one-way travel time of 27.2 minutes"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    average_commute_minutes: "Average Commute (min)"
+    carpool_pct: "Carpool (%)"
+    drive_solo_pct: "Drive Solo (%)"
+    public_transit_pct: "Public Transit (%)"
+
+  metric_default: average_commute_minutes
+  sort_default: desc
+  column_formats:
+    average_commute_minutes: "N1"
+    carpool_pct: "N1"
+    drive_solo_pct: "N1"
+    public_transit_pct: "N1"
+
+  rows:
+    - rank: 1
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      average_commute_minutes: 33.5
+      carpool_pct: 6.3
+      drive_solo_pct: 53.1
+      public_transit_pct: 28.0
+
+    - rank: 2
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      average_commute_minutes: 33.0
+      carpool_pct: 8.8
+      drive_solo_pct: 74.3
+      public_transit_pct: 7.9
+
+    - rank: 3
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      average_commute_minutes: 32.0
+      carpool_pct: 8.2
+      drive_solo_pct: 70.9
+      public_transit_pct: 11.7
+
+    - rank: 4
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      average_commute_minutes: 30.0
+      carpool_pct: 7.4
+      drive_solo_pct: 69.8
+      public_transit_pct: 10.2
+
+    - rank: 5
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      average_commute_minutes: 29.8
+      carpool_pct: 10.0
+      drive_solo_pct: 73.8
+      public_transit_pct: 4.9
+
+    - rank: 6
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      average_commute_minutes: 29.0
+      carpool_pct: 8.3
+      drive_solo_pct: 72.7
+      public_transit_pct: 9.4
+
+    - rank: 7
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      average_commute_minutes: 28.7
+      carpool_pct: 9.4
+      drive_solo_pct: 79.4
+      public_transit_pct: 2.0
+
+    - rank: 8
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      average_commute_minutes: 28.6
+      carpool_pct: 9.1
+      drive_solo_pct: 76.7
+      public_transit_pct: 4.5
+
+    - rank: 9
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      average_commute_minutes: 28.0
+      carpool_pct: 9.8
+      drive_solo_pct: 71.0
+      public_transit_pct: 7.0
+
+    - rank: 10
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      average_commute_minutes: 27.9
+      carpool_pct: 9.4
+      drive_solo_pct: 79.1
+      public_transit_pct: 1.7
+
+    - rank: 11
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      average_commute_minutes: 27.4
+      carpool_pct: 7.4
+      drive_solo_pct: 80.8
+      public_transit_pct: 0.9
+
+    - rank: 12
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      average_commute_minutes: 27.1
+      carpool_pct: 14.7
+      drive_solo_pct: 67.3
+      public_transit_pct: 5.7
+
+    - rank: 13
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      average_commute_minutes: 27.1
+      carpool_pct: 8.5
+      drive_solo_pct: 75.6
+      public_transit_pct: 5.8
+
+    - rank: 14
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      average_commute_minutes: 26.7
+      carpool_pct: 8.1
+      drive_solo_pct: 77.9
+      public_transit_pct: 4.4
+
+    - rank: 15
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      average_commute_minutes: 26.6
+      carpool_pct: 9.8
+      drive_solo_pct: 80.7
+      public_transit_pct: 1.3
+
+    - rank: 16
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      average_commute_minutes: 26.2
+      carpool_pct: 9.1
+      drive_solo_pct: 79.6
+      public_transit_pct: 2.2
+
+    - rank: 17
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      average_commute_minutes: 26.1
+      carpool_pct: 8.6
+      drive_solo_pct: 83.3
+      public_transit_pct: 0.9
+
+    - rank: 18
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      average_commute_minutes: 25.8
+      carpool_pct: 11.0
+      drive_solo_pct: 76.1
+      public_transit_pct: 1.7
+
+    - rank: 19
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      average_commute_minutes: 25.8
+      carpool_pct: 8.6
+      drive_solo_pct: 74.9
+      public_transit_pct: 2.8
+
+    - rank: 20
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      average_commute_minutes: 25.8
+      carpool_pct: 9.0
+      drive_solo_pct: 82.7
+      public_transit_pct: 1.2
+
+    - rank: 21
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      average_commute_minutes: 25.4
+      carpool_pct: 9.0
+      drive_solo_pct: 83.1
+      public_transit_pct: 0.6
+
+    - rank: 22
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      average_commute_minutes: 25.3
+      carpool_pct: 8.1
+      drive_solo_pct: 81.3
+      public_transit_pct: 2.2
+
+    - rank: 23
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      average_commute_minutes: 25.2
+      carpool_pct: 7.9
+      drive_solo_pct: 86.3
+      public_transit_pct: 0.3
+
+    - rank: 24
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      average_commute_minutes: 25.2
+      carpool_pct: 8.9
+      drive_solo_pct: 85.5
+      public_transit_pct: 0.3
+
+    - rank: 25
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      average_commute_minutes: 25.1
+      carpool_pct: 9.4
+      drive_solo_pct: 81.4
+      public_transit_pct: 0.6
+
+    - rank: 26
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      average_commute_minutes: 24.9
+      carpool_pct: 9.3
+      drive_solo_pct: 80.6
+      public_transit_pct: 1.0
+
+    - rank: 27
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      average_commute_minutes: 24.6
+      carpool_pct: 8.9
+      drive_solo_pct: 82.0
+      public_transit_pct: 1.4
+
+    - rank: 28
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      average_commute_minutes: 24.6
+      carpool_pct: 10.5
+      drive_solo_pct: 78.3
+      public_transit_pct: 2.9
+
+    - rank: 29
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      average_commute_minutes: 24.3
+      carpool_pct: 9.9
+      drive_solo_pct: 77.8
+      public_transit_pct: 0.6
+
+    - rank: 30
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      average_commute_minutes: 23.9
+      carpool_pct: 8.9
+      drive_solo_pct: 82.9
+      public_transit_pct: 0.9
+
+    - rank: 31
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      average_commute_minutes: 23.9
+      carpool_pct: 8.4
+      drive_solo_pct: 82.2
+      public_transit_pct: 1.3
+
+    - rank: 32
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      average_commute_minutes: 23.9
+      carpool_pct: 9.5
+      drive_solo_pct: 71.7
+      public_transit_pct: 4.2
+
+    - rank: 33
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      average_commute_minutes: 23.8
+      carpool_pct: 8.4
+      drive_solo_pct: 77.7
+      public_transit_pct: 3.5
+
+    - rank: 34
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      average_commute_minutes: 23.7
+      carpool_pct: 9.4
+      drive_solo_pct: 82.4
+      public_transit_pct: 1.0
+
+    - rank: 35
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      average_commute_minutes: 23.7
+      carpool_pct: 8.2
+      drive_solo_pct: 82.4
+      public_transit_pct: 1.6
+
+    - rank: 36
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      average_commute_minutes: 23.3
+      carpool_pct: 9.0
+      drive_solo_pct: 75.4
+      public_transit_pct: 0.9
+
+    - rank: 37
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      average_commute_minutes: 22.7
+      carpool_pct: 11.2
+      drive_solo_pct: 79.3
+      public_transit_pct: 1.1
+
+    - rank: 38
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      average_commute_minutes: 22.2
+      carpool_pct: 7.5
+      drive_solo_pct: 81.7
+      public_transit_pct: 1.5
+
+    - rank: 39
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      average_commute_minutes: 22.0
+      carpool_pct: 9.5
+      drive_solo_pct: 82.5
+      public_transit_pct: 0.5
+
+    - rank: 40
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      average_commute_minutes: 22.0
+      carpool_pct: 11.1
+      drive_solo_pct: 75.7
+      public_transit_pct: 2.2
+
+    - rank: 41
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      average_commute_minutes: 21.8
+      carpool_pct: 10.4
+      drive_solo_pct: 82.6
+      public_transit_pct: 0.4
+
+    - rank: 42
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      average_commute_minutes: 21.2
+      carpool_pct: 8.9
+      drive_solo_pct: 79.7
+      public_transit_pct: 0.8
+
+    - rank: 43
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      average_commute_minutes: 19.6
+      carpool_pct: 9.3
+      drive_solo_pct: 82.0
+      public_transit_pct: 0.5
+
+    - rank: 44
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      average_commute_minutes: 19.5
+      carpool_pct: 8.1
+      drive_solo_pct: 81.6
+      public_transit_pct: 1.0
+
+    - rank: 45
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      average_commute_minutes: 18.9
+      carpool_pct: 12.3
+      drive_solo_pct: 68.0
+      public_transit_pct: 1.2
+
+    - rank: 46
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      average_commute_minutes: 18.9
+      carpool_pct: 8.7
+      drive_solo_pct: 82.1
+      public_transit_pct: 0.6
+
+    - rank: 47
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      average_commute_minutes: 18.4
+      carpool_pct: 9.5
+      drive_solo_pct: 74.9
+      public_transit_pct: 0.8
+
+    - rank: 48
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      average_commute_minutes: 17.9
+      carpool_pct: 10.2
+      drive_solo_pct: 75.8
+      public_transit_pct: 1.2
+
+    - rank: 49
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      average_commute_minutes: 17.6
+      carpool_pct: 8.7
+      drive_solo_pct: 82.2
+      public_transit_pct: 0.7
+
+    - rank: 50
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      average_commute_minutes: 17.3
+      carpool_pct: 8.8
+      drive_solo_pct: 81.1
+      public_transit_pct: 0.2
+
+map:
+  title: "Average Commute Time by State Map"
+  image: "/images/rankings/infrastructure/longest-commute-by-state/longest-commute-by-state-map.webp"
+  image_alt: "U.S. map shaded by average one-way commute time in minutes"
+  caption: "New York leads at 33.5 minutes, followed by Maryland at 33.0 and New Jersey at 32.0. South Dakota is lowest at 17.3 minutes, with North Dakota at 17.6 just above it."
+  metric_key: average_commute_minutes
+  metric_label: "Minutes"
+  detail_keys:
+    - carpool_pct
+    - drive_solo_pct
+    - public_transit_pct
+  color_scheme: red
+  color_scale: linear
+
+sections:
+  - id: "states-with-the-longest-commute-times"
+    icon: "fa-solid fa-car-side"
+    title: "States With the Longest Commute Times"
+    paragraphs:
+      - "New York ranks first at 33.5 minutes, followed by Maryland at 33.0 and New Jersey at 32.0. Massachusetts is fourth at 30.0, and California is fifth at 29.8."
+      - "Illinois also stays high at 29.0, while Georgia is at 28.7 and Virginia is at 28.6. The national mean was 27.2 minutes in the 2024 ACS summary, so each of those states sits above the U.S. figure."
+
+  - id: "states-with-the-shortest-commute-times"
+    icon: "fa-solid fa-road"
+    title: "States With the Shortest Commute Times"
+    paragraphs:
+      - "South Dakota has the shortest average commute at 17.3 minutes. North Dakota is next at 17.6, Wyoming is at 17.9, and Montana is at 18.4."
+      - "Alaska and Nebraska both post 18.9 minutes, while Iowa is at 19.5 and Kansas is at 19.6. Every state in that cluster stays well below the 27.2 minute national mean."
+
+  - id: "states-with-the-most-public-transit-commuters"
+    icon: "fa-solid fa-train-subway"
+    title: "States With the Most Public Transit Commuters"
+    paragraphs:
+      - "New York has the highest public transit share at 28.0%, far ahead of New Jersey at 11.7% and Massachusetts at 10.2%. Illinois is also high at 9.4%, and Maryland reaches 7.9%."
+      - "Alabama and Mississippi are each at 0.3% public transit use, while South Dakota is at 0.2%. Alabama also has the highest drive solo share at 86.3%, and Hawaii has the highest carpool share at 14.7%."
+
+visual_assets:
+  - id: "states-with-the-longest-commute-times-visual"
+    src: "/images/rankings/infrastructure/longest-commute-by-state/states-with-the-longest-commute-times.jpg"
+    alt: "Heavy freeway traffic representing states with the longest commute times"
+    caption: "New York leads at 33.5 minutes, with Maryland at 33.0 and New Jersey at 32.0 close behind."
+    section: "states-with-the-longest-commute-times"
+    layout: "full-width-tall"
+
+  - id: "states-with-the-shortest-commute-times-visual"
+    src: "/images/rankings/infrastructure/longest-commute-by-state/states-with-the-shortest-commute-times.jpg"
+    alt: "Open road representing states with the shortest commute times"
+    caption: "South Dakota is lowest at 17.3 minutes. North Dakota is next at 17.6, and Wyoming is at 17.9."
+    section: "states-with-the-shortest-commute-times"
+    layout: "full-width-tall"
+
+  - id: "states-with-the-most-public-transit-commuters-visual"
+    src: "/images/rankings/infrastructure/longest-commute-by-state/states-with-the-most-public-transit-commuters.jpg"
+    alt: "Commuter train platform representing states with the highest public transit use"
+    caption: "New York leads public transit use at 28.0%. New Jersey is second at 11.7%, and Massachusetts is third at 10.2%."
+    section: "states-with-the-most-public-transit-commuters"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state has the longest average commute time?"
+    answer: "New York has the longest average commute time at 33.5 minutes. Maryland ranks second at 33.0, and New Jersey is third at 32.0."
+
+  - question: "Which state has the shortest average commute time?"
+    answer: "South Dakota has the shortest average commute time at 17.3 minutes. North Dakota follows at 17.6, and Wyoming is at 17.9."
+
+  - question: "What is the average commute time in California?"
+    answer: "California averages 29.8 minutes one way. That puts it fifth overall, just behind Massachusetts at 30.0."
+
+  - question: "What is the average commute time in Texas?"
+    answer: "Texas averages 26.6 minutes one way. Its drive solo share is 80.7%, while public transit use is 1.3%."
+
+  - question: "Which state uses public transit the most for commuting?"
+    answer: "New York has the highest public transit share at 28.0%. New Jersey is next at 11.7%, and Massachusetts is at 10.2%."
+
+  - question: "Which state has the highest drive solo share?"
+    answer: "Alabama has the highest drive solo share at 86.3%. Mississippi is close behind at 85.5%, and West Virginia is at 83.3%."
+
+related:
+  - title: "Railroad Miles by State"
+    url: "/rankings/infrastructure/railroad-miles-by-state"
+  - title: "Largest Airport by State"
+    url: "/rankings/infrastructure/largest-airport-by-state"
+  - title: "Domestic Migration by State"
+    url: "/rankings/demographics/domestic-migration-by-state"

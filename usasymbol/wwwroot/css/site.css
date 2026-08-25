@@ -3357,6 +3357,26 @@ body {
     background: linear-gradient(135deg, #1c1c2e, #2d2d44);
 }
 
+.disc-card__banner--national-symbols {
+    background: #102b55;
+}
+.disc-card__banner--national-symbols img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.disc-card__banner-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(7, 25, 52, .82), rgba(7, 25, 52, .3));
+}
+.disc-card__banner--national-symbols .disc-card__icon {
+    position: relative;
+    z-index: 1;
+}
+
 .disc-card__icon {
     color: rgba(255, 255, 255, .75);
 }
@@ -3434,4 +3454,65 @@ body {
 .sidebar-ad-slot {
     width: 300px;
     min-height: 300px;
+}
+
+/* National symbols hub */
+.national-hub-breadcrumb,
+.national-hub {
+    width: min(100% - 2rem, 80rem);
+    margin-inline: auto;
+}
+.national-hub-breadcrumb {
+    display: flex;
+    gap: .65rem;
+    align-items: center;
+    padding: 1rem 0;
+    color: #64748b;
+    font-size: .78rem;
+}
+.national-hub-breadcrumb a:hover { color: #0f2e59; }
+.national-hub-breadcrumb strong { color: #0f172a; }
+.national-hub { padding-bottom: 4rem; }
+.national-hub-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 20rem;
+    padding: clamp(2rem, 6vw, 4.5rem);
+    color: #fff;
+    background: radial-gradient(circle at 88% 20%, rgba(255,255,255,.14), transparent 24%), linear-gradient(125deg, #071d3d 0%, #123f77 58%, #7f1d2d 100%);
+    box-shadow: 0 18px 45px rgba(15, 46, 89, .18);
+}
+.national-hub-hero__content { position: relative; z-index: 1; max-width: 48rem; }
+.national-hub-hero__eyebrow { margin: 0 0 1rem; color: #f7d78b; font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
+.national-hub-hero h1 { margin: 0; color: #fff; font-family: 'Libre Baskerville', Georgia, serif; font-size: clamp(2.15rem, 5vw, 4rem); line-height: 1.08; }
+.national-hub-hero__lead { margin: 1.4rem 0 0; color: #eef6ff; font-size: clamp(1rem, 2vw, 1.22rem); line-height: 1.7; }
+.national-hub-hero__note { margin: .85rem 0 0; max-width: 43rem; color: #cbdcf2; font-size: .9rem; line-height: 1.65; }
+.national-hub-hero__count { display: inline-block; margin-top: 1.4rem; padding: .45rem .8rem; border: 1px solid rgba(255,255,255,.28); color: #fff; background: rgba(255,255,255,.1); font-size: .78rem; font-weight: 700; }
+.national-hub-hero__mark { position: absolute; right: clamp(1.5rem, 7vw, 6rem); top: 50%; transform: translateY(-50%); color: rgba(255,255,255,.09); font-size: clamp(9rem, 22vw, 18rem); }
+.national-hub-guides { padding-top: 3rem; }
+.national-hub-guides__heading { display: flex; justify-content: space-between; align-items: end; gap: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid #dbe4ef; }
+.national-hub-guides__heading p { margin: 0 0 .35rem; color: #a26716; font-size: .68rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.national-hub-guides__heading h2 { margin: 0; color: #0f2342; font-family: 'Libre Baskerville', Georgia, serif; font-size: clamp(1.65rem, 3vw, 2.25rem); }
+.national-hub-guides__heading > span { color: #64748b; font-size: .82rem; }
+.national-hub-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin-top: 1.5rem; }
+@media (min-width: 640px) { .national-hub-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .national-hub-grid { grid-template-columns: repeat(3, 1fr); } }
+.national-hub-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid #d9e2ec; background: #fff; box-shadow: 0 6px 18px rgba(15,35,66,.06); transition: transform .2s, border-color .2s, box-shadow .2s; }
+.national-hub-card:hover { transform: translateY(-3px); border-color: #8299b7; box-shadow: 0 14px 30px rgba(15,35,66,.12); }
+.national-hub-card__media { height: 11rem; overflow: hidden; background: #e8f0f8; }
+.national-hub-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+.national-hub-card:hover .national-hub-card__media img { transform: scale(1.035); }
+.national-hub-card__fallback { display: grid; height: 100%; place-items: center; color: #315d91; background: linear-gradient(135deg, #eaf3fc, #f8ecec); font-size: 2.5rem; }
+.national-hub-card__body { display: flex; flex: 1; flex-direction: column; padding: 1.25rem; }
+.national-hub-card__body h3 { margin: 0; color: #0f2342; font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.05rem; line-height: 1.35; }
+.national-hub-card__body p { margin: .65rem 0 0; color: #526278; font-size: .82rem; line-height: 1.65; }
+.national-hub-card__body span { display: inline-flex; align-items: center; gap: .4rem; margin-top: auto; padding-top: 1rem; color: #174f8d; font-size: .78rem; font-weight: 800; }
+.site-footer-national { display: flex; align-items: center; gap: .75rem; margin: 1.25rem 0; padding: .85rem; border: 1px solid rgba(255,255,255,.18); color: #fff; background: rgba(255,255,255,.07); }
+.site-footer-national:hover { border-color: rgba(247,215,139,.7); background: rgba(255,255,255,.11); }
+.site-footer-national > span { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+.site-footer-national strong { color: #fff; font-size: .82rem; }
+.site-footer-national small { color: #bac7d8; font-size: .65rem; line-height: 1.4; }
+@media (max-width: 639px) {
+    .national-hub-guides__heading { align-items: start; flex-direction: column; gap: .6rem; }
+    .national-hub-hero__mark { display: none; }
 }

@@ -7,6 +7,9 @@ namespace USASymbol.Services.Images;
 
 public sealed class BunnyImageSyncService
 {
+    private const int ManifestVersion = 1;
+    private const string ManifestRemotePath = ".sync/usasymbol-images-v1.json";
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
@@ -29,7 +32,9 @@ public sealed class BunnyImageSyncService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<BunnyImageSyncResult> SyncAsync(CancellationToken cancellationToken)
+    public async Task<BunnyImageSyncResult> SyncAsync(
+        bool rebuildManifest,
+        CancellationToken cancellationToken)
     {
         ValidateConfiguration();
 
@@ -41,29 +46,53 @@ public sealed class BunnyImageSyncService
             throw new DirectoryNotFoundException($"Local images folder was not found: {localImagesRoot}");
         }
 
-        var files = Directory
-            .EnumerateFiles(localImagesRoot, "*", SearchOption.AllDirectories)
-            .Where(path => !IsIgnoredFile(path))
-            .ToList();
-        var remoteFiles = await GetRemoteFilesIndexAsync(cancellationToken);
+        var manifest = rebuildManifest
+            ? null
+            : await GetManifestAsync(cancellationToken);
+        Dictionary<string, BunnyStorageObject>? remoteFiles = null;
+
+        if (manifest is null)
+        {
+            _logger.LogInformation(
+                rebuildManifest
+                    ? "Rebuilding Bunny image manifest from the remote image tree."
+                    : "Bunny image manifest was not found. Bootstrapping it from the remote image tree once.");
+            remoteFiles = await GetRemoteFilesIndexAsync(cancellationToken);
+            manifest = new BunnySyncManifest();
+        }
+
+        var nextManifest = new BunnySyncManifest();
 
         _logger.LogInformation(
-            "Starting Bunny sync for {Count} local files from {Path}. Remote index contains {RemoteCount} files.",
-            files.Count,
+            "Starting incremental Bunny image sync from {Path}. Tracked files: {TrackedCount}.",
             localImagesRoot,
-            remoteFiles.Count);
+            manifest.Files.Count);
 
-        foreach (var filePath in files)
+        foreach (var filePath in Directory
+                     .EnumerateFiles(localImagesRoot, "*", SearchOption.AllDirectories)
+                     .Where(path => !IsIgnoredFile(path)))
         {
             cancellationToken.ThrowIfCancellationRequested();
+            result.Scanned++;
 
             var remotePath = BuildRemotePath(localImagesRoot, filePath);
             var localFileInfo = new FileInfo(filePath);
+            var localState = BunnySyncFileState.From(localFileInfo);
 
-            if (remoteFiles.TryGetValue(remotePath, out var remoteFile) && !ShouldUpload(localFileInfo, remoteFile))
+            if (manifest.Files.TryGetValue(remotePath, out var previousState) &&
+                previousState.Matches(localState))
             {
                 result.Skipped++;
-                _logger.LogDebug("Skipped unchanged file {RemotePath}", remotePath);
+                nextManifest.Files[remotePath] = localState;
+                continue;
+            }
+
+            if (remoteFiles is not null &&
+                remoteFiles.TryGetValue(remotePath, out var remoteFile) &&
+                !ShouldUpload(localFileInfo, remoteFile))
+            {
+                result.Skipped++;
+                nextManifest.Files[remotePath] = localState;
                 continue;
             }
 
@@ -71,6 +100,7 @@ public sealed class BunnyImageSyncService
             {
                 await UploadFileAsync(filePath, remotePath, cancellationToken);
                 result.Uploaded++;
+                nextManifest.Files[remotePath] = localState;
                 _logger.LogInformation("Uploaded {RemotePath}", remotePath);
             }
             catch (Exception ex)
@@ -80,7 +110,76 @@ public sealed class BunnyImageSyncService
             }
         }
 
+        await SaveManifestAsync(nextManifest, cancellationToken);
+
         return result;
+    }
+
+    private async Task<BunnySyncManifest?> GetManifestAsync(CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, BuildStorageUploadUri(ManifestRemotePath));
+        request.Headers.Add("AccessKey", _options.StorageApiKey);
+
+        using var response = await _httpClient.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        try
+        {
+            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            var manifest = await JsonSerializer.DeserializeAsync<BunnySyncManifest>(
+                stream,
+                JsonOptions,
+                cancellationToken);
+
+            if (manifest?.Version != ManifestVersion || manifest.Files is null)
+            {
+                _logger.LogWarning("Bunny image manifest has an unsupported version and will be rebuilt.");
+                return null;
+            }
+
+            manifest.Files = new Dictionary<string, BunnySyncFileState>(
+                manifest.Files,
+                StringComparer.OrdinalIgnoreCase);
+            return manifest;
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            _logger.LogWarning(ex, "Bunny image manifest is invalid and will be rebuilt.");
+            return null;
+        }
+    }
+
+    private async Task SaveManifestAsync(BunnySyncManifest manifest, CancellationToken cancellationToken)
+    {
+        manifest.GeneratedAtUtc = DateTimeOffset.UtcNow;
+        using var request = new HttpRequestMessage(HttpMethod.Put, BuildStorageUploadUri(ManifestRemotePath))
+        {
+            Content = JsonContent.Create(manifest, options: JsonOptions)
+        };
+        request.Headers.Add("AccessKey", _options.StorageApiKey);
+
+        using var response = await _httpClient.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        throw new InvalidOperationException(
+            $"Bunny manifest upload failed with status {(int)response.StatusCode}: {body}");
     }
 
     private async Task<Dictionary<string, BunnyStorageObject>> GetRemoteFilesIndexAsync(CancellationToken cancellationToken)
@@ -262,5 +361,29 @@ public sealed class BunnyImageSyncService
         public long Length { get; set; }
         public DateTimeOffset? LastChanged { get; set; }
         public bool IsDirectory { get; set; }
+    }
+
+    private sealed class BunnySyncManifest
+    {
+        public int Version { get; set; } = ManifestVersion;
+        public DateTimeOffset GeneratedAtUtc { get; set; }
+        public Dictionary<string, BunnySyncFileState> Files { get; set; } =
+            new(StringComparer.OrdinalIgnoreCase);
+    }
+
+    private sealed class BunnySyncFileState
+    {
+        public long Length { get; set; }
+        public long LastWriteTimeUtcTicks { get; set; }
+
+        public static BunnySyncFileState From(FileInfo file) => new()
+        {
+            Length = file.Length,
+            LastWriteTimeUtcTicks = file.LastWriteTimeUtc.Ticks
+        };
+
+        public bool Matches(BunnySyncFileState other) =>
+            Length == other.Length &&
+            LastWriteTimeUtcTicks == other.LastWriteTimeUtcTicks;
     }
 }

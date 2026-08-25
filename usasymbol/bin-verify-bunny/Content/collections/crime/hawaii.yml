@@ -1,0 +1,158 @@
+type: collection
+slug: hawaii
+category: crime
+url: /most-dangerous-cities/hawaii
+auto_link_phrases:
+- most dangerous cities in Hawaii
+- highest crime cities in Hawaii
+- Hawaii city crime rates
+author: USA Symbol Team
+date_published: '2026-08-13'
+date_modified: '2026-08-13'
+seo:
+  title: Most Dangerous City in Hawaii | 2024 Data
+  description: Honolulu leads qualifying Hawaii city agencies in 2024 with 1,974.8 reported violent and property
+    crimes per 100,000.
+page:
+  h1: Most Dangerous City in Hawaii
+  intro_title: Highest Reported City Crime Rates in Hawaii
+  quick_answer:
+  - Honolulu has the highest 2024 reported total crime rate among qualifying Hawaii city agencies matched to Census
+    places at 1,974.8 per 100,000 residents covered.
+  - Its rate combines 185.2 violent crimes and 1,789.6 property crimes per 100,000. The table compares 1 qualifying
+    city with a coverage population of at least 10,000.
+  - These are city-agency reporting rates, not neighborhood risk estimates. Reporting practices, agency boundaries,
+    and the number of crimes reported to police affect the comparison.
+  methodology: Cities are ranked by total reported crime rate, calculated as FBI Table 8 violent crime plus property
+    crime divided by the agency coverage population and multiplied by 100,000. Eligibility requires a 2024 coverage
+    population of at least 10,000 and a matching 2024 Census Gazetteer place; the table is limited to the top 10.
+    Arson is not included in the FBI property-crime total. Display names may simplify an FBI agency label, while
+    rates continue to use that agency's coverage population.
+  sources:
+  - name: FBI Crime Data Explorer, 2024 CIUS Table 8
+    url: https://cde.ucr.cjis.gov/LATEST/
+    description: Official city-agency population and reported offense counts used for every rate
+  - name: U.S. Census Bureau 2024 Gazetteer, Places
+    url: https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2024_Gazetteer/2024_Gaz_place_national.zip
+    description: Official place names and internal-point coordinates used for map markers
+table:
+  title: Highest Reported Crime Rate in Hawaii, 2024
+  caption: 1 qualifying Hawaii city ranked by combined violent and property crime rate.
+  note: Rates are per 100,000 residents in the reporting agency's coverage population, which may differ from Census
+    place population.
+  sortable: true
+  sort_default: desc
+  metric_default: total_crime_rate
+  column_formats:
+    total_crime_rate: '0.0'
+    violent_crime_rate: '0.0'
+    property_crime_rate: '0.0'
+    murder_rate: '0.0'
+  columns:
+    rank: Rank
+    city: City
+    coverage_population: Coverage Population
+    total_crime_rate: Total Crime Rate
+    violent_crime_rate: Violent Crime Rate
+    property_crime_rate: Property Crime Rate
+    murder_rate: Murder Rate
+  rows:
+  - rank: 1
+    city: Honolulu
+    city_slug: honolulu
+    coverage_population: 992973
+    total_crimes: 19609
+    total_crime_rate: 1974.8
+    violent_crimes: 1839
+    violent_crime_rate: 185.2
+    property_crimes: 17770
+    property_crime_rate: 1789.6
+    murders: 15
+    murder_rate: 1.5
+point_map:
+  title: Map of the City With the Highest Reported Crime Rate in Hawaii
+  image_alt: Interactive map showing 1 Hawaii city in the 2024 FBI ranking
+  caption: The numbered marker follows the table rank. Select it for rates and a link to the city summary.
+  max_zoom: 9
+  markers:
+  - rank: 1
+    slug: honolulu
+    anchor: highest-reported-crime-rates-honolulu
+    name: Honolulu
+    latitude: 21.324347
+    longitude: -157.84764
+    total_crime_rate: 1974.8
+    violent_crime_rate: 185.2
+    property_crime_rate: 1789.6
+    coverage_population: 992973
+    popup_text: Property crime is the larger category at 1,789.6 per 100,000.
+sections:
+- id: highest-reported-crime-rates
+  icon: fa-solid fa-location-dot
+  style: law-cards
+  title: Hawaii City With the Highest Reported Crime Rate
+  paragraphs:
+  - Each card separates violent and property crime so the category driving the combined rate remains visible. Counts
+    describe offenses reported by the listed city agency during 2024.
+  highlights:
+  - name: Honolulu
+    state: Hawaii
+    status: 2024 FBI data
+    description: |-
+      **Rank:** #1
+      **Total crime rate:** 1,974.8 per 100,000
+      **Coverage population:** 992,973
+
+      Honolulu reported 19,609 violent and property crimes in 2024. The violent crime rate was 185.2, while the property crime rate was 1,789.6 per 100,000.
+
+      Property crime accounts for the larger share of the combined rate, which places Honolulu at #1 among qualifying Hawaii city agencies matched to Census places.
+    image: /images/collections/crime/hawaii/honolulu.webp
+- id: why-these-cities-rank-highest
+  icon: fa-solid fa-chart-line
+  title: Why Honolulu Has the Highest Reported Crime Rate in Hawaii
+  paragraphs:
+  - Honolulu is the only qualifying Hawaii city agency in this comparison. It reported 19,609 violent and property
+    crimes, producing a combined rate of 1,974.8 per 100,000 residents covered.
+  - Property crime contributes 1,789.6 per 100,000, or 90.6% of the combined rate. Violent crime contributes the
+    remaining 185.2 per 100,000. The first-place label therefore reflects the only eligible agency in the dataset
+    rather than a comparison with every community in the state.
+  facts:
+  - Honolulu reported 19,609 combined violent and property offenses for an FBI coverage population of 992,973.
+  - Property offenses account for 90.6% of its combined reported crime rate; violent offenses account for 9.4%.
+  - No second qualifying Hawaii city is available in this matched dataset, so a statewide rate gap cannot be calculated.
+faq:
+- question: What city has the highest reported crime rate in Hawaii?
+  answer: Honolulu ranks first among qualifying city agencies matched to Census places at 1,974.8 total reported
+    crimes per 100,000 residents covered in 2024.
+- question: Why does Honolulu rank first for reported crime in Hawaii?
+  answer: Its combined violent and property crime rate is 1,974.8 per 100,000 residents covered. Property crime
+    contributes 1,789.6 and violent crime contributes 185.2 per 100,000 to that total.
+- question: What crimes are included in the total crime rate?
+  answer: Violent crime includes murder, rape, robbery, and aggravated assault. Property crime includes burglary,
+    larceny-theft, and motor vehicle theft. FBI Table 8 lists arson separately, so it is not added to the property
+    total.
+- question: Does a high city crime rate mean every neighborhood in Hawaii is dangerous?
+  answer: No. FBI Table 8 reports at the law-enforcement agency level. Crime can vary sharply within a city, and
+    the dataset does not provide neighborhood-level risk.
+- question: Why can coverage population differ from city population?
+  answer: A police agency's jurisdiction may not match Census place boundaries exactly. The calculation uses the
+    FBI coverage population because that is the population associated with the reported offenses.
+related:
+- title: Crime Rate by State
+  url: /rankings/crime/crime-rate-by-state
+- title: Safest Cities by State
+  url: /rankings/crime/safest-cities-by-state
+- title: Most Dangerous City in Each State
+  url: /rankings/crime/most-dangerous-cities-by-state
+hero_image: /images/collections/crime/hawaii/honolulu.webp
+hero_image_alt: City view of Honolulu, Hawaii
+hero_image_caption: Honolulu, Hawaii. Photo by Simon_sees from Australia via Wikimedia Commons (CC BY 2.0); full
+  source details are recorded in the image credits manifest.
+visual_assets:
+- id: hawaii-honolulu-city-view
+  src: /images/collections/crime/hawaii/honolulu.webp
+  alt: City view of Honolulu, Hawaii
+  caption: Honolulu, Hawaii. Photo by Simon_sees from Australia via Wikimedia Commons (CC BY 2.0); full source details
+    are recorded in the image credits manifest.
+  layout: full-width-wide
+  section: highest-reported-crime-rates

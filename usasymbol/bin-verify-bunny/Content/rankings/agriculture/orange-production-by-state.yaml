@@ -1,0 +1,129 @@
+type: ranking
+slug: orange-production-by-state
+category: agriculture
+url: /rankings/agriculture/orange-production-by-state
+auto_link_phrases:
+  - "orange production by state"
+  - "which state produces the most oranges"
+  - "orange farming by state"
+extremes_mode: both
+extremes_title: "States With the Most and Least Orange Production"
+hero_image: "/images/rankings/agriculture/orange-production-by-state/orange-production-by-state-hero.jpg"
+hero_image_alt: "Rows of orange trees loaded with fruit in a California grove"
+hero_image_caption: "California produces the most oranges in the country at 45.5 million boxes. Texas produces the least among listed states at 900,000 boxes."
+
+author: "USA Symbol Team"
+date_published: "2026-08-13"
+date_modified: "2026-08-13"
+
+seo:
+  title: "Orange Production by State | Map, States & Facts"
+  description: "California produces 45.5 million boxes of oranges, well ahead of Florida at 12 million boxes and Texas at 900,000 boxes."
+
+page:
+  h1: "Orange Production by State"
+
+  quick_answer:
+    - "California produces the most oranges in the country at 45.5 million boxes, 77.91% of the U.S. total of 58.4 million boxes."
+    - "Florida ranks second at 12 million boxes, 20.55% of the U.S. total, less than a third of California's output."
+    - "Texas produces the least among the 3 listed states at 900,000 boxes, just 1.54% of the U.S. total."
+
+  methodology: "Production figures reflect 2025 USDA data reported by World Population Review, in boxes, covering the 3 states with recorded commercial orange output."
+
+  sources:
+    - name: "USDA NASS. Citrus Fruits Summary"
+      url: "https://www.nass.usda.gov/Statistics_by_State/Florida/Publications/Citrus/Citrus_Summary/Citrus_Summary_Prelim/cit082925.pdf"
+      description: "State-level orange production forecasts, 2025-2026 season"
+
+table:
+  caption: "Orange Production by State"
+  note: "Figures reflect 2025-2026 season forecast production in boxes. Only states with recorded commercial output are listed."
+  columns:
+    rank: "Rank"
+    state: "State"
+    production_boxes: "Production (boxes)"
+    notes: "Notes"
+
+  metric_default: production_boxes
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      production_boxes: 45500000
+      notes: "The most orange production of any state, 77.91% of the U.S. total."
+
+    - rank: 2
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      production_boxes: 12000000
+      notes: "20.55% of the U.S. total."
+
+    - rank: 3
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      production_boxes: 900000
+      notes: "The least orange production among listed states, 1.54% of the U.S. total."
+
+map:
+  title: "Orange Production by State Map"
+  image_alt: "U.S. map shaded by orange production, from California's 45.5-million-box high down to Texas's 900,000-box low"
+  caption: "California's 45.5 million boxes is the darkest shade on the map. Texas's 900,000 boxes is the lightest, while Florida ranks second at 12 million boxes."
+  metric_key: production_boxes
+  metric_label: "Orange Production (boxes)"
+  color_scheme: orange
+  color_scale: log
+
+sections:
+  - id: "orange-production-by-state-top-producers"
+    icon: "fa-solid fa-lemon"
+    title: "Orange Production by State: Top Producers"
+    paragraphs:
+      - "California accounts for 45.5 million of the 58.4-million-box U.S. total, 77.91% of all recorded production. Florida adds 12 million boxes, and Texas contributes the remaining 900,000 boxes."
+    table:
+      columns:
+        state: "State"
+        production_boxes: "Production (boxes)"
+      rows:
+        - state: "California"
+          production_boxes: "45,500,000"
+        - state: "Florida"
+          production_boxes: "12,000,000"
+        - state: "Texas"
+          production_boxes: "900,000"
+
+visual_assets:
+  - id: "orange-production-by-state-top-producers-visual"
+    src: "/images/rankings/agriculture/orange-production-by-state/orange-production-by-state-top-producers.jpg"
+    alt: "California orange grove representing top orange producing states"
+    caption: "California produces 45.5 million boxes of oranges, 77.91% of the U.S. total."
+    section: "orange-production-by-state-top-producers"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state produces the most oranges?"
+    answer: "California produces the most oranges in the country at 45.5 million boxes, 77.91% of the U.S. total."
+
+  - question: "Which state produces the least oranges?"
+    answer: "Texas produces the least among the 3 listed states at 900,000 boxes."
+
+  - question: "How much does Florida produce compared to California?"
+    answer: "Florida produces 12 million boxes, about 33.5 million boxes behind California's 45.5 million."
+
+  - question: "How many states produce oranges commercially?"
+    answer: "Only three states report commercial orange production: California, Florida, and Texas."
+
+  - question: "What is the total U.S. orange production among listed states?"
+    answer: "The three producing states combined for 58.4 million boxes of oranges."
+
+related:
+  - title: "Nectarine Production by State"
+    url: "/rankings/agriculture/nectarine-production-by-state"
+  - title: "Olive Production by State"
+    url: "/rankings/agriculture/olive-production-by-state"
+  - title: "Farms by State"
+    url: "/rankings/food/farms-by-state"

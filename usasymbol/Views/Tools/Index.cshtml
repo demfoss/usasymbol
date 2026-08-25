@@ -1,0 +1,104 @@
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">Tools</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tools</p>
+            <h1>Handy tools for <em>exploring the states.</em></h1>
+            <p class="tl-lede">
+                Small, free utilities that use the same state and location data behind USA
+                Symbol — no sign-up required. More tools are on the way.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="tl-grid">
+            <a class="tl-tool-card" href="/tools/random-zip-code-generator">
+                <span class="tl-tool-icon"><i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i></span>
+                <h2>Random ZIP Code Generator</h2>
+                <p>Generate real U.S. ZIP codes with city and state, filter by state, copy results, or download them as a .txt file.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/zip-code-lookup">
+                <span class="tl-tool-icon"><i class="fa-solid fa-magnifying-glass-location" aria-hidden="true"></i></span>
+                <h2>ZIP Code Lookup</h2>
+                <p>Enter any ZIP code to find its city, county, state, and flag.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/random-city-generator">
+                <span class="tl-tool-icon"><i class="fa-solid fa-city" aria-hidden="true"></i></span>
+                <h2>Random City &amp; State Generator</h2>
+                <p>Generate real U.S. cities with their state, filter by state, copy results, or download them as a .txt file.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/county-finder">
+                <span class="tl-tool-icon"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i></span>
+                <h2>County Finder</h2>
+                <p>Find which U.S. county a ZIP code or city belongs to.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/state-abbreviation-finder">
+                <span class="tl-tool-icon"><i class="fa-solid fa-flag-usa" aria-hidden="true"></i></span>
+                <h2>State Abbreviation Finder</h2>
+                <p>Look up any state's two-letter postal abbreviation, or find the state behind an abbreviation.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/state-capital-flashcards">
+                <span class="tl-tool-icon"><i class="fa-solid fa-clone" aria-hidden="true"></i></span>
+                <h2>State Capital Flashcards</h2>
+                <p>Practice all 50 U.S. state capitals with a free flip-card trainer.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/timezone-finder">
+                <span class="tl-tool-icon"><i class="fa-solid fa-clock" aria-hidden="true"></i></span>
+                <h2>Time Zone Finder</h2>
+                <p>Find which U.S. time zone a state or ZIP code falls in, with UTC offsets.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/distance-calculator">
+                <span class="tl-tool-icon"><i class="fa-solid fa-ruler" aria-hidden="true"></i></span>
+                <h2>ZIP Code Distance Calculator</h2>
+                <p>Calculate the straight-line distance between two U.S. ZIP codes in miles and kilometers.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/area-code-lookup">
+                <span class="tl-tool-icon"><i class="fa-solid fa-phone" aria-hidden="true"></i></span>
+                <h2>Area Code Lookup</h2>
+                <p>Look up any U.S. telephone area code to find its state and primary cities.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/random-address-generator">
+                <span class="tl-tool-icon"><i class="fa-solid fa-house" aria-hidden="true"></i></span>
+                <h2>Random Address Generator</h2>
+                <p>Generate a random, non-deliverable U.S. street address for testing, QA, or sample data.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/population-lookup">
+                <span class="tl-tool-icon"><i class="fa-solid fa-people-group" aria-hidden="true"></i></span>
+                <h2>Population Lookup</h2>
+                <p>Look up the population of any U.S. ZIP code or city.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+            <a class="tl-tool-card" href="/tools/nearest-national-parks">
+                <span class="tl-tool-icon"><i class="fa-solid fa-tree" aria-hidden="true"></i></span>
+                <h2>Nearest National Park Finder</h2>
+                <p>Find the closest U.S. national parks to any ZIP code, ranked by distance, with map links.</p>
+                <span class="tl-tool-cta">Open tool <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+        </div>
+        <p class="tl-more-soon">More free tools are coming soon.</p>
+    </section>
+</div>

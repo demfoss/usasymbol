@@ -1,0 +1,77 @@
+schemaVersion: 1
+fips: "48443"
+parentFips: "48"
+state: texas
+name: "Terrell County"
+slug: terrell-county
+published: false
+updatedOn: "2026-07-26"
+sources:
+  census_acs:
+    name: "U.S. Census Bureau — American Community Survey"
+    url: "https://www.census.gov/programs-surveys/acs/data/summary-file.html"
+    period: "2020–2024 ACS 5-year"
+  bls_laus:
+    name: "U.S. Bureau of Labor Statistics — Local Area Unemployment Statistics"
+    url: "https://www.bls.gov/lau/data-overview.htm"
+    period: "2025 annual average"
+  county_health_rankings:
+    name: "County Health Rankings & Roadmaps"
+    url: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation"
+    period: "2025 annual release"
+metrics:
+  population:
+    raw: 835
+    unit: residents
+    direction: 0
+    sourceId: census_acs
+  medianHouseholdIncome:
+    raw: 44886
+    unit: usd
+    direction: 1
+    sourceId: census_acs
+  medianHomeValue:
+    raw: 137500
+    unit: usd
+    direction: -1
+    sourceId: census_acs
+  collegeEducatedRate:
+    raw: 26.8656716418
+    unit: percent
+    direction: 1
+    sourceId: census_acs
+  unemploymentRate:
+    raw: 3.7
+    unit: percent
+    direction: -1
+    sourceId: bls_laus
+  employment:
+    raw: 336
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  laborForce:
+    raw: 349
+    unit: people
+    direction: 0
+    sourceId: bls_laus
+  poorFairHealthRate:
+    raw: 17.3
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  uninsuredRate:
+    raw: 19.13043478
+    unit: percent
+    direction: -1
+    sourceId: county_health_rankings
+  primaryCareRatio:
+    raw: -724
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings
+  mentalHealthProviderRatio:
+    raw: -687
+    unit: residents_per_provider
+    direction: -1
+    sourceId: county_health_rankings

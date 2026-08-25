@@ -10,22 +10,27 @@
     if (!steps.Any()) { return; }
 }
 
-<ol class="my-6 space-y-4 clear-both">
+<ol class="dance-steps my-8 clear-both">
     @for (var i = 0; i < steps.Count; i++)
     {
         var step = steps[i];
-        <li class="flex gap-4 border border-slate-200 bg-white p-4">
-            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
+        var isLast = i == steps.Count - 1;
+        <li class="dance-step relative flex gap-5 @(isLast ? "" : "pb-8")">
+            @if (!isLast)
+            {
+                <span class="absolute left-[19px] top-10 bottom-0 w-px bg-gradient-to-b from-pink-300 to-pink-100" aria-hidden="true"></span>
+            }
+            <span class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-pink-600 text-base font-bold text-white shadow-[0_2px_8px_-2px_rgba(219,39,119,0.5)]">
                 @(i + 1)
             </span>
-            <div class="min-w-0">
+            <div class="min-w-0 flex-1 border border-pink-100 bg-pink-50/40 p-4 sm:p-5">
                 @if (!string.IsNullOrWhiteSpace(step.Title))
                 {
-                    <p class="font-semibold text-slate-900">@step.Title</p>
+                    <p class="text-base font-semibold text-slate-900 sm:text-lg">@step.Title</p>
                 }
                 @if (!string.IsNullOrWhiteSpace(step.Description))
                 {
-                    <p class="mt-1 text-sm leading-6 text-slate-700">@step.Description.RenderAutoLinks()</p>
+                    <p class="mt-1.5 text-sm leading-6 text-slate-700 sm:text-[15px]">@step.Description.RenderAutoLinks()</p>
                 }
             </div>
         </li>

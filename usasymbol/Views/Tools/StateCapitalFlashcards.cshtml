@@ -1,0 +1,86 @@
+@using System.Text.Json
+@using USASymbol.Models
+
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "tools-surface";
+
+    var states = (List<State>)(ViewBag.States ?? new List<State>());
+    var cards = states.Select(s => new
+    {
+        name = s.Name,
+        slug = s.Slug,
+        capital = s.Capital,
+        flagUrl = $"/images/states/flags/small/{s.Abbreviation.ToLowerInvariant()}.webp"
+    });
+
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var cardsJson = JsonSerializer.Serialize(cards, jsonOptions);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tools.css" asp-append-version="true" />
+}
+
+<div class="tl-page">
+    <section class="tl-hero">
+        <div class="tl-shell">
+            <nav class="tl-breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Home</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <a href="/tools">Tools</a>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <span aria-current="page">State Capital Flashcards</span>
+            </nav>
+            <p class="tl-eyebrow"><span></span> Free tool</p>
+            <h1>State Capital <em>Flashcards</em></h1>
+            <p class="tl-lede">
+                Click a card to flip it, then mark whether you got it right. Practice all 50
+                state capitals at your own pace.
+            </p>
+        </div>
+    </section>
+
+    <section class="tl-shell">
+        <div class="zg-panel">
+            <div class="tl-flash-toolbar">
+                <span class="tl-flash-progress" id="fc-progress">1 / 50</span>
+                <span class="tl-flash-score" id="fc-score">Correct: 0</span>
+            </div>
+
+            <div class="tl-flash-stage">
+                <div class="tl-flash-card" id="fc-card">
+                    <div class="tl-flash-card-inner">
+                        <div class="tl-flash-face tl-flash-face-front">
+                            <span class="tl-flash-face-label">State</span>
+                            <img id="fc-flag" src="" alt="" width="64" height="46" />
+                            <span class="tl-flash-face-value" id="fc-state-name"></span>
+                            <span class="tl-flash-hint">Click to reveal the capital</span>
+                        </div>
+                        <div class="tl-flash-face tl-flash-face-back">
+                            <span class="tl-flash-face-label">Capital</span>
+                            <span class="tl-flash-face-value" id="fc-capital"></span>
+                            <a href="#" class="tl-flash-hint" id="fc-state-link">View state page</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tl-flash-nav">
+                <button type="button" class="zg-btn zg-btn-secondary" id="fc-prev"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Prev</button>
+                <button type="button" class="zg-btn zg-btn-secondary" id="fc-flip"><i class="fa-solid fa-rotate" aria-hidden="true"></i> Flip</button>
+                <button type="button" class="zg-btn zg-btn-primary" id="fc-correct"><i class="fa-solid fa-check" aria-hidden="true"></i> Got it right</button>
+                <button type="button" class="zg-btn zg-btn-secondary" id="fc-next">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                <button type="button" class="zg-btn zg-btn-secondary" id="fc-shuffle"><i class="fa-solid fa-shuffle" aria-hidden="true"></i> Shuffle</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    window.flashcardData = @Html.Raw(cardsJson);
+</script>
+
+@section Scripts {
+    <script defer src="~/js/state-capital-flashcards.js" asp-append-version="true"></script>
+}

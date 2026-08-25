@@ -30,6 +30,9 @@ public interface ISymbolDetailViewModel
 
     IReadOnlyList<QuickFactItem>? QuickFacts { get; }
 
+    bool IsNationalSymbol { get; }
+    string? CanonicalUrl { get; }
+
 
     SymbolColorScheme Colors { get; }
     

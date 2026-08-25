@@ -13,14 +13,23 @@
 <ol class="sd-breadcrumbs">
     <li><a href="/">Home</a></li>
     <li class="sd-breadcrumb-divider" aria-hidden="true">/</li>
-    <li><a href="/states/@Model.State.Slug">@Model.State.Name</a></li>
-    <li class="sd-breadcrumb-divider" aria-hidden="true">/</li>
-    <li><a href="/symbols">State symbols</a></li>
-    @if (!string.IsNullOrWhiteSpace(symbolTypeSlug))
+    @if (Model.IsNationalSymbol)
     {
+        <li><a href="/national-symbols">National Symbols</a></li>
         <li class="sd-breadcrumb-divider" aria-hidden="true">/</li>
-        <li aria-current="page">
-            <span>@symbolTypeText</span>
-        </li>
+        <li aria-current="page"><span>@Model.ContentTitle</span></li>
+    }
+    else
+    {
+        <li><a href="/states/@Model.State.Slug">@Model.State.Name</a></li>
+        <li class="sd-breadcrumb-divider" aria-hidden="true">/</li>
+        <li><a href="/symbols">State symbols</a></li>
+        @if (!string.IsNullOrWhiteSpace(symbolTypeSlug))
+        {
+            <li class="sd-breadcrumb-divider" aria-hidden="true">/</li>
+            <li aria-current="page">
+                <span>@symbolTypeText</span>
+            </li>
+        }
     }
 </ol>

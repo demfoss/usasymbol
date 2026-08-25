@@ -1,0 +1,103 @@
+@using System.Text.Json
+@using USASymbol.Models.Content
+@model PagePointMap
+
+@{
+    var mapId = $"point-map-{Guid.NewGuid():N}";
+    var markers = Model.Markers
+        .Where(marker => marker.Latitude is >= -90 and <= 90 && marker.Longitude is >= -180 and <= 180)
+        .OrderBy(marker => marker.Rank)
+        .ToList();
+    var markersJson = JsonSerializer.Serialize(markers, new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    });
+}
+
+@if (markers.Count > 0)
+{
+    <div class="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm" role="region" aria-labelledby="@($"{mapId}-title")">
+        <div class="border-b border-slate-200/80 px-5 py-4">
+            <h2 id="@($"{mapId}-title")" class="text-xl font-semibold tracking-tight text-slate-900">@Model.Title</h2>
+            @if (!string.IsNullOrWhiteSpace(Model.Caption))
+            {
+                <p class="mt-1 text-sm leading-6 text-slate-600">@Model.Caption</p>
+            }
+        </div>
+        <div id="@mapId" class="w-full min-h-[340px] sm:min-h-[440px]" style="height:min(440px,70vh)" aria-label="@Model.ImageAlt"></div>
+        <div id="@($"{mapId}-fallback")" class="hidden px-5 py-5 text-sm text-slate-600">
+            The interactive map is temporarily unavailable. The city ranking remains available below.
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="~/vendor/leaflet/leaflet.css" />
+    <script src="~/vendor/leaflet/leaflet.js"></script>
+    <script>
+    (() => {
+        const element = document.getElementById('@mapId');
+        const fallback = document.getElementById('@($"{mapId}-fallback")');
+        if (!element || typeof window.L === 'undefined') {
+            element?.classList.add('hidden');
+            fallback?.classList.remove('hidden');
+            return;
+        }
+
+        const points = @Html.Raw(markersJson);
+        const map = L.map('@mapId', { zoomControl: true, scrollWheelZoom: false });
+        const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="nofollow noopener noreferrer">OpenStreetMap</a> contributors',
+            maxZoom: 18
+        });
+        let tileErrors = 0;
+        tiles.on('tileerror', () => {
+            tileErrors += 1;
+            if (tileErrors >= 6) {
+                element.classList.add('hidden');
+                fallback?.classList.remove('hidden');
+            }
+        });
+        tiles.addTo(map);
+
+        const bounds = [];
+        const addText = (parent, text, className) => {
+            if (!text) return;
+            const node = document.createElement('div');
+            if (className) node.className = className;
+            node.textContent = text;
+            parent.appendChild(node);
+        };
+
+        points.forEach(point => {
+            const icon = L.divIcon({
+                html: `<div style="background:#b91c1c;color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2px solid #fff;box-shadow:0 2px 6px rgba(15,23,42,.4);font-family:sans-serif">${point.rank}</div>`,
+                className: '', iconSize: [30, 30], iconAnchor: [15, 15]
+            });
+
+            const popup = document.createElement('div');
+            popup.style.minWidth = '210px';
+            addText(popup, `#${point.rank} ${point.name}`, 'font-semibold text-slate-900');
+            if (point.totalCrimeRate != null)
+                addText(popup, `${point.totalCrimeRate.toLocaleString(undefined, { maximumFractionDigits: 1 })} total crimes per 100K`, 'mt-1 text-xs text-slate-600');
+            if (point.violentCrimeRate != null)
+                addText(popup, `${point.violentCrimeRate.toLocaleString(undefined, { maximumFractionDigits: 1 })} violent crimes per 100K`, 'text-xs text-slate-600');
+            addText(popup, point.popupText, 'mt-2 text-xs leading-5 text-slate-700');
+            if (point.anchor) {
+                const link = document.createElement('a');
+                link.href = `#${encodeURIComponent(point.anchor)}`;
+                link.textContent = 'Read city summary';
+                link.className = 'mt-2 inline-block text-xs font-semibold text-red-700';
+                popup.appendChild(link);
+            }
+
+            L.marker([point.latitude, point.longitude], { icon })
+                .addTo(map)
+                .bindTooltip(point.name, { direction: 'top', offset: [0, -18] })
+                .bindPopup(popup, { maxWidth: 280 });
+            bounds.push([point.latitude, point.longitude]);
+        });
+
+        if (bounds.length === 1) map.setView(bounds[0], Math.min(8, @Model.MaxZoom));
+        else map.fitBounds(bounds, { padding: [34, 34], maxZoom: @Model.MaxZoom });
+    })();
+    </script>
+}

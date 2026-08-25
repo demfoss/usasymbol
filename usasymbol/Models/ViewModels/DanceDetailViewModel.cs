@@ -22,6 +22,9 @@ namespace USASymbol.Models.ViewModels
         public bool HasSources => Sources?.Any() == true;
         public bool HasFaq => Faq?.Any() == true;
 
+        public string? TutorialUrl => DanceContent?.TutorialUrl;
+        public string? TutorialTitle => DanceContent?.TutorialTitle;
+        public string? TutorialCaption => DanceContent?.TutorialCaption;
         public string? VideoUrl => DanceContent?.VideoUrl;
         public string? VideoTitle => DanceContent?.VideoTitle;
         public string? VideoCaption => DanceContent?.VideoCaption;

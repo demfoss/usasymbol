@@ -57,6 +57,9 @@ namespace USASymbol.Services.Content
                         HeroImageAlt = GetString(data, "hero_image_alt"),
                         HeroImageCaption = GetString(data, "hero_image_caption"),
                         IntroText = GetString(data, "intro_text"),
+                        TutorialUrl = GetString(data, "tutorial_url"),
+                        TutorialTitle = GetString(data, "tutorial_title"),
+                        TutorialCaption = GetString(data, "tutorial_caption"),
                         VideoUrl = GetString(data, "video_url"),
                         VideoTitle = GetString(data, "video_title"),
                         VideoCaption = GetString(data, "video_caption")

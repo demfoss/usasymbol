@@ -1,0 +1,121 @@
+type: ranking
+slug: grape-production-by-state
+category: agriculture
+url: /rankings/agriculture/grape-production-by-state
+auto_link_phrases:
+  - "grape production by state"
+  - "states that grow grapes"
+  - "which state produces the most grapes"
+  - "california grape production"
+extremes_mode: top
+extremes_title: "States That Produce the Most Grapes"
+hero_image: "/images/rankings/agriculture/grape-production-by-state/grape-production-by-state-hero.jpg"
+hero_image_alt: "Rows of grapevines in a California vineyard heavy with fruit"
+hero_image_caption: "California produces 5 million tons of grapes a year, more than 17 times second-place Washington's 280,000 tons."
+
+author: "USA Symbol Team"
+date_published: "2026-08-13"
+date_modified: "2026-08-13"
+
+seo:
+  title: "Grape Production by State | Map, States & Facts"
+  description: "California produces 5 million tons of grapes a year. Washington ranks second at 280,000 tons, New York third at 220,000 tons."
+
+page:
+  h1: "Grape Production by State"
+
+  quick_answer:
+    - "California produces the most grapes at 5 million tons a year, more than 17 times second-place Washington's 280,000 tons."
+    - "New York ranks third at 220,000 tons, ahead of Oregon's 110,000 tons in fourth."
+    - "The four states combined produce roughly 5.6 million tons, and California alone accounts for about 89% of that total."
+
+  methodology: "Production figures reflect the most recent USDA NASS noncitrus fruit data reported by World Population Review, measured in tons of utilized production."
+
+  sources:
+    - name: "USDA NASS. Noncitrus Fruits and Nuts 2025 Summary"
+      url: "https://esmis.nal.usda.gov/sites/default/release-files/795891/ncit0526.pdf"
+      description: "State-by-state grape production, utilized tons"
+
+table:
+  caption: "Grape Production by State"
+  note: "Figures are in tons of utilized production. Only four states report significant commercial grape production to USDA NASS."
+  columns:
+    rank: "Rank"
+    state: "State"
+    production_tons: "Production (tons)"
+    notes: "Notes"
+
+  metric_default: production_tons
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      production_tons: 5000000
+      notes: "About 89% of the four-state total of 5.6 million tons."
+    - rank: 2
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      production_tons: 280000
+    - rank: 3
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      production_tons: 220000
+    - rank: 4
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      production_tons: 110000
+      notes: "The smallest total among the four reporting states."
+
+map:
+  title: "Grape Production by State Map"
+  image_alt: "U.S. map shaded by grape production, led by California's 5 million tons"
+  caption: "California's 5 million tons is the darkest shade on the map. Oregon's 110,000 tons is the lightest among the four reporting states."
+  metric_key: production_tons
+  metric_label: "Production (tons)"
+  color_scheme: purple
+  color_scale: log
+
+sections:
+  - id: "why-california-leads-grape-production"
+    icon: "fa-solid fa-wine-bottle"
+    title: "Why California Leads Grape Production"
+    paragraphs:
+      - "California's 5 million tons comes from microclimates that range from cool coastal regions to warm inland valleys, conditions suited to many grape varieties at once. Washington's 280,000 tons comes largely from cooler growing areas such as the Columbia Valley, irrigated by the Columbia River."
+
+visual_assets:
+  - id: "why-california-leads-grape-production-visual"
+    src: "/images/rankings/agriculture/grape-production-by-state/why-california-leads-grape-production.jpg"
+    alt: "California vineyard in a warm inland valley representing the state's lead in grape production"
+    caption: "California produces 5 million tons of grapes a year, the most of any state."
+    section: "why-california-leads-grape-production"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state produces the most grapes?"
+    answer: "California produces the most grapes at 5 million tons a year."
+
+  - question: "Which state ranks second in grape production?"
+    answer: "Washington ranks second at 280,000 tons, far below California but ahead of New York's 220,000 tons."
+
+  - question: "How many tons of grapes does New York produce?"
+    answer: "New York produces 220,000 tons of grapes a year, ranking third nationally."
+
+  - question: "Which state produces the fewest grapes among top producers?"
+    answer: "Oregon produces the least among the four major grape states at 110,000 tons."
+
+  - question: "Why does California produce so many more grapes than other states?"
+    answer: "California's climate ranges from cool coastal areas to warm inland valleys, giving growers conditions for many grape varieties at once, unlike the narrower growing regions in Washington, New York, or Oregon."
+
+related:
+  - title: "Grapefruit Production by State"
+    url: "/rankings/agriculture/grapefruit-production-by-state"
+  - title: "Farms by State"
+    url: "/rankings/food/farms-by-state"
+  - title: "Hops Production by State"
+    url: "/rankings/agriculture/hops-production-by-state"

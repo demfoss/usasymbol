@@ -1,0 +1,291 @@
+type: ranking
+slug: best-selling-album-by-state
+category: culture
+url: /rankings/culture/best-selling-album-by-state
+auto_link_phrases:
+  - "best-selling album by state"
+  - "which state has the best-selling album"
+  - "best-selling album from each state"
+  - "top selling albums by state"
+  - "RIAA albums by state"
+  - "best-selling albums by artist home state"
+
+author: "USA Symbol Team"
+date_published: "2026-06-27"
+date_modified: "2026-07-22"
+
+seo:
+  title: "Best-Selling Album by State | RIAA Data"
+  description: "California leads seven states represented in the RIAA top 25, with the Eagles' Their Greatest Hits certified for 40 million units."
+
+hero_image: "/images/rankings/culture/best-selling-album-by-state/best-selling-album-by-state-hero.jpg"
+hero_image_alt: "Vinyl record and turntable, representing RIAA-certified best-selling albums in U.S. chart history"
+hero_image_caption: "The Eagles' Their Greatest Hits 1971-1975 is the only album ever certified for 40 million units by the RIAA, more than any other release tied to a single U.S. state."
+
+page:
+  h1: "Best-Selling Album by State"
+
+  quick_answer:
+    - "California leads the state ranking through the Eagles' Their Greatest Hits 1971-1975, the top RIAA-certified U.S. album at 40 million units."
+    - "Indiana ranks second through Michael Jackson's Thriller (34 million units, 1982), and Oklahoma ranks third through Garth Brooks's Double Live (25 million units, 1998)."
+    - "California-linked acts account for 6 of the RIAA's top 25 albums: two by the Eagles and one each by Green Day, Metallica, Guns N' Roses, and Journey."
+
+  methodology: "The ranking takes the highest-certified album for each U.S. state represented in the RIAA top 25 as of June 2026, using certified units that include qualifying U.S. sales and streams. Solo artists are assigned by birthplace, bands by founding city, and acts without one U.S. home state to the international group."
+
+  sources:
+    - name: "RIAA Gold & Platinum - Top 100 Albums"
+      url: "https://www.riaa.com/gold-platinum/?tab_active=top_tallies&ttt=T1A"
+      description: "Current U.S. album certification totals used for the ranking"
+    - name: "RIAA Gold & Platinum Program"
+      url: "https://www.riaa.com/gold-platinum/about-awards/"
+      description: "Certification thresholds and rules for counting album sales, track sales, and on-demand streams"
+
+table:
+  title: "Best-Selling Albums by State"
+  columns:
+    rank: "Rank"
+    state: "State"
+    artist: "Artist"
+    album: "Album"
+    certified_units: "Certified Units (Millions)"
+    year: "Year"
+
+  metric_default: certified_units
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      artist: "Eagles"
+      album: "Their Greatest Hits 1971-1975"
+      certified_units: 40
+      year: 1976
+      notes: "California is also home to Green Day, Metallica, Guns N' Roses, and Journey, all of whom chart elsewhere in the top 25."
+
+    - rank: 2
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      artist: "Michael Jackson"
+      album: "Thriller"
+      certified_units: 34
+      year: 1982
+      notes: "The best-selling non-compilation album in U.S. chart history."
+
+    - rank: 3
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      artist: "Garth Brooks"
+      album: "Double Live"
+      certified_units: 25
+      year: 1998
+      notes: "Garth Brooks also charts No Fences (18 million units, 1990) elsewhere in the top 25."
+
+    - rank: 4
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      artist: "Billy Joel"
+      album: "Greatest Hits Volume I & Volume II"
+      certified_units: 23
+      year: 1985
+      notes: "Tied for eighth place overall with Pink Floyd's The Wall."
+
+    - rank: 5
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      artist: "Hootie & the Blowfish"
+      album: "Cracked Rear View"
+      certified_units: 22
+      year: 1994
+      notes: "The highest-certified debut album among the seven state leaders."
+
+    - rank: 6
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      artist: "Whitney Houston"
+      album: "The Bodyguard (Soundtrack)"
+      certified_units: 19
+      year: 1992
+      notes: "Bruce Springsteen's Born in the U.S.A. (17 million units, 1984) is also from New Jersey."
+
+    - rank: 7
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      artist: "Boston"
+      album: "Boston"
+      certified_units: 17
+      year: 1976
+      notes: "Tied for the lowest certified total among the seven states on this list."
+
+map:
+  title: "Best-Selling Album by State Map"
+  image: "/images/maps/best-selling-album-by-state.png"
+  image_alt: "Map of the United States highlighting the seven states represented among the RIAA's top 25 certified albums"
+  caption: "Seven states have a homegrown artist or band in the RIAA top 25. California leads at 40 million certified units, while Massachusetts has the lowest state-leading total at 17 million. States without a qualifying album are gray."
+  metric_key: certified_units
+  metric_label: "Certified Units (Millions)"
+  tooltip_label: artist
+  detail_keys: [album, year]
+  color_scheme: purple
+  color_scale: linear
+
+sections:
+  - id: "state-album-spotlights"
+    icon: "fa-solid fa-record-vinyl"
+    style: "law-cards"
+    title: "States With a Top-25 RIAA Album"
+    paragraphs:
+      - "Only 7 states place an album in the RIAA's top 25 best-sellers. California leads by a wide margin, and the other six states each carry a distinct story."
+    subsections:
+      - subtitle: "California"
+        text: |
+          **Top Artist:** Eagles
+          **Certified Units:** 40 million (1976)
+
+          California is tied to six of the top 25 best-selling U.S. albums, more than any other state. The Eagles, formed in Los Angeles in 1971, hold two of them: Their Greatest Hits 1971-1975 (40 million units) and Hotel California (28 million units), both released in 1976. Green Day (Berkeley), Metallica (Los Angeles), Guns N' Roses (Los Angeles), and Journey (San Francisco) add four more.
+
+          No other state comes close to that count. New Jersey and Oklahoma are the next closest with two albums apiece, and four of the seven states on this list place only one album in the top 25.
+      - subtitle: "Indiana"
+        text: |
+          **Artist:** Michael Jackson
+          **Certified Units:** 34 million (1982)
+
+          Michael Jackson was born in Gary, Indiana, in 1958. Thriller, his 1982 studio album, is certified for 34 million units, the highest total of any non-compilation album in U.S. chart history.
+
+          Indiana's total rests on one album, but that album outsells every other state's best entry except California's Eagles compilation.
+      - subtitle: "Oklahoma"
+        text: |
+          **Artist:** Garth Brooks
+          **Certified Units:** 25 million (1998)
+
+          Garth Brooks, born in Tulsa, Oklahoma, released Double Live in 1998, certified for 25 million units. His 1990 album No Fences adds a second Oklahoma entry to the top 25, certified for 18 million units.
+
+          Oklahoma is one of only two states to place two albums in the top 25, and both of its entries come from the same artist.
+      - subtitle: "New York"
+        text: |
+          **Artist:** Billy Joel
+          **Certified Units:** 23 million (1985)
+
+          Billy Joel, born in the Bronx and raised on Long Island, released Greatest Hits Volume I & Volume II in 1985. The compilation is certified for 23 million units, tied for eighth place overall with Pink Floyd's The Wall.
+
+          New York's single entry outranks every state's best album except California, Indiana, and Oklahoma, keeping it among the top four state-linked albums on the list.
+      - subtitle: "South Carolina"
+        text: |
+          **Artist:** Hootie & the Blowfish
+          **Certified Units:** 22 million (1994)
+
+          Hootie & the Blowfish formed in 1986 at the University of South Carolina in Columbia. Cracked Rear View, the band's 1994 debut, is certified for 22 million units, the tenth-highest total in U.S. chart history.
+
+          Cracked Rear View is the highest-certified debut among the seven state-leading albums. That distinction puts South Carolina fifth even though the state has no second entry in the RIAA top 25.
+      - subtitle: "New Jersey"
+        text: |
+          **Top Artist:** Whitney Houston
+          **Certified Units:** 19 million (1992)
+
+          Whitney Houston, born in Newark, New Jersey, released The Bodyguard soundtrack in 1992, certified for 19 million units. Bruce Springsteen, born in Long Branch, New Jersey, adds Born in the U.S.A. (17 million units, 1984) as the state's second top-25 album.
+
+          New Jersey is the only state on this list where a soundtrack, rather than a studio or live album, produces the higher-certified of its two entries.
+      - subtitle: "Massachusetts"
+        text: |
+          **Artist:** Boston
+          **Certified Units:** 17 million (1976)
+
+          Boston formed in the city of the same name in 1976, and the band's self-titled debut album is certified for 17 million units, tied for the lowest total among this list's seven states.
+
+          Massachusetts closes out the ranking, but a 17-million-unit debut is still enough to make the RIAA top 25, a list only seven states appear on at all.
+
+  - id: "international-artists-on-the-best-selling-list"
+    icon: "fa-solid fa-globe"
+    title: "International Artists With Top-25 U.S. Albums"
+    paragraphs:
+      - "Eleven of the top 25 best-selling U.S. albums come from artists with no single U.S. state of origin. Seven trace to Britain: Led Zeppelin's Led Zeppelin IV (24 million units, 1971), two Beatles compilations (24 million units in 1968 and 17 million units in 1973), Pink Floyd's The Wall (23 million units), Fleetwood Mac's Rumours (21 million units), Adele's 21 (17 million units), and Elton John's Greatest Hits (17 million units)."
+      - "The remaining four come from three other countries. AC/DC's Back in Black (27 million units, 1980) is Australian. Shania Twain's Come On Over (20 million units) and Alanis Morissette's Jagged Little Pill (17 million units) are both Canadian. Bob Marley & The Wailers' Legend (18 million units) traces to Jamaica."
+
+visual_assets:
+  - id: california-eagles
+    src: "/images/rankings/culture/best-selling-album-by-state/california-eagles.jpg"
+    alt: "Los Angeles skyline at dusk, home city of the Eagles"
+    caption: "The Eagles formed in Los Angeles in 1971. Their Greatest Hits 1971-1975 is the only U.S. album certified for 40 million units."
+    section: "state-album-spotlights::california"
+    layout: right
+
+  - id: indiana-michael-jackson
+    src: "/images/rankings/culture/best-selling-album-by-state/indiana-gary.jpg"
+    alt: "Gary, Indiana, birthplace of Michael Jackson"
+    caption: "Michael Jackson was born in Gary, Indiana, in 1958. Thriller (1982) is certified for 34 million units."
+    section: "state-album-spotlights::indiana"
+    layout: left
+
+  - id: oklahoma-garth-brooks
+    src: "/images/rankings/culture/best-selling-album-by-state/oklahoma-tulsa.jpg"
+    alt: "Tulsa, Oklahoma, birthplace of Garth Brooks"
+    caption: "Garth Brooks was born in Tulsa, Oklahoma. Double Live (1998) is certified for 25 million units."
+    section: "state-album-spotlights::oklahoma"
+    layout: right
+
+  - id: new-york-billy-joel
+    src: "/images/rankings/culture/best-selling-album-by-state/new-york-long-island.jpg"
+    alt: "Long Island, New York, where Billy Joel was raised"
+    caption: "Billy Joel was born in the Bronx and raised on Long Island. Greatest Hits Volume I & Volume II (1985) is certified for 23 million units."
+    section: "state-album-spotlights::new-york"
+    layout: left
+
+  - id: south-carolina-hootie
+    src: "/images/rankings/culture/best-selling-album-by-state/south-carolina-columbia.jpg"
+    alt: "University of South Carolina campus in Columbia, where Hootie & the Blowfish formed"
+    caption: "Hootie & the Blowfish formed at the University of South Carolina in 1986. Cracked Rear View (1994) is certified for 22 million units."
+    section: "state-album-spotlights::south-carolina"
+    layout: right
+
+  - id: new-jersey-whitney-houston
+    src: "/images/rankings/culture/best-selling-album-by-state/new-jersey-newark.jpg"
+    alt: "Newark, New Jersey, birthplace of Whitney Houston"
+    caption: "Whitney Houston was born in Newark, New Jersey. The Bodyguard soundtrack (1992) is certified for 19 million units."
+    section: "state-album-spotlights::new-jersey"
+    layout: left
+
+  - id: massachusetts-boston
+    src: "/images/rankings/culture/best-selling-album-by-state/massachusetts-boston.jpg"
+    alt: "City of Boston, Massachusetts, where the band Boston formed"
+    caption: "The band Boston formed in Boston, Massachusetts, in 1976. Its self-titled debut is certified for 17 million units."
+    section: "state-album-spotlights::massachusetts"
+    layout: right
+
+  - id: international-artists-section
+    src: "/images/rankings/culture/best-selling-album-by-state/international-artists-section.jpg"
+    alt: "Stack of vinyl records representing international artists on the U.S. best-selling album list"
+    caption: "Nearly half of the RIAA top 25 comes from artists with no single U.S. home state, led by British acts like Led Zeppelin, the Beatles, Pink Floyd, Fleetwood Mac, Adele, and Elton John."
+    section: "international-artists-on-the-best-selling-list"
+    layout: right
+
+faq:
+  - question: "Which state has the best-selling album in U.S. history?"
+    answer: "California. The Eagles formed in Los Angeles, and Their Greatest Hits 1971-1975 is certified for 40 million units, the only album to reach that total in U.S. chart history."
+
+  - question: "What is the best-selling non-compilation album in the U.S.?"
+    answer: "Michael Jackson's Thriller, certified for 34 million units. Jackson was born in Gary, Indiana, in 1958, and Thriller remains the highest-certified studio album in U.S. chart history."
+
+  - question: "Is Thriller the best-selling album of all time in the U.S.?"
+    answer: "No. The Eagles' Their Greatest Hits 1971-1975 outranks it at 40 million certified units against Thriller's 34 million. Thriller is the best-selling non-compilation album."
+
+  - question: "How many states have an album in the RIAA top 25?"
+    answer: "Seven: California (40 million units), Indiana (34 million), Oklahoma (25 million), New York (23 million), South Carolina (22 million), New Jersey (19 million), and Massachusetts (17 million)."
+
+  - question: "How many top-25 U.S. albums are by international artists?"
+    answer: "Eleven of the RIAA's top 25 albums come from artists with no single U.S. home state. Seven albums are by British acts, two by Canadian artists, one by an Australian band, and one by a Jamaican group."
+
+  - question: "Which states have more than one album in the RIAA top 25?"
+    answer: "California has six: two by the Eagles and one apiece by Green Day, Metallica, Guns N' Roses, and Journey. Oklahoma and New Jersey each place two."
+
+related:
+  - title: "Casinos by State"
+    url: "/rankings/culture/casinos-by-state"
+  - title: "State Fairs by State"
+    url: "/rankings/culture/state-fairs-by-state"
