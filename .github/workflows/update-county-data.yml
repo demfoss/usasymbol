@@ -25,17 +25,17 @@ jobs:
           dotnet-version: "9.0.x"
 
       - name: Download and join official county sources
-        run: dotnet run --project tools/CountyDataImporter/CountyDataImporter.csproj -- --refresh
+        run: dotnet run --project usasymbol/tools/CountyDataImporter/CountyDataImporter.csproj -- --refresh
 
       - name: Commit changed county records
         shell: pwsh
         run: |
-          if (-not (git status --porcelain -- Content/places/counties)) {
+          if (-not (git status --porcelain -- usasymbol/Content/places/counties)) {
             Write-Host "County sources are unchanged."
             exit 0
           }
           git config user.name "usasymbol-data-bot"
           git config user.email "data-bot@usasymbol.com"
-          git add Content/places/counties
+          git add usasymbol/Content/places/counties
           git commit -m "data: refresh county metrics"
           git push

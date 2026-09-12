@@ -22,10 +22,10 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore
-        run: dotnet restore usasymbol.csproj
+        run: dotnet restore usasymbol/usasymbol.csproj
 
       - name: Publish
-        run: dotnet publish usasymbol.csproj -c Release -o ${{ github.workspace }}/publish
+        run: dotnet publish usasymbol/usasymbol.csproj -c Release -o ${{ github.workspace }}/publish
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
