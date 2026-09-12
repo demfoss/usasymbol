@@ -106,6 +106,7 @@ builder.Services.AddScoped<IStateMatchService, StateMatchService>();
 builder.Services.AddScoped<IStateLivingService, StateLivingService>();
 builder.Services.AddScoped<ICountyService, CountyService>();
 builder.Services.AddSingleton<INormalizer, StateMatchNormalizer>();
+builder.Services.AddSingleton<IStateMatchOgImageService, StateMatchOgImageService>();
 builder.Services.AddSingleton<QuizService>();
 builder.Services.AddScoped<IParkService, ParkService>();
 builder.Services.AddScoped<ISoilService, SoilService>();

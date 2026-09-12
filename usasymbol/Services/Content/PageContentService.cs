@@ -535,6 +535,18 @@ namespace USASymbol.Services
                 if (s.TryGetValue("style", out var style))
                     sect.Style = style?.ToString();
 
+                if (s.TryGetValue("document_text", out var documentText))
+                    sect.DocumentText = documentText?.ToString();
+
+                if (s.TryGetValue("document_source_url", out var documentSourceUrl))
+                    sect.DocumentSourceUrl = documentSourceUrl?.ToString();
+
+                if (s.TryGetValue("document_source_name", out var documentSourceName))
+                    sect.DocumentSourceName = documentSourceName?.ToString();
+
+                if (s.TryGetValue("document_note", out var documentNote))
+                    sect.DocumentNote = documentNote?.ToString();
+
                 if (s.TryGetValue("paragraphs", out var parObj) && parObj is List<object> parL)
                     sect.Paragraphs = parL.Select(x => x?.ToString() ?? "").ToList();
 

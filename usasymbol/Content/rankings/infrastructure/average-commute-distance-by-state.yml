@@ -1,0 +1,725 @@
+type: ranking
+slug: average-commute-distance-by-state
+category: infrastructure
+url: /rankings/infrastructure/average-commute-distance-by-state
+auto_link_phrases:
+  - "average commute distance by state"
+  - "commute distance by state"
+  - "how many miles do people commute by state"
+  - "states with the longest commute distance"
+  - "average miles to work by state"
+extremes_mode: both
+extremes_title: "States With the Longest and Shortest Commute Distances"
+hero_image: "/images/rankings/infrastructure/average-commute-distance-by-state/average-commute-distance-by-state-hero.jpg"
+hero_image_alt: "Car driving a long stretch of highway between a suburb and a distant city skyline"
+hero_image_caption: "New York has the longest average one-way commute distance at about 18 miles. South Dakota, North Dakota, Nebraska, and Wyoming are shortest at about 10 miles."
+
+author: "USA Symbol Team"
+date_published: "2026-08-25"
+date_modified: "2026-08-25"
+
+seo:
+  title: "Average Commute Distance by State | Map, Miles & Facts"
+  description: "New York has the longest average one-way commute at about 18 miles. South Dakota, North Dakota, Nebraska, and Wyoming are shortest at about 10 miles."
+
+page:
+  h1: "Average Commute Distance by State"
+
+  quick_answer:
+    - "New York has the longest average one-way commute distance of any state at about 18 miles, followed by Maryland and New Jersey at about 17 miles each."
+    - "South Dakota, North Dakota, Nebraska, and Wyoming are shortest at about 10 miles one way. New York commuters travel roughly 8 more miles each way than commuters in those four states."
+    - "The average American commuter who drives covers about 14.4 miles one way, or roughly 7,200 miles a year round trip. New York commuters cover closer to 9,000 miles a year, the most of any state."
+
+  methodology: "Average one-way commute distance is estimated from U.S. Census Bureau ACS commute-time data using the national average commute speed derived from that same data, then rounded to the nearest mile; annual commute miles and commute fuel cost are calculated from that distance assuming 250 workdays a year, each state's motor fuel tax, and the on-road fleet average fuel economy of 23.7 MPG. The District of Columbia appears in some source tables but is excluded here because this page ranks the 50 states only."
+
+  sources:
+    - name: "U.S. Census Bureau. American Community Survey (ACS) 1-Year Estimates, Table S0801"
+      url: "https://www.census.gov/programs-surveys/acs"
+      description: "Underlying state average one-way commute time used to estimate commute distance"
+    - name: "Federal Highway Administration. 2022 National Household Travel Survey (NHTS)"
+      url: "https://nhts.ornl.gov"
+      description: "National mean and median one-way commute distance for automobile commuters, used to benchmark the state estimates"
+    - name: "True Driving Cost. Average Commute Distance by State"
+      url: "https://truedrivingcost.com/articles/average-commute-distance-by-state"
+      description: "State-level commute distance, annual commute mileage, and annual commute fuel cost estimates derived from ACS commute-time data"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    avg_commute_distance_miles: "Avg. Distance (mi)"
+    avg_commute_minutes: "Avg. Time (min)"
+    annual_commute_miles: "Annual Commute Miles"
+    annual_fuel_cost: "Annual Fuel Cost"
+
+  metric_default: avg_commute_distance_miles
+  sort_default: desc
+  column_formats:
+    avg_commute_distance_miles: "N0"
+    avg_commute_minutes: "N1"
+    annual_commute_miles: "N0"
+    annual_fuel_cost: "C0"
+
+  rows:
+    - rank: 1
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      avg_commute_distance_miles: 18
+      avg_commute_minutes: 32.8
+      annual_commute_miles: 9000
+      annual_fuel_cost: 1584
+
+    - rank: 2
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      avg_commute_distance_miles: 17
+      avg_commute_minutes: 31.4
+      annual_commute_miles: 8500
+      annual_fuel_cost: 1560
+      notes: "Ties with New Jersey"
+
+    - rank: 3
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      avg_commute_distance_miles: 17
+      avg_commute_minutes: 31.4
+      annual_commute_miles: 8500
+      annual_fuel_cost: 1539
+      notes: "Ties with Maryland"
+
+    - rank: 4
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      avg_commute_distance_miles: 16
+      avg_commute_minutes: 29.9
+      annual_commute_miles: 8000
+      annual_fuel_cost: 1404
+      notes: "Ties with California"
+
+    - rank: 5
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      avg_commute_distance_miles: 16
+      avg_commute_minutes: 29.2
+      annual_commute_miles: 8000
+      annual_fuel_cost: 1506
+      notes: "Ties with Massachusetts"
+
+    - rank: 6
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      avg_commute_distance_miles: 15
+      avg_commute_minutes: 28.7
+      annual_commute_miles: 7500
+      annual_fuel_cost: 1333
+
+    - rank: 7
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      avg_commute_distance_miles: 15
+      avg_commute_minutes: 28.5
+      annual_commute_miles: 7500
+      annual_fuel_cost: 1362
+
+    - rank: 8
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      avg_commute_distance_miles: 15
+      avg_commute_minutes: 28.1
+      annual_commute_miles: 7500
+      annual_fuel_cost: 1367
+
+    - rank: 9
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      avg_commute_distance_miles: 15
+      avg_commute_minutes: 27.7
+      annual_commute_miles: 7500
+      annual_fuel_cost: 1355
+
+    - rank: 10
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      avg_commute_distance_miles: 15
+      avg_commute_minutes: 27.5
+      annual_commute_miles: 7500
+      annual_fuel_cost: 1330
+
+    - rank: 11
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      avg_commute_distance_miles: 15
+      avg_commute_minutes: 27.2
+      annual_commute_miles: 7500
+      annual_fuel_cost: 1303
+
+    - rank: 12
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      avg_commute_distance_miles: 15
+      avg_commute_minutes: 27.1
+      annual_commute_miles: 7500
+      annual_fuel_cost: 1315
+
+    - rank: 13
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      avg_commute_distance_miles: 15
+      avg_commute_minutes: 27.0
+      annual_commute_miles: 7500
+      annual_fuel_cost: 1291
+
+    - rank: 14
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 26.9
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1231
+
+    - rank: 15
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 26.8
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1226
+
+    - rank: 16
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 26.7
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1303
+
+    - rank: 17
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 26.5
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1328
+
+    - rank: 18
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 26.3
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1234
+
+    - rank: 19
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 25.7
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1211
+
+    - rank: 20
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 25.7
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1217
+
+    - rank: 21
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 25.6
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1261
+
+    - rank: 22
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 25.5
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1241
+
+    - rank: 23
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 25.5
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1228
+
+    - rank: 24
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 25.5
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1228
+
+    - rank: 25
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 25.5
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1241
+
+    - rank: 26
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 25.3
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1272
+
+    - rank: 27
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      avg_commute_distance_miles: 14
+      avg_commute_minutes: 25.2
+      annual_commute_miles: 7000
+      annual_fuel_cost: 1212
+
+    - rank: 28
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      avg_commute_distance_miles: 13
+      avg_commute_minutes: 24.5
+      annual_commute_miles: 6500
+      annual_fuel_cost: 1150
+
+    - rank: 29
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      avg_commute_distance_miles: 13
+      avg_commute_minutes: 24.3
+      annual_commute_miles: 6500
+      annual_fuel_cost: 1165
+
+    - rank: 30
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      avg_commute_distance_miles: 13
+      avg_commute_minutes: 24.3
+      annual_commute_miles: 6500
+      annual_fuel_cost: 1158
+
+    - rank: 31
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      avg_commute_distance_miles: 13
+      avg_commute_minutes: 24.2
+      annual_commute_miles: 6500
+      annual_fuel_cost: 1142
+
+    - rank: 32
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      avg_commute_distance_miles: 13
+      avg_commute_minutes: 24.2
+      annual_commute_miles: 6500
+      annual_fuel_cost: 1159
+
+    - rank: 33
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      avg_commute_distance_miles: 13
+      avg_commute_minutes: 23.5
+      annual_commute_miles: 6500
+      annual_fuel_cost: 1136
+
+    - rank: 34
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      avg_commute_distance_miles: 13
+      avg_commute_minutes: 23.5
+      annual_commute_miles: 6500
+      annual_fuel_cost: 1181
+
+    - rank: 35
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      avg_commute_distance_miles: 12
+      avg_commute_minutes: 23.2
+      annual_commute_miles: 6000
+      annual_fuel_cost: 1036
+
+    - rank: 36
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      avg_commute_distance_miles: 12
+      avg_commute_minutes: 23.2
+      annual_commute_miles: 6000
+      annual_fuel_cost: 1089
+
+    - rank: 37
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      avg_commute_distance_miles: 12
+      avg_commute_minutes: 22.7
+      annual_commute_miles: 6000
+      annual_fuel_cost: 1055
+
+    - rank: 38
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      avg_commute_distance_miles: 12
+      avg_commute_minutes: 22.7
+      annual_commute_miles: 6000
+      annual_fuel_cost: 1065
+
+    - rank: 39
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      avg_commute_distance_miles: 12
+      avg_commute_minutes: 22.6
+      annual_commute_miles: 6000
+      annual_fuel_cost: 1043
+
+    - rank: 40
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      avg_commute_distance_miles: 12
+      avg_commute_minutes: 22.6
+      annual_commute_miles: 6000
+      annual_fuel_cost: 1071
+
+    - rank: 41
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      avg_commute_distance_miles: 12
+      avg_commute_minutes: 22.5
+      annual_commute_miles: 6000
+      annual_fuel_cost: 1071
+
+    - rank: 42
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      avg_commute_distance_miles: 12
+      avg_commute_minutes: 21.9
+      annual_commute_miles: 6000
+      annual_fuel_cost: 1077
+
+    - rank: 43
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      avg_commute_distance_miles: 11
+      avg_commute_minutes: 20.2
+      annual_commute_miles: 5500
+      annual_fuel_cost: 987
+
+    - rank: 44
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      avg_commute_distance_miles: 11
+      avg_commute_minutes: 20.0
+      annual_commute_miles: 5500
+      annual_fuel_cost: 982
+      notes: "Ties with Kansas"
+
+    - rank: 45
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      avg_commute_distance_miles: 11
+      avg_commute_minutes: 20.0
+      annual_commute_miles: 5500
+      annual_fuel_cost: 966
+      notes: "Ties with Iowa"
+
+    - rank: 46
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      avg_commute_distance_miles: 11
+      avg_commute_minutes: 19.8
+      annual_commute_miles: 5500
+      annual_fuel_cost: 929
+
+    - rank: 47
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      avg_commute_distance_miles: 10
+      avg_commute_minutes: 19.5
+      annual_commute_miles: 5000
+      annual_fuel_cost: 878
+      notes: "Ties with Nebraska, North Dakota, and South Dakota"
+
+    - rank: 48
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      avg_commute_distance_miles: 10
+      avg_commute_minutes: 19.1
+      annual_commute_miles: 5000
+      annual_fuel_cost: 881
+      notes: "Ties with Wyoming, North Dakota, and South Dakota"
+
+    - rank: 49
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      avg_commute_distance_miles: 10
+      avg_commute_minutes: 18.5
+      annual_commute_miles: 5000
+      annual_fuel_cost: 876
+      notes: "Ties with Wyoming, Nebraska, and South Dakota"
+
+    - rank: 50
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      avg_commute_distance_miles: 10
+      avg_commute_minutes: 18.4
+      annual_commute_miles: 5000
+      annual_fuel_cost: 890
+      notes: "Ties with Wyoming, Nebraska, and North Dakota; lowest average commute time of any state"
+
+map:
+  title: "Average Commute Distance by State Map"
+  image: "/images/rankings/infrastructure/average-commute-distance-by-state/average-commute-distance-by-state-map.webp"
+  image_alt: "U.S. map shaded by average one-way commute distance in miles"
+  caption: "New York leads at about 18 miles, followed by Maryland and New Jersey at about 17. South Dakota, North Dakota, Nebraska, and Wyoming are lowest at about 10 miles."
+  metric_key: avg_commute_distance_miles
+  metric_label: "Miles"
+  detail_keys:
+    - avg_commute_minutes
+    - annual_commute_miles
+    - annual_fuel_cost
+  color_scheme: amber
+  color_scale: linear
+
+sections:
+  - id: "states-with-the-longest-commute-distances"
+    icon: "fa-solid fa-road"
+    title: "States With the Longest Commute Distances"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        avg_commute_distance_miles: "Avg. Distance (mi)"
+        annual_commute_miles: "Annual Commute Miles"
+      rows:
+        - rank: 1
+          state: "New York"
+          state_slug: "new-york"
+          avg_commute_distance_miles: 18
+          annual_commute_miles: 9000
+        - rank: 2
+          state: "Maryland"
+          state_slug: "maryland"
+          avg_commute_distance_miles: 17
+          annual_commute_miles: 8500
+        - rank: 3
+          state: "New Jersey"
+          state_slug: "new-jersey"
+          avg_commute_distance_miles: 17
+          annual_commute_miles: 8500
+        - rank: 4
+          state: "Massachusetts"
+          state_slug: "massachusetts"
+          avg_commute_distance_miles: 16
+          annual_commute_miles: 8000
+        - rank: 5
+          state: "California"
+          state_slug: "california"
+          avg_commute_distance_miles: 16
+          annual_commute_miles: 8000
+        - rank: 6
+          state: "Georgia"
+          state_slug: "georgia"
+          avg_commute_distance_miles: 15
+          annual_commute_miles: 7500
+        - rank: 7
+          state: "Florida"
+          state_slug: "florida"
+          avg_commute_distance_miles: 15
+          annual_commute_miles: 7500
+        - rank: 8
+          state: "Illinois"
+          state_slug: "illinois"
+          avg_commute_distance_miles: 15
+          annual_commute_miles: 7500
+        - rank: 9
+          state: "West Virginia"
+          state_slug: "west-virginia"
+          avg_commute_distance_miles: 15
+          annual_commute_miles: 7500
+        - rank: 10
+          state: "Virginia"
+          state_slug: "virginia"
+          avg_commute_distance_miles: 15
+          annual_commute_miles: 7500
+    paragraphs:
+      - "New York has the longest average one-way commute distance at about 18 miles, ahead of Maryland and New Jersey at about 17 miles each. Massachusetts and California follow at about 16 miles."
+      - "Georgia, Florida, Illinois, West Virginia, and Virginia round out the top ten, each averaging about 15 miles one way. That group covers a mix of dense Northeast corridors and sprawling Southern metro areas, states where jobs and housing sit far enough apart that commuters cover more ground even when traffic is light."
+
+  - id: "states-with-the-shortest-commute-distances"
+    icon: "fa-solid fa-signs-post"
+    title: "States With the Shortest Commute Distances"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        avg_commute_distance_miles: "Avg. Distance (mi)"
+        annual_commute_miles: "Annual Commute Miles"
+      rows:
+        - rank: 50
+          state: "South Dakota"
+          state_slug: "south-dakota"
+          avg_commute_distance_miles: 10
+          annual_commute_miles: 5000
+        - rank: 49
+          state: "North Dakota"
+          state_slug: "north-dakota"
+          avg_commute_distance_miles: 10
+          annual_commute_miles: 5000
+        - rank: 48
+          state: "Nebraska"
+          state_slug: "nebraska"
+          avg_commute_distance_miles: 10
+          annual_commute_miles: 5000
+        - rank: 47
+          state: "Wyoming"
+          state_slug: "wyoming"
+          avg_commute_distance_miles: 10
+          annual_commute_miles: 5000
+        - rank: 46
+          state: "Alaska"
+          state_slug: "alaska"
+          avg_commute_distance_miles: 11
+          annual_commute_miles: 5500
+        - rank: 45
+          state: "Kansas"
+          state_slug: "kansas"
+          avg_commute_distance_miles: 11
+          annual_commute_miles: 5500
+        - rank: 44
+          state: "Iowa"
+          state_slug: "iowa"
+          avg_commute_distance_miles: 11
+          annual_commute_miles: 5500
+        - rank: 43
+          state: "Montana"
+          state_slug: "montana"
+          avg_commute_distance_miles: 11
+          annual_commute_miles: 5500
+        - rank: 42
+          state: "Idaho"
+          state_slug: "idaho"
+          avg_commute_distance_miles: 12
+          annual_commute_miles: 6000
+        - rank: 41
+          state: "Wisconsin"
+          state_slug: "wisconsin"
+          avg_commute_distance_miles: 12
+          annual_commute_miles: 6000
+    paragraphs:
+      - "South Dakota has the shortest average commute distance in the country at about 10 miles one way, tied with North Dakota, Nebraska, and Wyoming. All four are large, sparsely populated states, but their workers still cluster near a handful of small cities rather than spreading into long-distance exurbs."
+      - "Alaska, Kansas, Iowa, and Montana follow at about 11 miles, and Idaho and Wisconsin sit at about 12. Every state in this group stays several miles below the roughly 14-mile national average for drivers."
+
+  - id: "commute-fuel-cost-by-state"
+    icon: "fa-solid fa-gas-pump"
+    title: "Which States Spend the Most on Commute Fuel"
+    paragraphs:
+      - "New York's commuters spend the most on gas getting to work, about $1,584 a year, the product of the longest average distance in the country and one of the higher state fuel taxes. Maryland ($1,560) and New Jersey ($1,539) rank second and third for the same reason: long commutes layered on top of above-average pump prices."
+      - "Distance and fuel tax do not always move together. West Virginia's commute runs about 15 miles, tied with several shorter-tax states, but its higher fuel tax still pushes its annual cost to $1,355, ahead of similar-distance states like Texas ($1,303) and Virginia ($1,330). At the other end, North Dakota's short 10-mile commute and low fuel tax combine for the lowest annual commute fuel cost in the country at $876."
+
+visual_assets:
+  - id: "states-with-the-longest-commute-distances-visual"
+    src: "/images/rankings/infrastructure/average-commute-distance-by-state/states-with-the-longest-commute-distances.jpg"
+    alt: "Car merging onto a long multi-lane highway representing states with the longest commute distances"
+    caption: "New York leads at about 18 miles one way, with Maryland and New Jersey close behind at about 17."
+    section: "states-with-the-longest-commute-distances"
+    layout: "full-width-tall"
+
+  - id: "states-with-the-shortest-commute-distances-visual"
+    src: "/images/rankings/infrastructure/average-commute-distance-by-state/states-with-the-shortest-commute-distances.jpg"
+    alt: "Quiet rural two-lane road representing states with the shortest commute distances"
+    caption: "South Dakota, North Dakota, Nebraska, and Wyoming are shortest at about 10 miles one way."
+    section: "states-with-the-shortest-commute-distances"
+    layout: "full-width-tall"
+
+  - id: "commute-fuel-cost-by-state-visual"
+    src: "/images/rankings/infrastructure/average-commute-distance-by-state/commute-fuel-cost-by-state.jpg"
+    alt: "Driver fueling up a car at a gas station pump"
+    caption: "New York commuters spend about $1,584 a year on commute gas, the most of any state. North Dakota spends the least at $876."
+    section: "commute-fuel-cost-by-state"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state has the longest average commute distance?"
+    answer: "New York has the longest average one-way commute distance at about 18 miles. Maryland and New Jersey are next at about 17 miles each."
+
+  - question: "Which state has the shortest average commute distance?"
+    answer: "South Dakota, North Dakota, Nebraska, and Wyoming are tied for the shortest average one-way commute distance at about 10 miles. South Dakota also has the lowest average commute time of any state."
+
+  - question: "What is the average commute distance in California?"
+    answer: "California averages about 16 miles one way, tied with Massachusetts for fourth longest, and about 8,000 miles a year round trip."
+
+  - question: "What is the average commute distance in Texas?"
+    answer: "Texas averages about 15 miles one way, part of a large cluster of states between Georgia and Mississippi that all land in the same range."
+
+  - question: "How many miles do commuters drive to work per year on average?"
+    answer: "The average American driver covers about 14.4 miles one way, or roughly 7,200 miles a year round trip over 250 workdays. New York commuters cover closer to 9,000 miles a year, the most of any state."
+
+  - question: "Which state has the highest annual commute fuel cost?"
+    answer: "New York has the highest estimated annual commute fuel cost at about $1,584, followed by Maryland at $1,560 and New Jersey at $1,539. North Dakota has the lowest at $876."
+
+related:
+  - title: "Average Commute Time by State"
+    url: "/rankings/infrastructure/longest-commute-by-state"
+  - title: "Rush Hour Length by State"
+    url: "/rankings/infrastructure/rush-hour-length-by-state"
+  - title: "Traffic Congestion by State"
+    url: "/rankings/infrastructure/traffic-congestion-by-state"
+  - title: "Toll Roads by State"
+    url: "/rankings/infrastructure/toll-roads-by-state"
+  - title: "Compare States"
+    url: "/compare-states"

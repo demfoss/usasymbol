@@ -1,0 +1,268 @@
+@model USASymbol.Models.ViewModels.StateMatchPageViewModel
+@using System.Text.Json
+@using USASymbol.Services
+@inject IStateMatchService StateMatchService
+
+@{
+    var jsonOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    var placesJson = JsonSerializer.Serialize(Model.Places, jsonOptions);
+    var metricsJson = JsonSerializer.Serialize(Model.MetricOptions, jsonOptions);
+    var initialWeights = ViewData["InitialWeights"] as IReadOnlyDictionary<string, int>;
+    var weightsJson = initialWeights != null ? JsonSerializer.Serialize(initialWeights, jsonOptions) : "null";
+    var occupationSalariesJson = StateMatchService.GetOccupationSalariesJson();
+}
+@* @section only works in the top-level view, not here — Index.cshtml and Preset.cshtml
+   each declare their own @section Styles / @section Scripts around this partial. *@
+
+<main class="sm-shell sm-workspace">
+    <aside class="sm-controls" aria-labelledby="sm-controls-title">
+        <div class="sm-controls-head">
+            <div>
+                <p class="sm-section-kicker">Your priorities</p>
+                <h2 id="sm-controls-title">What matters to you?</h2>
+            </div>
+            <button class="sm-icon-button" id="sm-mobile-toggle" type="button" aria-expanded="true" aria-controls="sm-controls-body">
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                <span class="sr-only">Toggle priorities</span>
+            </button>
+        </div>
+
+        <div id="sm-controls-body">
+            <button type="button" class="sm-quiz-launch" id="sm-quiz-launch">
+                <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                <span>Not sure where to start? Answer 9 quick either-or questions</span>
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </button>
+
+            <div class="sm-quiz" id="sm-quiz" hidden>
+                <div class="sm-quiz-progress"><i id="sm-quiz-progress-bar"></i></div>
+                <p class="sm-quiz-step" id="sm-quiz-step">Question 1 of 9</p>
+                <h3 class="sm-quiz-prompt">Which matters more to you?</h3>
+                <div class="sm-quiz-options" id="sm-quiz-options"></div>
+                <div class="sm-quiz-actions">
+                    <button type="button" class="sm-quiz-equal" id="sm-quiz-equal">They're about equal</button>
+                    <button type="button" class="sm-quiz-cancel" id="sm-quiz-cancel">Cancel, use sliders instead</button>
+                </div>
+            </div>
+
+            <div id="sm-manual-controls">
+                <div class="sm-presets" aria-label="Quick priority presets">
+                    <button type="button" class="sm-preset" data-preset="balanced">Balanced</button>
+                    <button type="button" class="sm-preset" data-preset="budget">Budget</button>
+                    <button type="button" class="sm-preset" data-preset="career">Career</button>
+                    <button type="button" class="sm-preset" data-preset="family">Family</button>
+                    <button type="button" class="sm-preset" data-preset="warm">Warmth</button>
+                </div>
+
+                <div class="sm-filters" aria-label="Hard filters">
+                    <p class="sm-filters-label">Must have <span>— cuts states out, weights only rank them</span></p>
+                    <label class="sm-filter-toggle">
+                        <input type="checkbox" data-filter="noIncomeTax">
+                        No state income tax
+                    </label>
+                    <label class="sm-filter-toggle">
+                        <input type="checkbox" data-filter="popMillion">
+                        Population over 1M
+                    </label>
+                    <label class="sm-filter-toggle">
+                        <input type="checkbox" data-filter="warmClimate">
+                        Warm climate (60&deg;F+ avg)
+                    </label>
+                </div>
+
+                <div class="sm-sliders" id="sm-sliders"></div>
+
+                <div class="sm-controls-actions">
+                    <button type="button" class="sm-reset" id="sm-reset">
+                        <i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i>
+                        Reset
+                    </button>
+                    <button type="button" class="sm-share" id="sm-share">
+                        <i class="fa-solid fa-link" aria-hidden="true"></i>
+                        Copy result link
+                    </button>
+                </div>
+            </div>
+            <p class="sm-share-status" id="sm-share-status" role="status" aria-live="polite"></p>
+        </div>
+    </aside>
+
+    <div class="sm-results">
+        <section class="sm-map-card" aria-labelledby="sm-map-title">
+            <div class="sm-card-head">
+                <div>
+                    <p class="sm-section-kicker">Live results</p>
+                    <h2 id="sm-map-title">Your state match map</h2>
+                </div>
+                <div class="sm-legend" aria-label="Map score legend">
+                    <span>Weak</span>
+                    <span class="sm-legend-scale" aria-hidden="true"></span>
+                    <span>Strong</span>
+                </div>
+            </div>
+
+            <div class="sm-map-wrap" id="sm-map-wrap">
+                <div class="sm-tilegrid" id="sm-tilegrid" role="group" aria-label="Tile grid map of state match scores"></div>
+                <div class="sm-map-tooltip" id="sm-map-tooltip" role="tooltip"></div>
+            </div>
+
+            <div class="sm-map-caption">
+                <span><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Darker means a stronger match to your priorities.</span>
+                <span id="sm-result-summary">@Model.Places.Count places scored</span>
+            </div>
+        </section>
+
+        <section class="sm-ranking-card" aria-labelledby="sm-ranking-title">
+            <div class="sm-card-head sm-ranking-head">
+                <div>
+                    <p class="sm-section-kicker">Ranked for you</p>
+                    <h2 id="sm-ranking-title">Best matching states</h2>
+                </div>
+                <div class="sm-ranking-tools">
+                    <label class="sm-search">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <span class="sr-only">Search states</span>
+                        <input id="sm-search" type="search" placeholder="Search a state" autocomplete="off" />
+                    </label>
+                    <button type="button" class="sm-export-csv" id="sm-export-csv" title="Download the current ranking as a CSV file">
+                        <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+                        <span class="sr-only">Export CSV</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sm-table-head" aria-hidden="true">
+                <span>Rank</span>
+                <span>State</span>
+                <span>Best fit</span>
+                <span>Match</span>
+            </div>
+            <div class="sm-ranking-list" id="sm-ranking-list"></div>
+            <button type="button" class="sm-show-all" id="sm-show-all">
+                Show all states
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <p class="sm-sensitivity" id="sm-sensitivity" hidden></p>
+        </section>
+
+        <section class="sm-partner-card" aria-labelledby="sm-partner-title">
+            <div class="sm-card-head">
+                <div>
+                    <p class="sm-section-kicker">Two people, one decision</p>
+                    <h2 id="sm-partner-title">Compare with a partner</h2>
+                </div>
+            </div>
+            <div class="sm-partner-body">
+                <p class="sm-partner-intro">
+                    Pick whichever preset best matches what they care about most, and we'll check it
+                    against your own priorities above — where your top 10s overlap, and where they don't.
+                </p>
+                <div class="sm-presets sm-partner-presets" id="sm-partner-presets" aria-label="Partner's priorities">
+                    <button type="button" class="sm-preset" data-preset="balanced">Balanced</button>
+                    <button type="button" class="sm-preset" data-preset="budget">Budget</button>
+                    <button type="button" class="sm-preset" data-preset="career">Career</button>
+                    <button type="button" class="sm-preset" data-preset="family">Family</button>
+                    <button type="button" class="sm-preset" data-preset="warm">Warmth</button>
+                </div>
+                <div class="sm-partner-result" id="sm-partner-result"></div>
+            </div>
+        </section>
+
+        <section class="sm-calc-card" aria-labelledby="sm-calc-title">
+            <div class="sm-card-head">
+                <div>
+                    <p class="sm-section-kicker">Take-home estimate</p>
+                    <h2 id="sm-calc-title">How much would you keep?</h2>
+                </div>
+            </div>
+            <div class="sm-calc-body">
+                <div class="sm-calc-inputs">
+                    <label class="sm-calc-field sm-calc-span2">
+                        <span>Profession (optional)</span>
+                        <select id="sm-calc-occupation">
+                            <option value="">Enter income manually</option>
+                        </select>
+                    </label>
+                    <label class="sm-calc-field">
+                        <span>Annual household income</span>
+                        <input type="number" id="sm-calc-income" min="0" step="1000" value="75000" inputmode="numeric">
+                    </label>
+                    <label class="sm-calc-field">
+                        <span>Monthly rent or mortgage payment</span>
+                        <input type="number" id="sm-calc-housing" min="0" step="50" value="1800" inputmode="numeric">
+                    </label>
+                    <label class="sm-filter-toggle sm-calc-owns">
+                        <input type="checkbox" id="sm-calc-owns">
+                        I'd own this home (adds property tax)
+                    </label>
+                    <label class="sm-calc-field" id="sm-calc-home-price-field" hidden>
+                        <span>Home price</span>
+                        <input type="number" id="sm-calc-home-price" min="0" step="5000" value="350000" inputmode="numeric">
+                    </label>
+                </div>
+                <p class="sm-calc-note">
+                    Enter your own income to hold it constant across every state, so only what actually
+                    changes state to state (taxes) moves the number. Pick a profession instead to use
+                    that job's real average pay in each state. Either way: your housing payment stays
+                    fixed, we assume 20% of income goes to taxable purchases for the sales-tax estimate,
+                    and income tax uses each state's top marginal rate (your real bracket may be lower).
+                    A planning estimate, not tax advice.
+                </p>
+                <p class="sm-calc-occupation-note" id="sm-calc-occupation-note" hidden></p>
+                <div class="sm-calc-list" id="sm-calc-list"></div>
+            </div>
+        </section>
+
+        <section class="sm-method">
+            <div>
+                <p class="sm-section-kicker">How scoring works</p>
+                <h2>Comparable, transparent, and adjustable.</h2>
+            </div>
+            <div class="sm-method-grid">
+                <article>
+                    <span>01</span>
+                    <h3>Normalize</h3>
+                    <p>Each raw metric is placed on a 0–100 scale against every available state.</p>
+                </article>
+                <article>
+                    <span>02</span>
+                    <h3>Weight</h3>
+                    <p>Your sliders control how much each metric contributes to the final score.</p>
+                </article>
+                <article>
+                    <span>03</span>
+                    <h3>Rank</h3>
+                    <p>Missing values are excluded and remaining weights are rebalanced automatically.</p>
+                </article>
+            </div>
+            <p class="sm-method-note">
+                State Match is a planning aid, not a recommendation to move. Statewide averages can hide large local differences.
+                <a href="/state-match/methodology">Full methodology &amp; sources <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            </p>
+        </section>
+    </div>
+</main>
+
+<div class="sm-drawer-backdrop" id="sm-drawer-backdrop"></div>
+<aside class="sm-drawer" id="sm-drawer" aria-hidden="true" aria-labelledby="sm-drawer-title">
+    <div id="sm-drawer-content"></div>
+</aside>
+
+<noscript>
+    <div class="sm-noscript sm-shell">
+        <h2>JavaScript is required for State Match</h2>
+        <p>The matcher recalculates scores in your browser as priorities change. You can still <a href="/states">browse all states</a> or <a href="/compare-states">compare two states</a>.</p>
+    </div>
+</noscript>
+
+<script>
+    window.stateMatchData = {
+        places: @Html.Raw(placesJson),
+        metrics: @Html.Raw(metricsJson),
+        initialWeights: @Html.Raw(weightsJson),
+        occupationSalaries: @Html.Raw(occupationSalariesJson)
+    };
+</script>

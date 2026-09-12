@@ -148,7 +148,7 @@ namespace USASymbol.Extensions
 
                 var href = WebUtility.HtmlEncode(safeUrl);
                 var cls = "text-slate-900 border-b border-slate-300 hover:border-slate-900 hover:text-blue-700 transition-colors";
-                var rel = external ? " rel=\"nofollow noopener noreferrer\"" : "";
+                var rel = external ? $" rel=\"{safeUrl.ExternalRel()}\"" : "";
                 var target = external ? " target=\"_blank\"" : "";
 
                 return $"<a href=\"{href}\" class=\"{cls}\"{target}{rel}>{label}</a>";
@@ -164,7 +164,7 @@ namespace USASymbol.Extensions
 
                 var href = WebUtility.HtmlEncode(safeUrl);
                 var cls = "text-slate-900 border-b border-slate-300 hover:border-slate-900 hover:text-blue-700 transition-colors";
-                var rel = external ? " rel=\"nofollow noopener noreferrer\"" : "";
+                var rel = external ? $" rel=\"{safeUrl.ExternalRel()}\"" : "";
                 var target = external ? " target=\"_blank\"" : "";
 
                 return $"<a href=\"{href}\" class=\"{cls}\"{target}{rel}>{url}</a>";

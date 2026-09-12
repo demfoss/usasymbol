@@ -1,0 +1,143 @@
+@model USASymbol.Models.ViewModels.StateMatchPageViewModel
+@using USASymbol.Services
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/state-match.css" asp-append-version="true" />
+}
+
+<div class="sm-page">
+    <section class="sm-hero">
+        <div class="sm-shell sm-hero-grid">
+            <div>
+                <nav class="sm-breadcrumb" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    <a href="/state-match">State Match</a>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    <span aria-current="page">Methodology</span>
+                </nav>
+                <p class="sm-eyebrow"><span></span> Interactive relocation planner</p>
+                <h1>How State Match scoring works</h1>
+                <p class="sm-lede">
+                    Every score on State Match comes from the same formula, run against the same
+                    sourced metrics we use across USA Symbol's state comparisons. Here's exactly
+                    how it's built, so you can trust it or check our work.
+                </p>
+                <a class="sm-hero-guide-link" href="/state-match">
+                    Back to the interactive tool
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="sm-shell sm-method-detail">
+        <p class="sm-section-kicker">The formula</p>
+        <h2>Normalize, weight, rank — nothing hidden in between</h2>
+        <div class="sm-method-steps">
+            <article>
+                <span>01</span>
+                <h3>Normalize</h3>
+                <p>
+                    Each metric is placed on a 0–100 scale using min–max normalization:
+                    <code>(value − lowest state) ÷ (highest state − lowest state) × 100</code>.
+                    For metrics where a lower number is better — cost of living, crime, unemployment,
+                    all three tax rates — the scale is flipped so 100 always means "best."
+                </p>
+            </article>
+            <article>
+                <span>02</span>
+                <h3>Weight</h3>
+                <p>
+                    Every slider is a weight from 0 to 100. A state's score is the weighted average
+                    of its normalized metrics: multiply each metric's 0–100 value by its weight, add
+                    them up, then divide by the total weight in play. A metric left at 0 doesn't just
+                    count for nothing — it's removed from the average entirely, so it can't quietly
+                    drag a score down.
+                </p>
+            </article>
+            <article>
+                <span>03</span>
+                <h3>Rank</h3>
+                <p>
+                    States are sorted by that score, highest first. Any hard filter you turn on
+                    (no income tax, population over 1M, warm climate) is applied before ranking —
+                    a state that fails a filter is pushed to the bottom regardless of how it scores.
+                </p>
+            </article>
+        </div>
+    </section>
+
+    <section class="sm-shell sm-method-detail">
+        <p class="sm-section-kicker">Metrics &amp; sources</p>
+        <h2>What each slider actually measures</h2>
+        <div class="sm-methodology-table" role="table">
+            <div class="sm-methodology-row sm-methodology-head" role="row">
+                <span role="columnheader">Metric</span>
+                <span role="columnheader">What it measures</span>
+                <span role="columnheader">Direction</span>
+                <span role="columnheader">Source</span>
+            </div>
+            @foreach (var option in Model.MetricOptions)
+            {
+                var definition = ComparisonMetricsConfig.GetBySlug(option.ComparisonSlug);
+                <div class="sm-methodology-row" role="row">
+                    <span role="cell" class="sm-methodology-name">
+                        <i class="@option.Icon" aria-hidden="true"></i> @option.Name
+                    </span>
+                    <span role="cell">@(definition?.Description ?? option.Description)</span>
+                    <span role="cell" class="sm-methodology-direction">
+                        @(definition == null || definition.HigherIsBetter ? "Higher is better" : "Lower is better")
+                    </span>
+                    <span role="cell" class="sm-methodology-source">
+                        @if (definition != null && !string.IsNullOrWhiteSpace(definition.SourceUrl))
+                        {
+                            <a href="@definition.SourceUrl" rel="nofollow noopener" target="_blank">@definition.SourceName</a>
+                        }
+                        else
+                        {
+                            @(definition?.SourceName ?? "—")
+                        }
+                        @if (definition != null && !string.IsNullOrWhiteSpace(definition.UpdatedAt))
+                        {
+                            <small>Reviewed @definition.UpdatedAt</small>
+                        }
+                    </span>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="sm-shell sm-method-detail">
+        <p class="sm-section-kicker">Limitations</p>
+        <h2>What State Match isn't</h2>
+        <ul class="sm-method-limits">
+            <li>It's a planning aid, not a recommendation to move — statewide averages can hide large differences between cities, counties, and neighborhoods within the same state.</li>
+            <li>Every score reflects the priorities you set. Two people who weight the same metrics differently will get different rankings from the same underlying data — that's the point, not a bug.</li>
+            <li>It isn't financial, tax, immigration, or relocation advice. Verify anything decision-critical — especially tax rates and cost estimates — directly with a state agency or a licensed professional before acting on it.</li>
+        </ul>
+        <p class="sm-method-note">
+            Have a correction or a metric you'd like to see added? The tool and this page share
+            one data pipeline, so a fix here improves every ranking, preset page, and comparison
+            on the site.
+        </p>
+    </section>
+
+    <section class="sm-shell sm-method-detail">
+        <p class="sm-section-kicker">Data access</p>
+        <h2>Get the ranking as JSON</h2>
+        <p class="sm-overview">
+            <code>GET /api/state-match/rank?w=cost:15,income:15,jobs:15,housing:15,safety:15,health:15,education:10,warmth:10,incometax:5,propertytax:5,salestax:5</code>
+            returns every state's rank and score for that weight vector as JSON — the same
+            format the "Copy result link" button encodes into a URL. Omit <code>w</code> to get
+            the default weighting. It's unauthenticated and unversioned right now, meant for
+            occasional pulls rather than heavy traffic.
+        </p>
+        <p class="sm-overview">
+            Running a relocation forum or a real-estate blog? Embed a live top-5 card with
+            <code>&lt;iframe src="https://usasymbol.com/state-match/widget/low-taxes" width="420" height="360"&gt;&lt;/iframe&gt;</code>
+            — swap <code>low-taxes</code> for any preset slug on this site, or drop it for the
+            balanced default. It links back to the full tool.
+        </p>
+    </section>
+</div>

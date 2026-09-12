@@ -1,0 +1,105 @@
+@using USASymbol.Models.Content
+@model PageSection
+
+@{
+    var documentId = $"primary-document-{Model.Id}";
+    var copyButtonId = $"copy-primary-document-{Model.Id}";
+    var expandToggleId = $"expand-primary-document-{Model.Id}";
+    var sourceName = string.IsNullOrWhiteSpace(Model.DocumentSourceName)
+        ? "Source transcript"
+        : Model.DocumentSourceName;
+}
+
+<div class="mt-6 min-w-0 max-w-full overflow-hidden border border-slate-300 bg-[#fbfaf5] shadow-sm" data-primary-document>
+    <input id="@expandToggleId"
+           type="checkbox"
+           class="sr-only"
+           aria-controls="@documentId" />
+    <style>
+        #@(expandToggleId):checked ~ #@(documentId) {
+            max-height: none !important;
+            overflow-y: visible !important;
+        }
+
+        #@(expandToggleId):not(:checked) ~ [data-document-header] .document-collapse-label,
+        #@(expandToggleId):checked ~ [data-document-header] .document-expand-label {
+            display: none;
+        }
+    </style>
+
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-300 bg-[#f1eee3] px-4 py-3 sm:px-5" data-document-header>
+        <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-700">
+            <i class="fa-solid fa-file-lines text-slate-500" aria-hidden="true"></i>
+            Primary source transcript
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <label for="@expandToggleId"
+                   class="inline-flex min-h-9 cursor-pointer items-center gap-2 border border-slate-400 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition hover:bg-slate-100">
+                <span class="document-expand-label">
+                    <i class="fa-solid fa-expand mr-1" aria-hidden="true"></i>
+                    Expand text
+                </span>
+                <span class="document-collapse-label">
+                    <i class="fa-solid fa-compress mr-1" aria-hidden="true"></i>
+                    Collapse text
+                </span>
+            </label>
+            <button id="@copyButtonId"
+                    type="button"
+                    class="inline-flex min-h-9 items-center gap-2 border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-700"
+                    data-copy-document="@documentId">
+                <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                <span>Copy full text</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="@documentId"
+         class="min-w-0 max-w-full overflow-x-hidden overflow-y-auto px-5 py-6 sm:px-8 sm:py-8"
+         style="max-height: 42rem;"
+         tabindex="0">
+        <pre class="m-0 min-w-0 max-w-full font-mono text-[14px] leading-7 text-slate-900 sm:text-[15px]"
+             style="width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal; overflow-x: hidden;">@Model.DocumentText?.Trim()</pre>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-2 border-t border-slate-300 bg-white/70 px-4 py-3 text-xs text-slate-600 sm:px-5">
+        @if (!string.IsNullOrWhiteSpace(Model.DocumentNote))
+        {
+            <span>@Model.DocumentNote</span>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.DocumentSourceUrl))
+        {
+            <a href="@Model.DocumentSourceUrl"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="font-semibold text-slate-800 underline decoration-slate-400 underline-offset-4 hover:text-black">
+                @sourceName
+                <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]" aria-hidden="true"></i>
+            </a>
+        }
+    </div>
+</div>
+
+<script>
+(() => {
+    const textPanel = document.getElementById('@documentId');
+    const copyButton = document.getElementById('@copyButtonId');
+    if (!textPanel || !copyButton) return;
+
+    copyButton.addEventListener('click', async () => {
+        const text = textPanel.innerText.trim();
+        try {
+            await navigator.clipboard.writeText(text);
+            copyButton.querySelector('span').textContent = 'Copied';
+            copyButton.querySelector('i').className = 'fa-solid fa-check';
+            window.setTimeout(() => {
+                copyButton.querySelector('span').textContent = 'Copy full text';
+                copyButton.querySelector('i').className = 'fa-regular fa-copy';
+            }, 1800);
+        } catch {
+            window.getSelection()?.selectAllChildren(textPanel);
+        }
+    });
+
+})();
+</script>

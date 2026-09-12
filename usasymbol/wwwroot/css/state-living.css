@@ -139,10 +139,11 @@
 .sl-gallery figcaption span { overflow: hidden; color: var(--sl-muted); text-overflow: ellipsis; white-space: nowrap; }
 .sl-gallery figcaption .sl-photo-credit { overflow: hidden; color: var(--sl-muted); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 
-.sl-next { display: flex; justify-content: space-between; gap: 2rem; align-items: center; margin: 3rem 0; padding: clamp(1.5rem, 4vw, 2.3rem); border-radius: 1rem; background: #173e69; color: #fff; }
+.sl-next { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.5rem 2rem; align-items: center; margin: 3rem 0; padding: clamp(1.5rem, 4vw, 2.3rem); border-radius: 1rem; background: #173e69; color: #fff; }
 .sl-next h2 { color: #fff; }
 .sl-next p:not(.sl-eyebrow) { max-width: 650px; margin: .7rem 0 0; color: #d3e0eb; line-height: 1.6; }
-.sl-next-actions { flex: 0 0 auto; margin: 0; }
+.sl-next > div:first-child { flex: 1 1 320px; min-width: 260px; }
+.sl-next-actions { flex: 1 1 360px; min-width: 260px; margin: 0; }
 .sl-related { padding: 1rem 0 2.5rem; }
 .sl-related h2 { margin-bottom: 1rem; font-size: 1.25rem; }
 .sl-related > div { display: grid; grid-template-columns: repeat(2, 1fr); gap: .65rem; }

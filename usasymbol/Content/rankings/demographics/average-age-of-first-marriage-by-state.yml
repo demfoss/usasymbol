@@ -1,0 +1,595 @@
+type: ranking
+slug: average-age-of-first-marriage-by-state
+category: demographics
+url: /rankings/demographics/average-age-of-first-marriage-by-state
+auto_link_phrases:
+  - "average age at first marriage by state"
+  - "average age of first marriage by state"
+  - "oldest state to get married"
+  - "youngest state to get married"
+extremes_mode: both
+extremes_title: "States With the Oldest and Youngest Marriage Ages"
+hero_image: "/images/rankings/demographics/average-age-of-first-marriage-by-state/average-age-of-first-marriage-by-state-hero.jpg"
+hero_image_alt: "Bride and groom holding hands outdoors at a wedding ceremony"
+hero_image_caption: "New York has the oldest average age at first marriage at 31.4 years. Utah is the youngest at 26.0."
+
+author: "USA Symbol Team"
+date_published: "2026-09-10"
+date_modified: "2026-09-10"
+
+seo:
+  title: "Average Age at First Marriage by State | Map & Data"
+  description: "New York has the oldest average age at first marriage at 31.4 years. Utah is youngest at 26.0, more than five years lower."
+
+page:
+  h1: "Average Age at First Marriage by State"
+
+  quick_answer:
+    - "New York has the oldest average age at first marriage among the states, 31.4 years, with men marrying at 32.2 and women at 30.5."
+    - "Utah is the youngest-marrying state at an average of 26.0, more than five years below New York, with men marrying at 26.8 and women at 25.2."
+    - "Hawaii has the widest gap between sexes at 5.4 years, since men there marry at 32.5, the oldest male figure of any state, while women marry at 27.1."
+
+  methodology: "Ages are 2023 American Community Survey 1-year estimates, Table B12007, for the population ages 15 to 54, on record with the Census Bureau. The average and gap columns are calculated from the published male and female medians."
+
+  sources:
+    - name: "U.S. Census Bureau, American Community Survey, Table B12007"
+      url: "https://data.census.gov/table/ACSDT1Y2023.B12007"
+      description: "2023 1-year estimates of median age at first marriage by sex and state, population ages 15 to 54"
+    - name: "National Center for Family & Marriage Research, Bowling Green State University, FP-25-09"
+      url: "https://www.bgsu.edu/ncfmr/resources/data/family-profiles/FP-25-09.html"
+      description: "State rankings and quartile analysis of median age at first marriage by sex, based on 2023 ACS Table B12007"
+
+map:
+  title: "Average Age at First Marriage by State Map"
+  image: "/images/rankings/demographics/average-age-of-first-marriage-by-state/average-age-of-first-marriage-by-state-map.webp"
+  image_alt: "Map of the United States shaded by average age at first marriage, darkest in New York and Massachusetts, lightest in Utah"
+  caption: "New York (31.4) and Massachusetts (31.3) have the oldest average marrying ages. Utah (26.0) is the youngest, more than five years below New York."
+  metric_key: overall_avg
+  metric_label: "Average Age"
+  name_key: state
+  color_scheme: amber
+  color_scale: linear
+
+table:
+  searchable: true
+  sortable: true
+  metric_default: overall_avg
+  sort_default: desc
+
+  columns:
+    rank: "Rank"
+    state: "State"
+    age_male: "Men"
+    age_female: "Women"
+    overall_avg: "Average"
+    gender_gap: "Gap (Years)"
+
+  column_formats:
+    age_male: "0.0"
+    age_female: "0.0"
+    overall_avg: "0.0"
+    gender_gap: "0.0"
+
+  rows:
+    - rank: 1
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      age_male: 32.2
+      age_female: 30.5
+      overall_avg: 31.4
+      gender_gap: 1.7
+    - rank: 2
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      age_male: 32.0
+      age_female: 30.5
+      overall_avg: 31.3
+      gender_gap: 1.5
+    - rank: 3
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      age_male: 32.1
+      age_female: 30.2
+      overall_avg: 31.2
+      gender_gap: 1.9
+    - rank: 4
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      age_male: 31.8
+      age_female: 30.3
+      overall_avg: 31.1
+      gender_gap: 1.5
+    - rank: 5
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      age_male: 31.5
+      age_female: 30.3
+      overall_avg: 30.9
+      gender_gap: 1.2
+    - rank: 5
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      age_male: 31.6
+      age_female: 30.1
+      overall_avg: 30.9
+      gender_gap: 1.5
+    - rank: 7
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      age_male: 31.2
+      age_female: 30.3
+      overall_avg: 30.8
+      gender_gap: 0.9
+    - rank: 8
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      age_male: 31.5
+      age_female: 29.6
+      overall_avg: 30.6
+      gender_gap: 1.9
+    - rank: 9
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      age_male: 31.2
+      age_female: 29.6
+      overall_avg: 30.4
+      gender_gap: 1.6
+    - rank: 10
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      age_male: 31.0
+      age_female: 29.6
+      overall_avg: 30.3
+      gender_gap: 1.4
+    - rank: 10
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      age_male: 31.1
+      age_female: 29.4
+      overall_avg: 30.3
+      gender_gap: 1.7
+    - rank: 12
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      age_male: 31.0
+      age_female: 29.3
+      overall_avg: 30.2
+      gender_gap: 1.7
+    - rank: 13
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      age_male: 31.0
+      age_female: 29.2
+      overall_avg: 30.1
+      gender_gap: 1.8
+    - rank: 14
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      age_male: 30.6
+      age_female: 29.3
+      overall_avg: 30.0
+      gender_gap: 1.3
+    - rank: 15
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      age_male: 31.1
+      age_female: 28.5
+      overall_avg: 29.8
+      gender_gap: 2.6
+    - rank: 15
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      age_male: 30.9
+      age_female: 28.6
+      overall_avg: 29.8
+      gender_gap: 2.3
+    - rank: 15
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      age_male: 32.5
+      age_female: 27.1
+      overall_avg: 29.8
+      gender_gap: 5.4
+      notes: "Widest male-female gap of any state; men marry at the oldest median age nationwide (32.5) while women marry closer to the middle of the pack (27.1)"
+    - rank: 18
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      age_male: 30.8
+      age_female: 28.6
+      overall_avg: 29.7
+      gender_gap: 2.2
+    - rank: 19
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      age_male: 31.0
+      age_female: 28.2
+      overall_avg: 29.6
+      gender_gap: 2.8
+    - rank: 20
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      age_male: 30.6
+      age_female: 28.4
+      overall_avg: 29.5
+      gender_gap: 2.2
+    - rank: 20
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      age_male: 30.2
+      age_female: 28.8
+      overall_avg: 29.5
+      gender_gap: 1.4
+    - rank: 20
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      age_male: 30.4
+      age_female: 28.5
+      overall_avg: 29.5
+      gender_gap: 1.9
+    - rank: 23
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      age_male: 30.2
+      age_female: 28.3
+      overall_avg: 29.3
+      gender_gap: 1.9
+    - rank: 23
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      age_male: 30.2
+      age_female: 28.3
+      overall_avg: 29.3
+      gender_gap: 1.9
+    - rank: 25
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      age_male: 30.4
+      age_female: 27.9
+      overall_avg: 29.2
+      gender_gap: 2.5
+    - rank: 25
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      age_male: 30.3
+      age_female: 28.1
+      overall_avg: 29.2
+      gender_gap: 2.2
+    - rank: 25
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      age_male: 30.4
+      age_female: 28.0
+      overall_avg: 29.2
+      gender_gap: 2.4
+    - rank: 28
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      age_male: 30.5
+      age_female: 27.5
+      overall_avg: 29.0
+      gender_gap: 3.0
+    - rank: 28
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      age_male: 30.0
+      age_female: 27.9
+      overall_avg: 29.0
+      gender_gap: 2.1
+    - rank: 30
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      age_male: 29.7
+      age_female: 27.8
+      overall_avg: 28.8
+      gender_gap: 1.9
+    - rank: 31
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      age_male: 29.8
+      age_female: 27.6
+      overall_avg: 28.7
+      gender_gap: 2.2
+    - rank: 32
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      age_male: 29.2
+      age_female: 28.0
+      overall_avg: 28.6
+      gender_gap: 1.2
+    - rank: 33
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      age_male: 29.5
+      age_female: 27.1
+      overall_avg: 28.3
+      gender_gap: 2.4
+    - rank: 34
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      age_male: 29.4
+      age_female: 26.9
+      overall_avg: 28.2
+      gender_gap: 2.5
+    - rank: 35
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      age_male: 29.0
+      age_female: 27.2
+      overall_avg: 28.1
+      gender_gap: 1.8
+    - rank: 35
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      age_male: 28.8
+      age_female: 27.4
+      overall_avg: 28.1
+      gender_gap: 1.4
+    - rank: 37
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      age_male: 29.7
+      age_female: 26.2
+      overall_avg: 28.0
+      gender_gap: 3.5
+    - rank: 38
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      age_male: 29.0
+      age_female: 26.7
+      overall_avg: 27.9
+      gender_gap: 2.3
+    - rank: 38
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      age_male: 27.6
+      age_female: 28.2
+      overall_avg: 27.9
+      gender_gap: -0.6
+      notes: "The only state where the female median age at first marriage (28.2) is higher than the male median (27.6)"
+    - rank: 38
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      age_male: 28.8
+      age_female: 27.0
+      overall_avg: 27.9
+      gender_gap: 1.8
+    - rank: 38
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      age_male: 28.8
+      age_female: 27.0
+      overall_avg: 27.9
+      gender_gap: 1.8
+    - rank: 42
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      age_male: 28.2
+      age_female: 27.1
+      overall_avg: 27.7
+      gender_gap: 1.1
+    - rank: 43
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      age_male: 28.9
+      age_female: 26.2
+      overall_avg: 27.6
+      gender_gap: 2.7
+    - rank: 44
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      age_male: 28.2
+      age_female: 26.2
+      overall_avg: 27.2
+      gender_gap: 2.0
+    - rank: 45
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      age_male: 28.1
+      age_female: 26.0
+      overall_avg: 27.1
+      gender_gap: 2.1
+    - rank: 45
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      age_male: 27.8
+      age_female: 26.3
+      overall_avg: 27.1
+      gender_gap: 1.5
+    - rank: 45
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      age_male: 27.2
+      age_female: 27.0
+      overall_avg: 27.1
+      gender_gap: 0.2
+    - rank: 45
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      age_male: 27.7
+      age_female: 26.4
+      overall_avg: 27.1
+      gender_gap: 1.3
+    - rank: 49
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      age_male: 27.8
+      age_female: 26.2
+      overall_avg: 27.0
+      gender_gap: 1.6
+    - rank: 50
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      age_male: 26.8
+      age_female: 25.2
+      overall_avg: 26.0
+      gender_gap: 1.6
+
+sections:
+  - id: "states-with-the-highest-marriage-age"
+    icon: "fa-solid fa-arrow-up"
+    title: "States With the Highest Marriage Age"
+    paragraphs:
+      - "New York posts the highest combined marriage age in the country, an average of 31.4 years across men and women. Men there marry at 32.2 and women at 30.5, both among the oldest figures nationwide."
+      - "Massachusetts ranks second at 31.3, and California follows closely at 31.2. Connecticut rounds out the top four at 31.1, with men marrying at 31.8 and women at 30.3."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        age_male: "Men"
+        age_female: "Women"
+      rows:
+        - { rank: 1, state: "New York", state_slug: "new-york", age_male: "32.2", age_female: "30.5" }
+        - { rank: 2, state: "Massachusetts", state_slug: "massachusetts", age_male: "32.0", age_female: "30.5" }
+        - { rank: 3, state: "California", state_slug: "california", age_male: "32.1", age_female: "30.2" }
+        - { rank: 4, state: "Connecticut", state_slug: "connecticut", age_male: "31.8", age_female: "30.3" }
+        - { rank: 5, state: "New Jersey", state_slug: "new-jersey", age_male: "31.5", age_female: "30.3" }
+        - { rank: 5, state: "Rhode Island", state_slug: "rhode-island", age_male: "31.6", age_female: "30.1" }
+        - { rank: 7, state: "Vermont", state_slug: "vermont", age_male: "31.2", age_female: "30.3" }
+        - { rank: 8, state: "Maryland", state_slug: "maryland", age_male: "31.5", age_female: "29.6" }
+        - { rank: 9, state: "Delaware", state_slug: "delaware", age_male: "31.2", age_female: "29.6" }
+        - { rank: 10, state: "Illinois", state_slug: "illinois", age_male: "31.0", age_female: "29.6" }
+
+  - id: "states-with-the-lowest-marriage-age"
+    icon: "fa-solid fa-arrow-down"
+    title: "States With the Lowest Marriage Age"
+    paragraphs:
+      - "Utah has the lowest average marriage age in the country at 26.0 years, with men marrying at 26.8 and women at 25.2. Idaho follows at 27.0, the only other state under 27.1."
+      - "Four states tie for the next-lowest spot at 27.1, Arkansas, Kentucky, South Dakota, and West Virginia. Oklahoma follows at 27.2, and Kansas closes out the bottom ten at 27.6."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        age_male: "Men"
+        age_female: "Women"
+      rows:
+        - { rank: 50, state: "Utah", state_slug: "utah", age_male: "26.8", age_female: "25.2" }
+        - { rank: 49, state: "Idaho", state_slug: "idaho", age_male: "27.8", age_female: "26.2" }
+        - { rank: 45, state: "Arkansas", state_slug: "arkansas", age_male: "28.1", age_female: "26.0" }
+        - { rank: 45, state: "Kentucky", state_slug: "kentucky", age_male: "27.8", age_female: "26.3" }
+        - { rank: 45, state: "South Dakota", state_slug: "south-dakota", age_male: "27.2", age_female: "27.0" }
+        - { rank: 45, state: "West Virginia", state_slug: "west-virginia", age_male: "27.7", age_female: "26.4" }
+        - { rank: 44, state: "Oklahoma", state_slug: "oklahoma", age_male: "28.2", age_female: "26.2" }
+        - { rank: 43, state: "Kansas", state_slug: "kansas", age_male: "28.9", age_female: "26.2" }
+        - { rank: 42, state: "Tennessee", state_slug: "tennessee", age_male: "28.2", age_female: "27.1" }
+        - { rank: 38, state: "Iowa", state_slug: "iowa", age_male: "29.0", age_female: "26.7" }
+
+  - id: "marriage-age-gap-between-men-and-women"
+    icon: "fa-solid fa-venus-mars"
+    title: "Marriage Age Gap Between Men and Women"
+    paragraphs:
+      - "Hawaii has the widest gap between men and women at 5.4 years. Men there marry at 32.5, the oldest male figure of any state, while women marry at 27.1."
+      - "Montana follows at 3.5 years, 29.7 for men versus 26.2 for women, and New Mexico is third at 3.0. Mississippi is the only state where women marry later than men, a reversed gap of 0.6 years, 28.2 versus 27.6."
+    table:
+      columns:
+        state: "State"
+        age_male: "Men"
+        age_female: "Women"
+        gender_gap: "Gap (Years)"
+      rows:
+        - { state: "Hawaii", state_slug: "hawaii", age_male: "32.5", age_female: "27.1", gender_gap: "5.4" }
+        - { state: "Montana", state_slug: "montana", age_male: "29.7", age_female: "26.2", gender_gap: "3.5" }
+        - { state: "New Mexico", state_slug: "new-mexico", age_male: "30.5", age_female: "27.5", gender_gap: "3.0" }
+        - { state: "Oregon", state_slug: "oregon", age_male: "31.0", age_female: "28.2", gender_gap: "2.8" }
+        - { state: "Kansas", state_slug: "kansas", age_male: "28.9", age_female: "26.2", gender_gap: "2.7" }
+        - { state: "Mississippi", state_slug: "mississippi", age_male: "27.6", age_female: "28.2", gender_gap: "-0.6" }
+
+visual_assets:
+  - id: states-with-the-highest-marriage-age
+    src: /images/rankings/demographics/average-age-of-first-marriage-by-state/states-with-the-highest-marriage-age.jpg
+    alt: "Couple exchanging vows at an upscale outdoor wedding in the Northeast"
+    caption: "New York has the highest combined marriage age at 31.4 years, followed by Massachusetts at 31.3 and California at 31.2."
+    section: states-with-the-highest-marriage-age
+    layout: full-width-tall
+
+  - id: states-with-the-lowest-marriage-age
+    src: /images/rankings/demographics/average-age-of-first-marriage-by-state/states-with-the-lowest-marriage-age.jpg
+    alt: "Young couple at a small wedding ceremony in the Mountain West"
+    caption: "Utah has the lowest combined marriage age at 26.0 years, well below Idaho's 27.0."
+    section: states-with-the-lowest-marriage-age
+    layout: full-width-tall
+
+  - id: marriage-age-gap-between-men-and-women
+    src: /images/rankings/demographics/average-age-of-first-marriage-by-state/marriage-age-gap-between-men-and-women.jpg
+    alt: "Bride and groom's hands with wedding rings, one older and one younger pairing"
+    caption: "Hawaii has the widest gap between men and women at 5.4 years. Mississippi is the only state where women marry later than men."
+    section: marriage-age-gap-between-men-and-women
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the oldest average age at first marriage?"
+    answer: "New York has the oldest average age at first marriage at 31.4 years. Men there marry at 32.2 and women at 30.5, both among the highest figures in the country."
+
+  - question: "Which state has the youngest average age at first marriage?"
+    answer: "Utah has the youngest average age at first marriage at 26.0 years, more than five years below New York."
+
+  - question: "What is the national average age at first marriage?"
+    answer: "The national median age at first marriage in 2023 was 30.6 years for men and 28.7 years for women, according to the Census Bureau's American Community Survey."
+
+  - question: "What is the average age at first marriage in California?"
+    answer: "California's average age at first marriage is 31.2 years, third-highest among the states. Men marry at 32.1 and women at 30.2."
+
+  - question: "Which state has the biggest gap between men's and women's marriage age?"
+    answer: "Hawaii has the biggest gap at 5.4 years. Men there marry at 32.5, the oldest male figure of any state, while women marry at 27.1."
+
+  - question: "Which state has a higher marriage age for women than men?"
+    answer: "Mississippi is the only state where women marry later than men. The female median is 28.2 years, compared with 27.6 for men, a reversed gap of 0.6 years."
+
+related:
+  - title: "Marriage Rate by State 2026"
+    url: "/rankings/demographics/marriage-rate-by-state"
+  - title: "Remarriage Rate by State"
+    url: "/rankings/demographics/remarriage-rate-by-state"
+  - title: "Dating to Engagement Time by State"
+    url: "/rankings/demographics/dating-to-engagement-time-by-state"
+  - title: "Median Age by State"
+    url: "/rankings/demographics/median-age-by-state"

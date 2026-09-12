@@ -1,0 +1,660 @@
+type: ranking
+slug: average-class-size-by-state
+category: education
+url: /rankings/education/average-class-size-by-state
+auto_link_phrases:
+  - "average class size by state"
+  - "class size by state"
+  - "pupil-teacher ratio by state"
+  - "student-teacher ratio by state"
+extremes_mode: both
+extremes_title: "States with the Highest and Lowest Pupil-Teacher Ratios"
+hero_image: "/images/rankings/education/average-class-size-by-state/average-class-size-by-state-hero.jpg"
+hero_image_alt: "Elementary school classroom with rows of student desks facing a whiteboard"
+hero_image_caption: "Arizona has the highest public school pupil-teacher ratio in the country at 22.8 students per teacher. Vermont has the lowest at 10.5. The national average is 15.4."
+
+author: "USA Symbol Team"
+date_published: "2026-08-25"
+date_modified: "2026-08-25"
+
+seo:
+  title: "Average Class Size by State 2026 | Pupil-Teacher Ratios"
+  description: "Arizona has the highest public school pupil-teacher ratio at 22.8 students per teacher. Vermont has the lowest at 10.5. The national average is 15.4."
+
+page:
+  h1: "Average Class Size by State"
+
+  quick_answer:
+    - "NCES does not publish a literal 'average class size' figure for every state. The closest official measure is the pupil-teacher ratio, which divides total student enrollment by the full-time-equivalent number of teachers on staff, including specialists who don't lead a full classroom. Actual classroom class sizes typically run higher than the ratio suggests."
+    - "Arizona has the highest public school pupil-teacher ratio in the country at 22.8 students per teacher, followed by Utah (22.2), California (21.9), and Nevada (21.0)."
+    - "Vermont has the lowest pupil-teacher ratio at 10.5 students per teacher. Maine (11.4), New Hampshire (11.5), New York (11.7), and Connecticut (11.7) round out the lowest five. The national average is 15.4 students per teacher."
+
+  methodology: "Figures are 2022-23 school year data from the National Center for Education Statistics' Common Core of Data, the most recent year with complete state-level totals. The pupil-teacher ratio divides total public school student membership by the full-time-equivalent count of classroom teachers reported by each state; it is not the same as average class size, since it includes specialist and support teachers who don't oversee a single classroom of students. The District of Columbia is excluded to keep the ranking limited to the 50 states."
+
+  sources:
+    - name: "NCES Common Core of Data — 2022-23 State Summary"
+      url: "https://nces.ed.gov/ccd/tables/202223_summary_2.asp"
+      description: "Number of public schools, districts, student membership, teachers (FTE), and pupil/teacher ratio by state, school year 2022-23"
+    - name: "NCES Digest of Education Statistics, Table 208.40"
+      url: "https://nces.ed.gov/programs/digest/d22/tables/dt22_208.40.asp"
+      description: "Historical public elementary and secondary pupil/teacher ratios by state"
+
+map:
+  title: "Pupil-Teacher Ratio by State Map"
+  image_alt: "U.S. map showing public school pupil-teacher ratio by state, shaded from light for the lowest ratios to dark for the highest"
+  caption: "Arizona has the highest pupil-teacher ratio at 22.8 students per teacher. Vermont has the lowest at 10.5. Western states cluster at the high end, while the Northeast dominates the low end."
+  metric_key: ratio
+  metric_label: "Pupil-Teacher Ratio"
+  name_key: state
+  color_scheme: blue
+  color_scale: linear
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    ratio: "Pupil-Teacher Ratio"
+    students: "Enrollment"
+    teachers: "Teachers (FTE)"
+
+  metric_default: ratio
+  sort_default: desc
+
+  rows:
+    - rank: 1
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      ratio: 22.8
+      students: "1,132,223"
+      teachers: "49,566"
+
+    - rank: 2
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      ratio: 22.2
+      students: "691,906"
+      teachers: "31,164"
+
+    - rank: 3
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      ratio: 21.9
+      students: "5,851,877"
+      teachers: "267,659"
+
+    - rank: 4
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      ratio: 21.0
+      students: "484,192"
+      teachers: "23,076"
+
+    - rank: 5
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      ratio: 18.3
+      students: "130,723"
+      teachers: "7,160"
+
+    - rank: 6
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      ratio: 18.3
+      students: "2,870,527"
+      teachers: "156,787"
+
+    - rank: 7
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      ratio: 17.9
+      students: "750,923"
+      teachers: "42,022"
+
+    - rank: 8
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      ratio: 17.9
+      students: "552,380"
+      teachers: "30,906"
+
+    - rank: 9
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      ratio: 17.5
+      students: "317,555"
+      teachers: "18,121"
+
+    - rank: 10
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      ratio: 17.5
+      students: "718,145"
+      teachers: "41,110"
+
+    - rank: 11
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      ratio: 17.2
+      students: "1,090,227"
+      teachers: "63,272"
+
+    - rank: 12
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      ratio: 16.7
+      students: "1,433,914"
+      teachers: "85,880"
+
+    - rank: 13
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      ratio: 16.6
+      students: "701,301"
+      teachers: "42,124"
+
+    - rank: 14
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      ratio: 16.4
+      students: "1,680,639"
+      teachers: "102,323"
+
+    - rank: 15
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      ratio: 16.3
+      students: "870,871"
+      teachers: "53,553"
+
+    - rank: 16
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      ratio: 15.8
+      students: "1,036,108"
+      teachers: "65,597"
+
+    - rank: 17
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      ratio: 15.5
+      students: "870,019"
+      teachers: "56,124"
+
+    - rank: 18
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      ratio: 15.4
+      students: "1,541,722"
+      teachers: "99,980"
+
+    - rank: 19
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      ratio: 15.3
+      students: "660,029"
+      teachers: "43,023"
+
+    - rank: 20
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      ratio: 15.3
+      students: "1,006,752"
+      teachers: "65,781"
+
+    - rank: 21
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      ratio: 14.8
+      students: "5,519,599"
+      teachers: "373,332"
+
+    - rank: 22
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      ratio: 14.6
+      students: "315,023"
+      teachers: "21,572"
+
+    - rank: 23
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      ratio: 14.4
+      students: "1,750,972"
+      teachers: "121,301"
+
+    - rank: 24
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      ratio: 14.3
+      students: "889,960"
+      teachers: "62,236"
+
+    - rank: 25
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      ratio: 14.2
+      students: "141,465"
+      teachers: "9,991"
+
+    - rank: 26
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      ratio: 14.2
+      students: "170,209"
+      teachers: "11,984"
+
+    - rank: 27
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      ratio: 14.1
+      students: "511,297"
+      teachers: "36,138"
+
+    - rank: 28
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      ratio: 14.1
+      students: "789,231"
+      teachers: "55,947"
+
+    - rank: 29
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      ratio: 13.8
+      students: "329,234"
+      teachers: "23,911"
+
+    - rank: 30
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      ratio: 13.8
+      students: "141,888"
+      teachers: "10,261"
+
+    - rank: 31
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      ratio: 13.7
+      students: "1,852,242"
+      teachers: "135,363"
+
+    - rank: 32
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      ratio: 13.7
+      students: "150,733"
+      teachers: "11,036"
+
+    - rank: 33
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      ratio: 13.7
+      students: "823,040"
+      teachers: "60,011"
+
+    - rank: 34
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      ratio: 13.6
+      students: "1,260,351"
+      teachers: "92,651"
+
+    - rank: 35
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      ratio: 13.5
+      students: "251,224"
+      teachers: "18,670"
+
+    - rank: 36
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      ratio: 13.3
+      students: "1,693,347"
+      teachers: "127,037"
+
+    - rank: 37
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      ratio: 13.0
+      students: "440,285"
+      teachers: "33,768"
+
+    - rank: 38
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      ratio: 12.9
+      students: "487,978"
+      teachers: "37,885"
+
+    - rank: 39
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      ratio: 12.8
+      students: "892,246"
+      teachers: "69,838"
+
+    - rank: 40
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      ratio: 12.7
+      students: "493,130"
+      teachers: "38,815"
+
+    - rank: 41
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      ratio: 12.7
+      students: "137,449"
+      teachers: "10,786"
+
+    - rank: 42
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      ratio: 12.6
+      students: "92,467"
+      teachers: "7,312"
+
+    - rank: 43
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      ratio: 12.4
+      students: "118,513"
+      teachers: "9,581"
+
+    - rank: 44
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      ratio: 12.0
+      students: "923,349"
+      teachers: "76,978"
+
+    - rank: 45
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      ratio: 11.8
+      students: "1,383,830"
+      teachers: "117,661"
+
+    - rank: 46
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      ratio: 11.7
+      students: "513,513"
+      teachers: "44,007"
+
+    - rank: 47
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      ratio: 11.7
+      students: "2,532,888"
+      teachers: "215,761"
+
+    - rank: 48
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      ratio: 11.5
+      students: "168,909"
+      teachers: "14,731"
+
+    - rank: 49
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      ratio: 11.4
+      students: "173,853"
+      teachers: "15,192"
+
+    - rank: 50
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      ratio: 10.5
+      students: "83,654"
+      teachers: "7,934"
+
+compare:
+  metric_slug: pupil-teacher-ratio
+  title: "Compare Class Sizes Between Two States"
+  description: "Pick any two states to see a side-by-side comparison of education data, income, cost of living, and more."
+  button_text: "Compare states"
+  icon: "fa-solid fa-chalkboard-user"
+  default_state_a: arizona
+  default_state_b: vermont
+
+sections:
+  - id: "highest-pupil-teacher-ratio"
+    icon: "fa-solid fa-arrow-up"
+    title: "States with the Highest Pupil-Teacher Ratios"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        ratio: "Pupil-Teacher Ratio"
+        students: "Enrollment"
+      rows:
+        - rank: 1
+          state: "Arizona"
+          state_slug: "arizona"
+          ratio: 22.8
+          students: "1,132,223"
+        - rank: 2
+          state: "Utah"
+          state_slug: "utah"
+          ratio: 22.2
+          students: "691,906"
+        - rank: 3
+          state: "California"
+          state_slug: "california"
+          ratio: 21.9
+          students: "5,851,877"
+        - rank: 4
+          state: "Nevada"
+          state_slug: "nevada"
+          ratio: 21.0
+          students: "484,192"
+        - rank: 5
+          state: "Alaska"
+          state_slug: "alaska"
+          ratio: 18.3
+          students: "130,723"
+        - rank: 6
+          state: "Florida"
+          state_slug: "florida"
+          ratio: 18.3
+          students: "2,870,527"
+        - rank: 7
+          state: "Alabama"
+          state_slug: "alabama"
+          ratio: 17.9
+          students: "750,923"
+        - rank: 8
+          state: "Oregon"
+          state_slug: "oregon"
+          ratio: 17.9
+          students: "552,380"
+        - rank: 9
+          state: "Idaho"
+          state_slug: "idaho"
+          ratio: 17.5
+          students: "317,555"
+        - rank: 10
+          state: "Louisiana"
+          state_slug: "louisiana"
+          ratio: 17.5
+          students: "718,145"
+    paragraphs:
+      - "Arizona has the highest public school pupil-teacher ratio in the country at 22.8 students per teacher, well above the national average of 15.4. Utah (22.2) and California (21.9), the state with the largest total enrollment at nearly 5.9 million students, follow close behind."
+      - "Four of the ten highest-ratio states sit in the Southwest or Mountain West — Arizona, Utah, Nevada, and Idaho — while Florida ties Alaska for fifth at 18.3, despite serving a far larger student population of 2.87 million."
+
+  - id: "lowest-pupil-teacher-ratio"
+    icon: "fa-solid fa-arrow-down"
+    title: "States with the Lowest Pupil-Teacher Ratios"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        ratio: "Pupil-Teacher Ratio"
+        students: "Enrollment"
+      rows:
+        - rank: 50
+          state: "Vermont"
+          state_slug: "vermont"
+          ratio: 10.5
+          students: "83,654"
+        - rank: 49
+          state: "Maine"
+          state_slug: "maine"
+          ratio: 11.4
+          students: "173,853"
+        - rank: 48
+          state: "New Hampshire"
+          state_slug: "new-hampshire"
+          ratio: 11.5
+          students: "168,909"
+        - rank: 47
+          state: "New York"
+          state_slug: "new-york"
+          ratio: 11.7
+          students: "2,532,888"
+        - rank: 46
+          state: "Connecticut"
+          state_slug: "connecticut"
+          ratio: 11.7
+          students: "513,513"
+        - rank: 45
+          state: "New Jersey"
+          state_slug: "new-jersey"
+          ratio: 11.8
+          students: "1,383,830"
+        - rank: 44
+          state: "Massachusetts"
+          state_slug: "massachusetts"
+          ratio: 12.0
+          students: "923,349"
+        - rank: 43
+          state: "North Dakota"
+          state_slug: "north-dakota"
+          ratio: 12.4
+          students: "118,513"
+        - rank: 42
+          state: "Wyoming"
+          state_slug: "wyoming"
+          ratio: 12.6
+          students: "92,467"
+        - rank: 41
+          state: "Rhode Island"
+          state_slug: "rhode-island"
+          ratio: 12.7
+          students: "137,449"
+    paragraphs:
+      - "Vermont has the lowest pupil-teacher ratio in the country at 10.5 students per teacher, the only state under 11. Maine (11.4) and New Hampshire (11.5) follow, giving northern New England the three lowest ratios nationwide."
+      - "New York stands out among the lowest ten: despite enrolling 2.5 million students, more than any state in the bottom half of the ranking, its ratio of 11.7 ties Connecticut for fifth-lowest, reflecting a comparatively large teaching workforce of nearly 216,000 FTE teachers."
+
+  - id: "pupil-teacher-ratio-vs-class-size"
+    icon: "fa-solid fa-circle-question"
+    title: "Is Pupil-Teacher Ratio the Same as Class Size?"
+    paragraphs:
+      - "No. Pupil-teacher ratio divides a state's total enrollment by every full-time-equivalent teacher on staff, including reading specialists, special education teachers, and other staff who don't lead a single classroom of students all day. Actual class sizes — the number of students a teacher instructs at one time — are typically higher than the ratio suggests, since not every teacher counted in the ratio is standing in front of a full class."
+      - "NCES and most states publish pupil-teacher ratio rather than a true average class size because ratio data is collected consistently through staffing and enrollment counts, while class-size counts vary by grade, subject, and how each district reports co-taught or split classes. Some states, including Florida, set legal class-size caps by grade band, but those caps apply per classroom and aren't directly comparable to the statewide ratios in this table."
+
+visual_assets:
+  - id: highest-pupil-teacher-ratio
+    src: /images/rankings/education/average-class-size-by-state/highest-pupil-teacher-ratio.jpg
+    alt: "Crowded elementary school classroom with many student desks"
+    caption: "Arizona, Utah, California, and Nevada have the highest public school pupil-teacher ratios in the country, all above 21 students per teacher."
+    section: highest-pupil-teacher-ratio
+    layout: full-width-tall
+
+  - id: lowest-pupil-teacher-ratio
+    src: /images/rankings/education/average-class-size-by-state/lowest-pupil-teacher-ratio.jpg
+    alt: "Small classroom with a teacher working closely with a handful of students"
+    caption: "Vermont, Maine, and New Hampshire have the lowest pupil-teacher ratios in the country, all under 11.5 students per teacher."
+    section: lowest-pupil-teacher-ratio
+    layout: full-width-tall
+
+  - id: pupil-teacher-ratio-vs-class-size
+    src: /images/rankings/education/average-class-size-by-state/pupil-teacher-ratio-vs-class-size.jpg
+    alt: "Teacher helping an individual student at a desk while the rest of the class works"
+    caption: "Pupil-teacher ratio counts every FTE teacher on staff, including specialists, so actual classroom class sizes usually run higher than the statewide ratio."
+    section: pupil-teacher-ratio-vs-class-size
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the largest class sizes?"
+    answer: "Based on pupil-teacher ratio, the closest available measure, Arizona has the highest ratio at 22.8 students per teacher. Utah (22.2) and California (21.9) rank second and third."
+
+  - question: "Which state has the smallest class sizes?"
+    answer: "Vermont has the lowest pupil-teacher ratio at 10.5 students per teacher, the only state below 11. Maine (11.4) and New Hampshire (11.5) rank second and third lowest."
+
+  - question: "What is the average pupil-teacher ratio in the US?"
+    answer: "The national public school pupil-teacher ratio was 15.4 students per teacher in the 2022-23 school year, according to NCES Common Core of Data totals of about 49.5 million students and 3.22 million FTE teachers."
+
+  - question: "Is pupil-teacher ratio the same as average class size?"
+    answer: "No. Pupil-teacher ratio divides total enrollment by every FTE teacher on staff, including specialists who don't run a single classroom. Actual average class sizes are typically higher than the statewide ratio because not every counted teacher is leading a full class at one time."
+
+  - question: "What is the student-teacher ratio in California?"
+    answer: "California's public school pupil-teacher ratio is 21.9 students per teacher, third highest in the country, across roughly 5.85 million students and 267,659 FTE teachers."
+
+  - question: "What is the student-teacher ratio in Texas?"
+    answer: "Texas has a pupil-teacher ratio of 14.8 students per teacher, close to the national average of 15.4, across about 5.52 million students and 373,332 FTE teachers, the largest teaching workforce of any state."
+
+related:
+  - title: "States by K-12 Education"
+    url: "/rankings/education/states-by-k12-education"
+  - title: "Most Educated US States"
+    url: "/rankings/education/most-educated-us-states"
+  - title: "Teacher Salary by State"
+    url: "/rankings/education/teacher-salary-by-state"
+  - title: "School Spending by State"
+    url: "/rankings/education/school-spending-by-state"
+  - title: "Compare States"
+    url: "/compare-states"

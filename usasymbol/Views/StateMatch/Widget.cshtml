@@ -1,0 +1,100 @@
+@model USASymbol.Models.ViewModels.StateMatchWidgetViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <base target="_parent" />
+    <title>State Match — @Model.PresetLabel</title>
+    <style>
+        :root {
+            --ink: #172033;
+            --ink-2: #465064;
+            --ink-3: #727b8c;
+            --paper: #f5f1e8;
+            --paper-2: #ece6d9;
+            --card: #fffdf8;
+            --line: #d8d0c0;
+            --teal: #245e61;
+        }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font: 14px/1.4 -apple-system, "Segoe UI", Arial, sans-serif;
+        }
+        .smw-card { border: 1px solid var(--line); background: var(--card); max-width: 420px; }
+        .smw-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 14px 16px 10px; border-bottom: 1px solid var(--line); }
+        .smw-head strong { font-size: 15px; }
+        .smw-head span { color: var(--ink-3); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+        .smw-presets { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+        .smw-presets a {
+            border: 1px solid var(--line);
+            padding: 4px 9px;
+            color: var(--ink-2);
+            font-size: 10px;
+            text-decoration: none;
+        }
+        .smw-presets a.is-active { border-color: var(--teal); background: var(--teal); color: #fff; }
+        .smw-list { margin: 0; padding: 0; list-style: none; }
+        .smw-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            border-top: 1px solid var(--line);
+            text-decoration: none;
+            color: inherit;
+        }
+        .smw-row:first-child { border-top: 0; }
+        .smw-rank { width: 16px; color: var(--ink-3); font: 700 11px monospace; }
+        .smw-flag { width: 26px; height: 18px; flex: 0 0 auto; border: 1px solid rgba(23,32,51,.2); object-fit: cover; }
+        .smw-name { flex: 1; min-width: 0; overflow: hidden; font-weight: 700; font-size: 12.5px; white-space: nowrap; text-overflow: ellipsis; }
+        .smw-score { color: var(--teal); font: 700 13px monospace; }
+        .smw-cta {
+            display: block;
+            padding: 11px 16px;
+            border-top: 1px solid var(--line);
+            background: var(--paper-2);
+            color: var(--teal);
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+        }
+        .smw-cta:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="smw-card">
+        <div class="smw-head">
+            <strong>State Match</strong>
+            <span>Top 5 &middot; @Model.PresetLabel</span>
+        </div>
+        <div class="smw-presets">
+            <a href="/state-match/widget" class="@(Model.PresetSlug == null ? "is-active" : "")">Balanced</a>
+            @foreach (var preset in Model.QuickPresets)
+            {
+                <a href="/state-match/widget/@preset.Slug" class="@(Model.PresetSlug == preset.Slug ? "is-active" : "")">@preset.NavLabel</a>
+            }
+        </div>
+        <ol class="smw-list">
+            @foreach (var row in Model.Top5)
+            {
+                <a class="smw-row" href="https://usasymbol.com/states/@row.Place.Slug/living">
+                    <span class="smw-rank">@row.Rank</span>
+                    <img class="smw-flag" src="https://usasymbol.com@row.Place.FlagImageUrl" alt="" width="26" height="18" loading="lazy" />
+                    <span class="smw-name">@row.Place.Name</span>
+                    <span class="smw-score">@row.Score</span>
+                </a>
+            }
+        </ol>
+        <a class="smw-cta" href="https://usasymbol.com/state-match" target="_top">Set your own priorities on USA Symbol &rarr;</a>
+    </div>
+</body>
+</html>

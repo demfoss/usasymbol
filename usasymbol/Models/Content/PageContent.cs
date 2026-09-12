@@ -187,6 +187,10 @@ namespace USASymbol.Models.Content
         public List<string>? ListItems { get; set; }
         public PageSectionTable? Table { get; set; }
         public List<PageHighlight>? Highlights { get; set; }
+        public string? DocumentText { get; set; }
+        public string? DocumentSourceUrl { get; set; }
+        public string? DocumentSourceName { get; set; }
+        public string? DocumentNote { get; set; }
 
         List<IContentSubsection>? IContentSection.Subsections =>
             Subsections?.Cast<IContentSubsection>().ToList();

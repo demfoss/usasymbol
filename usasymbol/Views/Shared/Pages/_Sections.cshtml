@@ -115,6 +115,12 @@
                 </div>
             }
 
+            @if (string.Equals(style, "document-reader", StringComparison.OrdinalIgnoreCase) &&
+                 !string.IsNullOrWhiteSpace(sect.DocumentText))
+            {
+                @await Html.PartialAsync("Components/Widgets/_PrimaryDocument", sect)
+            }
+
             @if (sect.Table?.Rows?.Any() == true)
             {
                 <div class="mt-6">

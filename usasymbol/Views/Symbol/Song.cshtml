@@ -53,6 +53,11 @@
             " "))
         .Trim();
 
+    var audioMimeType = !string.IsNullOrWhiteSpace(Model.AudioUrl) &&
+                        Model.AudioUrl.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase)
+        ? "audio/ogg"
+        : "audio/mpeg";
+
     var heroModel = new SymbolHeroViewModel
     {
         PageModel = Model,
@@ -146,7 +151,7 @@
                             {
                                 <div class="mt-5 rounded-xl border border-slate-200 bg-white p-4">
                                     <audio class="w-full" controls preload="metadata">
-                                        <source src="@Model.AudioUrl" type="audio/ogg" />
+                                        <source src="@Model.AudioUrl" type="@audioMimeType" />
                                     </audio>
                                 </div>
                             }
