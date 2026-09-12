@@ -2,9 +2,14 @@
 bin/
 obj/
 bin-verify/
+bin-verify-*/
 obj-verify/
+obj-verify-*/
 tmp/
 artifacts/
+
+# Images/assets served from Bunny CDN storage (not part of the deploy package)
+wwwroot/images/
 
 # Sensitive config
 appsettings.Production.json
