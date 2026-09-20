@@ -21,7 +21,7 @@
     bool isHome = currentPath == "/";
     bool isStates = currentPath.StartsWith("/states");
     bool isSymbols = currentPath.StartsWith("/symbols") || currentPath.StartsWith("/national-symbols");
-    bool isAbout = currentPath.StartsWith("/about");
+    bool isCollections = currentPath.StartsWith("/collections");
     bool isCompare = currentPath.StartsWith("/compare");
     bool isStateMatch = currentPath.StartsWith("/state-match");
     bool isParks = currentPath.StartsWith("/national-parks");
@@ -107,7 +107,6 @@
     @RenderSection("LcpPreload", required: false)
     <link rel="stylesheet" href="~/css/editorial-typography.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/symbol-detail.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/page-data-hero.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/key-takeaways.css" asp-append-version="true" />
@@ -146,7 +145,7 @@
                         <a href="/national-parks" class="@(isParks ? "nav-link is-active" : "nav-link")">Parks</a>
                         <a href="/compare-states" class="@(isCompare ? "nav-link is-active" : "nav-link")">Compare</a>
                         <a href="/tools" class="@(isTools ? "nav-link is-active" : "nav-link")">Tools</a>
-                        <a asp-controller="Home" asp-action="About" class="@(isAbout ? "nav-link is-active" : "nav-link")">About</a>
+                        <a asp-controller="Collections" asp-action="Index" class="@(isCollections ? "nav-link is-active" : "nav-link")">Collections</a>
                     </div>
 
                     <button id="mobile-menu-button" aria-label="Toggle navigation menu" class="mobile-nav-button md:hidden">
@@ -186,8 +185,8 @@
                             <span>Tools</span>
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
-                        <a asp-controller="Home" asp-action="About" class="@(isAbout ? "mobile-menu-link is-active" : "mobile-menu-link")">
-                            <span>About</span>
+                        <a asp-controller="Collections" asp-action="Index" class="@(isCollections ? "mobile-menu-link is-active" : "mobile-menu-link")">
+                            <span>Collections</span>
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
                     </div>
@@ -246,6 +245,7 @@
                             <li><a asp-controller="Quiz" asp-action="Index">Take a Quiz</a></li>
                             <li><a asp-controller="StateGuides" asp-action="Index">State Borders</a></li>
                             <li><a asp-controller="Rankings" asp-action="Index">Rankings</a></li>
+                            <li><a asp-controller="Collections" asp-action="Index">Collections</a></li>
                         </ul>
                     </div>
 
