@@ -1,680 +1,268 @@
-@using System.Text.Json
 @model USASymbol.Models.ViewModels.HomeViewModel
 @inject IImageUrlService Images
-
 @{
-    ViewData["Title"] = "Official State Symbols Encyclopedia";
-    ViewData["Description"] = "A guide to official state symbols of the USA, celebrating the natural, historic, and cultural emblems of all 50 states.";
-    ViewData["Keywords"] = "state symbols, US state symbols, official state symbols, state flags, state birds, state flowers, state trees, state mottos, state seals, state nicknames, american state symbols, state symbols list";
+    ViewData["Title"] = "Explore the United States — States, Symbols & Guides";
+    ViewData["Description"] = "Explore all 50 U.S. states with state symbols, living guides, rankings, national parks, maps, and practical lookup tools.";
+    ViewData["Canonical"] = "/";
     ViewData["OgImage"] = "/images/usasymbol.png?v=20260429";
     ViewData["BodyClass"] = "home-page";
+    var heroImage = Images.Hero("/images/parks/national/yosemite-national-park/01-overview-yosemite-valley-taft-point-sentinel-dome.jpg");
 
-    var typeLabels = Model.SymbolCategories
-        .Where(c => !string.IsNullOrEmpty(c.Type))
-        .ToDictionary(
-            c => c.Type,
-            c => c.Name.EndsWith("s", StringComparison.OrdinalIgnoreCase) ? c.Name[..^1] : c.Name
-        );
-
-    var poolJson = JsonSerializer.Serialize(
-        Model.SymbolOfTheDayPool.Select(item => new
-        {
-            name      = item.Symbol.Name,
-            type      = item.Symbol.Type,
-            typeLabel = typeLabels.TryGetValue(item.Symbol.Type, out var lbl) ? lbl : "State Symbol",
-            stateName = item.State.Name,
-            stateAbbr = item.State.Abbreviation,
-            stateSlug = item.State.Slug,
-            imageUrl  = Images.Hero(item.Symbol.ImageUrl),
-            flagUrl   = Images.Thumb($"/images/states/flags/small/{item.State.Abbreviation.ToLowerInvariant()}.webp"),
-            meaning   = item.Symbol.Meaning ?? "",
-            url       = item.Symbol.ToSymbolUrl(item.State.Slug),
-        })
-    );
-
-    var first = Model.SymbolOfTheDayPool.FirstOrDefault();
-    var firstTypeLabel = first != null && typeLabels.TryGetValue(first.Symbol.Type, out var fl) ? fl : "State Symbol";
-    var stateMapLookup = Model.StateMapItems
-        .Where(item => !string.Equals(item.Abbreviation, "DC", StringComparison.OrdinalIgnoreCase))
-        .ToDictionary(item => item.Abbreviation, StringComparer.OrdinalIgnoreCase);
-    var initialMapState = stateMapLookup.TryGetValue("CA", out var california)
-        ? california
-        : stateMapLookup.Values.FirstOrDefault();
-    var initialMapPopulation = initialMapState?.Population is int population
-        ? population.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("en-US"))
-        : "Not available";
-    var stateTileRows = new[]
+    var states = Model.StateMapItems.ToDictionary(state => state.Abbreviation, StringComparer.OrdinalIgnoreCase);
+    var selectedState = states.GetValueOrDefault("CA") ?? Model.StateMapItems.FirstOrDefault();
+    var featuredStates = new[] { "CA", "TX", "FL", "NY", "PA" };
+    var tiles = new[]
     {
-        new[] { "AK", "",   "",   "",   "",   "",   "",   "",   "",   "",   "ME" },
-        new[] { "",   "",   "",   "",   "",   "",   "",   "",   "",   "VT", "NH" },
+        new[] { "AK", "", "", "", "", "", "", "", "", "", "ME" },
+        new[] { "", "", "", "", "", "", "", "", "", "VT", "NH" },
         new[] { "WA", "ID", "MT", "ND", "MN", "WI", "IL", "MI", "NY", "RI", "MA" },
-        new[] { "OR", "NV", "WY", "SD", "IA", "IN", "OH", "PA", "NJ", "CT", ""   },
-        new[] { "CA", "UT", "CO", "NE", "MO", "KY", "WV", "VA", "MD", "DE", ""   },
-        new[] { "",   "AZ", "NM", "KS", "AR", "TN", "NC", "SC", "",   "",   ""   },
-        new[] { "",   "",   "OK", "LA", "MS", "AL", "GA", "",   "",   "",   ""   },
-        new[] { "HI", "",   "TX", "",   "",   "",   "",   "",   "FL", "",   ""   }
+        new[] { "OR", "NV", "WY", "SD", "IA", "IN", "OH", "PA", "NJ", "CT", "" },
+        new[] { "CA", "UT", "CO", "NE", "MO", "KY", "WV", "VA", "MD", "DE", "" },
+        new[] { "", "AZ", "NM", "KS", "AR", "TN", "NC", "SC", "", "", "" },
+        new[] { "", "", "OK", "LA", "MS", "AL", "GA", "", "", "", "" },
+        new[] { "HI", "", "TX", "", "", "", "", "", "FL", "", "" }
+    };
+    var symbols = new[]
+    {
+        (Slug: "birds", Name: "State Birds", Image: "/images/birds/eastern-bluebird.webp", Alt: "Eastern bluebird", Copy: "Meet the birds that represent each state's wildlife and character."),
+        (Slug: "flowers", Name: "State Flowers", Image: "/images/flowers/sunflower.webp", Alt: "Sunflower, the state flower of Kansas", Copy: "Discover the blooms chosen as official floral emblems."),
+        (Slug: "trees", Name: "State Trees", Image: "/images/trees/california-redwood.webp", Alt: "California redwoods viewed from the forest floor", Copy: "Explore the trees rooted in each state's landscape and heritage."),
+        (Slug: "flags", Name: "State Flags", Image: "/images/states/flags/large/ca.webp", Alt: "California state flag", Copy: "Uncover the history, colors, and meaning behind every state flag.")
+    };
+    var compactSymbols = new[]
+    {
+        (Slug: "mottos", Name: "State Mottos", Icon: "fa-scroll", Copy: "Official phrases and their meanings"),
+        (Slug: "state-seals", Name: "State Seals", Icon: "fa-stamp", Copy: "Great seals and official emblems"),
+        (Slug: "coats-of-arms", Name: "Coats of Arms", Icon: "fa-shield-halved", Copy: "Historic heraldry and official arms"),
+        (Slug: "sports", Name: "State Sports", Icon: "fa-medal", Copy: "Sports and heritage activities")
+    };
+    var references = new[]
+    {
+        (Url: "/guides/state-abbreviations", Name: "State Abbreviations", Icon: "fa-font", Copy: "Postal codes, traditional abbreviations, and common mix-ups."),
+        (Url: "/tools/state-capital-flashcards", Name: "State Capitals", Icon: "fa-landmark", Copy: "Learn all 50 capital cities with interactive flashcards."),
+        (Url: "/guides/surnames", Name: "Last Names by State", Icon: "fa-users", Copy: "Discover common surnames and the stories behind them."),
+        (Url: "/guides/state-borders", Name: "State Borders", Icon: "fa-map", Copy: "Neighboring states, coastlines, rivers, and waterways."),
+        (Url: "/tools/timezone-finder", Name: "Time Zones", Icon: "fa-clock", Copy: "Find local time zones by state, city, or ZIP code."),
+        (Url: "/tools/zip-code-lookup", Name: "ZIP Code Lookup", Icon: "fa-location-dot", Copy: "Look up cities, counties, and states by ZIP code.")
     };
 }
 
-<section class="editorial-hero home-hero">
-    <div class="max-w-5xl mx-auto px-4 home-hero-content">
-        <div class="hero-pill inline-flex mb-5">
-            <i class="fa-solid fa-feather-pointed"></i>
-            Complete 50-State Encyclopedia
-        </div>
-        <h1 class="hero-title">
-            Official State Symbols<br>of All 50 U.S. States
-        </h1>
-        <p class="hero-subtitle">
-            Explore every official U.S. state symbol — flags, birds, flowers, trees, mottos, seals, nicknames, and 20+ more categories across all 50 states.
-        </p>
-        <div class="flex flex-wrap justify-center gap-4">
-            <a href="/states" class="hero-cta-btn hero-cta-btn--light">
-                <i class="fa-solid fa-map-location-dot"></i>
-                Browse by State
-            </a>
-            <a href="/symbols" class="hero-cta-btn hero-cta-btn--ghost">
-                <i class="fa-solid fa-layer-group"></i>
-                Explore Categories
-            </a>
-        </div>
-    </div>
-</section>
+@section Styles {
+    <link rel="stylesheet" href="~/css/home-hub.css" asp-append-version="true" />
+}
+@section LcpPreload {
+    <link rel="preload" as="image" href="@heroImage" />
+}
 
-@if (initialMapState != null && stateMapLookup.Any())
-{
-    <section class="home-map-section">
-        <div class="home-map-shell">
-            <div class="home-map-card">
-                <div class="home-map-layout">
-                    <div class="home-map-copy">
-                        <div class="hs-eyebrow">
-                            <i class="fa-solid fa-map"></i>
-                            State Map
-                        </div>
-                        <h2 class="content-h2">Browse State Symbols by Map</h2>
-                        <p>Choose any tile to explore its state's flags, birds, flowers, trees, mottos, seals, and other official symbols.</p>
-
-                        <div class="home-map-detail" id="home-map-detail" aria-live="polite">
-                            <div class="home-map-detail__eyebrow">Selected state</div>
-                            <h3 class="home-map-detail__state" id="home-map-state">@initialMapState.Name</h3>
-                            <div class="home-map-detail__meta">
-                                <div class="home-map-detail__fact">
-                                    <span>Capital</span>
-                                    <strong id="home-map-capital">@initialMapState.Capital</strong>
-                                </div>
-                                <div class="home-map-detail__fact">
-                                    <span>Population</span>
-                                    <strong id="home-map-population">@initialMapPopulation</strong>
-                                </div>
-                            </div>
-                            <a class="home-map-detail__link"
-                               id="home-map-state-link"
-                               href="/states/@initialMapState.Slug">
-                                <span id="home-map-state-link-label">Explore @initialMapState.Name symbols</span>
-                                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="home-map-visual">
-                        <div class="home-map-visual__top">
-                            <span>50-state tile map</span>
-                            <span class="home-map-hint">
-                                <i class="fa-solid fa-arrow-pointer" aria-hidden="true"></i>
-                                Hover to preview · click to open
-                            </span>
-                        </div>
-
-                        <nav class="home-map-tiles" id="home-state-map" aria-label="Browse symbols by state">
-                            @foreach (var row in stateTileRows)
-                            {
-                                @foreach (var abbreviation in row)
-                                {
-                                    if (string.IsNullOrEmpty(abbreviation))
-                                    {
-                                        <span class="home-map-tile home-map-tile--empty" aria-hidden="true"></span>
-                                    }
-                                    else if (stateMapLookup.TryGetValue(abbreviation, out var state))
-                                    {
-                                        var statePopulation = state.Population is int tilePopulation
-                                            ? tilePopulation.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("en-US"))
-                                            : "Not available";
-                                        var isInitialState = string.Equals(state.Abbreviation, initialMapState.Abbreviation, StringComparison.OrdinalIgnoreCase);
-                                        <a class="home-map-tile@(isInitialState ? " is-selected" : "")"
-                                           href="/states/@state.Slug"
-                                           data-state-name="@state.Name"
-                                           data-state-capital="@state.Capital"
-                                           data-state-population="@statePopulation"
-                                           aria-label="Explore @state.Name state symbols"
-                                           aria-current="@(isInitialState ? "true" : null)">
-                                            @state.Abbreviation
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="home-map-tile home-map-tile--unavailable" aria-hidden="true">@abbreviation</span>
-                                    }
-                                }
-                            }
-                        </nav>
-
-                        <div class="home-map-legend" aria-hidden="true">
-                            <span><i></i>State symbols available</span>
-                            <strong>50 of 50 states</strong>
-                        </div>
-                    </div>
-                </div>
+<div class="home-hub">
+    <section class="hub-intro" aria-labelledby="home-title" style="--hub-hero-image: url('@heroImage')">
+        <div class="hub-wrap">
+            <nav class="hub-breadcrumbs" aria-label="Breadcrumb"><span aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</span></nav>
+            <p class="hub-eyebrow">States / People / Places / Data</p>
+            <h1 id="home-title">Explore the United States</h1>
+            <p class="hub-intro-copy">Fifty states. Countless stories. Discover the places, symbols, and facts that make America unique — and find your next place to explore.</p>
+            <div class="hub-featured">
+                <a class="hub-feature hub-feature--photo" href="/states/living">
+                    <img src="@Images.Card("/images/state-living/new-york/pexels-975399.jpg")" alt="" width="940" height="627" />
+                    <span class="hub-icon"><i class="fa-solid fa-house-chimney" aria-hidden="true"></i></span>
+                    <span class="hub-kicker">Live well</span><h2>State Living Guides</h2>
+                    <p>Compare costs, housing, safety, schools, and quality of life.</p>
+                    <span class="hub-cta">Browse living guides <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                </a>
+                <a class="hub-feature hub-feature--photo hub-feature--blue" href="/rankings">
+                    <img src="@Images.Card("/images/rankings/demographics/states-by-population-map.webp")" alt="" width="940" height="627" />
+                    <span class="hub-icon"><i class="fa-solid fa-chart-column" aria-hidden="true"></i></span>
+                    <span class="hub-kicker">Data insights</span><h2>State Rankings</h2>
+                    <p>See how states compare on affordability, health, education, and more.</p>
+                    <span class="hub-cta">Browse rankings <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                </a>
+                <a class="hub-feature hub-feature--photo hub-feature--light" href="/state-match">
+                    <img src="@Images.Card("/images/state-living/new-york/pexels-17231430.jpg")" alt="" width="940" height="627" />
+                    <span class="hub-icon"><i class="fa-solid fa-bullseye" aria-hidden="true"></i></span>
+                    <span class="hub-kicker">Find your fit</span><h2>State Match</h2>
+                    <p>Find states that fit your lifestyle, budget, and priorities.</p>
+                    <span class="hub-cta">Find your state <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                </a>
+                <a class="hub-feature hub-feature--photo" href="/national-symbols">
+                    <img src="@Images.Card("/images/national-symbols/united-states-flag.jpg")" alt="" width="1880" height="1253" />
+                    <span class="hub-icon"><i class="fa-solid fa-flag-usa" aria-hidden="true"></i></span>
+                    <span class="hub-kicker">Our heritage</span><h2>National Symbols</h2>
+                    <p>The flag, Great Seal, anthem, and the stories that connect us.</p>
+                    <span class="hub-cta">Explore symbols <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                </a>
             </div>
         </div>
     </section>
-}
 
-<section class="hs hs-white">
-    <div class="max-w-6xl mx-auto px-4">
-        <div class="flex items-end justify-between gap-4 flex-wrap mb-6">
-            <div>
-                <div class="hs-eyebrow">
-                    <i class="fa-solid fa-bookmark"></i>
-                    Symbol Types
-                </div>
-                <h2 class="content-h2 home-category-heading">Browse State Symbols by Category</h2>
-            </div>
-            <a href="/symbols" class="cta-btn cta-btn-outline cta-btn--compact">
-                View All Symbols <i class="fa-solid fa-arrow-right text-xs"></i>
+    <section class="hub-core hub-wrap" aria-label="Explore states, comparisons, and data">
+        <section class="hub-core-column" aria-labelledby="explore-heading">
+            <div class="hub-core-heading"><span class="hub-icon"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i></span><div><h2 id="explore-heading">Explore States</h2><p>Get to know every corner of the country.</p></div></div>
+            <a class="hub-primary" href="/states">
+                <img src="@Images.Card("/images/parks/national/yosemite-national-park/13-best-tunnel-view.jpg")" alt="Yosemite Valley in California" loading="lazy" width="480" height="600" />
+                <div><h3>State Guides</h3><p>History, geography, cities, and the symbols that make each of the 50 states unique.</p><span class="hub-cta">Explore states <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div>
             </a>
-        </div>
-        <div class="category-grid">
-            @foreach (var category in Model.SymbolCategories.Take(8))
-            {
-                var stateLabel = category.StateCount == 1 ? "1 state" : $"{category.StateCount} states";
-                var shortDescription = string.IsNullOrWhiteSpace(category.Description)
-                    ? "Browse official state symbol listings and guides."
-                    : category.Description;
-                <a href="@category.Url" class="category-card category-card--home">
-                    <div class="category-card__media">
-                        @if (!string.IsNullOrEmpty(category.ImageUrl))
-                        {
-                            <img src="@Images.Card(category.ImageUrl)"
-                                 srcset="@Images.CardSrcSet(category.ImageUrl, 240, 360, 480)"
-                                 sizes="(max-width: 639px) 44vw, (max-width: 1023px) 30vw, 23vw"
-                                 alt="@category.Name"
-                                 loading="lazy">
-                        }
-                        else
-                        {
-                            <div class="category-card__icon" aria-hidden="true">
-                                <i class="@category.Icon"></i>
-                            </div>
-                        }
-                        <span class="category-card__pill">@stateLabel</span>
-                    </div>
-                    <div class="category-card__body">
-                        <div class="category-card__eyebrow">Symbol Category</div>
-                        <div class="category-card__title">@category.Name</div>
-                        <p class="category-card__desc">@shortDescription</p>
-                        <div class="category-card__footer">
-                            <span class="category-card__count">@stateLabel</span>
-                            <span class="category-card__link">Explore <i class="fa-solid fa-arrow-right"></i></span>
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
-    </div>
-</section>
+            <div class="hub-small-row">
+                <a class="hub-small" href="/guides/state-borders"><span class="hub-small-title"><i class="fa-solid fa-map" aria-hidden="true"></i><h3>State Borders</h3></span><p>Neighbors, coastlines, and waterways.</p><span class="hub-cta">Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+                <a class="hub-small" href="/tools/county-finder"><span class="hub-small-title"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><h3>Counties</h3></span><p>Find the county for a city or ZIP code.</p><span class="hub-cta">Find a county <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+            </div>
+        </section>
+        <section class="hub-core-column" aria-labelledby="compare-heading">
+            <div class="hub-core-heading"><span class="hub-icon"><i class="fa-solid fa-compass" aria-hidden="true"></i></span><div><h2 id="compare-heading">Compare &amp; Find</h2><p>A little guidance for your next big move.</p></div></div>
+            <a class="hub-primary" href="/county-match">
+                <img src="@Images.Card("/images/state-living/new-york/pexels-975399.jpg")" alt="City neighborhoods along the waterfront at dusk" loading="lazy" width="940" height="627" />
+                <div><h3>County Match</h3><p>Weigh housing, income, jobs, education, and health to find a county that fits.</p><span class="hub-cta">Find a county <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div>
+            </a>
+            <div class="hub-small-row">
+                <a class="hub-small" href="/compare-states"><span class="hub-small-title"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i><h3>Compare States</h3></span><p>Put population, costs, and quality of life side by side.</p><span class="hub-cta">Compare <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+                <a class="hub-small" href="/state-match"><span class="hub-small-title"><i class="fa-solid fa-sliders" aria-hidden="true"></i><h3>Your State Match</h3></span><p>Set your priorities and discover your best fit.</p><span class="hub-cta">Get started <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+            </div>
+        </section>
+        <section class="hub-core-column" aria-labelledby="data-heading">
+            <div class="hub-core-heading"><span class="hub-icon"><i class="fa-solid fa-chart-column" aria-hidden="true"></i></span><div><h2 id="data-heading">Rankings &amp; Data</h2><p>See the bigger picture, state by state.</p></div></div>
+            <a class="hub-primary hub-primary--green" href="/county-rankings">
+                <img src="@Images.Card("/images/state-living/new-york/pexels-28273489.jpg")" alt="Suburban neighborhood street" loading="lazy" width="480" height="600" />
+                <div><h3>County Rankings</h3><p>Explore affordability, household income, employment, education, and health.</p><span class="hub-cta">Browse rankings <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div>
+            </a>
+            <div class="hub-small-row">
+                <a class="hub-small" href="/rankings"><span class="hub-small-title"><i class="fa-solid fa-database" aria-hidden="true"></i><h3>State Data</h3></span><p>Population, economy, housing, and more.</p><span class="hub-cta">Explore data <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+                <a class="hub-small" href="/compare-states"><span class="hub-small-title"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i><h3>Visual Comparisons</h3></span><p>Explore differences with interactive charts.</p><span class="hub-cta">View charts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+            </div>
+        </section>
+    </section>
 
-@if (Model.FeaturedStates.Any())
-{
-    <section class="hs hs-cream">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex items-end justify-between mb-8 gap-4 flex-wrap">
-                <div>
-                    <div class="hs-eyebrow">
-                        <i class="fa-solid fa-flag-usa"></i>
-                        All 50 States
-                    </div>
-                    <h2 class="content-h2">Browse State Symbols by State</h2>
-                </div>
-                <a href="/states" class="cta-btn cta-btn-outline cta-btn--compact">
-                    View All States <i class="fa-solid fa-arrow-right text-xs"></i>
+    <section class="hub-section hub-soft" aria-labelledby="outdoors-heading">
+        <div class="hub-wrap">
+            <div class="hub-section-head"><div><p class="hub-eyebrow">Places &amp; nature</p><h2 id="outdoors-heading">Explore the Outdoors</h2><p>Extraordinary landscapes. Room to wander. Find your next adventure.</p></div><a class="hub-view-all" href="/national-parks">View all parks <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            <div class="hub-places">
+                <a class="hub-place-main" href="/national-parks"><img src="@Images.Card("/images/parks/national/yosemite-national-park/01-overview-yosemite-valley-taft-point-sentinel-dome.jpg")" alt="Granite cliffs and forest in Yosemite National Park" loading="lazy" width="960" height="383" /><div><span class="hub-kicker">America's wild places</span><h3>National Parks</h3><p>Best hikes, entrance fees, maps, and the right time to visit.</p><span class="hub-cta">Explore parks <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></a>
+                <a class="hub-place-side hub-place-side--photo" href="/collections/nature">
+                    <img src="@Images.Card("/images/collections/nature/best-states-for-fall-foliage/best-states-for-fall-foliage-hero.jpg")" alt="" loading="lazy" width="480" height="600" />
+                    <span class="hub-icon"><i class="fa-solid fa-mountain-sun" aria-hidden="true"></i></span>
+                    <h3>Nature &amp; Travel</h3><p>Scenic destinations, natural wonders, and outdoor inspiration.</p><span class="hub-cta">Explore nature <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                </a>
+                <a class="hub-place-side hub-place-side--photo" href="/tools/nearest-national-parks">
+                    <img src="@Images.Card("/images/parks/national/acadia-national-park/01-hero-image.jpg")" alt="" loading="lazy" width="480" height="600" />
+                    <span class="hub-icon"><i class="fa-solid fa-tree" aria-hidden="true"></i></span>
+                    <h3>Parks Near You</h3><p>Find nearby national parks and plan where to go next.</p><span class="hub-cta">Find a park <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
                 </a>
             </div>
-            <div class="state-grid">
-                @foreach (var state in Model.FeaturedStates)
+        </div>
+    </section>
+
+    <section class="hub-section" aria-labelledby="symbols-heading">
+        <div class="hub-wrap">
+            <div class="hub-section-head"><div><p class="hub-eyebrow">Symbol types</p><h2 id="symbols-heading">Browse State Symbols by Category</h2><p>Discover the wildlife, traditions, and emblems that tell each state's story.</p></div><a class="hub-view-all" href="/symbols">View all symbols <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            <div class="hub-symbols">
+                @foreach (var symbol in symbols)
                 {
-                    var flagPath = $"/images/states/flags/small/{state.Abbreviation.ToLowerInvariant()}.webp";
-                    <a href="/states/@state.Slug" class="st-card">
-                        <div class="st-card__flag">
-                            <img src="@Images.Card(flagPath)"
-                                 srcset="@Images.CardSrcSet(flagPath, 320, 480, 640)"
-                                 sizes="(max-width: 639px) 48vw, (max-width: 1023px) 31vw, (max-width: 1279px) 18vw, 220px"
-                                 alt="@state.Name flag"
-                                 loading="lazy"
-                                 onerror="this.style.display='none'" />
-                        </div>
-                        <div class="st-card__body">
-                            <div class="st-card__name">@state.Name</div>
-                            <div class="st-card__capital">@state.Capital</div>
-                        </div>
-                    </a>
+                    <a class="hub-symbol" href="/symbols/@symbol.Slug"><div class="hub-symbol-image"><img src="@Images.Card(symbol.Image)" alt="@symbol.Alt" loading="lazy" width="480" height="320" /></div><div class="hub-symbol-copy"><span class="hub-kicker">Symbol category</span><h3>@symbol.Name</h3><p>@symbol.Copy</p><span class="hub-cta">Explore @symbol.Name.ToLowerInvariant() <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></a>
+                }
+            </div>
+            <div class="hub-compact-grid">
+                @foreach (var symbol in compactSymbols)
+                {
+                    <a class="hub-compact" href="/symbols/@symbol.Slug"><span class="hub-icon"><i class="fa-solid @symbol.Icon" aria-hidden="true"></i></span><div><h3>@symbol.Name</h3><p>@symbol.Copy</p></div></a>
                 }
             </div>
         </div>
     </section>
-}
 
-<section class="hs hs-white">
-    <div class="max-w-6xl mx-auto px-4">
-        <div class="hs-eyebrow">
-            <i class="fa-solid fa-compass"></i>
-            Explore More
-        </div>
-        <h2 class="content-h2 mb-8">Popular State Guides &amp; Collections</h2>
-        <div class="disc-grid">
-            <a href="/national-symbols" class="disc-card">
-                <div class="disc-card__banner disc-card__banner--national-symbols">
-                    <img src="@Images.Card("/images/amphibians/national-symbols/bald-eagle-1.webp")"
-                         alt="Bald eagle representing the national symbols of the United States"
-                         loading="lazy" />
-                    <span class="disc-card__banner-shade" aria-hidden="true"></span>
-                    <i class="fa-solid fa-flag-usa text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">United States</div>
-                    <div class="disc-card__title">National Symbols</div>
-                    <p class="disc-card__desc">Explore the U.S. flag, Great Seal, anthem, founding documents, national bird, mammal, flower, tree, motto, and civic traditions.</p>
-                    <span class="disc-card__cta">Browse National Symbols <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a href="/states/living" class="disc-card">
-                <div class="disc-card__banner disc-card__banner--living">
-                    <i class="fa-solid fa-house-chimney-window text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Moving &amp; Living</div>
-                    <div class="disc-card__title">State Living Guides</div>
-                    <p class="disc-card__desc">Compare costs, income, housing, safety, schools, healthcare, climate, and quality of life across all 50 states.</p>
-                    <span class="disc-card__cta">Browse Living Guides <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a href="/state-match" class="disc-card">
-                <div class="disc-card__banner" style="background:linear-gradient(135deg,#173f5f 0%,#4f46a5 100%)">
-                    <i class="fa-solid fa-bullseye text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Personalized Match</div>
-                    <div class="disc-card__title">State Match</div>
-                    <p class="disc-card__desc">Set your priorities for affordability, jobs, schools, safety, climate, and more to find the states that fit you best.</p>
-                    <span class="disc-card__cta">Find Your State <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a href="/county-match" class="disc-card">
-                <div class="disc-card__banner" style="background:linear-gradient(135deg,#10253d 0%,#176a72 100%)">
-                    <i class="fa-solid fa-location-crosshairs text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Moving &amp; Data</div>
-                    <div class="disc-card__title">County Match</div>
-                    <p class="disc-card__desc">Weight housing, income, jobs, education, and health to find counties that fit your priorities.</p>
-                    <span class="disc-card__cta">Find a County <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a href="/county-rankings" class="disc-card">
-                <div class="disc-card__banner" style="background:linear-gradient(135deg,#3d315b 0%,#7d5ba6 100%)">
-                    <i class="fa-solid fa-chart-column text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">County Data</div>
-                    <div class="disc-card__title">County Rankings</div>
-                    <p class="disc-card__desc">Explore transparent rankings for affordability, household income, employment, education, and health.</p>
-                    <span class="disc-card__cta">Browse Rankings <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a href="/national-parks" class="disc-card">
-                <div class="disc-card__banner" style="background:linear-gradient(135deg,#1a3a2a 0%,#2d6a4f 50%,#52b788 100%)">
-                    <i class="fa-solid fa-mountain-sun text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Nature &amp; Travel</div>
-                    <div class="disc-card__title">National Parks</div>
-                    <p class="disc-card__desc">All 62 U.S. national parks — maps, best hikes, entrance fees, when to visit, and how to get reservations.</p>
-                    <span class="disc-card__cta">Explore Parks <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a href="/guides/state-abbreviations" class="disc-card">
-                <div class="disc-card__banner disc-card__banner--collections" style="background:linear-gradient(135deg,#111827 0%,#334155 100%)">
-                    <div class="flex gap-2 items-center">
-                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl border border-white/20 bg-white/10 text-white text-lg font-black">CA</span>
-                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl border border-white/20 bg-white/10 text-white text-lg font-black">NY</span>
-                    </div>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Reference</div>
-                    <div class="disc-card__title">State Abbreviations</div>
-                    <p class="disc-card__desc">All 50 U.S. state abbreviations in one table, plus capitals, regions, and common code mix-ups.</p>
-                    <span class="disc-card__cta">View Abbreviations <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a asp-controller="StateGuides" asp-action="BordersListing" class="disc-card">
-                <div class="disc-card__banner disc-card__banner--borders">
-                    <i class="fa-solid fa-map text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Geography</div>
-                    <div class="disc-card__title">State Borders</div>
-                    <p class="disc-card__desc">What borders each state? Neighbors, coastlines, rivers, and waterways for all 50 states.</p>
-                    <span class="disc-card__cta">Explore Borders <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a asp-controller="Rankings" asp-action="Index" class="disc-card">
-                <div class="disc-card__banner disc-card__banner--rankings">
-                    <i class="fa-solid fa-ranking-star text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Data</div>
-                    <div class="disc-card__title">State Rankings</div>
-                    <p class="disc-card__desc">Compare all 50 states by population, land area, statehood date, and more.</p>
-                    <span class="disc-card__cta">View Rankings <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a href="/collections" class="disc-card">
-                <div class="disc-card__banner disc-card__banner--collections">
-                    <i class="fa-solid fa-list text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Curated</div>
-                    <div class="disc-card__title">Collections</div>
-                    <p class="disc-card__desc">Themed lists — states sharing the same bird, oldest symbols, flags with bears, and more.</p>
-                    <span class="disc-card__cta">Browse Collections <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a href="/compare-states" class="disc-card">
-                <div class="disc-card__banner disc-card__banner--compare">
-                    <i class="fa-solid fa-scale-balanced text-5xl disc-card__icon"></i>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Compare</div>
-                    <div class="disc-card__title">Compare States</div>
-                    <p class="disc-card__desc">Side-by-side comparison of population, area, income, taxes, climate, and more.</p>
-                    <span class="disc-card__cta">Compare Now <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-            <a href="/guides/surnames" class="disc-card">
-                <div class="disc-card__banner disc-card__banner--surnames">
-                    <i class="fa-solid fa-users text-5xl disc-card__icon"></i>
-                    <div class="disc-card__dots">
-                        <span class="disc-card__dot disc-card__dot--blue"></span>
-                        <span class="disc-card__dot disc-card__dot--green"></span>
-                        <span class="disc-card__dot disc-card__dot--amber"></span>
-                        <span class="disc-card__dot disc-card__dot--red"></span>
-                        <span class="disc-card__dot disc-card__dot--purple"></span>
-                    </div>
-                </div>
-                <div class="disc-card__body">
-                    <div class="disc-card__eyebrow">Genealogy</div>
-                    <div class="disc-card__title">Last Names by State</div>
-                    <p class="disc-card__desc">Top 20 most common surnames per state — with origins, meanings, and heritage context. Is yours on the list?</p>
-                    <span class="disc-card__cta">Explore Last Names <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                </div>
-            </a>
-        </div>
-    </div>
-</section>
-
-@if (Model.SymbolOfTheDayPool.Any() && first != null)
-{
-    <section class="hs hs-white">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="hs-eyebrow">
-                <i class="fa-solid fa-star"></i>
-                Symbol of the Day
-            </div>
-            <div class="sotd-card" id="sotd-card">
-                <div class="sotd-toolbar">
-                    <span class="hero-pill">
-                        <i class="fa-solid fa-star"></i>
-                        Featured Symbol
-                    </span>
-                    <button id="sotd-next" class="sotd-next-btn">
-                        <i class="fa-solid fa-shuffle"></i>
-                        Next Symbol
-                    </button>
-                </div>
-                <div class="sotd-inner">
-                    <div class="sotd-media">
-                        <img id="sotd-img"
-                             src="@Images.Hero(first.Symbol.ImageUrl)"
-                             alt="@(first.Symbol.Name)"
-                             loading="eager" />
-                        <span id="sotd-type-badge" class="sotd-type-badge">@firstTypeLabel</span>
-                    </div>
-                    <div class="sotd-info">
-                        <div class="sotd-state-row">
-                            <img id="sotd-flag"
-                                 src="@Images.Thumb($"/images/states/flags/small/{first.State.Abbreviation.ToLowerInvariant()}.webp")"
-                                 alt="@(first.State.Name) flag"
-                                 class="sotd-flag"
-                                 onerror="this.style.display='none'" />
-                            <span id="sotd-state" class="sotd-state-text">@first.State.Name</span>
-                        </div>
-                        <h2 id="sotd-name" class="sotd-name">@first.Symbol.Name</h2>
-                        <p id="sotd-meaning" class="sotd-meaning">
-                            @if (!string.IsNullOrWhiteSpace(first.Symbol.Meaning))
-                            {
-                                @(first.Symbol.Meaning.Length > 200 ? first.Symbol.Meaning[..200] + "..." : first.Symbol.Meaning)
-                            }
-                            else
-                            {
-                                <text>The official @firstTypeLabel of @first.State.Name.</text>
-                            }
-                        </p>
-                        <div class="sotd-actions">
-                            <a id="sotd-link"
-                               href="@first.Symbol.ToSymbolUrl(first.State.Slug)"
-                               class="sotd-btn-primary">
-                                View Symbol <i class="fa-solid fa-arrow-right text-xs"></i>
-                            </a>
-                            <a id="sotd-state-link"
-                               href="/states/@(first.State.Slug)"
-                               class="sotd-btn-secondary">
-                                @first.State.Name
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <section class="hub-section hub-cream" aria-labelledby="states-heading">
+        <div class="hub-wrap">
+            <div class="hub-section-head"><div><p class="hub-eyebrow">All 50 states</p><h2 id="states-heading">Browse State Symbols by State</h2></div><a class="hub-view-all" href="/states">View all states <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            <div class="hub-states">
+                @foreach (var abbreviation in featuredStates)
+                {
+                    if (states.TryGetValue(abbreviation, out var state))
+                    {
+                        <a class="hub-state" href="/states/@state.Slug"><img src="@Images.Thumb($"/images/states/flags/small/{abbreviation.ToLowerInvariant()}.webp")" alt="@state.Name flag" loading="lazy" width="96" height="64" /><div><h3>@state.Name</h3><p>@state.Capital</p></div></a>
+                    }
+                }
             </div>
         </div>
     </section>
-    <script type="application/json" id="sotd-pool">@Html.Raw(poolJson)</script>
-}
 
-<section class="hs hs-navy text-center">
-    <div class="max-w-4xl mx-auto px-4">
-        <div class="hs-eyebrow hs-eyebrow--gold justify-center">
-            <i class="fa-solid fa-lightbulb"></i>
-            Did You Know?
-        </div>
-        <span class="fact-quote-mark">&ldquo;</span>
-        <p class="fact-quote-text">
-            The Northern Cardinal is the most popular state bird, chosen by seven states: Illinois, Indiana, Kentucky, North Carolina, Ohio, Virginia, and West Virginia.
-        </p>
-        <a href="/symbols/birds" class="cta-btn cta-btn-gold">
-            <i class="fa-solid fa-dove"></i>
-            Explore State Birds
-        </a>
-    </div>
-</section>
-
-<section class="hs hs-white">
-    <div class="max-w-5xl mx-auto px-4">
-        <div class="hs-eyebrow justify-center">
-            <i class="fa-solid fa-circle-info"></i>
-            About State Symbols
-        </div>
-        <h2 class="content-h2 mb-10 text-center">The Story Behind U.S. State Symbols</h2>
-        <div class="home-editorial-grid">
-            <div class="home-editorial-item">
-                <h3 class="home-editorial-heading">What Are Official State Symbols?</h3>
-                <p>Every U.S. state has a set of official symbols — emblems designated by the state legislature to represent its history, landscape, culture, and people. The most familiar are state flags, birds, and flowers, but most states recognize dozens more: trees, mottos, seals, mammals, fossils, minerals, songs, and dances. That official status makes them a unique lens into each state’s priorities and identity.</p>
+    @if (selectedState != null)
+    {
+        <section class="hub-section" aria-labelledby="map-heading">
+            <div class="hub-wrap">
+                <div class="hub-map-panel">
+                    <div class="hub-map-copy"><p class="hub-eyebrow">State map</p><h2 id="map-heading">A State for Every Story</h2><p>Hover or focus on a state to preview its facts. Select a tile to explore its symbols.</p>
+                        <div class="hub-map-detail" aria-live="polite" aria-atomic="true"><p class="hub-eyebrow">Selected state</p><h3 id="hub-state-name">@selectedState.Name</h3><dl><div><dt>Capital</dt><dd id="hub-state-capital">@selectedState.Capital</dd></div><div><dt>Population</dt><dd id="hub-state-population">@(selectedState.Population?.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("en-US")) ?? "Not available")</dd></div></dl><a class="hub-cta" id="hub-state-link" href="/states/@selectedState.Slug"><span>Explore @selectedState.Name</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+                    </div>
+                    <div class="hub-map-visual"><p class="hub-map-caption">50 states, one place to explore</p><nav class="hub-tile-map" aria-label="Browse state symbols by map">
+                        @foreach (var row in tiles)
+                        {
+                            @foreach (var abbreviation in row)
+                            {
+                                if (states.TryGetValue(abbreviation, out var state))
+                                {
+                                    <a class="hub-tile@(state.Abbreviation == selectedState.Abbreviation ? " is-selected" : "")" href="/states/@state.Slug" aria-label="Explore @state.Name" data-name="@state.Name" data-capital="@state.Capital" data-population="@(state.Population?.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("en-US")) ?? "Not available")">@state.Abbreviation</a>
+                                }
+                                else
+                                {
+                                    <span aria-hidden="true"></span>
+                                }
+                            }
+                        }
+                    </nav><p class="hub-map-note"><i class="fa-solid fa-arrow-pointer" aria-hidden="true"></i> Every tile opens a state guide</p></div>
+                </div>
             </div>
-            <div class="home-editorial-item">
-                <h3 class="home-editorial-heading">When Did the U.S. Begin Adopting State Symbols?</h3>
-                <p>The trend began at the 1893 World’s Fair in Chicago, where a "National Garland of Flowers" represented each state. That event inspired a wave of official designations — Kentucky named the Cardinal as its state bird in 1926, and most states adopted their birds, flowers, and trees throughout the 1920s–1940s. The practice never stopped: states today continue adding new categories, from state dinosaurs to state beverages.</p>
-            </div>
-            <div class="home-editorial-item">
-                <h3 class="home-editorial-heading">How Is a State Symbol Created?</h3>
-                <p>Most state symbols begin with a citizen proposal — often from schoolchildren or a conservation group. A bill is introduced in the state legislature, hearings are held, and if passed, the governor signs it into law. A 7th-grade class in Texas championed the cowboy boot as state footwear. Students in Alaska pushed for the Alaskan Malamute. Third-graders in Alabama got the Red Hills salamander designated state amphibian. The people choose their symbols.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="hs hs-cream text-center">
-    <div class="max-w-3xl mx-auto px-4">
-        <div class="hs-eyebrow justify-center">
-            <i class="fa-solid fa-book-open"></i>
-            Full Coverage
-        </div>
-        <h2 class="content-h2 mb-4">Explore U.S. State Symbols by State or Category</h2>
-        <p class="home-section-copy home-section-copy--narrow">
-            Browse every state’s official emblems, compare symbol categories across all 50 states, and discover the history behind each designation.
-        </p>
-        <div class="flex flex-wrap justify-center gap-4">
-            <a href="/states"      class="cta-btn cta-btn-navy"><i class="fa-solid fa-map-location-dot"></i> Browse States</a>
-            <a href="/symbols"     class="cta-btn cta-btn-outline"><i class="fa-solid fa-layer-group"></i> Browse Symbols</a>
-            <a href="/collections" class="cta-btn cta-btn-ghost"><i class="fa-solid fa-list"></i> Collections</a>
-        </div>
-    </div>
-</section>
-
-<!-- Organization Schema -->
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org",
-  "@@type": "Organization",
-  "@@id": "https://usasymbol.com/#organization",
-  "name": "USA Symbol",
-  "url": "https://usasymbol.com",
-  "logo": "https://usasymbol.com/images/profile/logo.png",
-  "description": "Educational encyclopedia of official state symbols across all 50 U.S. states, including flags, birds, flowers, trees, mottos, seals, nicknames, mammals, fossils, and minerals.",
-  "founder": { "@@type": "Person", "name": "Artsiom Dusau", "@@id": "https://usasymbol.com/about" },
-  "sameAs": [
-    "https://www.linkedin.com/in/artsiom-dusau/",
-    "https://www.pinterest.com/usasymbol/",
-    "https://www.facebook.com/profile.php?id=61586291576329",
-    "https://www.linkedin.com/company/usasymbol/"
-  ],
-  "contactPoint": { "@@type": "ContactPoint", "email": "contact@usasymbol.com", "contactType": "Customer Service" }
-}
-</script>
-
-<!-- WebSite Schema -->
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org",
-  "@@type": "WebSite",
-  "@@id": "https://usasymbol.com/#website",
-  "name": "USA Symbol",
-  "url": "https://usasymbol.com",
-  "description": "Official encyclopedia of U.S. state symbols for all 50 states.",
-  "publisher": { "@@id": "https://usasymbol.com/#organization" }
-}
-</script>
-
-<!-- CollectionPage Schema -->
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org",
-  "@@type": "CollectionPage",
-  "@@id": "https://usasymbol.com/#webpage",
-  "name": "U.S. State Symbols — Official 50-State Encyclopedia",
-  "description": "Official symbols of all 50 U.S. states — flags, birds, flowers, trees, mottos, seals, and 20+ categories. The most complete state symbols reference online.",
-  "url": "https://usasymbol.com",
-  "isPartOf": { "@@id": "https://usasymbol.com/#website" },
-  "publisher": { "@@id": "https://usasymbol.com/#organization" },
-  "about": { "@@type": "Thing", "name": "State Symbols of the United States" },
-  "inLanguage": "en-US"
-}
-</script>
-
-<script>
-(() => {
-    const mapEl = document.getElementById('home-state-map');
-    const stateEl = document.getElementById('home-map-state');
-    const capitalEl = document.getElementById('home-map-capital');
-    const populationEl = document.getElementById('home-map-population');
-    const stateLinkEl = document.getElementById('home-map-state-link');
-    const stateLinkLabelEl = document.getElementById('home-map-state-link-label');
-
-    if (mapEl && stateEl && capitalEl && populationEl && stateLinkEl && stateLinkLabelEl) {
-        const tiles = Array.from(mapEl.querySelectorAll('.home-map-tile[href]'));
-
-        function selectState(tile) {
-            tiles.forEach(item => {
-                item.classList.remove('is-selected');
-                item.removeAttribute('aria-current');
-            });
-
-            tile.classList.add('is-selected');
-            tile.setAttribute('aria-current', 'true');
-            stateEl.textContent = tile.dataset.stateName || '';
-            capitalEl.textContent = tile.dataset.stateCapital || 'Not available';
-            populationEl.textContent = tile.dataset.statePopulation || 'Not available';
-            stateLinkEl.href = tile.href;
-            stateLinkLabelEl.textContent = `Explore ${tile.dataset.stateName || 'state'} symbols`;
-        }
-
-        tiles.forEach(tile => {
-            tile.addEventListener('mouseenter', () => selectState(tile));
-            tile.addEventListener('focus', () => selectState(tile));
-        });
+        </section>
     }
 
-    const poolEl = document.getElementById('sotd-pool');
-    if (!poolEl) return;
-    let pool;
-    try { pool = JSON.parse(poolEl.textContent); } catch { return; }
-    if (!pool || pool.length === 0) return;
+    <section class="hub-section hub-soft" aria-labelledby="reference-heading">
+        <div class="hub-wrap">
+            <div class="hub-section-head"><div><p class="hub-eyebrow">Quick reference</p><h2 id="reference-heading">Fast Facts &amp; Lookup Tools</h2><p>The everyday details, all in one place.</p></div><a class="hub-view-all" href="/tools">View all tools <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            <div class="hub-reference-grid">
+                @foreach (var reference in references)
+                {
+                    <a class="hub-reference" href="@reference.Url"><span class="hub-icon"><i class="fa-solid @reference.Icon" aria-hidden="true"></i></span><h3>@reference.Name</h3><p>@reference.Copy</p><span class="hub-cta">Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+                }
+            </div>
+        </div>
+    </section>
+</div>
 
-    let idx = Math.floor(Math.random() * pool.length);
-
-    const elImg       = document.getElementById('sotd-img');
-    const elBadge     = document.getElementById('sotd-type-badge');
-    const elFlag      = document.getElementById('sotd-flag');
-    const elState     = document.getElementById('sotd-state');
-    const elName      = document.getElementById('sotd-name');
-    const elMeaning   = document.getElementById('sotd-meaning');
-    const elLink      = document.getElementById('sotd-link');
-    const elStateLink = document.getElementById('sotd-state-link');
-    const elCard      = document.getElementById('sotd-card');
-
-    function render(s) {
-        elCard.style.opacity = '0';
-        setTimeout(() => {
-            elImg.src             = s.imageUrl;
-            elImg.alt             = s.name;
-            elBadge.textContent   = s.typeLabel;
-            elFlag.src            = s.flagUrl;
-            elFlag.alt            = s.stateName + ' flag';
-            elState.textContent   = s.stateName;
-            elName.textContent    = s.name;
-            elMeaning.textContent = s.meaning
-                ? (s.meaning.length > 200 ? s.meaning.slice(0, 200) + '\u2026' : s.meaning)
-                : 'The official ' + s.typeLabel + ' of ' + s.stateName + '.';
-            elLink.href           = s.url;
-            elStateLink.href      = '/states/' + s.stateSlug;
-            elStateLink.textContent = s.stateName;
-            elCard.style.opacity  = '1';
-        }, 180);
+@section Scripts {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@graph": [
+            {
+                "@@type": "Organization",
+                "@@id": "https://usasymbol.com/#organization",
+                "name": "USA Symbol",
+                "url": "https://usasymbol.com/",
+                "logo": "https://usasymbol.com/images/profile/logo.png",
+                "founder": { "@@type": "Person", "name": "Artsiom Dusau", "@@id": "https://usasymbol.com/about/artsiom-dusau" },
+                "sameAs": [
+                    "https://www.linkedin.com/in/artsiom-dusau/",
+                    "https://www.pinterest.com/usasymbol/",
+                    "https://www.facebook.com/profile.php?id=61586291576329",
+                    "https://www.linkedin.com/company/usasymbol/"
+                ],
+                "contactPoint": { "@@type": "ContactPoint", "email": "contact@usasymbol.com", "contactType": "Customer Service" }
+            },
+            {
+                "@@type": "WebSite",
+                "@@id": "https://usasymbol.com/#website",
+                "name": "USA Symbol",
+                "url": "https://usasymbol.com/",
+                "publisher": { "@@id": "https://usasymbol.com/#organization" }
+            },
+            {
+                "@@type": "CollectionPage",
+                "@@id": "https://usasymbol.com/#webpage",
+                "name": "Explore the United States",
+                "description": "Explore all 50 U.S. states with state symbols, living guides, rankings, national parks, maps, and practical lookup tools.",
+                "url": "https://usasymbol.com/",
+                "isPartOf": { "@@id": "https://usasymbol.com/#website" },
+                "publisher": { "@@id": "https://usasymbol.com/#organization" },
+                "inLanguage": "en-US"
+            }
+        ]
     }
-
-    elCard.style.transition = 'opacity 0.18s ease';
-    render(pool[idx]);
-
-    document.getElementById('sotd-next')?.addEventListener('click', () => {
-        idx = (idx + 1) % pool.length;
-        render(pool[idx]);
-    });
-})();
-</script>
+    </script>
+    <script defer src="~/js/home-hub.js" asp-append-version="true"></script>
+}

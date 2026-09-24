@@ -57,6 +57,8 @@ namespace USASymbol.Models.ViewModels
         public string TableAnchor { get; set; } = "#ranking-table";
         public string MethodologyAnchor { get; set; } = "#methodology";
         public bool HasMethodology { get; set; }
+        public List<RankingChip> Chips { get; set; } = new();
+        public RankingChip? SubHub { get; set; }
         public List<PageDataHeroItem> Items { get; set; } = new();
         public List<PageDataHeroStateTile> StateTiles { get; set; } = new();
     }

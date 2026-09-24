@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using USASymbol.Extensions;
 using USASymbol.Models.Content;
 
 namespace USASymbol.Models.ViewModels
@@ -33,7 +34,9 @@ namespace USASymbol.Models.ViewModels
         public bool HasQuickAnswer      => Content?.Page?.QuickAnswer?.Any()      == true;
         public bool HasIntroParagraphs  => Content?.Page?.IntroParagraphs?.Any()  == true;
         public bool HasInsights         => Content?.Page?.Insights?.Any()         == true;
-        public bool HasSources          => Content?.Page?.Sources?.Any()          == true;
+        public List<PageSource> VisibleSources =>
+            Content?.Page?.Sources?.Where(s => !s.Url.IsSuppressedSourceUrl()).ToList() ?? new List<PageSource>();
+        public bool HasSources          => VisibleSources.Count > 0;
         public bool HasRelated          => Content?.Related?.Any()                == true;
         public bool HasFaq              => Content?.Faq?.Any()                    == true;
         public bool HasSections         => Content?.Sections?.Any()               == true;

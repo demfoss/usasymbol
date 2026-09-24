@@ -66,6 +66,13 @@
         categoryTitle,
         $"/rankings/{content?.Category}",
         "#ranking-table");
+
+    if (ViewData["RankingChips"] is IEnumerable<RankingChip> rankingChips)
+    {
+        dataHero.Chips = rankingChips.ToList();
+    }
+
+    dataHero.SubHub = ViewData["RankingSubHub"] as RankingChip;
 }
 
 <div id="top"></div>

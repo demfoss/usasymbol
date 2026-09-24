@@ -1,0 +1,216 @@
+@using System.Text.Json
+@model CollectionsDirectoryViewModel
+@inject IImageUrlService Images
+@{
+    ViewData["Title"] = Model.Title + (Model.Page > 1 ? $" — Page {Model.Page}" : " — Curated State Lists");
+    ViewData["Description"] = Model.Category?.Description ?? "Curated collections of U.S. state facts, symbols, records, and curiosities. Search the full directory and explore every state.";
+    ViewData["Canonical"] = Model.Link(Model.Page);
+    ViewData["BodyClass"] = "rankings-directory-page";
+    if (Model.HasFilters || Model.Sort != "featured") ViewData["Robots"] = "noindex, follow";
+    var firstResult = Model.ResultCount == 0 ? 0 : (Model.Page - 1) * CollectionsDirectoryViewModel.PageSize + 1;
+    var lastResult = Math.Min(Model.Page * CollectionsDirectoryViewModel.PageSize, Model.ResultCount);
+    var firstPage = Math.Max(1, Math.Min(Model.Page - 2, Model.PageCount - 4));
+    var lastPage = Math.Min(Model.PageCount, firstPage + 4);
+    var breadcrumbs = new List<Dictionary<string, object>>
+    {
+        new() { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = "https://usasymbol.com/" },
+        new() { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "Collections", ["item"] = "https://usasymbol.com/collections" }
+    };
+    if (Model.Category != null)
+        breadcrumbs.Add(new() { ["@type"] = "ListItem", ["position"] = 3, ["name"] = Model.Category.Title, ["item"] = "https://usasymbol.com" + Model.BasePath });
+    var schema = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org", ["@type"] = "CollectionPage",
+        ["name"] = ViewData["Title"]!, ["description"] = ViewData["Description"]!,
+        ["url"] = "https://usasymbol.com" + Model.Link(Model.Page),
+        ["breadcrumb"] = new Dictionary<string, object>
+        {
+            ["@type"] = "BreadcrumbList", ["itemListElement"] = breadcrumbs
+        },
+        ["mainEntity"] = new Dictionary<string, object>
+        {
+            ["@type"] = "ItemList",
+            ["itemListElement"] = Model.Items.Select((item, index) => new Dictionary<string, object>
+            {
+                ["@type"] = "ListItem", ["position"] = firstResult + index,
+                ["name"] = item.Title, ["url"] = "https://usasymbol.com" + item.Url
+            }).ToArray()
+        }
+    };
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/rankings-directory.css" asp-append-version="true" />
+}
+
+<div class="rankings-directory">
+    <div class="rd-wrap">
+        <nav class="rd-breadcrumbs" aria-label="Breadcrumb"><a href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            @if (Model.Category != null)
+            {
+                <a href="/collections">Collections</a><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><span aria-current="page">@Model.Category.Title</span>
+            }
+            else
+            {
+                <span aria-current="page">Collections</span>
+            }
+        </nav>
+        <section class="rd-hero" aria-labelledby="collections-heading">
+            <div>
+                <p class="rd-eyebrow">@(Model.Category == null ? "Curated state lists" : "Collection category")</p>
+                <h1 id="collections-heading">@Model.Title</h1>
+                <p class="rd-lead">@(Model.Category?.Description ?? "Curated lists of U.S. state facts, symbols, records, and curiosities — pick a category or search the full directory.")</p>
+                <p class="rd-hero-meta"><strong>@Model.TotalCount collections</strong><span aria-hidden="true">·</span>@(Model.Category == null ? $"{Model.Categories.Count} categories" : "State-by-state stories")</p>
+                <form method="get" action="@(Model.BasePath + "#directory")" class="rd-hero-search" role="search">
+                    @if (Model.Topic.Length > 0) { <input type="hidden" name="topic" value="@Model.Topic" /> }
+                    @if (Model.Group.Length > 0) { <input type="hidden" name="group" value="@Model.Group" /> }
+                    @if (Model.Sort != "featured") { <input type="hidden" name="sort" value="@Model.Sort" /> }
+                    <label class="rd-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="rd-sr-only">Search @Model.Title</span><input name="q" type="search" value="@Model.Query" maxlength="200" placeholder="@(Model.Category == null ? "Search collections: laws, flags, crime…" : $"Search {Model.Category.Title.ToLowerInvariant()} collections…")" /></label><button type="submit" class="rd-button">Search <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                </form>
+                @if (Model.Category != null && Model.Topics.Count > 1)
+                {
+                    <nav class="rd-pills" aria-label="Collection topics"><a href="@(Model.Link(topic: "") + "#directory")" class="@(Model.Topic.Length == 0 ? "is-active" : null)">All</a>
+                        @foreach (var topic in Model.Topics)
+                        {
+                            <a href="@(Model.Link(topic: topic.Value) + "#directory")" class="@(Model.Topic == topic.Value ? "is-active" : null)">@topic.Label</a>
+                        }
+                    </nav>
+                }
+            </div>
+            <aside class="rd-hero-stat"><i class="@(Model.Category?.Icon ?? "fa-solid fa-layer-group")" aria-hidden="true"></i><strong>@Model.TotalCount</strong><span>@(Model.Category == null ? "collections to explore" : Model.Category.Title.ToLowerInvariant() + " collections")</span><p>Pick a topic. Explore the states.<br />Find the story.</p></aside>
+        </section>
+
+        @if (Model.ShowOverview)
+        {
+            @if (Model.Category != null && Model.Topics.Count > 1)
+            {
+                <nav class="rd-metrics" aria-label="Explore collection topics">
+                    @foreach (var topic in Model.Topics.OrderByDescending(topic => topic.Count).Take(4))
+                    {
+                        <a href="@(Model.Link(topic: topic.Value) + "#directory")"><strong>@topic.Count</strong><span>@topic.Label</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    }
+                </nav>
+            }
+
+            @if (Model.Featured.Count > 0)
+            {
+                <section class="rd-section" aria-labelledby="featured-heading">
+                    <div class="rd-section-head"><div><p class="rd-eyebrow">Start exploring</p><h2 id="featured-heading">@(Model.Category == null ? "Featured Collections" : $"Explore {Model.Category.Title}")</h2></div><a class="rd-text-link" href="#directory">Browse the directory <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a></div>
+                    <div class="rd-featured-grid">
+                        @foreach (var item in Model.Featured)
+                        {
+                            <a class="rd-featured @(!string.IsNullOrWhiteSpace(item.HeroImage) ? "rd-featured--photo" : null)" href="@item.Url">
+                                @if (!string.IsNullOrWhiteSpace(item.HeroImage))
+                                {
+                                    <img src="@Images.Card(item.HeroImage)" alt="" loading="lazy" width="480" height="320" />
+                                    <span class="rd-badge">@(Model.Category == null ? item.CategoryTitle : item.Topic)</span>
+                                }
+                                else
+                                {
+                                    <div class="rd-featured-top"><span class="rd-icon"><i class="@(Model.Categories.First(category => category.Id == item.CategoryId).Icon)" aria-hidden="true"></i></span><span class="rd-badge">@(Model.Category == null ? item.CategoryTitle : item.Topic)</span></div>
+                                }
+                                <h3>@item.Title</h3>
+                                <p>@item.Description</p>
+                                <span class="rd-text-link">View collection <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                            </a>
+                        }
+                    </div>
+                </section>
+            }
+
+            @if (Model.Category == null)
+            {
+                <section class="rd-section" aria-labelledby="categories-heading">
+                    <div class="rd-section-head"><div><p class="rd-eyebrow">Browse by category</p><h2 id="categories-heading">Explore Collections by Topic</h2><p>Choose a subject and discover the stories within.</p></div><span class="rd-badge">@Model.Categories.Count categories</span></div>
+                    <div class="rd-category-grid">
+                        @foreach (var category in Model.Categories)
+                        {
+                            <a class="rd-category-card" href="/collections/@category.Id"><div class="rd-category-top"><span class="rd-icon"><i class="@category.Icon" aria-hidden="true"></i></span><span class="rd-badge">@category.Entries.Count collections</span></div><h3>@category.Title</h3><p>@category.Description</p><span class="rd-text-link">Browse @category.Title <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+                        }
+                    </div>
+                </section>
+            }
+        }
+
+        <section class="rd-section rd-directory-section" id="directory" aria-labelledby="directory-heading">
+            <div class="rd-section-head"><div><p class="rd-eyebrow">@(Model.Category == null ? "All collections" : $"All {Model.Category.Title} collections")</p><h2 id="directory-heading">Browse the Directory</h2><p>Search by subject, narrow your results, and open a collection to explore its story.</p></div><span class="rd-badge">@Model.ResultCount results</span></div>
+            <form class="rd-directory-layout" method="get" action="@(Model.BasePath + "#directory")">
+                @if (Model.Topic.Length > 0) { <input type="hidden" name="topic" value="@Model.Topic" /> }
+                @if (Model.Group.Length > 0) { <input type="hidden" name="group" value="@Model.Group" /> }
+                <details class="rd-filters" open>
+                    <summary><span><i class="fa-solid fa-sliders" aria-hidden="true"></i> Filters @(Model.ActiveFilterCount > 0 ? $"({Model.ActiveFilterCount})" : "")</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                    <div class="rd-filter-body">
+                        <div class="rd-filter-label">@(Model.Category == null ? "Categories" : "Topics")</div>
+                        <nav class="rd-filter-links" aria-label="Filter collections">
+                            <a href="@(Model.Link(topic: "", group: "") + "#directory")" class="@(Model.Topic.Length == 0 && Model.Group.Length == 0 ? "is-active" : null)"><span>All collections</span><span>@Model.TotalCount</span></a>
+                            @if (Model.Category == null)
+                            {
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <a href="@(Model.Link(group: category.Id, topic: "") + "#directory")" class="@(Model.Group == category.Id ? "is-active" : null)"><span>@category.Title</span><span>@category.Entries.Count</span></a>
+                                }
+                            }
+                            else
+                            {
+                                @foreach (var topic in Model.Topics)
+                                {
+                                    <a href="@(Model.Link(topic: topic.Value) + "#directory")" class="@(Model.Topic == topic.Value ? "is-active" : null)"><span>@topic.Label</span><span>@topic.Count</span></a>
+                                }
+                            }
+                        </nav>
+                        <a class="rd-reset" href="@(Model.BasePath + "#directory")">Clear all filters</a>
+                    </div>
+                </details>
+                <div class="rd-results">
+                    <div class="rd-toolbar"><label class="rd-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="rd-sr-only">Search the directory</span><input name="q" type="search" value="@Model.Query" maxlength="200" placeholder="Search collections…" /></label><label class="rd-sort"><span>Sort by</span><select name="sort"><option value="featured" selected="@(Model.Sort == "featured")">Featured first</option><option value="az" selected="@(Model.Sort == "az")">A–Z</option><option value="updated" selected="@(Model.Sort == "updated")">Recently updated</option></select></label><button type="submit" class="rd-button">Search</button></div>
+                    <div class="rd-results-meta"><span>Showing @firstResult–@lastResult of @Model.ResultCount collections</span>@if (Model.HasFilters) { <a href="@(Model.BasePath + "#directory")">Reset search &amp; filters</a> }</div>
+                    @if (Model.Items.Count == 0)
+                    {
+                        <div class="rd-empty"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><h3>No collections found</h3><p>Try a broader search or remove a filter.</p><a class="rd-text-link" href="@(Model.BasePath + "#directory")">View all collections <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+                    }
+                    else
+                    {
+                        <div class="rd-list">
+                            @foreach (var item in Model.Items)
+                            {
+                                <a class="rd-row" href="@item.Url"><div><h3>@item.Title</h3><p>@item.Description</p><div class="rd-row-meta"><span class="rd-topic">@(Model.Category == null ? item.CategoryTitle : item.Topic)</span>
+                                    @if (item.Source.Length > 0) { <span class="rd-source" title="@item.Source">@item.Source</span> }
+                                    @if (item.Updated.HasValue) { <span>Updated <time datetime="@item.Updated.Value.ToString("yyyy-MM-dd")">@item.Updated.Value.ToString("MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</time></span> }
+                                </div></div><span class="rd-row-arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+                            }
+                        </div>
+                    }
+                    @if (Model.PageCount > 1)
+                    {
+                        <nav class="rd-pagination" aria-label="Collections directory pages">
+                            @if (Model.Page > 1) { <a href="@(Model.Link(Model.Page - 1) + "#directory")" rel="prev" aria-label="Previous page"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a> }
+                            @if (firstPage > 1) { <a href="@(Model.Link(1) + "#directory")" aria-label="Page 1">1</a>@if (firstPage > 2) { <span aria-hidden="true">…</span> } }
+                            @for (var pageNumber = firstPage; pageNumber <= lastPage; pageNumber++)
+                            {
+                                <a href="@(Model.Link(pageNumber) + "#directory")" aria-label="Page @pageNumber" aria-current="@(pageNumber == Model.Page ? "page" : null)">@pageNumber</a>
+                            }
+                            @if (lastPage < Model.PageCount) { @if (lastPage < Model.PageCount - 1) { <span aria-hidden="true">…</span> }<a href="@(Model.Link(Model.PageCount) + "#directory")" aria-label="Page @Model.PageCount">@Model.PageCount</a> }
+                            @if (Model.Page < Model.PageCount) { <a href="@(Model.Link(Model.Page + 1) + "#directory")" rel="next" aria-label="Next page"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a> }
+                        </nav>
+                        <p class="rd-page-note">Page @Model.Page of @Model.PageCount · @CollectionsDirectoryViewModel.PageSize collections per page</p>
+                    }
+                </div>
+            </form>
+        </section>
+        @if (Model.Category != null)
+        {
+            <section class="rd-section" aria-labelledby="more-categories-heading">
+                <div class="rd-section-head"><div><p class="rd-eyebrow">Keep exploring</p><h2 id="more-categories-heading">More Collection Categories</h2></div><a class="rd-text-link" href="/collections">All collections <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+                <nav class="rd-category-grid" aria-label="More collection categories">
+                    @foreach (var category in Model.Categories.Where(category => category.Id != Model.Category.Id))
+                    {
+                        <a class="rd-category-card" href="/collections/@category.Id"><div class="rd-category-top"><span class="rd-icon"><i class="@category.Icon" aria-hidden="true"></i></span><span class="rd-badge">@category.Entries.Count collections</span></div><h3>@category.Title</h3><p>@category.Description</p><span class="rd-text-link">Browse @category.Title <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+                    }
+                </nav>
+            </section>
+        }
+    </div>
+</div>
+@section Scripts {
+    <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(schema))</script>
+    <script defer src="~/js/rankings-directory.js" asp-append-version="true"></script>
+}

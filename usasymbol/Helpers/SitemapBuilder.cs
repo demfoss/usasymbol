@@ -5,6 +5,7 @@ using USASymbol.Data;
 using USASymbol.Extensions;
 using USASymbol.Models;
 using USASymbol.Models.Content;
+using USASymbol.Services;
 using USASymbol.Services.Interface;
 using Usasymbol.Helpers;
 
@@ -26,6 +27,7 @@ namespace USASymbol.Services
         private readonly IComparisonStatsService _statsService;
         private readonly IStateService _stateService;
         private readonly ICountyService _countyService;
+        private readonly RankingDirectoryService _rankingDirectory;
 
         public SitemapBuilder(
             AppDbContext db,
@@ -41,7 +43,8 @@ namespace USASymbol.Services
             IMapPngService mapPngService,
             IComparisonStatsService statsService,
             IStateService stateService,
-            ICountyService countyService)
+            ICountyService countyService,
+            RankingDirectoryService rankingDirectory)
         {
             _db                 = db;
             _rankingsService    = rankingsService;
@@ -57,6 +60,7 @@ namespace USASymbol.Services
             _statsService       = statsService;
             _stateService       = stateService;
             _countyService      = countyService;
+            _rankingDirectory   = rankingDirectory;
         }
 
         public async Task<List<string>> BuildMainUrlsAsync()
@@ -163,6 +167,8 @@ namespace USASymbol.Services
                 foreach (var item in cat.Items)
                     urls.Add(item.Url);
             }
+
+            urls.AddRange(await _rankingDirectory.GetIndexableTagUrlsAsync());
 
 
 

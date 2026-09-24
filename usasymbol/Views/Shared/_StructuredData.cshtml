@@ -284,6 +284,17 @@
             });
         }
 
+        if (pageModel.IsRanking && ViewData["RankingSubHub"] is USASymbol.Models.ViewModels.RankingChip subHubCrumb)
+        {
+            breadcrumbItems.Add(new Dictionary<string, object?>
+            {
+                ["@type"] = "ListItem",
+                ["position"] = breadcrumbItems.Count + 1,
+                ["name"] = subHubCrumb.Label,
+                ["item"] = $"{baseUrl}{subHubCrumb.Url}"
+            });
+        }
+
         breadcrumbItems.Add(new Dictionary<string, object?>
         {
             ["@type"] = "ListItem",

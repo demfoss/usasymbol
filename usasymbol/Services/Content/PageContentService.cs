@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -45,21 +46,29 @@ namespace USASymbol.Services
     public class PageContentService : IPageContentService
     {
         private readonly ILogger<PageContentService> _logger;
+        private readonly IWebHostEnvironment _env;
         private readonly string _contentBasePath;
+        private readonly IMemoryCache _cache;
 
         private static readonly Regex MultiDash     = new(@"-+",   RegexOptions.Compiled);
         private static readonly Regex AnyWhitespace = new(@"\s+",  RegexOptions.Compiled);
 
-        public PageContentService(ILogger<PageContentService> logger, string contentBasePath)
+        public PageContentService(ILogger<PageContentService> logger, IWebHostEnvironment env, string contentBasePath, IMemoryCache cache)
         {
             _logger          = logger;
+            _env             = env;
             _contentBasePath = contentBasePath;
+            _cache           = cache;
         }
 
 
 
         public async Task<PageContent?> GetContentAsync(string category, string slug)
         {
+            var cacheKey = $"page-content:{_contentBasePath}:{category}:{slug}";
+            if (_cache.TryGetValue(cacheKey, out PageContent? cached))
+                return cached;
+
             try
             {
                 var filePath = Path.Combine(_contentBasePath, category, $"{slug}.yml");
@@ -84,6 +93,14 @@ namespace USASymbol.Services
                 var raw     = deserializer.Deserialize<Dictionary<string, object>>(yaml);
                 var content = MapToPageContent(raw);
                 content.LastModified = new FileInfo(filePath).LastWriteTime;
+
+                // Cached so repeat visits to the same page skip disk I/O entirely;
+                // the file watch invalidates the entry the moment the YAML is edited.
+                var relativePath = Path.GetRelativePath(_env.ContentRootPath, filePath).Replace('\\', '/');
+                var changeToken = _env.ContentRootFileProvider.Watch(relativePath);
+                _cache.Set(cacheKey, content, new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+                    .AddExpirationToken(changeToken));
 
                 return content;
             }
@@ -121,7 +138,7 @@ namespace USASymbol.Services
                     foreach (var file in Directory.GetFiles(categoryDir, "*.yml").Concat(Directory.GetFiles(categoryDir, "*.yaml")))
                     {
                         var content = await GetContentAsync(categoryName, Path.GetFileNameWithoutExtension(file));
-                        if (content != null)
+                        if (content != null && !string.IsNullOrWhiteSpace(content.Url))
                         {
                             category.Items.Add(new PageCategoryItem
                             {
@@ -1009,19 +1026,19 @@ namespace USASymbol.Services
 
     public class RankingsContentService : PageContentService, IRankingsContentService
     {
-        public RankingsContentService(ILogger<PageContentService> logger, IWebHostEnvironment env)
-            : base(logger, Path.Combine(env.ContentRootPath, "Content", "rankings")) { }
+        public RankingsContentService(ILogger<PageContentService> logger, IWebHostEnvironment env, IMemoryCache cache)
+            : base(logger, env, Path.Combine(env.ContentRootPath, "Content", "rankings"), cache) { }
     }
 
     public class ListingsContentService : PageContentService, IListingsContentService
     {
-        public ListingsContentService(ILogger<PageContentService> logger, IWebHostEnvironment env)
-            : base(logger, Path.Combine(env.ContentRootPath, "Content")) { }
+        public ListingsContentService(ILogger<PageContentService> logger, IWebHostEnvironment env, IMemoryCache cache)
+            : base(logger, env, Path.Combine(env.ContentRootPath, "Content"), cache) { }
     }
 
     public class CollectionsContentService : PageContentService, ICollectionsContentService
     {
-        public CollectionsContentService(ILogger<PageContentService> logger, IWebHostEnvironment env)
-            : base(logger, Path.Combine(env.ContentRootPath, "Content", "collections")) { }
+        public CollectionsContentService(ILogger<PageContentService> logger, IWebHostEnvironment env, IMemoryCache cache)
+            : base(logger, env, Path.Combine(env.ContentRootPath, "Content", "collections"), cache) { }
     }
 }

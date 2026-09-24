@@ -1,0 +1,128 @@
+@using System.Text.Json
+@model RankingTagPage
+@{
+    var label = Model.Label;
+    var hub = Model.Hub;
+    var count = Model.Entries.Count;
+    var topTitles = Model.Entries.Take(3).Select(e => e.Title).ToList();
+    var autoDescription = $"Compare U.S. states across {count} {label.ToLowerInvariant()} rankings, including {string.Join(", ", topTitles)}. See which states rank highest and lowest.";
+    if (autoDescription.Length > 158) autoDescription = $"Compare U.S. states across {count} {label.ToLowerInvariant()} rankings. See which states rank highest and lowest.";
+    var description = string.IsNullOrWhiteSpace(hub?.SeoDescription) ? autoDescription : hub!.SeoDescription!;
+
+    ViewData["Title"] = string.IsNullOrWhiteSpace(hub?.SeoTitle) ? $"{label} Rankings by State | {count} Comparisons" : hub!.SeoTitle!;
+    ViewData["Description"] = description;
+    ViewData["Canonical"] = Model.CanonicalUrl;
+    ViewData["BodyClass"] = "rankings-directory-page";
+    if (!Model.IsIndexable && !Model.IsDuplicate) ViewData["Robots"] = "noindex, follow";
+
+    const string baseUrl = "https://usasymbol.com";
+    var crumbs = new List<Dictionary<string, object>>
+    {
+        new() { ["@type"] = "ListItem", ["position"] = 1, ["name"] = "Home", ["item"] = baseUrl + "/" },
+        new() { ["@type"] = "ListItem", ["position"] = 2, ["name"] = "Rankings", ["item"] = baseUrl + "/rankings" }
+    };
+    if (Model.Parent != null)
+        crumbs.Add(new() { ["@type"] = "ListItem", ["position"] = crumbs.Count + 1, ["name"] = Model.Parent.Label, ["item"] = baseUrl + Model.Parent.Url });
+    crumbs.Add(new() { ["@type"] = "ListItem", ["position"] = crumbs.Count + 1, ["name"] = label, ["item"] = baseUrl + Model.CanonicalUrl });
+
+    var schema = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@graph"] = new object[]
+        {
+            new Dictionary<string, object>
+            {
+                ["@type"] = "CollectionPage",
+                ["name"] = Model.Heading,
+                ["description"] = description,
+                ["url"] = baseUrl + Model.CanonicalUrl,
+                ["mainEntity"] = new Dictionary<string, object>
+                {
+                    ["@type"] = "ItemList",
+                    ["numberOfItems"] = count,
+                    ["itemListElement"] = Model.Entries.Select((item, index) => new Dictionary<string, object>
+                    {
+                        ["@type"] = "ListItem", ["position"] = index + 1,
+                        ["name"] = item.Title, ["url"] = baseUrl + item.Url
+                    }).ToArray()
+                }
+            },
+            new Dictionary<string, object> { ["@type"] = "BreadcrumbList", ["itemListElement"] = crumbs }
+        }
+    };
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/rankings-directory.css" asp-append-version="true" />
+}
+
+<div class="rankings-directory">
+    <div class="rd-wrap">
+        <nav class="rd-breadcrumbs" aria-label="Breadcrumb"><a href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><a href="/rankings">Rankings</a><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            @if (Model.Parent != null)
+            {
+                <a href="@Model.Parent.Url">@Model.Parent.Label</a><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            }
+            <span aria-current="page">@label</span></nav>
+
+        <section class="rd-hero" aria-labelledby="tag-heading">
+            <div>
+                <p class="rd-eyebrow">@(Model.Parent != null ? $"{Model.Parent.Label} topic" : "Ranking topic")</p>
+                <h1 id="tag-heading">@Model.Heading</h1>
+                @if (hub?.Intro is { Count: > 0 })
+                {
+                    <p class="rd-lead">@hub.Intro[0]</p>
+                }
+                else
+                {
+                    <p class="rd-lead">Compare @Model.Blurb. This page collects every ranking on USA Symbol tagged <strong>#@label</strong>.</p>
+                }
+                <p class="rd-hero-meta"><strong>@count rankings</strong><span aria-hidden="true">·</span>@Model.Groups.Count @(Model.Groups.Count == 1 ? "category" : "categories")</p>
+                @if (Model.RelatedTags.Count > 0)
+                {
+                    <nav class="rd-pills" aria-label="Related topics">
+                        @foreach (var tag in Model.RelatedTags)
+                        {
+                            <a href="@tag.Url">#@tag.Label</a>
+                        }
+                    </nav>
+                }
+            </div>
+            <aside class="rd-hero-stat"><i class="fa-solid fa-hashtag" aria-hidden="true"></i><strong>@count</strong><span>@label.ToLowerInvariant() rankings</span><p>Find a topic. Compare the states.<br />See the full story.</p></aside>
+        </section>
+
+        @if (hub?.Intro is { Count: > 1 })
+        {
+            <section class="rd-section" aria-label="About this topic">
+                @foreach (var paragraph in hub.Intro.Skip(1))
+                {
+                    <p class="rd-lead">@paragraph</p>
+                }
+            </section>
+        }
+
+        @foreach (var group in Model.Groups)
+        {
+            <section class="rd-section" aria-labelledby="group-@group.CategoryId">
+                <div class="rd-section-head">
+                    <div>
+                        <p class="rd-eyebrow">@group.CategoryTitle</p>
+                        <h2 id="group-@group.CategoryId">@(Model.Groups.Count == 1 ? $"All {label} Rankings" : $"{label} Rankings: {group.CategoryTitle}")</h2>
+                    </div>
+                    <a class="rd-text-link" href="/rankings/@group.CategoryId">All @group.CategoryTitle rankings <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+                <div class="rd-list">
+                    @foreach (var item in group.Entries)
+                    {
+                        <a class="rd-row" href="@item.Url"><div><h3>@item.Title</h3><p>@item.Description</p><div class="rd-row-meta"><span class="rd-topic">@item.CategoryTitle</span>
+                            @if (item.DataYear.HasValue) { <span>@item.DataYear data</span> }
+                            @if (item.Updated.HasValue) { <span>Updated <time datetime="@item.Updated.Value.ToString("yyyy-MM-dd")">@item.Updated.Value.ToString("MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</time></span> }
+                        </div></div><span class="rd-row-arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+</div>
+@section Scripts {
+    <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(schema))</script>
+}

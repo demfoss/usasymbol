@@ -600,12 +600,7 @@ namespace USASymbol.Data
         }
         private static async Task SeedStateBirds(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "bird").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "bird").ExecuteDeleteAsync();
 
             var stateBirdsData = new Dictionary<string, (string Name, string ScientificName, int Year, string Legislation, string WikidataId, string Meaning)>
             {
@@ -694,12 +689,7 @@ namespace USASymbol.Data
         private static async Task SeedStateMottos(AppDbContext context, List<State> states)
         {
 
-            var old = await context.Symbols.Where(s => s.Type == "motto").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "motto").ExecuteDeleteAsync();
 
 
             var stateMottoData = new Dictionary<string, (string Motto, string Language, int Year, string Legislation, string Meaning)>
@@ -793,12 +783,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateNicknames(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "nickname").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "nickname").ExecuteDeleteAsync();
 
 
             var stateNicknameData = new Dictionary<string, (string MainNickname, string Status, int Year, string Legislation, string Meaning)>
@@ -892,12 +877,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateFlowers(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "flower").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "flower").ExecuteDeleteAsync();
 
 
             var stateFlowerData = new Dictionary<string, (string Name, string Scientific, bool IsOfficial, int Year, string Legislation, string WikidataId, string Meaning)>
@@ -990,12 +970,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateFlags(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "flag").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "flag").ExecuteDeleteAsync();
 
 
             var stateFlagData = new Dictionary<string, (string Name, int AdoptedYear, int? StandardizedYear, string Legislation, string WikidataId, string Meaning)>
@@ -1089,12 +1064,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateTrees(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "tree").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "tree").ExecuteDeleteAsync();
 
 
             var stateTreeData = new Dictionary<string, (string Name, string Scientific, bool IsOfficial, int Year, string Legislation, string WikidataId, string Meaning)>
@@ -1190,12 +1160,7 @@ namespace USASymbol.Data
         private static async Task SeedStateMammals(AppDbContext context, List<State> states)
         {
 
-            var old = await context.Symbols.Where(s => s.Type == "mammal").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "mammal").ExecuteDeleteAsync();
 
             var rows = new List<(string StateSlug, string CommonName, string ScientificName, string Designation, int? Year, string? Legislation, string WikidataId, string Meaning)>
 {
@@ -1462,12 +1427,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateColors(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "color").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "color").ExecuteDeleteAsync();
 
             var stateColorData = new Dictionary<string, (string Name, string Status, int Year, string Legislation, string WikidataId, string Meaning)>
 {
@@ -1560,12 +1520,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateFirearms(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "firearm").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "firearm").ExecuteDeleteAsync();
 
             var stateFirearmData = new Dictionary<string, (string Name, string Status, int Year, string Legislation, string WikidataId, string Meaning)>
         {
@@ -1614,12 +1569,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateDinosaurs(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "dinosaur").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "dinosaur").ExecuteDeleteAsync();
 
             var stateDinosaurData = new Dictionary<string, (string Name, string ScientificName, int Year, string Legislation, string WikidataId, string Meaning)>
             {
@@ -1669,12 +1619,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateBeverages(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "beverage").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "beverage").ExecuteDeleteAsync();
 
             var stateBeverageData = new (string StateSlug, string Name, string Slug, int? Year, string Designation, string Legislation, string Meaning)[]
             {
@@ -1751,12 +1696,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateLicensePlates(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "license-plate").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "license-plate").ExecuteDeleteAsync();
 
             var data = new (string StateSlug, string Slogan, string Slug, int? Year, string Meaning)[]
             {
@@ -1842,12 +1782,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateSeals(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "state-seal").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "state-seal").ExecuteDeleteAsync();
 
             var stateSealData = new Dictionary<string, (string Name, int AdoptedYear, int? RevisedYear, string Legislation, string Meaning)>
             {
@@ -1934,12 +1869,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateCoatsOfArms(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "coat-of-arms").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "coat-of-arms").ExecuteDeleteAsync();
 
             var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
             if (!Directory.Exists(contentRoot))
@@ -2025,12 +1955,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateSoils(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "soil" || s.Type == "state-soil").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "soil" || s.Type == "state-soil").ExecuteDeleteAsync();
 
             var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
             if (!Directory.Exists(contentRoot))
@@ -2091,12 +2016,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateInsects(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "insect").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "insect").ExecuteDeleteAsync();
 
             var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
             if (!Directory.Exists(contentRoot))
@@ -2171,12 +2091,7 @@ namespace USASymbol.Data
             string defaultDesignation,
             string categoryPlural)
         {
-            var old = await context.Symbols.Where(s => s.Type == symbolType).ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == symbolType).ExecuteDeleteAsync();
 
             var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
             if (!Directory.Exists(contentRoot))
@@ -2256,12 +2171,7 @@ namespace USASymbol.Data
             string yamlFilePattern,
             string defaultDesignation)
         {
-            var old = await context.Symbols.Where(s => s.Type == symbolType).ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == symbolType).ExecuteDeleteAsync();
 
             var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
             if (!Directory.Exists(contentRoot))
@@ -2333,12 +2243,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateFossils(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "fossil").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "fossil").ExecuteDeleteAsync();
 
             var fossilEntries = new (string StateSlug, string Name, string ScientificName, string Age, int? Year, string Legislation, string Meaning, string YamlFile)[]
             {
@@ -2421,12 +2326,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateSports(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "sport").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "sport").ExecuteDeleteAsync();
 
             var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
             if (!Directory.Exists(contentRoot))
@@ -2500,12 +2400,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateDances(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "dance").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "dance").ExecuteDeleteAsync();
 
             var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
             if (!Directory.Exists(contentRoot))
@@ -2579,12 +2474,7 @@ namespace USASymbol.Data
 
         private static async Task SeedStateSongs(AppDbContext context, List<State> states)
         {
-            var old = await context.Symbols.Where(s => s.Type == "song").ToListAsync();
-            if (old.Count > 0)
-            {
-                context.Symbols.RemoveRange(old);
-                await context.SaveChangesAsync();
-            }
+            await context.Symbols.Where(s => s.Type == "song").ExecuteDeleteAsync();
 
             var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "Content", "states");
             if (!Directory.Exists(contentRoot))

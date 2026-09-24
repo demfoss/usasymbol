@@ -246,6 +246,9 @@ function initFilterChips() {
 // Shared by header clicks and the desktop "Sort by" select.
 // ============================================
 function getCellValue(row, column, table) {
+    // Unranked rows carry data-rank="0"; treat that as "no value" so it sorts last
+    if (column === 'rank' && row.dataset.rank === '0') return '';
+
     // data attribute first
     if (row.dataset[column]) return row.dataset[column];
 
@@ -297,6 +300,15 @@ function applySort(table, th, direction) {
     rows.sort((a, b) => {
         const aVal = getCellValue(a, column, table);
         const bVal = getCellValue(b, column, table);
+
+        // Rows with no value (blank or an em dash placeholder) always stay at the bottom,
+        // whichever direction is active
+        const aMissing = aVal === '' || aVal === '—';
+        const bMissing = bVal === '' || bVal === '—';
+        if (aMissing || bMissing) {
+            if (aMissing && bMissing) return 0;
+            return aMissing ? 1 : -1;
+        }
 
         // Try numeric sort
         const aNum = parseFloat(String(aVal).replace(/[^0-9.-]/g, ''));

@@ -11,9 +11,6 @@ namespace USASymbol.Models.ViewModels
 
     public class HomeViewModel
     {
-        public List<State> FeaturedStates { get; set; } = new();
-        public List<SymbolCategoryViewModel> SymbolCategories { get; set; } = new();
-        public List<SymbolWithState> SymbolOfTheDayPool { get; set; } = new();
         public List<HomeStateMapItem> StateMapItems { get; set; } = new();
     }
 }

@@ -22,8 +22,8 @@
     {
         <div class="pdh-eyebrow">
             <span class="pdh-dot" aria-hidden="true"></span>
-            <span class="pdh-eyebrow-lead">@Model.KindLabel</span>
-            <span>@Model.CategoryLabel</span>
+            <span class="pdh-eyebrow-lead"><a href="@Model.HubUrl">@Model.KindLabel</a></span>
+            <span>@if (!string.IsNullOrWhiteSpace(Model.CategoryUrl)) { <a href="@Model.CategoryUrl">@Model.CategoryLabel</a> } else { @Model.CategoryLabel }</span>
         </div>
 
         <h1 class="pdh-title">@Model.Title</h1>
@@ -66,8 +66,8 @@
             <div class="pdh-copy">
                 <div class="pdh-eyebrow">
                     <span class="pdh-dot" aria-hidden="true"></span>
-                    <span class="pdh-eyebrow-lead">@Model.KindLabel</span>
-                    <span>@Model.CategoryLabel</span>
+                    <span class="pdh-eyebrow-lead"><a href="@Model.HubUrl">@Model.KindLabel</a></span>
+                    <span>@if (!string.IsNullOrWhiteSpace(Model.CategoryUrl)) { <a href="@Model.CategoryUrl">@Model.CategoryLabel</a> } else { @Model.CategoryLabel }</span>
                     @if (!string.IsNullOrWhiteSpace(Model.SourceName))
                     {
                         <span>@Model.SourceName</span>
@@ -145,8 +145,8 @@
     {
         <div class="pdh-eyebrow">
             <span class="pdh-dot" aria-hidden="true"></span>
-            <span class="pdh-eyebrow-lead">@Model.KindLabel</span>
-            <span>@Model.CategoryLabel</span>
+            <span class="pdh-eyebrow-lead"><a href="@Model.HubUrl">@Model.KindLabel</a></span>
+            <span>@if (!string.IsNullOrWhiteSpace(Model.CategoryUrl)) { <a href="@Model.CategoryUrl">@Model.CategoryLabel</a> } else { @Model.CategoryLabel }</span>
         </div>
 
         <div class="pdh-strip-head">
@@ -212,8 +212,8 @@
             <div class="pdh-copy">
                 <div class="pdh-eyebrow">
                     <span class="pdh-dot" aria-hidden="true"></span>
-                    <span class="pdh-eyebrow-lead">@Model.KindLabel</span>
-                    <span>@Model.CategoryLabel</span>
+                    <span class="pdh-eyebrow-lead"><a href="@Model.HubUrl">@Model.KindLabel</a></span>
+                    <span>@if (!string.IsNullOrWhiteSpace(Model.CategoryUrl)) { <a href="@Model.CategoryUrl">@Model.CategoryLabel</a> } else { @Model.CategoryLabel }</span>
                     @if (!string.IsNullOrWhiteSpace(Model.SourceName))
                     {
                         <span>@Model.SourceName</span>
@@ -300,5 +300,15 @@
                 });
             })();
         </script>
+    }
+
+    @if (Model.Chips.Count > 0)
+    {
+        <nav class="pdh-tags" aria-label="Topics">
+            @foreach (var chip in Model.Chips)
+            {
+                <a class="pdh-tag" href="@chip.Url"><span aria-hidden="true">#</span>@chip.Label</a>
+            }
+        </nav>
     }
 </header>

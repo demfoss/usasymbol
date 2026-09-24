@@ -53,12 +53,14 @@
             </div>
         }
 
+        @* Superlatives block intentionally hidden; component kept: _RankingSuperlatives.cshtml
         @if (numericInsights != null)
         {
             <div class="ranking-insights-before-table">
                 @await Html.PartialAsync("~/Views/Rankings/_RankingSuperlatives.cshtml", Model)
             </div>
         }
+        *@
 
         <div id="@rankingTableSectionId" class="ranking-primary-table scroll-mt-24">
             <div class="ranking-primary-table__heading">

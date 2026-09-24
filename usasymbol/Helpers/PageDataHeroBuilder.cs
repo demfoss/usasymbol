@@ -108,7 +108,7 @@ namespace Usasymbol.Helpers
                 CategoryUrl = categoryUrl,
                 Title = string.IsNullOrWhiteSpace(content?.Page?.H1) ? kindLabel : content.Page.H1,
                 Description = content?.Seo?.Description ?? string.Empty,
-                SourceName = content?.Page?.Sources?.FirstOrDefault()?.Name ?? string.Empty,
+                SourceName = pageModel.VisibleSources.FirstOrDefault()?.Name ?? string.Empty,
                 DateModified = content?.DateModified,
                 EntryCount = pageModel.TotalRowsCount,
                 MetricLabel = ResolveMetricLabel(table, content),

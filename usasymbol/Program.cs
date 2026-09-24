@@ -89,8 +89,10 @@ builder.Services.AddScoped<IBorderService, BorderService>();
 builder.Services.AddScoped<IStateAbbreviationContentService, StateAbbreviationContentService>();
 builder.Services.AddScoped<ISurnamesService, SurnamesService>();
 builder.Services.AddScoped<IRankingsContentService, RankingsContentService>();
+builder.Services.AddSingleton<RankingDirectoryService>();
 builder.Services.AddScoped<IListingsContentService, ListingsContentService>();
 builder.Services.AddScoped<ICollectionsContentService, CollectionsContentService>();
+builder.Services.AddSingleton<CollectionsDirectoryService>();
 builder.Services.AddScoped<INationalSymbolsContentService, NationalSymbolsContentService>();
 builder.Services.AddScoped<ILatestContentRailService, LatestContentRailService>();
 builder.Services.AddScoped<USASymbol.Services.Interface.IParkService, USASymbol.Services.Content.ParkService>();
@@ -295,6 +297,19 @@ using (var scope = app.Services.CreateScope())
         await context.States.CountAsync(),
         await context.Symbols.CountAsync(),
         await context.SymbolCategories.CountAsync());
+
+    // Warms the rankings directory metadata cache before traffic arrives, so the
+    // first visitor to /rankings never pays the cost of scanning hundreds of
+    // YAML files (that scan previously ran on the first request instead).
+    var rankingDirectory = scope.ServiceProvider.GetRequiredService<RankingDirectoryService>();
+    var rankingCategories = await rankingDirectory.GetCategoriesAsync();
+    logger.LogInformation("Ranking directory cache warmed. Categories: {CategoryCount}, Rankings: {RankingCount}",
+        rankingCategories.Count, rankingCategories.Sum(c => c.Entries.Count));
+
+    var collectionsDirectory = scope.ServiceProvider.GetRequiredService<CollectionsDirectoryService>();
+    var collectionsCategories = await collectionsDirectory.GetCategoriesAsync();
+    logger.LogInformation("Collections directory cache warmed. Categories: {CategoryCount}, Collections: {CollectionCount}",
+        collectionsCategories.Count, collectionsCategories.Sum(c => c.Entries.Count));
 }
 
 

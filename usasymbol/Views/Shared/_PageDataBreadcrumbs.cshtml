@@ -3,15 +3,20 @@
 <nav class="pdh-breadcrumb-shell" aria-label="Breadcrumb">
     <div>
         <ol class="pdh-breadcrumbs">
-            <li><a href="/">Home</a></li>
-            <li aria-hidden="true">/</li>
+            <li><a href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></li>
             <li><a href="@Model.HubUrl">@Model.KindLabel</a></li>
             @if (!string.IsNullOrWhiteSpace(Model.CategoryLabel))
             {
-                <li aria-hidden="true">/</li>
+                <li aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></li>
                 <li><a href="@Model.CategoryUrl">@Model.CategoryLabel</a></li>
             }
-            <li aria-hidden="true">/</li>
+            @if (Model.SubHub != null)
+            {
+                <li aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></li>
+                <li><a href="@Model.SubHub.Url">@Model.SubHub.Label</a></li>
+            }
+            <li aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></li>
             <li aria-current="page"><span>@Model.Title</span></li>
         </ol>
     </div>

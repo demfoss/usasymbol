@@ -1,7 +1,7 @@
 @model USASymbol.Models.ViewModels.PageDetailViewModel
 
 @{
-    var sources = Model.Content?.Page?.Sources;
+    var sources = Model.VisibleSources;
 }
 
 <div class="my-12 scroll-mt-24" aria-label="Sources and methodology">

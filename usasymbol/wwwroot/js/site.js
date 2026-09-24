@@ -9,7 +9,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (mobileMenuButton && mobileMenu) {
         mobileMenuButton.addEventListener('click', function () {
-            mobileMenu.classList.toggle('hidden');
+            const isOpen = !mobileMenu.classList.toggle('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', String(isOpen));
+            const icon = mobileMenuButton.querySelector('i');
+            icon?.classList.toggle('fa-bars', !isOpen);
+            icon?.classList.toggle('fa-xmark', isOpen);
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+                mobileMenuButton.click();
+                mobileMenuButton.focus();
+            }
         });
     }
 

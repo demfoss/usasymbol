@@ -13,29 +13,34 @@ namespace USASymbol.Controllers
     public class CollectionsController : Controller
     {
         private readonly ICollectionsContentService _service;
+        private readonly CollectionsDirectoryService _directory;
         private readonly ILatestContentRailService _latestContentRailService;
         private readonly IMapPngService _mapPngService;
         private readonly ILogger<CollectionsController> _logger;
 
         public CollectionsController(
             ICollectionsContentService service,
+            CollectionsDirectoryService directory,
             ILatestContentRailService latestContentRailService,
             IMapPngService mapPngService,
             ILogger<CollectionsController> logger)
         {
             _service = service;
+            _directory = directory;
             _latestContentRailService = latestContentRailService;
             _mapPngService = mapPngService;
             _logger  = logger;
         }
 
         [Route("/collections")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? q, string? topic, string? group, string? sort, int page = 1)
         {
             try
             {
-                var categories = await _service.GetAllCategoriesAsync();
-                return View(new PageHubViewModel { Categories = categories });
+                var categories = await _directory.GetCategoriesAsync();
+                var model = CollectionsDirectoryService.Build(categories, null, q, topic, group, sort, page);
+                if (model.Page > model.PageCount) return NotFound();
+                return View("Directory", model);
             }
             catch (System.Exception ex)
             {
@@ -45,12 +50,12 @@ namespace USASymbol.Controllers
         }
 
         [Route("/collections/{group}")]
-        public async Task<IActionResult> Group(string group)
+        public async Task<IActionResult> Group(string group, string? q, string? topic, string? sort, int page = 1)
         {
             try
             {
-                var categories = await _service.GetAllCategoriesAsync();
-                var cat = categories.Find(c =>
+                var categories = await _directory.GetCategoriesAsync();
+                var cat = categories.FirstOrDefault(c =>
                     string.Equals(c.Id, group, System.StringComparison.OrdinalIgnoreCase));
 
                 if (cat == null) return NotFound();
@@ -58,7 +63,9 @@ namespace USASymbol.Controllers
                 ViewData["Title"]       = $"{cat.Title} Collections";
                 ViewData["Description"] = $"Browse U.S. state collections related to {cat.Title.ToLower()}";
 
-                return View("Category", BuildCategoryViewModel(cat));
+                var model = CollectionsDirectoryService.Build(categories, cat, q, topic, null, sort, page);
+                if (model.Page > model.PageCount) return NotFound();
+                return View("Directory", model);
             }
             catch (System.Exception ex)
             {
@@ -120,27 +127,5 @@ namespace USASymbol.Controllers
         [HttpGet("/most-dangerous-cities/{state}")]
         [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept-Encoding")]
         public Task<IActionResult> MostDangerousCitiesByState(string state) => Detail("crime", state);
-
-        private static PageCategoryViewModel BuildCategoryViewModel(PageCategory cat)
-        {
-            var mostPopular = cat.Items
-                .OrderByDescending(i => i.DateModified ?? i.DatePublished ?? System.DateTime.MinValue)
-                .Take(2)
-                .ToList();
-
-            var subcategoryFilters = cat.Items
-                .GroupBy(i => string.IsNullOrWhiteSpace(i.Subcategory) ? "Not set" : i.Subcategory!)
-                .Select(g => new SubcategoryFilterOption { Value = g.Key, Label = g.Key, Count = g.Count() })
-                .OrderBy(f => f.Value == "Not set" ? 1 : 0)
-                .ThenByDescending(f => f.Count)
-                .ToList();
-
-            return new PageCategoryViewModel
-            {
-                Category = cat,
-                MostPopular = mostPopular,
-                SubcategoryFilters = subcategoryFilters,
-            };
-        }
     }
 }

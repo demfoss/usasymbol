@@ -15,6 +15,7 @@ namespace USASymbol.Controllers
     public class RankingsController : Controller
     {
         private readonly IRankingsContentService _service;
+        private readonly RankingDirectoryService _directory;
         private readonly ILatestContentRailService _latestContentRailService;
         private readonly IComparisonStatsService _statsService;
         private readonly IStateService _stateService;
@@ -23,6 +24,7 @@ namespace USASymbol.Controllers
 
         public RankingsController(
             IRankingsContentService service,
+            RankingDirectoryService directory,
             ILatestContentRailService latestContentRailService,
             IComparisonStatsService statsService,
             IStateService stateService,
@@ -30,6 +32,7 @@ namespace USASymbol.Controllers
             ILogger<RankingsController> logger)
         {
             _service = service;
+            _directory = directory;
             _latestContentRailService = latestContentRailService;
             _statsService = statsService;
             _stateService = stateService;
@@ -38,12 +41,14 @@ namespace USASymbol.Controllers
         }
 
         [Route("/rankings")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? q, string? topic, string? group, string? year, string? sort, int page = 1)
         {
             try
             {
-                var categories = await _service.GetAllCategoriesAsync();
-                return View(new PageHubViewModel { Categories = categories });
+                var categories = await _directory.GetCategoriesAsync();
+                var model = RankingDirectoryService.Build(categories, null, q, topic, group, year, sort, page);
+                if (model.Page > model.PageCount) return NotFound();
+                return View("Directory", model);
             }
             catch (System.Exception ex)
             {
@@ -52,13 +57,24 @@ namespace USASymbol.Controllers
             }
         }
 
+        [Route("/rankings/tag/{tag}")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept-Encoding")]
+        public async Task<IActionResult> Tag(string tag)
+        {
+            var page = await _directory.GetTagPageAsync(tag);
+            if (page == null) return NotFound();
+            if (!string.Equals(tag, page.Slug, System.StringComparison.Ordinal))
+                return RedirectPermanent(page.Url);
+            return View("Tag", page);
+        }
+
         [Route("/rankings/{category}")]
-        public async Task<IActionResult> Category(string category)
+        public async Task<IActionResult> Category(string category, string? q, string? topic, string? year, string? sort, int page = 1)
         {
             try
             {
-                var categories = await _service.GetAllCategoriesAsync();
-                var cat = categories.Find(c =>
+                var categories = await _directory.GetCategoriesAsync();
+                var cat = categories.FirstOrDefault(c =>
                     string.Equals(c.Id, category, System.StringComparison.OrdinalIgnoreCase));
 
                 if (cat == null) return NotFound();
@@ -66,7 +82,9 @@ namespace USASymbol.Controllers
                 ViewData["Title"]       = $"{cat.Title} Rankings";
                 ViewData["Description"] = $"Compare U.S. states by {cat.Title.ToLower()}";
 
-                return View("Category", BuildCategoryViewModel(cat));
+                var model = RankingDirectoryService.Build(categories, cat, q, topic, null, year, sort, page);
+                if (model.Page > model.PageCount) return NotFound();
+                return View("Directory", model);
             }
             catch (System.Exception ex)
             {
@@ -103,7 +121,22 @@ namespace USASymbol.Controllers
                         ViewData["MapPngPath"] = mapPngPath;
                 }
 
-                ViewData["LatestContentRail"] = await _latestContentRailService.GetLatestItemsAsync(8);
+                var links = await _directory.GetPageLinksAsync(category, slug);
+                ViewData["RankingChips"] = links.Chips;
+                ViewData["RankingSubHub"] = links.SubHub;
+                ViewData["LatestContentRail"] = new LatestContentRailViewModel
+                {
+                    Title = links.RelatedHeading,
+                    Items = links.Related.Select(r => new LatestContentRailItemViewModel
+                    {
+                        Title = r.Title,
+                        Description = r.Description,
+                        Url = r.Url,
+                        ImageUrl = string.IsNullOrWhiteSpace(r.HeroImage) ? "/images/usasymbol.png" : r.HeroImage,
+                        Eyebrow = r.Topic == "General" ? r.CategoryTitle : r.Topic,
+                        SectionLabel = r.CategoryTitle
+                    }).ToList()
+                };
                 return View("Ranking", new PageDetailViewModel { Content = content });
             }
             catch (System.Exception ex)
@@ -111,28 +144,6 @@ namespace USASymbol.Controllers
                 _logger.LogError(ex, "Error loading ranking: {Category}/{Slug}", category, slug);
                 throw;
             }
-        }
-
-        private static PageCategoryViewModel BuildCategoryViewModel(PageCategory cat)
-        {
-            var mostPopular = cat.Items
-                .OrderByDescending(i => i.DateModified ?? i.DatePublished ?? System.DateTime.MinValue)
-                .Take(2)
-                .ToList();
-
-            var subcategoryFilters = cat.Items
-                .GroupBy(i => string.IsNullOrWhiteSpace(i.Subcategory) ? "Not set" : i.Subcategory!)
-                .Select(g => new SubcategoryFilterOption { Value = g.Key, Label = g.Key, Count = g.Count() })
-                .OrderBy(f => f.Value == "Not set" ? 1 : 0)
-                .ThenByDescending(f => f.Count)
-                .ToList();
-
-            return new PageCategoryViewModel
-            {
-                Category = cat,
-                MostPopular = mostPopular,
-                SubcategoryFilters = subcategoryFilters,
-            };
         }
 
         private async Task BuildComputedTableAsync(PageContent content)
