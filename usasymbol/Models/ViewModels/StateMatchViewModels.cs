@@ -98,6 +98,25 @@ namespace USASymbol.Models.ViewModels
         public IReadOnlyList<StateMatchPresetLinkViewModel> QuickPresets { get; init; } = Array.Empty<StateMatchPresetLinkViewModel>();
     }
 
+    /// <summary>One state's cost inputs for the Take-Home Pay by State calculator. Null means the source has no figure for it.</summary>
+    public sealed class TakeHomePlaceViewModel
+    {
+        public string Name { get; init; } = string.Empty;
+        public string Slug { get; init; } = string.Empty;
+        public string Abbreviation { get; init; } = string.Empty;
+        public string FlagImageUrl { get; init; } = string.Empty;
+        public double? PropertyTaxRate { get; init; }
+        public double? SalesTaxCombinedRate { get; init; }
+        public double? AverageRent { get; init; }
+    }
+
+    public sealed class TakeHomePageViewModel
+    {
+        public IReadOnlyList<TakeHomePlaceViewModel> Places { get; init; } = Array.Empty<TakeHomePlaceViewModel>();
+        public string IncomeTaxScheduleJson { get; init; } = "{}";
+        public string OccupationSalariesJson { get; init; } = "{}";
+    }
+
     /// <summary>A pre-scored State Match landing page — SEO copy and a real top-10 rendered server-side, plus the interactive tool below it.</summary>
     public sealed class StateMatchPresetPageViewModel
     {

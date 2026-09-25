@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USA Symbol — Explore the United States</title>
+<meta name="description" content="Explore U.S. states, symbols, rankings, parks, maps, and quick-reference guides.">
+<style>
+  :root{
+    --ink:#0b1a36;
+    --muted:#6c7890;
+    --line:#e3e8ef;
+    --paper:#ffffff;
+    --soft:#f7f9fc;
+    --cream:#f8f4ec;
+    --blue:#0f4d97;
+    --blue-2:#163c70;
+    --teal:#0f7d73;
+    --green:#17865e;
+    --gold:#cda64c;
+    --radius:18px;
+    --radius-sm:14px;
+    --shadow:0 12px 34px rgba(18,43,73,.08);
+    --wrap:1390px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    color:var(--ink);
+    background:#fff;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  img{display:block;width:100%;height:100%;object-fit:cover}
+  h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0;color:var(--ink)}
+  p{margin:0}
+  .wrap{width:min(calc(100% - 48px),var(--wrap));margin:0 auto}
+  .section{padding:64px 0}
+  .section.soft{background:var(--soft)}
+  .section.cream{background:var(--cream)}
+  .eyebrow{
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:#b38a35;
+    margin-bottom:8px;
+  }
+  .section-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    margin-bottom:24px;
+  }
+  .section-head h2{font-size:clamp(30px,3vw,43px);line-height:1.06;letter-spacing:-.02em}
+  .section-head p{color:var(--muted);margin-top:7px;max-width:700px}
+  .view-all{font-size:13px;font-weight:800;color:var(--blue);white-space:nowrap}
+  .divider{height:1px;background:var(--line)}
+
+  /* ---------- top intro ---------- */
+  .intro{
+    padding:56px 0 26px;
+    background:
+      linear-gradient(90deg,rgba(255,255,255,.99) 0%,rgba(255,255,255,.95) 47%,rgba(255,255,255,.5) 78%,rgba(255,255,255,.2) 100%),
+      url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2200&q=85') center 38%/cover no-repeat;
+  }
+  .intro h1{
+    font-size:clamp(48px,5vw,72px);
+    line-height:.98;
+    letter-spacing:-.035em;
+    max-width:890px;
+  }
+  .intro-copy{
+    max-width:770px;
+    margin-top:16px;
+    font-size:18px;
+    color:#31435f;
+  }
+
+  .featured-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-top:30px;
+  }
+  .feature-card{
+    min-height:248px;
+    border-radius:var(--radius);
+    overflow:hidden;
+    position:relative;
+    box-shadow:var(--shadow);
+    border:1px solid rgba(8,34,70,.08);
+    transition:.2s ease;
+    isolation:isolate;
+  }
+  .feature-card:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(18,43,73,.13)}
+  .feature-card:before{content:"";position:absolute;inset:0;z-index:-1}
+  .feature-card.photo{background-size:cover;background-position:center}
+  .feature-card.photo:before{background:linear-gradient(180deg,rgba(4,21,43,.03),rgba(4,21,43,.76))}
+  .feature-card.blue{background:linear-gradient(145deg,#173b72,#0b5b99)}
+  .feature-card.teal{background:linear-gradient(145deg,#0c7169,#10978d)}
+  .feature-card.light{background:linear-gradient(145deg,#fff,#f0f5f8)}
+  .feature-card.light:before{
+    background:
+      radial-gradient(circle at 78% 22%,rgba(16,91,150,.08),transparent 28%),
+      linear-gradient(145deg,rgba(255,255,255,0),rgba(230,240,246,.55));
+  }
+  .feature-inner{
+    height:100%;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    color:#fff;
+  }
+  .feature-card.light .feature-inner{color:var(--ink)}
+  .feature-kicker{font-size:10px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;opacity:.8;margin-top:10px}
+  .feature-card h3{font-size:25px;color:inherit;margin-top:5px}
+  .feature-card p{font-size:14px;opacity:.92;max-width:280px;margin-top:8px}
+  .cta{font-size:13px;font-weight:800;margin-top:auto}
+  .circle-icon{
+    width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+    background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.26)
+  }
+  .feature-card.light .circle-icon{background:#edf3f7;border-color:#dce7ee}
+  svg{stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .circle-icon svg{width:21px;height:21px}
+
+  /* ---------- core 3 columns ---------- */
+  .core{
+    padding:34px 0 70px;
+  }
+  .core-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:26px;
+    align-items:stretch;
+  }
+  .core-col{
+    display:grid;
+    grid-template-rows:auto 300px 154px;
+    gap:12px;
+  }
+  .core-head{
+    min-height:76px;
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .core-icon{
+    width:46px;height:46px;border-radius:50%;
+    display:grid;place-items:center;flex:0 0 auto;
+    background:#eef4f7;color:var(--blue);
+  }
+  .core-icon svg{width:23px;height:23px}
+  .core-title{flex:1}
+  .core-title-row{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .core-title h2{font-size:31px;line-height:1.07}
+  .core-title p{font-size:13px;color:var(--muted);margin-top:5px}
+  .small-link{font-size:11px;font-weight:800;color:var(--blue);white-space:nowrap}
+
+  .primary-card{
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    overflow:hidden;
+    display:grid;
+    grid-template-columns:48% 52%;
+    background:#fff;
+    min-height:0;
+    box-shadow:0 7px 20px rgba(18,43,73,.04);
+    transition:.2s ease;
+  }
+  .primary-card:hover,.small-card:hover,.ref-card:hover,.symbol-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(18,43,73,.08)}
+  .primary-card .copy{padding:20px;display:flex;flex-direction:column}
+  .primary-card h3{font-size:21px}
+  .primary-card p{font-size:13px;color:var(--muted);margin-top:8px}
+  .primary-card .cta{color:var(--blue)}
+  .primary-card.soft-green{grid-template-columns:40% 60%;background:linear-gradient(135deg,#eef9f0,#f8fcf8)}
+  .primary-card.soft-green .visual{display:grid;place-items:center}
+  .metric-icon{
+    width:92px;height:92px;border-radius:50%;display:grid;place-items:center;
+    background:rgba(30,154,93,.12);color:#17865e
+  }
+  .metric-icon svg{width:44px;height:44px}
+
+  .small-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;height:154px}
+  .small-card{
+    min-height:0;
+    border:1px solid var(--line);
+    border-radius:13px;
+    background:#fff;
+    padding:14px;
+    transition:.2s ease;
+    display:flex;
+    flex-direction:column;
+  }
+  .small-card-top{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+  .tiny-icon{
+    width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+    flex:0 0 auto;background:#eef5f1;color:var(--green)
+  }
+  .tiny-icon.blue{background:#eef3fa;color:var(--blue)}
+  .tiny-icon svg{width:18px;height:18px}
+  .small-card h3{font-size:16px;line-height:1.15}
+  .small-card p{
+    font-size:12px;color:var(--muted);
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;
+  }
+  .small-card .cta{color:var(--blue);font-size:12px}
+
+  /* ---------- places ---------- */
+  .places-grid{
+    display:grid;
+    grid-template-columns:1.55fr .72fr .72fr;
+    gap:14px;
+  }
+  .place-main{
+    min-height:300px;
+    border-radius:var(--radius);
+    overflow:hidden;
+    position:relative;
+    background-size:cover;
+    background-position:center;
+    box-shadow:var(--shadow);
+  }
+  .place-main:after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(7,24,41,.82),rgba(7,24,41,.26) 65%,rgba(7,24,41,.08));
+  }
+  .place-main .content{
+    position:absolute;z-index:2;inset:0;
+    padding:28px;display:flex;flex-direction:column;justify-content:flex-end;
+    color:#fff;max-width:65%;
+  }
+  .place-main h3{font-size:32px;color:#fff}
+  .place-main p{font-size:14px;margin-top:7px;opacity:.93}
+  .place-side{
+    min-height:300px;border-radius:var(--radius);border:1px solid var(--line);
+    background:#fff;padding:22px;display:flex;flex-direction:column;
+    transition:.2s ease;
+  }
+  .place-side .art{
+    height:120px;border-radius:12px;margin-bottom:18px;
+    display:grid;place-items:center;background:linear-gradient(145deg,#eef8f3,#f8fbf9);color:var(--green)
+  }
+  .place-side .art svg{width:46px;height:46px}
+  .place-side h3{font-size:22px}
+  .place-side p{font-size:13px;color:var(--muted);margin-top:8px}
+  .place-side .cta{color:var(--blue)}
+
+  /* ---------- symbols ---------- */
+  .symbol-top-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px
+  }
+  .symbol-card{
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    overflow:hidden;background:#fff;transition:.2s ease;
+    display:grid;grid-template-rows:160px 1fr;
+    min-height:330px;
+  }
+  .symbol-img{overflow:hidden;background:#eef2f5}
+  .symbol-img img{transition:transform .3s ease}
+  .symbol-card:hover .symbol-img img{transform:scale(1.03)}
+  .symbol-copy{padding:16px;display:flex;flex-direction:column}
+  .symbol-copy .meta{font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#b18432}
+  .symbol-copy h3{font-size:20px;margin-top:4px}
+  .symbol-copy p{
+    font-size:12px;color:var(--muted);margin-top:7px;
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;
+  }
+  .symbol-copy .bottom{
+    margin-top:auto;padding-top:14px;border-top:1px solid #edf0f4;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:11px;font-weight:800;
+  }
+  .symbol-copy .bottom span:last-child{color:var(--blue)}
+
+  .symbol-compact{
+    margin-top:16px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:12px
+  }
+  .compact-card{
+    border:1px solid var(--line);border-radius:13px;background:#fff;
+    padding:14px 15px;display:flex;align-items:center;gap:12px;min-height:78px;
+    transition:.2s ease;
+  }
+  .compact-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(18,43,73,.07)}
+  .compact-card .tiny-icon{width:38px;height:38px}
+  .compact-card h3{font-size:16px}
+  .compact-card p{font-size:11px;color:var(--muted);margin-top:2px}
+
+  /* ---------- browse states ---------- */
+  .states-strip{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:14px
+  }
+  .state-card{
+    background:#fff;border:1px solid #e6e0d5;border-radius:14px;overflow:hidden;
+    transition:.2s ease;
+  }
+  .state-card:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(37,34,28,.07)}
+  .flag{
+    height:116px;background:#f1eee8;display:grid;place-items:center;
+    overflow:hidden
+  }
+  .flag img{object-fit:cover}
+  .state-copy{padding:13px 14px}
+  .state-copy h3{font-size:17px}
+  .state-copy p{font-size:11px;color:var(--muted);margin-top:3px}
+
+  /* ---------- map panel ---------- */
+  .map-panel{
+    border:1px solid #dce4ee;border-radius:22px;background:#f4f8fc;
+    padding:30px;display:grid;grid-template-columns:.8fr 1.2fr;gap:34px;align-items:center
+  }
+  .map-copy h2{font-size:40px;line-height:1.06}
+  .map-copy p{color:var(--muted);margin-top:10px;max-width:430px}
+  .selected{
+    margin-top:22px;border:1px solid #d9e2ec;background:#fff;border-radius:15px;padding:18px;
+    max-width:420px;
+  }
+  .selected .eyebrow{margin:0 0 3px;font-size:9px}
+  .selected h3{font-size:28px}
+  .selected-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;border-top:1px solid #edf0f4;margin-top:10px;padding-top:10px}
+  .selected-row span{font-size:10px;color:#93a0b3;text-transform:uppercase;font-weight:800;letter-spacing:.08em}
+  .selected-row strong{display:block;margin-top:3px;font-size:12px}
+  .selected .cta{color:#5c6d86;display:inline-block;margin-top:13px}
+  .tile-map{
+    display:grid;grid-template-columns:repeat(11,38px);grid-auto-rows:38px;gap:6px;justify-content:center;
+  }
+  .tile{
+    width:38px;height:38px;border-radius:6px;
+    display:grid;place-items:center;background:#e7eef6;border:1px solid #cbd8e6;
+    color:#35506f;font-size:10px;font-weight:800;
+  }
+  .tile.gold{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 6px 14px rgba(205,166,76,.28)}
+  .tile.blank{visibility:hidden}
+
+  /* ---------- quick reference ---------- */
+  .ref-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+  .ref-card{
+    border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;
+    min-height:150px;display:flex;flex-direction:column;transition:.2s ease;
+  }
+  .ref-card h3{font-size:17px;margin-top:10px}
+  .ref-card p{
+    font-size:11px;color:var(--muted);margin-top:6px;
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;
+  }
+  .ref-card .cta{font-size:11px;color:var(--blue)}
+
+  /* ---------- footer ---------- */
+  footer{
+    background:#142f58;color:#dbe5f3;padding:44px 0 18px
+  }
+  .footer-grid{
+    display:grid;grid-template-columns:1.4fr .8fr .8fr;gap:70px
+  }
+  .brand-title{font-family:Georgia,"Times New Roman",serif;font-size:24px;color:#fff}
+  .brand-copy{font-size:13px;line-height:1.7;max-width:420px;color:#c8d5e7;margin-top:10px}
+  .footer-col h3{font-family:inherit;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#fff;margin-bottom:14px}
+  .footer-links{display:grid;gap:9px}
+  .footer-links a{font-size:13px;color:#d6e2f1}
+  .footer-bottom{
+    margin-top:34px;padding-top:16px;border-top:1px solid rgba(255,255,255,.13);
+    display:flex;justify-content:space-between;gap:18px;align-items:center;
+    font-size:11px;color:#b8c7db
+  }
+  .footer-bottom .right{display:flex;gap:18px}
+
+  @media(max-width:1150px){
+    .featured-grid{grid-template-columns:repeat(2,1fr)}
+    .core-grid{grid-template-columns:1fr 1fr}
+    .core-col:last-child{grid-column:1/-1}
+    .places-grid{grid-template-columns:1.3fr .7fr}
+    .place-side:last-child{grid-column:1/-1;min-height:190px}
+    .symbol-top-grid{grid-template-columns:repeat(2,1fr)}
+    .symbol-compact{grid-template-columns:repeat(2,1fr)}
+    .states-strip{grid-template-columns:repeat(3,1fr)}
+    .map-panel{grid-template-columns:1fr}
+    .ref-grid{grid-template-columns:repeat(3,1fr)}
+  }
+  @media(max-width:760px){
+    .wrap{width:min(calc(100% - 28px),var(--wrap))}
+    .section{padding:48px 0}
+    .section-head{align-items:flex-start}
+    .featured-grid,.core-grid,.places-grid,.symbol-top-grid,.symbol-compact,.states-strip,.ref-grid{grid-template-columns:1fr}
+    .core-col,.core-col:last-child{grid-column:auto;grid-template-rows:auto 260px auto}
+    .small-row{grid-template-columns:1fr;height:auto}
+    .primary-card{grid-template-columns:1fr}
+    .primary-card .visual{height:150px}
+    .primary-card.soft-green{grid-template-columns:1fr}
+    .place-main{min-height:290px}
+    .place-main .content{max-width:100%}
+    .place-side:last-child{grid-column:auto}
+    .map-panel{padding:22px}
+    .tile-map{transform:scale(.78);transform-origin:left top;width:128%}
+    .footer-grid{grid-template-columns:1fr;gap:30px}
+    .footer-bottom{flex-direction:column;align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+
+<!-- Intro / Featured -->
+<header class="intro">
+  <div class="wrap">
+    <div class="eyebrow">States / People / Places / Data</div>
+    <h1>Explore the United States</h1>
+    <p class="intro-copy">Guides, rankings, state symbols, maps, and practical tools for exploring all 50 states without turning the page into one endless wall of cards.</p>
+
+    <div class="featured-grid">
+      <a class="feature-card photo" href="#" style="background-image:url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=82')">
+        <div class="feature-inner">
+          <span class="circle-icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg></span>
+          <span class="feature-kicker">Live Well</span>
+          <h3>State Living Guides</h3>
+          <p>Compare costs, housing, safety, schools, and quality of life.</p>
+          <span class="cta">Browse Living Guides →</span>
+        </div>
+      </a>
+
+      <a class="feature-card blue" href="#">
+        <div class="feature-inner">
+          <span class="circle-icon"><svg viewBox="0 0 24 24"><path d="M5 20V11"/><path d="M12 20V5"/><path d="M19 20v-8"/></svg></span>
+          <span class="feature-kicker">Data Insights</span>
+          <h3>State Rankings</h3>
+          <p>See how states compare across affordability, health, education, and more.</p>
+          <span class="cta">Browse Rankings →</span>
+        </div>
+      </a>
+
+      <a class="feature-card light" href="#">
+        <div class="feature-inner">
+          <span class="circle-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg></span>
+          <span class="feature-kicker">Find Your Fit</span>
+          <h3>State Match</h3>
+          <p>Answer a few questions to find states that fit your lifestyle and priorities.</p>
+          <span class="cta">Find Your State →</span>
+        </div>
+      </a>
+
+      <a class="feature-card photo" href="#" style="background-image:url('https://images.unsplash.com/photo-1535083783855-76ae62b2914e?auto=format&fit=crop&w=900&q=82')">
+        <div class="feature-inner">
+          <span class="feature-kicker">Our Heritage</span>
+          <h3>National Symbols</h3>
+          <p>Explore the flag, Great Seal, anthem, and other iconic U.S. symbols.</p>
+          <span class="cta">Explore Symbols →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Core 3 columns -->
+<section class="core">
+  <div class="wrap">
+    <div class="core-grid">
+
+      <section class="core-col">
+        <div class="core-head">
+          <div class="core-icon"><svg viewBox="0 0 24 24"><path d="M3 5.5 8 3v15.5L3 21z"/><path d="m8 3 8 2.5V21l-8-2.5z"/><path d="m16 5.5 5-2V19l-5 2z"/></svg></div>
+          <div class="core-title">
+            <div class="core-title-row"><h2>Explore States</h2><a class="small-link" href="#">View all states →</a></div>
+            <p>Guides, maps, and key information for every state.</p>
+          </div>
+        </div>
+        <a class="primary-card" href="#">
+          <div class="visual"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80" alt="State landscape"></div>
+          <div class="copy">
+            <h3>State Guides</h3>
+            <p>In-depth guides to all 50 states including history, geography, cities, and what makes each state unique.</p>
+            <span class="cta">Explore States →</span>
+          </div>
+        </a>
+        <div class="small-row">
+          <a class="small-card" href="#">
+            <div class="small-card-top"><span class="tiny-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 7 5 4"/><path d="m16 7 3-3"/></svg></span><h3>State Borders</h3></div>
+            <p>Explore neighbors, coastlines, and waterways for all 50 states.</p>
+            <span class="cta">Explore →</span>
+          </a>
+          <a class="small-card" href="#">
+            <div class="small-card-top"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><path d="M12 21s6-5 6-11a6 6 0 1 0-12 0c0 6 6 11 6 11Z"/><circle cx="12" cy="10" r="2"/></svg></span><h3>Counties</h3></div>
+            <p>Find and learn about counties in every state.</p>
+            <span class="cta">Find a County →</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="core-col">
+        <div class="core-head">
+          <div class="core-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m14.5 9.5-2 5-5 2 2-5z"/></svg></div>
+          <div class="core-title">
+            <div class="core-title-row"><h2>Compare & Find</h2><a class="small-link" href="#">View all tools →</a></div>
+            <p>Helpful tools for finding and comparing the right places.</p>
+          </div>
+        </div>
+        <a class="primary-card" href="#">
+          <div class="visual"><img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80" alt="Neighborhood"></div>
+          <div class="copy">
+            <h3>County Match</h3>
+            <p>Weight housing, income, jobs, education, and health to find counties that fit your priorities.</p>
+            <span class="cta">Find a County →</span>
+          </div>
+        </a>
+        <div class="small-row">
+          <a class="small-card" href="#">
+            <div class="small-card-top"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M4 6h16"/><path d="M6 6 3 13h6z"/><path d="m18 6-3 7h6z"/></svg></span><h3>Compare States</h3></div>
+            <p>Compare population, economy, education, health, and more.</p>
+            <span class="cta">Compare States →</span>
+          </a>
+          <a class="small-card" href="#">
+            <div class="small-card-top"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2"/><path d="M4 20c.5-4 2.5-6 5-6s4.5 2 5 6"/><path d="M14 16c3 0 5 1.5 6 4"/></svg></span><h3>Personalized Match</h3></div>
+            <p>Set your preferences and discover the states that fit your lifestyle.</p>
+            <span class="cta">Get Started →</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="core-col">
+        <div class="core-head">
+          <div class="core-icon"><svg viewBox="0 0 24 24"><path d="M5 20V11"/><path d="M12 20V5"/><path d="M19 20v-8"/></svg></div>
+          <div class="core-title">
+            <div class="core-title-row"><h2>Rankings & Data</h2><a class="small-link" href="#">View all data →</a></div>
+            <p>Data-driven insights to help you explore and compare.</p>
+          </div>
+        </div>
+        <a class="primary-card soft-green" href="#">
+          <div class="visual"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 20V12"/><path d="M12 20V7"/><path d="M19 20V3"/></svg></div></div>
+          <div class="copy">
+            <h3>County Rankings</h3>
+            <p>Explore rankings for affordability, household income, employment, education, and health.</p>
+            <span class="cta">Browse Rankings →</span>
+          </div>
+        </a>
+        <div class="small-row">
+          <a class="small-card" href="#">
+            <div class="small-card-top"><span class="tiny-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="7" ry="3"/><path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5"/><path d="M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></span><h3>State Data</h3></div>
+            <p>Population, economy, housing, education, and more in one place.</p>
+            <span class="cta">Explore Data →</span>
+          </a>
+          <a class="small-card" href="#">
+            <div class="small-card-top"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><path d="M12 3v9h9"/><path d="M20 15a8 8 0 1 1-11-11"/></svg></span><h3>Visualizations</h3></div>
+            <p>Interactive charts and maps to discover trends across the country.</p>
+            <span class="cta">View Charts →</span>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</section>
+
+<!-- Places & Nature -->
+<section class="section soft">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Places & Nature</div>
+        <h2>Explore the Outdoors</h2>
+        <p>Keep this visual and emotional. This is where photography works best.</p>
+      </div>
+      <a class="view-all" href="#">View all places →</a>
+    </div>
+
+    <div class="places-grid">
+      <a class="place-main" href="#" style="background-image:url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1300&q=84')">
+        <div class="content">
+          <h3>National Parks</h3>
+          <p>Maps, best hikes, entrance fees, when to visit, and how to plan your trip.</p>
+          <span class="cta">Explore Parks →</span>
+        </div>
+      </a>
+      <a class="place-side" href="#">
+        <div class="art"><svg viewBox="0 0 24 24"><path d="m3 19 6-10 4 6 2-3 6 7z"/></svg></div>
+        <h3>Nature & Travel</h3>
+        <p>Scenic destinations, outdoor activities, and practical travel guides.</p>
+        <span class="cta">Explore →</span>
+      </a>
+      <a class="place-side" href="#">
+        <div class="art"><svg viewBox="0 0 24 24"><path d="m12 3 5 7h-3l4 6h-5v5h-2v-5H6l4-6H7z"/></svg></div>
+        <h3>Outdoors by State</h3>
+        <p>Parks, forests, lakes, trails, and natural wonders organized by state.</p>
+        <span class="cta">Browse by State →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Symbols -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Symbol Types</div>
+        <h2>Browse State Symbols by Category</h2>
+        <p>Fewer large photo cards, then quieter compact categories below. The section stays visual without turning into a noisy image wall.</p>
+      </div>
+      <a class="view-all" href="#">View all symbols →</a>
+    </div>
+
+    <div class="symbol-top-grid">
+      <a class="symbol-card" href="#">
+        <div class="symbol-img"><img src="https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=800&q=80" alt="Bird"></div>
+        <div class="symbol-copy">
+          <div class="meta">Symbol Category</div>
+          <h3>State Birds</h3>
+          <p>Official state birds chosen to represent local wildlife, identity, and character.</p>
+          <div class="bottom"><span>50 states</span><span>Explore →</span></div>
+        </div>
+      </a>
+      <a class="symbol-card" href="#">
+        <div class="symbol-img"><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=800&q=80" alt="Flowers"></div>
+        <div class="symbol-copy">
+          <div class="meta">Symbol Category</div>
+          <h3>State Flowers</h3>
+          <p>Beautiful blooms selected as each state's official floral emblem.</p>
+          <div class="bottom"><span>50 states</span><span>Explore →</span></div>
+        </div>
+      </a>
+      <a class="symbol-card" href="#">
+        <div class="symbol-img"><img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80" alt="Trees"></div>
+        <div class="symbol-copy">
+          <div class="meta">Symbol Category</div>
+          <h3>State Trees</h3>
+          <p>Trees that symbolize the landscapes, ecosystems, and heritage of each state.</p>
+          <div class="bottom"><span>50 states</span><span>Explore →</span></div>
+        </div>
+      </a>
+      <a class="symbol-card" href="#">
+        <div class="symbol-img"><img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=800&q=80" alt="Flag"></div>
+        <div class="symbol-copy">
+          <div class="meta">Symbol Category</div>
+          <h3>State Flags</h3>
+          <p>Official flags and the history, imagery, and symbolism behind their designs.</p>
+          <div class="bottom"><span>50 states</span><span>Explore →</span></div>
+        </div>
+      </a>
+    </div>
+
+    <div class="symbol-compact">
+      <a class="compact-card" href="#"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><path d="M6 17 18 7"/><path d="M8 7h10v10"/></svg></span><div><h3>State Mottos</h3><p>Official phrases and their meanings</p></div></a>
+      <a class="compact-card" href="#"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M8 12h8M12 8v8"/></svg></span><div><h3>State Seals</h3><p>Official great seals and emblems</p></div></a>
+      <a class="compact-card" href="#"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><path d="M4 18h16"/><path d="M7 18V9l5-4 5 4v9"/></svg></span><div><h3>Coats of Arms</h3><p>Historic heraldry and official arms</p></div></a>
+      <a class="compact-card" href="#"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M3 20c.5-4 2.5-6 5-6M21 20c-.5-4-2.5-6-5-6"/></svg></span><div><h3>State Sports</h3><p>Official sports and heritage activities</p></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- States strip -->
+<section class="section cream">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">All 50 States</div>
+        <h2>Browse State Symbols by State</h2>
+      </div>
+      <a class="view-all" href="#">View all states →</a>
+    </div>
+
+    <div class="states-strip">
+      <a class="state-card" href="#"><div class="flag"><img src="https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_California.svg" alt="California flag"></div><div class="state-copy"><h3>California</h3><p>Sacramento</p></div></a>
+      <a class="state-card" href="#"><div class="flag"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Texas.svg" alt="Texas flag"></div><div class="state-copy"><h3>Texas</h3><p>Austin</p></div></a>
+      <a class="state-card" href="#"><div class="flag"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Florida.svg" alt="Florida flag"></div><div class="state-copy"><h3>Florida</h3><p>Tallahassee</p></div></a>
+      <a class="state-card" href="#"><div class="flag"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_New_York.svg" alt="New York flag"></div><div class="state-copy"><h3>New York</h3><p>Albany</p></div></a>
+      <a class="state-card" href="#"><div class="flag"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Pennsylvania.svg" alt="Pennsylvania flag"></div><div class="state-copy"><h3>Pennsylvania</h3><p>Harrisburg</p></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- Map -->
+<section class="section">
+  <div class="wrap">
+    <div class="map-panel">
+      <div class="map-copy">
+        <div class="eyebrow">State Map</div>
+        <h2>Browse State Symbols by Map</h2>
+        <p>Choose a state tile to preview its flags, birds, flowers, trees, mottos, seals, and other official symbols.</p>
+        <div class="selected">
+          <div class="eyebrow">Selected State</div>
+          <h3>Mississippi</h3>
+          <div class="selected-row"><div><span>Capital</span><strong>Jackson</strong></div><div><span>Population</span><strong>2,961,279</strong></div></div>
+          <span class="cta">Explore Mississippi symbols →</span>
+        </div>
+      </div>
+
+      <div class="tile-map" aria-label="Stylized 50-state tile map">
+        <div class="tile">AK</div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile">ME</div>
+        <div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile">VT</div><div class="tile">NH</div>
+        <div class="tile">WA</div><div class="tile">ID</div><div class="tile">MT</div><div class="tile">ND</div><div class="tile">MN</div><div class="tile">WI</div><div class="tile">IL</div><div class="tile">MI</div><div class="tile">NY</div><div class="tile">RI</div><div class="tile">MA</div>
+        <div class="tile">OR</div><div class="tile">NV</div><div class="tile">WY</div><div class="tile">SD</div><div class="tile">IA</div><div class="tile">IN</div><div class="tile">OH</div><div class="tile">PA</div><div class="tile">NJ</div><div class="tile">CT</div><div class="tile blank"></div>
+        <div class="tile">CA</div><div class="tile">UT</div><div class="tile">CO</div><div class="tile">NE</div><div class="tile">MO</div><div class="tile">KY</div><div class="tile">WV</div><div class="tile">VA</div><div class="tile">MD</div><div class="tile">DE</div><div class="tile blank"></div>
+        <div class="tile blank"></div><div class="tile">AZ</div><div class="tile">NM</div><div class="tile">KS</div><div class="tile">AR</div><div class="tile">TN</div><div class="tile">NC</div><div class="tile">SC</div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div>
+        <div class="tile blank"></div><div class="tile blank"></div><div class="tile">OK</div><div class="tile">LA</div><div class="tile gold">MS</div><div class="tile">AL</div><div class="tile">GA</div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div>
+        <div class="tile">HI</div><div class="tile blank"></div><div class="tile">TX</div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile blank"></div><div class="tile">FL</div><div class="tile blank"></div><div class="tile blank"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick reference -->
+<section class="section soft">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Quick Reference</div>
+        <h2>Fast Facts & Lookup Tools</h2>
+        <p>No photos here. Keep utility content quiet, compact, and easy to scan.</p>
+      </div>
+      <a class="view-all" href="#">View all reference →</a>
+    </div>
+
+    <div class="ref-grid">
+      <a class="ref-card" href="#"><span class="tiny-icon blue" style="font-weight:900">CA</span><h3>State Abbreviations</h3><p>All 50 abbreviations, capitals, regions, and common code mix-ups.</p><span class="cta">View List →</span></a>
+      <a class="ref-card" href="#"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><path d="M4 18h16"/><path d="M7 18V9l5-4 5 4v9"/></svg></span><h3>State Capitals</h3><p>Capital cities for every U.S. state in one quick reference.</p><span class="cta">Browse Capitals →</span></a>
+      <a class="ref-card" href="#"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2"/><path d="M4 20c.5-4 2.5-6 5-6s4.5 2 5 6"/><path d="M14 16c3 0 5 1.5 6 4"/></svg></span><h3>Last Names by State</h3><p>See common surnames and explore name patterns across states.</p><span class="cta">Explore Names →</span></a>
+      <a class="ref-card" href="#"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 7 5 4"/><path d="m16 7 3-3"/></svg></span><h3>State Borders</h3><p>Neighbors, coastlines, border lengths, rivers, and waterways.</p><span class="cta">Explore Borders →</span></a>
+      <a class="ref-card" href="#"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></span><h3>Time Zones</h3><p>Which time zones each state uses, including multi-zone states.</p><span class="cta">View Zones →</span></a>
+      <a class="ref-card" href="#"><span class="tiny-icon blue"><svg viewBox="0 0 24 24"><path d="M4 6h16v14H4z"/><path d="M8 3v6M16 3v6M4 10h16"/></svg></span><h3>Statehood Dates</h3><p>Admission dates, order of statehood, and historic milestones.</p><span class="cta">View Timeline →</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="brand-title">USA Symbol</div>
+        <p class="brand-copy">A visual reference for U.S. state symbols, state guides, rankings, and practical lookup tools across all 50 states.</p>
+      </div>
+      <div class="footer-col">
+        <h3>Explore</h3>
+        <div class="footer-links">
+          <a href="#">Browse States</a>
+          <a href="#">State Symbols</a>
+          <a href="#">Rankings</a>
+          <a href="#">Compare States</a>
+          <a href="#">Collections</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h3>Company</h3>
+        <div class="footer-links">
+          <a href="#">About Us</a>
+          <a href="#">Contact</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Accessibility</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 USA Symbol. Educational reference for American state symbols.</span>
+      <span class="right"><a href="#">Sitemap</a><a href="#">Privacy Settings</a></span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

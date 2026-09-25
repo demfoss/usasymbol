@@ -1,0 +1,198 @@
+@model USASymbol.Models.ViewModels.StateMatchPageViewModel
+@using System.Text.Json
+
+@{
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var placesJson = JsonSerializer.Serialize(Model.Places, jsonOptions);
+    var metricsJson = JsonSerializer.Serialize(Model.MetricOptions, jsonOptions);
+    var people = new[]
+    {
+        (Key: "a", Label: "You", Kicker: "Person one"),
+        (Key: "b", Label: "Partner", Kicker: "Person two")
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/state-match.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/state-match-tools.css" asp-append-version="true" />
+}
+
+<div class="sm-page">
+    <section class="sm-hero sm-hero--tool">
+        <div class="sm-shell sm-hero-grid">
+            <div>
+                <nav class="sm-breadcrumb" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    <a href="/tools">Tools</a>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    <span aria-current="page">Where Should We Move?</span>
+                </nav>
+                <p class="sm-eyebrow"><span></span> State Match for two</p>
+                <h1>Where should <em>we</em> move?</h1>
+                <p class="sm-lede">
+                    You and your partner each set what matters most. We score every state for both of
+                    you, then rank the ones you'd both be happy with, and show where you disagree.
+                </p>
+            </div>
+            <div class="sm-hero-note">
+                <span class="sm-note-number">01</span>
+                <div>
+                    <strong>Each sets priorities</strong>
+                    <p>Pick a starting point, then fine-tune. Or send your partner the link to fill in their side.</p>
+                </div>
+                <span class="sm-note-number">02</span>
+                <div>
+                    <strong>Find common ground</strong>
+                    <p>Rank by your combined score, or by the "fairest" option where neither of you settles for much less.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="sm-shell cm-main">
+        <div class="cm-people">
+            @foreach (var person in people)
+            {
+                <section class="cm-person cm-person-@person.Key" aria-labelledby="cm-title-@person.Key" data-person="@person.Key">
+                    <div class="cm-person-head">
+                        <span class="cm-dot" aria-hidden="true"></span>
+                        <div class="cm-person-name">
+                            <p class="sm-section-kicker">@person.Kicker</p>
+                            <label class="sr-only" for="cm-name-@person.Key">Name for @person.Label.ToLowerInvariant()</label>
+                            <input class="cm-name" id="cm-name-@person.Key" type="text" maxlength="18" value="@person.Label" placeholder="@person.Label" autocomplete="off" spellcheck="false">
+                            <h2 class="sr-only" id="cm-title-@person.Key">Priorities for <span data-name-for="@person.Key">@person.Label</span></h2>
+                        </div>
+                        <i class="fa-solid fa-pen cm-edit-icon" aria-hidden="true"></i>
+                    </div>
+                    <div class="cm-presets" role="group" aria-label="Starting point">
+                        <button type="button" class="cm-preset" data-preset="balanced">Balanced</button>
+                        <button type="button" class="cm-preset" data-preset="budget">Budget</button>
+                        <button type="button" class="cm-preset" data-preset="career">Career</button>
+                        <button type="button" class="cm-preset" data-preset="family">Family</button>
+                        <button type="button" class="cm-preset" data-preset="warm">Warmth</button>
+                    </div>
+                    <p class="cm-summary" data-summary-for="@person.Key"></p>
+                    <details class="cm-fine">
+                        <summary>
+                            <span>Fine-tune priorities</span>
+                            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                        </summary>
+                        <div class="cm-sliders" data-sliders-for="@person.Key"></div>
+                    </details>
+                </section>
+            }
+        </div>
+
+        <section class="cm-verdict" id="cm-verdict" aria-live="polite" aria-label="Result"></section>
+
+        <div class="cm-duo">
+            <section class="smt-card cm-plot-card" aria-labelledby="cm-plot-title">
+                <div class="smt-card-head">
+                    <div>
+                        <p class="sm-section-kicker">Every state, both scores</p>
+                        <h2 id="cm-plot-title">Where you meet</h2>
+                    </div>
+                    <ul class="cm-plot-legend">
+                        <li><i class="cm-key-both"></i>In both top 10s</li>
+                        <li><i class="cm-key-other"></i>Other states</li>
+                        <li><i class="cm-key-line"></i>Equal scores</li>
+                    </ul>
+                </div>
+                <div class="cm-plot-wrap" id="cm-plot-wrap">
+                    <svg class="cm-plot" id="cm-plot" viewBox="0 0 600 440" role="img" aria-labelledby="cm-plot-title cm-plot-desc"></svg>
+                    <p class="sr-only" id="cm-plot-desc">Scatter plot: each dot is a state, placed by the first person's score across and the second person's score up. States in the shaded top-right corner are in both people's top 10. The ranked list below has the same numbers.</p>
+                    <div class="cm-plot-tip" id="cm-plot-tip" role="tooltip"></div>
+                </div>
+                <p class="cm-plot-caption" id="cm-plot-caption"></p>
+            </section>
+
+            <section class="smt-card" aria-labelledby="cm-split-title">
+                <div class="smt-card-head">
+                    <div>
+                        <p class="sm-section-kicker">Worth talking about</p>
+                        <h2 id="cm-split-title">Where you disagree</h2>
+                    </div>
+                </div>
+                <div class="cm-split" id="cm-split"></div>
+            </section>
+        </div>
+
+        <section class="smt-card cm-table-card" aria-labelledby="cm-table-title">
+            <div class="smt-card-head">
+                <div>
+                    <p class="sm-section-kicker" id="cm-table-kicker">Ranked by combined score</p>
+                    <h2 id="cm-table-title">States for both of you</h2>
+                </div>
+                <div class="smt-card-tools">
+                    <div class="smt-segmented smt-segmented-sm" role="radiogroup" aria-label="Rank by">
+                        <label title="Average of both scores"><input type="radio" name="cm-mode" value="average" checked><span>Combined</span></label>
+                        <label title="Ranked by the lower of the two scores, so neither of you ends up with a poor fit"><input type="radio" name="cm-mode" value="fair"><span>Fairest</span></label>
+                    </div>
+                </div>
+            </div>
+            <p class="cm-mode-hint" id="cm-mode-hint"></p>
+            <div class="cm-row cm-row-head" aria-hidden="true">
+                <span>#</span>
+                <span>State</span>
+                <span class="cm-num" data-name-for="a">You</span>
+                <span class="cm-num" data-name-for="b">Partner</span>
+                <span class="cm-num">Together</span>
+            </div>
+            <div class="smt-scroll" id="cm-list"></div>
+            <button type="button" class="sm-show-all" id="cm-show-all">Show all states <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+        </section>
+
+        <section class="smt-notes" aria-labelledby="cm-notes-title">
+            <h2 id="cm-notes-title">How the shared score works</h2>
+            <div class="smt-notes-grid">
+                <div>
+                    <h3>Two separate scores</h3>
+                    <p>Each person's sliders produce their own 0–100 match for every state, using the same data and formula as <a href="/state-match">State Match</a>.</p>
+                </div>
+                <div>
+                    <h3>Combined vs. fairest</h3>
+                    <p>Combined ranks by the average of both scores. Fairest ranks by the lower score, so a state one of you loves and the other can't stand drops down.</p>
+                </div>
+                <div>
+                    <h3>Top 10 overlap</h3>
+                    <p>Counts how many states appear in both of your individual top 10s: a quick read on how close your priorities really are.</p>
+                </div>
+            </div>
+            <p class="smt-notes-links">
+                Statewide averages hide big local differences. <a href="/state-match/methodology">Full methodology and sources</a>.
+            </p>
+        </section>
+    </main>
+</div>
+
+<noscript>
+    <div class="sm-noscript sm-shell">
+        <h2>JavaScript is required for this tool</h2>
+        <p>Scores are calculated in your browser. You can still <a href="/states">browse all states</a> or <a href="/compare-states">compare two states</a>.</p>
+    </div>
+</noscript>
+
+<script>
+    window.stateMatchData = {
+        places: @Html.Raw(placesJson),
+        metrics: @Html.Raw(metricsJson)
+    };
+</script>
+
+@section Scripts {
+    <script defer src="~/js/state-match-core.js" asp-append-version="true"></script>
+    <script defer src="~/js/couple-match.js" asp-append-version="true"></script>
+}
+
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "WebApplication",
+    "name": "Where Should We Move? State Match for Couples",
+    "url": "https://usasymbol.com/tools/where-should-we-move",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any",
+    "description": "Two people set their own priorities and see which U.S. states suit them both, where their top 10s overlap, and where they disagree."
+}
+</script>

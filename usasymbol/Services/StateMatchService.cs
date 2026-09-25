@@ -23,9 +23,15 @@ namespace USASymbol.Services
         /// <summary>
         /// Raw contents of Content/state-match/occupation-median-salary.json — sourced median/mean
         /// salary by occupation and state, embedded as-is into the client payload so the "How much
-        /// would you keep?" calculator can use a real per-state income instead of one flat number.
+        /// would you keep?" take-home calculator (/tools/take-home-pay-by-state) can use a real per-state income.
         /// </summary>
         string GetOccupationSalariesJson();
+
+        /// <summary>
+        /// Raw contents of Content/state-match/state-income-tax-2025.json — simplified federal and
+        /// state bracket schedules behind the Take-Home Pay by State calculator.
+        /// </summary>
+        string GetIncomeTaxScheduleJson();
     }
 
     public sealed class StateMatchService : IStateMatchService
@@ -59,8 +65,7 @@ namespace USASymbol.Services
         private readonly INormalizer _normalizer;
         private readonly IWebHostEnvironment _env;
 
-        private static string? _cachedOccupationSalariesJson;
-        private static readonly object OccupationSalariesLock = new();
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> CachedContentJson = new();
 
         public StateMatchService(
             IStateService stateService,
@@ -74,22 +79,16 @@ namespace USASymbol.Services
             _env = env;
         }
 
-        public string GetOccupationSalariesJson()
-        {
-            if (_cachedOccupationSalariesJson != null)
-                return _cachedOccupationSalariesJson;
+        public string GetOccupationSalariesJson() => ReadContentJson("occupation-median-salary.json");
 
-            lock (OccupationSalariesLock)
+        public string GetIncomeTaxScheduleJson() => ReadContentJson("state-income-tax-2025.json");
+
+        private string ReadContentJson(string fileName) =>
+            CachedContentJson.GetOrAdd(fileName, name =>
             {
-                if (_cachedOccupationSalariesJson != null)
-                    return _cachedOccupationSalariesJson;
-
-                var path = Path.Combine(_env.ContentRootPath, "Content", "state-match", "occupation-median-salary.json");
-                _cachedOccupationSalariesJson = File.Exists(path) ? File.ReadAllText(path) : "{}";
-            }
-
-            return _cachedOccupationSalariesJson;
-        }
+                var path = Path.Combine(_env.ContentRootPath, "Content", "state-match", name);
+                return File.Exists(path) ? File.ReadAllText(path) : "{}";
+            });
 
         public async Task<StateMatchPageViewModel> BuildAsync()
         {
@@ -165,6 +164,12 @@ namespace USASymbol.Services
             };
         }
 
+        /// <summary>
+        /// Slider value (0–100) to scoring weight, squared so a maxed-out priority dominates the
+        /// ranking. Must match effectiveWeight() in wwwroot/js/state-match-core.js.
+        /// </summary>
+        public static double EffectiveWeight(int slider) => slider > 0 ? slider * (double)slider / 100.0 : 0;
+
         public async Task<IReadOnlyList<StateMatchRankedPlace>> RankAsync(
             IReadOnlyDictionary<string, int> weights,
             StateMatchPageViewModel? page = null)
@@ -203,8 +208,9 @@ namespace USASymbol.Services
                     var normalized = _normalizer.Normalize(
                         metric.Key, metric.Raw, range.Min, range.Max, metric.Direction, NormalizationFrame.Nation50States);
 
-                    weightedTotal += normalized * weight;
-                    usedWeight += weight;
+                    var effective = EffectiveWeight(weight);
+                    weightedTotal += normalized * effective;
+                    usedWeight += effective;
 
                     if (normalized > strongestValue)
                     {

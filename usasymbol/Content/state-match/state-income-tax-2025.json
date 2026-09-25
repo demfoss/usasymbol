@@ -1,0 +1,194 @@
+{
+  "_readme": "Simplified 2025 individual income tax schedules used by the Take-Home Pay by State calculator (/tools/take-home-pay-by-state). Brackets are [taxable-income floor in USD, marginal rate in percent]. 'deduction' and 'exemption' are the total amounts subtracted from wages for that filing status. Optional '*Phaseout' objects shrink that amount by 'rate' percent of income above 'start'. Credits, local income taxes (county/city), state payroll taxes (SDI/PFML), and special deductions (e.g. Alabama's deduction for federal tax paid) are not modeled. States with no tax on wages use { \"none\": true }.",
+  "taxYear": 2025,
+  "source": "Tax Foundation, State Individual Income Tax Rates and Brackets, 2025; IRS 2025 federal brackets and standard deduction",
+  "sourceUrl": "https://taxfoundation.org/data/all/state/state-income-tax-rates/",
+  "federal": {
+    "single": { "deduction": 15750, "brackets": [[0, 10], [11925, 12], [48475, 22], [103350, 24], [197300, 32], [250525, 35], [626350, 37]] },
+    "married": { "deduction": 31500, "brackets": [[0, 10], [23850, 12], [96950, 22], [206700, 24], [394600, 32], [501050, 35], [751600, 37]] },
+    "socialSecurityRate": 6.2,
+    "socialSecurityWageBase": 176100,
+    "medicareRate": 1.45,
+    "additionalMedicareRate": 0.9,
+    "additionalMedicareThreshold": { "single": 200000, "married": 250000 }
+  },
+  "states": {
+    "AL": {
+      "single": { "deduction": 3000, "exemption": 1500, "brackets": [[0, 2], [500, 4], [3000, 5]] },
+      "married": { "deduction": 8500, "exemption": 3000, "brackets": [[0, 2], [1000, 4], [6000, 5]] }
+    },
+    "AK": { "none": true },
+    "AZ": {
+      "single": { "deduction": 15000, "brackets": [[0, 2.5]] },
+      "married": { "deduction": 30000, "brackets": [[0, 2.5]] }
+    },
+    "AR": {
+      "single": { "deduction": 2410, "brackets": [[0, 0], [5500, 2], [10900, 3], [15600, 3.4], [25700, 3.9]] },
+      "married": { "deduction": 4820, "brackets": [[0, 0], [5500, 2], [10900, 3], [15600, 3.4], [25700, 3.9]] }
+    },
+    "CA": {
+      "single": { "deduction": 5706, "brackets": [[0, 1], [11079, 2], [26264, 4], [41452, 6], [57542, 8], [72724, 9.3], [371479, 10.3], [445771, 11.3], [742953, 12.3], [1000000, 13.3]] },
+      "married": { "deduction": 11412, "brackets": [[0, 1], [22158, 2], [52528, 4], [82904, 6], [115084, 8], [145448, 9.3], [742958, 10.3], [891542, 11.3], [1000000, 12.3], [1485906, 13.3]] }
+    },
+    "CO": {
+      "single": { "deduction": 15000, "brackets": [[0, 4.4]] },
+      "married": { "deduction": 30000, "brackets": [[0, 4.4]] }
+    },
+    "CT": {
+      "single": { "exemption": 15000, "exemptionPhaseout": { "start": 30000, "rate": 100 }, "brackets": [[0, 2], [10000, 4.5], [50000, 5.5], [100000, 6], [200000, 6.5], [250000, 6.9], [500000, 6.99]] },
+      "married": { "exemption": 24000, "exemptionPhaseout": { "start": 48000, "rate": 100 }, "brackets": [[0, 2], [20000, 4.5], [100000, 5.5], [200000, 6], [400000, 6.5], [500000, 6.9], [1000000, 6.99]] }
+    },
+    "DE": {
+      "single": { "deduction": 3250, "brackets": [[0, 0], [2000, 2.2], [5000, 3.9], [10000, 4.8], [20000, 5.2], [25000, 5.55], [60000, 6.6]] },
+      "married": { "deduction": 6500, "brackets": [[0, 0], [2000, 2.2], [5000, 3.9], [10000, 4.8], [20000, 5.2], [25000, 5.55], [60000, 6.6]] }
+    },
+    "DC": {
+      "single": { "deduction": 15000, "brackets": [[0, 4], [10000, 6], [40000, 6.5], [60000, 8.5], [250000, 9.25], [500000, 9.75], [1000000, 10.75]] },
+      "married": { "deduction": 30000, "brackets": [[0, 4], [10000, 6], [40000, 6.5], [60000, 8.5], [250000, 9.25], [500000, 9.75], [1000000, 10.75]] }
+    },
+    "FL": { "none": true },
+    "GA": {
+      "single": { "deduction": 12000, "brackets": [[0, 5.19]] },
+      "married": { "deduction": 24000, "brackets": [[0, 5.19]] }
+    },
+    "HI": {
+      "single": { "deduction": 4400, "exemption": 1144, "brackets": [[0, 1.4], [9600, 3.2], [14400, 5.5], [19200, 6.4], [24000, 6.8], [36000, 7.2], [48000, 7.6], [125000, 7.9], [175000, 8.25], [225000, 9], [275000, 10], [325000, 11]] },
+      "married": { "deduction": 8800, "exemption": 2288, "brackets": [[0, 1.4], [19200, 3.2], [28800, 5.5], [38400, 6.4], [48000, 6.8], [72000, 7.2], [96000, 7.6], [250000, 7.9], [350000, 8.25], [450000, 9], [550000, 10], [650000, 11]] }
+    },
+    "ID": {
+      "single": { "deduction": 15000, "brackets": [[0, 0], [4811, 5.3]] },
+      "married": { "deduction": 30000, "brackets": [[0, 0], [9622, 5.3]] }
+    },
+    "IL": {
+      "single": { "exemption": 2850, "brackets": [[0, 4.95]] },
+      "married": { "exemption": 5700, "brackets": [[0, 4.95]] }
+    },
+    "IN": {
+      "single": { "exemption": 1000, "brackets": [[0, 3.0]] },
+      "married": { "exemption": 2000, "brackets": [[0, 3.0]] }
+    },
+    "IA": {
+      "single": { "deduction": 15000, "brackets": [[0, 3.8]] },
+      "married": { "deduction": 30000, "brackets": [[0, 3.8]] }
+    },
+    "KS": {
+      "single": { "deduction": 3605, "exemption": 9160, "brackets": [[0, 5.2], [23000, 5.58]] },
+      "married": { "deduction": 8240, "exemption": 18320, "brackets": [[0, 5.2], [46000, 5.58]] }
+    },
+    "KY": {
+      "single": { "deduction": 3270, "brackets": [[0, 4.0]] },
+      "married": { "deduction": 6540, "brackets": [[0, 4.0]] }
+    },
+    "LA": {
+      "single": { "deduction": 12500, "brackets": [[0, 3.0]] },
+      "married": { "deduction": 25000, "brackets": [[0, 3.0]] }
+    },
+    "ME": {
+      "single": { "deduction": 15000, "exemption": 5150, "brackets": [[0, 5.8], [26800, 6.75], [63450, 7.15]] },
+      "married": { "deduction": 30000, "exemption": 10300, "brackets": [[0, 5.8], [53600, 6.75], [126900, 7.15]] }
+    },
+    "MD": {
+      "single": { "deduction": 3350, "exemption": 3200, "brackets": [[0, 2], [1000, 3], [2000, 4], [3000, 4.75], [100000, 5], [125000, 5.25], [150000, 5.5], [250000, 5.75], [500000, 6.25], [1000000, 6.5]] },
+      "married": { "deduction": 6700, "exemption": 6400, "brackets": [[0, 2], [1000, 3], [2000, 4], [3000, 4.75], [150000, 5], [175000, 5.25], [225000, 5.5], [300000, 5.75], [600000, 6.25], [1200000, 6.5]] }
+    },
+    "MA": {
+      "single": { "exemption": 4400, "brackets": [[0, 5], [1083150, 9]] },
+      "married": { "exemption": 8800, "brackets": [[0, 5], [1083150, 9]] }
+    },
+    "MI": {
+      "single": { "exemption": 5800, "brackets": [[0, 4.25]] },
+      "married": { "exemption": 11600, "brackets": [[0, 4.25]] }
+    },
+    "MN": {
+      "single": { "deduction": 14950, "brackets": [[0, 5.35], [32570, 6.8], [106990, 7.85], [198630, 9.85]] },
+      "married": { "deduction": 29900, "brackets": [[0, 5.35], [47620, 6.8], [189180, 7.85], [330410, 9.85]] }
+    },
+    "MS": {
+      "single": { "deduction": 2300, "exemption": 6000, "brackets": [[0, 0], [10000, 4.4]] },
+      "married": { "deduction": 4600, "exemption": 12000, "brackets": [[0, 0], [10000, 4.4]] }
+    },
+    "MO": {
+      "single": { "deduction": 15000, "brackets": [[0, 0], [1313, 2], [2626, 2.5], [3939, 3], [5252, 3.5], [6565, 4], [7878, 4.5], [9191, 4.7]] },
+      "married": { "deduction": 30000, "brackets": [[0, 0], [1313, 2], [2626, 2.5], [3939, 3], [5252, 3.5], [6565, 4], [7878, 4.5], [9191, 4.7]] }
+    },
+    "MT": {
+      "single": { "deduction": 15000, "brackets": [[0, 4.7], [21100, 5.9]] },
+      "married": { "deduction": 30000, "brackets": [[0, 4.7], [42200, 5.9]] }
+    },
+    "NE": {
+      "single": { "deduction": 8600, "brackets": [[0, 2.46], [4030, 3.51], [24120, 5.01], [38870, 5.2]] },
+      "married": { "deduction": 17200, "brackets": [[0, 2.46], [8040, 3.51], [48250, 5.01], [77730, 5.2]] }
+    },
+    "NV": { "none": true },
+    "NH": { "none": true },
+    "NJ": {
+      "single": { "exemption": 1000, "brackets": [[0, 1.4], [20000, 1.75], [35000, 3.5], [40000, 5.525], [75000, 6.37], [500000, 8.97], [1000000, 10.75]] },
+      "married": { "exemption": 2000, "brackets": [[0, 1.4], [20000, 1.75], [50000, 2.45], [70000, 3.5], [80000, 5.525], [150000, 6.37], [500000, 8.97], [1000000, 10.75]] }
+    },
+    "NM": {
+      "single": { "deduction": 15000, "brackets": [[0, 1.5], [5500, 3.2], [16500, 4.3], [33500, 4.7], [66500, 4.9], [210000, 5.9]] },
+      "married": { "deduction": 30000, "brackets": [[0, 1.5], [8000, 3.2], [25000, 4.3], [50000, 4.7], [100000, 4.9], [315000, 5.9]] }
+    },
+    "NY": {
+      "single": { "deduction": 8000, "brackets": [[0, 4], [8500, 4.5], [11700, 5.25], [13900, 5.5], [80650, 6], [215400, 6.85], [1077550, 9.65], [5000000, 10.3], [25000000, 10.9]] },
+      "married": { "deduction": 16050, "brackets": [[0, 4], [17150, 4.5], [23600, 5.25], [27900, 5.5], [161550, 6], [323200, 6.85], [2155350, 9.65], [5000000, 10.3], [25000000, 10.9]] }
+    },
+    "NC": {
+      "single": { "deduction": 12750, "brackets": [[0, 4.25]] },
+      "married": { "deduction": 25500, "brackets": [[0, 4.25]] }
+    },
+    "ND": {
+      "single": { "deduction": 15000, "brackets": [[0, 0], [48475, 1.95], [244825, 2.5]] },
+      "married": { "deduction": 30000, "brackets": [[0, 0], [80975, 1.95], [298075, 2.5]] }
+    },
+    "OH": {
+      "single": { "exemption": 2150, "brackets": [[0, 0], [26050, 2.75], [100000, 3.5]] },
+      "married": { "exemption": 4300, "brackets": [[0, 0], [26050, 2.75], [100000, 3.5]] }
+    },
+    "OK": {
+      "single": { "deduction": 6350, "exemption": 1000, "brackets": [[0, 0.25], [1000, 0.75], [2500, 1.75], [3750, 2.75], [4900, 3.75], [7200, 4.75]] },
+      "married": { "deduction": 12700, "exemption": 2000, "brackets": [[0, 0.25], [2000, 0.75], [5000, 1.75], [7500, 2.75], [9800, 3.75], [14400, 4.75]] }
+    },
+    "OR": {
+      "single": { "deduction": 2835, "brackets": [[0, 4.75], [4400, 6.75], [11050, 8.75], [125000, 9.9]] },
+      "married": { "deduction": 5670, "brackets": [[0, 4.75], [8800, 6.75], [22100, 8.75], [250000, 9.9]] }
+    },
+    "PA": {
+      "single": { "brackets": [[0, 3.07]] },
+      "married": { "brackets": [[0, 3.07]] }
+    },
+    "RI": {
+      "single": { "deduction": 10900, "exemption": 5100, "brackets": [[0, 3.75], [79900, 4.75], [181650, 5.99]] },
+      "married": { "deduction": 21800, "exemption": 10200, "brackets": [[0, 3.75], [79900, 4.75], [181650, 5.99]] }
+    },
+    "SC": {
+      "single": { "deduction": 15000, "brackets": [[0, 0], [3560, 3], [17830, 6.2]] },
+      "married": { "deduction": 30000, "brackets": [[0, 0], [3560, 3], [17830, 6.2]] }
+    },
+    "SD": { "none": true },
+    "TN": { "none": true },
+    "TX": { "none": true },
+    "UT": {
+      "single": { "brackets": [[0, 4.5]] },
+      "married": { "brackets": [[0, 4.5]] }
+    },
+    "VT": {
+      "single": { "deduction": 7400, "exemption": 5300, "brackets": [[0, 3.35], [47900, 6.6], [116000, 7.6], [242000, 8.75]] },
+      "married": { "deduction": 14850, "exemption": 10600, "brackets": [[0, 3.35], [79950, 6.6], [193300, 7.6], [294600, 8.75]] }
+    },
+    "VA": {
+      "single": { "deduction": 8500, "exemption": 930, "brackets": [[0, 2], [3000, 3], [5000, 5], [17000, 5.75]] },
+      "married": { "deduction": 17000, "exemption": 1860, "brackets": [[0, 2], [3000, 3], [5000, 5], [17000, 5.75]] }
+    },
+    "WA": { "none": true },
+    "WV": {
+      "single": { "exemption": 2000, "brackets": [[0, 2.22], [10000, 2.96], [25000, 3.33], [40000, 4.44], [60000, 4.82]] },
+      "married": { "exemption": 4000, "brackets": [[0, 2.22], [10000, 2.96], [25000, 3.33], [40000, 4.44], [60000, 4.82]] }
+    },
+    "WI": {
+      "single": { "deduction": 13560, "deductionPhaseout": { "start": 19070, "rate": 12 }, "exemption": 700, "brackets": [[0, 3.5], [14680, 4.4], [29370, 5.3], [323290, 7.65]] },
+      "married": { "deduction": 25110, "deductionPhaseout": { "start": 26880, "rate": 19.778 }, "exemption": 1400, "brackets": [[0, 3.5], [19580, 4.4], [39150, 5.3], [431060, 7.65]] }
+    },
+    "WY": { "none": true }
+  }
+}

@@ -1,0 +1,270 @@
+@model USASymbol.Models.ViewModels.TakeHomePageViewModel
+@using System.Text.Json
+
+@{
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var placesJson = JsonSerializer.Serialize(Model.Places, jsonOptions);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/state-match.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/state-match-tools.css" asp-append-version="true" />
+}
+
+<div class="sm-page">
+    <section class="sm-hero sm-hero--tool">
+        <div class="sm-shell sm-hero-grid">
+            <div>
+                <nav class="sm-breadcrumb" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    <a href="/tools">Tools</a>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    <span aria-current="page">Take-Home Pay by State</span>
+                </nav>
+                <p class="sm-eyebrow"><span></span> Free calculator</p>
+                <h1>Take-home pay <em>in every state.</em></h1>
+                <p class="sm-lede">
+                    Enter a salary, or pick a job to use its real pay in each state. We run it through
+                    2025 federal and state income tax brackets, then subtract housing, sales tax, and
+                    property tax, so you can see what's actually left.
+                </p>
+            </div>
+            <div class="sm-hero-note">
+                <span class="sm-note-number">01</span>
+                <div>
+                    <strong>Taxes on your paycheck</strong>
+                    <p>Federal and state income tax on real 2025 brackets, plus Social Security and Medicare.</p>
+                </div>
+                <span class="sm-note-number">02</span>
+                <div>
+                    <strong>Costs that follow the state</strong>
+                    <p>Average rent (or your own payment), combined sales tax, and property tax if you'd own.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="sm-shell smt-workspace">
+        <aside class="smt-panel" aria-labelledby="th-panel-title">
+            <div class="smt-panel-head">
+                <p class="sm-section-kicker">Your numbers</p>
+                <h2 id="th-panel-title">Pay and housing</h2>
+            </div>
+
+            <form class="smt-form" id="th-form" novalidate>
+                <fieldset class="smt-group">
+                    <legend>Pay</legend>
+                    <div class="smt-segmented" role="radiogroup" aria-label="How to set pay">
+                        <label><input type="radio" name="th-pay-mode" value="salary" checked><span>My salary</span></label>
+                        <label><input type="radio" name="th-pay-mode" value="job"><span>A job's pay</span></label>
+                    </div>
+                    <label class="smt-field" id="th-salary-field">
+                        <span>Annual household income</span>
+                        <span class="smt-money">
+                            <b aria-hidden="true">$</b>
+                            <input type="text" id="th-salary" inputmode="numeric" autocomplete="off" value="75,000" aria-describedby="th-salary-hint">
+                        </span>
+                        <span class="smt-chips" role="group" aria-label="Quick amounts">
+                            <button type="button" data-income="50000">$50k</button>
+                            <button type="button" data-income="75000">$75k</button>
+                            <button type="button" data-income="100000">$100k</button>
+                            <button type="button" data-income="150000">$150k</button>
+                            <button type="button" data-income="250000">$250k</button>
+                        </span>
+                        <small id="th-salary-hint">Same salary in every state, so only taxes and costs move the result.</small>
+                    </label>
+                    <label class="smt-field" id="th-job-field" hidden>
+                        <span>Job</span>
+                        <select id="th-job"></select>
+                        <small>Uses that job's average pay in each state. States without a published figure are left out.</small>
+                    </label>
+                </fieldset>
+
+                <fieldset class="smt-group">
+                    <legend>Filing status</legend>
+                    <div class="smt-segmented" role="radiogroup" aria-label="Filing status">
+                        <label><input type="radio" name="th-status" value="single" checked><span>Single</span></label>
+                        <label><input type="radio" name="th-status" value="married"><span>Married, joint</span></label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="smt-group">
+                    <legend>Housing</legend>
+                    <div class="smt-segmented smt-segmented-3" role="radiogroup" aria-label="Housing cost">
+                        <label><input type="radio" name="th-housing" value="rent" checked><span>Avg. rent</span></label>
+                        <label><input type="radio" name="th-housing" value="fixed"><span>My rent</span></label>
+                        <label><input type="radio" name="th-housing" value="own"><span>I'd own</span></label>
+                    </div>
+                    <p class="smt-hint" id="th-housing-hint">Each state's average monthly rent.</p>
+                    <label class="smt-field" id="th-payment-field" hidden>
+                        <span id="th-payment-label">Monthly rent</span>
+                        <span class="smt-money">
+                            <b aria-hidden="true">$</b>
+                            <input type="text" id="th-payment" inputmode="numeric" autocomplete="off" value="1,800">
+                        </span>
+                    </label>
+                    <label class="smt-field" id="th-price-field" hidden>
+                        <span>Home price</span>
+                        <span class="smt-money">
+                            <b aria-hidden="true">$</b>
+                            <input type="text" id="th-price" inputmode="numeric" autocomplete="off" value="350,000">
+                        </span>
+                        <small>Used for property tax at each state's effective rate.</small>
+                    </label>
+                </fieldset>
+
+                <fieldset class="smt-group">
+                    <legend>Compare with</legend>
+                    <label class="smt-field">
+                        <span>State you live in now <em>(optional)</em></span>
+                        <select id="th-home">
+                            <option value="">None</option>
+                            @foreach (var place in Model.Places)
+                            {
+                                <option value="@place.Abbreviation">@place.Name</option>
+                            }
+                        </select>
+                    </label>
+                </fieldset>
+
+                <details class="smt-assumptions">
+                    <summary>Assumptions</summary>
+                    <label class="smt-field">
+                        <span>Share of income spent on taxable goods <output id="th-spend-out" for="th-spend">20%</output></span>
+                        <input class="sm-range" type="range" id="th-spend" min="0" max="50" step="5" value="20">
+                        <small>Sales tax applies to this share of after-tax pay, at each state's combined state + average local rate.</small>
+                    </label>
+                </details>
+
+                <div class="smt-actions">
+                    <button type="button" class="smt-btn" id="th-reset"><i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> Reset</button>
+                    <button type="button" class="smt-btn smt-btn-dark" id="th-share"><i class="fa-solid fa-link" aria-hidden="true"></i> Copy link</button>
+                    <p class="smt-status" id="th-status" role="status" aria-live="polite"></p>
+                </div>
+            </form>
+        </aside>
+
+        <div class="smt-results">
+            <div class="th-compare-host" id="th-stats" aria-live="polite"></div>
+
+            <section class="smt-card" aria-labelledby="th-table-title">
+                <div class="smt-card-head">
+                    <div>
+                        <p class="sm-section-kicker" id="th-table-kicker">Ranked by money left</p>
+                        <h2 id="th-table-title">What you'd keep in each state</h2>
+                    </div>
+                    <div class="smt-card-tools">
+                        <div class="smt-segmented smt-segmented-sm smt-view" role="radiogroup" aria-label="View">
+                            <label><input type="radio" name="th-view" value="table" checked><span><i class="fa-solid fa-list" aria-hidden="true"></i> Table</span></label>
+                            <label><input type="radio" name="th-view" value="map"><span><i class="fa-solid fa-map" aria-hidden="true"></i> Map</span></label>
+                        </div>
+                        <div class="smt-segmented smt-segmented-sm" role="radiogroup" aria-label="Show amounts">
+                            <label><input type="radio" name="th-period" value="year" checked><span>Per year</span></label>
+                            <label><input type="radio" name="th-period" value="month"><span>Per month</span></label>
+                        </div>
+                        <label class="smt-select-sm">
+                            <span class="sr-only">Sort by</span>
+                            <select id="th-sort">
+                                <option value="left">Money left after housing</option>
+                                <option value="net">Take-home pay</option>
+                                <option value="tax">Lowest state taxes</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+                <div class="th-map" id="th-map" hidden>
+                    <div class="sm-map-wrap">
+                        <div class="sm-tilegrid th-tilegrid" id="th-tilegrid" role="group" aria-label="Map of money left by state"></div>
+                    </div>
+                    <div class="sm-map-caption">
+                        <span><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Select a state to see its breakdown.</span>
+                        <span class="sm-legend" aria-hidden="true"><span id="th-legend-low">Less</span><span class="sm-legend-scale"></span><span id="th-legend-high">More</span></span>
+                    </div>
+                </div>
+                <div class="th-table-view" id="th-table-view">
+                <div class="smt-searchbar">
+                    <label class="sm-search">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <span class="sr-only">Find a state</span>
+                        <input id="th-search" type="search" placeholder="Find a state" autocomplete="off">
+                    </label>
+                    <span class="smt-count" id="th-count"></span>
+                </div>
+                <div class="smt-table">
+                    <div class="th-row th-row-head" aria-hidden="true">
+                        <span>#</span>
+                        <span>State</span>
+                        <span class="th-row-bar">Where the money goes</span>
+                        <span class="th-num">Left over</span>
+                    </div>
+                    <div class="smt-scroll" id="th-list"></div>
+                </div>
+                </div>
+                <p class="smt-foot">All bars share one scale. Select a state to see every line of the breakdown.</p>
+            </section>
+
+            <section class="smt-notes" aria-labelledby="th-notes-title">
+                <h2 id="th-notes-title">How the numbers are calculated</h2>
+                <div class="smt-notes-grid">
+                    <div>
+                        <h3>Income taxes</h3>
+                        <p>Federal and state tax use 2025 brackets with the standard deduction and personal exemptions for your filing status. Social Security (6.2% up to $176,100) and Medicare (1.45%, plus 0.9% on high earnings) are included.</p>
+                    </div>
+                    <div>
+                        <h3>What's left out</h3>
+                        <p>Tax credits, itemized deductions, and local income taxes (Maryland and Indiana counties, New York City, Ohio and Pennsylvania cities) aren't counted, so totals in those places run low. So are state payroll taxes like disability insurance.</p>
+                    </div>
+                    <div>
+                        <h3>Housing and spending</h3>
+                        <p>Average rent is each state's typical monthly rent. Property tax uses the state's effective rate on your home price. Sales tax uses the combined state and average local rate.</p>
+                    </div>
+                </div>
+                <p class="smt-notes-links">
+                    A planning estimate, not tax advice. Related:
+                    <a href="/rankings/taxes/states-by-income-tax">state income tax rates</a>,
+                    <a href="/rankings/taxes/sales-tax-by-state">sales tax by state</a>,
+                    <a href="/rankings/economy/average-rent-by-state">average rent by state</a>,
+                    <a href="/state-match">State Match</a>.
+                </p>
+            </section>
+        </div>
+    </main>
+</div>
+
+<div class="th-mobilebar" id="th-mobilebar" aria-hidden="true">
+    <span class="th-mobilebar-text" id="th-mobilebar-text"></span>
+    <a href="#th-stats" class="th-mobilebar-link" tabindex="-1">Results <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
+</div>
+
+<noscript>
+    <div class="sm-noscript sm-shell">
+        <h2>JavaScript is required for this calculator</h2>
+        <p>The calculator runs in your browser. You can still browse <a href="/rankings/taxes/states-by-income-tax">state income tax rates</a> or <a href="/rankings/economy/average-rent-by-state">average rent by state</a>.</p>
+    </div>
+</noscript>
+
+<script>
+    window.takeHomeData = {
+        places: @Html.Raw(placesJson),
+        taxes: @Html.Raw(Model.IncomeTaxScheduleJson),
+        occupations: @Html.Raw(Model.OccupationSalariesJson)
+    };
+</script>
+
+@section Scripts {
+    <script defer src="~/js/state-match-core.js" asp-append-version="true"></script>
+    <script defer src="~/js/take-home-pay.js" asp-append-version="true"></script>
+}
+
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "WebApplication",
+    "name": "Take-Home Pay by State Calculator",
+    "url": "https://usasymbol.com/tools/take-home-pay-by-state",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "description": "Calculates take-home pay after 2025 federal and state income taxes, and money left after housing and sales tax, in every U.S. state."
+}
+</script>

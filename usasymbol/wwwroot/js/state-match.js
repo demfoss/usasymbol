@@ -33,26 +33,20 @@
     var quizStepLabel = document.getElementById("sm-quiz-step");
     var quizProgressBar = document.getElementById("sm-quiz-progress-bar");
     var manualControlsEl = document.getElementById("sm-manual-controls");
-    var calcIncomeInput = document.getElementById("sm-calc-income");
-    var calcHousingInput = document.getElementById("sm-calc-housing");
-    var calcOwnsCheckbox = document.getElementById("sm-calc-owns");
-    var calcHomePriceField = document.getElementById("sm-calc-home-price-field");
-    var calcHomePriceInput = document.getElementById("sm-calc-home-price");
-    var calcListHost = document.getElementById("sm-calc-list");
-    var calcOccupationSelect = document.getElementById("sm-calc-occupation");
-    var calcOccupationNote = document.getElementById("sm-calc-occupation-note");
-    var occupationSalaries = (payload.occupationSalaries && payload.occupationSalaries.occupations) || {};
-    var partnerPresetsHost = document.getElementById("sm-partner-presets");
-    var partnerResultHost = document.getElementById("sm-partner-result");
-    var partnerPreset = null;
+    var coupleLink = document.getElementById("sm-couple-link");
+    var sensitivityPanel = document.getElementById("sm-sensitivity");
+    var placeByAbbr = new Map(places.map(function (place) { return [place.abbreviation, place]; }));
 
-    var presets = {
-        balanced: defaults(),
-        budget: preset({ cost: 100, housing: 95, incometax: 35, propertytax: 25, salestax: 25, jobs: 52, income: 36, safety: 45, health: 30, education: 25, warmth: 20 }),
-        career: preset({ income: 100, jobs: 96, education: 68, cost: 42, housing: 35, safety: 35, health: 40, incometax: 15, propertytax: 10, salestax: 10, warmth: 15 }),
-        family: preset({ safety: 100, education: 95, health: 88, housing: 62, cost: 60, jobs: 55, income: 48, incometax: 15, propertytax: 10, salestax: 10, warmth: 20 }),
-        warm: preset({ warmth: 100, cost: 58, housing: 52, jobs: 45, safety: 42, health: 40, incometax: 15, propertytax: 10, salestax: 10, income: 30, education: 25 })
-    };
+    var core = window.StateMatchCore;
+    var scorer = core.createScorer(places, metrics);
+    var facts = core.createFacts(places, metrics, scorer);
+    // Places with no metric data (DC today) can't be scored; they show as "n/a" on the map.
+    var scorablePlaces = places.filter(facts.hasData);
+    var noDataPlaces = places.filter(function (place) { return !facts.hasData(place); });
+    var presets = {};
+    Object.keys(core.PRESET_VALUES).forEach(function (name) {
+        presets[name] = scorer.preset(name);
+    });
 
     // Nine forced-choice pairs covering all 11 metrics at least once. Weight math in
     // finishQuiz() scores each metric by win-rate (wins ÷ appearances), so a metric asked
@@ -76,28 +70,7 @@
     var quizStep = 0;
     var quizTally = {};
 
-    // Grid position (column, row — 1-indexed) for each state on a 12x8 tile grid,
-    // approximating real geography so neighbors on the tile grid are neighbors on the map.
-    // Source layout: github.com/kristw/gridmap-layout-usa
-    // Declared here (not down by buildTileGrid) because it must be assigned before the
-    // top-level init calls below run — `var` hoists the declaration but not the assignment.
-    var STATE_GRID = {
-        AK: [1, 1], ME: [12, 1],
-        VT: [10, 2], NH: [11, 2], MA: [12, 2],
-        WA: [2, 3], MT: [3, 3], ND: [4, 3], SD: [5, 3], MN: [6, 3], WI: [7, 3], MI: [8, 3], NY: [10, 3], CT: [11, 3], RI: [12, 3],
-        OR: [2, 4], ID: [3, 4], WY: [4, 4], NE: [5, 4], IA: [6, 4], IL: [7, 4], IN: [8, 4], OH: [9, 4], PA: [10, 4], NJ: [11, 4],
-        CA: [1, 5], NV: [2, 5], UT: [3, 5], CO: [4, 5], KS: [5, 5], MO: [6, 5], KY: [7, 5], WV: [8, 5], DC: [9, 5], MD: [10, 5], DE: [11, 5],
-        AZ: [3, 6], NM: [4, 6], OK: [5, 6], AR: [6, 6], TN: [7, 6], VA: [8, 6], NC: [9, 6],
-        TX: [4, 7], LA: [5, 7], MS: [6, 7], AL: [7, 7], GA: [8, 7], SC: [9, 7],
-        HI: [1, 8], FL: [8, 8]
-    };
-
-    // Match-strength color scale: paper at score 0, dark teal-ink at score 100. Wider than a
-    // straight paper→teal mix so mid-range scores stay visually distinguishable. Declared here
-    // (not down by matchColor) for the same reason as STATE_GRID above — it must be assigned
-    // before the top-level init calls run, since `var` only hoists the declaration.
-    var MATCH_LOW = { r: 0xf5, g: 0xf1, b: 0xe8 };
-    var MATCH_HIGH = { r: 0x12, g: 0x33, b: 0x3a };
+    var STATE_GRID = core.STATE_GRID;
 
     var FILTER_KEYS = ["noIncomeTax", "popMillion", "warmClimate"];
 
@@ -111,13 +84,21 @@
     var tileReady = false;
     var tileBySlug = new Map();
     var updateUrlTimer = null;
+    var home = readHome();
+    var money = { data: null, paycheck: null, loading: null, failed: false, salary: readSalary() };
+    var sensitivitySuggestion = null;
+
+    var SLIDER_GROUPS = [
+        { name: "Economy", icon: "fa-solid fa-sack-dollar", keys: ["cost", "income", "jobs", "housing"] },
+        { name: "Community", icon: "fa-solid fa-people-roof", keys: ["safety", "health", "education"] },
+        { name: "Climate & taxes", icon: "fa-solid fa-sun", keys: ["warmth", "incometax", "propertytax", "salestax"] }
+    ];
 
     buildSliders();
     bindControls();
     bindFilters();
     bindQuiz();
-    bindCalculator();
-    bindPartner();
+    bindHome();
     renderAll();
     buildTileGrid();
 
@@ -127,21 +108,69 @@
     }
 
     function defaults() {
-        var result = {};
-        metrics.forEach(function (metric) {
-            result[metric.key] = clampNumber(metric.defaultWeight, 0, 100);
-        });
-        return result;
+        return scorer.defaults();
     }
 
-    function preset(values) {
-        var result = defaults();
-        Object.keys(values).forEach(function (key) {
-            if (metricByKey.has(key)) {
-                result[key] = clampNumber(values[key], 0, 100);
+    function readHome() {
+        var fromUrl = (new URL(window.location.href).searchParams.get("home") || "").toUpperCase();
+        if (fromUrl && placeByAbbr.has(fromUrl)) {
+            return fromUrl;
+        }
+        try {
+            var saved = window.localStorage.getItem("sm-home");
+            return saved && placeByAbbr.has(saved) ? saved : "";
+        } catch (_) {
+            return "";
+        }
+    }
+
+    function readSalary() {
+        try {
+            var saved = Number(window.localStorage.getItem("sm-salary"));
+            return Number.isFinite(saved) && saved > 0 ? saved : 75000;
+        } catch (_) {
+            return 75000;
+        }
+    }
+
+    function homePlace() {
+        return home ? placeByAbbr.get(home) || null : null;
+    }
+
+    /** The comparison point for a given place: your state, unless it IS your state. */
+    function baselineFor(place) {
+        var mine = homePlace();
+        return mine && mine !== place && facts.hasData(mine) ? mine : null;
+    }
+
+    function setHome(abbr) {
+        home = abbr && placeByAbbr.has(abbr) ? abbr : "";
+        try {
+            if (home) {
+                window.localStorage.setItem("sm-home", home);
+            } else {
+                window.localStorage.removeItem("sm-home");
+            }
+        } catch (_) { /* per-viewer convenience only */ }
+        syncHomeSelects();
+        renderAll();
+        updateMoney();
+        scheduleUrlUpdate();
+    }
+
+    function syncHomeSelects() {
+        document.querySelectorAll("[data-home-select]").forEach(function (select) {
+            select.value = home;
+        });
+    }
+
+    function bindHome() {
+        document.addEventListener("change", function (event) {
+            if (event.target.matches && event.target.matches("[data-home-select]")) {
+                setHome(event.target.value);
             }
         });
-        return result;
+        syncHomeSelects();
     }
 
     function readFiltersFromUrl() {
@@ -238,33 +267,18 @@
     }
 
     function matchColor(score) {
-        var t = clampNumber(score, 0, 100) / 100;
-        var r = Math.round(MATCH_LOW.r + (MATCH_HIGH.r - MATCH_LOW.r) * t);
-        var g = Math.round(MATCH_LOW.g + (MATCH_HIGH.g - MATCH_LOW.g) * t);
-        var b = Math.round(MATCH_LOW.b + (MATCH_HIGH.b - MATCH_LOW.b) * t);
-        return {
-            fill: "rgb(" + r + "," + g + "," + b + ")",
-            isDark: relativeLuminance(r, g, b) < 0.42
-        };
-    }
-
-    function relativeLuminance(r, g, b) {
-        var channel = function (value) {
-            var normalized = value / 255;
-            return normalized <= 0.03928 ? normalized / 12.92 : Math.pow((normalized + 0.055) / 1.055, 2.4);
-        };
-        return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+        return core.matchColor(score);
     }
 
     function scorePlaces() {
         var hasAnyWeight = hasActiveWeights();
-        var rows = places.map(function (place) {
+        var rows = scorablePlaces.map(function (place) {
             var weightedTotal = 0;
             var usedWeight = 0;
             var normalized = {};
 
             place.metrics.forEach(function (metricValue) {
-                var weight = weights[metricValue.key] || 0;
+                var weight = core.effectiveWeight(weights[metricValue.key]);
                 var value = normalizedValue(metricValue);
                 normalized[metricValue.key] = value;
                 if (weight <= 0) {
@@ -318,7 +332,24 @@
     }
 
     function buildSliders() {
-        sliderHost.innerHTML = metrics.map(function (metric) {
+        var grouped = {};
+        SLIDER_GROUPS.forEach(function (group) { group.keys.forEach(function (key) { grouped[key] = true; }); });
+        var groups = SLIDER_GROUPS.map(function (group) {
+            return { name: group.name, icon: group.icon, metrics: group.keys.map(function (key) { return metricByKey.get(key); }).filter(Boolean) };
+        });
+        var leftover = metrics.filter(function (metric) { return !grouped[metric.key]; });
+        if (leftover.length) {
+            groups.push({ name: "Other", icon: "fa-solid fa-ellipsis", metrics: leftover });
+        }
+
+        sliderHost.innerHTML = groups.filter(function (group) { return group.metrics.length; }).map(function (group) {
+            return '<div class="sm-slider-group" role="group" aria-label="' + escapeHtml(group.name) + '">' +
+                '<p class="sm-slider-group-title"><i class="' + escapeHtml(group.icon) + '" aria-hidden="true"></i>' + escapeHtml(group.name) + '</p>' +
+                group.metrics.map(sliderHtml).join("") +
+                '</div>';
+        }).join("");
+
+        function sliderHtml(metric) {
             var safeKey = escapeHtml(metric.key);
             return [
                 '<div class="sm-metric-control">',
@@ -336,7 +367,7 @@
                 '</div>',
                 '</div>'
             ].join("");
-        }).join("");
+        }
 
         sliderHost.querySelectorAll(".sm-range").forEach(function (input) {
             updateRangeFill(input);
@@ -371,7 +402,7 @@
     }
 
     function bindControls() {
-        document.querySelectorAll(".sm-preset").forEach(function (button) {
+        controlsBody.querySelectorAll(".sm-preset").forEach(function (button) {
             button.addEventListener("click", function () {
                 var name = button.dataset.preset;
                 if (!presets[name]) {
@@ -399,6 +430,19 @@
         });
 
         searchInput.addEventListener("input", renderRanking);
+
+        if (sensitivityPanel) {
+            sensitivityPanel.addEventListener("click", function (event) {
+                if (!event.target.closest(".sm-try") || !sensitivitySuggestion) {
+                    return;
+                }
+                weights[sensitivitySuggestion.key] = sensitivitySuggestion.weight;
+                syncSliderValues();
+                setActivePreset(null);
+                renderAll();
+                scheduleUrlUpdate();
+            });
+        }
 
         shareButton.addEventListener("click", copyShareLink);
         if (exportCsvButton) {
@@ -511,155 +555,6 @@
         quizLaunchButton.hidden = false;
     }
 
-    function bindCalculator() {
-        if (!calcIncomeInput || !calcListHost) {
-            return;
-        }
-
-        if (calcOccupationSelect) {
-            Object.keys(occupationSalaries).forEach(function (key) {
-                var occupation = occupationSalaries[key];
-                var option = document.createElement("option");
-                option.value = key;
-                option.textContent = occupation.label || key;
-                calcOccupationSelect.appendChild(option);
-            });
-            calcOccupationSelect.addEventListener("change", function () {
-                calcIncomeInput.disabled = Boolean(calcOccupationSelect.value);
-                computeMoneyLeft();
-            });
-        }
-
-        [calcIncomeInput, calcHousingInput, calcHomePriceInput].forEach(function (input) {
-            input.addEventListener("input", computeMoneyLeft);
-        });
-        calcOwnsCheckbox.addEventListener("change", function () {
-            calcHomePriceField.hidden = !calcOwnsCheckbox.checked;
-            computeMoneyLeft();
-        });
-        computeMoneyLeft();
-    }
-
-    function computeMoneyLeft() {
-        var occupationKey = calcOccupationSelect ? calcOccupationSelect.value : "";
-        var occupation = occupationKey ? occupationSalaries[occupationKey] : null;
-        var flatIncome = Math.max(0, Number(calcIncomeInput.value) || 0);
-        var housingAnnual = Math.max(0, Number(calcHousingInput.value) || 0) * 12;
-        var owns = calcOwnsCheckbox.checked;
-        var homePrice = owns ? Math.max(0, Number(calcHomePriceInput.value) || 0) : 0;
-
-        var skipped = 0;
-        var rows = [];
-
-        places.forEach(function (place) {
-            var income = flatIncome;
-            if (occupation) {
-                var occupationIncome = occupation.byState ? occupation.byState[place.abbreviation] : null;
-                if (occupationIncome == null) {
-                    skipped++;
-                    return;
-                }
-                income = occupationIncome;
-            }
-
-            var incomeTax = getPlaceMetric(place, "incometax");
-            var propertyTax = getPlaceMetric(place, "propertytax");
-            var salesTax = getPlaceMetric(place, "salestax");
-            var taxableSpending = income * 0.2;
-
-            var incomeTaxCost = incomeTax ? income * (incomeTax.raw / 100) : 0;
-            var propertyTaxCost = owns && propertyTax ? homePrice * (propertyTax.raw / 100) : 0;
-            var salesTaxCost = salesTax ? taxableSpending * (salesTax.raw / 100) : 0;
-            var left = income - incomeTaxCost - housingAnnual - propertyTaxCost - salesTaxCost;
-
-            rows.push({ place: place, income: income, left: Math.round(left) });
-        });
-
-        rows.sort(function (a, b) { return b.left - a.left; });
-
-        if (calcOccupationNote) {
-            calcOccupationNote.hidden = !occupation;
-            if (occupation) {
-                calcOccupationNote.textContent = "Using " + occupation.label.toLowerCase() + " pay by state (" + occupation.source + ")" +
-                    (skipped > 0 ? " — " + skipped + " state" + (skipped === 1 ? "" : "s") + " excluded, no published figure." : ".");
-            }
-        }
-
-        renderMoneyLeft(rows.slice(0, 10), Boolean(occupation));
-    }
-
-    function renderMoneyLeft(rows, showIncome) {
-        calcListHost.innerHTML = rows.map(function (row, index) {
-            return [
-                '<div class="sm-calc-row">',
-                '<span class="sm-calc-rank">' + String(index + 1).padStart(2, "0") + '</span>',
-                '<img class="sm-row-flag" src="' + escapeHtml(row.place.flagImageUrl) + '" alt="" width="34" height="23" loading="lazy">',
-                '<span class="sm-calc-name">' + escapeHtml(row.place.name) +
-                    (showIncome ? '<small> ' + formatCurrency(row.income) + ' pay</small>' : '') + '</span>',
-                '<span class="sm-calc-amount">' + formatCurrency(row.left) + '</span>',
-                '</div>'
-            ].join("");
-        }).join("");
-    }
-
-    function formatCurrency(value) {
-        var sign = value < 0 ? "-$" : "$";
-        return sign + Math.round(Math.abs(value)).toLocaleString("en-US");
-    }
-
-    function bindPartner() {
-        if (!partnerPresetsHost) {
-            return;
-        }
-        partnerPresetsHost.querySelectorAll(".sm-preset").forEach(function (button) {
-            button.addEventListener("click", function () {
-                partnerPreset = button.dataset.preset;
-                partnerPresetsHost.querySelectorAll(".sm-preset").forEach(function (candidate) {
-                    candidate.classList.toggle("is-active", candidate === button);
-                });
-                renderPartnerComparison();
-            });
-        });
-    }
-
-    function renderPartnerComparison() {
-        if (!partnerResultHost) {
-            return;
-        }
-        if (!partnerPreset || !presets[partnerPreset]) {
-            partnerResultHost.innerHTML = "";
-            return;
-        }
-
-        var partnerWeights = presets[partnerPreset];
-        var eligibleRows = scored.filter(function (row) { return row.eligible; });
-
-        var myTop10 = eligibleRows.slice(0, 10).map(function (row) { return row.place.slug; });
-
-        var partnerRanked = eligibleRows
-            .map(function (row) { return { place: row.place, score: scoreWithWeights(row.place, partnerWeights) }; })
-            .sort(function (a, b) { return b.score - a.score || a.place.name.localeCompare(b.place.name); });
-        var partnerTop10 = partnerRanked.slice(0, 10).map(function (row) { return row.place.slug; });
-
-        var overlap = myTop10.filter(function (slug) { return partnerTop10.indexOf(slug) !== -1; });
-        var myTopPlace = eligibleRows[0];
-        var partnerTopRow = partnerRanked[0];
-
-        var overlapHtml = overlap.length
-            ? '<p class="sm-partner-overlap"><i class="fa-solid fa-heart" aria-hidden="true"></i> ' +
-                overlap.length + ' of your top 10 also make theirs: ' +
-                overlap.map(function (slug) { return escapeHtml(placeBySlug.get(slug).name); }).join(", ") + '.</p>'
-            : '<p class="sm-partner-overlap"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> No overlap between your top 10s right now — very different priorities.</p>';
-
-        partnerResultHost.innerHTML = [
-            '<div class="sm-partner-grid">',
-            '<div><span class="sm-partner-label">Your top state</span><strong>' + (myTopPlace ? escapeHtml(myTopPlace.place.name) : "—") + '</strong></div>',
-            '<div><span class="sm-partner-label">Their top state</span><strong>' + (partnerTopRow ? escapeHtml(partnerTopRow.place.name) : "—") + '</strong></div>',
-            '</div>',
-            overlapHtml
-        ].join("");
-    }
-
     function syncSliderValues() {
         metrics.forEach(function (metric) {
             var input = document.getElementById("sm-weight-" + metric.key);
@@ -685,7 +580,7 @@
     }
 
     function setActivePreset(name) {
-        document.querySelectorAll(".sm-preset").forEach(function (button) {
+        controlsBody.querySelectorAll(".sm-preset").forEach(function (button) {
             button.classList.toggle("is-active", button.dataset.preset === name);
         });
     }
@@ -706,13 +601,19 @@
         if (excludedCount > 0) {
             summary += " · " + excludedCount + " excluded by your filters";
         }
+        if (noDataPlaces.length) {
+            summary += " · " + noDataPlaces.map(function (place) { return place.abbreviation; }).join(", ") + ": not enough data";
+        }
         resultSummary.textContent = summary;
 
         if (currentSlug) {
             renderDrawer(currentSlug);
         }
 
-        renderPartnerComparison();
+        // Carry the current sliders over as "your" side of the couples tool.
+        if (coupleLink) {
+            coupleLink.href = "/tools/where-should-we-move?a=" + encodeURIComponent(weightVector());
+        }
     }
 
     function renderRanking() {
@@ -729,8 +630,13 @@
                 ? '<p class="sm-empty">No state matches that search.</p>'
                 : '<p class="sm-empty">No state passes your filters. Try loosening one.</p>';
         } else {
+            var mine = homePlace();
             rankingHost.innerHTML = visible.map(function (row) {
-                var strongest = strongestMetric(row);
+                var list = facts.prosAndCons(row.place, weights, baselineFor(row.place));
+                var chips = list.pros.slice(0, 2).map(function (item) { return factChip(item, true); })
+                    .concat(list.cons.slice(0, 1).map(function (item) { return factChip(item, false); }))
+                    .join("");
+                var isHome = mine === row.place;
                 return [
                     '<button class="sm-state-row" type="button" data-slug="' + escapeHtml(row.place.slug) + '"',
                     ' aria-label="Open ' + escapeHtml(row.place.name) + ', rank ' + row.rank + ', ' + row.score + ' percent match">',
@@ -738,13 +644,14 @@
                     '<span class="sm-row-state">',
                     '<img class="sm-row-flag" src="' + escapeHtml(row.place.flagImageUrl) + '" alt="" width="34" height="23" loading="lazy">',
                     '<span class="sm-row-name"><strong>' + escapeHtml(row.place.name) + '</strong>',
-                    '<small>' + escapeHtml(row.place.region || "United States") + ' · ' + escapeHtml(row.place.abbreviation) + '</small></span>',
+                    '<small>' + escapeHtml(row.place.region || "United States") + ' · ' + escapeHtml(row.place.abbreviation) +
+                        (isHome ? ' <em class="sm-home-tag">Your state</em>' : '') + '</small></span>',
                     '</span>',
-                    '<span class="sm-row-fit">' + (strongest ? escapeHtml(strongest.name) : "Balanced") + '</span>',
                     '<span class="sm-row-score">',
+                    '<span class="sm-score-track"><i class="sm-score-fill" style="width:' + row.score + '%"></i></span>',
                     '<span class="sm-score-number">' + row.score + '</span>',
-                    '<span class="sm-score-track"><i class="sm-score-dot" style="left:' + row.score + '%;background:' + matchColor(row.score).fill + '"></i></span>',
                     '</span>',
+                    chips ? '<span class="sm-row-chips">' + chips + '</span>' : '',
                     '</button>'
                 ].join("");
             }).join("");
@@ -768,6 +675,13 @@
             : 'Show all states <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>';
 
         renderSensitivity(scored.filter(function (row) { return row.eligible; }));
+    }
+
+    function factChip(item, isPro) {
+        return '<span class="sm-chip ' + (isPro ? "is-pro" : "is-con") + '">' +
+            // Label on the icon, not hidden text, so copying the list doesn't pick up "Plus:".
+            '<i class="fa-solid ' + (isPro ? "fa-check" : "fa-minus") + '" role="img" aria-label="' + (isPro ? "Plus" : "Minus") + '"></i>' +
+            escapeHtml(item.chip) + '</span>';
     }
 
     // "One slider from changing": finds the smallest weight increase on a single metric
@@ -810,22 +724,27 @@
         }
 
         if (!best) {
+            sensitivitySuggestion = null;
             panel.hidden = true;
             return;
         }
 
+        sensitivitySuggestion = { key: best.metric.key, weight: best.trialWeight };
+
         panel.hidden = false;
-        panel.innerHTML = '<i class="fa-solid fa-arrows-left-right" aria-hidden="true"></i> ' +
-            'One slider from changing: raise <strong>' + escapeHtml(best.metric.name) + '</strong> by +' + best.delta +
-            ' (to ' + best.trialWeight + ') and <strong>' + escapeHtml(outRank.place.name) + '</strong> (#11) would pass ' +
-            '<strong>' + escapeHtml(inRank.place.name) + '</strong> (#10) for your top 10.';
+        // One text element + the button, so the flex row doesn't split the sentence into pieces.
+        panel.innerHTML = '<i class="fa-solid fa-arrows-left-right" aria-hidden="true"></i>' +
+            '<span class="sm-sensitivity-text"><strong>One slider from changing:</strong> raise ' + escapeHtml(best.metric.name) + ' by +' + best.delta +
+            ' (to ' + best.trialWeight + ') and <strong>' + escapeHtml(outRank.place.name) + '</strong> (#11) passes ' +
+            '<strong>' + escapeHtml(inRank.place.name) + '</strong> (#10) in your top 10.</span>' +
+            '<button type="button" class="sm-try">Try it</button>';
     }
 
     function scoreWithWeights(place, weightSet) {
         var weightedTotal = 0;
         var usedWeight = 0;
         place.metrics.forEach(function (metricValue) {
-            var weight = weightSet[metricValue.key] || 0;
+            var weight = core.effectiveWeight(weightSet[metricValue.key]);
             if (weight <= 0) {
                 return;
             }
@@ -833,26 +752,6 @@
             usedWeight += weight;
         });
         return usedWeight > 0 ? Math.round((weightedTotal / usedWeight) * 100) : 0;
-    }
-
-    function strongestMetric(row) {
-        var candidates = metrics
-            .filter(function (metric) { return weights[metric.key] > 0 && row.normalized[metric.key] != null; })
-            .map(function (metric) {
-                return { name: metric.name, value: row.normalized[metric.key], key: metric.key };
-            })
-            .sort(function (a, b) { return b.value - a.value; });
-        return candidates[0] || null;
-    }
-
-    function weakestMetric(row) {
-        var candidates = metrics
-            .filter(function (metric) { return weights[metric.key] > 0 && row.normalized[metric.key] != null; })
-            .map(function (metric) {
-                return { name: metric.name, value: row.normalized[metric.key], key: metric.key };
-            })
-            .sort(function (a, b) { return a.value - b.value; });
-        return candidates[0] || null;
     }
 
     function buildTileGrid() {
@@ -921,6 +820,14 @@
         document.querySelectorAll(".sm-tile").forEach(function (tile) {
             var row = bySlug.get(tile.dataset.slug);
             var scoreEl = tile.querySelector(".sm-tile-score");
+            if (!row) {
+                tile.classList.add("is-nodata");
+                tile.style.background = "";
+                scoreEl.textContent = "n/a";
+                tile.setAttribute("aria-label", placeBySlug.get(tile.dataset.slug).name + ": not enough data to score");
+                tile.title = "Not enough data to score";
+                return;
+            }
             var excluded = Boolean(row && !row.eligible);
             var active = Boolean(row && activeWeights && !excluded);
             var color = active ? matchColor(row.score) : null;
@@ -951,7 +858,7 @@
     }
 
     function openDetail(slug, updateUrl) {
-        if (!placeBySlug.has(slug)) {
+        if (!placeBySlug.has(slug) || !facts.hasData(placeBySlug.get(slug))) {
             return;
         }
 
@@ -1001,98 +908,241 @@
         }
 
         var place = row.place;
-        var strongest = strongestMetric(row);
-        var weakest = weakestMetric(row);
-        var metricRows = metrics.map(function (option) {
-            var metricValue = getPlaceMetric(place, option.key);
-            if (!metricValue) {
-                return [
-                    '<div class="sm-strip">',
-                    '<div class="sm-strip-head"><span class="sm-strip-name">' + escapeHtml(option.name) + '</span>',
-                    '<span class="sm-strip-value">Not available</span></div>',
-                    '</div>'
-                ].join("");
-            }
+        var mine = homePlace();
+        var base = baselineFor(place);
+        var baseName = base ? base.name : "the US average";
+        var list = facts.prosAndCons(place, weights, base);
+        var eligibleCount = scored.filter(function (item) { return item.eligible; }).length;
+        var openSections = {};
+        drawerContent.querySelectorAll("details[data-section]").forEach(function (section) {
+            openSections[section.dataset.section] = section.open;
+        });
 
-            var range = metricRanges.get(option.key);
-            var rank = metricRank(metricValue);
-            var lowerClass = metricValue.direction < 0 ? " is-lower" : "";
-            return [
-                '<div class="sm-strip' + lowerClass + '">',
-                '<div class="sm-strip-head"><span class="sm-strip-name">' + escapeHtml(option.name) + '</span>',
-                '<span class="sm-strip-value">' + escapeHtml(metricValue.displayValue) + '</span></div>',
-                '<div class="sm-strip-track"><i class="sm-strip-marker" style="left:' + rawPosition(metricValue) + '%"></i></div>',
-                '<div class="sm-strip-meta"><span>' + compactNumber(range.min) + ' — ' + compactNumber(range.max) + '</span>',
-                '<span>#' + rank + ' of ' + placesWithMetric(option.key) + ' · ' + (metricValue.direction > 0 ? "higher" : "lower") + ' is better</span></div>',
-                '</div>'
-            ].join("");
+        var whyCards = list.pros.slice(0, 4).map(function (item) {
+            return '<div class="sm-why-card">' +
+                '<strong>' + escapeHtml(item.big) + '</strong>' +
+                '<span>' + escapeHtml(item.label) + '</span>' +
+                '<small>' + escapeHtml(item.sub) + '</small>' +
+                '</div>';
         }).join("");
+        var whySection = whyCards
+            ? '<div class="sm-why-grid">' + whyCards + '</div>'
+            : '<p class="sm-why-empty">Nothing here clearly beats ' + escapeHtml(baseName) + ' on what you weighted. ' +
+                escapeHtml(place.name) + ' ranks on balance, not standout strengths.</p>';
 
-        var overview = strongest
-            ? place.name + " ranks #" + row.rank + " for your current priorities. Its strongest fit is " +
-                strongest.name.toLowerCase() + (weakest ? ", while " + weakest.name.toLowerCase() + " is the main trade-off in this result." : ".")
-            : "Raise at least one priority slider to calculate how " + place.name + " fits your preferences.";
-        if (!row.eligible) {
-            overview = "This state is excluded by one of your hard filters, so it's ranked last regardless of score. " + overview;
-        }
+        var con = list.cons[0];
+        var tradeoff = con
+            ? '<div class="sm-tradeoff">' +
+                '<strong>' + escapeHtml(con.big) + '</strong>' +
+                '<p><b>The trade-off:</b> ' + escapeHtml(con.label) + '. <span>' + escapeHtml(con.sub) + '</span></p>' +
+              '</div>'
+            : '<div class="sm-tradeoff is-none"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>' +
+                '<p>No clear trade-off against ' + escapeHtml(baseName) + ' on anything you weighted.</p></div>';
+
+        var excludedNote = row.eligible ? "" :
+            '<p class="sm-drawer-note"><i class="fa-solid fa-filter" aria-hidden="true"></i> Excluded by one of your must-haves, so it ranks last whatever its score.</p>';
 
         var breakdown = metrics
             .filter(function (option) { return (weights[option.key] || 0) > 0 && row.normalized[option.key] != null; })
             .map(function (option) {
                 var contribution = row.usedWeight > 0
-                    ? Math.round((row.normalized[option.key] * weights[option.key] / row.usedWeight) * 100)
+                    ? Math.round((row.normalized[option.key] * core.effectiveWeight(weights[option.key]) / row.usedWeight) * 100)
                     : 0;
                 return { name: option.name, contribution: contribution };
             })
             .sort(function (a, b) { return b.contribution - a.contribution; });
 
-        var breakdownSection = breakdown.length
-            ? [
-                '<section class="sm-drawer-section"><h3>How this ' + row.score + ' adds up</h3>',
-                '<div class="sm-breakdown-bar">',
+        var breakdownHtml = breakdown.length
+            ? '<div class="sm-breakdown-bar">' +
                 breakdown.map(function (item, index) {
                     return '<i style="width:' + Math.max(item.contribution, 0) + '%" class="' + (index % 2 === 0 ? "is-a" : "is-b") + '" title="' + escapeHtml(item.name) + ': ' + item.contribution + ' pts"></i>';
-                }).join(""),
-                '</div>',
-                '<ul class="sm-breakdown-list">',
+                }).join("") +
+                '</div><ul class="sm-breakdown-list">' +
                 breakdown.map(function (item) {
-                    return '<li><span>' + escapeHtml(item.name) + '</span><span>' + (item.contribution >= 0 ? "+" : "") + item.contribution + '</span></li>';
-                }).join(""),
-                '</ul>',
-                '</section>'
-            ].join("")
-            : "";
+                    return '<li><span>' + escapeHtml(item.name) + '</span><span>+' + item.contribution + '</span></li>';
+                }).join("") + '</ul>'
+            : '<p class="sm-overview">Raise at least one priority to see how the score is built.</p>';
+
+        var strips = metrics.map(function (option) {
+            var metricValue = getPlaceMetric(place, option.key);
+            if (!metricValue) {
+                return '<div class="sm-strip"><div class="sm-strip-head"><span class="sm-strip-name">' + escapeHtml(option.name) + '</span>' +
+                    '<span class="sm-strip-value">Not available</span></div></div>';
+            }
+            var range = metricRanges.get(option.key);
+            return '<div class="sm-strip' + (metricValue.direction < 0 ? " is-lower" : "") + '">' +
+                '<div class="sm-strip-head"><span class="sm-strip-name">' + escapeHtml(option.name) + '</span>' +
+                '<span class="sm-strip-value">' + escapeHtml(metricValue.displayValue) + '</span></div>' +
+                '<div class="sm-strip-track"><i class="sm-strip-marker" style="left:' + rawPosition(metricValue) + '%"></i></div>' +
+                '<div class="sm-strip-meta"><span>' + compactNumber(range.min) + ' — ' + compactNumber(range.max) + '</span>' +
+                '<span>#' + metricRank(metricValue) + ' of ' + placesWithMetric(option.key) + ' · ' + (metricValue.direction > 0 ? "higher" : "lower") + ' is better</span></div>' +
+                '</div>';
+        }).join("");
+
+        var compareOptions = '<option value="">US average</option>' + scorablePlaces.map(function (candidate) {
+            return '<option value="' + escapeHtml(candidate.abbreviation) + '"' + (candidate.abbreviation === home ? " selected" : "") + '>' +
+                escapeHtml(candidate.name) + ' (my state)</option>';
+        }).join("");
+
+        var compareAction = base
+            ? '<a class="is-primary" href="/compare/' + [place.slug, base.slug].sort().join("-vs-") + '">' +
+                escapeHtml(place.name) + ' vs ' + escapeHtml(base.name) + ' <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>'
+            : '<a href="/compare-states">Compare two states <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>';
         var countyAction = place.hasCounties
             ? '<a href="/states/' + encodeURIComponent(place.slug) + '/counties?w=' + encodeURIComponent(weightVector()) + '">Browse counties <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>'
-            : '<button type="button" disabled title="County matching is planned for phase 2"><i class="fa-solid fa-lock" aria-hidden="true"></i> Counties · coming next</button>';
+            : '';
 
         drawerContent.innerHTML = [
             '<div class="sm-drawer-hero">',
             '<button class="sm-drawer-close" id="sm-drawer-close" type="button" aria-label="Close state details"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>',
             '<div class="sm-drawer-state">',
-            '<img class="sm-drawer-flag" src="' + escapeHtml(place.flagImageUrl) + '" alt="' + escapeHtml(place.name) + ' flag" width="60" height="40">',
+            '<img class="sm-drawer-flag" src="' + escapeHtml(place.flagImageUrl) + '" alt="' + escapeHtml(place.name) + ' flag" width="64" height="42">',
             '<div class="sm-drawer-title"><h2 id="sm-drawer-title">' + escapeHtml(place.name) + '</h2>',
-            '<p>' + escapeHtml(place.region || "United States") + ' · ' + escapeHtml(place.abbreviation) + '</p></div>',
-            '<div class="sm-match-badge"><strong>' + row.score + '</strong><span>match</span></div>',
+            '<p>' + escapeHtml(place.region || "United States") + (place.capital ? ' · Capital ' + escapeHtml(place.capital) : '') +
+                (place.population ? ' · Pop. ' + formatPopulation(place.population) : '') + '</p></div>',
+            '<div class="sm-match-badge"><strong>' + row.score + '</strong><span>#' + row.rank + ' of ' + eligibleCount + '</span></div>',
             '</div>',
-            '<div class="sm-facts">',
-            '<span class="sm-fact"><b>Capital</b> ' + escapeHtml(place.capital || "—") + '</span>',
-            '<span class="sm-fact"><b>Population</b> ' + formatPopulation(place.population) + '</span>',
-            '<span class="sm-fact"><b>Rank</b> #' + row.rank + ' of ' + scored.length + '</span>',
-            '<span class="sm-fact"><b>FIPS</b> ' + escapeHtml(place.fips) + '</span>',
+            '<label class="sm-drawer-compare"><span>Compared with</span><select data-home-select>' + compareOptions + '</select></label>',
+            mine === place ? '<p class="sm-drawer-note"><i class="fa-solid fa-house" aria-hidden="true"></i> This is your state, so facts compare it with the US average.</p>' : '',
             '</div>',
-            '</div>',
+            excludedNote,
+            '<section class="sm-drawer-section"><h3>Why you\'d like it</h3>' + whySection + '</section>',
+            '<section class="sm-drawer-section sm-drawer-tight">' + tradeoff + '</section>',
+            '<section class="sm-drawer-section sm-drawer-tight">' + moneyCheckHtml(place, base) + '</section>',
+            '<details class="sm-drawer-more" data-section="score"' + (openSections.score ? " open" : "") + '>',
+            '<summary>How this ' + row.score + ' adds up <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>',
+            '<div class="sm-drawer-more-body">' + breakdownHtml + '</div></details>',
+            '<details class="sm-drawer-more" data-section="stands"' + (openSections.stands ? " open" : "") + '>',
+            '<summary>Where it stands nationwide <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>',
+            '<div class="sm-drawer-more-body">' + strips + '</div></details>',
             '<div class="sm-drawer-actions">',
+            compareAction,
             '<a href="/states/' + encodeURIComponent(place.slug) + '/living">Living guide <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>',
-            '<a href="/states/' + encodeURIComponent(place.slug) + '">Symbols & facts <i class="fa-solid fa-landmark" aria-hidden="true"></i></a>',
+            '<a href="/states/' + encodeURIComponent(place.slug) + '">Symbols &amp; facts <i class="fa-solid fa-landmark" aria-hidden="true"></i></a>',
             countyAction,
-            '</div>',
-            '<section class="sm-drawer-section"><h3>Why it matches</h3><p class="sm-overview">' + escapeHtml(overview) + '</p></section>',
-            breakdownSection,
-            '<section class="sm-drawer-section"><h3>Where it stands · nationwide</h3>' + metricRows + '</section>'
+            '</div>'
         ].join("");
 
         document.getElementById("sm-drawer-close").addEventListener("click", closeDetail);
+        bindMoneyCheck();
+        updateMoney();
+    }
+
+    // ---------- Money check ----------
+    // What a salary leaves after federal + state tax, typical rent, and sales tax — here vs
+    // your state (or vs the average state). Data loads on first use; the math is shared with
+    // /tools/take-home-pay-by-state through state-match-core.js.
+
+    function moneyCheckHtml(place, base) {
+        return '<div class="sm-money">' +
+            '<h3>Money check</h3>' +
+            '<div class="sm-money-line">' +
+                '<label for="sm-money-salary">On a salary of</label>' +
+                '<span class="sm-money-input"><b aria-hidden="true">$</b><input id="sm-money-salary" type="text" inputmode="numeric" autocomplete="off" value="' + Math.round(money.salary).toLocaleString("en-US") + '"></span>' +
+                '<span>you\'d keep</span>' +
+                '<output id="sm-money-result" class="sm-money-result" for="sm-money-salary">…</output>' +
+            '</div>' +
+            '<p class="sm-money-sub" id="sm-money-sub">' + (base ? "a year vs " + escapeHtml(base.name) : "a year vs the average state") + '</p>' +
+            '<a class="sm-money-link" id="sm-money-link" href="/tools/take-home-pay-by-state">Full take-home breakdown <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
+            '</div>';
+    }
+
+    function bindMoneyCheck() {
+        var input = document.getElementById("sm-money-salary");
+        if (!input) {
+            return;
+        }
+        input.addEventListener("input", function () {
+            var value = Math.round(Number(input.value.replace(/[^0-9.]/g, "")) || 0);
+            money.salary = Math.min(10000000, value);
+            try { window.localStorage.setItem("sm-salary", String(money.salary)); } catch (_) { /* optional */ }
+            updateMoney();
+        });
+        input.addEventListener("blur", function () {
+            input.value = Math.round(money.salary).toLocaleString("en-US");
+        });
+        input.addEventListener("focus", function () { input.select(); });
+        ensureMoneyData();
+    }
+
+    function ensureMoneyData() {
+        if (money.data || money.loading || money.failed) {
+            return;
+        }
+        money.loading = window.fetch("/api/state-match/money-data")
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
+                }
+                return response.json();
+            })
+            .then(function (data) {
+                money.data = data;
+                money.paycheck = core.createPaycheck(data.taxes);
+                updateMoney();
+            })
+            .catch(function () {
+                money.failed = true;
+                updateMoney();
+            });
+    }
+
+    function leftOver(place, gross) {
+        var cost = money.data.costs[place.abbreviation];
+        var stateTax = money.paycheck.stateIncomeTax(place.abbreviation, gross, "single");
+        if (!cost || cost.rent == null || stateTax == null) {
+            return null;
+        }
+        var net = gross - money.paycheck.federalTax(gross, "single") - money.paycheck.payrollTax(gross, "single") - stateTax;
+        var sales = Math.max(0, net) * 0.2 * (cost.sales || 0) / 100;
+        return net - cost.rent * 12 - sales;
+    }
+
+    function updateMoney() {
+        var result = document.getElementById("sm-money-result");
+        var sub = document.getElementById("sm-money-sub");
+        var link = document.getElementById("sm-money-link");
+        var place = currentSlug ? placeBySlug.get(currentSlug) : null;
+        if (!result || !place) {
+            return;
+        }
+        if (money.failed) {
+            result.textContent = "—";
+            sub.textContent = "Couldn't load tax data. Try the full calculator instead.";
+            return;
+        }
+        if (!money.data) {
+            result.textContent = "…";
+            return;
+        }
+
+        var base = baselineFor(place);
+        var mine = leftOver(place, money.salary);
+        var baseValue;
+        if (base) {
+            baseValue = leftOver(base, money.salary);
+        } else {
+            var all = scorablePlaces.map(function (candidate) { return leftOver(candidate, money.salary); })
+                .filter(function (value) { return value != null; });
+            baseValue = all.length ? all.reduce(function (sum, value) { return sum + value; }, 0) / all.length : null;
+        }
+
+        link.href = "/tools/take-home-pay-by-state?income=" + Math.round(money.salary) + (home ? "&home=" + encodeURIComponent(home) : "");
+
+        if (mine == null || baseValue == null) {
+            result.textContent = "—";
+            result.className = "sm-money-result";
+            sub.textContent = "No rent figure on file for this comparison.";
+            return;
+        }
+
+        var diff = mine - baseValue;
+        var rounded = Math.round(Math.abs(diff) / 10) * 10;
+        result.textContent = (diff >= 0 ? "+" : "−") + "$" + rounded.toLocaleString("en-US") + "/yr";
+        result.className = "sm-money-result " + (diff >= 0 ? "is-up" : "is-down");
+        sub.textContent = (diff >= 0 ? "more" : "less") + " than in " + (base ? base.name : "the average state") +
+            ", after federal and state tax, typical rent, and sales tax. About $" +
+            Math.round(Math.max(0, mine) / 12).toLocaleString("en-US") + " a month left here.";
     }
 
     function metricRank(metricValue) {
@@ -1125,6 +1175,12 @@
             url.searchParams.set("f", activeFilters.join(","));
         } else {
             url.searchParams.delete("f");
+        }
+
+        if (home) {
+            url.searchParams.set("home", home);
+        } else {
+            url.searchParams.delete("home");
         }
 
         if (currentSlug) {

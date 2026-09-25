@@ -8,11 +8,16 @@ namespace USASymbol.Controllers
     {
         private readonly IStateMatchService _stateMatchService;
         private readonly IStateMatchOgImageService _ogImageService;
+        private readonly IRankingsContentService _rankingsContent;
 
-        public StateMatchController(IStateMatchService stateMatchService, IStateMatchOgImageService ogImageService)
+        public StateMatchController(
+            IStateMatchService stateMatchService,
+            IStateMatchOgImageService ogImageService,
+            IRankingsContentService rankingsContent)
         {
             _stateMatchService = stateMatchService;
             _ogImageService = ogImageService;
+            _rankingsContent = rankingsContent;
         }
 
         [HttpGet("/state-match")]
@@ -86,6 +91,116 @@ namespace USASymbol.Controllers
             ViewData["BodyClass"] = "state-match-surface";
 
             return View(model);
+        }
+
+        /// <summary>
+        /// Take-Home Pay by State: salary (or a profession's real pay by state) run through 2025
+        /// federal + state brackets, then housing and sales/property tax, for every state at once.
+        /// Rent and combined sales tax come from the site's own ranking pages so the numbers match them.
+        /// </summary>
+        [HttpGet("/tools/take-home-pay-by-state")]
+        public async Task<IActionResult> TakeHomePay()
+        {
+            var tool = await _stateMatchService.BuildAsync();
+            var rentByAbbr = await ReadRankingColumnAsync("economy", "average-rent-by-state", "rent");
+            var salesTaxByAbbr = await ReadRankingColumnAsync("taxes", "sales-tax-by-state", "combined_rate");
+
+            var model = new TakeHomePageViewModel
+            {
+                Places = tool.Places
+                    .Select(place => new TakeHomePlaceViewModel
+                    {
+                        Name = place.Name,
+                        Slug = place.Slug,
+                        Abbreviation = place.Abbreviation,
+                        FlagImageUrl = place.FlagImageUrl,
+                        PropertyTaxRate = place.Metrics.FirstOrDefault(metric => metric.Key == "propertytax")?.Raw,
+                        SalesTaxCombinedRate = salesTaxByAbbr.TryGetValue(place.Abbreviation, out var sales)
+                            ? sales
+                            : place.Metrics.FirstOrDefault(metric => metric.Key == "salestax")?.Raw,
+                        AverageRent = rentByAbbr.TryGetValue(place.Abbreviation, out var rent) ? rent : null
+                    })
+                    .ToList(),
+                IncomeTaxScheduleJson = _stateMatchService.GetIncomeTaxScheduleJson(),
+                OccupationSalariesJson = _stateMatchService.GetOccupationSalariesJson()
+            };
+
+            ViewData["Title"] = "Take-Home Pay by State Calculator (2025 Taxes) | USA Symbol";
+            ViewData["Description"] = "Enter a salary or pick a job and see take-home pay after federal and state taxes in every state, plus what's left after rent or a mortgage.";
+            ViewData["Canonical"] = "/tools/take-home-pay-by-state";
+            ViewData["BodyClass"] = "state-match-surface";
+
+            return View("TakeHomePay", model);
+        }
+
+        /// <summary>
+        /// Two-person State Match: each partner sets their own priorities, and states are ranked
+        /// by how well they suit both. "?a=" and "?b=" use the same weight-vector format as "?w=".
+        /// </summary>
+        [HttpGet("/tools/where-should-we-move")]
+        public async Task<IActionResult> CoupleMatch()
+        {
+            var model = await _stateMatchService.BuildAsync();
+
+            ViewData["Title"] = "Where Should We Move? State Match for Couples | USA Symbol";
+            ViewData["Description"] = "You and your partner each set what matters most. See which states suit you both, where your top 10s overlap, and where you disagree.";
+            ViewData["Canonical"] = "/tools/where-should-we-move";
+            ViewData["BodyClass"] = "state-match-surface";
+
+            return View("CoupleMatch", model);
+        }
+
+        /// <summary>
+        /// Everything State Match's "Money check" needs, fetched only when a state panel opens:
+        /// the tax schedules plus average rent and combined sales tax per state (same sources as
+        /// the Take-Home Pay tool, so both show the same figure).
+        /// </summary>
+        [HttpGet("/api/state-match/money-data")]
+        public async Task<IActionResult> MoneyData()
+        {
+            var rent = await ReadRankingColumnAsync("economy", "average-rent-by-state", "rent");
+            var sales = await ReadRankingColumnAsync("taxes", "sales-tax-by-state", "combined_rate");
+            var costs = rent.Keys.Union(sales.Keys, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(
+                    abbr => abbr.ToUpperInvariant(),
+                    abbr => new
+                    {
+                        rent = rent.TryGetValue(abbr, out var r) ? r : (double?)null,
+                        sales = sales.TryGetValue(abbr, out var s) ? s : (double?)null
+                    });
+
+            var json = "{\"taxes\":" + _stateMatchService.GetIncomeTaxScheduleJson() +
+                ",\"costs\":" + System.Text.Json.JsonSerializer.Serialize(costs) + "}";
+
+            Response.Headers.CacheControl = "public, max-age=3600";
+            return Content(json, "application/json");
+        }
+
+        private async Task<Dictionary<string, double>> ReadRankingColumnAsync(string category, string slug, string column)
+        {
+            var result = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+            var content = await _rankingsContent.GetContentAsync(category, slug);
+            if (content?.Table == null)
+            {
+                return result;
+            }
+
+            foreach (var row in content.Table.Rows)
+            {
+                var abbreviation = row.GetString("postal_code");
+                if (string.IsNullOrWhiteSpace(abbreviation))
+                {
+                    continue;
+                }
+                if (row.Data.TryGetValue(column, out var raw) && raw != null &&
+                    double.TryParse(Convert.ToString(raw, System.Globalization.CultureInfo.InvariantCulture),
+                        System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var value))
+                {
+                    result[abbreviation.Trim()] = value;
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
