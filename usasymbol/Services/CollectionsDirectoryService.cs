@@ -25,6 +25,7 @@ public sealed class CollectionsDirectoryService(IWebHostEnvironment environment,
         ["laws"] = ("fa-scale-balanced", "Unusual and noteworthy state laws and statutes."),
         ["nature"] = ("fa-mountain-sun", "Wildlife, weather, natural hazards, and the environment."),
         ["sports"] = ("fa-medal", "Sports participation, teams, and fan culture by state."),
+        ["travel"] = ("fa-plane", "Airlines, airports, and getting around the United States."),
     };
 
     private static readonly string[] FeaturedSlugs =

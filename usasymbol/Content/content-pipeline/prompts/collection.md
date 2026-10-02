@@ -66,6 +66,7 @@ SECTIONS
 - Optional supporting sections: an intro/overview section before the cards, an "honorable mentions" or "just missed the list" section, a section explaining a recurring pattern across entries (e.g. what most of the top picks have in common), a myths/unverified section, a `timeline` section for a claim's history, or a closing gradient facts section for loose trivia that doesn't earn its own card.
 - Do not invent a section just to fill space. If the topic only supports the cards plus a short intro, that is a complete page.
 - H2s must pass the same Google test as rankings: a real, searchable phrase. No clever headline framing, no colons with a data callout.
+- Never put a specific number or rank callout in an H2 ("Texas at #1", "Delta With 200 Million"). The number belongs in the paragraph or the card.
 
 QUICK ANSWER
 - quick_answer[0]: name the headline entry (the #1, or the clearest example) and its one-sentence reason. Max 40 words.
@@ -80,6 +81,17 @@ TABLE (optional — only for OBJECTIVE/COUNTABLE collections)
 MAP (optional)
 - Include only when the topic is inherently geographic and a map adds real information (e.g. which states are in a defined region). Skip it for non-geographic or purely qualitative topics.
 
+DATA FOR OBJECTIVE / COUNTABLE COLLECTIONS
+- Name the data year and what exactly is counted in methodology (e.g. "passengers carried in 2025 as reported by each airline, including regional partners where the airline reports them that way").
+- If entries come from sources that count differently, say so in methodology and round the numbers ("about 200 million") rather than implying false precision.
+- Never claim growth, decline, or a trend unless the payload has prior-period values.
+
+PARTNER LINKS (dofollow partner sites)
+- The payload may provide `partner_links` (anchor + url) pointing to our partner sites (for example goairports.org). Use them only when the page topic genuinely matches the linked page.
+- Place each as an inline markdown link inside a section paragraph, card text, or FAQ answer. The anchor is a natural noun phrase that names the thing being linked, usually its proper name ("[Denver International](...)", "[IATA and ICAO codes](...)"). Never a bare keyword stuffed into a sentence, never "click here".
+- Each URL at most once per page. At most 6 partner links per page. Never in quick_answer, H2s, title, description, captions, or the table.
+- Only use partner URLs from the payload. Never invent or guess a partner URL.
+
 VISUAL ASSETS
 - One image per spotlight card is required, not optional: `section: <card-section-id>::<item-slug>`, with `layout: left` or `right` alternating for rhythm down the page. This is what makes the card format work; a text-only card row is a visible downgrade.
 - Caption every image with a specific, real detail, not a generic description. Mirror the ranking.md caption rule: 1–2 sentences, cite an actual fact tied to that entry.
@@ -87,11 +99,13 @@ VISUAL ASSETS
 SEO
 
 TITLE (seo.title)
-- Collections may use "Ranked," superlatives, or list framing that a straight ranking page would avoid, because the list itself IS the premise: "Most Boring States, Ranked" or "Weirdest Laws in Every State" are both fine here.
-- Max 58 characters. No colon-plus-data-callout, no source citation in the title.
+- Format: [Topic] or [Topic] | [what the page contains: Map, List, Facts, History, Hubs…]. Max 58 characters, pipe separator.
+- Superlatives are fine when they are the premise of the list ("Most Beautiful State Capitol Buildings", "Weirdest Laws in Every State").
+- No numbers, counts, or values in the title. No "Top 10", no "All 7", no "| 33 States", no colon, no source citation. The only allowed number is the year, and only for data that changes every year.
 - Good: "State Capitals Named After Presidents"
-- Good: "Most Beautiful State Capitol Buildings"
-- Bad: "Top 10 Most Boring States (You Won't Believe #3)" — no clickbait, no reader address
+- Good: "Largest U.S. Airlines | Hubs, Home States & Facts"
+- Bad: "Top 10 Most Boring States (You Won't Believe #3)" (count, clickbait, reader address)
+- Bad: "State Flags With Stars | 17 Flags Ranked" (count in title)
 
 H1 (page.h1)
 - Can be a short noun phrase or a direct question, matching how people actually search: "Which US State Capitals Are Named After Presidents?" or "Most Beautiful State Capitols."
@@ -101,6 +115,9 @@ DESCRIPTION (seo.description)
 - State the real hook of the list: the count, the #1 pick, or the defining fact. Max 152 characters.
 - No CTAs ("See the full list," "Find out"), no source names, no "ranked by."
 
+SOURCE NAMES
+- Source names (BTS, FAA, Census, CDC, Wikipedia, a company report, etc.) appear ONLY in methodology and sources. Never in title, description, H1, quick_answer, card text, captions, section paragraphs, H2s, or FAQ. Use "reported", "on record", or "listed" instead.
+
 FAQ
 - 4–6 questions phrased as real searches: "What is the most [X] state?", "Is [state] really [claim]?", "Why is [state] considered [superlative]?"
 - Answers ground in the same real facts as the cards; do not repeat a quick_answer sentence verbatim, reframe or add a different detail.
@@ -109,7 +126,7 @@ FAQ
 STYLE
 - Encyclopedia tone underneath the topic's flex: specific, direct, calm. Not a blog, not a school essay, not a listicle.
 - Active voice. Max 75 words per paragraph, max 40 words for quick_answer[0].
-- No em dash. No semicolons as em-dash substitutes.
+- PUNCTUATION: never use em dash (—), en dash as a dash, semicolon (;), or colon (:) in paragraphs, quick_answer, card text, captions, or FAQ answers. The only colons allowed are inside the `**Label:** value` metadata strip of a card. Replace each with a period or a comma. Number ranges like "2010–2020" are fine.
 - Sentence variety: mix short and long, never three consecutive sentences of the same length.
 - Do not open a paragraph or card with "This," "It," "The state," or "When it comes to." Open with a name, a fact, or a number.
 - Do not start two consecutive sentences in the same paragraph with the same word.
@@ -121,7 +138,10 @@ FINAL CHECK
 - Every card has both beats: a real, checkable fact and an explicit reason it belongs on the list.
 - No invented statistics, laws, records, or events anywhere on the page.
 - Any myth or unverified claim is labeled as such, never presented as confirmed fact.
-- Title ≤58 chars. Description ≤152 chars.
+- Title ≤58 chars, no numbers except an allowed year. Description ≤152 chars.
+- No em dash, semicolon, or colon in prose (only in the card metadata strip).
+- No source names outside methodology and sources.
+- Partner links, if any, come from the payload, appear once each, and sit in body text only.
 - No paragraph or card opens with "This," "It," "The state," or "When it comes to."
 - No two consecutive sentences in the same paragraph start with the same word.
 - FAQ answers vary in length and don't repeat quick_answer verbatim.

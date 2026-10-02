@@ -26,6 +26,8 @@ public static class LinkUrlExtensions
     {
         "globallicenseplates.com",
         "www.globallicenseplates.com",
+        "goairports.org",
+        "www.goairports.org",
     };
 
     public static bool IsExternalUrl(this string? url)
@@ -52,8 +54,8 @@ public static class LinkUrlExtensions
     }
 
     /// <summary>
-    /// True for the small allowlist of external hosts (currently just our partner site,
-    /// globallicenseplates.com) that should get a dofollow link instead of the default nofollow.
+    /// True for the small allowlist of external hosts (our partner sites, globallicenseplates.com
+    /// and goairports.org) that should get a dofollow link instead of the default nofollow.
     /// </summary>
     public static bool IsDofollowExternalUrl(this string? url)
     {

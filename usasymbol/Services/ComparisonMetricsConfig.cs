@@ -275,7 +275,7 @@ namespace USASymbol.Services
             {
                 Slug = "minimum-wage",
                 Name = "Minimum Wage",
-                Description = "State minimum wage in U.S. dollars per hour (U.S. Department of Labor, updated January 1, 2026).",
+                Description = "State minimum wage in U.S. dollars per hour (U.S. Department of Labor, July 1, 2026, with Florida updated September 30, 2026).",
                 GroupSlug = "jobs",
                 GroupName = "Jobs",
                 GroupOrder = 2,

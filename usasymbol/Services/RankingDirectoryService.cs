@@ -387,13 +387,19 @@ public sealed class RankingDirectoryService(IWebHostEnvironment environment, IMe
         if (!string.IsNullOrWhiteSpace(explicitTopic)) return explicitTopic;
         if (category != "agriculture") return "General";
         bool Has(params string[] terms) => terms.Any(term => slug.Contains(term, StringComparison.OrdinalIgnoreCase));
-        if (Has("disaster", "insurance", "drought", "weather")) return "Disasters & Weather";
-        if (Has("export", "import", "trade")) return "Trade & Exports";
-        if (Has("gdp", "employment", "price", "ethanol", "storage")) return "Agricultural Economy";
+        if (Has("disaster", "insurance", "drought", "weather", "export", "import", "trade",
+                "gdp", "employment", "price", "ethanol", "storage")) return "Agricultural Economy";
         if (Has("farmland", "farmer", "farms", "own-a-ranch", "farming-friendly")) return "Farmland & Farming";
         if (Has("legal", "thc")) return "Laws & Policy";
-        if (Has("beef", "beekeeping", "bison", "butter", "catfish", "cattle", "cheese", "chicken", "crawfish", "egg", "goat", "hog", "honey-production", "horse", "ice-cream", "lobster", "milk", "oyster", "sheep", "shrimp", "trout", "turkey", "wool", "yogurt")) return "Livestock & Aquaculture";
-        if (Has("production", "belt", "vineyard", "planting")) return "Crops & Forestry";
+        // Crop groups match whole slug tokens so "pea" never catches "peach" and "oat" never catches "goat".
+        var padded = "-" + slug.ToLowerInvariant() + "-";
+        bool HasToken(params string[] terms) => terms.Any(term => padded.Contains("-" + term + "-", StringComparison.Ordinal));
+        if (HasToken("catfish", "crawfish", "lobster", "oyster", "shrimp", "trout")) return "Seafood & Aquaculture";
+        if (HasToken("beef", "beekeeping", "bison", "butter", "cattle", "cheese", "chicken", "egg", "goat", "hog", "honey", "horse", "ice-cream", "milk", "sheep", "turkey", "wool", "yogurt")) return "Livestock & Dairy";
+        if (HasToken("almond", "apple", "apricot", "avocado", "banana", "blueberry", "cantaloupe", "cherry", "cranberry", "date", "fruit", "grape", "grapefruit", "hazelnut", "honeydew", "kiwi", "lemon", "macadamia", "nectarine", "olive", "orange", "papaya", "peach", "pear", "pecan", "pistachio", "plum", "prune", "raspberry", "strawberry", "tangerine", "vineyards", "walnut", "watermelon", "wine")) return "Fruits & Nuts";
+        if (HasToken("artichoke", "asparagus", "broccoli", "cabbage", "carrot", "cauliflower", "celery", "cucumber", "garlic", "lettuce", "lima-bean", "mushroom", "onion", "pea", "pepper", "potato", "pumpkin", "spinach", "squash", "sweet-corn", "taro", "tomato")) return "Vegetables";
+        if (HasToken("barley", "black-bean", "canola", "chickpea", "corn", "cotton", "flaxseed", "hay", "hemp", "hops", "lentil", "millet", "oat", "peanut", "rice", "rye", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "tobacco", "wheat")) return "Grains & Field Crops";
+        if (Has("production", "belt", "vineyard", "planting")) return "Forestry & Specialty Crops";
         return "Other Agriculture";
     }
 

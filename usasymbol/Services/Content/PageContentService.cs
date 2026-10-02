@@ -937,6 +937,7 @@ namespace USASymbol.Services
             "capitals"      => "fa-solid fa-building-columns",
             "flags"         => "fa-solid fa-flag",
             "crime"         => "fa-solid fa-shield-halved",
+            "travel"        => "fa-solid fa-plane",
             _               => "fa-solid fa-list",
         };
 
@@ -962,6 +963,7 @@ namespace USASymbol.Services
             "capitals"       => "Facts and history behind every U.S. state capital.",
             "flags"          => "Design, symbolism, and history behind every U.S. state flag.",
             "crime"          => "Crime rates, gun violence, prisons, and public safety statistics by state.",
+            "travel"         => "Airlines, airports, and getting around the United States.",
             _ => "",
         };
 

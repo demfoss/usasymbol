@@ -6,40 +6,42 @@ auto_link_phrases:
   - "average height by state"
   - "tallest states in America"
   - "average male height by state"
+  - "average female height by state"
+  - "shortest states in America"
 extremes_mode: both
 extremes_title: "Tallest and Shortest U.S. States by Average Height"
 hero_image: "/images/rankings/demographics/average-height-by-state/average-height-by-state-hero.jpg"
 hero_image_alt: "Group of adults standing together outdoors"
-hero_image_caption: "Average adult height varies only modestly across states, but clear regional patterns still show up in the data. Northern Plains and Mountain states cluster near the top, while Hawaii and the Southwest sit lower."
+hero_image_caption: "Montana men average 5'10.7\", the tallest in the country, while Hawaii men average 5'9.0\". The whole range between the tallest and shortest state is less than two inches."
 
 author: "USA Symbol Team"
 date_published: "2026-06-21"
-date_modified: "2026-06-21"
+date_modified: "2026-10-02"
 
 seo:
-  title: "Average Height by State | Tallest and Shortest States"
-  description: "Montana men are the tallest in the U.S. at 5'10.7\" and shortest in Hawaii at 5'9.0\". Male and female averages are listed for all 50 states."
+  title: "Average Height by State | Men, Women, Map & Facts"
+  description: "Montana men are the tallest in the U.S. at 5'10.7\", and Utah women lead at 5'4.7\". Hawaii is the shortest state for both men and women."
 
 page:
   h1: "Average Height by State"
 
   quick_answer:
-    - "Montana men average 5'10.7\", the tallest in the country. South Dakota ties that mark. Utah and Montana share the women's lead at 5'4.7\"."
-    - "Hawaii ranks last for both. Men average 5'9.0\" there, women 5'3.5\". The spread from Montana to Hawaii is 1.7 inches for men and 1.2 inches for women."
-    - "Utah places third for men at 5'10.6\" and ties Montana for women at 5'4.7\". No other state ranks in the top three for both."
+    - "Average height by state peaks in Montana, where men average 5'10.7\". The Northern Plains and Mountain West fill most of the top ten, a pattern tied to the Northern European families who settled them."
+    - "Hawaii is the shortest state, with men at 5'9.0\" and women at 5'3.5\". Its gap below California, the next shortest state for men, is the biggest jump anywhere in the table."
+    - "Utah has the tallest women at 5'4.7\" and ranks third for men. Texas sits near the bottom for both, 44th for men and 47th for women."
 
-  methodology: "Data comes from the CDC BRFSS 2017, a telephone survey of approximately 450,000 adults. Heights are self-reported and consistent across all 50 states, making cross-state comparisons valid."
+  methodology: "Average self-reported adult height by state and sex from the CDC Behavioral Risk Factor Surveillance System (BRFSS) 2017. States are ranked by average male height."
 
   sources:
     - name: "CDC Behavioral Risk Factor Surveillance System (BRFSS) 2017"
       url: "https://www.cdc.gov/brfss/"
-      description: "Self-reported height data by state and sex, ~450,000 respondents"
+      description: "Self-reported height data by state and sex"
 
 map:
   title: "Average Height by U.S. State Map"
   image: "/images/rankings/demographics/average-height-by-state-map.webp"
   image_alt: "Choropleth map of the United States shaded from pale to deep teal by average male height per state"
-  caption: "Montana (#1) leads with men at 5'10.7\". Hawaii (#50) sits 0.6 inches below California (#49) at 5'9.0\", the largest single-step drop in the table. Northern Plains states shade darkest."
+  caption: "Montana, South Dakota, and Utah shade darkest, with men averaging 5'10.6\" or more. Hawaii is lightest at 5'9.0\", with California and New Mexico next."
   metric_key: avg_male_height_in
   metric_label: "in (men)"
   color_scheme: teal
@@ -511,56 +513,171 @@ table:
 sections:
   - id: "tallest-states-men"
     icon: "fa-solid fa-arrow-up"
-    title: "States with the Tallest Average Height"
+    title: "Tallest States in the U.S."
     paragraphs:
-      - "Montana leads at 5'10.7\", followed by South Dakota at 5'10.7\". Both sit above Utah (#3) at 5'10.6\". All 11 states in ranks 1 through 11 average 5'10.4\" or above for men."
-      - "For women the top state shifts. Utah leads at 5'4.7\", with Montana and South Dakota 0.012 inches behind at the same value. Nebraska (#4 for men) and Idaho (#8) also rank in the women's top nine."
+      - "Montana and South Dakota lead with men averaging 5'10.7\", and nine of the ten tallest states sit in the Plains, the Upper Midwest, or the Mountain West. Alabama, in 7th place, is the only Southern state in the top ten."
+      - "The differences are small. Only 1.7 inches separate the tallest state for men from the shortest, and 41 states fall within half an inch of 5'10\"."
+    table:
+      numbered: true
+      columns:
+        state: "State"
+        men: "Men"
+        women: "Women"
+      rows:
+        - state: "Montana"
+          men: "5'10.7\""
+          women: "5'4.7\""
+        - state: "South Dakota"
+          men: "5'10.7\""
+          women: "5'4.7\""
+        - state: "Utah"
+          men: "5'10.6\""
+          women: "5'4.7\""
+        - state: "Nebraska"
+          men: "5'10.6\""
+          women: "5'4.6\""
+        - state: "Iowa"
+          men: "5'10.6\""
+          women: "5'4.6\""
+        - state: "Kansas"
+          men: "5'10.6\""
+          women: "5'4.5\""
+        - state: "Alabama"
+          men: "5'10.5\""
+          women: "5'4.5\""
+        - state: "Idaho"
+          men: "5'10.5\""
+          women: "5'4.6\""
+        - state: "Wyoming"
+          men: "5'10.5\""
+          women: "5'4.4\""
+        - state: "Minnesota"
+          men: "5'10.5\""
+          women: "5'4.6\""
+
+  - id: "why-montana-is-tallest"
+    icon: "fa-solid fa-circle-question"
+    title: "Why Montana Has the Tallest Average Height"
+    paragraphs:
+      - "Montana, the Dakotas, Nebraska, Iowa, and Minnesota were settled in the late 1800s largely by German, Scandinavian, and Dutch farm families. Northern Europeans are among the tallest people in the world, and that ancestry still shows at the top of the table."
+      - "Utah followed a similar path. Thousands of its pioneers were converts from Britain and Scandinavia who crossed the plains to join the early Mormon settlements, and Utah now has the tallest women of any state."
+
+  - id: "average-height-women"
+    icon: "fa-solid fa-person-dress"
+    title: "Average Height for Women by State"
+    paragraphs:
+      - "Utah women average 5'4.7\", the tallest of any state, just ahead of Montana and South Dakota. Illinois is the surprise on the women's list. It ranks 23rd for men but 5th for women at 5'4.6\"."
+      - "Hawaii, New Mexico, and Rhode Island have the shortest women. Texas falls to 47th at 5'3.9\", three places lower than its rank for men."
+    table:
+      numbered: true
+      columns:
+        state: "State"
+        women: "Women"
+      rows:
+        - state: "Utah"
+          women: "5'4.7\""
+        - state: "Montana"
+          women: "5'4.7\""
+        - state: "South Dakota"
+          women: "5'4.7\""
+        - state: "Nebraska"
+          women: "5'4.6\""
+        - state: "Illinois"
+          women: "5'4.6\""
+        - state: "Iowa"
+          women: "5'4.6\""
+        - state: "Minnesota"
+          women: "5'4.6\""
+        - state: "Oregon"
+          women: "5'4.6\""
+        - state: "Idaho"
+          women: "5'4.6\""
+        - state: "Alabama"
+          women: "5'4.5\""
 
   - id: "hawaii-outlier"
     icon: "fa-solid fa-arrow-down"
-    title: "State with the Shortest Average Height"
+    title: "Shortest States in the U.S."
     paragraphs:
-      - "Hawaii ranks last with men at 5'9.0\" and women at 5'3.5\". California (#49) has men at 5'9.6\", placing Hawaii 0.612 inches below the next-lowest state. That drop is the widest between any two adjacent ranks in the table."
-      - "The total spread from Montana (#1) to Hawaii (#50) is 1.7 inches for men and 1.2 inches for women. New Mexico (#48 at 5'9.7\") and California (#49 at 5'9.6\") are the only other states with men averaging below 5'9.7\"."
+      - "Hawaii has the shortest average height for both men and women. It also has the largest share of Asian American and Pacific Islander residents of any state, and adults of East and Southeast Asian ancestry tend to be shorter than those of Northern European ancestry."
+      - "New Mexico, California, and Texas have large Hispanic populations, and all three rank in the bottom seven for men. Many adults there grew up in Mexico or Central America, where childhood nutrition kept average heights lower for generations. Their U.S.-born children tend to grow taller."
+    table:
+      numbered: false
+      columns:
+        state: "State"
+        men: "Men"
+        women: "Women"
+      rows:
+        - state: "Hawaii"
+          men: "5'9.0\""
+          women: "5'3.5\""
+        - state: "California"
+          men: "5'9.6\""
+          women: "5'4.2\""
+        - state: "New Mexico"
+          men: "5'9.7\""
+          women: "5'3.7\""
+        - state: "Rhode Island"
+          men: "5'9.7\""
+          women: "5'3.8\""
+        - state: "New York"
+          men: "5'9.7\""
+          women: "5'4.1\""
+        - state: "New Jersey"
+          men: "5'9.8\""
+          women: "5'4.1\""
+        - state: "Texas"
+          men: "5'9.8\""
+          women: "5'3.9\""
 
 visual_assets:
   - id: tallest-states-men
     src: /images/rankings/demographics/average-height-by-state/tallest-states-men.jpg
     alt: Tall adults walking together on a city street
-    caption: Montana, South Dakota, and Utah lead the ranking, with men averaging around 5'10.6\" to 5'10.7\". The tallest states are concentrated in the Northern Plains and Mountain West rather than on the coasts.
+    caption: Montana, South Dakota, and Utah lead the ranking, with men averaging 5'10.6" to 5'10.7". The tallest states cluster in the Northern Plains and Mountain West rather than on the coasts.
     section: tallest-states-men
     layout: full-width-tall
 
   - id: hawaii-outlier
     src: /images/rankings/demographics/average-height-by-state/hawaii-outlier.jpg
     alt: People walking along a beach promenade in Hawaii
-    caption: Hawaii stands apart at the bottom of the table, with the lowest average male and female height in the country. Its 0.612-inch drop below California is the largest single-step gap between adjacent states in the ranking.
+    caption: Hawaii has the lowest average height for both men and women. Men there average 5'9.0", more than half an inch below California, the next shortest state.
     section: hawaii-outlier
     layout: full-width-tall
 
 faq:
-  - question: "Which state has the tallest average height for men?"
-    answer: "Montana ranks first at 5'10.7\" per CDC BRFSS 2017. All 11 states in ranks 1 through 11 average 5'10.4\" or above. South Dakota is 0.012 inches behind Montana at 5'10.7\", and Utah is third at 5'10.6\"."
+  - question: "Which state has the tallest people?"
+    answer: "Montana has the tallest men, averaging 5'10.7\", with South Dakota a hair behind. Most of the tallest states sit on the Northern Plains, where many families trace their roots to Germany and Scandinavia."
 
-  - question: "Which state has the tallest average height for women?"
-    answer: "Utah leads for women at 5'4.7\", 0.012 inches ahead of Montana and South Dakota. Nebraska (#4 overall) ranks fourth for women at 5'4.6\"."
+  - question: "Which state has the tallest women?"
+    answer: "Utah, where women average 5'4.7\". Montana and South Dakota round out the top three at the same rounded height."
 
-  - question: "Which state has the shortest average height?"
-    answer: "Hawaii ranks 50th. The 0.612-inch gap between California (#49 at 5'9.6\") and Hawaii (#50 at 5'9.0\") is the widest between any two consecutive ranks in the table. For women, Hawaii (5'3.5\") sits 1.2 inches below Utah (#1)."
+  - question: "Which state has the shortest people?"
+    answer: "Hawaii is shortest for both sexes, with men at 5'9.0\" and women at 5'3.5\". California is the next shortest state for men, and New Mexico for women."
 
   - question: "What is the average height in Texas?"
-    answer: "Texas ranks 44th. Men average 5'9.8\" and women 5'3.9\"."
+    answer: "Texas men average 5'9.8\" and women 5'3.9\". The state ranks 44th for men and 47th for women, below every neighbor except New Mexico."
 
   - question: "What is the average height in California?"
-    answer: "California ranks 49th with men at 5'9.6\" and women at 5'4.2\". It is the second-shortest state for men, above only Hawaii."
+    answer: "California men average 5'9.6\", 49th of 50 states, and women average 5'4.2\". Only Hawaii has shorter men."
 
-  - question: "How much does average height vary from state to state?"
-    answer: "The range is 1.7 inches for men, from 5'9.0\" in Hawaii to 5'10.7\" in Montana. For women the spread is 1.2 inches, from 5'3.5\" in Hawaii to 5'4.7\" in Utah and Montana. Most states cluster within 0.5 inches of each other."
+  - question: "What is the average height in Florida?"
+    answer: "Florida men average 5'10.0\" and women 5'4.2\", which puts the state 41st for men."
+
+  - question: "What is the average height in New York?"
+    answer: "New York men average 5'9.7\" and women 5'4.1\". The state ranks 46th for men, one of several Northeast states near the bottom of the list."
+
+  - question: "How accurate is average height by state data?"
+    answer: "Every figure is self-reported in a phone survey, and people tend to round their height up. The true averages are probably a little lower everywhere, but the order of the states holds because the bias runs the same way in each one. For body size, see [average BMI by state](/rankings/health/average-bmi-by-state)."
 
 related:
+  - title: "Average BMI by State"
+    url: "/rankings/health/average-bmi-by-state"
+  - title: "States by Obesity Rate"
+    url: "/rankings/health/states-by-obesity-rate"
   - title: "States by Population"
     url: "/rankings/demographics/states-by-population"
-  - title: "States by Population Density"
-    url: "/rankings/demographics/states-by-population-density"
   - title: "Most Spoken Language After English by State"
     url: "/rankings/demographics/most-spoken-language-after-english-by-state"
+  - title: "Median Age by State"
+    url: "/rankings/demographics/median-age-by-state"

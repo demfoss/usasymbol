@@ -104,12 +104,15 @@ namespace USASymbol.Services
 
 
             var states = await _db.States.ToListAsync();
+            var abbreviationsPath = Path.Combine(_env.ContentRootPath, "Content", "abbreviations", "states");
 
             foreach (var state in states)
             {
                 urls.Add($"/states/{state.Slug}");
                 urls.Add($"/states/{state.Slug}/living");
-                urls.Add($"/states/{state.Slug}/abbreviation");
+                // Abbreviation pages 404 without a content file (e.g. District of Columbia).
+                if (File.Exists(Path.Combine(abbreviationsPath, $"{state.Slug.ToLowerInvariant()}.yml")))
+                    urls.Add($"/states/{state.Slug}/abbreviation");
                 urls.Add($"/states/{state.Slug}/map");
             }
 
@@ -458,7 +461,11 @@ namespace USASymbol.Services
                 "land-area", "life-expectancy", "violent-crime",
                 "infant-mortality", "overdose-death-rate",
                 "water-quality", "power-outages", "road-quality",
-                "casinos", "ufo-sightings"
+                "casinos", "ufo-sightings",
+                "public-school-rank", "teacher-salary", "retirement-score",
+                "best-state-to-live-in", "best-healthcare", "livability-score",
+                "car-insurance", "unemployment-benefit",
+                "annual-precipitation", "sunny-days"
             };
             var metricSlugs = ComparisonMetricsConfig.All
                 .Where(metric => indexableMetricSlugs.Contains(metric.Slug))

@@ -2,39 +2,44 @@
   "key": "ranking",
   "displayName": "Ranking",
   "output_path_pattern": "rankings/{topic_slug}/{slug}.yaml",
-  "intent": "Answer the ranking query immediately, then explain what the rank means and why it matters in a concise, human way.",
-  "style": "editorial, analytical, concise, mobile-friendly",
+  "intent": "Answer the ranking query immediately with the #1 state and its exact value, then explain why the top and bottom states land where they do, with concrete, true, interesting context.",
+  "style": "clear, explanatory, interesting to read, concise, mobile-friendly",
   "avoid": [
     "generic state profile tone",
     "methodology sludge",
     "AI-sounding filler",
-    "forced FAQ",
+    "why-this-matters framing",
+    "regional narratives not visible in the table",
     "repetitive opener formulas"
   ],
   "default_secondary_queries": [
-    "[TOPIC] ranking in [STATE]",
-    "where does [STATE] rank for [TOPIC]",
-    "[STATE] [TOPIC] rank"
+    "[TOPIC] in [STATE]",
+    "which state has the most [TOPIC]",
+    "which state has the least [TOPIC]",
+    "[TOPIC] by state"
   ],
-  "exact_phrase_rule": "Use the primary keyword naturally in the title, intro, and SEO description.",
+  "exact_phrase_rule": "Use the primary keyword naturally in the title, H1, and the first sentence of quick_answer[0].",
   "anti_template_bans": [
     "Do not open with 'When it comes to...'",
     "Do not open with a vague superlative",
+    "Do not open with setup or background before the #1 value",
     "Do not restate the ranking three different ways in the intro"
   ],
   "good_intro_examples": [
-    "Texas ranks high for wind energy, and the interesting part is not just the position but what keeps it there.",
-    "If California's housing costs rank near the top, the useful question is what that rank actually reflects on the ground.",
-    "Florida's tourism ranking matters because the state has built whole regions of its economy around that one strength."
+    "Nevada has more casinos than any other state. It legalized gambling statewide in 1931, decades before any other state.",
+    "Alaska has the most volcanoes because it sits on the Pacific Ring of Fire, where the Pacific Plate dives under North America.",
+    "Harvard University, founded in 1636, is the oldest college in the United States. It opened just six years after the Massachusetts Bay Colony was established."
   ],
   "good_title_examples": [
-    "Texas Wind Energy Ranking",
-    "California Housing Cost Ranking",
-    "Florida Tourism Ranking Explained"
+    "Highest Point by State | Names, Map & Elevations",
+    "Oldest City in Each State | Map, Founding Year & History",
+    "Teacher Salary by State 2026 | Map & Rankings"
   ],
   "bad_template_examples": [
     "When it comes to [topic], [State] stands out.",
     "[State] has long been known for [topic].",
-    "This ranking offers valuable insight into [State]."
+    "This ranking offers valuable insight into [State].",
+    "[State] ranks first, with twice as many as [State]. [State] ranks last.",
+    "States That Border Colorado | All 7, Map"
   ]
 }

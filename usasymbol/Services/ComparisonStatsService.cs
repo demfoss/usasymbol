@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections;
+using System.Globalization;
 using System.Linq;
 using USASymbol.Models;
 using USASymbol.Services.Interface;
@@ -66,6 +67,23 @@ namespace USASymbol.Services
                 }
             }
 
+            // YAML numbers arrive as strings ("3.9"); parse them culture-independently so the
+            // site behaves the same on non-English machines (e.g. ru-RU expects "3,9").
+            var previousCulture = CultureInfo.CurrentCulture;
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            try
+            {
+                return BuildStats(fieldsBySlug);
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = previousCulture;
+            }
+        }
+
+        private static Dictionary<string, StateStats> BuildStats(
+            Dictionary<string, Dictionary<string, object?>> fieldsBySlug)
+        {
             var result = new Dictionary<string, StateStats>();
             foreach (var (slug, fields) in fieldsBySlug)
             {

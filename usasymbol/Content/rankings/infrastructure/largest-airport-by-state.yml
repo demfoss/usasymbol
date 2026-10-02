@@ -5,48 +5,46 @@ url: /rankings/infrastructure/largest-airport-by-state
 auto_link_phrases:
   - "largest airport by state"
   - "biggest airport in each state"
+  - "busiest airport in each state"
   - "main airport in each US state"
   - "what is the largest airport by state"
 extremes_mode: both
 extremes_title: "Busiest and Least Busy Airports by State"
 hero_image: "/images/rankings/infrastructure/largest-airport-by-state/largest-airport-by-state.png"
-hero_image_alt: "Map showing the largest airport in each U.S. state by passengers and by land area"
+hero_image_alt: "Map showing the busiest airport in each U.S. state by passenger boardings"
 
 author: "USA Symbol Team"
 date_published: "2026-04-19"
-date_modified: "2026-06-22"
+date_modified: "2026-10-02"
 
 seo:
-  title: "Largest Airport by State | Map, States & Facts"
-  description: "Georgia leads this largest airport by state list at 104.7 million passengers, while Delaware is last at 0.3 million."
+  title: "Largest Airport by State | Map, Codes & Passengers"
+  description: "Atlanta's Hartsfield-Jackson is the busiest airport in any state, with 51.5 million boardings in 2025. Delaware's Wilmington Airport is the smallest."
 
 page:
   h1: "Largest Airport in Each State"
 
   quick_answer:
-    - "Largest airport by state data puts Georgia first. Hartsfield-Jackson Atlanta International handles 104.7 million passengers, ahead of Texas at 81.4 million."
-    - "Denver International in Colorado covers 34,000 acres, the biggest footprint in the table. Dallas/Fort Worth in Texas is next at 17,207 acres."
-    - "Delaware ranks last at 0.3 million passengers at Wilmington Airport. West Virginia is next at 0.5 million at Yeager Airport."
+    - "Largest airport by state data puts Georgia first. Hartsfield-Jackson Atlanta International boarded 51.5 million passengers in 2025, more than any other airport in the country, because it is the main hub of Atlanta-based Delta Air Lines."
+    - "Kentucky's busiest airport serves another state's city. Cincinnati/Northern Kentucky International sits in Hebron, Kentucky, across the Ohio River from Cincinnati."
+    - "Delaware ranks last, with 169,382 boardings at Wilmington Airport. Most Delaware travelers drive to Philadelphia or Baltimore instead, both within about an hour."
 
-  methodology: "Passenger figures use FAA 2023 enplanements, and area figures use FAA airport facility records. Each state is represented by its busiest commercial airport in the table."
+  methodology: "Busiest commercial service airport in each state by revenue passenger enplanements (boardings), FAA calendar year 2025 preliminary data, with change from 2024. Total passenger counts that include arrivals run roughly twice as high."
 
   sources:
-    - name: "FAA Passenger Boarding Data"
+    - name: "FAA Passenger Boarding (Enplanement) Data, CY 2025"
       url: "https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger"
-      description: "2023 enplanements for U.S. commercial service airports"
-    - name: "FAA Airport Master Records"
-      url: "https://www.faa.gov/airports"
-      description: "Airport facility information including land area and boundary data"
+      description: "Preliminary 2025 and final 2024 enplanements for U.S. commercial service airports"
 
 map:
-  title: "Busiest Airport by State (Annual Passengers) Map"
-  image: "/images/rankings/geography/largest-airport-by-state-map.webp"
-  image_alt: "U.S. map showing the busiest airport in each state by annual passenger traffic"
-  caption: "Georgia ranks first with Hartsfield-Jackson Atlanta International at 104.7 million passengers. Delaware ranks last with Wilmington Airport at 0.3 million."
-  metric_key: passengers_millions
-  metric_label: "M passengers"
+  title: "Busiest Airport by State Map"
+  image: "/images/rankings/infrastructure/largest-airport-by-state/largest-airport-by-state-map.webp"
+  image_alt: "U.S. map showing the busiest airport in each state by annual passenger boardings"
+  caption: "Georgia shades darkest with 51.5 million boardings at Hartsfield-Jackson Atlanta International. Delaware is lightest at 169,382 at Wilmington Airport."
+  metric_key: enplanements
+  metric_label: "boardings"
   name_key: airport
-  color_scheme: blue
+  color_scheme: teal
   color_scale: log
   tooltip_fields:
     - key: airport
@@ -62,11 +60,13 @@ table:
     state: "State"
     airport: "Airport"
     iata: "Code"
-    city: "City"
-    passengers_millions: "Passengers (M)"
-    area_acres: "Area (acres)"
+    enplanements: "Boardings (2025)"
+    change_pct: "Change vs 2024"
+  column_formats:
+    enplanements: "N0"
+    change_pct: "0.0'%'"
 
-  metric_default: passengers_millions
+  metric_default: enplanements
   sort_default: desc
 
   rows:
@@ -76,35 +76,35 @@ table:
       airport: "Hartsfield-Jackson Atlanta International"
       iata: "ATL"
       city: "Atlanta"
-      passengers_millions: 104.7
-      area_acres: 4700
+      enplanements: 51459786
+      change_pct: -2.0
 
     - rank: 2
       state: "Texas"
       state_slug: "texas"
       airport: "Dallas/Fort Worth International"
       iata: "DFW"
-      city: "Dallas–Fort Worth"
-      passengers_millions: 81.4
-      area_acres: 17207
+      city: "Dallas-Fort Worth"
+      enplanements: 41297009
+      change_pct: -2.5
 
     - rank: 3
-      state: "Colorado"
-      state_slug: "colorado"
-      airport: "Denver International"
-      iata: "DEN"
-      city: "Denver"
-      passengers_millions: 77.8
-      area_acres: 34000
-
-    - rank: 4
       state: "Illinois"
       state_slug: "illinois"
       airport: "O'Hare International"
       iata: "ORD"
       city: "Chicago"
-      passengers_millions: 77.0
-      area_acres: 7627
+      enplanements: 40680735
+      change_pct: 5.5
+
+    - rank: 4
+      state: "Colorado"
+      state_slug: "colorado"
+      airport: "Denver International"
+      iata: "DEN"
+      city: "Denver"
+      enplanements: 39976695
+      change_pct: -0.1
 
     - rank: 5
       state: "California"
@@ -112,8 +112,8 @@ table:
       airport: "Los Angeles International"
       iata: "LAX"
       city: "Los Angeles"
-      passengers_millions: 75.0
-      area_acres: 3500
+      enplanements: 36497303
+      change_pct: -3.4
 
     - rank: 6
       state: "New York"
@@ -121,44 +121,44 @@ table:
       airport: "John F. Kennedy International"
       iata: "JFK"
       city: "New York City"
-      passengers_millions: 62.5
-      area_acres: 5200
+      enplanements: 30792806
+      change_pct: -2.1
 
     - rank: 7
+      state: "Florida"
+      state_slug: "florida"
+      airport: "Orlando International"
+      iata: "MCO"
+      city: "Orlando"
+      enplanements: 27999709
+      change_pct: 0.5
+
+    - rank: 8
       state: "Nevada"
       state_slug: "nevada"
       airport: "Harry Reid International"
       iata: "LAS"
       city: "Las Vegas"
-      passengers_millions: 57.7
-      area_acres: 2800
+      enplanements: 26531765
+      change_pct: -6.1
 
-    - rank: 8
+    - rank: 9
       state: "North Carolina"
       state_slug: "north-carolina"
       airport: "Charlotte Douglas International"
       iata: "CLT"
       city: "Charlotte"
-      passengers_millions: 54.5
-      area_acres: 4750
-
-    - rank: 9
-      state: "Florida"
-      state_slug: "florida"
-      airport: "Miami International"
-      iata: "MIA"
-      city: "Miami"
-      passengers_millions: 52.3
-      area_acres: 3230
+      enplanements: 25873555
+      change_pct: -9.3
 
     - rank: 10
       state: "Washington"
       state_slug: "washington"
       airport: "Seattle-Tacoma International"
       iata: "SEA"
-      city: "SeaTac"
-      passengers_millions: 51.7
-      area_acres: 2500
+      city: "Seattle"
+      enplanements: 25417071
+      change_pct: 0.0
 
     - rank: 11
       state: "Arizona"
@@ -166,8 +166,8 @@ table:
       airport: "Phoenix Sky Harbor International"
       iata: "PHX"
       city: "Phoenix"
-      passengers_millions: 49.2
-      area_acres: 3300
+      enplanements: 25094817
+      change_pct: -2.0
 
     - rank: 12
       state: "New Jersey"
@@ -175,26 +175,26 @@ table:
       airport: "Newark Liberty International"
       iata: "EWR"
       city: "Newark"
-      passengers_millions: 46.4
-      area_acres: 2027
+      enplanements: 23464492
+      change_pct: -4.4
 
     - rank: 13
-      state: "Minnesota"
-      state_slug: "minnesota"
-      airport: "Minneapolis–Saint Paul International"
-      iata: "MSP"
-      city: "Minneapolis"
-      passengers_millions: 41.7
-      area_acres: 3500
-
-    - rank: 14
       state: "Massachusetts"
       state_slug: "massachusetts"
-      airport: "Logan International"
+      airport: "Boston Logan International"
       iata: "BOS"
       city: "Boston"
-      passengers_millions: 40.5
-      area_acres: 2384
+      enplanements: 21021153
+      change_pct: -0.3
+
+    - rank: 14
+      state: "Minnesota"
+      state_slug: "minnesota"
+      airport: "Minneapolis-Saint Paul International"
+      iata: "MSP"
+      city: "Minneapolis"
+      enplanements: 17488261
+      change_pct: -3.1
 
     - rank: 15
       state: "Michigan"
@@ -202,8 +202,8 @@ table:
       airport: "Detroit Metropolitan Wayne County"
       iata: "DTW"
       city: "Detroit"
-      passengers_millions: 36.0
-      area_acres: 4850
+      enplanements: 16294768
+      change_pct: 1.1
 
     - rank: 16
       state: "Pennsylvania"
@@ -211,44 +211,44 @@ table:
       airport: "Philadelphia International"
       iata: "PHL"
       city: "Philadelphia"
-      passengers_millions: 32.0
-      area_acres: 2600
+      enplanements: 14779849
+      change_pct: -2.1
 
     - rank: 17
+      state: "Virginia"
+      state_slug: "virginia"
+      airport: "Washington Dulles International"
+      iata: "IAD"
+      city: "Dulles"
+      enplanements: 13859569
+      change_pct: 6.6
+
+    - rank: 18
       state: "Utah"
       state_slug: "utah"
       airport: "Salt Lake City International"
       iata: "SLC"
       city: "Salt Lake City"
-      passengers_millions: 26.8
-      area_acres: 7700
-
-    - rank: 18
-      state: "Maryland"
-      state_slug: "maryland"
-      airport: "Baltimore/Washington International Thurgood Marshall"
-      iata: "BWI"
-      city: "Baltimore"
-      passengers_millions: 26.7
-      area_acres: 3630
+      enplanements: 13429128
+      change_pct: -0.8
 
     - rank: 19
-      state: "Virginia"
-      state_slug: "virginia"
-      airport: "Ronald Reagan Washington National"
-      iata: "DCA"
-      city: "Arlington"
-      passengers_millions: 25.1
-      area_acres: 861
-
-    - rank: 20
       state: "Tennessee"
       state_slug: "tennessee"
       airport: "Nashville International"
       iata: "BNA"
       city: "Nashville"
-      passengers_millions: 24.0
-      area_acres: 4200
+      enplanements: 12549304
+      change_pct: 4.1
+
+    - rank: 20
+      state: "Maryland"
+      state_slug: "maryland"
+      airport: "Baltimore/Washington International"
+      iata: "BWI"
+      city: "Baltimore"
+      enplanements: 12274134
+      change_pct: -7.2
 
     - rank: 21
       state: "Hawaii"
@@ -256,8 +256,8 @@ table:
       airport: "Daniel K. Inouye International"
       iata: "HNL"
       city: "Honolulu"
-      passengers_millions: 21.2
-      area_acres: 4524
+      enplanements: 10430353
+      change_pct: -0.2
 
     - rank: 22
       state: "Oregon"
@@ -265,8 +265,8 @@ table:
       airport: "Portland International"
       iata: "PDX"
       city: "Portland"
-      passengers_millions: 20.3
-      area_acres: 3000
+      enplanements: 9054394
+      change_pct: 4.8
 
     - rank: 23
       state: "Missouri"
@@ -274,8 +274,8 @@ table:
       airport: "St. Louis Lambert International"
       iata: "STL"
       city: "St. Louis"
-      passengers_millions: 16.0
-      area_acres: 2970
+      enplanements: 7483526
+      change_pct: -4.2
 
     - rank: 24
       state: "Louisiana"
@@ -283,8 +283,8 @@ table:
       airport: "Louis Armstrong New Orleans International"
       iata: "MSY"
       city: "New Orleans"
-      passengers_millions: 13.0
-      area_acres: 3500
+      enplanements: 6221146
+      change_pct: -4.8
 
     - rank: 25
       state: "Indiana"
@@ -292,17 +292,17 @@ table:
       airport: "Indianapolis International"
       iata: "IND"
       city: "Indianapolis"
-      passengers_millions: 10.5
-      area_acres: 7700
+      enplanements: 5221447
+      change_pct: 0.8
 
     - rank: 26
       state: "Ohio"
       state_slug: "ohio"
-      airport: "John Glenn Columbus International"
-      iata: "CMH"
-      city: "Columbus"
-      passengers_millions: 9.5
-      area_acres: 3400
+      airport: "Cleveland Hopkins International"
+      iata: "CLE"
+      city: "Cleveland"
+      enplanements: 4855943
+      change_pct: -1.9
 
     - rank: 27
       state: "Kentucky"
@@ -310,35 +310,35 @@ table:
       airport: "Cincinnati/Northern Kentucky International"
       iata: "CVG"
       city: "Hebron"
-      passengers_millions: 9.3
-      area_acres: 7000
+      enplanements: 4366865
+      change_pct: -3.0
 
     - rank: 28
-      state: "Wisconsin"
-      state_slug: "wisconsin"
-      airport: "Milwaukee Mitchell International"
-      iata: "MKE"
-      city: "Milwaukee"
-      passengers_millions: 8.2
-      area_acres: 1300
+      state: "Connecticut"
+      state_slug: "connecticut"
+      airport: "Bradley International"
+      iata: "BDL"
+      city: "Windsor Locks"
+      enplanements: 3283397
+      change_pct: -0.1
 
     - rank: 29
-      state: "New Mexico"
-      state_slug: "new-mexico"
-      airport: "Albuquerque International Sunport"
-      iata: "ABQ"
-      city: "Albuquerque"
-      passengers_millions: 5.6
-      area_acres: 4400
-
-    - rank: 30
       state: "South Carolina"
       state_slug: "south-carolina"
       airport: "Charleston International"
       iata: "CHS"
       city: "Charleston"
-      passengers_millions: 5.5
-      area_acres: 2300
+      enplanements: 3142402
+      change_pct: 0.9
+
+    - rank: 30
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      airport: "Milwaukee Mitchell International"
+      iata: "MKE"
+      city: "Milwaukee"
+      enplanements: 2889040
+      change_pct: -6.9
 
     - rank: 31
       state: "Alaska"
@@ -346,8 +346,8 @@ table:
       airport: "Ted Stevens Anchorage International"
       iata: "ANC"
       city: "Anchorage"
-      passengers_millions: 5.3
-      area_acres: 7100
+      enplanements: 2729285
+      change_pct: -1.4
 
     - rank: 32
       state: "Idaho"
@@ -355,8 +355,8 @@ table:
       airport: "Boise Airport"
       iata: "BOI"
       city: "Boise"
-      passengers_millions: 5.0
-      area_acres: 3700
+      enplanements: 2579647
+      change_pct: 4.2
 
     - rank: 33
       state: "Nebraska"
@@ -364,35 +364,35 @@ table:
       airport: "Eppley Airfield"
       iata: "OMA"
       city: "Omaha"
-      passengers_millions: 4.7
-      area_acres: 2800
+      enplanements: 2565135
+      change_pct: -0.7
 
     - rank: 34
-      state: "Oklahoma"
-      state_slug: "oklahoma"
-      airport: "Will Rogers World Airport"
-      iata: "OKC"
-      city: "Oklahoma City"
-      passengers_millions: 4.5
-      area_acres: 8000
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      airport: "Albuquerque International Sunport"
+      iata: "ABQ"
+      city: "Albuquerque"
+      enplanements: 2562028
+      change_pct: -4.8
 
     - rank: 35
-      state: "Rhode Island"
-      state_slug: "rhode-island"
-      airport: "T.F. Green International"
-      iata: "PVD"
-      city: "Warwick"
-      passengers_millions: 3.5
-      area_acres: 1200
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      airport: "Will Rogers International"
+      iata: "OKC"
+      city: "Oklahoma City"
+      enplanements: 2242888
+      change_pct: -0.0
 
     - rank: 36
-      state: "Connecticut"
-      state_slug: "connecticut"
-      airport: "Bradley International"
-      iata: "BDL"
-      city: "Windsor Locks"
-      passengers_millions: 3.5
-      area_acres: 1600
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      airport: "Rhode Island T. F. Green International"
+      iata: "PVD"
+      city: "Warwick"
+      enplanements: 2117401
+      change_pct: 6.7
 
     - rank: 37
       state: "Alabama"
@@ -400,8 +400,8 @@ table:
       airport: "Birmingham-Shuttlesworth International"
       iata: "BHM"
       city: "Birmingham"
-      passengers_millions: 3.5
-      area_acres: 3700
+      enplanements: 1615940
+      change_pct: 1.2
 
     - rank: 38
       state: "Iowa"
@@ -409,8 +409,8 @@ table:
       airport: "Des Moines International"
       iata: "DSM"
       city: "Des Moines"
-      passengers_millions: 2.8
-      area_acres: 2500
+      enplanements: 1596784
+      change_pct: 2.7
 
     - rank: 39
       state: "Montana"
@@ -418,26 +418,26 @@ table:
       airport: "Bozeman Yellowstone International"
       iata: "BZN"
       city: "Bozeman"
-      passengers_millions: 2.5
-      area_acres: 1900
+      enplanements: 1406833
+      change_pct: 6.4
 
     - rank: 40
-      state: "Arkansas"
-      state_slug: "arkansas"
-      airport: "Bill and Hillary Clinton National Airport"
-      iata: "LIT"
-      city: "Little Rock"
-      passengers_millions: 2.2
-      area_acres: 2700
+      state: "Maine"
+      state_slug: "maine"
+      airport: "Portland International Jetport"
+      iata: "PWM"
+      city: "Portland"
+      enplanements: 1287041
+      change_pct: 5.3
 
     - rank: 41
-      state: "Mississippi"
-      state_slug: "mississippi"
-      airport: "Jackson-Medgar Wiley Evers International"
-      iata: "JAN"
-      city: "Jackson"
-      passengers_millions: 1.8
-      area_acres: 3600
+      state: "Arkansas"
+      state_slug: "arkansas"
+      airport: "Northwest Arkansas National"
+      iata: "XNA"
+      city: "Bentonville"
+      enplanements: 1234923
+      change_pct: 10.0
 
     - rank: 42
       state: "Kansas"
@@ -445,26 +445,26 @@ table:
       airport: "Wichita Dwight D. Eisenhower National"
       iata: "ICT"
       city: "Wichita"
-      passengers_millions: 1.8
-      area_acres: 3500
+      enplanements: 909224
+      change_pct: 2.7
 
     - rank: 43
-      state: "Maine"
-      state_slug: "maine"
-      airport: "Portland International Jetport"
-      iata: "PWM"
-      city: "Portland"
-      passengers_millions: 1.4
-      area_acres: 850
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      airport: "Sioux Falls Regional"
+      iata: "FSD"
+      city: "Sioux Falls"
+      enplanements: 741643
+      change_pct: 5.7
 
     - rank: 44
-      state: "North Dakota"
-      state_slug: "north-dakota"
-      airport: "Hector International"
-      iata: "FAR"
-      city: "Fargo"
-      passengers_millions: 1.3
-      area_acres: 2000
+      state: "Vermont"
+      state_slug: "vermont"
+      airport: "Patrick Leahy Burlington International"
+      iata: "BTV"
+      city: "Burlington"
+      enplanements: 709881
+      change_pct: 5.9
 
     - rank: 45
       state: "New Hampshire"
@@ -472,118 +472,218 @@ table:
       airport: "Manchester-Boston Regional"
       iata: "MHT"
       city: "Manchester"
-      passengers_millions: 0.9
-      area_acres: 1800
+      enplanements: 685594
+      change_pct: 8.3
 
     - rank: 46
-      state: "South Dakota"
-      state_slug: "south-dakota"
-      airport: "Joe Foss Field"
-      iata: "FSD"
-      city: "Sioux Falls"
-      passengers_millions: 0.9
-      area_acres: 2100
+      state: "Mississippi"
+      state_slug: "mississippi"
+      airport: "Jackson-Medgar Wiley Evers International"
+      iata: "JAN"
+      city: "Jackson"
+      enplanements: 600350
+      change_pct: -2.6
 
     - rank: 47
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      airport: "Hector International"
+      iata: "FAR"
+      city: "Fargo"
+      enplanements: 598611
+      change_pct: 8.3
+
+    - rank: 48
       state: "Wyoming"
       state_slug: "wyoming"
       airport: "Jackson Hole Airport"
       iata: "JAC"
       city: "Jackson"
-      passengers_millions: 0.7
-      area_acres: 540
-
-    - rank: 48
-      state: "Vermont"
-      state_slug: "vermont"
-      airport: "Burlington International"
-      iata: "BTV"
-      city: "Burlington"
-      passengers_millions: 0.6
-      area_acres: 900
+      enplanements: 572151
+      change_pct: 10.3
 
     - rank: 49
       state: "West Virginia"
       state_slug: "west-virginia"
-      airport: "Yeager Airport"
+      airport: "West Virginia International Yeager"
       iata: "CRW"
       city: "Charleston"
-      passengers_millions: 0.5
-      area_acres: 1000
+      enplanements: 220015
+      change_pct: 8.8
 
     - rank: 50
       state: "Delaware"
       state_slug: "delaware"
       airport: "Wilmington Airport"
       iata: "ILG"
-      city: "Wilmington"
-      passengers_millions: 0.3
-      area_acres: 1000
+      city: "New Castle"
+      enplanements: 169382
+      change_pct: 35.4
 
 sections:
-  - id: "size-vs-traffic"
+  - id: "busiest-airports-by-state"
     icon: "fa-solid fa-plane-departure"
-    title: "Largest Airport by State Top and Bottom"
+    title: "Busiest Airports by State"
     paragraphs:
-      - "Georgia leads the table with Hartsfield-Jackson Atlanta International at 104.7 million passengers. Texas follows with Dallas/Fort Worth International at 81.4 million, and Colorado is close behind at 77.8 million."
-      - "Delaware sits last with Wilmington Airport at 0.3 million passengers. West Virginia reaches 0.5 million at Yeager Airport, and Vermont reaches 0.6 million at Burlington International."
+      - "Georgia leads with [Hartsfield-Jackson Atlanta International](https://goairports.org/airports/north-america/united-states/atl/), which boarded 51.5 million passengers in 2025. [Dallas/Fort Worth International](https://goairports.org/airports/north-america/united-states/dfw/) in Texas is second at 41.3 million, and Chicago's O'Hare is third at 40.7 million."
+      - "O'Hare grew +5.5% in 2025 while Denver held flat, which moved Chicago ahead of [Denver International](https://goairports.org/airports/north-america/united-states/den/) into third place. Most airports in the top ten are major airline hubs, where many travelers change planes rather than start or end their trip."
+    table:
+      numbered: true
+      columns:
+        state: "State"
+        airport: "Airport"
+        iata: "Code"
+        boardings: "Boardings (2025)"
+      rows:
+        - state: "Georgia"
+          airport: "Hartsfield-Jackson Atlanta International"
+          iata: "ATL"
+          boardings: "51,459,786"
+        - state: "Texas"
+          airport: "Dallas/Fort Worth International"
+          iata: "DFW"
+          boardings: "41,297,009"
+        - state: "Illinois"
+          airport: "O'Hare International"
+          iata: "ORD"
+          boardings: "40,680,735"
+        - state: "Colorado"
+          airport: "Denver International"
+          iata: "DEN"
+          boardings: "39,976,695"
+        - state: "California"
+          airport: "Los Angeles International"
+          iata: "LAX"
+          boardings: "36,497,303"
+        - state: "New York"
+          airport: "John F. Kennedy International"
+          iata: "JFK"
+          boardings: "30,792,806"
+        - state: "Florida"
+          airport: "Orlando International"
+          iata: "MCO"
+          boardings: "27,999,709"
+        - state: "Nevada"
+          airport: "Harry Reid International"
+          iata: "LAS"
+          boardings: "26,531,765"
+        - state: "North Carolina"
+          airport: "Charlotte Douglas International"
+          iata: "CLT"
+          boardings: "25,873,555"
+        - state: "Washington"
+          airport: "Seattle-Tacoma International"
+          iata: "SEA"
+          boardings: "25,417,071"
+
+  - id: "why-atlanta-has-the-busiest-airport"
+    icon: "fa-solid fa-circle-question"
+    title: "Why Atlanta Has the Busiest Airport"
+    paragraphs:
+      - "Hartsfield-Jackson is the home hub of Delta Air Lines, which is headquartered in Atlanta and runs its largest operation there. A large share of its passengers never leave the airport. They land, walk to another gate, and fly on to somewhere else in the Southeast or overseas."
+      - "Atlanta's location helps too. The city sits within a short flight of most of the eastern United States, so routing connections through one Atlanta hub is cheaper for an airline than flying point to point between smaller cities."
 
   - id: "when-the-airport-doesnt-match-the-city"
-    icon: "fa-solid fa-map-pin"
-    title: "Largest Airport by State Area Leaders"
+    icon: "fa-solid fa-map-location-dot"
+    title: "Airports That Serve a Neighboring State"
     paragraphs:
-      - "Colorado has the biggest airport footprint in the table at 34,000 acres at Denver International. Texas ranks second at 17,207 acres at Dallas/Fort Worth International."
-      - "Oklahoma also stands out by area. Will Rogers World Airport covers 8,000 acres with 4.5 million passengers, while Virginia's Ronald Reagan Washington National covers 861 acres with 25.1 million passengers."
+      - "Kentucky's busiest airport is the one Cincinnati travelers use. Cincinnati/Northern Kentucky International sits in Hebron, Kentucky, south of the Ohio River, and boarded 4.4 million passengers in 2025, more than Louisville's airport."
+      - "Virginia's leader is Washington Dulles International, which serves the nation's capital from Loudoun County. New Jersey's Newark Liberty works the same way for New York City, and it ranks 12th nationally among state leaders at 23.5 million boardings."
 
-  - id: "outliers-worth-knowing"
-    icon: "fa-solid fa-star"
-    title: "Largest Airport by State Traffic and Size Gaps"
+  - id: "fastest-growing-state-airports"
+    icon: "fa-solid fa-chart-line"
+    title: "Fastest Growing Airports by State"
     paragraphs:
-      - "Georgia handles 104.7 million passengers on 4,700 acres at Hartsfield-Jackson Atlanta International. Colorado handles 77.8 million passengers on 34,000 acres at Denver International."
-      - "Indiana shows a similar gap at a smaller scale. Indianapolis International spans 7,700 acres with 10.5 million passengers, while New Jersey's Newark Liberty handles 46.4 million passengers on 2,027 acres."
+      - "Wilmington Airport in Delaware grew +35.4% in 2025, the fastest of any state leader, though from a very small base. Jackson Hole Airport in Wyoming (+10.3%) and Bozeman Yellowstone International in Montana (+6.4%) both rose as gateways to Grand Teton and Yellowstone national parks."
+      - "Northwest Arkansas National grew +10.0%. It sits near Bentonville, home of Walmart's headquarters, which draws a steady stream of business travelers. At the other end, Charlotte Douglas boarded -9.3% fewer passengers than in 2024, the biggest drop among state leaders."
+    table:
+      numbered: true
+      columns:
+        state: "State"
+        airport: "Airport"
+        change: "Change vs 2024"
+      rows:
+        - state: "Delaware"
+          airport: "Wilmington Airport"
+          change: "+35.4%"
+        - state: "Wyoming"
+          airport: "Jackson Hole Airport"
+          change: "+10.3%"
+        - state: "Arkansas"
+          airport: "Northwest Arkansas National"
+          change: "+10.0%"
+        - state: "West Virginia"
+          airport: "West Virginia International Yeager"
+          change: "+8.8%"
+        - state: "New Hampshire"
+          airport: "Manchester-Boston Regional"
+          change: "+8.3%"
+        - state: "North Dakota"
+          airport: "Hector International"
+          change: "+8.3%"
+        - state: "Rhode Island"
+          airport: "Rhode Island T. F. Green International"
+          change: "+6.7%"
+        - state: "Virginia"
+          airport: "Washington Dulles International"
+          change: "+6.6%"
+        - state: "Montana"
+          airport: "Bozeman Yellowstone International"
+          change: "+6.4%"
+        - state: "Vermont"
+          airport: "Patrick Leahy Burlington International"
+          change: "+5.9%"
 
 visual_assets:
   - id: denver-international-jeppesen-terminal
     src: /images/rankings/infrastructure/largest-airport-by-state/denver-international-jeppesen-terminal.jpg
     alt: Aerial view of Jeppesen Terminal and its white peaked roof at Denver International Airport
-    caption: Denver International in Colorado ranks third at 77.8 million passengers and first by area at 34,000 acres.
-    section: size-vs-traffic
+    caption: Denver International boarded 40.0 million passengers in 2025 and covers more land than any other U.S. airport.
+    section: busiest-airports-by-state
     layout: full-width-tall
   - id: cvg-airport-aerial
     src: /images/rankings/infrastructure/largest-airport-by-state/cvg-airport-aerial.jpg
     alt: Aerial view of Cincinnati Northern Kentucky International Airport with runways and terminal complex in Hebron
-    caption: Cincinnati/Northern Kentucky International in Kentucky ranks 27th at 9.3 million passengers and covers 7,000 acres.
+    caption: Cincinnati/Northern Kentucky International in Hebron is Kentucky's busiest airport, with 4.4 million boardings in 2025.
     section: when-the-airport-doesnt-match-the-city
     layout: full-width-tall
   - id: jackson-hole-airport-aerial
     src: /images/rankings/infrastructure/largest-airport-by-state/jackson-hole-airport-aerial.jpg
     alt: Jackson Hole Airport on the valley floor with the Teton Range rising behind the runway
-    caption: Jackson Hole Airport in Wyoming ranks 47th at 0.7 million passengers and covers 540 acres.
-    section: outliers-worth-knowing
+    caption: Jackson Hole Airport, inside Grand Teton National Park, is Wyoming's busiest airport and grew +10.3% in 2025.
+    section: fastest-growing-state-airports
     layout: full-width-tall
-faq:
-  - question: "Which state has the largest airport by passengers?"
-    answer: "Georgia ranks first with Hartsfield-Jackson Atlanta International at 104.7 million passengers. Texas is second at 81.4 million with Dallas/Fort Worth International."
 
-  - question: "What is the largest airport in Colorado?"
-    answer: "Denver International is Colorado's largest airport in this table at 77.8 million passengers. Denver also has the biggest area figure at 34,000 acres."
+faq:
+  - question: "What is the busiest airport in the United States?"
+    answer: "Hartsfield-Jackson Atlanta International in Georgia, with 51.5 million boardings in 2025. Its lead over Dallas/Fort Worth is more than ten million boardings."
 
   - question: "What is the largest airport in Texas?"
-    answer: "Dallas/Fort Worth International is Texas's largest airport with 81.4 million passengers. Its area is 17,207 acres, which ranks second in the table."
+    answer: "Dallas/Fort Worth International is Texas's busiest airport, with 41.3 million boardings in 2025. Houston's George Bush Intercontinental ranks behind it."
 
   - question: "What is the largest airport in California?"
-    answer: "Los Angeles International is California's largest airport at 75.0 million passengers. LAX covers 3,500 acres."
+    answer: "Los Angeles International (LAX), with 36.5 million boardings in 2025, -3.4% from 2024."
 
-  - question: "Which state has the smallest primary airport?"
-    answer: "Delaware ranks last with Wilmington Airport at 0.3 million passengers. West Virginia follows at 0.5 million with Yeager Airport."
+  - question: "What is the largest airport in Florida?"
+    answer: "Orlando International, with 28.0 million boardings in 2025. Theme park visitors keep it ahead of Miami, Fort Lauderdale, and Tampa."
 
-  - question: "Which state has the largest airport by area?"
-    answer: "Colorado leads by area with Denver International at 34,000 acres. Texas is next with Dallas/Fort Worth International at 17,207 acres."
+  - question: "What is the largest airport in Colorado?"
+    answer: "Denver International, with 40.0 million boardings in 2025. Denver also covers more land than any other airport in the country."
+
+  - question: "Which state has the smallest main airport?"
+    answer: "Delaware. Wilmington Airport boarded 169,382 passengers in 2025, and West Virginia's Yeager Airport in Charleston is next at 220,015."
+
+  - question: "What do airport codes like ATL and DFW mean?"
+    answer: "They are three-letter IATA codes, the ones printed on boarding passes and bag tags. Each airport also has a four-letter ICAO code used by pilots and air traffic control, such as KATL for Atlanta. The full list of [U.S. airport codes](https://goairports.org/airports/north-america/united-states/) and a guide to [IATA and ICAO codes](https://goairports.org/guides/iata-vs-icao) explain how the two systems differ, and the [GoAirports airport directory](https://goairports.org/) covers airports worldwide."
 
 related:
-  - title: "U.S. States by Land Area"
-    url: "/rankings/geography/states-by-land-area"
-  - title: "Tallest Building in Each State"
-    url: "/rankings/geography/tallest-building-by-state"
-  - title: "Highest Point in Each State"
-    url: "/rankings/geography/highest-point-by-state"
+  - title: "Largest U.S. Airlines"
+    url: "/collections/travel/largest-us-airlines"
+  - title: "Railroad Miles by State"
+    url: "/rankings/infrastructure/railroad-miles-by-state"
+  - title: "Traffic Congestion by State"
+    url: "/rankings/infrastructure/traffic-congestion-by-state"
+  - title: "Passport Ownership Rate by State"
+    url: "/rankings/government/passport-ownership-rate-by-state"
+  - title: "Toll Roads by State"
+    url: "/rankings/infrastructure/toll-roads-by-state"
