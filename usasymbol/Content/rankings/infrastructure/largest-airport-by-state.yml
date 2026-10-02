@@ -3,687 +3,616 @@ slug: largest-airport-by-state
 category: infrastructure
 url: /rankings/infrastructure/largest-airport-by-state
 auto_link_phrases:
-  - "largest airport by state"
-  - "biggest airport in each state"
-  - "busiest airport in each state"
-  - "main airport in each US state"
-  - "what is the largest airport by state"
+- largest airport by state
+- biggest airport in each state
+- busiest airport in each state
+- main airport in each US state
+- what is the largest airport by state
 extremes_mode: both
-extremes_title: "Busiest and Least Busy Airports by State"
-hero_image: "/images/rankings/infrastructure/largest-airport-by-state/largest-airport-by-state.png"
-hero_image_alt: "Map showing the busiest airport in each U.S. state by passenger boardings"
-
-author: "USA Symbol Team"
-date_published: "2026-04-19"
-date_modified: "2026-10-02"
-
+extremes_title: Busiest and Least Busy Airports by State
+hero_image: /images/rankings/infrastructure/largest-airport-by-state/largest-airport-by-state.png
+hero_image_alt: Map showing the busiest airport in each U.S. state by passenger boardings
+author: USA Symbol Team
+date_published: '2026-04-19'
+date_modified: '2026-10-02'
 seo:
-  title: "Largest Airport by State | Map, Codes & Passengers"
-  description: "Atlanta's Hartsfield-Jackson is the busiest airport in any state, with 51.5 million boardings in 2025. Delaware's Wilmington Airport is the smallest."
-
+  title: Largest Airport by State | Map, Codes & Passengers
+  description: Georgia leads with 51,459,786 boardings at Atlanta. Delaware has 169,382 at Wilmington, the lowest total among state-leading airports.
 page:
-  h1: "Largest Airport in Each State"
-
+  h1: Largest Airport by State
   quick_answer:
-    - "Largest airport by state data puts Georgia first. Hartsfield-Jackson Atlanta International boarded 51.5 million passengers in 2025, more than any other airport in the country, because it is the main hub of Atlanta-based Delta Air Lines."
-    - "Kentucky's busiest airport serves another state's city. Cincinnati/Northern Kentucky International sits in Hebron, Kentucky, across the Ohio River from Cincinnati."
-    - "Delaware ranks last, with 169,382 boardings at Wilmington Airport. Most Delaware travelers drive to Philadelphia or Baltimore instead, both within about an hour."
-
-  methodology: "Busiest commercial service airport in each state by revenue passenger enplanements (boardings), FAA calendar year 2025 preliminary data, with change from 2024. Total passenger counts that include arrivals run roughly twice as high."
-
+  - Largest airport by state comparisons put Georgia first with 51,459,786 boardings at Hartsfield-Jackson Atlanta International in 2025. Delta uses Atlanta as its largest connecting hub.
+  - Delaware finishes last with 169,382 boardings at Wilmington Airport. Its airport shares the Greater Philadelphia travel market with a much larger airport across the state line.
+  - Kentucky records 4,366,865 boardings at Cincinnati/Northern Kentucky International. The airport serving Cincinnati sits in Hebron, Kentucky, rather than Ohio.
+  methodology: FAA calendar-year 2025 preliminary revenue passenger enplanements identify each state’s busiest commercial airport. Enplanements count boardings, not arrivals or airport land area. Changes compare 2024.
   sources:
-    - name: "FAA Passenger Boarding (Enplanement) Data, CY 2025"
-      url: "https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger"
-      description: "Preliminary 2025 and final 2024 enplanements for U.S. commercial service airports"
-
+  - name: FAA Passenger Boarding (Enplanement) Data, CY 2025
+    url: https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger
+    description: Preliminary 2025 and final 2024 enplanements for U.S. commercial service airports
+  - name: Delta Corporate Stats and Facts
+    url: https://news.delta.com/corporate-stats-and-facts
+    description: Atlanta headquarters and largest-hub context
+  - name: Wilmington Airport Visitor Information
+    url: https://www.flyilg.com/visitor-information
+    description: Greater Philadelphia airport market context
+  - name: Cincinnati/Northern Kentucky Airport Directions
+    url: https://www.cvgairport.com/directions-and-traffic/
+    description: Hebron, Kentucky airport location
 map:
-  title: "Busiest Airport by State Map"
-  image: "/images/rankings/infrastructure/largest-airport-by-state/largest-airport-by-state-map.webp"
-  image_alt: "U.S. map showing the busiest airport in each state by annual passenger boardings"
-  caption: "Georgia shades darkest with 51.5 million boardings at Hartsfield-Jackson Atlanta International. Delaware is lightest at 169,382 at Wilmington Airport."
+  title: Busiest Airport by State Map
+  image: /images/rankings/infrastructure/largest-airport-by-state/largest-airport-by-state-map.webp
+  image_alt: U.S. map showing the busiest airport in each state by annual passenger boardings
+  caption: Georgia leads with 51,459,786 boardings at Atlanta, while Delaware has 169,382 at Wilmington. Airports are assigned to the state where they physically sit.
   metric_key: enplanements
-  metric_label: "boardings"
+  metric_label: boardings
   name_key: airport
   color_scheme: teal
   color_scale: log
   tooltip_fields:
-    - key: airport
-      label: "Airport"
-    - key: iata
-      label: "Code"
-    - key: city
-      label: "City"
-
+  - key: airport
+    label: Airport
+  - key: iata
+    label: Code
+  - key: city
+    label: City
 table:
   columns:
-    rank: "Rank"
-    state: "State"
-    airport: "Airport"
-    iata: "Code"
-    enplanements: "Boardings (2025)"
-    change_pct: "Change vs 2024"
+    rank: Rank
+    state: State
+    airport: Airport
+    iata: Code
+    enplanements: Boardings (2025)
+    change_pct: Change vs 2024
   column_formats:
-    enplanements: "N0"
-    change_pct: "0.0'%'"
-
+    enplanements: N0
+    change_pct: 0.0'%'
   metric_default: enplanements
   sort_default: desc
-
   rows:
-    - rank: 1
-      state: "Georgia"
-      state_slug: "georgia"
-      airport: "Hartsfield-Jackson Atlanta International"
-      iata: "ATL"
-      city: "Atlanta"
-      enplanements: 51459786
-      change_pct: -2.0
-
-    - rank: 2
-      state: "Texas"
-      state_slug: "texas"
-      airport: "Dallas/Fort Worth International"
-      iata: "DFW"
-      city: "Dallas-Fort Worth"
-      enplanements: 41297009
-      change_pct: -2.5
-
-    - rank: 3
-      state: "Illinois"
-      state_slug: "illinois"
-      airport: "O'Hare International"
-      iata: "ORD"
-      city: "Chicago"
-      enplanements: 40680735
-      change_pct: 5.5
-
-    - rank: 4
-      state: "Colorado"
-      state_slug: "colorado"
-      airport: "Denver International"
-      iata: "DEN"
-      city: "Denver"
-      enplanements: 39976695
-      change_pct: -0.1
-
-    - rank: 5
-      state: "California"
-      state_slug: "california"
-      airport: "Los Angeles International"
-      iata: "LAX"
-      city: "Los Angeles"
-      enplanements: 36497303
-      change_pct: -3.4
-
-    - rank: 6
-      state: "New York"
-      state_slug: "new-york"
-      airport: "John F. Kennedy International"
-      iata: "JFK"
-      city: "New York City"
-      enplanements: 30792806
-      change_pct: -2.1
-
-    - rank: 7
-      state: "Florida"
-      state_slug: "florida"
-      airport: "Orlando International"
-      iata: "MCO"
-      city: "Orlando"
-      enplanements: 27999709
-      change_pct: 0.5
-
-    - rank: 8
-      state: "Nevada"
-      state_slug: "nevada"
-      airport: "Harry Reid International"
-      iata: "LAS"
-      city: "Las Vegas"
-      enplanements: 26531765
-      change_pct: -6.1
-
-    - rank: 9
-      state: "North Carolina"
-      state_slug: "north-carolina"
-      airport: "Charlotte Douglas International"
-      iata: "CLT"
-      city: "Charlotte"
-      enplanements: 25873555
-      change_pct: -9.3
-
-    - rank: 10
-      state: "Washington"
-      state_slug: "washington"
-      airport: "Seattle-Tacoma International"
-      iata: "SEA"
-      city: "Seattle"
-      enplanements: 25417071
-      change_pct: 0.0
-
-    - rank: 11
-      state: "Arizona"
-      state_slug: "arizona"
-      airport: "Phoenix Sky Harbor International"
-      iata: "PHX"
-      city: "Phoenix"
-      enplanements: 25094817
-      change_pct: -2.0
-
-    - rank: 12
-      state: "New Jersey"
-      state_slug: "new-jersey"
-      airport: "Newark Liberty International"
-      iata: "EWR"
-      city: "Newark"
-      enplanements: 23464492
-      change_pct: -4.4
-
-    - rank: 13
-      state: "Massachusetts"
-      state_slug: "massachusetts"
-      airport: "Boston Logan International"
-      iata: "BOS"
-      city: "Boston"
-      enplanements: 21021153
-      change_pct: -0.3
-
-    - rank: 14
-      state: "Minnesota"
-      state_slug: "minnesota"
-      airport: "Minneapolis-Saint Paul International"
-      iata: "MSP"
-      city: "Minneapolis"
-      enplanements: 17488261
-      change_pct: -3.1
-
-    - rank: 15
-      state: "Michigan"
-      state_slug: "michigan"
-      airport: "Detroit Metropolitan Wayne County"
-      iata: "DTW"
-      city: "Detroit"
-      enplanements: 16294768
-      change_pct: 1.1
-
-    - rank: 16
-      state: "Pennsylvania"
-      state_slug: "pennsylvania"
-      airport: "Philadelphia International"
-      iata: "PHL"
-      city: "Philadelphia"
-      enplanements: 14779849
-      change_pct: -2.1
-
-    - rank: 17
-      state: "Virginia"
-      state_slug: "virginia"
-      airport: "Washington Dulles International"
-      iata: "IAD"
-      city: "Dulles"
-      enplanements: 13859569
-      change_pct: 6.6
-
-    - rank: 18
-      state: "Utah"
-      state_slug: "utah"
-      airport: "Salt Lake City International"
-      iata: "SLC"
-      city: "Salt Lake City"
-      enplanements: 13429128
-      change_pct: -0.8
-
-    - rank: 19
-      state: "Tennessee"
-      state_slug: "tennessee"
-      airport: "Nashville International"
-      iata: "BNA"
-      city: "Nashville"
-      enplanements: 12549304
-      change_pct: 4.1
-
-    - rank: 20
-      state: "Maryland"
-      state_slug: "maryland"
-      airport: "Baltimore/Washington International"
-      iata: "BWI"
-      city: "Baltimore"
-      enplanements: 12274134
-      change_pct: -7.2
-
-    - rank: 21
-      state: "Hawaii"
-      state_slug: "hawaii"
-      airport: "Daniel K. Inouye International"
-      iata: "HNL"
-      city: "Honolulu"
-      enplanements: 10430353
-      change_pct: -0.2
-
-    - rank: 22
-      state: "Oregon"
-      state_slug: "oregon"
-      airport: "Portland International"
-      iata: "PDX"
-      city: "Portland"
-      enplanements: 9054394
-      change_pct: 4.8
-
-    - rank: 23
-      state: "Missouri"
-      state_slug: "missouri"
-      airport: "St. Louis Lambert International"
-      iata: "STL"
-      city: "St. Louis"
-      enplanements: 7483526
-      change_pct: -4.2
-
-    - rank: 24
-      state: "Louisiana"
-      state_slug: "louisiana"
-      airport: "Louis Armstrong New Orleans International"
-      iata: "MSY"
-      city: "New Orleans"
-      enplanements: 6221146
-      change_pct: -4.8
-
-    - rank: 25
-      state: "Indiana"
-      state_slug: "indiana"
-      airport: "Indianapolis International"
-      iata: "IND"
-      city: "Indianapolis"
-      enplanements: 5221447
-      change_pct: 0.8
-
-    - rank: 26
-      state: "Ohio"
-      state_slug: "ohio"
-      airport: "Cleveland Hopkins International"
-      iata: "CLE"
-      city: "Cleveland"
-      enplanements: 4855943
-      change_pct: -1.9
-
-    - rank: 27
-      state: "Kentucky"
-      state_slug: "kentucky"
-      airport: "Cincinnati/Northern Kentucky International"
-      iata: "CVG"
-      city: "Hebron"
-      enplanements: 4366865
-      change_pct: -3.0
-
-    - rank: 28
-      state: "Connecticut"
-      state_slug: "connecticut"
-      airport: "Bradley International"
-      iata: "BDL"
-      city: "Windsor Locks"
-      enplanements: 3283397
-      change_pct: -0.1
-
-    - rank: 29
-      state: "South Carolina"
-      state_slug: "south-carolina"
-      airport: "Charleston International"
-      iata: "CHS"
-      city: "Charleston"
-      enplanements: 3142402
-      change_pct: 0.9
-
-    - rank: 30
-      state: "Wisconsin"
-      state_slug: "wisconsin"
-      airport: "Milwaukee Mitchell International"
-      iata: "MKE"
-      city: "Milwaukee"
-      enplanements: 2889040
-      change_pct: -6.9
-
-    - rank: 31
-      state: "Alaska"
-      state_slug: "alaska"
-      airport: "Ted Stevens Anchorage International"
-      iata: "ANC"
-      city: "Anchorage"
-      enplanements: 2729285
-      change_pct: -1.4
-
-    - rank: 32
-      state: "Idaho"
-      state_slug: "idaho"
-      airport: "Boise Airport"
-      iata: "BOI"
-      city: "Boise"
-      enplanements: 2579647
-      change_pct: 4.2
-
-    - rank: 33
-      state: "Nebraska"
-      state_slug: "nebraska"
-      airport: "Eppley Airfield"
-      iata: "OMA"
-      city: "Omaha"
-      enplanements: 2565135
-      change_pct: -0.7
-
-    - rank: 34
-      state: "New Mexico"
-      state_slug: "new-mexico"
-      airport: "Albuquerque International Sunport"
-      iata: "ABQ"
-      city: "Albuquerque"
-      enplanements: 2562028
-      change_pct: -4.8
-
-    - rank: 35
-      state: "Oklahoma"
-      state_slug: "oklahoma"
-      airport: "Will Rogers International"
-      iata: "OKC"
-      city: "Oklahoma City"
-      enplanements: 2242888
-      change_pct: -0.0
-
-    - rank: 36
-      state: "Rhode Island"
-      state_slug: "rhode-island"
-      airport: "Rhode Island T. F. Green International"
-      iata: "PVD"
-      city: "Warwick"
-      enplanements: 2117401
-      change_pct: 6.7
-
-    - rank: 37
-      state: "Alabama"
-      state_slug: "alabama"
-      airport: "Birmingham-Shuttlesworth International"
-      iata: "BHM"
-      city: "Birmingham"
-      enplanements: 1615940
-      change_pct: 1.2
-
-    - rank: 38
-      state: "Iowa"
-      state_slug: "iowa"
-      airport: "Des Moines International"
-      iata: "DSM"
-      city: "Des Moines"
-      enplanements: 1596784
-      change_pct: 2.7
-
-    - rank: 39
-      state: "Montana"
-      state_slug: "montana"
-      airport: "Bozeman Yellowstone International"
-      iata: "BZN"
-      city: "Bozeman"
-      enplanements: 1406833
-      change_pct: 6.4
-
-    - rank: 40
-      state: "Maine"
-      state_slug: "maine"
-      airport: "Portland International Jetport"
-      iata: "PWM"
-      city: "Portland"
-      enplanements: 1287041
-      change_pct: 5.3
-
-    - rank: 41
-      state: "Arkansas"
-      state_slug: "arkansas"
-      airport: "Northwest Arkansas National"
-      iata: "XNA"
-      city: "Bentonville"
-      enplanements: 1234923
-      change_pct: 10.0
-
-    - rank: 42
-      state: "Kansas"
-      state_slug: "kansas"
-      airport: "Wichita Dwight D. Eisenhower National"
-      iata: "ICT"
-      city: "Wichita"
-      enplanements: 909224
-      change_pct: 2.7
-
-    - rank: 43
-      state: "South Dakota"
-      state_slug: "south-dakota"
-      airport: "Sioux Falls Regional"
-      iata: "FSD"
-      city: "Sioux Falls"
-      enplanements: 741643
-      change_pct: 5.7
-
-    - rank: 44
-      state: "Vermont"
-      state_slug: "vermont"
-      airport: "Patrick Leahy Burlington International"
-      iata: "BTV"
-      city: "Burlington"
-      enplanements: 709881
-      change_pct: 5.9
-
-    - rank: 45
-      state: "New Hampshire"
-      state_slug: "new-hampshire"
-      airport: "Manchester-Boston Regional"
-      iata: "MHT"
-      city: "Manchester"
-      enplanements: 685594
-      change_pct: 8.3
-
-    - rank: 46
-      state: "Mississippi"
-      state_slug: "mississippi"
-      airport: "Jackson-Medgar Wiley Evers International"
-      iata: "JAN"
-      city: "Jackson"
-      enplanements: 600350
-      change_pct: -2.6
-
-    - rank: 47
-      state: "North Dakota"
-      state_slug: "north-dakota"
-      airport: "Hector International"
-      iata: "FAR"
-      city: "Fargo"
-      enplanements: 598611
-      change_pct: 8.3
-
-    - rank: 48
-      state: "Wyoming"
-      state_slug: "wyoming"
-      airport: "Jackson Hole Airport"
-      iata: "JAC"
-      city: "Jackson"
-      enplanements: 572151
-      change_pct: 10.3
-
-    - rank: 49
-      state: "West Virginia"
-      state_slug: "west-virginia"
-      airport: "West Virginia International Yeager"
-      iata: "CRW"
-      city: "Charleston"
-      enplanements: 220015
-      change_pct: 8.8
-
-    - rank: 50
-      state: "Delaware"
-      state_slug: "delaware"
-      airport: "Wilmington Airport"
-      iata: "ILG"
-      city: "New Castle"
-      enplanements: 169382
-      change_pct: 35.4
-
+  - rank: 1
+    state: Georgia
+    state_slug: georgia
+    airport: Hartsfield-Jackson Atlanta International
+    iata: ATL
+    city: Atlanta
+    enplanements: 51459786
+    change_pct: -2.0
+  - rank: 2
+    state: Texas
+    state_slug: texas
+    airport: Dallas/Fort Worth International
+    iata: DFW
+    city: Dallas-Fort Worth
+    enplanements: 41297009
+    change_pct: -2.5
+  - rank: 3
+    state: Illinois
+    state_slug: illinois
+    airport: O'Hare International
+    iata: ORD
+    city: Chicago
+    enplanements: 40680735
+    change_pct: 5.5
+  - rank: 4
+    state: Colorado
+    state_slug: colorado
+    airport: Denver International
+    iata: DEN
+    city: Denver
+    enplanements: 39976695
+    change_pct: -0.1
+  - rank: 5
+    state: California
+    state_slug: california
+    airport: Los Angeles International
+    iata: LAX
+    city: Los Angeles
+    enplanements: 36497303
+    change_pct: -3.4
+  - rank: 6
+    state: New York
+    state_slug: new-york
+    airport: John F. Kennedy International
+    iata: JFK
+    city: New York City
+    enplanements: 30792806
+    change_pct: -2.1
+  - rank: 7
+    state: Florida
+    state_slug: florida
+    airport: Orlando International
+    iata: MCO
+    city: Orlando
+    enplanements: 27999709
+    change_pct: 0.5
+  - rank: 8
+    state: Nevada
+    state_slug: nevada
+    airport: Harry Reid International
+    iata: LAS
+    city: Las Vegas
+    enplanements: 26531765
+    change_pct: -6.1
+  - rank: 9
+    state: North Carolina
+    state_slug: north-carolina
+    airport: Charlotte Douglas International
+    iata: CLT
+    city: Charlotte
+    enplanements: 25873555
+    change_pct: -9.3
+  - rank: 10
+    state: Washington
+    state_slug: washington
+    airport: Seattle-Tacoma International
+    iata: SEA
+    city: Seattle
+    enplanements: 25417071
+    change_pct: 0.0
+  - rank: 11
+    state: Arizona
+    state_slug: arizona
+    airport: Phoenix Sky Harbor International
+    iata: PHX
+    city: Phoenix
+    enplanements: 25094817
+    change_pct: -2.0
+  - rank: 12
+    state: New Jersey
+    state_slug: new-jersey
+    airport: Newark Liberty International
+    iata: EWR
+    city: Newark
+    enplanements: 23464492
+    change_pct: -4.4
+  - rank: 13
+    state: Massachusetts
+    state_slug: massachusetts
+    airport: Boston Logan International
+    iata: BOS
+    city: Boston
+    enplanements: 21021153
+    change_pct: -0.3
+  - rank: 14
+    state: Minnesota
+    state_slug: minnesota
+    airport: Minneapolis-Saint Paul International
+    iata: MSP
+    city: Minneapolis
+    enplanements: 17488261
+    change_pct: -3.1
+  - rank: 15
+    state: Michigan
+    state_slug: michigan
+    airport: Detroit Metropolitan Wayne County
+    iata: DTW
+    city: Detroit
+    enplanements: 16294768
+    change_pct: 1.1
+  - rank: 16
+    state: Pennsylvania
+    state_slug: pennsylvania
+    airport: Philadelphia International
+    iata: PHL
+    city: Philadelphia
+    enplanements: 14779849
+    change_pct: -2.1
+  - rank: 17
+    state: Virginia
+    state_slug: virginia
+    airport: Washington Dulles International
+    iata: IAD
+    city: Dulles
+    enplanements: 13859569
+    change_pct: 6.6
+  - rank: 18
+    state: Utah
+    state_slug: utah
+    airport: Salt Lake City International
+    iata: SLC
+    city: Salt Lake City
+    enplanements: 13429128
+    change_pct: -0.8
+  - rank: 19
+    state: Tennessee
+    state_slug: tennessee
+    airport: Nashville International
+    iata: BNA
+    city: Nashville
+    enplanements: 12549304
+    change_pct: 4.1
+  - rank: 20
+    state: Maryland
+    state_slug: maryland
+    airport: Baltimore/Washington International
+    iata: BWI
+    city: Baltimore
+    enplanements: 12274134
+    change_pct: -7.2
+  - rank: 21
+    state: Hawaii
+    state_slug: hawaii
+    airport: Daniel K. Inouye International
+    iata: HNL
+    city: Honolulu
+    enplanements: 10430353
+    change_pct: -0.2
+  - rank: 22
+    state: Oregon
+    state_slug: oregon
+    airport: Portland International
+    iata: PDX
+    city: Portland
+    enplanements: 9054394
+    change_pct: 4.8
+  - rank: 23
+    state: Missouri
+    state_slug: missouri
+    airport: St. Louis Lambert International
+    iata: STL
+    city: St. Louis
+    enplanements: 7483526
+    change_pct: -4.2
+  - rank: 24
+    state: Louisiana
+    state_slug: louisiana
+    airport: Louis Armstrong New Orleans International
+    iata: MSY
+    city: New Orleans
+    enplanements: 6221146
+    change_pct: -4.8
+  - rank: 25
+    state: Indiana
+    state_slug: indiana
+    airport: Indianapolis International
+    iata: IND
+    city: Indianapolis
+    enplanements: 5221447
+    change_pct: 0.8
+  - rank: 26
+    state: Ohio
+    state_slug: ohio
+    airport: Cleveland Hopkins International
+    iata: CLE
+    city: Cleveland
+    enplanements: 4855943
+    change_pct: -1.9
+  - rank: 27
+    state: Kentucky
+    state_slug: kentucky
+    airport: Cincinnati/Northern Kentucky International
+    iata: CVG
+    city: Hebron
+    enplanements: 4366865
+    change_pct: -3.0
+  - rank: 28
+    state: Connecticut
+    state_slug: connecticut
+    airport: Bradley International
+    iata: BDL
+    city: Windsor Locks
+    enplanements: 3283397
+    change_pct: -0.1
+  - rank: 29
+    state: South Carolina
+    state_slug: south-carolina
+    airport: Charleston International
+    iata: CHS
+    city: Charleston
+    enplanements: 3142402
+    change_pct: 0.9
+  - rank: 30
+    state: Wisconsin
+    state_slug: wisconsin
+    airport: Milwaukee Mitchell International
+    iata: MKE
+    city: Milwaukee
+    enplanements: 2889040
+    change_pct: -6.9
+  - rank: 31
+    state: Alaska
+    state_slug: alaska
+    airport: Ted Stevens Anchorage International
+    iata: ANC
+    city: Anchorage
+    enplanements: 2729285
+    change_pct: -1.4
+  - rank: 32
+    state: Idaho
+    state_slug: idaho
+    airport: Boise Airport
+    iata: BOI
+    city: Boise
+    enplanements: 2579647
+    change_pct: 4.2
+  - rank: 33
+    state: Nebraska
+    state_slug: nebraska
+    airport: Eppley Airfield
+    iata: OMA
+    city: Omaha
+    enplanements: 2565135
+    change_pct: -0.7
+  - rank: 34
+    state: New Mexico
+    state_slug: new-mexico
+    airport: Albuquerque International Sunport
+    iata: ABQ
+    city: Albuquerque
+    enplanements: 2562028
+    change_pct: -4.8
+  - rank: 35
+    state: Oklahoma
+    state_slug: oklahoma
+    airport: Will Rogers International
+    iata: OKC
+    city: Oklahoma City
+    enplanements: 2242888
+    change_pct: -0.0
+  - rank: 36
+    state: Rhode Island
+    state_slug: rhode-island
+    airport: Rhode Island T. F. Green International
+    iata: PVD
+    city: Warwick
+    enplanements: 2117401
+    change_pct: 6.7
+  - rank: 37
+    state: Alabama
+    state_slug: alabama
+    airport: Birmingham-Shuttlesworth International
+    iata: BHM
+    city: Birmingham
+    enplanements: 1615940
+    change_pct: 1.2
+  - rank: 38
+    state: Iowa
+    state_slug: iowa
+    airport: Des Moines International
+    iata: DSM
+    city: Des Moines
+    enplanements: 1596784
+    change_pct: 2.7
+  - rank: 39
+    state: Montana
+    state_slug: montana
+    airport: Bozeman Yellowstone International
+    iata: BZN
+    city: Bozeman
+    enplanements: 1406833
+    change_pct: 6.4
+  - rank: 40
+    state: Maine
+    state_slug: maine
+    airport: Portland International Jetport
+    iata: PWM
+    city: Portland
+    enplanements: 1287041
+    change_pct: 5.3
+  - rank: 41
+    state: Arkansas
+    state_slug: arkansas
+    airport: Northwest Arkansas National
+    iata: XNA
+    city: Bentonville
+    enplanements: 1234923
+    change_pct: 10.0
+  - rank: 42
+    state: Kansas
+    state_slug: kansas
+    airport: Wichita Dwight D. Eisenhower National
+    iata: ICT
+    city: Wichita
+    enplanements: 909224
+    change_pct: 2.7
+  - rank: 43
+    state: South Dakota
+    state_slug: south-dakota
+    airport: Sioux Falls Regional
+    iata: FSD
+    city: Sioux Falls
+    enplanements: 741643
+    change_pct: 5.7
+  - rank: 44
+    state: Vermont
+    state_slug: vermont
+    airport: Patrick Leahy Burlington International
+    iata: BTV
+    city: Burlington
+    enplanements: 709881
+    change_pct: 5.9
+  - rank: 45
+    state: New Hampshire
+    state_slug: new-hampshire
+    airport: Manchester-Boston Regional
+    iata: MHT
+    city: Manchester
+    enplanements: 685594
+    change_pct: 8.3
+  - rank: 46
+    state: Mississippi
+    state_slug: mississippi
+    airport: Jackson-Medgar Wiley Evers International
+    iata: JAN
+    city: Jackson
+    enplanements: 600350
+    change_pct: -2.6
+  - rank: 47
+    state: North Dakota
+    state_slug: north-dakota
+    airport: Hector International
+    iata: FAR
+    city: Fargo
+    enplanements: 598611
+    change_pct: 8.3
+  - rank: 48
+    state: Wyoming
+    state_slug: wyoming
+    airport: Jackson Hole Airport
+    iata: JAC
+    city: Jackson
+    enplanements: 572151
+    change_pct: 10.3
+  - rank: 49
+    state: West Virginia
+    state_slug: west-virginia
+    airport: West Virginia International Yeager
+    iata: CRW
+    city: Charleston
+    enplanements: 220015
+    change_pct: 8.8
+  - rank: 50
+    state: Delaware
+    state_slug: delaware
+    airport: Wilmington Airport
+    iata: ILG
+    city: New Castle
+    enplanements: 169382
+    change_pct: 35.4
 sections:
-  - id: "busiest-airports-by-state"
-    icon: "fa-solid fa-plane-departure"
-    title: "Busiest Airports by State"
-    paragraphs:
-      - "Georgia leads with [Hartsfield-Jackson Atlanta International](https://goairports.org/airports/north-america/united-states/atl/), which boarded 51.5 million passengers in 2025. [Dallas/Fort Worth International](https://goairports.org/airports/north-america/united-states/dfw/) in Texas is second at 41.3 million, and Chicago's O'Hare is third at 40.7 million."
-      - "O'Hare grew +5.5% in 2025 while Denver held flat, which moved Chicago ahead of [Denver International](https://goairports.org/airports/north-america/united-states/den/) into third place. Most airports in the top ten are major airline hubs, where many travelers change planes rather than start or end their trip."
-    table:
-      numbered: true
-      columns:
-        state: "State"
-        airport: "Airport"
-        iata: "Code"
-        boardings: "Boardings (2025)"
-      rows:
-        - state: "Georgia"
-          airport: "Hartsfield-Jackson Atlanta International"
-          iata: "ATL"
-          boardings: "51,459,786"
-        - state: "Texas"
-          airport: "Dallas/Fort Worth International"
-          iata: "DFW"
-          boardings: "41,297,009"
-        - state: "Illinois"
-          airport: "O'Hare International"
-          iata: "ORD"
-          boardings: "40,680,735"
-        - state: "Colorado"
-          airport: "Denver International"
-          iata: "DEN"
-          boardings: "39,976,695"
-        - state: "California"
-          airport: "Los Angeles International"
-          iata: "LAX"
-          boardings: "36,497,303"
-        - state: "New York"
-          airport: "John F. Kennedy International"
-          iata: "JFK"
-          boardings: "30,792,806"
-        - state: "Florida"
-          airport: "Orlando International"
-          iata: "MCO"
-          boardings: "27,999,709"
-        - state: "Nevada"
-          airport: "Harry Reid International"
-          iata: "LAS"
-          boardings: "26,531,765"
-        - state: "North Carolina"
-          airport: "Charlotte Douglas International"
-          iata: "CLT"
-          boardings: "25,873,555"
-        - state: "Washington"
-          airport: "Seattle-Tacoma International"
-          iata: "SEA"
-          boardings: "25,417,071"
-
-  - id: "why-atlanta-has-the-busiest-airport"
-    icon: "fa-solid fa-circle-question"
-    title: "Why Atlanta Has the Busiest Airport"
-    paragraphs:
-      - "Hartsfield-Jackson is the home hub of Delta Air Lines, which is headquartered in Atlanta and runs its largest operation there. A large share of its passengers never leave the airport. They land, walk to another gate, and fly on to somewhere else in the Southeast or overseas."
-      - "Atlanta's location helps too. The city sits within a short flight of most of the eastern United States, so routing connections through one Atlanta hub is cheaper for an airline than flying point to point between smaller cities."
-
-  - id: "when-the-airport-doesnt-match-the-city"
-    icon: "fa-solid fa-map-location-dot"
-    title: "Airports That Serve a Neighboring State"
-    paragraphs:
-      - "Kentucky's busiest airport is the one Cincinnati travelers use. Cincinnati/Northern Kentucky International sits in Hebron, Kentucky, south of the Ohio River, and boarded 4.4 million passengers in 2025, more than Louisville's airport."
-      - "Virginia's leader is Washington Dulles International, which serves the nation's capital from Loudoun County. New Jersey's Newark Liberty works the same way for New York City, and it ranks 12th nationally among state leaders at 23.5 million boardings."
-
-  - id: "fastest-growing-state-airports"
-    icon: "fa-solid fa-chart-line"
-    title: "Fastest Growing Airports by State"
-    paragraphs:
-      - "Wilmington Airport in Delaware grew +35.4% in 2025, the fastest of any state leader, though from a very small base. Jackson Hole Airport in Wyoming (+10.3%) and Bozeman Yellowstone International in Montana (+6.4%) both rose as gateways to Grand Teton and Yellowstone national parks."
-      - "Northwest Arkansas National grew +10.0%. It sits near Bentonville, home of Walmart's headquarters, which draws a steady stream of business travelers. At the other end, Charlotte Douglas boarded -9.3% fewer passengers than in 2024, the biggest drop among state leaders."
-    table:
-      numbered: true
-      columns:
-        state: "State"
-        airport: "Airport"
-        change: "Change vs 2024"
-      rows:
-        - state: "Delaware"
-          airport: "Wilmington Airport"
-          change: "+35.4%"
-        - state: "Wyoming"
-          airport: "Jackson Hole Airport"
-          change: "+10.3%"
-        - state: "Arkansas"
-          airport: "Northwest Arkansas National"
-          change: "+10.0%"
-        - state: "West Virginia"
-          airport: "West Virginia International Yeager"
-          change: "+8.8%"
-        - state: "New Hampshire"
-          airport: "Manchester-Boston Regional"
-          change: "+8.3%"
-        - state: "North Dakota"
-          airport: "Hector International"
-          change: "+8.3%"
-        - state: "Rhode Island"
-          airport: "Rhode Island T. F. Green International"
-          change: "+6.7%"
-        - state: "Virginia"
-          airport: "Washington Dulles International"
-          change: "+6.6%"
-        - state: "Montana"
-          airport: "Bozeman Yellowstone International"
-          change: "+6.4%"
-        - state: "Vermont"
-          airport: "Patrick Leahy Burlington International"
-          change: "+5.9%"
-
+- id: busiest-airports-by-state
+  icon: fa-solid fa-plane-departure
+  title: Why Atlanta Has the Busiest Airport
+  paragraphs:
+  - Georgia leads with 51,459,786 boardings at [Hartsfield-Jackson Atlanta International](https://goairports.org/airports/north-america/united-states/atl/). Atlanta houses Delta’s headquarters and largest hub, where connecting travelers board another flight without visiting the city. Airline hubs explain why [the largest U.S. airlines](/collections/travel/largest-us-airlines) can concentrate passengers at a single airport.
+  - Delaware has the smallest state-leading total, 169,382 at Wilmington. Its airport lies in the Greater Philadelphia region, where travelers can also use Philadelphia International across the state line. Airport catchment areas cross borders, unlike the state boundaries used for this table.
+  table:
+    numbered: true
+    columns:
+      state: State
+      airport: Airport
+      iata: Code
+      boardings: Boardings (2025)
+    rows:
+    - state: Georgia
+      airport: Hartsfield-Jackson Atlanta International
+      iata: ATL
+      boardings: 51,459,786
+    - state: Texas
+      airport: Dallas/Fort Worth International
+      iata: DFW
+      boardings: 41,297,009
+    - state: Illinois
+      airport: O'Hare International
+      iata: ORD
+      boardings: 40,680,735
+    - state: Colorado
+      airport: Denver International
+      iata: DEN
+      boardings: 39,976,695
+    - state: California
+      airport: Los Angeles International
+      iata: LAX
+      boardings: 36,497,303
+    - state: New York
+      airport: John F. Kennedy International
+      iata: JFK
+      boardings: 30,792,806
+    - state: Florida
+      airport: Orlando International
+      iata: MCO
+      boardings: 27,999,709
+    - state: Nevada
+      airport: Harry Reid International
+      iata: LAS
+      boardings: 26,531,765
+    - state: North Carolina
+      airport: Charlotte Douglas International
+      iata: CLT
+      boardings: 25,873,555
+    - state: Washington
+      airport: Seattle-Tacoma International
+      iata: SEA
+      boardings: 25,417,071
+- id: when-the-airport-doesnt-match-the-city
+  icon: fa-solid fa-map-location-dot
+  title: Airports That Serve a Neighboring State
+  paragraphs:
+  - Kentucky records 4,366,865 boardings at Cincinnati/Northern Kentucky International in Hebron, south of the Ohio River. Cincinnati itself sits in Ohio, but passengers boarding its airport count toward Kentucky. Airport location and the city printed on a ticket need not match.
+  - Virginia’s Washington Dulles International has 13,859,569 boardings and serves Washington from outside the District of Columbia. New Jersey’s Newark Liberty similarly serves the New York metropolitan area. Travel across state lines also shapes [traffic congestion by state](/rankings/infrastructure/traffic-congestion-by-state), especially around shared metropolitan areas.
+- id: fastest-growing-state-airports
+  icon: fa-solid fa-chart-line
+  title: Fastest Growing Airports by State
+  paragraphs:
+  - Delaware’s Wilmington Airport reports a 35.4% boarding increase from 2024, the largest among the state leaders. Its 169,382 boardings still put Delaware last because percentage gains measure change from an airport’s own starting point, rather than its size.
+  - Wyoming’s Jackson Hole Airport reports a 10.3% increase and sits inside Grand Teton National Park. Arkansas’s Northwest Arkansas National reports 10.0% and serves the Bentonville area, home to Walmart’s headquarters. Vacation gateways and corporate travel centers appear together in this top ten, without implying that either explains the entire yearly change.
+  table:
+    numbered: true
+    columns:
+      state: State
+      airport: Airport
+      change: Change vs 2024
+    rows:
+    - state: Delaware
+      airport: Wilmington Airport
+      change: +35.4%
+    - state: Wyoming
+      airport: Jackson Hole Airport
+      change: +10.3%
+    - state: Arkansas
+      airport: Northwest Arkansas National
+      change: +10.0%
+    - state: West Virginia
+      airport: West Virginia International Yeager
+      change: +8.8%
+    - state: New Hampshire
+      airport: Manchester-Boston Regional
+      change: +8.3%
+    - state: North Dakota
+      airport: Hector International
+      change: +8.3%
+    - state: Rhode Island
+      airport: Rhode Island T. F. Green International
+      change: +6.7%
+    - state: Virginia
+      airport: Washington Dulles International
+      change: +6.6%
+    - state: Montana
+      airport: Bozeman Yellowstone International
+      change: +6.4%
+    - state: Vermont
+      airport: Patrick Leahy Burlington International
+      change: +5.9%
 visual_assets:
-  - id: denver-international-jeppesen-terminal
-    src: /images/rankings/infrastructure/largest-airport-by-state/denver-international-jeppesen-terminal.jpg
-    alt: Aerial view of Jeppesen Terminal and its white peaked roof at Denver International Airport
-    caption: Denver International boarded 40.0 million passengers in 2025 and covers more land than any other U.S. airport.
-    section: busiest-airports-by-state
-    layout: full-width-tall
-  - id: cvg-airport-aerial
-    src: /images/rankings/infrastructure/largest-airport-by-state/cvg-airport-aerial.jpg
-    alt: Aerial view of Cincinnati Northern Kentucky International Airport with runways and terminal complex in Hebron
-    caption: Cincinnati/Northern Kentucky International in Hebron is Kentucky's busiest airport, with 4.4 million boardings in 2025.
-    section: when-the-airport-doesnt-match-the-city
-    layout: full-width-tall
-  - id: jackson-hole-airport-aerial
-    src: /images/rankings/infrastructure/largest-airport-by-state/jackson-hole-airport-aerial.jpg
-    alt: Jackson Hole Airport on the valley floor with the Teton Range rising behind the runway
-    caption: Jackson Hole Airport, inside Grand Teton National Park, is Wyoming's busiest airport and grew +10.3% in 2025.
-    section: fastest-growing-state-airports
-    layout: full-width-tall
-
+- id: denver-international-jeppesen-terminal
+  src: /images/rankings/infrastructure/largest-airport-by-state/denver-international-jeppesen-terminal.jpg
+  alt: Aerial view of Jeppesen Terminal and its white peaked roof at Denver International Airport
+  caption: Denver International in Colorado recorded 39,976,695 boardings in 2025. Its tented terminal roof echoes the nearby Rocky Mountains.
+  section: busiest-airports-by-state
+  layout: full-width-tall
+- id: cvg-airport-aerial
+  src: /images/rankings/infrastructure/largest-airport-by-state/cvg-airport-aerial.jpg
+  alt: Aerial view of Cincinnati Northern Kentucky International Airport with runways and terminal complex in Hebron
+  caption: Cincinnati/Northern Kentucky International recorded 4,366,865 boardings in 2025. Its Hebron location places Cincinnati’s airport in Kentucky.
+  section: when-the-airport-doesnt-match-the-city
+  layout: full-width-tall
+- id: jackson-hole-airport-aerial
+  src: /images/rankings/infrastructure/largest-airport-by-state/jackson-hole-airport-aerial.jpg
+  alt: Jackson Hole Airport on the valley floor with the Teton Range rising behind the runway
+  caption: Wyoming’s Jackson Hole Airport sits inside Grand Teton National Park. Its boardings increased 10.3% from 2024.
+  section: fastest-growing-state-airports
+  layout: full-width-tall
 faq:
-  - question: "What is the busiest airport in the United States?"
-    answer: "Hartsfield-Jackson Atlanta International in Georgia, with 51.5 million boardings in 2025. Its lead over Dallas/Fort Worth is more than ten million boardings."
-
-  - question: "What is the largest airport in Texas?"
-    answer: "Dallas/Fort Worth International is Texas's busiest airport, with 41.3 million boardings in 2025. Houston's George Bush Intercontinental ranks behind it."
-
-  - question: "What is the largest airport in California?"
-    answer: "Los Angeles International (LAX), with 36.5 million boardings in 2025, -3.4% from 2024."
-
-  - question: "What is the largest airport in Florida?"
-    answer: "Orlando International, with 28.0 million boardings in 2025. Theme park visitors keep it ahead of Miami, Fort Lauderdale, and Tampa."
-
-  - question: "What is the largest airport in Colorado?"
-    answer: "Denver International, with 40.0 million boardings in 2025. Denver also covers more land than any other airport in the country."
-
-  - question: "Which state has the smallest main airport?"
-    answer: "Delaware. Wilmington Airport boarded 169,382 passengers in 2025, and West Virginia's Yeager Airport in Charleston is next at 220,015."
-
-  - question: "What do airport codes like ATL and DFW mean?"
-    answer: "They are three-letter IATA codes, the ones printed on boarding passes and bag tags. Each airport also has a four-letter ICAO code used by pilots and air traffic control, such as KATL for Atlanta. The full list of [U.S. airport codes](https://goairports.org/airports/north-america/united-states/) and a guide to [IATA and ICAO codes](https://goairports.org/guides/iata-vs-icao) explain how the two systems differ, and the [GoAirports airport directory](https://goairports.org/) covers airports worldwide."
-
+- question: What is the largest airport in Texas?
+  answer: Dallas/Fort Worth International is Texas’s busiest airport with 41,297,009 boardings in 2025. The airport serves the neighboring cities of Dallas and Fort Worth, which explains its paired name.
+- question: What is the largest airport in California?
+  answer: Los Angeles International leads California with 36,497,303 boardings. Passenger boardings measure departures onto aircraft, so this figure does not include everyone arriving at LAX.
+- question: What is the largest airport in Florida?
+  answer: Orlando International leads Florida with 27,999,709 boardings in 2025. Orlando’s theme parks make the city a vacation destination as well as a place where residents begin trips.
+- question: What is the largest airport in Colorado?
+  answer: Denver International leads Colorado with 39,976,695 boardings. Passenger traffic and land area answer different versions of “largest,” so this page uses boardings for a consistent comparison.
+- question: Which state has the smallest main airport?
+  answer: Delaware’s Wilmington Airport has the lowest boarding total among the state leaders, at 169,382. Wilmington nevertheless handles commercial airline flights, rather than being solely a private-plane airfield.
+- question: What does Atlanta airport code ATL mean?
+  answer: ATL identifies Georgia’s Hartsfield-Jackson Atlanta International on tickets and luggage tags. Atlanta also has the four-letter code KATL for aviation operations. The [U.S. airport codes directory](https://goairports.org/airports/north-america/united-states/) and [guide to IATA and ICAO codes](https://goairports.org/guides/iata-vs-icao) explain the two systems.
 related:
-  - title: "Largest U.S. Airlines"
-    url: "/collections/travel/largest-us-airlines"
-  - title: "Railroad Miles by State"
-    url: "/rankings/infrastructure/railroad-miles-by-state"
-  - title: "Traffic Congestion by State"
-    url: "/rankings/infrastructure/traffic-congestion-by-state"
-  - title: "Passport Ownership Rate by State"
-    url: "/rankings/government/passport-ownership-rate-by-state"
-  - title: "Toll Roads by State"
-    url: "/rankings/infrastructure/toll-roads-by-state"
+- title: Largest U.S. Airlines
+  url: /collections/travel/largest-us-airlines
+- title: Railroad Miles by State
+  url: /rankings/infrastructure/railroad-miles-by-state
+- title: Traffic Congestion by State
+  url: /rankings/infrastructure/traffic-congestion-by-state
+- title: Passport Ownership Rate by State
+  url: /rankings/government/passport-ownership-rate-by-state
+- title: Toll Roads by State
+  url: /rankings/infrastructure/toll-roads-by-state

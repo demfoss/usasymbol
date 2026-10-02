@@ -16,7 +16,7 @@ hero_image_caption: "Michigan has 203 active and historic lights, more than any 
 
 author: "USA Symbol Team"
 date_published: "2026-07-11"
-date_modified: "2026-07-11"
+date_modified: "2026-10-02"
 
 seo:
   title: "Lighthouses by State | Map, Counts & Historic Lights"
@@ -26,11 +26,11 @@ page:
   h1: "Lighthouses by State"
 
   quick_answer:
-    - "Michigan has the most lighthouses of any state, with 203 active and historic lights on record. New York ranks second with 142, followed by Texas with 104."
-    - "North Carolina has the tallest traditional lighthouse. Cape Hatteras Light rises 198 feet, while Virginia's Cape Charles Light reaches 191 feet and Florida's Ponce de Leon Inlet Light reaches 175 feet."
-    - "New Jersey has the oldest standing and operating U.S. lighthouse. Sandy Hook Light was first lit in 1764, 27 years before Maine's Portland Head Light in 1791."
+    - "Lighthouses by state counts put Michigan first with 203 active and historic lights. Its shores touch Lake Superior, Lake Michigan, Lake Huron, and Lake Erie, with lights marking harbors, reefs, and shipping channels."
+    - "North Carolina has the tallest lighthouse in the table. Cape Hatteras Light reaches 198 feet and warns ships approaching the shifting sandbars of Diamond Shoals."
+    - "New Jersey's Sandy Hook Light was first lit in 1764 and still operates. Ships approaching New York Harbor needed its beacon before the United States became a country."
 
-  methodology: "Counts come from the ARLHS World List of Lights and include active aids, historic stations, and range and pier lights, so they run higher than surviving-tower totals. Heights and first-lit dates follow U.S. Coast Guard and National Park Service records."
+  methodology: "ARLHS 2026 totals include active, historic, range, and pier lights. Heights and tower first-lit dates use Coast Guard and National Park Service records, not always the original station date."
 
   sources:
     - name: "ARLHS World List of Lights"
@@ -42,6 +42,15 @@ page:
     - name: "National Park Service Lighthouse History"
       url: "https://www.nps.gov/articles/000/history-of-lighthouses.htm"
       description: "Federal lighthouse history, automation, and preservation context"
+    - name: "Library of Michigan, Michigan Lighthouses"
+      url: "https://www.michigan.gov/libraryofmichigan/public/michigan/bibs/michigan-lighthouses"
+      description: "Great Lakes lighthouse history and preservation references"
+    - name: "National Park Service, Cape Hatteras Light Station"
+      url: "https://www.nps.gov/caha/planyourvisit/chls.htm"
+      description: "Tower dimensions, Diamond Shoals, and relocation history"
+    - name: "National Park Service, Sandy Hook Lighthouse"
+      url: "https://www.nps.gov/gate/learn/historyculture/sandy-hook-lighthouse.htm"
+      description: "First lighting and the changing Sandy Hook peninsula"
 table:
   columns:
     rank: "Rank"
@@ -541,13 +550,13 @@ map:
   metric_key: lighthouse_count
   metric_label: "Lights"
   color_scheme: teal
-  color_scale: linear
+  color_scale: log
   detail_keys: [lighthouse_count, tallest_lighthouse, height_ft, oldest_lighthouse, oldest_year, water_type]
 
 sections:
   - id: "most-lighthouses-state"
     icon: "fa-solid fa-tower-observation"
-    title: "States With the Most Lighthouses"
+    title: "Why Michigan Has the Most Lighthouses"
     table:
       columns:
         rank: "Rank"
@@ -606,8 +615,8 @@ sections:
           lighthouse_count: 47
           water_type: "Atlantic Ocean"
     paragraphs:
-      - "Michigan ranks first with 203 active and historic lights, 61 more than New York's 142. Texas ranks third with 104, followed by Massachusetts at 90 and Maine at 81."
-      - "Great Lakes shorelines explain the top of the list. Michigan, Wisconsin (76), Ohio (37), Illinois (12), Indiana (10), and Minnesota (10) together hold 348 lights, and 15 inland states have none at all."
+      - "Michigan's 203 listed lights served shipping routes across several [Great Lakes](/rankings/geography/great-lakes-states). Freighters carrying iron ore, timber, and grain needed warnings at reefs and narrow passages as well as harbor entrances, which helps explain a large inland lighthouse network."
+      - "Wyoming shares the zero-count bottom group because it has neither an ocean shore nor a Great Lakes shipping corridor. Missouri has 1 listed light despite being among the [landlocked states](/rankings/geography/landlocked-states), a reminder that historic river lights also count."
 
   - id: "tallest-lighthouses"
     icon: "fa-solid fa-arrow-up-wide-short"
@@ -670,7 +679,7 @@ sections:
           state_slug: "alabama"
           height_ft: 131
     paragraphs:
-      - "Cape Hatteras Light in North Carolina is the tallest traditional U.S. lighthouse at 198 feet, 7 feet above Virginia's Cape Charles Light at 191. Florida's Ponce de Leon Inlet Light stands 175 feet and New Jersey's Absecon Lighthouse reaches 171."
+      - "North Carolina's Cape Hatteras Light tops the height table at 198 feet, including its lightning rod. Its beacon warns mariners away from Diamond Shoals, where sandbars extend offshore near the meeting of major ocean currents. The tower was moved inland in 1999 to protect it from shoreline erosion."
 
   - id: "oldest-lighthouses"
     icon: "fa-solid fa-landmark"
@@ -733,8 +742,8 @@ sections:
           state_slug: "michigan"
           first_lit: 1825
     paragraphs:
-      - "Sandy Hook Light in New Jersey dates to 1764 and remains active, the oldest standing lighthouse in the country. Boston Light followed in 1783, Portland Head Light in 1791, and Old Cape Henry Light in 1792."
-      - "Marblehead Lighthouse (1821) in Ohio and Fort Gratiot Light (1825) in Michigan are the oldest on the Great Lakes. Both still stand more than a decade older than any Pacific coast tower."
+      - "New Jersey's Sandy Hook Light dates to 1764 and still guides ships into New York Harbor. Ocean currents carried sand northward along the peninsula, leaving the tower farther from its tip without the lighthouse itself moving."
+      - "Massachusetts lists Boston Light at 1783, the date of the replacement tower rather than the original colonial light. First-lit dates can describe a surviving structure, so a tower's age and the age of its light station are different questions."
 
 visual_assets:
   - id: most-lighthouses-state
@@ -753,22 +762,22 @@ visual_assets:
 
 faq:
   - question: "Which state has the most lighthouses?"
-    answer: "Michigan has the most lighthouses with 203 active and historic lights. New York follows with 142, and Texas ranks third with 104."
+    answer: "Michigan leads with 203 listed lights. The total includes historic stations and smaller pier or range lights, so it should not be read as a count of surviving lighthouse towers."
 
   - question: "How many lighthouses are in each state?"
-    answer: "There are 1,431 active and historic lights on record across 35 states, ranging from Michigan's 203 to one each in Missouri, Oklahoma, and West Virginia. Fifteen states have none."
+    answer: "Counts range from Michigan's 203 to zero in states such as Wyoming and Kansas. River and lake lights appear alongside ocean lighthouses, so an inland location does not automatically mean no entries."
 
   - question: "What is the tallest lighthouse in the United States?"
-    answer: "Cape Hatteras Light in North Carolina is the tallest traditional U.S. lighthouse at 198 feet. It is 7 feet taller than Virginia's 191-foot Cape Charles Light."
+    answer: "Cape Hatteras Light in North Carolina leads the table at 198 feet. Tower height measures the structure, while focal height measures the beacon above the water, which is a different navigation measurement."
 
   - question: "What is the oldest lighthouse in the United States?"
-    answer: "Sandy Hook Light in New Jersey is the oldest standing U.S. lighthouse. First lit in 1764, it remains an active aid to navigation."
+    answer: "Sandy Hook Light in New Jersey, first lit in 1764, is the oldest operating U.S. lighthouse. Its Fresnel lens concentrates light through glass prisms rather than relying on a brighter lamp alone."
 
-  - question: "Which Great Lakes state has the most lighthouses?"
-    answer: "Michigan leads the Great Lakes states with 203 active and historic lights. Wisconsin ranks second within that group at 76, followed by Ohio with 37."
+  - question: "How many lighthouses are in Wisconsin?"
+    answer: "Wisconsin has 76 active and historic lights listed. Its Lake Michigan and Lake Superior shores put it on freight routes even though it has no ocean coastline."
 
-  - question: "What is the most visited lighthouse in the United States?"
-    answer: "Cape Hatteras Light Station in North Carolina draws about 500,000 visitors a year, the most of any U.S. lighthouse. The surrounding lighthouse area receives more than 1 million visits in a typical year."
+  - question: "How many lighthouses are in Missouri?"
+    answer: "Missouri has 1 listed light, the Mark Twain Memorial Lighthouse in Hannibal. Its commemorative purpose makes it different from the working coastal beacons readers may picture."
 
 related:
   - title: "States by Coastline Length"

@@ -62,6 +62,8 @@ public sealed class BunnyImageSyncService
         }
 
         var nextManifest = new BunnySyncManifest();
+        var checkedRemoteDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var checkedRemoteFiles = new Dictionary<string, BunnyStorageObject>(StringComparer.OrdinalIgnoreCase);
 
         _logger.LogInformation(
             "Starting incremental Bunny image sync from {Path}. Tracked files: {TrackedCount}.",
@@ -87,8 +89,18 @@ public sealed class BunnyImageSyncService
                 continue;
             }
 
-            if (remoteFiles is not null &&
-                remoteFiles.TryGetValue(remotePath, out var remoteFile) &&
+            // In incremental mode, a manifest mismatch (often just a new timestamp after the folder
+            // was copied) is checked against the file's own remote folder, listed once per folder.
+            if (remoteFiles is null)
+            {
+                var remoteDirectory = Path.GetDirectoryName(remotePath)?.Replace('\\', '/') ?? "images";
+                if (checkedRemoteDirectories.Add(remoteDirectory))
+                {
+                    await LoadRemoteDirectoryAsync(remoteDirectory, checkedRemoteFiles, cancellationToken, recursive: false);
+                }
+            }
+
+            if ((remoteFiles ?? checkedRemoteFiles).TryGetValue(remotePath, out var remoteFile) &&
                 !ShouldUpload(localFileInfo, remoteFile))
             {
                 result.Skipped++;
@@ -192,7 +204,8 @@ public sealed class BunnyImageSyncService
     private async Task LoadRemoteDirectoryAsync(
         string remoteDirectory,
         Dictionary<string, BunnyStorageObject> result,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        bool recursive = true)
     {
         var requestUri = BuildStorageListUri(remoteDirectory);
         using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
@@ -229,7 +242,11 @@ public sealed class BunnyImageSyncService
 
             if (obj.IsDirectory)
             {
-                await LoadRemoteDirectoryAsync(fullPath, result, cancellationToken);
+                if (recursive)
+                {
+                    await LoadRemoteDirectoryAsync(fullPath, result, cancellationToken);
+                }
+
                 continue;
             }
 
@@ -302,23 +319,10 @@ public sealed class BunnyImageSyncService
         return string.Equals(extension, ".db", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool ShouldUpload(FileInfo localFile, BunnyStorageObject remoteFile)
-    {
-        if (remoteFile.Length != localFile.Length)
-        {
-            return true;
-        }
-
-        if (!remoteFile.LastChanged.HasValue)
-        {
-            return true;
-        }
-
-        var localUtc = localFile.LastWriteTimeUtc;
-        var remoteUtc = remoteFile.LastChanged.Value.ToUniversalTime();
-
-        return localUtc > remoteUtc.AddSeconds(1);
-    }
+    // Size-only comparison: local timestamps change whenever the images folder is copied or
+    // restored, which would otherwise force a full re-upload of identical files.
+    private static bool ShouldUpload(FileInfo localFile, BunnyStorageObject remoteFile) =>
+        remoteFile.Length != localFile.Length;
 
     private void ValidateConfiguration()
     {

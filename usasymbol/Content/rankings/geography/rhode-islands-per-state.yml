@@ -14,20 +14,21 @@ hero_image_alt: "Choropleth map of the United States shaded by how many Rhode Is
 
 author: "USA Symbol Team"
 date_published: "2026-05-16"
-date_modified: "2026-05-16"
+date_modified: "2026-10-02"
 
 seo:
-  title: "How Many Rhode Islands Fit in Each State"
-  description: "Alaska fits 551.9 Rhode Islands by land area. Texas fits 253.3. Every state compared to Rhode Island, the smallest at 1,034 sq mi."
+  title: "How Many Rhode Islands Fit in Each State | Map & Facts"
+  description: "Alaska fits 551.9 Rhode Islands by land area and Texas fits 253.3. Delaware, the second-smallest state, fits just 1.9 Rhode Islands."
 
 page:
-  h1: "How Many Rhode Islands Could Fit Inside Each U.S. State"
+  h1: "How Many Rhode Islands Fit in Each State"
 
   quick_answer:
-    - "Rhode Island (1,034 sq mi) is the smallest U.S. state. Alaska fits 551.9 Rhode Islands within its borders, Texas fits 253.3, and California fits 150.8."
-    - "Eight states each fit 100 or more Rhode Islands, Alaska, Texas, California, Montana, New Mexico, Arizona, Nevada, and Colorado, all west of the Mississippi. Delaware, the second-smallest state, fits just 1.9."
+    - "Alaska fits 551.9 Rhode Islands inside its borders, more than any other state. The whole territory bought from Russia in 1867 entered the Union in 1959 as a single state."
+    - "Delaware fits just 1.9 Rhode Islands, the fewest of any state. Both are colonial-era states whose borders were fixed by royal charters and land grants in the 1600s, long before the country pushed west."
+    - "Texas fits 253.3 Rhode Islands, the most in the Lower 48. An independent republic until 1845, it joined the Union on terms that even let it divide into as many as five states. No split ever happened."
 
-  methodology: "Rhode Islands per state = state land area (sq mi) divided by Rhode Island land area (1,034 sq mi). Land area from U.S. Census Bureau Gazetteer Files; water excluded throughout."
+  methodology: "Each state's land area in square miles divided by Rhode Island's 1,034 square miles, from U.S. Census Bureau Gazetteer Files. Water is excluded, and Rhode Island itself is left out of the ranking."
 
   sources:
     - name: "U.S. Census Bureau (Gazetteer Files)"
@@ -41,6 +42,9 @@ table:
     rhode_islands: "Rhode Islands that fit"
     land_sq_mi: "Land area (sq mi)"
     region: "Region"
+  column_formats:
+    rhode_islands: "0.0"
+    land_sq_mi: "N0"
 
   metric_default: rhode_islands
   sort_default: desc
@@ -393,8 +397,8 @@ table:
 map:
   title: "Rhode Islands per State Map"
   image: "/images/rankings/geography/rhode-islands-per-state-map.webp"
-  image_alt: "Choropleth map of the United States shaded by how many Rhode Islands could fit inside each state, from Alaska (551.9) to Rhode Island (1.0)"
-  caption: "Alaska can fit 551.9 Rhode Islands — more than twice as many as Texas (253.3). All eight states that fit 100 or more Rhode Islands are west of the Mississippi River."
+  image_alt: "Choropleth map of the United States shaded by how many Rhode Islands could fit inside each state, from Alaska (551.9) to Delaware (1.9)"
+  caption: "Alaska fits 551.9 Rhode Islands and Texas fits 253.3, while Delaware fits just 1.9. All eight states that fit 100 or more lie west of the Mississippi River."
   metric_key: rhode_islands
   metric_label: "Rhode Islands"
   color_scheme: green
@@ -421,9 +425,9 @@ compare:
   default_state_b: rhode-island
 
 sections:
-  - id: "most-rhode-islands"
+  - id: "why-alaska-fits-the-most-rhode-islands"
     icon: "fa-solid fa-mountain"
-    title: "States Where the Most Rhode Islands Fit"
+    title: "Why Alaska Fits the Most Rhode Islands"
     table:
       columns:
         rank: "Rank"
@@ -482,12 +486,12 @@ sections:
           rhode_islands: 92.8
           land_sq_mi: 95988
     paragraphs:
-      - "Alaska (570,641 sq mi) fits 551.9 Rhode Islands, more than twice the 253.3 that fit in Texas. The gap between Alaska and every other state is wider here than in any other geographic comparison: Alaska is 2.18 times larger than Texas, yet most people picture the two as roughly comparable. Colorado is the only state that crosses exactly 100 Rhode Islands, fitting 100.2."
-      - "California (150.8 RI) edges out Montana (140.8 RI) despite being more than twice as populous and far more associated with cities than open land. Montana's 145,552 square miles are almost entirely undeveloped, yet California's vast interior, the Central Valley, the Mojave, the eastern Sierra Nevada foothills, outpaces it. The full [U.S. states by land area](/rankings/geography/states-by-land-area) ranking shows how this comparison extends across all 50 states."
+      - "Alaska covers 570,641 square miles of land, enough for 551.9 Rhode Islands and more than twice the 253.3 that fit in Texas. The United States bought the entire Russian colony in 1867 for $7.2 million. Nearly a century later, Congress admitted all of it as one state, and its Aleutian Islands reach so far west that they cross the 180th meridian."
+      - "Congress carved most other western territories into states of similar size, often along straight survey lines. Montana (140.8), New Mexico (117.3), Arizona (109.9), Nevada (106.2), and Colorado (100.2) all clear 100 Rhode Islands, and every state that does lies west of the Mississippi River. The full [U.S. states by land area](/rankings/geography/states-by-land-area) ranking lists the raw square miles."
 
   - id: "fewest-rhode-islands"
     icon: "fa-solid fa-compress"
-    title: "States Closest in Size to Rhode Island"
+    title: "Smallest States Compared to Rhode Island"
     table:
       columns:
         rank: "Rank"
@@ -541,22 +545,22 @@ sections:
           rhode_islands: 1.9
           land_sq_mi: 1949
     paragraphs:
-      - "Delaware is the only other state with a ratio below 2.0, it fits 1.9 Rhode Islands. Connecticut (4.7 RI) and Hawaii (6.2 RI) are the next closest. Hawaii's 6,423 square miles are spread across eight main islands, which makes the ratio feel smaller than the total distance across the archipelago suggests."
-      - "The five smallest states combined, Rhode Island, Delaware, Connecticut, New Jersey, and New Hampshire, fit 23.4 Rhode Islands total. That is almost exactly the same as West Virginia (23.2 RI) alone. Rhode Island itself has a [population density](/rankings/demographics/states-by-population-density) higher than all but two other states, fitting more than 1 million residents into its 1,034 square miles."
+      - "Delaware fits 1.9 Rhode Islands, the fewest of any state. Both states drew their borders in the 1600s, and Delaware's curved northern line still follows a 12-mile circle measured from the courthouse town of New Castle. Connecticut (4.7) and Hawaii (6.2) come next, with Hawaii's 6,423 square miles split across eight main islands."
+      - "West Virginia fits 23.2 Rhode Islands, yet Maryland, one place lower, fits only 9.4. West Virginia broke away from Virginia in 1863, during the Civil War, and took the mountainous western counties with it. Maryland kept the narrow colonial shape set by its 1632 charter, squeezed between the Potomac River and the Mason-Dixon Line."
 
-  - id: "how-it-works"
+  - id: "how-big-is-rhode-island"
     icon: "fa-solid fa-ruler-combined"
-    title: "How the Rhode Island Comparison Works"
+    title: "How Big Is Rhode Island"
     paragraphs:
-      - "The ratio divides each state's land area (in square miles, as measured by the U.S. Census Bureau) by Rhode Island's land area of 1,034 square miles. Land area counts only solid ground and excludes rivers, lakes, reservoirs, and coastal waters. The same source and exclusion rule applies to all 50 states, so the ratios are directly comparable. Using total area instead of land area would change results slightly for water-heavy states like Michigan and Florida."
-      - "Rhode Island is frequently used as a size reference in U.S. geography because it is the smallest and most widely recognized benchmark. The [states-by-land-area ranking](/rankings/geography/states-by-land-area) shows all 50 states ranked by raw land area, and the [compare-states tool](/compare-states) lets you set any two states side by side with population and density context."
+      - "Rhode Island has 1,034 square miles of land, the smallest of any state and the unit behind every number on this page. Narragansett Bay cuts deep into its middle, so a big share of the state's total area is water. Measuring land only keeps the bay from inflating the comparison."
+      - "Despite the name, most of Rhode Island is mainland. The name first belonged to Aquidneck Island, home to Newport, and the official name stayed Rhode Island and Providence Plantations until voters shortened it in 2020. New Jersey, which fits 7.1 Rhode Islands, is the only state with a higher [population density](/rankings/demographics/states-by-population-density)."
 
 visual_assets:
   - id: narragansett-bay-rhode-island
     src: /images/rankings/geography/rhode-islands-per-state/narragansett-bay-rhode-island.jpg
     alt: Oblique aerial view of Narragansett Bay with peninsulas and islands in Rhode Island
     caption: Narragansett Bay cuts deep into Rhode Island's center, helping give the smallest state its distinctive mix of compact land area, islands, and shoreline.
-    section: how-it-works
+    section: how-big-is-rhode-island
     layout: full-width-tall
   - id: hawaiian-archipelago-satellite
     src: /images/rankings/geography/rhode-islands-per-state/hawaiian-archipelago-satellite.jpg
@@ -566,31 +570,31 @@ visual_assets:
     layout: full-width-tall
 faq:
   - question: "How many Rhode Islands fit in Alaska?"
-    answer: "Alaska fits 551.9 Rhode Islands by land area. Alaska covers 570,641 square miles; Rhode Island covers 1,034 square miles. Alaska is the largest U.S. state and more than twice the size of Texas."
+    answer: "About 551.9, based on Alaska's 570,641 square miles of land. Juneau, the state capital, cannot be reached by road from the rest of Alaska, a sign of how much empty ground lies between towns."
 
   - question: "How many Rhode Islands fit in Texas?"
-    answer: "Texas fits 253.3 Rhode Islands. Texas covers 261,914 square miles and is the largest state in the contiguous United States. Alaska fits more than twice as many Rhode Islands as Texas does."
+    answer: "Texas fits 253.3 Rhode Islands, more than any state except Alaska. El Paso, at the far western tip, sits closer to San Diego than to Beaumont on the Louisiana line."
 
   - question: "How many Rhode Islands fit in California?"
-    answer: "California fits 150.8 Rhode Islands. California covers 155,959 square miles, making it the third-largest U.S. state by land area. It fits more Rhode Islands than Montana (140.8), despite Montana being better known for open land."
+    answer: "California fits 150.8 Rhode Islands and ranks third. The Mojave Desert and the long Central Valley give it just enough room to edge out Montana, which fits 140.8."
 
-  - question: "What state fits the fewest Rhode Islands besides Rhode Island itself?"
-    answer: "Delaware fits the fewest Rhode Islands of any state besides Rhode Island: 1.9. Connecticut is next at 4.7, followed by Hawaii at 6.2. Delaware's 1,949 square miles make it the second-smallest U.S. state."
+  - question: "Which state fits the fewest Rhode Islands?"
+    answer: "Delaware, at 1.9. Its 1,949 square miles are divided into only three counties, the fewest of any state."
 
-  - question: "How many Rhode Islands fit in the entire United States?"
-    answer: "The combined land area of all 50 states is approximately 3,532,714 square miles, which fits about 3,417 Rhode Islands. That figure uses land area only and excludes water bodies throughout."
+  - question: "How many Rhode Islands fit in Hawaii?"
+    answer: "Hawaii fits 6.2 Rhode Islands, but that land is spread along a chain of islands rather than one block. The Island of Hawaii, known as the Big Island, is larger than all the other islands combined. Its shoreline also places Hawaii high among [states by coastline length](/rankings/geography/states-by-coastline-length)."
 
-  - question: "How big is Rhode Island compared to other states?"
-    answer: "Rhode Island (1,034 sq mi) is the smallest U.S. state by land area. It is about half the size of Delaware (1,949 sq mi), the next smallest. Rhode Island is ranked 50th in land area but has a population density higher than 48 other states."
+  - question: "How many Rhode Islands fit in Montana?"
+    answer: "Montana fits 140.8 Rhode Islands, fourth among the states. The name comes from the Spanish word for mountain, yet most of eastern Montana is flat Great Plains grassland."
 
 related:
   - title: "U.S. States by Land Area"
     url: "/rankings/geography/states-by-land-area"
   - title: "U.S. States by Population Density"
     url: "/rankings/demographics/states-by-population-density"
+  - title: "U.S. States by Coastline Length"
+    url: "/rankings/geography/states-by-coastline-length"
   - title: "U.S. States by Population"
     url: "/rankings/demographics/states-by-population"
-  - title: "State Capitals"
-    url: "/rankings/geography/states-capital-cities"
-  - title: "Compare States"
-    url: "/compare-states"
+  - title: "Public Land by State"
+    url: "/rankings/geography/public-land-by-state"

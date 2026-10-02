@@ -15,21 +15,21 @@ hero_image_caption: "Massachusetts has the highest average IQ of any state, 104.
 
 author: "USA Symbol Team"
 date_published: "2026-07-28"
-date_modified: "2026-07-28"
+date_modified: "2026-10-02"
 
 seo:
-  title: "Smartest States in the U.S. 2026 | Map & IQ Rankings"
+  title: "Smartest States | Map, Average IQ & Rankings"
   description: "Massachusetts has the highest average IQ of any state, 104.3. Mississippi has the lowest, at 94.2."
 
 page:
-  h1: "Smartest States in the U.S."
+  h1: "Smartest States"
 
   quick_answer:
-    - "Massachusetts is the smartest state in the country by average IQ, 104.3, narrowly ahead of New Hampshire's 104.2."
-    - "Mississippi has the lowest average IQ of any state at 94.2, a full 10.1 points behind Massachusetts."
-    - "New Hampshire leads a separate composite intelligence index at 56.82, the highest of any state, even though Massachusetts posts the higher raw IQ score. Massachusetts also posts a smartest-states composite score of 93.9, more than 20 points above second-ranked Connecticut's 73.8."
+    - "Smartest states ranked by listed average IQ put Massachusetts first at 104.3. The ranking uses a state average, which cannot establish the intelligence of an individual resident."
+    - "Mississippi has the lowest listed average IQ at 94.2. Educational access and the population included in a measure can affect state comparisons, so the number alone does not explain its position."
+    - "New Hampshire leads the separate intelligence index at 56.82. That index combines educational and economic measures with IQ, so changing the yardstick changes the winner."
 
-  methodology: "Average IQ, the Guru99 Most & Least Intelligent States Index (2024), and the Penn Stakes Smartest/Dumbest States Index (2022) come from the same compilation, though Guru99 figures are on record for only 30 of the 50 states."
+  methodology: "World Population Review compiles undated average IQ values, Guru99's 2024 intelligence index, and Penn Stakes' 2022 index. Guru99 omits 20 middle-ranked states. The indices use different inputs and scales."
 
   sources:
     - name: "World Population Review. Smartest States"
@@ -37,7 +37,7 @@ page:
       description: "State-by-state average IQ score, Most & Least Intelligent States Index (Guru99), and Smartest/Dumbest States Index (Penn Stakes)"
 
 map:
-  title: "Smartest States in the U.S. 2026 Map"
+  title: "Smartest States by Average IQ Map"
   image_alt: "U.S. map color-coded by average IQ score in each state"
   caption: "Massachusetts, the darkest shaded state, has the highest average IQ at 104.3. New Hampshire is close behind at 104.2. Mississippi, the lightest shaded state, has the lowest average IQ at 94.2."
   metric_key: avg_iq
@@ -46,14 +46,12 @@ map:
   color_scale: linear
 
 table:
-  caption: "Average IQ and Composite Intelligence Rankings by State"
-  note: "Average IQ is reported for all 50 states. Intelligence Index is a composite score from a 2024 compilation on record for 30 states only. A blank cell means that state is not included. Smartest States Index is a composite score from a 2022 compilation covering all 50 states."
+  caption: "Average IQ by State"
+  note: "Ranks follow average IQ, not either composite index. Equal IQ values can occupy consecutive rows because the supplied table orders ties separately. Composite scores appear in the section tables."
   columns:
     rank: "Rank"
     state: "State"
     avg_iq: "Average IQ"
-    intelligence_index: "Intelligence Index"
-    smartest_index: "Smartest States Index"
 
   metric_default: avg_iq
   sort_default: desc
@@ -462,21 +460,70 @@ table:
 sections:
   - id: "states-with-the-highest-average-iq"
     icon: "fa-solid fa-arrow-up"
-    title: "States With the Highest Average IQ"
+    title: "Why Massachusetts Leads Average IQ"
     paragraphs:
-      - "Massachusetts posts the highest average IQ of any state at 104.3, just ahead of New Hampshire at 104.2. Vermont and North Dakota tie for third at 103.8 each."
+      - "Massachusetts leads at 104.3 and is home to Harvard and MIT in Cambridge. Universities and research employers attract highly educated workers, while household resources affect access to schooling and college. Those are concrete influences on educational comparisons, but the supplied averages do not prove which caused Massachusetts to lead."
+      - "Mississippi's 94.2 puts it last under the same measure. The data do not isolate a cause for that result, and attributing it to a resident's innate ability would go beyond the evidence. [Educational attainment](/rankings/education/most-educated-us-states) measures a different question, the credentials adults have completed."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        avg_iq: "Average IQ"
+      rows:
+        - {rank: 1, state: "Massachusetts", state_slug: "massachusetts", avg_iq: 104.3}
+        - {rank: 2, state: "New Hampshire", state_slug: "new-hampshire", avg_iq: 104.2}
+        - {rank: 3, state: "Vermont", state_slug: "vermont", avg_iq: 103.8}
+        - {rank: 4, state: "North Dakota", state_slug: "north-dakota", avg_iq: 103.8}
+        - {rank: 5, state: "Minnesota", state_slug: "minnesota", avg_iq: 103.7}
+        - {rank: 6, state: "Montana", state_slug: "montana", avg_iq: 103.4}
+        - {rank: 7, state: "Maine", state_slug: "maine", avg_iq: 103.4}
+        - {rank: 8, state: "Iowa", state_slug: "iowa", avg_iq: 103.2}
+        - {rank: 9, state: "Connecticut", state_slug: "connecticut", avg_iq: 103.1}
+        - {rank: 10, state: "Wisconsin", state_slug: "wisconsin", avg_iq: 102.9}
 
   - id: "states-with-the-lowest-average-iq"
     icon: "fa-solid fa-arrow-down"
-    title: "States With the Lowest Average IQ"
+    title: "States With the Highest Intelligence Index"
     paragraphs:
-      - "Mississippi has the lowest average IQ of any state at 94.2, followed by Louisiana at 95.3 and California at 95.5. All three sit at least 8.8 points below Massachusetts, the top-ranked state."
+      - "New Hampshire leads the intelligence index at 56.82, although Massachusetts has the higher average IQ. The combined measure also uses graduation, literacy, test scores, diploma attainment, and economic output per person. A lead in one ingredient does not guarantee the highest combined score."
+      - "Connecticut has an average IQ of 103.1 but no reported intelligence-index value. Only the highest and lowest groups were included in this index's published compilation, so a blank is an exclusion rather than a score of zero."
+    table:
+      columns:
+        state: "State"
+        intelligence_index: "Intelligence Index"
+      rows:
+        - {state: "New Hampshire", state_slug: "new-hampshire", intelligence_index: 56.82}
+        - {state: "Minnesota", state_slug: "minnesota", intelligence_index: 55.82}
+        - {state: "Wyoming", state_slug: "wyoming", intelligence_index: 54.98}
+        - {state: "Vermont", state_slug: "vermont", intelligence_index: 54.91}
+        - {state: "Montana", state_slug: "montana", intelligence_index: 54.64}
+        - {state: "North Dakota", state_slug: "north-dakota", intelligence_index: 54.38}
+        - {state: "Maine", state_slug: "maine", intelligence_index: 53.83}
+        - {state: "South Dakota", state_slug: "south-dakota", intelligence_index: 52.61}
+        - {state: "Wisconsin", state_slug: "wisconsin", intelligence_index: 52.45}
+        - {state: "Iowa", state_slug: "iowa", intelligence_index: 52.04}
 
   - id: "which-state-is-actually-the-smartest"
     icon: "fa-solid fa-brain"
-    title: "Which State Is Actually the Smartest?"
+    title: "Smartest States by Composite Score"
     paragraphs:
-      - "New Hampshire leads a separate composite intelligence index at 56.82, the highest of any state, ahead of Massachusetts's 51.83, even though Massachusetts posts the higher average IQ. On a third measure, Massachusetts leads by a wide margin, posting a composite score of 93.9 versus Connecticut's 73.8, the next closest state."
+      - "Massachusetts leads the other composite at 93.9, with Connecticut next at 73.8. That measure combines IQ with diploma and degree attainment and college-admission test scores. Its scale differs from the intelligence index, so 93.9 and 56.82 are not directly comparable."
+      - "Maryland's composite score of 72.8 sits near the top despite its average IQ of 99.7. Adult credentials and school test results describe different populations, which is also why a [public school ranking](/rankings/education/public-school-rankings-by-state) need not follow this ordering."
+    table:
+      columns:
+        state: "State"
+        smartest_index: "Composite Score"
+      rows:
+        - {state: "Massachusetts", state_slug: "massachusetts", smartest_index: 93.9}
+        - {state: "Connecticut", state_slug: "connecticut", smartest_index: 73.8}
+        - {state: "Maryland", state_slug: "maryland", smartest_index: 72.8}
+        - {state: "Virginia", state_slug: "virginia", smartest_index: 72.5}
+        - {state: "Vermont", state_slug: "vermont", smartest_index: 72.2}
+        - {state: "New Hampshire", state_slug: "new-hampshire", smartest_index: 70.5}
+        - {state: "New Jersey", state_slug: "new-jersey", smartest_index: 69.5}
+        - {state: "Colorado", state_slug: "colorado", smartest_index: 69.4}
+        - {state: "Minnesota", state_slug: "minnesota", smartest_index: 67.0}
+        - {state: "Washington", state_slug: "washington", smartest_index: 60.3}
 
 visual_assets:
   - id: massachusetts-highest-average-iq
@@ -493,22 +540,22 @@ visual_assets:
     layout: full-width-tall
 faq:
   - question: "Which state has the highest IQ?"
-    answer: "Massachusetts, at 104.3. Vermont and North Dakota tie for third overall at 103.8 each."
+    answer: "Massachusetts has the highest listed average IQ at 104.3. A state average describes an aggregate, so it cannot predict the score of a particular person from Massachusetts."
 
   - question: "Which state has the lowest IQ?"
-    answer: "Mississippi, at 94.2. Louisiana and California follow closely at 95.3 and 95.5."
+    answer: "Mississippi has the lowest listed average IQ at 94.2. The value is not a current assessment of every resident, and the compilation gives no reference year for that column."
 
-  - question: "What is the average IQ in the United States?"
-    answer: "100.3, the national average. Massachusetts and New Hampshire are the only two states above 104."
+  - question: "What is the average IQ in California?"
+    answer: "California's listed average IQ is 95.5, placing it 48th in this table. A statewide mean hides variation among schools, communities, and individuals within the state."
 
   - question: "Is New Hampshire or Massachusetts the smartest state?"
-    answer: "Massachusetts has the higher average IQ, 104.3 versus New Hampshire's 104.2, a gap of just 0.1 points. New Hampshire's composite intelligence index of 56.82 is the highest of any state, ahead of Massachusetts's own 51.83 on that same measure."
+    answer: "Massachusetts leads on average IQ at 104.3, while New Hampshire leads the intelligence index at 56.82. IQ and a combined education-and-economy index measure different things, so the answer depends on the chosen metric."
 
   - question: "Which state has the highest smartest-states composite score?"
-    answer: "Massachusetts, at 93.9, more than 20 points above Connecticut, the second-highest state at 73.8."
+    answer: "Massachusetts leads the smartest-states composite at 93.9. The score includes educational credentials and admission tests, rather than measuring intelligence through a single test administered to all adults."
 
   - question: "Which state has the lowest smartest-states composite score?"
-    answer: "West Virginia, at 12.6, the lowest of any state."
+    answer: "West Virginia has the lowest smartest-states composite at 12.6. Mississippi is last on average IQ instead, illustrating how an index's inputs can change the bottom of the list as well as the top."
 
 related:
   - title: "Most Educated U.S. States"

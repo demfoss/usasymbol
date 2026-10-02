@@ -2,7 +2,7 @@
 
 > Обновлено: 2026-10-02. Основа — выгрузки Search Console (сентябрь 2026) + аудит репозитория.
 > Контент: 648 рейтингов, 283 коллекции, 11 квизов, 40 ranking-hubs, weird-laws и weird-alcohol-laws на все 50 штатов.
-> Сделанное из плана удаляется, след остаётся только в «Журнале» внизу.
+> Сделанное не удаляется, а помечается ✅ / `[x]` с датой (чтобы не писать повторно), плюс запись в «Журнале» внизу.
 
 ---
 
@@ -16,26 +16,26 @@
 
 | # | Страница | Показы | Поз. | Заметка |
 |---|---|---|---|---|
-| 1 | geography/states-neighboring-states | 50 417 | 12,1 | CTR 0,19% |
-| 2 | geography/states-with-no-snow | 31 271 | 8,4 | |
-| 3 | food/mcdonalds-by-state | 22 446 | 8,0 | |
-| 4 | taxes/vehicle-property-tax-by-state | 15 752 | 14,6 | |
-| 5 | law/drinking-age-by-state | 12 342 | 19,3 | |
-| 6 | geography/wild-west-states | 11 673 | 9,6 | CTR 0,34% |
-| 7 | education/teacher-salary-by-state | 10 862 | 21,7 | по шаблону jobs |
-| 8 | geography/rhode-islands-per-state | 10 371 | 7,0 | |
-| 9 | taxes/cigarette-prices-by-state | 7 780 | 11,6 | |
-| 10 | culture/state-fairs-by-state | 7 699 | 9,9 | взять точные цифры 2025 из `git show 413bc8d6:./Content/rankings/culture/state-fair-attendance-numbers.yml` (Texas 2 020 064 вместо «about 2.3 million») |
-| 11 | infrastructure/largest-airport-by-state | 7 300 | 9,4 | |
-| 12 | law/alcohol-sales-laws | 6 693 | 11,3 | |
-| 13 | law/front-license-plate-states | 6 452 | 11,4 | |
-| 14 | government/military-bases-by-state | 6 372 | 10,5 | |
-| 15 | law/fireworks-laws-by-state | 6 194 | 11,0 | |
-| 16 | education/smartest-states | 5 909 | 11,5 | |
-| 17 | law/age-of-consent-by-state | 5 577 | 14,9 | |
-| 18 | law/radar-detector-legality-by-state | 5 503 | 16,1 | |
-| 19 | geography/lighthouses-by-state | 4 126 | 8,2 | |
-| 20 | culture/casinos-by-state | 3 210 | 11,4 | |
+| 1 | ✅ geography/states-neighboring-states | 50 417 | 12,1 | сделано 2026-10-02 · CTR 0,19% |
+| 2 | ✅ geography/states-with-no-snow | 31 271 | 8,4 | сделано 2026-10-02 |
+| 3 | ✅ food/mcdonalds-by-state | 22 446 | 8,0 | сделано 2026-10-02 |
+| 4 | ✅ taxes/vehicle-property-tax-by-state | 15 752 | 14,6 | сделано 2026-10-02 |
+| 5 | ✅ law/drinking-age-by-state | 12 342 | 19,3 | сделано 2026-10-02 |
+| 6 | ✅ geography/wild-west-states | 11 673 | 9,6 | сделано 2026-10-02 · CTR 0,34% |
+| 7 | ✅ education/teacher-salary-by-state | 10 862 | 21,7 | сделано 2026-10-02 · шаблон jobs частично (нет OEWS-полей) |
+| 8 | ✅ geography/rhode-islands-per-state | 10 371 | 7,0 | сделано 2026-10-02 |
+| 9 | ✅ taxes/cigarette-prices-by-state | 7 780 | 11,6 | сделано 2026-10-02 |
+| 10 | ✅ culture/state-fairs-by-state | 7 699 | 9,9 | сделано 2026-10-02 · точные цифры 2025 у 14 ярмарок |
+| 11 | ✅ infrastructure/largest-airport-by-state | 7 300 | 9,4 | сделано 2026-10-02 · сохранён предварительный набор FAA CY2025 |
+| 12 | ✅ law/alcohol-sales-laws | 6 693 | 11,3 | сделано 2026-10-02 · категориальная карта разрешена пользователем |
+| 13 | ✅ law/front-license-plate-states | 6 452 | 11,4 | сделано 2026-10-02 · карта по числу пластин, исключения для отдельных регистраций |
+| 14 | ✅ government/military-bases-by-state | 6 372 | 10,5 | сделано 2026-10-02 · National Guard и reserve вне исходного подсчёта |
+| 15 | ✅ law/fireworks-laws-by-state | 6 194 | 11,0 | сделано 2026-10-02 · категориальная карта разрешена пользователем |
+| 16 | ✅ education/smartest-states | 5 909 | 11,5 | сделано 2026-10-02 · индексы разделены, причины IQ-различий исходные данные не доказывают |
+| 17 | ✅ law/age-of-consent-by-state | 5 577 | 14,9 | сделано 2026-10-02 · исправлена Arizona, полный аудит всех исключений не проводился |
+| 18 | ✅ law/radar-detector-legality-by-state | 5 503 | 16,1 | сделано 2026-10-02 · категориальная карта разрешена пользователем |
+| 19 | ✅ geography/lighthouses-by-state | 4 126 | 8,2 | сделано 2026-10-02 · высота включает lightning rod, даты сохранившихся башен |
+| 20 | ✅ culture/casinos-by-state | 3 210 | 11,4 | сделано 2026-10-02 · удалены revenue и online-статистики вне таблицы |
 | 21 | culture/zoos-by-state | 3 193 | 14,4 | |
 | 22 | education/hardest-bar-exams-by-state | 2 643 | 14,5 | |
 | 23 | agriculture/chicken-production-by-state | 2 297 | 8,5 | |
@@ -65,7 +65,7 @@
 
 ---
 
-Статусы: `[ ]` не начато · `[~]` в работе · `[x]` готово (готовое удаляется, запись — в журнал)
+Статусы: `[ ]` не начато · `[~]` в работе · `[x]` готово (остаётся в плане с датой, запись — в журнал)
 
 ---
 
@@ -98,19 +98,19 @@
 
 | # | slug | Почему интересно |
 |---|---|---|
-| 15 | law/overtime-laws-by-state | Калифорния платит сверхурочные уже после 8 часов в день |
-| 16 | law/paid-sick-leave-by-state | Федерального требования нет, штаты решают сами |
-| 17 | law/meal-and-rest-break-laws-by-state | Федерального требования перерыва на обед нет |
-| 18 | law/minimum-age-to-work-by-state | Арканзас в 2023 отменил разрешения на работу для младше 16 |
-| 19 | economy/truck-driver-salary-by-state | BLS OEWS 53-3032 |
-| 20 | economy/plumber-salary-by-state | 47-2152, лицензия штата |
-| 21 | economy/dental-hygienist-salary-by-state | 29-1292 |
-| 22 | economy/pharmacist-salary-by-state | 29-1051 |
-| 23 | economy/nurse-practitioner-salary-by-state | 29-1171, самостоятельная практика по штатам |
-| 24 | economy/software-developer-salary-by-state | 15-1252 |
-| 25 | economy/hvac-technician-salary-by-state | 49-9021 |
-| 26 | economy/welder-salary-by-state | 51-4121 |
-| 27 | economy/physical-therapist-salary-by-state | 29-1123, PT Compact |
+| ~~15~~ | ~~law/overtime-laws-by-state~~ | ✅ Написано 2026-10-02, DOL июль 2026, категориальная карта (числовая вводила бы в заблуждение). Kansas 46 ч — из закона штата, не из DOL |
+| ~~16~~ | ~~law/paid-sick-leave-by-state~~ | ✅ Написано 2026-10-02, статус на октябрь 2026, карта по годовому лимиту часов |
+| ~~17~~ | ~~law/meal-and-rest-break-laws-by-state~~ | ✅ Написано 2026-10-02, таблицы DOL от 1 янв 2023 |
+| ~~18~~ | ~~law/minimum-age-to-work-by-state~~ | ✅ Написано 2026-10-02, DOL Employment/Age Certificate (янв 2024) + изменения штатов до 2026. Карта по возрасту, до которого нужен work permit; минимальный возраст 14 — федеральный |
+| ~~19~~ | ~~economy/truck-driver-salary-by-state~~ | ✅ Написано 2026-10-02, OEWS May 2025 + RPP 2024, без «на 1 000 рабочих мест» |
+| ~~20~~ | ~~economy/plumber-salary-by-state~~ | ✅ Написано 2026-10-02, OEWS May 2025 + RPP 2024 |
+| ~~21~~ | ~~economy/dental-hygienist-salary-by-state~~ | ✅ Написано 2026-10-02, OEWS May 2025 |
+| ~~22~~ | ~~economy/pharmacist-salary-by-state~~ | ✅ Написано 2026-10-02, OEWS May 2025 |
+| ~~23~~ | ~~economy/nurse-practitioner-salary-by-state~~ | ✅ Написано 2026-10-02, OEWS May 2025 |
+| ~~24~~ | ~~economy/software-developer-salary-by-state~~ | ✅ Написано 2026-10-02, OEWS May 2025 + RPP 2024, у Alaska зарплаты не опубликованы, без «на 1 000 рабочих мест» |
+| ~~25~~ | ~~economy/hvac-technician-salary-by-state~~ | ✅ Написано 2026-10-02, OEWS May 2025 |
+| ~~26~~ | ~~economy/welder-salary-by-state~~ | ✅ Написано 2026-10-02, OEWS May 2025 |
+| ~~27~~ | ~~economy/physical-therapist-salary-by-state~~ | ✅ Написано 2026-10-02, OEWS May 2025 |
 
 **Школа и подростки — хаб Schools & Education (5)**
 
@@ -386,6 +386,7 @@
 
 | Дата | Что сделано | Проверить |
 |---|---|---|
+| 2026-10-02 | Написаны 10 новых зарплатных страниц из BACKLOG №102–111: licensed-practical-nurse, nursing-assistant, medical-assistant, physician-assistant, radiologic-technologist, respiratory-therapist, occupational-therapist, speech-language-pathologist, veterinarian, veterinary-technician. В каждой 50 штатов, 4 раздела, 7 FAQ и зелёная числовая карта. OEWS May 2025 и BEA RPP 2024, поправка на цены и таблицы занятости. У veterinarian зарплаты Alaska и Delaware не опубликованы, employment сохранён. Добавлены в jobs-wages, YAML и числовые данные проверены | Проверить отображение после публикации |
 | 2026-10-02 | Аудит по GSC, составлен план | — |
 | 2026-10-02 | Склеены 5 дублей (301): bigfoot, state-fair-attendance, college-graduation-rates, flags-ranked-by-stars, newest-state-flags. Sitemap compare +10 метрик. 40 синих карт → teal, 17 длинных description сокращены | — |
 | 2026-10-02 | Теги хабов: без тега было 137 рейтингов, осталось 4. Агро разбито на 6 групп. Всего 28 хабов с текстом (Salaries by State, 6 агро, Geography Facts, Weather, Health, Cost of Living, Cars & Roads, Outdoors, Sports, Pop Culture, Regions, Population) | индексация /rankings/tag/* |
@@ -397,3 +398,6 @@
 | 2026-10-02 | Ещё 5 страниц строго по ranking.md (deep, числовая карта): bicycle-helmet-laws, minimum-driving-age, tipped-minimum-wage, state-legislature-size, record-high-temperature. Хабы driving-laws, jobs-wages, weather-disasters, voting-elections. Отложены #6, 8–11, 28, 47, 49 (нет проверяемых данных). economy/minimum-wage-by-state обновлена (см. ниже) | GSC через 4–6 недель |
 | 2026-10-02 | Написаны governor-salary-by-state (данные 2025, IN и VT сверены с источниками штатов) и state-constitution-length-by-state (Book of the States через Wikipedia; у CT и IL длина пустая — одинаковые 16 401). Переписана economy/minimum-wage-by-state на данные Минтруда (июль 2026 + Florida $15), синхронизированы compare/stats/economy.yaml (20 штатов). Hero и карта-картинка у minimum-wage убраны (показывали 2025) | новые hero/карта для minimum-wage |
 | 2026-10-02 | Переписан largest-airport-by-state на данных FAA CY2025 (было смешение посадок и пассажиропотока); новая коллекция collections/travel/largest-us-airlines (категория travel). 11 dofollow-ссылок на goairports.org (6 + 5). Промпты: collection.md выровнен с ranking.md, в оба добавлены partner_links | CTR и переходы на goairports через 4–6 недель |
+| 2026-10-02 | Переписаны по ranking.md 10 топ-страниц: states-neighboring-states, states-with-no-snow, mcdonalds-by-state, vehicle-property-tax-by-state, drinking-age-by-state, wild-west-states, teacher-salary-by-state (зарплаты → числа + C0, без OEWS-полей), rhode-islands-per-state, cigarette-prices-by-state, state-fairs-by-state (14 ярмарок с точными цифрами 2025). Под вопросом данные: снегопад (Alaska < Vermont), vehicle tax (IN, AZ, NV, MI, OK, WA, OH), соседи NY/RI по воде, McDonald's — смесь 2021/2026 | CTR через 4–6 недель |
+| 2026-10-02 | Параллельно переписаны следующие 10 страниц очереди, №11–20, по ranking.md. Добавлены объяснения, поисковые H2, FAQ и inline-ссылки, устранены цифры вне таблиц. Пользователь разрешил категориальные карты alcohol-sales-laws, fireworks-laws и radar-detector-legality. У smartest-states три метрики разделены, причинность IQ не установлена. Основные числовые ряды сохранены, юридические исключения не проходили полный аудит всех штатов | CTR через 4–6 недель |
+| 2026-10-02 | Новые страницы по ranking.md (deep): законы overtime-laws, paid-sick-leave, meal-and-rest-break-laws, minimum-age-to-work; зарплаты truck-driver, plumber, software-developer (OEWS May 2025 + BEA RPP 2024). Добавлены в хаб jobs-wages (order) и теги Jobs & Wages. Без картинок. Нет колонки «на 1 000 рабочих мест» у truck/software (лимит API BLS) | картинки, Kansas в overtime, Virginia/WV/LA в sick-leave и work permits, GSC через 4–6 недель |

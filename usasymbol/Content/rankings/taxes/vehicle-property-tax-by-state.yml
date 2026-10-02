@@ -13,20 +13,21 @@ hero_image_alt: "Map of the United States showing which states charge an annual 
 
 author: "USA Symbol Team"
 date_published: "2026-04-25"
-date_modified: "2026-04-25"
+date_modified: "2026-10-02"
 
 seo:
-  title: "Vehicle Property Tax by State 2026 | Map & Taxes"
-  description: "Twenty-one states levy an annual vehicle property tax on cars, while the other 29 rely on registration fees, title taxes, or sales tax."
+  title: "Vehicle Property Tax by State | Map & Car Tax Rules"
+  description: "Twenty-one states, including Virginia, Missouri, and Connecticut, tax cars every year as personal property. Texas, Florida, and Ohio do not."
 
 page:
   h1: "Vehicle Property Tax by State"
 
   quick_answer:
-    - "Twenty-one states levy an annual vehicle property tax on privately owned cars, treated as taxable personal property reassessed each year. The other 29 states collect vehicle revenue through registration fees, title taxes, or sales tax at purchase instead."
-    - "Georgia abolished its annual vehicle property tax in 2013 and replaced it with a one-time Title Ad Valorem Tax (TAVT) paid at the time of title transfer, classifying it here as 'Special' because the tax is real but not annual. Ohio eliminated vehicle personal property tax entirely in 2005. Missouri applies a county-level personal property tax on vehicles that residents pay every January, based on the value assessed the prior year, a system so routine that Missouri drivers often describe it simply as 'the car tax.'"
+    - "Vehicle property tax by state is charged every year in 21 states, from Virginia and Missouri to Connecticut, where a car is taxed much like a house."
+    - "Twenty-four states have no annual vehicle property tax, including Texas, Florida, and California. Drivers there still pay registration and title fees, and California folds a value-based license fee into each renewal."
+    - "Georgia is the odd case. Lawmakers dropped its yearly car tax in 2013 for a one-time title tax, so Georgia drivers pay the whole bill when a car changes hands."
 
-  methodology: "Categories show whether a state or locality charges an annual value-based vehicle tax as of 2026. Exact fees and exemptions vary."
+  methodology: "Vehicle tax rules published by state revenue and motor vehicle agencies, as of 2026. Status shows whether a state or its localities charge an annual value-based tax on cars. Rates and exemptions vary by locality."
 
   sources:
     - name: "Virginia DMV – Personal Property Tax"
@@ -38,7 +39,10 @@ page:
     - name: "Connecticut Department of Revenue Services – Motor Vehicles"
       url: "https://portal.ct.gov/DRS/Individuals/Individual-Tax-Page/Property-Tax/Motor-Vehicle-Assessment"
       description: "Connecticut DRS explanation of how municipalities assess motor vehicles at 70 percent of fair market value for annual property tax purposes"
+
 table:
+  caption: "Vehicle Property Tax by State"
+  note: "Status shows whether cars face an annual value-based tax. Special marks a value-based tax collected another way, and Local means rules vary by county."
   columns:
     rank: "Rank"
     state: "State"
@@ -65,8 +69,6 @@ table:
       state_slug: "alaska"
       postal_code: "AK"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Registration fees apply"
 
     - rank: 3
@@ -74,8 +76,6 @@ table:
       state_slug: "arizona"
       postal_code: "AZ"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 4
@@ -92,8 +92,6 @@ table:
       state_slug: "california"
       postal_code: "CA"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "VLF is value-based fee"
 
     - rank: 6
@@ -119,8 +117,6 @@ table:
       state_slug: "delaware"
       postal_code: "DE"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 9
@@ -128,8 +124,6 @@ table:
       state_slug: "florida"
       postal_code: "FL"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 10
@@ -146,8 +140,6 @@ table:
       state_slug: "hawaii"
       postal_code: "HI"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 12
@@ -155,8 +147,6 @@ table:
       state_slug: "idaho"
       postal_code: "ID"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 13
@@ -164,8 +154,6 @@ table:
       state_slug: "illinois"
       postal_code: "IL"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 14
@@ -173,8 +161,6 @@ table:
       state_slug: "indiana"
       postal_code: "IN"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 15
@@ -227,8 +213,6 @@ table:
       state_slug: "maryland"
       postal_code: "MD"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Title excise, not annual"
 
     - rank: 21
@@ -245,8 +229,6 @@ table:
       state_slug: "michigan"
       postal_code: "MI"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Flat registration fees"
 
     - rank: 23
@@ -299,8 +281,6 @@ table:
       state_slug: "nevada"
       postal_code: "NV"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 29
@@ -317,8 +297,6 @@ table:
       state_slug: "new-jersey"
       postal_code: "NJ"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 31
@@ -326,8 +304,6 @@ table:
       state_slug: "new-mexico"
       postal_code: "NM"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 32
@@ -335,8 +311,6 @@ table:
       state_slug: "new-york"
       postal_code: "NY"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 33
@@ -353,8 +327,6 @@ table:
       state_slug: "north-dakota"
       postal_code: "ND"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Excise at purchase only"
 
     - rank: 35
@@ -362,8 +334,6 @@ table:
       state_slug: "ohio"
       postal_code: "OH"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Eliminated 2005"
 
     - rank: 36
@@ -380,8 +350,6 @@ table:
       state_slug: "oregon"
       postal_code: "OR"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 38
@@ -389,8 +357,6 @@ table:
       state_slug: "pennsylvania"
       postal_code: "PA"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 39
@@ -416,8 +382,6 @@ table:
       state_slug: "south-dakota"
       postal_code: "SD"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Excise at purchase only"
 
     - rank: 42
@@ -434,8 +398,6 @@ table:
       state_slug: "texas"
       postal_code: "TX"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 44
@@ -443,8 +405,6 @@ table:
       state_slug: "utah"
       postal_code: "UT"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 45
@@ -470,8 +430,6 @@ table:
       state_slug: "washington"
       postal_code: "WA"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Abolished 2000"
 
     - rank: 48
@@ -488,8 +446,6 @@ table:
       state_slug: "wisconsin"
       postal_code: "WI"
       status: "No"
-      tax_type: "None"
-      based_on: "N/A"
       note: "Fees still apply"
 
     - rank: 50
@@ -504,97 +460,96 @@ table:
 map:
   title: "Vehicle Property Tax by State Map"
   image: "/images/rankings/taxes/vehicle-property-tax-by-state/vehicle-property-tax-by-state-map.webp"
-  image_alt: "Map of the United States color-coded by vehicle property tax status: red for states with annual car property tax, green for states without, blue for special systems such as Georgia's TAVT, and orange for states where rules vary by locality"
-  caption: "States with annual vehicle property tax cluster along the South Atlantic coast, in New England, and across parts of the Midwest and Plains, reflecting historical personal property tax traditions that predate the automobile. Green states collect vehicle revenue through registration fees, title taxes, or sales tax at purchase but do not separately assess cars as personal property each year. No vehicle property tax does not mean no vehicle costs — registration fees, title fees, sales tax, and local charges apply in every state."
+  image_alt: "Map of the United States color-coded by vehicle property tax status, marking states with annual car property tax, states without it, special systems such as Georgia's TAVT, and states where rules vary by locality"
+  caption: "Twenty-one states tax cars every year and 24 do not. Georgia, Iowa, and Minnesota use special value-based taxes, while Tennessee and Wyoming leave the rules to local governments."
   metric_key: status
-  metric_label: "vehicle property tax"
+  metric_label: "Vehicle property tax"
+  name_key: state
   tooltip_label: tax_type
   color_scheme: categorical
   color_scale: categorical
+  color_map:
+    "Yes": "red"
+    "No": "green"
+    "Special": "orange"
+    "Local": "yellow"
 
 sections:
-  - id: "what-is-vehicle-property-tax"
-    icon: "fa-solid fa-car"
-    title: "What Is Vehicle Property Tax?"
-    paragraphs:
-      - "Vehicle property tax is an annual levy on cars, trucks, and other motor vehicles that a state or local government classifies as taxable personal property. Unlike a one-time sales tax paid at the dealership or a flat registration fee, vehicle property tax is reassessed each year as a percentage of the vehicle's current market value, most often set by a county assessor's office. The separate [disabled veteran property tax exemption by state](/rankings/taxes/states-with-no-property-tax-for-disabled-veterans) rules usually affect real estate taxes but not car taxes."
-      - "The defining feature of vehicle property tax is its recurring, value-based structure. A newer, more expensive car generates a larger annual bill than an older one because it carries a higher assessed value. As the vehicle depreciates, the tax falls with it, often dropping significantly after the first few years of ownership. In Virginia, for example, a new $45,000 SUV might generate a first-year county bill of several hundred dollars that declines noticeably by year five even if the owner's county rate never changes."
-      - "Most vehicle property taxes are administered locally, at the county, city, or parish level, so two neighbors on opposite sides of a county line can owe very different amounts for identical vehicles. In Connecticut, municipalities assess vehicles at 70 percent of fair market value using the NADA price guide, but each town sets its own mill rate. In Virginia, every county and independent city sets its own rate. It's often shorthand for a patchwork of local levies under a state-level framework."
-
   - id: "states-with-vehicle-property-tax"
     icon: "fa-solid fa-receipt"
     title: "States With Vehicle Property Tax"
     paragraphs:
-      - "Virginia is the state most closely associated with annual vehicle property tax, largely because the bill arrives as a document entirely separate from the DMV renewal notice. County and city rates vary from under $1 per $100 of assessed value in rural jurisdictions to over $5 per $100 in parts of Northern Virginia, where tax on a newer vehicle can exceed $1,000 a year. The tax has been a feature of Virginia local finance since the colonial era."
-      - "Missouri applies a similar county-level personal property tax and requires residents to file a declaration each year listing every vehicle they own, with the assessed value typically set at a percentage of trade-in value and bills arriving in late fall. Connecticut places vehicles on the municipal grand list alongside homes, assessed at 70 percent of fair market value, and the resulting bill in higher-rate cities like Hartford can exceed $1,000."
-      - "North Carolina and South Carolina both levy county vehicle property taxes and have streamlined collection by combining the bill with annual registration renewal, a change North Carolina fully phased in by 2015 under what the state called the Tag and Tax Together program. Drivers in those states receive one combined renewal notice, which eliminates the administrative confusion of two separate billing cycles while preserving the value-based assessment structure. Arkansas, Kansas, Louisiana (at the parish level), Mississippi, Nebraska, Oklahoma, and West Virginia follow comparable county-level frameworks."
-      - "New England's vehicle property tax states each operate slightly differently. Maine and Massachusetts levy annual municipal excise taxes on vehicles tied to the original MSRP and the vehicle's model year, collecting the tax through local governments at registration renewal time. New Hampshire towns levy annual property tax on vehicles the same way they levy it on real estate: the car appears on the local tax warrant alongside the owner's home. Rhode Island municipalities similarly assess an annual excise tax on vehicles registered within their boundaries."
-      - "Colorado's Specific Ownership Tax is also annual and value-based, calculated on a declining percentage of the vehicle's original taxable value set at the model year, and declines on a fixed depreciation schedule published by the state."
+      - "Twenty-one states tax cars every year as personal property, and most sit in the South, New England, and the Plains. Counties, cities, or towns usually set the rate, so two neighbors on either side of a county line can owe different bills for the same car. Louisiana collects through its parishes, the state's version of counties."
+      - "Missouri asks owners to list every vehicle they hold on January 1, and the county mails a bill due by the end of the year. Drivers there cannot renew their plates without a paid tax receipt. Connecticut goes further and puts cars on the same municipal grand list as houses, assessed at 70 percent of market value."
+      - "Massachusetts and Maine call their version an excise. Both base it on the original sticker price and the model year, not on what the owner paid, so a buyer who landed a bargain still owes tax on the full list price."
+
+  - id: "why-virginia-taxes-cars-every-year"
+    icon: "fa-solid fa-landmark"
+    title: "Why Virginia Still Taxes Cars Every Year"
+    paragraphs:
+      - "Virginia keeps its annual car tax because counties and independent cities depend on it for schools, police, and roads. Local governments there cannot levy their own income tax, so [property tax](/rankings/taxes/states-by-property-tax) on homes and cars carries most local budgets. Owners get the car bill from their locality, separate from the DMV renewal."
+      - "Jim Gilmore won the 1997 governor's race on the promise 'No Car Tax.' A 1998 law had the state pay back localities for much of each bill, but the cost grew faster than planned, and lawmakers froze the state's share in 2004. Virginians still pay the tax today, with partial relief that covers less of the bill as car values climb."
 
   - id: "states-with-no-vehicle-property-tax"
     icon: "fa-solid fa-circle-check"
     title: "States With No Vehicle Property Tax"
     paragraphs:
-      - "States without a separate annual vehicle property tax include Texas, Florida, California, New York, Illinois, Pennsylvania, New Jersey, Ohio, Michigan, Washington, Oregon, Nevada, Arizona, Idaho, Indiana, Wisconsin, Delaware, and others. In each of these states, car ownership costs are structured around a one-time sales tax at purchase, annual registration fees, and in some cases title fees, but no recurring assessment tied to the vehicle's taxable value arrives each year as a property tax bill."
-      - "The absence of vehicle property tax does not mean low vehicle costs overall. California charges a Vehicle License Fee (VLF) at 0.65 percent of the vehicle's current value as part of annual registration, so a $40,000 car generates a $260 VLF charge that functions like a low-rate property tax, though administered as a fee. Texas has no annual property-based vehicle charge but applies a 6.25 percent sales tax on purchases, one of the higher rates in the country. Compare the [state grocery tax map](/rankings/taxes/grocery-tax-by-state) for other sales-tax exposure."
-      - "Ohio and Washington offer two of the clearest examples of vehicle property tax repeal. Ohio phased out its vehicle personal property tax through legislative changes in the early 2000s, replacing some local revenue through state transfers while shifting vehicle costs toward flat registration fees. Washington voters eliminated the state's Motor Vehicle Excise Tax through Initiative 695 in 1999, cutting registration costs for most residents but triggering budget shortfalls in transit agencies that had depended on the excise for funding."
+      - "Twenty-four states, including Texas, Florida, New York, and Illinois, have no annual vehicle property tax. Car owners there pay sales tax once at purchase, then registration and title fees each cycle. That one-time bill at the dealer follows [sales tax by state](/rankings/taxes/sales-tax-by-state), so a pricey car can still cost plenty in a state with no yearly car tax."
+      - "Ohio eliminated its vehicle property tax in 2005. Washington abolished its value-based motor vehicle excise in 2000, a year after voters approved an initiative to cut car tab costs. California never adopted a yearly property tax on cars, but its Vehicle License Fee rises with a car's value, so a new car still costs more to renew."
 
-  - id: "vehicle-property-tax-is-not-a-registration-fee"
+  - id: "car-property-tax-and-registration-renewal"
     icon: "fa-solid fa-right-left"
-    title: "Vehicle Property Tax Is Not a Registration Fee"
+    title: "Car Property Tax and Registration Renewal"
     paragraphs:
-      - "Registration fees and vehicle property taxes serve different purposes and flow to different government accounts, even when collected together. A registration fee is a flat administrative charge paid to the state DMV to keep a vehicle legally on the road, and it does not change based on what the car is worth. Vehicle property tax is a revenue-generating levy on the vehicle's taxable value, directed primarily to county or municipal budgets for schools, roads, and local services."
-      - "Some states have blended the two charges into a single renewal notice, which creates confusion. In Maine and Massachusetts, the annual local excise tax and state registration fee arrive together, leading residents to perceive the total as simply 'registration.' In Virginia, the county personal property tax bill and DMV renewal notice arrive separately on different schedules, making the distinction obvious. North Carolina's Tag and Tax Together program combines them in one envelope but itemizes each charge."
-      - "A state can have no vehicle property tax and still charge expensive annual registration fees, and a state with no sales tax on vehicle purchases may levy a significant annual property assessment instead. New Hampshire charges no general sales tax or income tax, yet towns levy annual property tax on vehicles that can add several hundred dollars to ownership costs. Oregon has no sales tax and no annual vehicle property tax, but charges registration and title fees."
-      - "Evaluating whether your state 'taxes cars' requires looking at all three channels: purchase-time taxes, annual registration, and any recurring property-based charges. For a broader view of how states compare across household tax relief, see the guide to [states with no property tax for disabled veterans](/rankings/taxes/states-with-no-property-tax-for-disabled-veterans)."
-
-  - id: "why-some-states-tax-cars-every-year"
-    icon: "fa-solid fa-landmark"
-    title: "Why Some States Tax Cars Every Year"
-    paragraphs:
-      - "Vehicle property tax traces directly to the personal property tax systems American colonial and early-republic governments built before income and broad sales taxes existed as revenue tools. States that maintained wide personal property taxation into the 20th century generally kept vehicles inside that framework as automobiles became common after 1910. States that narrowed their property tax codes, typically shifting the burden to real estate, tended to let vehicle assessments lapse in favor of flat fees. Today's map largely reflects those 19th- and early-20th-century policy choices."
-      - "For county governments that still depend on vehicle property tax, the annual assessment provides a predictable revenue stream that grows with vehicle values in rising markets and declines only gradually as fleets age. In high-growth Virginia counties, rising vehicle values have increased property tax collections without any change to the stated rate, a dynamic that simultaneously pressures local governments to cut rates and reinforces their reluctance to eliminate a dependable funding mechanism for schools and public safety."
-      - "Ohio's phase-out of vehicle personal property tax in the early 2000s required the state to backfill some of the lost local revenue. Washington's 2000 repeal forced transit agencies to cut service and county roads programs to defer maintenance. Georgia's 2013 TAVT conversion, by contrast, was designed to be revenue-neutral over time by redirecting the tax to the point of title transfer rather than eliminating it."
-      - "For residents relocating from a no-property-tax state to Virginia, Connecticut, or Missouri, the first annual car tax bill is frequently the most surprising recurring cost of the move. For related context on recurring household taxes beyond vehicles, compare [grocery tax by state](/rankings/taxes/grocery-tax-by-state) and the overview of [property tax exemptions for disabled veterans](/rankings/taxes/states-with-no-property-tax-for-disabled-veterans)."
+      - "North Carolina mails one notice that covers both the county property tax and the state registration fee, a system called Tag and Tax Together that began in 2013. Owners once renewed their plates first and got the county tax bill months later. Kentucky and Alabama also collect the county tax at renewal time."
+      - "Registration fees and property taxes still go to different treasuries. A flat fee keeps a car legal on the road and funds the state motor vehicle agency, while the value-based tax pays for county services. Older cars owe less tax each year as they lose value, yet a flat fee stays the same."
 
 visual_assets:
   - id: st-louis-personal-property-return
     src: /images/rankings/taxes/vehicle-property-tax-by-state/st-louis-personal-property-return.webp
     alt: Blank City of St. Louis personal property tax return with motor vehicle assessment fields for year, make, model, and VIN
     caption: St. Louis taxpayers file vehicle details on a tangible personal property return that includes separate lines for automobiles, trucks, motorcycles, boats, and aircraft.
-    section: what-is-vehicle-property-tax
+    section: states-with-vehicle-property-tax
     layout: full-width-tall
   - id: nc-tag-tax-together-notice
     src: /images/rankings/taxes/vehicle-property-tax-by-state/nc-tag-tax-together-notice.webp
     alt: Sample North Carolina renewal notice listing vehicle property tax, registration fee, and total amount due
     caption: A sample North Carolina renewal notice lists the property tax, registration fee, and total amount due on one sheet, with Wake County and a separate fire district itemized on the bill.
-    section: vehicle-property-tax-is-not-a-registration-fee
+    section: car-property-tax-and-registration-renewal
     layout: full-width-tall
+
 faq:
-  - question: "What is vehicle property tax?"
-    answer: "Vehicle property tax is an annual levy on privately owned cars, trucks, and other vehicles that a state or local government classifies as taxable personal property. It is calculated as a percentage of the vehicle's assessed or market value and reassessed each year as the vehicle depreciates. It is separate from the one-time sales tax paid at purchase and from annual flat registration fees."
+  - question: "Which states have vehicle property tax?"
+    answer: "Twenty-one states tax cars every year, among them Virginia, Missouri, Connecticut, North Carolina, Kansas, and Mississippi. Georgia, Iowa, and Minnesota use special value-based taxes instead."
 
-  - question: "What states have vehicle property tax?"
-    answer: "States that levy an annual vehicle property tax include Virginia, Missouri, Connecticut, North Carolina, South Carolina, West Virginia, Arkansas, Kansas, Louisiana, Mississippi, Nebraska, New Hampshire, Rhode Island, Vermont, Oklahoma, Montana, Colorado, Maine, Massachusetts, Alabama, and Kentucky, among others. In most of these states, the tax is set and collected at the county or municipal level, so rates vary significantly within the state."
+  - question: "Does Texas have a car property tax?"
+    answer: "No. Texas drivers pay sales tax when they buy a car and a registration fee each year, but no tax based on the car's value."
 
-  - question: "What states have no vehicle property tax?"
-    answer: "States with no separate annual vehicle property tax on cars include Texas, Florida, California, New York, Illinois, Pennsylvania, New Jersey, Ohio, Michigan, Washington, Oregon, Nevada, Arizona, Idaho, Indiana, Wisconsin, Delaware, and Hawaii, among others. These states still charge registration fees, title fees, sales tax at purchase, or other vehicle-related costs — the absence of vehicle property tax does not mean no annual vehicle expenses."
+  - question: "Does Georgia have a car tax?"
+    answer: "Georgia charges a one-time Title Ad Valorem Tax when a car is titled. That tax replaced the annual one in 2013, which many Georgians called the birthday tax because it came due on the owner's birthday."
 
-  - question: "Is vehicle property tax the same as registration?"
-    answer: "No. A registration fee is a flat or modestly scaled administrative charge paid to the DMV to keep a vehicle legally on the road; it is not based on the vehicle's value. Vehicle property tax is a recurring value-based assessment directed to county or local government budgets. Some states collect both charges at the same time during registration renewal, which leads many drivers to mistake them for a single fee, but they are separate obligations going to different government accounts."
+  - question: "Does Tennessee have a vehicle property tax?"
+    answer: "Not a value-based one. Many Tennessee counties add a flat wheel tax at registration, so the cost depends on where the car is registered."
 
-  - question: "Do all states tax cars every year?"
-    answer: "No. Roughly half of U.S. states levy an annual value-based vehicle property tax; the remaining states do not have a separate recurring property assessment on privately owned vehicles. Even within states that do impose the tax, the rules are typically set at the county or city level, so the effective rate and total bill vary considerably depending on where you register the vehicle."
+  - question: "Does Montana have a vehicle property tax?"
+    answer: "Yes. Montana charges an annual tax on a scale tied to the vehicle's age, so older cars cost less. With no general sales tax, Montana has also drawn out-of-state owners who register expensive RVs and sports cars through Montana companies."
+
+  - question: "Does New Hampshire tax cars every year?"
+    answer: "Yes. New Hampshire is one of the [states with no income tax](/rankings/taxes/states-with-no-income-tax) and has no general sales tax, yet towns collect a yearly charge on each car based on its list price and age."
 
   - question: "Is car property tax deductible?"
-    answer: "A vehicle property tax may qualify as deductible on federal income taxes if it meets three IRS criteria: the tax must be based on the value of the vehicle, it must be assessed on a yearly basis, and it must be charged on personal property. Flat registration fees and fees based on vehicle weight rather than value do not meet these criteria and are generally not deductible as a property tax. Consult IRS Publication 17 or a tax professional to confirm whether your specific state's vehicle charge qualifies."
+    answer: "Often, yes. A tax based on the car's value and charged every year can count as a personal property tax deduction on a federal return for people who itemize. Flat registration fees and weight-based fees do not qualify."
 
 related:
-  - title: "States With the Lowest Property Taxes"
-    url: "/rankings/taxes/states-by-property-tax-rate"
-  - title: "State Taxes by State"
-    url: "/rankings/taxes/state-taxes-by-state"
-  - title: "States With No Property Tax for Disabled Veterans"
-    url: "/rankings/taxes/states-with-no-property-tax-for-disabled-veterans"
-  - title: "States With No Property Tax for Seniors"
-    url: "/rankings/taxes/states-with-no-property-tax-for-seniors"
+  - title: "Property Tax by State"
+    url: "/rankings/taxes/states-by-property-tax"
+  - title: "Sales Tax by State"
+    url: "/rankings/taxes/sales-tax-by-state"
+  - title: "Tax Burden by State"
+    url: "/rankings/taxes/tax-burden-by-state"
+  - title: "States With No Income Tax"
+    url: "/rankings/taxes/states-with-no-income-tax"
+  - title: "Car Insurance Cost by State"
+    url: "/rankings/economy/car-insurance-cost-by-state"
+  - title: "Car Inspections by State"
+    url: "/rankings/law/car-inspections-by-state"

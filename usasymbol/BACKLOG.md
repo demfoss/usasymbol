@@ -22,17 +22,17 @@
 
 | # | slug | Угол | Источник | Статус |
 |---|---|---|---|---|
-| 101 | law/paid-family-leave-states | Оплачиваемый отпуск по уходу за ребёнком | NCSL | [ ] |
-| 102 | economy/licensed-practical-nurse-salary-by-state | BLS 29-2061 | BLS OEWS | [ ] |
-| 103 | economy/nursing-assistant-salary-by-state | BLS 31-1131 | BLS OEWS | [ ] |
-| 104 | economy/medical-assistant-salary-by-state | BLS 31-9092 | BLS OEWS | [ ] |
-| 105 | economy/physician-assistant-salary-by-state | BLS 29-1071 | BLS OEWS | [ ] |
-| 106 | economy/radiologic-technologist-salary-by-state | BLS 29-2034 | BLS OEWS | [ ] |
-| 107 | economy/respiratory-therapist-salary-by-state | BLS 29-1126 | BLS OEWS | [ ] |
-| 108 | economy/occupational-therapist-salary-by-state | BLS 29-1122 | BLS OEWS | [ ] |
-| 109 | economy/speech-language-pathologist-salary-by-state | BLS 29-1127 | BLS OEWS | [ ] |
-| 110 | economy/veterinarian-salary-by-state | BLS 29-1131 | BLS OEWS | [ ] |
-| 111 | economy/veterinary-technician-salary-by-state | BLS 29-2056 | BLS OEWS | [ ] |
+| 101 | law/paid-family-leave-states | Оплачиваемый отпуск по уходу за ребёнком | Официальные программы штатов | [x] Написано 2026-10-02 |
+| 102 | economy/licensed-practical-nurse-salary-by-state | BLS 29-2061 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
+| 103 | economy/nursing-assistant-salary-by-state | BLS 31-1131 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
+| 104 | economy/medical-assistant-salary-by-state | BLS 31-9092 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
+| 105 | economy/physician-assistant-salary-by-state | BLS 29-1071 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
+| 106 | economy/radiologic-technologist-salary-by-state | BLS 29-2034 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
+| 107 | economy/respiratory-therapist-salary-by-state | BLS 29-1126 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
+| 108 | economy/occupational-therapist-salary-by-state | BLS 29-1122 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
+| 109 | economy/speech-language-pathologist-salary-by-state | BLS 29-1127 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
+| 110 | economy/veterinarian-salary-by-state | BLS 29-1131 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
+| 111 | economy/veterinary-technician-salary-by-state | BLS 29-2056 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
 | 112 | economy/paramedic-emt-salary-by-state | BLS 29-2042/43 | BLS OEWS | [ ] |
 | 113 | economy/dentist-salary-by-state | BLS 29-1021 | BLS OEWS | [ ] |
 | 114 | economy/psychologist-salary-by-state | BLS 19-3033 | BLS OEWS | [ ] |
@@ -42,7 +42,7 @@
 | 118 | economy/paralegal-salary-by-state | BLS 23-2011 | BLS OEWS | [ ] |
 | 119 | economy/accountant-salary-by-state | BLS 13-2011 | BLS OEWS | [ ] |
 | 120 | economy/financial-analyst-salary-by-state | BLS 13-2051 | BLS OEWS | [ ] |
-| 121 | economy/data-scientist-salary-by-state | BLS 15-2051 | BLS OEWS | [ ] |
+| 121 | economy/data-scientist-salary-by-state | BLS 15-2051 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
 | 122 | economy/cybersecurity-analyst-salary-by-state | BLS 15-1212 | BLS OEWS | [ ] |
 | 123 | economy/web-developer-salary-by-state | BLS 15-1254 | BLS OEWS | [ ] |
 | 124 | economy/carpenter-salary-by-state | BLS 47-2031 | BLS OEWS | [ ] |
@@ -728,8 +728,8 @@
 | 611 | law/non-compete-laws-by-state | Jobs & Wages | Калифорния запрещает неконкурентные соглашения | state codes | [ ] |
 | 612 | law/at-will-employment-exceptions-by-state | Jobs & Wages | Монтана — единственный штат без at-will | NCSL | [ ] |
 | 613 | law/salary-history-ban-states | Jobs & Wages | Работодателю нельзя спрашивать прошлую зарплату | state codes | [ ] |
-| 614 | law/pay-transparency-laws-by-state | Jobs & Wages | Колорадо первым обязал указывать зарплату в вакансиях (2021) | state codes | [ ] |
-| 615 | law/final-paycheck-laws-by-state | Jobs & Wages | В Калифорнии — в день увольнения | DOL, state codes | [ ] |
+| 614 | law/pay-transparency-laws-by-state | Jobs & Wages | Требования к диапазонам зарплаты в вакансиях | state codes | [x] Написано 2026-10-02 |
+| 615 | law/final-paycheck-laws-by-state | Jobs & Wages | Сроки последней зарплаты после увольнения | DOL, state codes | [x] Написано 2026-10-02 |
 | 616 | law/vacation-payout-laws-by-state | Jobs & Wages | Калифорния требует выплаты за неиспользованный отпуск | state codes | [ ] |
 | 617 | law/contractor-license-requirements-by-state | Jobs & Wages | Кому нужна лицензия подрядчика | state boards | [ ] |
 | 618 | law/cosmetology-license-hours-by-state | Jobs & Wages | Часы обучения для парикмахеров | state boards | [ ] |

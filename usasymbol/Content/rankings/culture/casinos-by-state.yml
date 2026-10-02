@@ -15,27 +15,36 @@ hero_image_alt: Map of casinos by state in the United States
 hero_image_caption: Nevada has 231 casinos, the most of any state. Seven states, including Utah and Hawaii, have none.
 author: USA Symbol Team
 date_published: '2026-07-11'
-date_modified: '2026-07-11'
+date_modified: '2026-10-02'
 seo:
   title: Casinos by State | Map, Counts & Facts
   description: Nevada has 231 casinos, the most of any state, followed by Oklahoma with 142. Seven states, including Utah and Hawaii, have none.
 page:
   h1: Casinos by State
   quick_answer:
-  - Casinos by state counts put Nevada first with 231, ahead of Oklahoma at 142 and California at 83. New York ranks fourth with 34.
-  - Seven states have no casinos at all. Utah and Hawaii ban every form of casino gambling, and Georgia, Kentucky, South Carolina, Tennessee, and Vermont also have none.
-  - Oklahoma's 142 casinos are almost entirely tribal, led by WinStar World Casino in Thackerville, the largest casino in the United States. Connecticut has just 2, Foxwoods and Mohegan Sun.
-  methodology: Casino counts come from World Population Review's April 2026 compilation of American Gaming Association and state regulator data and include both commercial and tribal properties. Revenue figures cite the AGA's 2025 commercial results and the National Indian Gaming Commission's fiscal 2024 tribal report.
+  - Casinos by state counts put Nevada first with 231. Statewide gambling legalization in 1931 gave casino operators a legal base long before destination resorts became common elsewhere.
+  - Vermont shares last place with 0 listed casinos. Limited nonprofit casino events are allowed there, but a charity event is different from a permanent casino property.
+  - Oklahoma has 142 casinos, including Chickasaw-owned WinStar World Casino in Thackerville. Its location near the Texas border puts a tribal gaming destination within reach of visitors from a neighboring state with few casinos.
+  methodology: World Population Review's April 2026 compilation counts commercial and tribal casino properties using gaming industry and regulator data. Zero means no listed properties, not a ban on every kind of gambling.
   sources:
   - name: World Population Review, Casinos by State
     url: https://worldpopulationreview.com/state-rankings/casinos-by-state
     description: Casino counts by state, commercial and tribal combined, April 2026
-  - name: American Gaming Association
-    url: https://www.americangaming.org/commercial-gaming-revenue-hits-78-7-billion-in-2025-driving-record-18-1-billion-in-gaming-taxes-nationwide/
-    description: 2025 commercial gaming revenue and tax figures
-  - name: National Indian Gaming Commission
-    url: https://www.nigc.gov/commission/reports-and-publications/gross-gaming-revenue-reports/
-    description: Tribal gross gaming revenue reports
+  - name: Nevada Legislature, Legislative Bulletin 68
+    url: https://www.leg.state.nv.us/Division/Research/Publications/InterimReports/1967/Bulletin068.pdf
+    description: Legalization of gambling in 1931
+  - name: WinStar World Casino and Resort
+    url: https://www.winstar.com/footer/about/
+    description: Chickasaw ownership and services funded by gaming income
+  - name: Vermont Legislature, Gambling and Lotteries
+    url: https://legislature.vermont.gov/statutes/section/13/051/02143
+    description: Limited nonprofit casino events
+  - name: Vermont Legislature, Sports Wagering
+    url: https://legislature.vermont.gov/statutes/fullchapter/31/025
+    description: Legal sports wagering is separate from casino properties
+  - name: Colorado Secretary of State, Amendment Four
+    url: https://historicalelectiondata.coloradosos.gov/contest/9329
+    description: Voter authorization of limited gaming in historic mining cities
 map:
   title: Casinos by State Map
   image: /images/maps/casinos-by-state.png
@@ -43,7 +52,7 @@ map:
   caption: Nevada ranks first with 231 casinos, and Oklahoma has 142. Seven states have none.
   metric_key: casinos
   metric_label: Casinos
-  color_scheme: warm
+  color_scheme: amber
   color_scale: log
   detail_keys:
   - casinos
@@ -301,10 +310,10 @@ table:
 sections:
 - id: most-casinos
   icon: fa-solid fa-dice
-  title: States With the Most Casinos
+  title: Why Nevada Has the Most Casinos
   paragraphs:
-  - Nevada leads with 231 casinos, 89 more than Oklahoma's 142. California ranks third with 83, nearly all of them tribal properties.
-  - New York has 34 casinos, just ahead of Colorado and Washington at 33 each. Minnesota holds 32, and South Dakota has 31.
+  - Nevada's 231 casinos reflect a statewide licensing system established after gambling was legalized in 1931. Las Vegas and Reno could build tourism around casino hotels, while operators elsewhere often faced restrictions on location or tribal land. Casinos are only one part of state gambling policy, alongside rules such as [lottery winner anonymity](/rankings/law/lottery-winner-anonymity).
+  - Colorado lists 33 casinos, but that total does not imply casinos are permitted in every town. Black Hawk, Central City, and Cripple Creek are historic mining communities where voters authorized commercial casino gambling.
   table:
     columns:
       rank: Rank
@@ -366,14 +375,14 @@ sections:
   icon: fa-solid fa-coins
   title: Commercial and Tribal Casinos by State
   paragraphs:
-  - The country has 492 commercial casinos across 27 states and 532 tribal gaming operations across 29 states. Oklahoma's 142 casinos are almost all tribal, including WinStar World Casino, the largest in the United States.
-  - Commercial casinos earned a record $78.72 billion in 2025, up 9.2 percent, and paid $18.09 billion in gaming taxes. Tribal operations added $43.9 billion in fiscal 2024, a fourth straight record year.
+  - Oklahoma's 142 casinos include WinStar World Casino, owned and operated by the Chickasaw Nation. Tribal gaming income supports services for tribal citizens, including health care and education, giving these properties a different ownership model from shareholder-owned casino companies.
+  - Connecticut has 2 listed casinos, Foxwoods and Mohegan Sun. Large resort properties can combine gaming, hotels, restaurants, and entertainment on one site, so a property count does not measure gaming floor area or revenue.
 - id: states-without-casinos
   icon: fa-solid fa-ban
   title: States Without Casinos
   paragraphs:
-  - Seven states have no casinos. Utah and Hawaii prohibit every form of casino gambling, while Georgia, Kentucky, South Carolina, Tennessee, and Vermont have simply never licensed one.
-  - Texas, the second-largest state by population, has only 4 casinos, all tribal. New Hampshire has 1, and Alaska, Connecticut, Maine, and Rhode Island have 2 each.
+  - Vermont has 0 listed casino properties and shares the bottom group with Georgia, Hawaii, Kentucky, South Carolina, Tennessee, and Utah. Vermont permits limited nonprofit casino events and regulated sports wagering, so its zero reflects the absence of permanent casino properties rather than the absence of legal betting.
+  - Texas has 4 listed casinos, including Kickapoo Lucky Eagle. A populous state can have few casino properties because gambling access depends on legal authorization and tribal jurisdiction rather than [population size](/rankings/demographics/states-by-population) alone.
   table:
     columns:
       state: State
@@ -387,19 +396,19 @@ sections:
       status: All casino gambling banned
     - state: Georgia
       state_slug: georgia
-      status: No casinos licensed
+      status: No permanent casinos listed
     - state: Kentucky
       state_slug: kentucky
-      status: No casinos licensed
+      status: No permanent casinos listed
     - state: South Carolina
       state_slug: south-carolina
-      status: No casinos licensed
+      status: No permanent casinos listed
     - state: Tennessee
       state_slug: tennessee
-      status: No casinos licensed
+      status: No permanent casinos listed
     - state: Vermont
       state_slug: vermont
-      status: No casinos licensed
+      status: No permanent casinos listed
 visual_assets:
 - id: las-vegas-strip
   src: /images/rankings/culture/casinos-by-state/las-vegas-strip.jpg
@@ -421,17 +430,17 @@ visual_assets:
   layout: full-width-tall
 faq:
 - question: Which state has the most casinos?
-  answer: Nevada has the most with 231. Oklahoma is second at 142, and California follows with 83.
+  answer: Nevada leads the property count at 231. A casino count measures locations, so a small venue and a destination resort each contribute one property.
 - question: What states have no casinos?
-  answer: Georgia, Hawaii, Kentucky, South Carolina, Tennessee, Utah, and Vermont. Only Utah and Hawaii ban all forms of casino gambling outright.
+  answer: Georgia, Hawaii, Kentucky, South Carolina, Tennessee, Utah, and Vermont each have 0 listed properties. Casino availability is separate from permission to run a lottery, place a sports wager, or hold a charitable gaming event.
 - question: What is the largest casino in the US?
-  answer: WinStar World Casino and Resort in Thackerville, Oklahoma. The tribal property anchors a state with 142 casinos, the second most in the country.
-- question: How many casinos are in the US?
-  answer: Roughly 1,000 in total. There are 492 commercial casinos in 27 states plus 532 tribal gaming operations in 29 states.
-- question: How much money do casinos make in the US?
-  answer: Commercial casinos took in a record $78.72 billion in 2025 and paid $18.09 billion in gaming taxes. Tribal casinos earned $43.9 billion in fiscal 2024.
-- question: Where is online casino gambling legal?
-  answer: 'Eight states have legalized online casino play: New Jersey, Pennsylvania, Michigan, West Virginia, Connecticut, Delaware, Rhode Island, and Maine, where launch is expected in late 2026. Sports betting is broader, legal in 39 states plus Washington, D.C., with 32 states offering online wagers.'
+  answer: WinStar World Casino and Resort in Thackerville, Oklahoma, describes itself as the world's biggest casino. Oklahoma has 142 listed properties, but this ranking counts locations rather than comparing their floor areas.
+- question: How many casinos are in New Jersey?
+  answer: New Jersey has 9 listed casinos. Atlantic City's casino hotels make it a recognizable gambling destination despite a much smaller property count than Nevada.
+- question: How many casinos are in California?
+  answer: California has 83 listed casinos, placing it third. Pechanga Resort Casino is a tribal property, illustrating why this table includes tribal gaming rather than only commercial casinos.
+- question: How many casinos are in New Hampshire?
+  answer: New Hampshire has 1 listed property, The Brook. Counts depend on the compilation's casino definition, so the figure should not be treated as an inventory of every charitable gaming venue.
 related:
 - title: Lottery Winner Anonymity by State
   url: /rankings/law/lottery-winner-anonymity
