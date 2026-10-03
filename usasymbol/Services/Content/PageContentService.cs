@@ -739,7 +739,11 @@ namespace USASymbol.Services
                 if (string.IsNullOrWhiteSpace(explicitSlug) && !string.IsNullOrWhiteSpace(alternateSlugKey))
                     explicitSlug = row.GetString(alternateSlugKey);
 
-                if (!row.Data.ContainsKey("symbol_slug"))
+                // Rows like "None" / "N/A" (a state with no official symbol) have no detail page.
+                var displayName = row.GetString(nameKey);
+                var isPlaceholderName = displayName.Trim() is "None" or "none" or "N/A" or "n/a" or "—" or "-";
+
+                if (!row.Data.ContainsKey("symbol_slug") && !isPlaceholderName)
                 {
                     if (!string.IsNullOrWhiteSpace(explicitSlug))
                         row.Data["symbol_slug"] = explicitSlug;

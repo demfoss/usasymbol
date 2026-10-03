@@ -4,8 +4,11 @@
     var bodyClass = ViewData["BodyClass"] as string ?? string.Empty;
     const string siteBaseUrl = "https://usasymbol.com";
     var rawCanonical = ViewData["Canonical"] as string;
+    // No explicit canonical → self-canonical (path without query). Falling back to the home page
+    // would tell search engines every such page is a duplicate of "/".
+    var selfPath = (Context.Request.Path.Value ?? "/").TrimEnd('/');
     var canonicalHref = string.IsNullOrWhiteSpace(rawCanonical)
-        ? siteBaseUrl
+        ? siteBaseUrl + selfPath
         : (rawCanonical.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
             || rawCanonical.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
                 ? rawCanonical

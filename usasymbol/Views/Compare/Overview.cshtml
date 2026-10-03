@@ -387,7 +387,7 @@
                 @foreach (var g in overviewScore.GroupWins.Take(6))
                 {
                     <span class="cmp2-hero-chip cmp-pill">
-                        <img src="@Images.Thumb(g.Winner.FlagImageUrl)" alt="" onerror="this.style.display='none'" />
+                        <img src="@Images.Thumb(g.Winner.FlagImageUrl)" alt="@g.Winner.Name flag" onerror="this.style.display='none'" />
                         @g.Winner.Abbreviation wins @g.Group
                     </span>
                 }

@@ -572,7 +572,8 @@
                     {
                         <tr data-search="@($"{state.Name} {state.Abbreviation} {state.Capital} {state.Region}").ToLowerInvariant()">
                             <td>
-                                <a href="/states/@state.Slug/abbreviation" class="sal-state-link">@state.Name</a>
+                                @* D.C. has no abbreviation guide page; link to its profile instead. *@
+                                <a href="@(state.Slug == "district-of-columbia" ? $"/states/{state.Slug}" : $"/states/{state.Slug}/abbreviation")" class="sal-state-link">@state.Name</a>
                             </td>
                             <td>
                                 <span class="sal-abbr-badge">@state.Abbreviation</span>

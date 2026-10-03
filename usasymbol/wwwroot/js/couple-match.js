@@ -205,7 +205,7 @@
             '<div class="cm-verdict-main">' +
                 '<p class="sm-section-kicker">Best state for both of you</p>' +
                 '<div class="cm-verdict-state">' +
-                    '<img src="' + escapeHtml(shared.place.flagImageUrl) + '" alt="" width="54" height="36">' +
+                    '<img src="' + escapeHtml(shared.place.flagImageUrl) + '" alt="' + escapeHtml(shared.place.name) + ' flag" width="54" height="36">' +
                     '<strong>' + escapeHtml(shared.place.name) + '</strong>' +
                 '</div>' +
                 '<p class="cm-verdict-scores">' +
@@ -239,7 +239,7 @@
             return '<div class="cm-item' + (isOpen ? " is-open" : "") + '">' +
                 '<button type="button" class="cm-row cm-row-toggle" data-slug="' + escapeHtml(slug) + '" aria-expanded="' + isOpen + '">' +
                 '<span class="cm-rank">' + row.rank + '</span>' +
-                '<span class="cm-state"><img src="' + escapeHtml(row.place.flagImageUrl) + '" alt="" width="30" height="20" loading="lazy">' +
+                '<span class="cm-state"><img src="' + escapeHtml(row.place.flagImageUrl) + '" alt="' + escapeHtml(row.place.name) + ' flag" width="30" height="20" loading="lazy">' +
                     '<span><strong>' + escapeHtml(row.place.name) + '</strong><small>' + escapeHtml(names.a) + ' #' + row.rankA + ' · ' + escapeHtml(names.b) + ' #' + row.rankB + '</small></span></span>' +
                 '<span class="cm-num cm-score-a">' + row.a + '</span>' +
                 '<span class="cm-num cm-score-b">' + row.b + '</span>' +
@@ -299,7 +299,7 @@
         splitHost.innerHTML = candidates.map(function (row) {
             var fan = row.a >= row.b ? "a" : "b";
             return '<div class="cm-split-row">' +
-                '<img src="' + escapeHtml(row.place.flagImageUrl) + '" alt="" width="27" height="18" loading="lazy">' +
+                '<img src="' + escapeHtml(row.place.flagImageUrl) + '" alt="' + escapeHtml(row.place.name) + ' flag" width="27" height="18" loading="lazy">' +
                 '<span class="cm-split-name"><strong>' + escapeHtml(row.place.name) + '</strong>' +
                     '<small>' + escapeHtml(names[fan]) + ' likes it more</small></span>' +
                 '<span class="cm-split-scores">' + scoreChip("a", row.a) + scoreChip("b", row.b) + '</span>' +

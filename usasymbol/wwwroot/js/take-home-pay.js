@@ -470,7 +470,7 @@
             return '<div class="th-cmp-row' + (isHome ? " is-home" : "") + '">' +
                 '<span class="th-cmp-state">' +
                     '<span class="th-cmp-tag">' + item.tag + '</span>' +
-                    '<img src="' + escapeHtml(item.row.place.flagImageUrl) + '" alt="" width="30" height="20">' +
+                    '<img src="' + escapeHtml(item.row.place.flagImageUrl) + '" alt="' + escapeHtml(item.row.place.name) + ' flag" width="30" height="20">' +
                     '<strong>' + escapeHtml(item.row.place.name) + '</strong>' +
                 '</span>' +
                 stackBar(item.row, scaleMax, "th-stack-lg") +
@@ -569,7 +569,7 @@
             return '<div class="th-item' + (isOpen ? " is-open" : "") + (isHome ? " is-home" : "") + '">' +
                 '<button type="button" class="th-row th-row-toggle" data-abbr="' + escapeHtml(abbr) + '" aria-expanded="' + isOpen + '" aria-controls="th-detail-' + escapeHtml(abbr) + '">' +
                 '<span class="th-rank">' + row.rank + '</span>' +
-                '<span class="th-state"><img src="' + escapeHtml(row.place.flagImageUrl) + '" alt="" width="30" height="20" loading="lazy">' +
+                '<span class="th-state"><img src="' + escapeHtml(row.place.flagImageUrl) + '" alt="' + escapeHtml(row.place.name) + ' flag" width="30" height="20" loading="lazy">' +
                     '<span><strong>' + escapeHtml(row.place.name) + '</strong>' + (isHome ? '<em>Your state</em>' : '<small>' + formatMoney(perPeriod(row.stateTaxes)) + ' state tax</small>') + '</span></span>' +
                 '<span class="th-row-bar">' + stackBar(row, scaleMax) + '</span>' +
                 '<span class="th-num th-left"><b class="' + (row.left < 0 ? "is-negative" : "") + '">' + formatMoney(perPeriod(row.left)) + '</b>' + deltaHtml + '</span>' +

@@ -642,7 +642,7 @@
                     ' aria-label="Open ' + escapeHtml(row.place.name) + ', rank ' + row.rank + ', ' + row.score + ' percent match">',
                     '<span class="sm-row-rank">' + String(row.rank).padStart(2, "0") + '</span>',
                     '<span class="sm-row-state">',
-                    '<img class="sm-row-flag" src="' + escapeHtml(row.place.flagImageUrl) + '" alt="" width="34" height="23" loading="lazy">',
+                    '<img class="sm-row-flag" src="' + escapeHtml(row.place.flagImageUrl) + '" alt="' + escapeHtml(row.place.name) + ' flag" width="34" height="23" loading="lazy">',
                     '<span class="sm-row-name"><strong>' + escapeHtml(row.place.name) + '</strong>',
                     '<small>' + escapeHtml(row.place.region || "United States") + ' · ' + escapeHtml(row.place.abbreviation) +
                         (isHome ? ' <em class="sm-home-tag">Your state</em>' : '') + '</small></span>',

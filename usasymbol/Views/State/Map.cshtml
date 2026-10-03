@@ -133,9 +133,12 @@
                     <p class="county-section-copy">
                         @Model.State.Name has @Model.CountySummary.CountyCount counties. The list below includes each county, its FIPS code, and population.
                     </p>
+                    @if (stateSlug != "district-of-columbia")
+                    {
                     <p class="county-section-copy">
                         <a href="/states/@stateSlug/counties">Search the full @Model.State.Name county directory and open published county profiles →</a>
                     </p>
+                    }
                 </div>
 
             <div class="county-summary">

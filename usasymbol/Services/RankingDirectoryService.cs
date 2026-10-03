@@ -22,7 +22,7 @@ public sealed class RankingDirectoryService(IWebHostEnvironment environment, IMe
     private static readonly Dictionary<string, (string Icon, string Description)> CategoryCopy = new()
     {
         ["agriculture"] = ("fa-wheat-awn", "Crops, livestock, farmland, trade, and the agricultural economy."),
-        ["cars-and-roads"] = ("fa-car-side", "Driving laws, vehicle requirements, insurance, and road rules across the states."),
+        ["cars-and-roads"] = ("fa-car-side", "Driving laws, vehicle requirements, insurance, and road rules."),
         ["crime"] = ("fa-shield-halved", "Crime, public safety, policing, and justice across the states."),
         ["culture"] = ("fa-masks-theater", "Arts, traditions, entertainment, and American life."),
         ["demographics"] = ("fa-users", "Population, age, households, migration, and communities."),

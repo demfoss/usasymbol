@@ -36,6 +36,9 @@
         return row.Cells[index] ?? string.Empty;
     }
 
+    private static string StateFlagAlt(string stateSlug) =>
+        System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase(stateSlug.Replace('-', ' ')) + " flag";
+
     private static string SlugifyStateName(string value)
     {
         if (string.IsNullOrWhiteSpace(value)) return string.Empty;
@@ -72,7 +75,7 @@
     }
 
     <div class="hidden md:block ranking-table-scroll">
-        <table class="rankingTable">
+        <table class="rankingTable rankingTable--section">
             <thead>
                 <tr>
                     @if (Model.ShowRowNumbers)
@@ -113,7 +116,7 @@
                                     <span class="ranking-state">
                                         @if (!string.IsNullOrWhiteSpace(stateSlug))
                                         {
-                                            <img src="@Images.Thumb($"/images/flags/{stateSlug}/flag.webp")" alt=""
+                                            <img src="@Images.Thumb($"/images/flags/{stateSlug}/flag.webp")" alt="@StateFlagAlt(stateSlug)"
                                                  loading="lazy" decoding="async"
                                                  onerror="this.style.display='none'" />
                                         }
@@ -158,7 +161,7 @@
                         }
                         @if (!string.IsNullOrWhiteSpace(stateSlug))
                         {
-                            <img src="@Images.Thumb($"/images/flags/{stateSlug}/flag.webp")" alt=""
+                            <img src="@Images.Thumb($"/images/flags/{stateSlug}/flag.webp")" alt="@StateFlagAlt(stateSlug)"
                                  class="mt-0.5 h-4 w-auto shrink-0 object-contain"
                                  loading="lazy" decoding="async"
                                  onerror="this.style.display='none'" />

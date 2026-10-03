@@ -48,6 +48,8 @@
         .ToList();
 
     if (rowsWithVals.Count < 3) { return; }
+    // The block links each row to a state; skip tables whose rows are not states (e.g. letters).
+    if (rowsWithVals.Any(x => string.IsNullOrWhiteSpace(x.Row.GetString("state_slug")))) { return; }
 
     // Rows are already sorted best-rank-first in the YAML
     var topRows    = rowsWithVals.Take(10).ToList();

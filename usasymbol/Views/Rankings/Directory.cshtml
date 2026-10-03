@@ -3,7 +3,9 @@
 @inject IImageUrlService Images
 @{
     ViewData["Title"] = Model.Title + (Model.Page > 1 ? $" — Page {Model.Page}" : " — Compare U.S. States");
-    ViewData["Description"] = Model.Category?.Description ?? "Explore state rankings across agriculture, economy, population, education, health, and more. Search the full directory and compare U.S. states.";
+    ViewData["Description"] = Model.Category != null
+        ? $"{Model.Category.Title} rankings that compare U.S. states with maps and state-by-state data. {Model.Category.Description}"
+        : "Explore state rankings across agriculture, economy, population, education, health, and more. Search the full directory and compare U.S. states.";
     ViewData["Canonical"] = Model.Link(Model.Page);
     ViewData["BodyClass"] = "rankings-directory-page";
     if (Model.HasFilters || Model.Sort != "featured") ViewData["Robots"] = "noindex, follow";
@@ -85,7 +87,7 @@
                         @foreach (var item in Model.Featured)
                         {
                             <a class="rd-featured rd-featured--photo" href="@item.Url">
-                                <img src="@Images.Card(string.IsNullOrWhiteSpace(item.HeroImage) ? "/images/og-default.webp" : item.HeroImage)" alt="" loading="lazy" width="480" height="320" />
+                                <img src="@Images.Card(string.IsNullOrWhiteSpace(item.HeroImage) ? "/images/og-default.webp" : item.HeroImage)" alt="@item.Title" loading="lazy" width="480" height="320" />
                                 <span class="rd-badge">@(Model.Category == null ? item.CategoryTitle : item.Topic)</span>
                                 <h3>@item.Title</h3>
                                 <p>@item.Description</p>

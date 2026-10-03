@@ -35,7 +35,9 @@ public class IndexNowBackgroundService : BackgroundService
                 var doc = XDocument.Parse(xml);
 
                 urls.AddRange(doc.Descendants()
-                    .Where(x => x.Name.LocalName == "loc")
+                    // Page URLs only: <image:loc> inside <image:image> shares the local name "loc",
+                    // and submitting image files to IndexNow makes Bing audit them as pages.
+                    .Where(x => x.Name.LocalName == "loc" && x.Parent?.Name.LocalName == "url")
                     .Select(x => x.Value));
             }
 

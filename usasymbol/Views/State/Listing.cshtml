@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "All 50 U.S. States and Their Official Symbols";
-    ViewData["Description"] = "Discover all 50 U.S. states and their official symbols. Learn about state birds, flowers, trees, flags, mottos, and unique state facts in one complete directory.";
+    ViewData["Description"] = "Discover all 50 U.S. states and their official symbols, from state birds, flowers, and trees to flags, mottos, and unique state facts.";
 }
 
 @section Styles {
@@ -256,7 +256,7 @@
                         <div class="slc-body">
                             <div class="slc-header">
                                 <a href="/states/@state.Slug" class="slc-name" style="text-decoration:none">@state.Name</a>
-                                <a href="/states/@state.Slug/abbreviation" class="slc-abbr" style="text-decoration:none">@state.Abbreviation</a>
+                                <a href="@(state.Slug == "district-of-columbia" ? $"/states/{state.Slug}" : $"/states/{state.Slug}/abbreviation")" class="slc-abbr" style="text-decoration:none">@state.Abbreviation</a>
                             </div>
                             <div class="slc-meta">
                                 <div class="slc-meta-row">
@@ -275,9 +275,12 @@
                                 <a href="/states/@state.Slug" class="slc-footer-link">
                                     View Symbols <i class="fa-solid fa-arrow-right text-xs"></i>
                                 </a>
+                                @if (state.Slug != "district-of-columbia")
+                                {
                                 <a href="/states/@state.Slug/abbreviation" class="slc-footer-link slc-footer-link--secondary">
                                     @state.Abbreviation abbreviation <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                                 </a>
+                                }
                             </div>
                         </div>
                     </article>

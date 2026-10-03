@@ -122,7 +122,7 @@ function collectParkImages(value, park, output) {
                     identity: `park:${child}`,
                     diskPath,
                     webPath: child,
-                    pageUrl: `/parks/national/${park.slug}`,
+                    pageUrl: `/national-parks/${park.slug}`,
                     credit: value.credit || park.credit || 'National Park Service',
                     alt: value.alt || `${park.name} landscape`,
                     parkName: park.name,

@@ -48,7 +48,12 @@ namespace USASymbol.Controllers
             var (manualIntro, manualQuickAnswer) = await LoadStateContentAsync(stateSlug);
             var intro       = manualIntro       ?? BuildStateIntro(stateName, parks);
             var quickAnswer = manualQuickAnswer ?? BuildStateQuickAnswer(stateName, parks);
-            var seoDesc = $"All {parks.Count} national parks in {stateName} with map, entrance fees, area, and visitor numbers. " + quickAnswer;
+            var seoDesc = $"All {parks.Count} national parks in {stateName} with map, entrance fees, area, and visitor numbers.";
+            // Add the quick answer's first sentence only while the description stays snippet-sized.
+            var firstSentenceEnd = quickAnswer.IndexOf(". ", StringComparison.Ordinal);
+            var leadSentence = firstSentenceEnd > 0 ? quickAnswer[..(firstSentenceEnd + 1)] : quickAnswer;
+            if (seoDesc.Length + 1 + leadSentence.Length <= 160)
+                seoDesc += " " + leadSentence;
 
             var vm = new ParkCollectionViewModel
             {
@@ -58,7 +63,7 @@ namespace USASymbol.Controllers
                 {
                     Slug = $"in-{stateSlug}",
                     H1 = $"National Parks in {stateName}",
-                    SeoTitle = $"National Parks in {stateName}: Map & Complete List ({parks.Count} Parks)",
+                    SeoTitle = $"National Parks in {stateName}: Map & Complete List",
                     SeoDescription = seoDesc,
                     Intro = intro,
                     QuickAnswer = quickAnswer,
@@ -118,6 +123,11 @@ namespace USASymbol.Controllers
             var names = string.Join(", ", parks.Select(p => ShortName(p.Name)));
             return $"{stateName} has {parks.Count} national park{(parks.Count > 1 ? "s" : "")}: {names}.";
         }
+
+        // Legacy park URLs that state hub FAQs linked to before the /national-parks/ move.
+        [Route("parks/national/{slug}")]
+        public IActionResult LegacyParkRedirect(string slug) =>
+            RedirectPermanent($"/national-parks/{slug}");
 
         // Dispatches to either a collection page or a park detail page
         [Route("national-parks/{slug}")]

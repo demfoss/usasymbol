@@ -160,7 +160,7 @@
                     {
                         <div class="w-[72px] md:w-[88px] h-[72px] md:h-[88px] rounded-xl overflow-hidden
                                     border border-slate-100 bg-slate-50 flex items-center justify-center">
-                            <img src="@((isSymbolImage && !preserveFullSymbolImage) ? Images.Crop(imgSrc, 176, 176) : Images.Thumb(imgSrc))" alt="@(mainValue ?? stateName)"
+                            <img src="@((isSymbolImage && !preserveFullSymbolImage) ? Images.Crop(imgSrc, 176, 176) : Images.Thumb(imgSrc))" alt="@(new[] { mainValue, stateName, row.GetString("name"), "Image" }.First(v => !string.IsNullOrWhiteSpace(v)))"
                                  class="w-full h-full @((isSymbolImage && !preserveFullSymbolImage) ? "object-cover" : "object-contain")"
                                  loading="lazy" decoding="async" />
                         </div>

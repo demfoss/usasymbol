@@ -32,17 +32,18 @@
     <section class="mb-8 lg:mb-10">
         <div class="border border-slate-200 bg-white shadow-sm p-6 sm:p-8 lg:p-10">
             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-3">@Model.CategoryName Comparison</p>
-            <div class="flex items-center gap-4 flex-wrap">
-                <div class="flex items-center gap-3">
+            <h1 class="flex items-center gap-4 flex-wrap">
+                <span class="flex items-center gap-3">
                     <img src="@Images.Card(pair.StateA.FlagImageUrl)" alt="@titleA flag" class="w-14 h-10 object-cover shadow-sm shrink-0" onerror="this.style.display='none'" />
                     <span class="text-2xl sm:text-3xl font-semibold text-slate-900">@titleA</span>
-                </div>
+                </span>
                 <span class="text-sm font-extrabold uppercase tracking-[0.18em] text-slate-400">vs</span>
-                <div class="flex items-center gap-3">
+                <span class="flex items-center gap-3">
                     <img src="@Images.Card(pair.StateB.FlagImageUrl)" alt="@titleB flag" class="w-14 h-10 object-cover shadow-sm shrink-0" onerror="this.style.display='none'" />
                     <span class="text-2xl sm:text-3xl font-semibold text-slate-900">@titleB</span>
-                </div>
-            </div>
+                </span>
+                <span class="sr-only">@Model.CategoryName Comparison</span>
+            </h1>
             <p class="mt-4 text-base text-slate-600 leading-relaxed max-w-2xl">
                 How @titleA and @titleB compare on @Model.CategoryName.ToLower(): @string.Join(", ", Model.CategoryResults.Take(3).Select(r => r.Metric.Name.ToLowerInvariant())), and more.
             </p>

@@ -3,7 +3,9 @@
 @inject IImageUrlService Images
 @{
     ViewData["Title"] = Model.Title + (Model.Page > 1 ? $" — Page {Model.Page}" : " — Curated State Lists");
-    ViewData["Description"] = Model.Category?.Description ?? "Curated collections of U.S. state facts, symbols, records, and curiosities. Search the full directory and explore every state.";
+    ViewData["Description"] = Model.Category != null
+        ? $"{Model.Category.Title} collections: curated lists, facts, and stories about U.S. states. {Model.Category.Description}"
+        : "Curated collections of U.S. state facts, symbols, records, and curiosities. Search the full directory and explore every state.";
     ViewData["Canonical"] = Model.Link(Model.Page);
     ViewData["BodyClass"] = "rankings-directory-page";
     if (Model.HasFilters || Model.Sort != "featured") ViewData["Robots"] = "noindex, follow";
@@ -101,7 +103,7 @@
                             <a class="rd-featured @(!string.IsNullOrWhiteSpace(item.HeroImage) ? "rd-featured--photo" : null)" href="@item.Url">
                                 @if (!string.IsNullOrWhiteSpace(item.HeroImage))
                                 {
-                                    <img src="@Images.Card(item.HeroImage)" alt="" loading="lazy" width="480" height="320" />
+                                    <img src="@Images.Card(item.HeroImage)" alt="@item.Title" loading="lazy" width="480" height="320" />
                                     <span class="rd-badge">@(Model.Category == null ? item.CategoryTitle : item.Topic)</span>
                                 }
                                 else

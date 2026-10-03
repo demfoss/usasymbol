@@ -132,7 +132,7 @@ namespace USASymbol.Controllers
             var highIntentSlugs = (await _stateAbbreviationContentService.GetHighIntentSlugsAsync()).ToList();
 
             ViewData["Title"] = "State Abbreviations and Capitals — All 50 US States";
-            ViewData["Description"] = "Complete list of all 50 U.S. state abbreviations with capitals in alphabetical order. Two-letter postal codes, state capitals, regions, and common abbreviation mistakes.";
+            ViewData["Description"] = "All 50 U.S. state abbreviations with capitals in alphabetical order, plus two-letter postal codes, regions, and common abbreviation mistakes.";
             ViewData["Canonical"] = "/guides/state-abbreviations";
             ViewData["TopAbbreviationStates"] = states
                 .Where(s => highIntentSlugs.Contains(s.Slug, StringComparer.OrdinalIgnoreCase))
@@ -154,7 +154,10 @@ namespace USASymbol.Controllers
                 return NotFound();
 
             var allStates = await _stateService.GetAllStatesAsync();
-            var alphabetical = allStates.OrderBy(s => s.Name).ToList();
+            // D.C. has no abbreviation guide page, so keep it out of the related-state links.
+            var alphabetical = allStates
+                .Where(s => !string.Equals(s.Slug, "district-of-columbia", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(s => s.Name).ToList();
             var stateIndex = alphabetical.FindIndex(s => s.Id == state.Id);
 
             var model = new StateAbbreviationGuideViewModel

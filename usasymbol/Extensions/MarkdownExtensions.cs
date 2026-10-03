@@ -69,6 +69,20 @@ namespace USASymbol.Extensions
         private static readonly AsyncLocal<AutoLinkScope?> CurrentAutoLinkScope = new();
         private static readonly List<AutoLinkTarget> AutoLinkTargets = BuildAutoLinkTargets();
         private const int MaxAutoLinksPerPage = 6;
+
+        // Type-only symbol URLs (/states/utah/tree) 301 to the canonical symbol page. Startup fills
+        // this map so auto-links point straight at the final URL instead of through a redirect.
+        private static IReadOnlyDictionary<string, string> _canonicalSymbolUrls =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        public static IReadOnlyList<string> AutoLinkSymbolTypes { get; } =
+            new[] { "bird", "flower", "flag", "tree", "motto", "nickname", "mammal", "sport", "seal" };
+
+        public static void SetCanonicalSymbolUrls(IReadOnlyDictionary<string, string> map) =>
+            _canonicalSymbolUrls = map;
+
+        private static string ResolveAutoLinkUrl(string url) =>
+            _canonicalSymbolUrls.TryGetValue(url, out var canonical) ? canonical : url;
         private const int MaxAutoLinksPerParagraph = 2;
         private const int MinCharsBetweenAutoLinks = 40;
 
@@ -534,7 +548,7 @@ namespace USASymbol.Extensions
 
             foreach (var match in accepted.OrderByDescending(m => m.Start))
             {
-                var replacement = $"[{match.Value}]({match.Target.Url})";
+                var replacement = $"[{match.Value}]({ResolveAutoLinkUrl(match.Target.Url)})";
                 output = output[..match.Start] + replacement + output[(match.Start + match.Length)..];
             }
 
@@ -584,7 +598,8 @@ namespace USASymbol.Extensions
                 return false;
 
             // General: never link to exact current page
-            if (scope.CurrentPath.Equals(target.Url, StringComparison.OrdinalIgnoreCase))
+            if (scope.CurrentPath.Equals(target.Url, StringComparison.OrdinalIgnoreCase) ||
+                scope.CurrentPath.Equals(ResolveAutoLinkUrl(target.Url), StringComparison.OrdinalIgnoreCase))
                 return true;
 
             if (target.IsState)

@@ -27,7 +27,7 @@ page:
   - Data scientist salary by state is highest in Washington at $158,040 a year. Seattle and Redmond place software
     and cloud-computing employers in the same labor market, where industry mix helps shape pay.
   - Mississippi has the lowest reported mean at $79,290. Its lower prices narrow the purchasing-power gap, although
-    they do not eliminate it. The figure measures employee wages rather than freelance consulting income.
+    its adjusted salary remains below the leading states.
   - Arkansas ranks 19th in cash pay at $116,320 but fourth after adjusting for local prices, at $133,798 in national-price
     purchasing power. A smaller paycheck can stretch farther without the employer actually paying more.
   methodology: BLS OEWS May 2025, SOC 15-2051 employee wages. BEA 2024 all-items RPP adjusts mean pay, rounded to
@@ -723,9 +723,10 @@ sections:
     employers around Seattle and Redmond recruit from the same labor market, while the work itself ranges from machine-learning
     systems to business analysis. Employer industry and local prices influence the wage attached to that mix of
     jobs.
-  - Washington's median of $163,350 exceeds its mean, so the average should not be treated as an entry-level offer.
-    Different wage distributions can produce different mean and median orderings, even within technology occupations
-    such as [software development](/rankings/economy/software-developer-salary-by-state).
+  - Washington's median of $163,350 exceeds its mean, placing the middle employee's wage above the arithmetic average.
+    Lower wages pull the mean down while the midpoint remains higher, an ordering that depends on the distribution
+    of pay across a workforce. [Software development](/rankings/economy/software-developer-salary-by-state) provides
+    another technology occupation in which to compare those measures.
   table:
     columns:
       rank: Rank
@@ -788,22 +789,21 @@ sections:
   title: Lowest Data Scientist Salaries
   paragraphs:
   - Mississippi's $79,290 mean comes from a smaller occupational market, with 440 data scientist jobs recorded.
-    Lower local prices can support lower nominal wage levels, and the mix of employers also matters. The state figures
-    average existing positions across industries rather than comparing the same job offer from the same company.
+    Lower local prices can support lower nominal wage levels, while data work spans software businesses, insurance,
+    finance, and corporate management, each with its own employer setting.
   - Delaware reports 770 jobs but no wage estimate, while Wyoming's occupation-level estimates are unpublished.
-    A missing wage should not place either state below Mississippi, and missing employment should not be read as
-    evidence that no one works in data science.
+    Publication can differ by measure, leaving Delaware's employee count available even though its pay is unpublished.
 - id: data-scientist-pay-and-living-costs
   icon: fa-solid fa-house
   title: Data Scientist Pay and Living Costs
   paragraphs:
   - Hawaii has the largest rank shift after the price adjustment, from 16th in cash pay to 38th in purchasing power.
     Its $118,940 mean becomes $108,175 at national prices because a typical basket of goods and services costs more
-    there. The adjustment uses statewide [cost of living](/rankings/economy/states-by-cost-of-living), so it is
-    not a specific Honolulu housing budget.
-  - Arkansas goes from 19th to fourth, with an adjusted value of $133,798. That is a comparison unit rather than
-    a new paycheck, and it does not subtract taxes or predict an individual's spending. Washington still leads the
-    adjusted table at $147,683.
+    there. Higher [cost of living](/rankings/economy/states-by-cost-of-living) reduces the amount that the same
+    salary can buy compared with states below the national price benchmark.
+  - Arkansas goes from 19th to fourth, with an adjusted value of $133,798. Prices below the national benchmark
+    give its salary more purchasing power, reversing its position against several higher-dollar states.
+    Washington still leads the adjusted table at $147,683.
   table:
     columns:
       adjusted_rank: Adjusted Rank
@@ -878,10 +878,10 @@ sections:
   paragraphs:
   - California has 39,310 data scientist jobs, the largest total. Data work extends beyond software companies into
     insurance, finance, and corporate management, so a state's employment count combines several kinds of workplace.
-    The total describes an existing workforce rather than the number of openings available today.
   - Washington has 9,600 jobs and 2.705 data scientist positions per thousand jobs, while Texas has 25,860 and 1.838
-    per thousand. Workforce size and occupational concentration answer different questions, and neither establishes
-    whether a position offers [remote work](/rankings/economy/remote-work-percentage-by-state).
+    per thousand. Data science takes a larger share of Washington's employee market, even though Texas has more positions.
+    Analysts can work on computer-based projects in settings where [remote work](/rankings/economy/remote-work-percentage-by-state)
+    is another part of the employment picture.
   table:
     columns:
       state: State
@@ -937,26 +937,26 @@ visual_assets:
 
 faq:
 - question: What state pays data scientists the most?
-  answer: Washington has the highest mean annual wage at $158,040, or $75.98 an hour. These wage figures do not
-    measure benefits or the value of stock grants, which can change the compensation offered by technology employers.
+  answer: Washington has the highest mean annual wage at $158,040, or $75.98 an hour. Software and cloud-computing
+    employers around Seattle and Redmond create a setting for machine-learning systems and business analysis.
 - question: How much does a data scientist make in California?
-  answer: California data scientists average $156,000 annually, with a median of $141,590. The difference shows
-    why the middle worker's wage and the arithmetic average should not be treated as interchangeable.
+  answer: California data scientists average $156,000 annually, with a median of $141,590. Higher wages pull
+    the arithmetic average above the midpoint of the employee pay distribution.
 - question: How much does a data scientist make in Texas?
-  answer: Texas reports a $119,710 mean annual wage and a $122,090 median. The statewide figures cover existing
-    workers across experience levels, so neither is a starting-salary promise.
+  answer: Texas reports a $119,710 mean annual wage and a $122,090 median. The median exceeds the mean,
+    placing the middle employee's pay above an average pulled down by lower wages.
 - question: How much does a data scientist make in New York?
   answer: New York's mean is $137,690 a year across 23,970 jobs. Financial and insurance employers use data science
     alongside technology companies, making industry experience relevant to the kind of role a worker seeks.
 - question: How much does a data scientist make in Florida?
-  answer: Florida's mean annual wage is $119,150, with median pay of $115,820. The wage estimates cover employees,
-    so an independent consultant's business revenue belongs to a different comparison.
+  answer: Florida's mean annual wage is $119,150, with median pay of $115,820. Data scientists turn raw information
+    into statistical models and findings used by businesses, including financial and insurance employers.
 - question: Where do data scientists earn the most after cost of living?
-  answer: Washington remains first at $147,683 in national-price purchasing power. The adjustment applies a statewide
-    consumption-price index to pay, and does not represent take-home income after taxes.
+  answer: Washington remains first at $147,683 in national-price purchasing power. Its high wage retains the lead
+    even after prices above the national benchmark reduce its comparable buying power.
 - question: What is the data scientist salary in Delaware?
-  answer: Delaware has no published wage estimate in this release, although 770 jobs are reported. Wage suppression
-    protects data quality or confidentiality and should not be replaced with an assumed salary.
+  answer: Delaware has no published wage estimate in this release, although 770 jobs are reported. Wages and
+    employment are published as separate measures, so an employee count can remain available when pay is withheld.
 related:
 - title: Software Developer Salary by State
   url: /rankings/economy/software-developer-salary-by-state

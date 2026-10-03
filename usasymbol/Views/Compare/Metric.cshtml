@@ -564,7 +564,7 @@
                     <h2 class="cmp2-title">Cost stack</h2>
                     <div class="cmp2-stack-grid">
                         <div class="cmp2-stack-card">
-                            <div class="cmp2-stack-head"><img src="@Images.Thumb(Model.StateA.FlagImageUrl)" onerror="this.style.display='none'" alt="" />@Model.StateA.Name</div>
+                            <div class="cmp2-stack-head"><img src="@Images.Thumb(Model.StateA.FlagImageUrl)" onerror="this.style.display='none'" alt="@Model.StateA.Name flag" />@Model.StateA.Name</div>
                             <div class="cmp2-stack-section">
                                 <div class="cmp2-stack-section-label">Overall affordability</div>
                                 <dl class="cmp2-stack-mini">
@@ -610,7 +610,7 @@
                         </div>
 
                         <div class="cmp2-stack-card">
-                            <div class="cmp2-stack-head"><img src="@Images.Thumb(Model.StateB.FlagImageUrl)" onerror="this.style.display='none'" alt="" />@Model.StateB.Name</div>
+                            <div class="cmp2-stack-head"><img src="@Images.Thumb(Model.StateB.FlagImageUrl)" onerror="this.style.display='none'" alt="@Model.StateB.Name flag" />@Model.StateB.Name</div>
                             <div class="cmp2-stack-section">
                                 <div class="cmp2-stack-section-label">Overall affordability</div>
                                 <dl class="cmp2-stack-mini">
@@ -664,7 +664,7 @@
                         @foreach (var (state, stats) in new[] { (Model.StateA, Model.StatsA), (Model.StateB, Model.StatsB) })
                         {
                             <div class="cmp2-stack-card">
-                                <div class="cmp2-stack-head"><img src="@Images.Thumb(state.FlagImageUrl)" onerror="this.style.display='none'" alt="" />@state.Name</div>
+                                <div class="cmp2-stack-head"><img src="@Images.Thumb(state.FlagImageUrl)" onerror="this.style.display='none'" alt="@state.Name flag" />@state.Name</div>
                                 <div class="cmp2-stack-section">
                                     <div class="cmp2-stack-section-label">Health</div>
                                     <dl class="cmp2-stack-mini"><div><dt>Life expectancy</dt><dd>@Number(stats?.LifeExpectancyYears) yrs</dd></div></dl>
@@ -690,7 +690,7 @@
                         {
                             var densityVal = stats?.PopulationDensity(state.Population);
                             <div class="cmp2-stack-card">
-                                <div class="cmp2-stack-head"><img src="@Images.Thumb(state.FlagImageUrl)" onerror="this.style.display='none'" alt="" />@state.Name</div>
+                                <div class="cmp2-stack-head"><img src="@Images.Thumb(state.FlagImageUrl)" onerror="this.style.display='none'" alt="@state.Name flag" />@state.Name</div>
                                 <div class="cmp2-stack-section">
                                     <div class="cmp2-stack-section-label">Safety</div>
                                     <dl class="cmp2-stack-mini"><div><dt>Violent crime rate / 100k</dt><dd>@Number(stats?.ViolentCrimeRatePer100k)</dd></div></dl>
@@ -1420,11 +1420,11 @@
             <h2 class="cmp2-title" style="font-size:18px;">Explore each state</h2>
             <div class="cmp2-related-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,auto));">
                 <a href="/states/@Model.StateA.Slug" class="cmp2-related-card">
-                    <img src="@Images.Thumb(Model.StateA.FlagImageUrl)" onerror="this.style.display='none'" alt="" />
+                    <img src="@Images.Thumb(Model.StateA.FlagImageUrl)" onerror="this.style.display='none'" alt="@Model.StateA.Name flag" />
                     <span>@Model.StateA.Name symbols</span>
                 </a>
                 <a href="/states/@Model.StateB.Slug" class="cmp2-related-card">
-                    <img src="@Images.Thumb(Model.StateB.FlagImageUrl)" onerror="this.style.display='none'" alt="" />
+                    <img src="@Images.Thumb(Model.StateB.FlagImageUrl)" onerror="this.style.display='none'" alt="@Model.StateB.Name flag" />
                     <span>@Model.StateB.Name symbols</span>
                 </a>
                 <a href="/compare-states" class="cmp2-related-card">

@@ -418,7 +418,7 @@
                     @foreach (var related in Model.RelatedStates)
                     {
                         <a href="/states/@related.Slug/living">
-                            <img src="@Images.Thumb(related.FlagImageUrl)" alt="" width="38" height="25" loading="lazy" />
+                            <img src="@Images.Thumb(related.FlagImageUrl)" alt="@related.Name flag" width="38" height="25" loading="lazy" />
                             <span>Living in @related.Name</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                         </a>
                     }

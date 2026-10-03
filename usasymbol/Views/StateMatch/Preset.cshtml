@@ -76,7 +76,7 @@
                 <a class="sm-state-row" href="/states/@row.Place.Slug/living">
                     <span class="sm-row-rank">@row.Rank.ToString("00")</span>
                     <span class="sm-row-state">
-                        <img class="sm-row-flag" src="@row.Place.FlagImageUrl" alt="" width="34" height="23" loading="lazy">
+                        <img class="sm-row-flag" src="@row.Place.FlagImageUrl" alt="@row.Place.Name flag" width="34" height="23" loading="lazy">
                         <span class="sm-row-name">
                             <strong>@row.Place.Name</strong>
                             <small>@(string.IsNullOrEmpty(row.Place.Region) ? "United States" : row.Place.Region) &middot; @row.Place.Abbreviation</small>

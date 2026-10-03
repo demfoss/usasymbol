@@ -310,6 +310,22 @@ using (var scope = app.Services.CreateScope())
     var collectionsCategories = await collectionsDirectory.GetCategoriesAsync();
     logger.LogInformation("Collections directory cache warmed. Categories: {CategoryCount}, Collections: {CollectionCount}",
         collectionsCategories.Count, collectionsCategories.Sum(c => c.Entries.Count));
+
+    // Resolve "/states/{state}/{type}" auto-link targets to canonical symbol URLs once.
+    var stateService = scope.ServiceProvider.GetRequiredService<IStateService>();
+    var symbolCanonical = scope.ServiceProvider.GetRequiredService<ISymbolCanonicalService>();
+    var canonicalSymbolUrls = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    foreach (var state in await stateService.GetAllStatesAsync())
+    {
+        foreach (var type in MarkdownExtensions.AutoLinkSymbolTypes)
+        {
+            var symbol = await symbolCanonical.ResolveCanonicalSymbolAsync(state, type);
+            if (symbol != null)
+                canonicalSymbolUrls[$"/states/{state.Slug}/{type}"] = symbol.ToSymbolUrl(state.Slug);
+        }
+    }
+    MarkdownExtensions.SetCanonicalSymbolUrls(canonicalSymbolUrls);
+    logger.LogInformation("Auto-link symbol URLs resolved: {Count}", canonicalSymbolUrls.Count);
 }
 
 
