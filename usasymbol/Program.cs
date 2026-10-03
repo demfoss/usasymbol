@@ -78,6 +78,7 @@ builder.Services.AddScoped<ISongService, SongService>();
 builder.Services.AddScoped<IInsectService, InsectService>();
 builder.Services.AddScoped<IMineralService, MineralService>();
 builder.Services.AddScoped<IAmphibianService, AmphibianService>();
+builder.Services.AddScoped<IFishService, FishService>();
 builder.Services.AddScoped<IReptileService, ReptileService>();
 builder.Services.AddScoped<IFoodService, FoodService>();
 builder.Services.AddHostedService<IndexNowBackgroundService>();

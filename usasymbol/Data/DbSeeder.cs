@@ -276,6 +276,7 @@ namespace USASymbol.Data
             await SeedStateRocks(context, states);
             await SeedStateGemstones(context, states);
             await SeedStateAmphibians(context, states);
+            await SeedStateFish(context, states);
             await SeedStateReptiles(context, states);
             await SeedStateFoods(context, states);
 
@@ -485,6 +486,13 @@ namespace USASymbol.Data
                         Name = "State Amphibians",
                         Description = "Discover official state amphibians, from salamanders to frogs and toads, recognized by U.S. states.",
                         ImageUrl = "/images/symbol-categories/amphibians.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "fish",
+                        Name = "State Fish",
+                        Description = "Discover official state fish, from trout and bass to saltwater game fish, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/fish.webp"
                     },
                     new SymbolCategory
                     {
@@ -2232,6 +2240,9 @@ namespace USASymbol.Data
 
         private static Task SeedStateAmphibians(AppDbContext context, List<State> states)
             => SeedStateCreatureSymbols(context, states, "amphibian", "amphibian*.yaml", "State Amphibian");
+
+        private static Task SeedStateFish(AppDbContext context, List<State> states)
+            => SeedStateCreatureSymbols(context, states, "fish", "fish*.yaml", "State Fish");
 
         private static Task SeedStateReptiles(AppDbContext context, List<State> states)
             => SeedStateCreatureSymbols(context, states, "reptile", "reptile*.yaml", "State Reptile");

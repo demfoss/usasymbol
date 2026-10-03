@@ -42,6 +42,7 @@ namespace USASymbol.Controllers
         private readonly IInsectService _insectService;
         private readonly IMineralService _mineralService;
         private readonly IAmphibianService _amphibianService;
+        private readonly IFishService _fishService;
         private readonly IReptileService _reptileService;
         private readonly IFoodService _foodService;
         private readonly ILatestContentRailService _latestContentRailService;
@@ -80,6 +81,7 @@ namespace USASymbol.Controllers
             ["rocks"] = "fa-solid fa-mountain",
             ["gemstones"] = "fa-solid fa-gem",
             ["amphibians"] = "fa-solid fa-frog",
+            ["fish"] = "fa-solid fa-fish",
             ["reptiles"] = "fa-solid fa-turtle",
             ["fruits"] = "fa-solid fa-apple-whole",
             ["vegetables"] = "fa-solid fa-carrot",
@@ -115,6 +117,7 @@ namespace USASymbol.Controllers
             IInsectService insectService,
             IMineralService mineralService,
             IAmphibianService amphibianService,
+            IFishService fishService,
             IReptileService reptileService,
             IFoodService foodService,
             ILatestContentRailService latestContentRailService,
@@ -147,6 +150,7 @@ namespace USASymbol.Controllers
             _insectService = insectService;
             _mineralService = mineralService;
             _amphibianService = amphibianService;
+            _fishService = fishService;
             _reptileService = reptileService;
             _foodService = foodService;
             _latestContentRailService = latestContentRailService;
@@ -285,6 +289,7 @@ namespace USASymbol.Controllers
                 "rocks" => symbol.Type == "rock",
                 "gemstones" => symbol.Type == "gemstone",
                 "amphibians" => symbol.Type == "amphibian",
+                "fish" => symbol.Type == "fish",
                 "reptiles" => symbol.Type == "reptile",
                 "fruits" => symbol.Type == "food" && GetFoodBucket(designation) == "fruits",
                 "vegetables" => symbol.Type == "food" && GetFoodBucket(designation) == "vegetables",
@@ -1805,6 +1810,54 @@ namespace USASymbol.Controllers
             };
 
             return View("Amphibian", model);
+        }
+
+        [OutputCache(PolicyName = "SymbolDetail")]
+        [Route("states/{stateSlug}/fish/{fishSlug}")]
+        public async Task<IActionResult> StateFish(string stateSlug, string fishSlug)
+        {
+            var state = await _stateService.GetStateBySlugAsync(stateSlug);
+            if (state == null)
+            {
+                _logger.LogWarning("State not found: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            // Try by slug first to correctly handle multi-fish states
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, fishSlug)
+                         ?? await _symbolService.GetSymbolAsync(state.Id, "fish");
+            if (symbol == null)
+            {
+                _logger.LogWarning("State fish symbol not found for state: {StateSlug}", stateSlug);
+                return NotFound();
+            }
+
+            var redirect = RedirectToCanonicalIfNeeded(fishSlug, symbol, state.Slug);
+            if (redirect != null)
+                return redirect;
+
+            var yamlFileName = string.IsNullOrWhiteSpace(symbol.YamlPath)
+                ? "fish.yaml"
+                : Path.GetFileName(symbol.YamlPath);
+            var content = await _fishService.GetFishContentAsync(stateSlug, yamlFileName);
+            if (content == null)
+                _logger.LogInformation("State fish YAML not found for state: {StateSlug}", stateSlug);
+            else
+                _logger.LogInformation("State fish content loaded: Name={Name}, Sections={SectionCount}", content.Name, content.Sections?.Count ?? 0);
+
+            var relatedSymbols = await GetRelatedSymbolsAsync(state.Id, symbol.Id);
+            var quizQuestions = BuildQuizQuestions("us-states-general-quiz");
+
+            var model = new FishDetailViewModel
+            {
+                State = state,
+                Symbol = symbol,
+                FishContent = content,
+                RelatedSymbols = relatedSymbols,
+                QuizQuestions = quizQuestions
+            };
+
+            return View("Fish", model);
         }
 
         [OutputCache(PolicyName = "SymbolDetail")]
