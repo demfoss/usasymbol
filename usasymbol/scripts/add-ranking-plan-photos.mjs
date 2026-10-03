@@ -6,8 +6,11 @@ const governmentBatch = process.argv.includes('--government');
 const jobsBatch = process.argv.includes('--jobs');
 const healthBatch = process.argv.includes('--health');
 const workBatch = process.argv.includes('--work');
-const batch = workBatch ? 'work-laws-trades-photos' : healthBatch ? 'healthcare-salary-photos' : jobsBatch ? 'jobs-and-pay-laws-photos' : governmentBatch ? 'governor-constitution-photos' : 'ranking-plan-14-32-48-63-82';
-const pages = workBatch ? JSON.parse(await fs.readFile('scripts/work-laws-trades-photos.json', 'utf8')) : healthBatch ? JSON.parse(await fs.readFile('scripts/healthcare-salary-photos.json', 'utf8')) : jobsBatch ? JSON.parse(await fs.readFile('scripts/jobs-and-pay-laws-photos.json', 'utf8')) : governmentBatch ? [
+const professionalBatch = process.argv.includes('--professional');
+const configIndex = process.argv.indexOf('--config');
+const customBatch = configIndex >= 0;
+const batch = customBatch ? process.argv[configIndex + 2] : professionalBatch ? 'professional-salary-photos' : workBatch ? 'work-laws-trades-photos' : healthBatch ? 'healthcare-salary-photos' : jobsBatch ? 'jobs-and-pay-laws-photos' : governmentBatch ? 'governor-constitution-photos' : 'ranking-plan-14-32-48-63-82';
+const pages = customBatch ? JSON.parse(await fs.readFile(process.argv[configIndex + 1], 'utf8')) : professionalBatch ? JSON.parse(await fs.readFile('scripts/professional-salary-photos.json', 'utf8')) : workBatch ? JSON.parse(await fs.readFile('scripts/work-laws-trades-photos.json', 'utf8')) : healthBatch ? JSON.parse(await fs.readFile('scripts/healthcare-salary-photos.json', 'utf8')) : jobsBatch ? JSON.parse(await fs.readFile('scripts/jobs-and-pay-laws-photos.json', 'utf8')) : governmentBatch ? [
   ['government', 'governor-salary-by-state', [
     ['1610055100752-a2f4ac29d58d', 'bJxCJw5TIp8', 'Indiana Statehouse in Indianapolis on a winter day'],
     ['1732723416426-8c3d5a826cb7', 'yMMAoNyt-T4', 'State capitol building with columns and an American flag'],
@@ -55,7 +58,7 @@ for (const [category, slug, photos] of pages) {
   const original = parse(text);
   if (original.hero_image || original.visual_assets) throw Error(`Existing assets: ${slug}`);
   const sections = original.sections.filter(s => s.paragraphs?.length && !s.table && !s.map && s.id !== 'table-intro').slice(0, 2);
-  if (!jobsBatch && !healthBatch && !workBatch && sections.length !== 2) throw Error(`Missing prose sections: ${slug}`);
+  if (!jobsBatch && !healthBatch && !workBatch && !professionalBatch && !customBatch && sections.length !== 2) throw Error(`Missing prose sections: ${slug}`);
   const dir = `/images/rankings/${category}/${slug}`;
   await fs.mkdir(`wwwroot${dir}`, { recursive: true });
   for (let i = 0; i < Math.min(photos.length, sections.length + 1); i++) {

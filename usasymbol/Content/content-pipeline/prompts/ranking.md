@@ -7,11 +7,22 @@ OUTPUT
 AUDIENCE AND PURPOSE
 - Readers are students, teachers, and curious adults. The table already shows who is first and last. The text exists to explain what the table cannot. Why a state leads, why another trails, and what is surprising or memorable about the result.
 - The number is the anchor. The explanation is the substance. A paragraph that only restates or compares numbers is a wasted paragraph.
+- Never pad an answer or paragraph with a generic limitation of rankings. Phrases such as "counts do not measure popularity", "employment does not count vacancies", "the table cannot isolate the causes", and "this is not a guaranteed salary" do not supply context and must not be used as filler.
+- Delete empty sentences first. Add a replacement only when you have a verified detail about the named state, a concrete feature of the occupation or business, or a historical event that helps the reader. A shorter answer is better than filler. Do not replace one generic caveat with another.
+- Keep source coverage, suppressed estimates, reference periods, and metric exclusions in methodology or necessary per-row table notes. Do not move them into the main text to fill space.
+- Do not invent a cause to avoid a caveat. Use documented mechanisms and distinguish contextual influences from a demonstrated cause without adding a boilerplate disclaimer about what the table cannot prove.
 - Not dry, not bloated. Every sentence must add something new, a reason, a cause, a piece of history, a concrete detail. No padding, no restating the same point in other words.
 - Bad (dry, only numbers): "California ranks first, with twice as many as Maryland. Alabama ranks last."
 - Bad (bloated): "California ranks first, which is a remarkable result that highlights the state's significant role and long history in this important area."
 - Good: "Nevada has more casinos than any other state. It legalized gambling statewide in 1931, decades before any other state, and Las Vegas grew up around that head start."
 - Good: "Alaska has the most volcanoes because it sits on the Pacific Ring of Fire, where the Pacific Plate dives under North America."
+
+NO TECHNICAL BOILERPLATE — hard rules
+- Title, description, quick_answer, captions, section prose, and FAQ are for readers interested in the topic. Never fill them with commentary about the dataset, collection process, ranking construction, omitted rows, missing cells, sorting, scraping, YAML, or rendering.
+- Generic disclaimers are prohibited in these fields, even when technically true. Never append claims that counts do not measure popularity, sales, preferences, quality, access, or demand; employment does not mean vacancies; salaries are not guaranteed offers or personal budgets; or a ranking cannot prove causes. Paraphrases of these disclaimers are also prohibited.
+- Do not create a section or FAQ just to explain what the table cannot tell the reader, how it was compiled, or why data is missing. Necessary technical information belongs only in methodology, sources, or a concise, specific table note. Do not repeat it elsewhere.
+- Explain a meaningful topic distinction in plain language when it changes the reader's understanding, such as a concrete legal exception or why local prices change purchasing power. Give the actual fact and its consequence. Do not attach a general caution about interpreting rankings.
+- Delete a useless sentence, paragraph, optional section, or FAQ rather than invent context or add technical filler. Keep required YAML keys and supplied data intact. Editorial usefulness takes priority over suggested section and FAQ counts.
 
 DATA CONSISTENCY — hard rules
 - The table is the single source of truth for every number, rank, and state position on the page. Title, description, H1, quick_answer, map caption, sections, section tables, and FAQ must match it exactly.
@@ -43,7 +54,7 @@ The payload may set `depth`. Default is `standard`.
 - standard: 2–3 sections, 5–6 FAQ.
 - deep: 3–4 sections, 6–8 FAQ. For competitive topics (salaries, education, taxes, laws).
 - A section holds 1–2 paragraphs (up to 3 at deep).
-- Depth is a ceiling, not a quota. Never create a section the table cannot support.
+- Depth is a ceiling, not a quota, for both sections and FAQ. Use fewer when there are fewer useful, distinct things to explain. Never create a section or FAQ the available facts cannot support.
 
 SECTIONS
 - H2 length: typically 4–8 words, ≤45 characters.
@@ -64,6 +75,7 @@ QUICK ANSWER
 INTERNAL LINKS
 - The payload may provide `related_links` (title + url). Use 2–4 of them as inline markdown links inside section paragraphs or FAQ answers, where the link text is a natural noun phrase ("[teacher salary by state](/rankings/education/teacher-salary-by-state)").
 - Only use URLs from `related_links`. Never invent or guess a URL.
+- Relevance takes priority over the inline-link count. If fewer than two supplied links genuinely fit the explanation, use fewer. Never add a generic warning that two topics are different, or an unrelated comparison, just to insert a link.
 - Do not link the same URL twice. Do not put links in quick_answer, H2s, title, or description.
 - Fill the `related` block from `related_links` (3–6 items, most relevant first).
 
@@ -161,7 +173,7 @@ FAQ
 - FAQ is the primary text block on ranking pages. It carries most of the keyword surface and most of the readable content. Treat it as the editorial core, not a footnote.
 - Question count follows DEPTH. Numbers and ranks in answers come from the table. "Why" questions and context may use reliable knowledge.
 - Phrase as real Google searches: "What is the [topic] in [State]?", "Which state has the most/least [topic]?", and "Why does [state] have the most/least [topic]?" (answer with a different angle than the "why" section, never a copy).
-- Answers: give the direct answer first (name, number), then one sentence of reason or context that makes it worth reading. 1–3 sentences per answer. Vary length across answers.
+- Answers: give the direct answer first (name, number), then useful, verified reason or context when available. 1–3 sentences per answer is a length limit, not a requirement to append a second sentence. Delete an empty follow-up instead of padding the answer. Vary length across answers.
 - Bad: "That's a great question. Many states have varying levels of X, and it is worth noting that the data shows some interesting contrasts."
 - Bad (dry): "Utah ranks first with 74.3%. The next closest state, Colorado, is 8 points lower at 66.1%."
 - Good: "Nevada has the most casinos. Statewide gambling has been legal there since 1931, far longer than anywhere else."
@@ -181,10 +193,18 @@ STYLE
 - Forbidden: embodies, tapestry, testament, vibrant, delve, boasts, nestled, rich history, stands as, serves as, Furthermore, Moreover, Additionally, Notably, In conclusion, In summary, it is worth noting, it comes as no surprise, when it comes to, in many ways, at its core, has long been, over the years, unique blend, deep roots, long-standing, as one of the few states, it is important to note.
 - No filler phrases: "plays an important role", "holds a special place", "reflects the state's heritage", "tells the story of".
 
+MANDATORY EDITORIAL REREAD BEFORE OUTPUT
+- Reread the entire finished draft as a curious reader before returning YAML. Include every quick_answer bullet, caption, section paragraph, table note, and FAQ answer. Do not treat valid YAML or matching numbers as proof that the prose is ready to publish.
+- For every sentence, identify the specific fact, explanation, or memorable detail it adds. If it only repeats a number, describes the dataset, warns about interpretation, or could be pasted unchanged into an unrelated ranking, delete it.
+- Check explicitly for every prohibited disclaimer above and its paraphrases. Remove it, even if it sounds cautious or professional. Add a replacement only when verified, useful context is available.
+- Reread the edited version once more for natural flow, direct answers, and repetition. A shorter finished page is preferable to extra text that gives the reader nothing. Never add filler back to satisfy a section count, FAQ count, or perceived minimum length.
+- Complete this reread silently. Return only the final YAML after it passes.
+
 FINAL CHECK
 - Every paragraph is anchored to a state or value from the table AND says something the table alone does not (a reason, a cause, history, a surprising detail).
 - No paragraph, quick_answer bullet, or FAQ answer is only a comparison of numbers.
 - No padding. Every sentence adds new information.
+- Mandatory editorial reread completed. No technical boilerplate or generic disclaimers in reader-facing prose. Necessary methodology stays in its designated block; concrete topic facts and legal exceptions are explained plainly.
 - Every number, rank, and #1/last-place mention in title, description, quick_answer, caption, sections, and FAQ matches the table exactly.
 - No invented stats, trends, or URLs. Context facts are true.
 - The page explains why the #1 state leads.
@@ -193,7 +213,7 @@ FINAL CHECK
 - No em dash, semicolon, or colon in any prose field.
 - Partner links, if any, come from the payload, appear once each, and sit in body text only.
 - No notes key used only to label #1 or last place. Map color_scheme is not blue.
-- Section count and FAQ count match DEPTH.
+- Section count and FAQ count stay within the DEPTH ceiling. No filler added to reach a suggested minimum.
 - FAQ numbers match the table, answers vary in length, and never repeat a quick_answer bullet verbatim.
 - No paragraph or quick_answer bullet opens with "This," "It," "The state," or "When it comes to."
 - No two consecutive sentences in the same paragraph start with the same word.

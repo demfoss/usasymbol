@@ -1,0 +1,284 @@
+type: ranking
+slug: pnc-bank-locations-by-state
+category: economy
+url: /rankings/economy/pnc-bank-locations-by-state
+auto_link_phrases:
+  - pnc bank locations by state
+tags:
+  - Store Locations
+extremes_mode: both
+extremes_title: States With the Most and Fewest PNC Bank Branches
+hero_image: "/images/rankings/economy/pnc-bank-locations-by-state/hero.jpg"
+hero_image_alt: "Employees at computer workstations illustrating office-based services"
+
+author: USA Symbol Team
+date_published: 2026-10-03
+date_modified: 2026-10-03
+seo:
+  title: PNC Bank Locations by State | Map & Branch Counts
+  description: Texas has 310 full-service PNC Bank branches and Pennsylvania has 241. Kansas and West Virginia have one each in the October 2026 inventory.
+page:
+  h1: PNC Bank Locations by State
+  quick_answer:
+    - PNC Bank locations by state are led by Texas with 310 full-service branches. The BBVA USA acquisition brought an established Texas network into PNC's footprint.
+    - Kansas and West Virginia each have one qualifying branch. Both sit outside the Texas-centered southwestern network inherited through BBVA USA.
+    - Pennsylvania has 241 branches and ranks second. The bank's large southwestern network shows how acquisitions can reshape the map of a business associated with Pittsburgh.
+  methodology: FDIC's October 2, 2026 location index for PNC Bank National Association, CERT 6384, retrieved October 3, includes service types 11 and 12 only. ATMs, other office types, DC, and states without qualifying records are excluded.
+  sources:
+    - name: FDIC PNC Bank Location Records
+      url: https://banks.data.fdic.gov/api/locations?filters=CERT%3A6384&limit=10000&fields=NAME,STNAME,SERVTYPE,OFFNAME,UNINUM,ADDRESS,CITY&format=json
+      description: Complete certificate 6384 location response from the October 2, 2026 index, deduplicated by UNINUM and filtered to service types 11 and 12.
+    - name: FDIC Summary of Deposits Instructions
+      url: https://fdic.gov/bank-financial-reports/2025-sod-instructions.pdf
+      description: Definitions of full-service standalone and retail offices used for the count.
+    - name: PNC 2021 Annual Report
+      url: https://www.sec.gov/Archives/edgar/data/713676/000071367622000019/pnc-20211231.htm
+      description: Documents the June 1, 2021 acquisition of BBVA USA and the regional bank network incorporated into PNC.
+table:
+  title: PNC Bank Full-Service Branches by State
+  columns:
+    rank: Rank
+    state: State
+    count: Full-Service Branches
+  metric_default: count
+  sort_default: desc
+  rows:
+    - rank: 1
+      state: Texas
+      state_slug: texas
+      postal_code: TX
+      count: 310
+      standalone: 308
+      in_store: 2
+    - rank: 2
+      state: Pennsylvania
+      state_slug: pennsylvania
+      postal_code: PA
+      count: 241
+      standalone: 239
+      in_store: 2
+    - rank: 3
+      state: Ohio
+      state_slug: ohio
+      postal_code: OH
+      count: 202
+      standalone: 197
+      in_store: 5
+    - rank: 4
+      state: Florida
+      state_slug: florida
+      postal_code: FL
+      count: 197
+      standalone: 197
+    - rank: 5
+      state: New Jersey
+      state_slug: new-jersey
+      postal_code: NJ
+      count: 174
+      standalone: 171
+      in_store: 3
+    - rank: 6
+      state: Illinois
+      state_slug: illinois
+      postal_code: IL
+      count: 135
+      standalone: 135
+    - rank: 7
+      state: Michigan
+      state_slug: michigan
+      postal_code: MI
+      count: 118
+      standalone: 118
+    - rank: 8
+      state: Maryland
+      state_slug: maryland
+      postal_code: MD
+      count: 111
+      standalone: 110
+      in_store: 1
+    - rank: 9
+      state: Colorado
+      state_slug: colorado
+      postal_code: CO
+      count: 109
+      standalone: 109
+    - rank: 10
+      state: North Carolina
+      state_slug: north-carolina
+      postal_code: NC
+      count: 102
+      standalone: 102
+    - rank: 11
+      state: Alabama
+      state_slug: alabama
+      postal_code: AL
+      count: 90
+      standalone: 90
+    - rank: 12
+      state: Indiana
+      state_slug: indiana
+      postal_code: IN
+      count: 78
+      standalone: 78
+    - rank: 13
+      state: Arizona
+      state_slug: arizona
+      postal_code: AZ
+      count: 69
+      standalone: 67
+      in_store: 2
+    - rank: 14
+      state: Kentucky
+      state_slug: kentucky
+      postal_code: KY
+      count: 66
+      standalone: 64
+      in_store: 2
+    - rank: 15
+      state: California
+      state_slug: california
+      postal_code: CA
+      count: 56
+      standalone: 54
+      in_store: 2
+    - rank: 15
+      state: Georgia
+      state_slug: georgia
+      postal_code: GA
+      count: 56
+      standalone: 56
+    - rank: 17
+      state: Virginia
+      state_slug: virginia
+      postal_code: VA
+      count: 52
+      standalone: 52
+    - rank: 18
+      state: Missouri
+      state_slug: missouri
+      postal_code: MO
+      count: 27
+      standalone: 27
+    - rank: 19
+      state: Delaware
+      state_slug: delaware
+      postal_code: DE
+      count: 25
+      standalone: 25
+    - rank: 20
+      state: Wisconsin
+      state_slug: wisconsin
+      postal_code: WI
+      count: 23
+      standalone: 23
+    - rank: 21
+      state: New Mexico
+      state_slug: new-mexico
+      postal_code: NM
+      count: 12
+      standalone: 12
+    - rank: 22
+      state: Massachusetts
+      state_slug: massachusetts
+      postal_code: MA
+      count: 10
+      standalone: 10
+    - rank: 23
+      state: South Carolina
+      state_slug: south-carolina
+      postal_code: SC
+      count: 8
+      standalone: 8
+    - rank: 24
+      state: Tennessee
+      state_slug: tennessee
+      postal_code: TN
+      count: 6
+      standalone: 6
+    - rank: 25
+      state: New York
+      state_slug: new-york
+      postal_code: NY
+      count: 5
+      standalone: 5
+    - rank: 26
+      state: Kansas
+      state_slug: kansas
+      postal_code: KS
+      count: 1
+      standalone: 1
+    - rank: 26
+      state: West Virginia
+      state_slug: west-virginia
+      postal_code: WV
+      count: 1
+      standalone: 1
+map:
+  title: PNC Bank Locations by State
+  caption: Texas has 310 full-service PNC branches and Pennsylvania has 241. Kansas and West Virginia each have one.
+  metric_key: count
+  metric_label: full-service branches
+  color_scheme: green
+  color_scale: log
+sections:
+  - id: states-with-most-pnc
+    title: States With the Most PNC Bank Branches
+    paragraphs:
+      - Pennsylvania's 241 branches place it behind Texas, despite PNC's association with Pittsburgh. A familiar corporate home and a bank's largest branch market can diverge after acquisitions, so [U.S. Bank locations](/rankings/economy/us-bank-locations-by-state) offer a useful parallel.
+    table:
+      columns:
+        state: State
+        count: Full-Service Branches
+      rows:
+        - state: Texas
+          count: 310
+        - state: Pennsylvania
+          count: 241
+        - state: Ohio
+          count: 202
+        - state: Florida
+          count: 197
+        - state: New Jersey
+          count: 174
+        - state: Illinois
+          count: 135
+        - state: Michigan
+          count: 118
+        - state: Maryland
+          count: 111
+        - state: Colorado
+          count: 109
+        - state: North Carolina
+          count: 102
+  - id: why-texas-leads-pnc
+    title: Why Texas Leads PNC Bank Branches
+    paragraphs:
+      - Texas's 310 branches connect to PNC's acquisition of BBVA USA in 2021. BBVA's existing network included Texas and other southern and southwestern states, allowing the buyer to inherit customer-facing offices rather than start a new regional network from scratch.
+      - Kansas and West Virginia each have one qualifying branch, outside the Texas-centered network inherited from BBVA USA. A bank assembled through regional acquisitions brings together existing local networks, leaving a patchwork of dense markets and thinly covered states. [Chase branch locations](/rankings/economy/chase-bank-by-state) offer a comparison with another bank built through mergers.
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/economy/pnc-bank-locations-by-state/section-1.jpg"
+    alt: "Calculator and financial paperwork on a desk"
+    section: "why-texas-leads-pnc"
+    layout: full-width-tall
+
+faq:
+  - question: How many PNC Bank branches are in Texas?
+    answer: Texas has 310 full-service branches. Of those, 308 are standalone offices and two operate inside retail premises.
+  - question: How many PNC Bank branches are in Pennsylvania?
+    answer: Pennsylvania has 241 qualifying branches and ranks second. Pittsburgh is PNC's corporate home, while the BBVA USA acquisition gave it an extensive network far to the southwest.
+  - question: How many PNC Bank branches are in Florida?
+    answer: Florida has 197 and ranks fourth. All qualifying Florida records in this inventory are classified as standalone full-service offices.
+  - question: Which states have the fewest PNC branches?
+    answer: Kansas and West Virginia each have one qualifying branch, tying for the smallest listed footprint. Kansas lies on the Great Plains and West Virginia in Appalachia, showing how the bank's network crosses regions unevenly.
+  - question: Are PNC ATMs counted as branches?
+    answer: No. Texas's 310 qualifying locations are full-service offices, including retail-premises branches. ATMs, administrative offices, and loan-only offices are outside the ranked metric.
+  - question: Which states have no qualifying PNC Bank branches?
+    answer: Alaska, Arkansas, Connecticut, Hawaii, Idaho, Iowa, Louisiana, Maine, Minnesota, Mississippi, Montana, Nebraska, Nevada, New Hampshire, North Dakota, Oklahoma, Oregon, Rhode Island, South Dakota, Utah, Vermont, Washington, and Wyoming have no qualifying full-service branch. The Pacific Northwest is entirely in this group, unlike the Texas-centered southwestern network.
+related:
+  - title: U.S. Bank Locations by State
+    url: /rankings/economy/us-bank-locations-by-state
+  - title: Chase Bank Branches by State
+    url: /rankings/economy/chase-bank-by-state
+  - title: Banks by State
+    url: /rankings/economy/banks-by-state

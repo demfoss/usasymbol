@@ -1,6 +1,6 @@
 # usasymbol.com — план развития
 
-> Обновлено: 2026-10-02. Основа — выгрузки Search Console (сентябрь 2026) + аудит репозитория.
+> Обновлено: 2026-10-03. Основа — выгрузки Search Console (сентябрь 2026) + аудит репозитория.
 > Контент: 648 рейтингов, 283 коллекции, 11 квизов, 40 ranking-hubs, weird-laws и weird-alcohol-laws на все 50 штатов.
 > Сделанное не удаляется, а помечается ✅ / `[x]` с датой (чтобы не писать повторно), плюс запись в «Журнале» внизу.
 
@@ -386,6 +386,8 @@
 
 | Дата | Что сделано | Проверить |
 |---|---|---|
+| 2026-10-03 | Написаны 10 страниц по ranking.md: Arby's, Five Guys, Panda Express, Panera Bread, Sam's Club, IKEA, Best Buy, Whole Foods, U.S. Bank, PNC Bank. Таблицы, числовые карты, отдельные объяснения лидеров, 5–6 FAQ и внутренние ссылки. Добавлены в Restaurants & Fast Food и Store Locations, BACKLOG #413, 417–419, 475, 484, 486, 506, 538–539 закрыты. Данные официальных каталогов и FDIC, без вымышленных нулей. Panera — fiscal 2025 по транскрипции FDD, IKEA разделена по форматам, Best Buy включает Pacific Sales, Whole Foods — найденные страницы и подтверждённые открытия, Sam's Club — state facts с более ранними датами отчётности | Panera: сверить оригинал FDD при доступности. Whole Foods: дополнить неиндексированные магазины. Sam's Club: обновить даты state facts. Картинки и GSC через 4–6 недель |
+| 2026-10-03 | Написаны 10 новых зарплатных страниц: dentist, psychologist, social-worker, correctional-officer, lawyer, paralegal, accountant, financial-analyst, cybersecurity-analyst, web-developer. В каждой 50 штатов, 4 раздела с таблицами, 7 FAQ и зелёная карта. Данные OEWS May 2025 и BEA RPP 2024, пропуски не заполнены вымышленными числами. Уточнены границы профессий, зарплаты сотрудников отделены от self-employment. Проверены цифры, ранги, SEO, YAML, денежные форматы и ссылки. Обновлены BACKLOG и jobs-wages | Проверить отображение после публикации |
 | 2026-10-02 | Написаны 10 новых зарплатных страниц из BACKLOG №102–111: licensed-practical-nurse, nursing-assistant, medical-assistant, physician-assistant, radiologic-technologist, respiratory-therapist, occupational-therapist, speech-language-pathologist, veterinarian, veterinary-technician. В каждой 50 штатов, 4 раздела, 7 FAQ и зелёная числовая карта. OEWS May 2025 и BEA RPP 2024, поправка на цены и таблицы занятости. У veterinarian зарплаты Alaska и Delaware не опубликованы, employment сохранён. Добавлены в jobs-wages, YAML и числовые данные проверены | Проверить отображение после публикации |
 | 2026-10-02 | Аудит по GSC, составлен план | — |
 | 2026-10-02 | Склеены 5 дублей (301): bigfoot, state-fair-attendance, college-graduation-rates, flags-ranked-by-stars, newest-state-flags. Sitemap compare +10 метрик. 40 синих карт → teal, 17 длинных description сокращены | — |

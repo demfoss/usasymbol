@@ -1,0 +1,340 @@
+type: ranking
+slug: us-bank-locations-by-state
+category: economy
+url: /rankings/economy/us-bank-locations-by-state
+auto_link_phrases:
+  - u.s. bank locations by state
+tags:
+  - Store Locations
+extremes_mode: both
+extremes_title: States With the Most and Fewest U.S. Bank Branches
+hero_image: "/images/rankings/economy/us-bank-locations-by-state/hero.jpg"
+hero_image_alt: "U.S. Bank sign on a building"
+
+author: USA Symbol Team
+date_published: 2026-10-03
+date_modified: 2026-10-03
+seo:
+  title: U.S. Bank Locations by State | Map & Branch Counts
+  description: California has 561 full-service U.S. Bank branches, followed by Ohio with 158. Georgia has one in the October 2026 branch inventory.
+page:
+  h1: U.S. Bank Locations by State
+  quick_answer:
+    - U.S. Bank locations by state are led by California with 561 full-service branches. The Union Bank acquisition brought a substantial existing California branch network into the bank.
+    - Georgia has one full-service branch, the smallest listed state total. The bank's Atlanta business-banking presence developed outside its traditional retail branch territory.
+    - California's total includes 81 branches inside retail premises. Counting only standalone branches would overlook part of the bank's customer-facing network.
+  methodology: FDIC's October 2, 2026 location index for U.S. Bank National Association, CERT 6548, retrieved October 3, includes service types 11 and 12 only. ATMs, other office types, DC, and states without qualifying records are excluded.
+  sources:
+    - name: FDIC U.S. Bank Location Records
+      url: https://banks.data.fdic.gov/api/locations?filters=CERT%3A6548&limit=10000&fields=NAME,STNAME,SERVTYPE,OFFNAME,UNINUM,ADDRESS,CITY&format=json
+      description: Complete location response for certificate 6548 from the October 2, 2026 index. Records deduplicated by UNINUM and filtered to full-service codes 11 and 12.
+    - name: FDIC Summary of Deposits Instructions
+      url: https://fdic.gov/bank-financial-reports/2025-sod-instructions.pdf
+      description: Definitions of full-service brick-and-mortar and retail offices. Administrative, loan-only, drive-through-only, and home-banking offices are excluded.
+    - name: U.S. Bank California Presence
+      url: https://www.usbank.com/about-us-bank/news-and-stories/article-library/us-bank-expands-california-presence-with-new-compton-location.html
+      description: Official account of the Union Bank acquisition and its contribution to California's branch network.
+    - name: U.S. Bank Business Banking Expansion
+      url: https://www.usbank.com/about-us-bank/news-and-stories/article-library/us-bank-expands-business-banking-in-florida-georgia-texas-and-arizona.html
+      description: Business banking in Atlanta and Texas outside the bank's traditional retail branch territory.
+table:
+  title: U.S. Bank Full-Service Branches by State
+  columns:
+    rank: Rank
+    state: State
+    count: Full-Service Branches
+  metric_default: count
+  sort_default: desc
+  rows:
+    - rank: 1
+      state: California
+      state_slug: california
+      postal_code: CA
+      count: 561
+      standalone: 480
+      in_store: 81
+    - rank: 2
+      state: Ohio
+      state_slug: ohio
+      postal_code: OH
+      count: 158
+      standalone: 133
+      in_store: 25
+    - rank: 3
+      state: Illinois
+      state_slug: illinois
+      postal_code: IL
+      count: 152
+      standalone: 136
+      in_store: 16
+    - rank: 4
+      state: Washington
+      state_slug: washington
+      postal_code: WA
+      count: 133
+      standalone: 116
+      in_store: 17
+    - rank: 5
+      state: Missouri
+      state_slug: missouri
+      postal_code: MO
+      count: 127
+      standalone: 116
+      in_store: 11
+    - rank: 6
+      state: Oregon
+      state_slug: oregon
+      postal_code: OR
+      count: 114
+      standalone: 107
+      in_store: 7
+    - rank: 7
+      state: Minnesota
+      state_slug: minnesota
+      postal_code: MN
+      count: 103
+      standalone: 93
+      in_store: 10
+    - rank: 8
+      state: Colorado
+      state_slug: colorado
+      postal_code: CO
+      count: 99
+      standalone: 74
+      in_store: 25
+    - rank: 9
+      state: Wisconsin
+      state_slug: wisconsin
+      postal_code: WI
+      count: 90
+      standalone: 84
+      in_store: 6
+    - rank: 10
+      state: Kentucky
+      state_slug: kentucky
+      postal_code: KY
+      count: 69
+      standalone: 56
+      in_store: 13
+    - rank: 11
+      state: Arizona
+      state_slug: arizona
+      postal_code: AZ
+      count: 56
+      standalone: 25
+      in_store: 31
+    - rank: 12
+      state: Iowa
+      state_slug: iowa
+      postal_code: IA
+      count: 55
+      standalone: 55
+    - rank: 12
+      state: Tennessee
+      state_slug: tennessee
+      postal_code: TN
+      count: 55
+      standalone: 49
+      in_store: 6
+    - rank: 14
+      state: Idaho
+      state_slug: idaho
+      postal_code: ID
+      count: 51
+      standalone: 47
+      in_store: 4
+    - rank: 15
+      state: Nevada
+      state_slug: nevada
+      postal_code: NV
+      count: 50
+      standalone: 36
+      in_store: 14
+    - rank: 16
+      state: Utah
+      state_slug: utah
+      postal_code: UT
+      count: 39
+      standalone: 22
+      in_store: 17
+    - rank: 17
+      state: Nebraska
+      state_slug: nebraska
+      postal_code: NE
+      count: 32
+      standalone: 27
+      in_store: 5
+    - rank: 18
+      state: Kansas
+      state_slug: kansas
+      postal_code: KS
+      count: 23
+      standalone: 21
+      in_store: 2
+    - rank: 19
+      state: New Mexico
+      state_slug: new-mexico
+      postal_code: NM
+      count: 21
+      standalone: 20
+      in_store: 1
+    - rank: 20
+      state: Arkansas
+      state_slug: arkansas
+      postal_code: AR
+      count: 18
+      standalone: 18
+    - rank: 21
+      state: Montana
+      state_slug: montana
+      postal_code: MT
+      count: 17
+      standalone: 17
+    - rank: 22
+      state: North Dakota
+      state_slug: north-dakota
+      postal_code: ND
+      count: 14
+      standalone: 13
+      in_store: 1
+    - rank: 23
+      state: Wyoming
+      state_slug: wyoming
+      postal_code: WY
+      count: 9
+      standalone: 9
+    - rank: 24
+      state: Indiana
+      state_slug: indiana
+      postal_code: IN
+      count: 8
+      standalone: 7
+      in_store: 1
+    - rank: 24
+      state: South Dakota
+      state_slug: south-dakota
+      postal_code: SD
+      count: 8
+      standalone: 8
+    - rank: 26
+      state: North Carolina
+      state_slug: north-carolina
+      postal_code: NC
+      count: 7
+      standalone: 7
+    - rank: 27
+      state: Florida
+      state_slug: florida
+      postal_code: FL
+      count: 3
+      standalone: 3
+    - rank: 28
+      state: Texas
+      state_slug: texas
+      postal_code: TX
+      count: 2
+      standalone: 2
+    - rank: 29
+      state: Georgia
+      state_slug: georgia
+      postal_code: GA
+      count: 1
+      standalone: 1
+map:
+  title: U.S. Bank Locations by State
+  caption: California has 561 full-service U.S. Bank branches and Ohio has 158. Georgia has one qualifying branch.
+  metric_key: count
+  metric_label: full-service branches
+  color_scheme: green
+  color_scale: log
+sections:
+  - id: states-with-most-us-bank
+    title: States With the Most U.S. Bank Branches
+    paragraphs:
+      - Minnesota has 103 full-service branches, while California's 561 place a much larger network on the West Coast. A bank's identity and corporate home need not predict its biggest branch market, particularly when mergers combine previously separate networks. [Chase branches by state](/rankings/economy/chase-bank-by-state) provide a separate comparison.
+    table:
+      columns:
+        state: State
+        count: Full-Service Branches
+      rows:
+        - state: California
+          count: 561
+        - state: Ohio
+          count: 158
+        - state: Illinois
+          count: 152
+        - state: Washington
+          count: 133
+        - state: Missouri
+          count: 127
+        - state: Oregon
+          count: 114
+        - state: Minnesota
+          count: 103
+        - state: Colorado
+          count: 99
+        - state: Wisconsin
+          count: 90
+        - state: Kentucky
+          count: 69
+  - id: why-california-leads-us-bank
+    title: Why California Leads U.S. Bank Branches
+    paragraphs:
+      - California's 561 branches partly reflect U.S. Bank's acquisition of Union Bank at the end of 2022. Buying an established bank transfers an existing branch network, creating a different geographic footprint from one assembled only through individually opened offices.
+      - Georgia's single qualifying branch sits outside the bank's traditional retail branch territory. Its move into Atlanta business banking used bankers serving companies, a different way to enter a market from acquiring an established consumer branch network such as Union Bank. The broader [banks by state ranking](/rankings/economy/banks-by-state) puts individual branch networks in an institutional context.
+  - id: us-bank-in-store-branches
+    title: U.S. Bank In-Store Branches by State
+    paragraphs:
+      - California has 81 full-service branches inside retail premises, compared with 480 standalone branches. These retail offices accept deposits and provide full-service banking, so removing them would change what the ranking measures rather than merely clean up duplicate addresses.
+    table:
+      columns:
+        state: State
+        in_store: In-Store Branches
+      rows:
+        - state: California
+          in_store: 81
+        - state: Arizona
+          in_store: 31
+        - state: Colorado
+          in_store: 25
+        - state: Ohio
+          in_store: 25
+        - state: Utah
+          in_store: 17
+        - state: Washington
+          in_store: 17
+        - state: Illinois
+          in_store: 16
+        - state: Nevada
+          in_store: 14
+        - state: Kentucky
+          in_store: 13
+        - state: Missouri
+          in_store: 11
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/economy/us-bank-locations-by-state/section-1.jpg"
+    alt: "Calculator and paperwork illustrating financial services"
+    section: "why-california-leads-us-bank"
+    layout: full-width-tall
+
+faq:
+  - question: How many U.S. Bank branches are in California?
+    answer: California has 561 full-service branches in the October 2026 inventory. The count combines 480 standalone branches with 81 offices inside retail premises.
+  - question: How many U.S. Bank branches are in Ohio?
+    answer: Ohio has 158 and ranks second. Its total includes full-service retail offices as well as standalone branches.
+  - question: How many U.S. Bank branches are in Minnesota?
+    answer: Minnesota has 103 qualifying branches. Minneapolis is the bank's corporate home, placing its headquarters in a state whose network is smaller than California's acquired branch base.
+  - question: Does U.S. Bank have branches in Texas?
+    answer: Texas has two qualifying full-service branches. The bank also built business-banking teams in Houston and Dallas, entering those markets through company relationships outside its traditional retail branch territory.
+  - question: Are U.S. Bank ATMs included in branch counts?
+    answer: No. California's 561 counts full-service banking offices, including offices inside retail premises. Standalone ATMs and offices classified only for administration or lending are excluded.
+  - question: Which states have no qualifying U.S. Bank branches?
+    answer: Alabama, Alaska, Connecticut, Delaware, Hawaii, Louisiana, Maine, Maryland, Massachusetts, Michigan, Mississippi, New Hampshire, New Jersey, New York, Oklahoma, Pennsylvania, Rhode Island, South Carolina, Vermont, Virginia, and West Virginia have no qualifying full-service branch. New England is entirely in this group, contrasting with the bank's much denser western network.
+related:
+  - title: Chase Bank Branches by State
+    url: /rankings/economy/chase-bank-by-state
+  - title: Banks by State
+    url: /rankings/economy/banks-by-state
+  - title: PNC Bank Locations by State
+    url: /rankings/economy/pnc-bank-locations-by-state

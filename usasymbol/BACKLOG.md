@@ -34,17 +34,17 @@
 | 110 | economy/veterinarian-salary-by-state | BLS 29-1131 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
 | 111 | economy/veterinary-technician-salary-by-state | BLS 29-2056 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
 | 112 | economy/paramedic-emt-salary-by-state | BLS 29-2042/43 | BLS OEWS | [ ] |
-| 113 | economy/dentist-salary-by-state | BLS 29-1021 | BLS OEWS | [ ] |
-| 114 | economy/psychologist-salary-by-state | BLS 19-3033 | BLS OEWS | [ ] |
-| 115 | economy/social-worker-salary-by-state | BLS 21-1021 | BLS OEWS | [ ] |
-| 116 | economy/correctional-officer-salary-by-state | BLS 33-3012 | BLS OEWS | [ ] |
-| 117 | economy/lawyer-salary-by-state | BLS 23-1011 | BLS OEWS | [ ] |
-| 118 | economy/paralegal-salary-by-state | BLS 23-2011 | BLS OEWS | [ ] |
-| 119 | economy/accountant-salary-by-state | BLS 13-2011 | BLS OEWS | [ ] |
-| 120 | economy/financial-analyst-salary-by-state | BLS 13-2051 | BLS OEWS | [ ] |
+| 113 | economy/dentist-salary-by-state | General dentists, BLS 29-1021 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
+| 114 | economy/psychologist-salary-by-state | Clinical and counseling psychologists, BLS 19-3033 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
+| 115 | economy/social-worker-salary-by-state | Child, family, and school social workers, BLS 21-1021 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
+| 116 | economy/correctional-officer-salary-by-state | BLS 33-3012 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
+| 117 | economy/lawyer-salary-by-state | BLS 23-1011 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
+| 118 | economy/paralegal-salary-by-state | BLS 23-2011 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
+| 119 | economy/accountant-salary-by-state | BLS 13-2011 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
+| 120 | economy/financial-analyst-salary-by-state | BLS 13-2051 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
 | 121 | economy/data-scientist-salary-by-state | BLS 15-2051 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
-| 122 | economy/cybersecurity-analyst-salary-by-state | BLS 15-1212 | BLS OEWS | [ ] |
-| 123 | economy/web-developer-salary-by-state | BLS 15-1254 | BLS OEWS | [ ] |
+| 122 | economy/cybersecurity-analyst-salary-by-state | BLS 15-1212 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
+| 123 | economy/web-developer-salary-by-state | BLS 15-1254 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
 | 124 | economy/carpenter-salary-by-state | BLS 47-2031 | BLS OEWS | [ ] |
 | 125 | economy/lineman-salary-by-state | BLS 49-9051 | BLS OEWS | [ ] |
 | 126 | economy/diesel-mechanic-salary-by-state | BLS 49-3031 | BLS OEWS | [ ] |
@@ -489,13 +489,13 @@
 
 | # | slug | Угол | Источник | Статус |
 |---|---|---|---|---|
-| 413 | food/arbys-locations-by-state | Родина — Огайо (1964) | company locator | [ ] |
+| 413 | food/arbys-locations-by-state | Родина — Огайо (1964) | official regional locator, 2026-10-03 | [x] 2026-10-03 |
 | 414 | food/jack-in-the-box-locations-by-state | Западная сеть из Сан-Диего | company locator | [ ] |
 | 415 | food/carls-jr-locations-by-state | Калифорнийская пара для Hardee's | company locator | [ ] |
 | 416 | food/hardees-locations-by-state | Восточная пара для Carl's Jr. | company locator | [ ] |
-| 417 | food/five-guys-locations-by-state | Родина — Вирджиния | company locator | [ ] |
-| 418 | food/panera-bread-locations-by-state | Корни в Сент-Луисе | company locator | [ ] |
-| 419 | food/panda-express-locations-by-state | Калифорния | company locator | [ ] |
+| 417 | food/five-guys-locations-by-state | Родина — Вирджиния | official directory, 2026-10-03 | [x] 2026-10-03 |
+| 418 | food/panera-bread-locations-by-state | Корни в Сент-Луисе | fiscal 2025, 2026 FDD Item 20 transcription | [x] 2026-10-03 |
+| 419 | food/panda-express-locations-by-state | Калифорния | official directory, 2026-10-03 | [x] 2026-10-03 |
 | 420 | food/papa-johns-locations-by-state | Индиана и Кентукки | company locator | [ ] |
 | 421 | food/little-caesars-locations-by-state | Мичиган | company locator | [ ] |
 | 422 | food/del-taco-locations-by-state | Калифорния | company locator | [ ] |
@@ -561,7 +561,7 @@
 | 472 | food/winco-foods-locations-by-state | Айдахо, принадлежит сотрудникам | company locator | [ ] |
 | 473 | food/wegmans-locations-by-state | Северо-Восток, культовый статус | company locator | [ ] |
 | 474 | food/sprouts-farmers-market-locations-by-state | Аризона | company locator | [ ] |
-| 475 | food/whole-foods-locations-by-state | Остин, Техас | company locator | [ ] |
+| 475 | food/whole-foods-locations-by-state | Остин, Техас | official sitemap plus September CA openings, incomplete inventory caveat | [x] 2026-10-03 |
 | 476 | food/harris-teeter-locations-by-state | Северная Каролина | company locator | [ ] |
 | 477 | food/piggly-wiggly-locations-by-state | Первый магазин самообслуживания, Мемфис (1916) | company locator | [ ] |
 
@@ -575,9 +575,9 @@
 | 481 | economy/marshalls-locations-by-state | Сестринская сеть TJ Maxx | company locator | [ ] |
 | 482 | economy/ross-dress-for-less-locations-by-state | Калифорния | company locator | [ ] |
 | 483 | economy/burlington-locations-by-state | Нью-Джерси | company locator | [ ] |
-| 484 | economy/best-buy-locations-by-state | Миннесота | company locator | [ ] |
+| 484 | economy/best-buy-locations-by-state | Миннесота | official directory, includes Pacific Sales and outlets | [x] 2026-10-03 |
 | 485 | economy/bjs-wholesale-locations-by-state | Только Восточное побережье | company locator | [ ] |
-| 486 | economy/sams-club-locations-by-state | Арканзас, конкурент Costco | company locator | [ ] |
+| 486 | economy/sams-club-locations-by-state | Конкурент Costco | official state facts, retail dates may predate retrieval | [x] 2026-10-03 |
 | 487 | economy/family-dollar-locations-by-state | Северная Каролина | company locator | [ ] |
 | 488 | economy/five-below-locations-by-state | Пенсильвания | company locator | [ ] |
 | 489 | economy/big-lots-locations-by-state | Огайо, банкротство и закрытия | company locator | [ ] |
@@ -597,7 +597,7 @@
 | 503 | economy/academy-sports-locations-by-state | Техас, юг | company locator | [ ] |
 | 504 | economy/bass-pro-shops-locations-by-state | Спрингфилд, Миссури, магазины-аттракционы | company locator | [ ] |
 | 505 | economy/cabelas-locations-by-state | Небраска | company locator | [ ] |
-| 506 | economy/ikea-locations-by-state | Во многих штатах нет ни одного магазина | company locator | [ ] |
+| 506 | economy/ikea-locations-by-state | Форматы Store, Small store и Plan & order point разделены | official directory, excludes pickup-only points | [x] 2026-10-03 |
 | 507 | economy/menards-locations-by-state | Висконсин, только Средний Запад | company locator | [ ] |
 | 508 | economy/ace-hardware-locations-by-state | Кооператив независимых магазинов | company locator | [ ] |
 | 509 | economy/staples-locations-by-state | Массачусетс | company locator | [ ] |
@@ -639,8 +639,8 @@
 
 | # | slug | Угол | Источник | Статус |
 |---|---|---|---|---|
-| 538 | economy/us-bank-locations-by-state | Миннеаполис | company locator | [ ] |
-| 539 | economy/pnc-bank-locations-by-state | Питтсбург | company locator | [ ] |
+| 538 | economy/us-bank-locations-by-state | Миннеаполис, покупка Union Bank | FDIC 2026-10-02, full-service 11/12 | [x] 2026-10-03 |
+| 539 | economy/pnc-bank-locations-by-state | Питтсбург, покупка BBVA USA | FDIC 2026-10-02, full-service 11/12 | [x] 2026-10-03 |
 | 540 | economy/truist-bank-locations-by-state | Слияние BB&T и SunTrust (2019) | company locator | [ ] |
 | 541 | economy/td-bank-locations-by-state | Восточное побережье, «самый удобный банк» | company locator | [ ] |
 | 542 | economy/citibank-locations-by-state | Нью-Йорк, мало отделений вне крупных городов | company locator | [ ] |

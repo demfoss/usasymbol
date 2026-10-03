@@ -2183,6 +2183,13 @@ body {
     }
 }
 
+/* Section tables sit inside an overflow-hidden card. Keep their headers in
+   normal flow so the desktop sticky offset cannot push them over data rows. */
+.rankingTable.rankingTable--section thead th {
+    position: static;
+    top: auto;
+}
+
 .rankingTable {
     width: 100%;
     border-collapse: separate;
