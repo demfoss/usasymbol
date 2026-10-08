@@ -8,7 +8,9 @@
     <section class="border-t border-slate-200/70 pt-4">
         <div class="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-slate-500">
             <i class="fa-solid fa-ranking-star text-[10px] text-slate-400"></i>
-            <span>@Model.Title</span>
+            @* Fixed label: the computed topic heading ("Related Crime & Safety Rankings")
+               can contradict the per-card topic eyebrows. *@
+            <span>Related Rankings</span>
         </div>
 
         <div class="mt-3.5 space-y-2.5">
@@ -28,10 +30,6 @@
                         {
                             <p class="mt-1.5 text-[13px] leading-5 text-slate-600 line-clamp-2">@item.Description</p>
                         }
-                        <div class="mt-2.5 inline-flex items-center gap-2 text-[12.5px] font-semibold text-slate-800">
-                            <span>View ranking</span>
-                            <i class="fa-solid fa-arrow-right text-[10px] transition group-hover:translate-x-0.5"></i>
-                        </div>
                     </div>
                 </a>
             }

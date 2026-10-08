@@ -6,8 +6,8 @@
 
 @if (Model.Items.Any())
 {
-    <nav class="lg:hidden mt-8" aria-label="@Model.Title" data-nosnippet>
-        <h2 class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400 mb-3">@Model.Title</h2>
+    <nav class="lg:hidden mt-8" aria-label="Related rankings" data-nosnippet>
+        <h2 class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400 mb-3">Related Rankings</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             @foreach (var item in Model.Items.Take(3))
             {
