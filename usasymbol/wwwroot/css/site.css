@@ -2208,10 +2208,31 @@ body {
     max-height: none;
     overflow-x: auto;
     background: #fff;
-    scrollbar-color: #b8c5d0 transparent;
+    scrollbar-color: #c3ced8 #f1f4f7;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-inline: contain;
+}
+
+/* Thin, quiet horizontal scrollbar (Chrome/Firefox use scrollbar-width/color
+   above; these cover Safari and older WebKit) */
+.ranking-table-scroll::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.ranking-table-scroll::-webkit-scrollbar-track {
+    background: #f1f4f7;
+    border-radius: 999px;
+}
+
+.ranking-table-scroll::-webkit-scrollbar-thumb {
+    background: #c3ced8;
+    border-radius: 999px;
+}
+
+.ranking-table-scroll::-webkit-scrollbar-thumb:hover {
+    background: #98a8b6;
 }
 
 .ranking-table-scroll--spaced {
@@ -2231,6 +2252,35 @@ body {
         top: 85px;
         z-index: 3;
         box-shadow: 0 1px 0 var(--ranking-line);
+    }
+
+    /* The clip above cuts off whatever does not fit, so let long headers
+       ("Avg. Annual Salary") wrap instead of forcing the table wider than
+       the content column (narrower now that every page has a 300px sidebar). */
+    .rankingTable th.rankingTh {
+        white-space: normal;
+    }
+
+    .rankingTable .rankingTh__content > span:first-child {
+        min-width: 0;
+    }
+
+    /* Still too wide (many metric columns): rankingTable.js adds this class and
+       the table scrolls sideways instead of being clipped. Sticky header is
+       dropped for that table only, since a scroll container would trap it. */
+    .ranking-table-scroll.ranking-table-scroll--overflow {
+        overflow-x: auto;
+    }
+
+    .ranking-table-scroll--overflow .rankingTable thead th {
+        position: static;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1439px) {
+    .rankingTable .rankingTh,
+    .rankingTable .ranking-cell {
+        padding-inline: 0.7rem;
     }
 }
 

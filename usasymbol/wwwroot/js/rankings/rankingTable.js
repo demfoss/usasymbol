@@ -13,7 +13,43 @@ document.addEventListener('DOMContentLoaded', function () {
     initRowClick();
     initRowHoverSync();
     initNotePopover();
+    initOverflowGuard();
 });
+
+// ============================================
+// OVERFLOW GUARD
+// Desktop wrappers use overflow-x: clip (keeps the sticky header working),
+// which silently cuts off columns that don't fit. Switch a wrapper to
+// horizontal scrolling when its table is wider than the content column.
+// ============================================
+function initOverflowGuard() {
+    const wrappers = document.querySelectorAll('.ranking-table-scroll');
+    if (!wrappers.length) return;
+
+    const check = () => {
+        wrappers.forEach(wrapper => {
+            const table = wrapper.querySelector('table');
+            if (!table) return;
+            wrapper.classList.toggle(
+                'ranking-table-scroll--overflow',
+                table.offsetWidth > wrapper.clientWidth + 1
+            );
+        });
+    };
+
+    check();
+    window.addEventListener('resize', check, { passive: true });
+
+    // Column toggles, filters and view switches change the table's width
+    if ('ResizeObserver' in window) {
+        const observer = new ResizeObserver(check);
+        wrappers.forEach(wrapper => {
+            observer.observe(wrapper);
+            const table = wrapper.querySelector('table');
+            if (table) observer.observe(table);
+        });
+    }
+}
 
 // Active quick-filter chip value, shared between search and chip filtering
 let activeChipValue = '';
