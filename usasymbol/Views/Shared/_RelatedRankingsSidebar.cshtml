@@ -1,0 +1,45 @@
+@model USASymbol.Models.ViewModels.LatestContentRailViewModel
+
+@* Topic-matched rankings for the article sidebar. Same card language as
+   _GuidesAndRankingsSidebar so swapping one for the other doesn't change the look. *@
+
+@if (Model.Items.Any())
+{
+    <section class="border-t border-slate-200/70 pt-4">
+        <div class="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <i class="fa-solid fa-ranking-star text-[10px] text-slate-400"></i>
+            <span>@Model.Title</span>
+        </div>
+
+        <div class="mt-3.5 space-y-2.5">
+            @foreach (var item in Model.Items)
+            {
+                <a href="@item.Url"
+                   class="group block overflow-hidden border border-slate-200/80 bg-white transition duration-200 hover:border-slate-300 hover:shadow-[0_10px_22px_rgba(15,23,42,0.045)]">
+                    <div class="h-px w-full bg-[#9DB0E8] opacity-80"></div>
+
+                    <div class="px-4 py-3.5">
+                        @if (!string.IsNullOrWhiteSpace(item.Eyebrow))
+                        {
+                            <div class="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">@item.Eyebrow</div>
+                        }
+                        <div class="mt-1 text-[0.98rem] font-semibold leading-5 text-slate-900 group-hover:text-slate-700">@item.Title</div>
+                        @if (!string.IsNullOrWhiteSpace(item.Description))
+                        {
+                            <p class="mt-1.5 text-[13px] leading-5 text-slate-600 line-clamp-2">@item.Description</p>
+                        }
+                        <div class="mt-2.5 inline-flex items-center gap-2 text-[12.5px] font-semibold text-slate-800">
+                            <span>View ranking</span>
+                            <i class="fa-solid fa-arrow-right text-[10px] transition group-hover:translate-x-0.5"></i>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+
+        <a href="/rankings" class="mt-3 inline-flex items-center gap-2 text-[12.5px] font-semibold text-slate-500 transition hover:text-slate-800">
+            <span>All state rankings</span>
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+    </section>
+}

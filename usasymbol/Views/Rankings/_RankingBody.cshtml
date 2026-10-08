@@ -31,6 +31,8 @@
         : $"{pageHeading} Table";
     var tableVM = Model.ToTableSection();
     var numericInsights = RankingNumericInsightsViewModel.Create(content?.Table);
+    var relatedRankings = ViewData["RelatedRankings"] as LatestContentRailViewModel;
+    var hasRelatedRankings = relatedRankings?.Items.Any() == true;
 }
 
 <div class="@shellGridClass">
@@ -80,6 +82,11 @@
                 @await Html.PartialAsync("Components/Tables/_Cards", tableVM)
                 @await Html.PartialAsync("Components/Tables/_Table", tableVM)
             </div>
+
+            @if (hasRelatedRankings)
+            {
+                @await Html.PartialAsync("_RelatedRankingsInline", relatedRankings)
+            }
         </div>
 
         @if (numericInsights != null)
@@ -159,7 +166,7 @@
                 @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
             </div>
 
-            @if (showExploreMore)
+            @if (showExploreMore && !hasRelatedRankings)
             {
                 <div class="mt-12 lg:hidden">
                     @await Html.PartialAsync("_GuidesAndRankingsSidebar")
@@ -172,7 +179,14 @@
     {
         <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
             <div class="sidebar-content">
-                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                @if (hasRelatedRankings)
+                {
+                    @await Html.PartialAsync("_RelatedRankingsSidebar", relatedRankings)
+                }
+                else
+                {
+                    @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+                }
             </div>
         </aside>
     }

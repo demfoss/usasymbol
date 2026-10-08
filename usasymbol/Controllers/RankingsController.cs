@@ -121,21 +121,31 @@ namespace USASymbol.Controllers
                         ViewData["MapPngPath"] = mapPngPath;
                 }
 
-                var links = await _directory.GetPageLinksAsync(category, slug);
+                // Closest matches go to the sidebar (visible for the whole read, and the
+                // generic "Explore more" cards it replaces got few clicks); the rest feed
+                // the end-of-article rail, so the two never repeat a link.
+                const int sidebarRelatedCount = 4;
+                var links = await _directory.GetPageLinksAsync(category, slug, take: sidebarRelatedCount + 6);
                 ViewData["RankingChips"] = links.Chips;
                 ViewData["RankingSubHub"] = links.SubHub;
+                var relatedItems = links.Related.Select(r => new LatestContentRailItemViewModel
+                {
+                    Title = r.Title,
+                    Description = r.Description,
+                    Url = r.Url,
+                    ImageUrl = string.IsNullOrWhiteSpace(r.HeroImage) ? "/images/usasymbol.png" : r.HeroImage,
+                    Eyebrow = r.Topic == "General" ? r.CategoryTitle : r.Topic,
+                    SectionLabel = r.CategoryTitle
+                }).ToList();
+                ViewData["RelatedRankings"] = new LatestContentRailViewModel
+                {
+                    Title = links.RelatedHeading,
+                    Items = relatedItems.Take(sidebarRelatedCount).ToList()
+                };
                 ViewData["LatestContentRail"] = new LatestContentRailViewModel
                 {
                     Title = links.RelatedHeading,
-                    Items = links.Related.Select(r => new LatestContentRailItemViewModel
-                    {
-                        Title = r.Title,
-                        Description = r.Description,
-                        Url = r.Url,
-                        ImageUrl = string.IsNullOrWhiteSpace(r.HeroImage) ? "/images/usasymbol.png" : r.HeroImage,
-                        Eyebrow = r.Topic == "General" ? r.CategoryTitle : r.Topic,
-                        SectionLabel = r.CategoryTitle
-                    }).ToList()
+                    Items = relatedItems.Skip(sidebarRelatedCount).ToList()
                 };
                 return View("Ranking", new PageDetailViewModel { Content = content });
             }
