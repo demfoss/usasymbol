@@ -45,18 +45,18 @@
 | 121 | economy/data-scientist-salary-by-state | BLS 15-2051 | BLS OEWS May 2025 | [x] Написано 2026-10-02 |
 | 122 | economy/cybersecurity-analyst-salary-by-state | BLS 15-1212 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
 | 123 | economy/web-developer-salary-by-state | BLS 15-1254 | BLS OEWS May 2025 | [x] Написано 2026-10-03 |
-| 124 | economy/carpenter-salary-by-state | BLS 47-2031 | BLS OEWS | [ ] |
-| 125 | economy/lineman-salary-by-state | BLS 49-9051 | BLS OEWS | [ ] |
-| 126 | economy/diesel-mechanic-salary-by-state | BLS 49-3031 | BLS OEWS | [ ] |
-| 127 | economy/auto-mechanic-salary-by-state | BLS 49-3023 | BLS OEWS | [ ] |
-| 128 | economy/machinist-salary-by-state | BLS 51-4041 | BLS OEWS | [ ] |
-| 129 | economy/crane-operator-salary-by-state | BLS 53-7021 | BLS OEWS | [ ] |
-| 130 | economy/heavy-equipment-operator-salary-by-state | BLS 47-2073 | BLS OEWS | [ ] |
-| 131 | economy/construction-laborer-salary-by-state | BLS 47-2061 | BLS OEWS | [ ] |
-| 132 | economy/childcare-worker-salary-by-state | BLS 39-9011 | BLS OEWS | [ ] |
-| 133 | economy/chef-salary-by-state | BLS 35-1011 | BLS OEWS | [ ] |
-| 134 | economy/hairdresser-salary-by-state | BLS 39-5012 | BLS OEWS | [ ] |
-| 135 | economy/massage-therapist-salary-by-state | BLS 31-9011 | BLS OEWS | [ ] |
+| 124 | economy/carpenter-salary-by-state | BLS 47-2031 | BLS OEWS May 2025 | [x] Написано 2026-10-07 |
+| 125 | economy/lineman-salary-by-state | BLS 49-9051 | BLS OEWS May 2025 | [x] Написано 2026-10-07 |
+| 126 | economy/diesel-mechanic-salary-by-state | BLS 49-3031 | BLS OEWS May 2025 | [x] Написано 2026-10-07 |
+| 127 | economy/auto-mechanic-salary-by-state | BLS 49-3023 | BLS OEWS May 2025 | [x] Написано 2026-10-07 |
+| 128 | economy/machinist-salary-by-state | BLS 51-4041 | BLS OEWS May 2025 | [x] Написано 2026-10-07 |
+| 129 | economy/crane-operator-salary-by-state | BLS 53-7021 | BLS OEWS May 2025 | [x] Написано 2026-10-07, 50 штатов, занятость Idaho, Maryland и Rhode Island не опубликована |
+| 130 | economy/heavy-equipment-operator-salary-by-state | BLS 47-2073 | BLS OEWS May 2025 | [x] Написано 2026-10-07, 50 штатов |
+| 131 | economy/construction-laborer-salary-by-state | BLS 47-2061 | BLS OEWS May 2025 | [x] Написано 2026-10-07, 50 штатов |
+| 132 | economy/childcare-worker-salary-by-state | BLS 39-9011 | BLS OEWS May 2025 | [x] Написано 2026-10-07, 50 штатов, занятость Vermont не опубликована |
+| 133 | economy/chef-salary-by-state | BLS 35-1011 | BLS OEWS May 2025 | [x] Написано 2026-10-07, 50 штатов |
+| 134 | economy/hairdresser-salary-by-state | BLS 39-5012 | BLS OEWS | [x] 2026-10-08 · 50 штатов, 49 зарплатных оценок, Virginia без зарплат |
+| 135 | economy/massage-therapist-salary-by-state | BLS 31-9011 | BLS OEWS | [x] 2026-10-08 · 50 штатов, 49 оценок, Vermont без данных |
 | 136 | economy/average-salary-by-state | Средняя зарплата по всем профессиям | BLS OEWS | [ ] |
 | 137 | economy/self-employment-rate-by-state | Самозанятые и фрилансеры | Census ACS | [ ] |
 | 138 | government/federal-employees-by-state | Федеральные служащие, округ Колумбия и Мэриленд | OPM | [ ] |
@@ -66,12 +66,12 @@
 
 | # | slug | Угол | Источник | Статус |
 |---|---|---|---|---|
-| 140 | education/librarian-salary-by-state | BLS 25-4022 | BLS OEWS | [ ] |
+| 140 | education/librarian-salary-by-state | BLS 25-4022 | BLS OEWS | [x] 2026-10-08 · 50 штатов |
 | 141 | education/school-principal-salary-by-state | BLS 11-9032 | BLS OEWS | [ ] |
 | 142 | education/college-professor-salary-by-state | BLS 25-1099 | BLS OEWS | [ ] |
-| 143 | education/substitute-teacher-salary-by-state | BLS 25-3031 | BLS OEWS | [ ] |
+| 143 | education/substitute-teacher-salary-by-state | BLS 25-3031 | BLS OEWS | [x] 2026-10-08 · 49 штатов, Colorado без оценки, employment DE/ME скрыт |
 | 144 | education/teacher-assistant-salary-by-state | BLS 25-9045 | BLS OEWS | [ ] |
-| 145 | education/school-bus-driver-salary-by-state | BLS 53-3051 | BLS OEWS | [ ] |
+| 145 | education/school-bus-driver-salary-by-state | BLS 53-3051 | BLS OEWS | [x] 2026-10-08 · 50 штатов |
 | 146 | education/charter-schools-by-state | Миннесота открыла первую чартерную школу (1992) | NCES | [ ] |
 | 147 | education/ap-exam-pass-rate-by-state | Доля выпускников, сдавших AP | College Board | [ ] |
 | 148 | education/chronic-absenteeism-by-state | Хронические пропуски после пандемии | state education depts | [ ] |
@@ -169,7 +169,7 @@
 | 215 | law/same-day-voter-registration-states | Регистрация в день выборов | NCSL | [ ] |
 | 216 | law/ballot-initiative-states | Где граждане сами выносят законы на голосование | NCSL, Ballotpedia | [ ] |
 | 217 | law/recall-election-states | Отзыв губернатора, Калифорния 2003 | NCSL | [ ] |
-| 218 | law/age-requirements-for-governor-by-state | Минимальный возраст губернатора: от 18 до 35 | state constitutions | [ ] |
+| 218 | law/age-requirements-for-governor-by-state | Минимальный возраст губернатора: от 18 до 31, Vermont без явного порога | state constitutions, election codes | [x] Написано 2026-10-07, 50 штатов, 49 числовых порогов |
 | 219 | government/women-in-state-legislatures-by-state | Невада — первое законодательное собрание с женским большинством (2019) | CAWP | [ ] |
 
 ### Business & Wealth (9)
@@ -378,9 +378,9 @@
 | 309 | economy/nurse-anesthetist-salary-by-state | CRNA — самая высокооплачиваемая сестринская профессия | BLS OEWS 29-1151 | [ ] |
 | 310 | economy/nurse-midwife-salary-by-state | BLS 29-1161 | BLS OEWS | [ ] |
 | 311 | economy/family-physician-salary-by-state | Учесть верхнюю границу BLS для зарплат врачей | BLS OEWS 29-1215 | [ ] |
-| 312 | economy/dental-assistant-salary-by-state | BLS 31-9091 | BLS OEWS | [ ] |
-| 313 | economy/pharmacy-technician-salary-by-state | BLS 29-2052 | BLS OEWS | [ ] |
-| 314 | economy/surgical-technologist-salary-by-state | BLS 29-2055 | BLS OEWS | [ ] |
+| 312 | economy/dental-assistant-salary-by-state | BLS 31-9091 | BLS OEWS | [x] 2026-10-08 · 50 штатов, 49 оценок, Kansas без данных |
+| 313 | economy/pharmacy-technician-salary-by-state | BLS 29-2052 | BLS OEWS | [x] 2026-10-08 · 50 штатов, OEWS May 2025 |
+| 314 | economy/surgical-technologist-salary-by-state | BLS 29-2055 | BLS OEWS | [x] 2026-10-08 · 50 штатов, OEWS May 2025 |
 | 315 | economy/ultrasound-technician-salary-by-state | Diagnostic medical sonographers | BLS OEWS 29-2032 | [ ] |
 | 316 | economy/mri-technologist-salary-by-state | BLS 29-2035 | BLS OEWS | [ ] |
 | 317 | economy/medical-lab-technician-salary-by-state | BLS 29-2010 | BLS OEWS | [ ] |
@@ -699,8 +699,8 @@
 | 582 | law/social-media-age-verification-laws | Family & Marriage | Юта первой потребовала согласия родителей (2023) | state codes | [ ] |
 | 583 | law/breastfeeding-in-public-laws-by-state | Family & Marriage | Айдахо и Юта последними разрешили (2018) | NCSL | [ ] |
 | 584 | law/legal-separation-laws-by-state | Family & Marriage | Где есть раздельное проживание без развода | state codes | [ ] |
-| 585 | law/covenant-marriage-states | Family & Marriage | Луизиана (1997), Аризона, Арканзас | state codes | [ ] |
-| 586 | law/human-composting-legal-states | Family & Marriage | Вашингтон первым разрешил компостирование тел (2019) | state codes | [ ] |
+| 585 | law/covenant-marriage-states | Family & Marriage | Луизиана (1997), Аризона, Арканзас | state codes | [x] Написано 2026-10-07, три штата, карта по году принятия закона |
+| 586 | law/human-composting-legal-states | Family & Marriage | Вашингтон первым разрешил компостирование тел (2019) | state codes | [x] 2026-10-08 · 14 принятых законов, California действует с 2027 |
 | 587 | law/home-burial-laws-by-state | Family & Marriage | Похороны на своей земле | state codes | [ ] |
 | 588 | law/scattering-ashes-laws-by-state | Family & Marriage | Где можно развеять прах | state codes, EPA | [ ] |
 | 589 | law/cyberbullying-laws-by-state | Family & Marriage | Травля в сети и школы | StopBullying.gov | [ ] |
@@ -718,25 +718,25 @@
 | 601 | law/snowmobile-laws-by-state | Outdoors & Recreation | Возраст и регистрация снегоходов | state DNRs | [ ] |
 | 602 | law/stigmatized-property-disclosure-laws | Housing & Property | Обязан ли продавец сказать про «дом с привидениями» | state codes | [ ] |
 | 603 | law/solar-access-laws-by-state | Housing & Property | HOA не может запретить солнечные панели | state codes, DSIRE | [ ] |
-| 604 | law/plastic-bag-bans-by-state | Housing & Property | Калифорния первой запретила пакеты (2014) | NCSL | [ ] |
-| 605 | law/bottle-deposit-states | Housing & Property | Залог за бутылку, в Мичигане и Орегоне 10 центов | state codes | [ ] |
-| 606 | law/right-to-repair-laws-by-state | Housing & Property | Право чинить технику самому | state codes | [ ] |
+| 604 | law/plastic-bag-bans-by-state | Housing & Property | Калифорния первой запретила пакеты (2014) | NCSL | [x] 2026-10-08 · 11 общештатных запретов, местные правила Hawaii исключены |
+| 605 | law/bottle-deposit-states | Housing & Property | Залог за бутылку, в Мичигане и Орегоне 10 центов | state codes | [x] Написано 2026-10-07, десять штатов, сравнение стандартной пивной тары, Connecticut 10 центов |
+| 606 | law/right-to-repair-laws-by-state | Housing & Property | Право чинить технику самому | state codes | [x] 2026-10-08 · 9 общих законов об электронике, Kansas с покрытием 2027 |
 | 607 | law/price-gouging-laws-by-state | Housing & Property | Запрет взвинчивать цены при ЧС | state codes | [ ] |
 | 608 | law/homeless-camping-bans-by-state | Housing & Property | После решения Grants Pass (2024) | state codes | [ ] |
 | 609 | law/ticket-resale-laws-by-state | Housing & Property | Перепродажа билетов и спекулянты | state codes | [ ] |
 | 610 | law/carbon-monoxide-detector-laws-by-state | Housing & Property | Обязательные детекторы угарного газа | NCSL | [ ] |
 | 611 | law/non-compete-laws-by-state | Jobs & Wages | Калифорния запрещает неконкурентные соглашения | state codes | [ ] |
 | 612 | law/at-will-employment-exceptions-by-state | Jobs & Wages | Монтана — единственный штат без at-will | NCSL | [ ] |
-| 613 | law/salary-history-ban-states | Jobs & Wages | Работодателю нельзя спрашивать прошлую зарплату | state codes | [ ] |
+| 613 | law/salary-history-ban-states | Jobs & Wages | Работодателю нельзя спрашивать прошлую зарплату | state codes | [x] 2026-10-08 · 18 общештатных ограничений для частных работодателей, Virginia 2026 |
 | 614 | law/pay-transparency-laws-by-state | Jobs & Wages | Требования к диапазонам зарплаты в вакансиях | state codes | [x] Написано 2026-10-02 |
 | 615 | law/final-paycheck-laws-by-state | Jobs & Wages | Сроки последней зарплаты после увольнения | DOL, state codes | [x] Написано 2026-10-02 |
 | 616 | law/vacation-payout-laws-by-state | Jobs & Wages | Калифорния требует выплаты за неиспользованный отпуск | state codes | [ ] |
 | 617 | law/contractor-license-requirements-by-state | Jobs & Wages | Кому нужна лицензия подрядчика | state boards | [ ] |
 | 618 | law/cosmetology-license-hours-by-state | Jobs & Wages | Часы обучения для парикмахеров | state boards | [ ] |
 | 619 | law/machine-gun-ownership-laws-by-state | Guns & Weapons | Автоматы законны по NFA в большинстве штатов | ATF, state codes | [ ] |
-| 620 | law/gun-purchase-waiting-period-by-state | Guns & Weapons | Период ожидания при покупке оружия | Giffords, state codes | [ ] |
+| 620 | law/gun-purchase-waiting-period-by-state | Guns & Weapons | Период ожидания при покупке оружия | state codes, state agencies | [x] Написано 2026-10-07, десять штатов, календарные/рабочие дни и исключения обозначены |
 | 621 | law/universal-background-check-states | Guns & Weapons | Проверка при частных продажах | state codes | [ ] |
-| 622 | law/assault-weapons-ban-states | Guns & Weapons | Около десяти штатов запрещают | state codes | [ ] |
+| 622 | law/assault-weapons-ban-states | Guns & Weapons | Около десяти штатов запрещают | state codes | [x] 2026-10-08 · 11 принятых законов, судебные статусы NJ/VA отдельно |
 | 623 | law/campus-carry-states | Guns & Weapons | Оружие в кампусах вузов | NCSL | [ ] |
 | 624 | law/gun-storage-laws-by-state | Guns & Weapons | Хранение оружия и доступ детей | Giffords | [ ] |
 | 625 | law/air-gun-laws-by-state | Guns & Weapons | Пневматика и страйкбол | state codes | [ ] |
@@ -745,14 +745,14 @@
 | 628 | law/public-drinking-laws-by-state | Alcohol | Лас-Вегас Стрип и Французский квартал | state codes | [ ] |
 | 629 | law/public-intoxication-laws-by-state | Alcohol | Появление в нетрезвом виде | state codes | [ ] |
 | 630 | law/bartending-age-by-state | Alcohol | Минимальный возраст бармена и официанта | state codes | [ ] |
-| 631 | law/homebrewing-laws-by-state | Alcohol | Алабама и Миссисипи легализовали домашнее пиво последними (2013) | AHA, state codes | [ ] |
+| 631 | law/homebrewing-laws-by-state | Alcohol | Алабама и Миссисипи легализовали домашнее пиво последними (2013) | state codes, LOC, TTB | [x] Написано 2026-10-07, статус во всех 50 штатах, числовые лимиты в десяти проверенных штатах |
 | 632 | law/age-of-criminal-responsibility-by-state | Crime & Safety | Северная Каролина до 2021 судила с 6 лет | NCSL, state codes | [ ] |
 | 633 | law/death-penalty-methods-by-state | Crime & Safety | Расстрел возможен в Южной Каролине и Юте | DPIC | [ ] |
 | 634 | law/private-prisons-by-state | Crime & Safety | Доля заключённых в частных тюрьмах | BJS, Sentencing Project | [ ] |
 | 635 | law/police-body-camera-laws-by-state | Crime & Safety | Обязательные нательные камеры | NCSL | [ ] |
 | 636 | law/qualified-immunity-reform-states | Crime & Safety | Колорадо (2020) | state codes | [ ] |
-| 637 | law/time-off-to-vote-laws-by-state | Voting & Elections | Оплачиваемое время на голосование | NCSL | [ ] |
-| 638 | law/legislative-term-limits-by-state | Voting & Elections | Около 16 штатов ограничивают сроки законодателей | NCSL | [ ] |
+| 637 | law/time-off-to-vote-laws-by-state | Voting & Elections | Оплачиваемое время на голосование | state codes, election agencies | [x] Написано 2026-10-07, 15 проверенных штатов, карта двенадцати фиксированных оплачиваемых лимитов |
+| 638 | law/legislative-term-limits-by-state | Voting & Elections | Около 16 штатов ограничивают сроки законодателей | NCSL, state constitutions | [x] Написано 2026-10-07, шестнадцать штатов, новые правила Arkansas и Michigan учтены |
 | 639 | law/state-holidays-by-state | Voting & Elections | Juneteenth, Confederate Memorial Day и др. | state codes | [ ] |
 | 640 | law/indigenous-peoples-day-states | Voting & Elections | Columbus Day или Indigenous Peoples' Day | state codes | [ ] |
 | 641 | law/official-language-by-state | Voting & Elections | На Гавайях два официальных языка | state codes | [ ] |
@@ -761,9 +761,9 @@
 | 644 | law/emotional-support-animal-laws-by-state | Animals & Pets | Справки ESA и жильё | state codes | [ ] |
 | 645 | law/axolotl-legality-by-state | Animals & Pets | Аксолотль запрещён в Калифорнии | state codes | [ ] |
 | 646 | law/pseudoephedrine-laws-by-state | Drugs & Tobacco | Лекарства от простуды за прилавком, в Орегоне — по рецепту | state codes | [ ] |
-| 647 | law/marijuana-home-grow-limits-by-state | Drugs & Tobacco | Сколько растений можно выращивать дома | state codes | [ ] |
+| 647 | law/marijuana-home-grow-limits-by-state | Drugs & Tobacco | Сколько растений можно выращивать дома | state codes | [x] 2026-10-08 · 20 adult-use home-grow штатов |
 | 648 | law/flavored-vape-bans-by-state | Drugs & Tobacco | Запреты ароматизированных вейпов | state codes | [ ] |
-| 649 | law/menthol-cigarette-bans | Drugs & Tobacco | Массачусетс первым запретил ментоловые сигареты (2020) | state codes | [ ] |
+| 649 | law/menthol-cigarette-bans | Drugs & Tobacco | Массачусетс первым запретил ментоловые сигареты (2020) | state codes | [x] 2026-10-08 · Massachusetts и California, годы принятия и исключения |
 | 650 | law/sales-tax-holidays-by-state | Taxes | Налоговые каникулы перед школой | state revenue depts | [ ] |
 | 651 | law/gold-and-silver-legal-tender-states | Taxes | Юта признала золото законным платёжным средством (2011) | state codes | [ ] |
 | 652 | law/period-product-tax-by-state | Taxes | Налог на средства гигиены | state revenue depts | [ ] |
@@ -1131,13 +1131,13 @@
 | 926 | law/hair-braiding-license-requirements | Jobs & Wages | Лицензия для косичек | Institute for Justice | [ ] |
 | 927 | law/anti-slapp-laws-by-state | Privacy & Recording | Защита от исков за высказывания | state codes | [ ] |
 | 928 | law/journalist-shield-laws-by-state | Privacy & Recording | Защита источников журналистов | RCFP | [ ] |
-| 929 | law/public-records-laws-by-state | Privacy & Recording | Сроки ответа на запросы | state codes | [ ] |
+| 929 | law/public-records-laws-by-state | Privacy & Recording | Сроки ответа на запросы | state codes | [x] Написано 2026-10-07, 20 штатов с проверенными сроками первого ответа в рабочих днях |
 | 930 | law/election-day-holiday-states | Voting & Elections | Выходной в день выборов | NCSL | [ ] |
 | 931 | law/ranked-choice-voting-states | Voting & Elections | Мэн и Аляска | NCSL | [ ] |
 | 932 | law/automatic-voter-registration-states | Voting & Elections | Орегон первым (2016) | NCSL | [ ] |
 | 933 | law/17-year-old-primary-voting-states | Voting & Elections | Голосование в 17 на праймериз | NCSL | [ ] |
 | 934 | law/redistricting-commission-states | Voting & Elections | Кто рисует округа | NCSL | [ ] |
-| 935 | law/minimum-age-for-state-legislators | Voting & Elections | Возраст депутата | NCSL | [ ] |
+| 935 | law/minimum-age-for-state-legislators | Voting & Elections | Возраст депутата | NCSL | [x] 2026-10-08 · 50 штатов, 48 числовых Senate порогов, KS/VT без express age |
 | 936 | law/line-item-veto-states | Voting & Elections | Постатейное вето губернатора | NCSL | [ ] |
 | 937 | taxes/military-retirement-tax-by-state | Taxes | Налог на военные пенсии | state revenue depts | [ ] |
 | 938 | taxes/pension-income-tax-by-state | Taxes | Налог на пенсии | state revenue depts | [ ] |
@@ -1152,7 +1152,7 @@
 | 947 | law/ai-laws-by-state | Privacy & Recording | Колорадо принял закон об ИИ (2024) | NCSL | [ ] |
 | 948 | law/deepfake-laws-by-state | Privacy & Recording | Дипфейки на выборах и в интимном контенте | state codes | [ ] |
 | 949 | law/car-dealer-doc-fees-by-state | Cars & Roads | Лимиты на сборы дилеров | state codes | [ ] |
-| 950 | law/child-support-age-limit-by-state | Family & Marriage | Алименты до 18, 19 или 21 года | state codes | [ ] |
+| 950 | law/child-support-age-limit-by-state | Family & Marriage | Алименты до 18, 19 или 21 года | state codes | [x] 2026-10-08 · 50 обычных возрастов, учебные и другие исключения отдельно |
 | 951 | law/title-loan-laws-by-state | Cost of Living | Займы под залог машины | state codes | [ ] |
 | 952 | law/debt-collection-statute-of-limitations-by-state | Cost of Living | Срок давности по долгам | state codes | [ ] |
 
