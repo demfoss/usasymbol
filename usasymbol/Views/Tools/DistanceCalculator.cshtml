@@ -26,7 +26,8 @@
         </div>
     </section>
 
-    <section class="tl-shell">
+    <article class="tl-shell page-shell-2col">
+    <section class="article-content min-w-0">
         <div class="zg-panel" id="distance-calc" data-calculate-url="/tools/distance-calculator/calculate">
             <form id="dc-form">
                 <div class="tl-distance-grid">
@@ -52,6 +53,13 @@
             <div id="dc-result"></div>
         </div>
     </section>
+
+    <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
 </div>
 
 @section Scripts {

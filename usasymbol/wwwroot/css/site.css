@@ -136,21 +136,72 @@
     margin-top: clamp(2rem, 3vw, 3rem);
 }
 
+/* =====================================================
+   Ad layout contract (Journey dashboard selectors)
+   Content:  article .article-content   — exactly one per page
+   Sidebar:  .article-sidebar .sidebar-content — exactly one per page
+   Footer:   .site-footer
+   The sidebar column must run the full height of the content column so the
+   sticky sidebar ad Journey appends to .sidebar-content has room to follow
+   the reader. Nothing inside the sidebar may be sticky/fixed, otherwise the
+   ad would scroll over it (ad-exchange rule).
+   ===================================================== */
 .article-content {
     min-width: 0;
 }
 
+/* Visibility stays with the template (hidden lg:block etc.); this only fixes
+   geometry. A stretched grid/flex item has a definite height, so the inner
+   container can fill it with min-height: 100%. */
 @media (min-width: 1024px) {
     .article-sidebar {
-        display: block;
+        position: static;
         width: 300px;
         min-width: 300px;
-        align-self: start;
+        max-width: 300px;
+        align-self: stretch;
+        overflow: visible;
     }
 
     .sidebar-content {
         width: 100%;
+        min-width: 300px;
+        min-height: 100%;
+        position: static;
+        overflow: visible;
     }
+
+    .sidebar-content [class*="sticky"]:not([class*="mv-"]) {
+        position: static !important;
+        top: auto !important;
+    }
+}
+
+/* Shared two-column shell for templates that had no sidebar of their own.
+   (No "ad" in class names: ad blockers hide generic .ad-* elements.) */
+@media (min-width: 1024px) {
+    .page-shell-2col {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        column-gap: 2.5rem;
+        align-items: stretch;
+    }
+}
+
+/* Wide interactive tools: keep one column until there is room for the sidebar */
+.page-shell-2col--xl {
+    width: min(1600px, calc(100% - 40px));
+    margin-inline: auto;
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .page-shell-2col.page-shell-2col--xl {
+        display: block;
+    }
+}
+
+.page-shell-2col .article-content .sm-shell {
+    width: 100%;
 }
 
 /* Shared shell, header, navigation, and footer */
@@ -3532,7 +3583,7 @@ body {
 .national-hub-guides__heading > span { color: #64748b; font-size: .82rem; }
 .national-hub-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin-top: 1.5rem; }
 @media (min-width: 640px) { .national-hub-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1024px) { .national-hub-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1280px) { .national-hub-grid { grid-template-columns: repeat(3, 1fr); } }
 .national-hub-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid #d9e2ec; background: #fff; box-shadow: 0 6px 18px rgba(15,35,66,.06); transition: transform .2s, border-color .2s, box-shadow .2s; }
 .national-hub-card:hover { transform: translateY(-3px); border-color: #8299b7; box-shadow: 0 14px 30px rgba(15,35,66,.12); }
 .national-hub-card__media { height: 11rem; overflow: hidden; background: #e8f0f8; }

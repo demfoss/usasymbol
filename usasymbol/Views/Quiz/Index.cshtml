@@ -94,7 +94,7 @@
 }
 
 <section class="bg-gradient-to-b from-blue-50 to-white">
-    <div class="max-w-6xl mx-auto px-4 py-14">
+    <div class="max-w-7xl mx-auto px-4 py-14">
 
         <!-- Hero -->
         <div class="text-center">
@@ -114,6 +114,8 @@
             </div>
         </div>
 
+        <article class="page-shell-2col">
+        <div class="article-content min-w-0">
         <!-- Featured categories -->
         @if (featuredCats.Any())
         {
@@ -253,6 +255,14 @@
                 }
             </div>
         </div>
+        </div>
+
+        <aside class="article-sidebar hidden lg:block mt-12" aria-label="Explore more">
+            <div class="sidebar-content">
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+            </div>
+        </aside>
+        </article>
 
     </div>
 </section>

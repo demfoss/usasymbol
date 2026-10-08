@@ -19,11 +19,12 @@
     </div>
 </div>
 
-<div class="max-w-[1440px] mx-auto px-4 xl:px-8 py-12">
+<article class="page-shell-2col max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-12">
+<div class="article-content min-w-0">
 
     <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-6">Available Guides</p>
 
-    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div class="grid md:grid-cols-2 2xl:grid-cols-3 gap-6">
 
         <!-- State Abbreviations -->
         <a href="/guides/state-abbreviations"
@@ -186,3 +187,10 @@
     </div>
 
 </div>
+
+<aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+    <div class="sidebar-content">
+        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+    </div>
+</aside>
+</article>

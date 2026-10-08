@@ -90,6 +90,8 @@
             <aside class="rd-hero-stat"><i class="fa-solid fa-hashtag" aria-hidden="true"></i><strong>@count</strong><span>@label.ToLowerInvariant() rankings</span><p>Find a topic. Compare the states.<br />See the full story.</p></aside>
         </section>
 
+        <article class="page-shell-2col">
+        <div class="article-content min-w-0">
         @if (hub?.Intro is { Count: > 1 })
         {
             <section class="rd-section" aria-label="About this topic">
@@ -121,6 +123,14 @@
                 </div>
             </section>
         }
+        </div>
+
+        <aside class="article-sidebar hidden lg:block rd-section" aria-label="Explore more">
+            <div class="sidebar-content">
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+            </div>
+        </aside>
+        </article>
     </div>
 </div>
 @section Scripts {

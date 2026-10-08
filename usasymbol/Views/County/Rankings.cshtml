@@ -8,7 +8,7 @@
     <div class="cx-container"><a href="/">Home</a><span>/</span><strong>County rankings</strong></div>
 </nav>
 
-<main>
+<div class="cx-page">
     <section class="cx-hero cx-rank-hero">
         <div class="cx-container">
             <p class="cx-kicker">ACS · BLS LAUS · County Health Rankings</p>
@@ -18,7 +18,8 @@
         </div>
     </section>
 
-    <div class="cx-container cx-ranking-content">
+    <article class="cx-container page-shell-2col">
+    <div class="cx-ranking-content article-content min-w-0">
         <form class="cx-ranking-filter" method="get" action="/county-rankings">
             <label><span>Show rankings for</span><select name="state" onchange="this.form.submit()">
                 <option value="">All U.S. counties</option>
@@ -66,4 +67,11 @@
             <p>Income, housing, and education use the 2020–2024 ACS 5-year release. Jobs use 2025 BLS LAUS annual averages. Health uses the 2025 County Health Rankings release. Composite sections state their components; missing records are excluded. Data index generated @Model.GeneratedOn.</p>
         </section>
     </div>
-</main>
+
+    <aside class="article-sidebar hidden lg:block cx-ranking-content" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
+</div>

@@ -45,7 +45,9 @@
         </div>
     </section>
 
-    <main class="sm-shell smt-workspace">
+    <article class="page-shell-2col page-shell-2col--xl">
+    <div class="article-content min-w-0">
+    <div class="sm-shell smt-workspace">
         <aside class="smt-panel" aria-labelledby="th-panel-title">
             <div class="smt-panel-head">
                 <p class="sm-section-kicker">Your numbers</p>
@@ -229,7 +231,15 @@
                 </p>
             </section>
         </div>
-    </main>
+    </div>
+    </div>
+
+    <aside class="article-sidebar hidden xl:block" style="padding-top:28px" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
 </div>
 
 <div class="th-mobilebar" id="th-mobilebar" aria-hidden="true">

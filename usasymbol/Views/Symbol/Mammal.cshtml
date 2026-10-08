@@ -69,7 +69,7 @@
         .ToList();
 }
 
-<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+<nav class="border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
     <div class="max-w-screen-xl mx-auto px-4 py-3">
         @await Html.PartialAsync("_Breadcrumbs", Model)
     </div>
@@ -79,7 +79,7 @@
 
 <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-6 lg:py-10">
 
-    <div class="symbol-editorial lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12">
+    <article class="symbol-editorial lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[216px_minmax(0,760px)_320px] 2xl:justify-center 2xl:gap-12">
 
         @await Html.PartialAsync("_SymbolHero", heroModel)
 
@@ -157,7 +157,7 @@
                 @await Html.PartialAsync("_RelatedStatesSidebar", Model)
             </div>
         </aside>
-    </div>
+    </article>
 
     @if (ViewData["LatestContentRail"] is USASymbol.Models.ViewModels.LatestContentRailViewModel latestContentRail && latestContentRail.Items.Any())
     {

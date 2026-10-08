@@ -9,7 +9,7 @@
 @section Styles {
 <style>
 .map-page-wrap  { background: var(--cream, #faf7f2); min-height: 100vh; padding: 2rem 0 4rem; }
-.map-page-inner { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+.map-page-inner { max-width: 1440px; margin: 0 auto; padding: 0 1rem; }
 .map-breadcrumb { font: 500 .8rem/1 system-ui, sans-serif; color: #64748b; margin-bottom: 1.25rem; display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
 .map-breadcrumb a { color: #64748b; text-decoration: none; }
 .map-breadcrumb a:hover { color: #0f172a; text-decoration: underline; }
@@ -78,7 +78,8 @@
 }
 
 <div class="map-page-wrap">
-<div class="map-page-inner">
+<article class="map-page-inner page-shell-2col">
+<div class="article-content min-w-0">
 
     <!-- Breadcrumb -->
     <nav class="map-breadcrumb" aria-label="Breadcrumb">
@@ -213,6 +214,13 @@
     </p>
 
 </div>
+
+<aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+    <div class="sidebar-content">
+        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+    </div>
+</aside>
+</article>
 </div>
 
 <!-- Schema.org -->

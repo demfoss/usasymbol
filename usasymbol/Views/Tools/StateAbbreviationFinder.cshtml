@@ -33,7 +33,8 @@
         </div>
     </section>
 
-    <section class="tl-shell">
+    <article class="tl-shell page-shell-2col">
+    <section class="article-content min-w-0">
         <input type="text" id="abbr-search" class="tl-abbr-search" placeholder="Search a state or abbreviation…" autocomplete="off" />
 
         <div class="tl-abbr-table-wrap">
@@ -50,6 +51,13 @@
             <div class="tl-abbr-no-match hidden" id="abbr-no-match">No states match your search.</div>
         </div>
     </section>
+
+    <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
 </div>
 
 <script>

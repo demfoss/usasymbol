@@ -9,7 +9,7 @@
 </style>
 
 <!-- Breadcrumb -->
-<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur" aria-label="Breadcrumb">
+<nav class="border-b border-slate-200/70 bg-white/90 backdrop-blur" aria-label="Breadcrumb">
     <div class="max-w-[1440px] mx-auto px-4 py-3 xl:px-8">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
@@ -21,7 +21,8 @@
     </div>
 </nav>
 
-<div class="max-w-[1440px] mx-auto px-4 xl:px-8 py-10 lg:py-14">
+<article class="page-shell-2col max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-10 lg:py-14">
+<div class="article-content min-w-0">
 
     <!-- Header -->
     <div class="max-w-3xl mb-10">
@@ -61,7 +62,7 @@
     </div>
 
     <!-- All 50 states grid -->
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
         @foreach (var item in Model.Items)
         {
             if (item.HasData)
@@ -108,6 +109,13 @@
     </div>
 
 </div>
+
+<aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+    <div class="sidebar-content">
+        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+    </div>
+</aside>
+</article>
 
 @section Scripts {
 <script type="application/ld+json">

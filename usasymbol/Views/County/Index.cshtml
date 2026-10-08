@@ -38,7 +38,7 @@
     </div>
 </nav>
 
-<main>
+<div class="cty-page">
     <section class="cty-hero">
         <div class="cty-container cty-hero-grid">
             <div>
@@ -63,6 +63,8 @@
         </div>
     </section>
 
+    <article class="cty-container page-shell-2col">
+    <div class="article-content min-w-0">
     <section class="cty-map-section">
         <div class="cty-container">
             <div class="cty-section-head">
@@ -206,7 +208,15 @@
             </aside>
         </div>
     </section>
-</main>
+    </div>
+
+    <aside class="article-sidebar hidden lg:block cty-map-section" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
+</div>
 
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(structuredData))</script>
 <script id="county-map-data" type="application/json">@Html.Raw(JsonSerializer.Serialize(Model.Counties, countyJsonOptions))</script>

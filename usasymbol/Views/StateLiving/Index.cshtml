@@ -50,7 +50,7 @@
     </div>
 </nav>
 
-<main>
+<div class="sl-page">
     <section class="sl-hero">
         <div class="sl-container sl-hero-grid">
             <div class="sl-hero-copy">
@@ -101,7 +101,8 @@
         </div>
     </nav>
 
-    <div class="sl-container sl-content">
+    <article class="sl-container page-shell-2col">
+    <div class="sl-content article-content min-w-0">
         <section id="overview" class="sl-section sl-overview">
             <div>
                 <p class="sl-eyebrow">Is @state.Name a good place to live?</p>
@@ -428,7 +429,14 @@
 
         <p class="sl-note">Statewide figures can hide major local differences. Rankings use available states in each metric, so the denominator may vary. Source inventory reviewed @Model.DataReviewedOn; individual data periods are shown beside each source.</p>
     </div>
-</main>
+
+    <aside class="article-sidebar hidden lg:block sl-content" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
+</div>
 
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(structuredData))</script>
 

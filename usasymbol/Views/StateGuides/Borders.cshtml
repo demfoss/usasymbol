@@ -420,7 +420,7 @@
 </div>
 
 <!-- BREADCRUMBS -->
-<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+<nav class="border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
     <div class="max-w-[1440px] mx-auto px-4 py-3 lg:px-6 xl:px-8">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
@@ -435,7 +435,8 @@
 </nav>
 
 <!-- MAIN CONTENT -->
-<div class="article-content borders-page max-w-[1440px] mx-auto px-4 pb-16 pt-6 lg:px-6 xl:px-8">
+<article class="borders-page page-shell-2col max-w-[1440px] mx-auto px-4 pb-16 pt-6 lg:px-6 xl:px-8">
+<div class="article-content min-w-0">
 
     @{
         var bordersAuthorBox = new USASymbol.Models.ViewModels.AuthorBox
@@ -1244,7 +1245,17 @@
         </a>
     </div>
 
+    <div class="mt-12 lg:hidden">
+        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+    </div>
 </div>
+
+<aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+    <div class="sidebar-content">
+        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+    </div>
+</aside>
+</article>
 
 <script>
 // ================================================================

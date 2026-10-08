@@ -25,7 +25,8 @@
         </div>
     </section>
 
-    <section class="tl-shell">
+    <article class="tl-shell page-shell-2col">
+    <section class="article-content min-w-0">
         <div class="zg-panel" id="area-code-lookup" data-lookup-url="/tools/area-code-lookup/lookup">
             <form class="tl-lookup-form" id="ac-form">
                 <div class="zg-field">
@@ -42,6 +43,13 @@
             <div id="ac-result"></div>
         </div>
     </section>
+
+    <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
 </div>
 
 @section Scripts {

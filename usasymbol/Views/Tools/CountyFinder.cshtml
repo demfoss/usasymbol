@@ -31,7 +31,8 @@
         </div>
     </section>
 
-    <section class="tl-shell">
+    <article class="tl-shell page-shell-2col">
+    <section class="article-content min-w-0">
         <div class="zg-panel" id="county-finder" data-lookup-url="/tools/county-finder/lookup">
             <div class="tl-lookup-form tl-mode-row" id="cf-tabs">
                 <div class="zg-field">
@@ -65,6 +66,13 @@
             <div id="cf-result"></div>
         </div>
     </section>
+
+    <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
 </div>
 
 <script>

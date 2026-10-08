@@ -33,12 +33,10 @@
 @@media (min-width: 1024px) {
     .state-layout-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 288px;
+        grid-template-columns: minmax(0, 1fr) 300px;
         gap: 2.5rem;
-        align-items: start;
     }
 }
-.state-sidebar-sticky { position: sticky; top: 5.5rem; }
 
 /* ── Overview card ──────────────────────────────────── */
 .state-overview {
@@ -350,7 +348,7 @@
 }
 
 <!-- Breadcrumb -->
-<nav class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
+<nav class="border-b border-slate-200/70 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60" aria-label="Breadcrumb">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <ol class="flex items-center flex-wrap gap-1 text-sm" style="color:var(--slate-ed)">
             <li><a href="/" style="color:var(--slate-ed);text-decoration:none" class="hover:text-slate-800">Home</a></li>
@@ -424,10 +422,10 @@
 <!-- Main -->
 <div class="state-main">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="state-layout-grid">
+        <article class="state-layout-grid">
 
             <!-- ── Content ─────────────────────────────── -->
-            <div style="min-width:0">
+            <div class="article-content" style="min-width:0">
 
                 <!-- Overview -->
                 <div class="state-overview">
@@ -794,9 +792,8 @@
             </div>
 
             <!-- ── Sidebar (desktop only) ──────────────── -->
-            <aside style="display:none" id="desktop-sidebar">
-                <style>@@media (min-width:1024px){#desktop-sidebar{display:block!important}}</style>
-                <div class="state-sidebar-sticky" style="display:flex;flex-direction:column;gap:1.25rem">
+            <aside class="article-sidebar hidden lg:block" id="desktop-sidebar" aria-label="State sidebar">
+                <div class="sidebar-content" style="display:flex;flex-direction:column;gap:1.25rem">
 
                     <!-- Quick Facts (untouched) -->
                     <div class="sidebar-widget">
@@ -855,7 +852,7 @@
                 </div>
             </aside>
 
-        </div>
+        </article>
     </div>
 </div>
 

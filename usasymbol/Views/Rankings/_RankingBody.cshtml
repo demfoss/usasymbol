@@ -21,7 +21,7 @@
         : "page-flow-shell lg:grid lg:grid-cols-[300px_minmax(0,860px)] lg:justify-center lg:gap-8 xl:grid-cols-[300px_minmax(0,884px)] xl:gap-10 2xl:grid-cols-[300px_minmax(0,912px)] 2xl:gap-12 relative";
     var tocSidebarClass = showExploreMore
         ? "hidden xl:block relative h-full"
-        : "article-sidebar hidden lg:block relative h-full";
+        : "hidden lg:block relative h-full";
     var slugRaw = (content?.Slug ?? "").Trim();
     var slugWords = Regex.Replace(slugRaw, @"[-_]+", " ");
     var slugTitle = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(slugWords.ToLowerInvariant());
@@ -34,7 +34,7 @@
 }
 
 <div class="@shellGridClass">
-    <aside class="@tocSidebarClass" aria-label="Article sidebar">
+    <aside class="@tocSidebarClass" aria-label="Table of contents">
         <div class="pb-10 h-full">
             @await Html.PartialAsync("_TocSidebar", Model)
         </div>
@@ -89,7 +89,7 @@
             </div>
         }
 
-        <div class="article-content relative content-flow site-content page-flow-content">
+        <div class="relative content-flow site-content page-flow-content">
             @if (content?.Heatmap != null)
             {
                 <div class="content-divider">

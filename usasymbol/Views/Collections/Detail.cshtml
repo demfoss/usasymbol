@@ -200,7 +200,7 @@
         @await Html.PartialAsync("_PageDataHero", dataHero)
 
         <div class="page-flow-shell lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:justify-center lg:gap-8 xl:grid-cols-[200px_minmax(0,1fr)_300px] xl:gap-[2px] 2xl:grid-cols-[240px_minmax(0,900px)_300px] 2xl:gap-4 relative">
-            <aside class="hidden xl:block relative h-full" aria-label="Article sidebar">
+            <aside class="hidden xl:block relative h-full" aria-label="Table of contents">
                 <div class="pb-10 h-full">
                     @await Html.PartialAsync("_TocSidebar", Model)
                     @await Html.PartialAsync("_RelatedCollectionsSidebar", Model)
@@ -260,7 +260,7 @@
                     </section>
                 }
 
-                <div class="article-content relative content-flow site-content page-flow-content">
+                <div class="relative content-flow site-content page-flow-content">
                 @if (hasSections)
                 {
                     <section id="sections" class="scroll-mt-24 content-divider">

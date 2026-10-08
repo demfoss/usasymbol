@@ -12,7 +12,7 @@
     <div class="cx-container"><a href="/">Home</a><span>/</span><strong>County Match</strong></div>
 </nav>
 
-<main>
+<div class="cx-page">
     <section class="cx-hero">
         <div class="cx-container">
             <p class="cx-kicker">3,143 counties · Your priorities</p>
@@ -25,7 +25,9 @@
         </div>
     </section>
 
-    <div class="cx-container cx-match-layout">
+    <article class="page-shell-2col" style="width:min(1440px, calc(100% - 2rem)); margin-inline:auto">
+    <div class="article-content min-w-0">
+    <div class="cx-match-layout">
         <aside class="cx-panel">
             <div class="cx-panel-head">
                 <div><span>01</span><h2>Set priorities</h2></div>
@@ -98,7 +100,15 @@
             </div>
         </div>
     </section>
-</main>
+    </div>
+
+    <aside class="article-sidebar hidden lg:block" style="padding-top:3rem" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
+</div>
 
 <script id="county-match-data" type="application/json">@Html.Raw(JsonSerializer.Serialize(Model.Counties, jsonOptions))</script>
 <script>

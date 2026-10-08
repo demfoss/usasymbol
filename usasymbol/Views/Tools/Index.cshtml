@@ -24,7 +24,8 @@
         </div>
     </section>
 
-    <section class="tl-shell">
+    <article class="tl-shell page-shell-2col">
+    <section class="article-content min-w-0">
         <div class="tl-grid">
             <a class="tl-tool-card" href="/tools/take-home-pay-by-state">
                 <span class="tl-tool-icon"><i class="fa-solid fa-calculator" aria-hidden="true"></i></span>
@@ -113,4 +114,11 @@
         </div>
         <p class="tl-more-soon">More free tools are coming soon.</p>
     </section>
+
+    <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
 </div>

@@ -11,7 +11,7 @@
     <a href="/">Home</a><span>/</span><strong>National Symbols</strong>
 </nav>
 
-<main class="national-hub">
+<div class="national-hub">
     <header class="national-hub-hero">
         <div class="national-hub-hero__content">
             <p class="national-hub-hero__eyebrow">United States of America</p>
@@ -27,6 +27,8 @@
         <div class="national-hub-hero__mark" aria-hidden="true"><i class="fa-solid fa-star"></i></div>
     </header>
 
+    <article class="page-shell-2col">
+    <div class="article-content min-w-0">
     @if (Model.Items.Count > 0)
     {
         <section class="national-hub-guides" aria-labelledby="national-symbol-guides">
@@ -68,4 +70,12 @@
             </div>
         </section>
     }
-</main>
+    </div>
+
+    <aside class="article-sidebar hidden lg:block national-hub-guides" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
+</div>

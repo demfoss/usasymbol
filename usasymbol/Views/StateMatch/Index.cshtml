@@ -39,7 +39,17 @@
         </div>
     </section>
 
-    @await Html.PartialAsync("_Tool", Model)
+    <article class="page-shell-2col page-shell-2col--xl">
+        <div class="article-content min-w-0">
+            @await Html.PartialAsync("_Tool", Model)
+        </div>
+
+        <aside class="article-sidebar hidden xl:block" style="padding-top:28px" aria-label="Explore more">
+            <div class="sidebar-content">
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+            </div>
+        </aside>
+    </article>
 </div>
 
 @section Scripts {

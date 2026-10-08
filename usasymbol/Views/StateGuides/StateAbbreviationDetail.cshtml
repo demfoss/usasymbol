@@ -701,7 +701,7 @@
 </style>
 }
 
-<div class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+<div class="border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
     <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-3">
         <nav aria-label="Breadcrumb">
             <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
@@ -784,7 +784,7 @@
 
     </section>
 
-    <div class="sab-layout">
+    <article class="sab-layout">
         <div class="article-content">
 
 
@@ -923,7 +923,7 @@
         </div>
 
         <aside class="article-sidebar" aria-label="Article sidebar">
-            <div class="sab-sidebar-sticky">
+            <div class="sidebar-content">
 
                 @if (Model.SimilarStates.Any())
                 {
@@ -977,7 +977,7 @@
 
             </div>
         </aside>
-    </div>
+    </article>
 
     <div style="margin-top:1.5rem; max-width:860px;">
         @await Html.PartialAsync("_AuthorBox", new USASymbol.Models.ViewModels.AuthorBox { DateModified = new DateTime(2026, 5, 28) })

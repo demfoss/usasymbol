@@ -29,7 +29,7 @@
     </div>
 </nav>
 
-<main>
+<div class="slh-page">
     <section class="slh-hero">
         <div class="slh-container slh-hero-grid">
             <div>
@@ -49,6 +49,8 @@
         </div>
     </section>
 
+    <article class="slh-container page-shell-2col">
+    <div class="article-content min-w-0">
     <section class="slh-explorer" aria-labelledby="state-guide-heading">
         <div class="slh-container">
             <div class="slh-explorer-head">
@@ -176,7 +178,15 @@
             </div>
         </div>
     </section>
-</main>
+    </div>
+
+    <aside class="article-sidebar hidden lg:block slh-explorer" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
+</div>
 
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(itemList))</script>
 <script>

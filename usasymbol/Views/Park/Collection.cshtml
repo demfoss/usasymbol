@@ -262,7 +262,7 @@
 
 @* ── Body grid ───────────────────────────────────────────────────────────── *@
 <div class="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-8 pb-20 pt-8">
-    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-12">
+    <article class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] xl:gap-12">
 
         @* ── Main column ─────────────────────────────────────────────── *@
         <div class="article-content min-w-0">
@@ -564,7 +564,8 @@
         </div>
 
         @* ── Sidebar ─────────────────────────────────────────────────── *@
-        <aside class="article-sidebar space-y-6 lg:self-start" aria-label="Article sidebar">
+        <aside class="article-sidebar" aria-label="Article sidebar">
+            <div class="sidebar-content space-y-6">
 
             @* Collection quick stats *@
             @if (parks.Count > 0)
@@ -649,8 +650,9 @@
                 </a>
             </div>
 
+            </div>
         </aside>
-    </div>
+    </article>
 </div>
 
 @* ── JSON-LD ──────────────────────────────────────────────────────────────── *@

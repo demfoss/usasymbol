@@ -81,6 +81,8 @@
             <aside class="rd-hero-stat"><i class="@(Model.Category?.Icon ?? "fa-solid fa-layer-group")" aria-hidden="true"></i><strong>@Model.TotalCount</strong><span>@(Model.Category == null ? "collections to explore" : Model.Category.Title.ToLowerInvariant() + " collections")</span><p>Pick a topic. Explore the states.<br />Find the story.</p></aside>
         </section>
 
+        <article class="page-shell-2col">
+        <div class="article-content min-w-0">
         @if (Model.ShowOverview)
         {
             @if (Model.Category != null && Model.Topics.Count > 1)
@@ -210,6 +212,14 @@
                 </nav>
             </section>
         }
+        </div>
+
+        <aside class="article-sidebar hidden lg:block rd-section" aria-label="Explore more">
+            <div class="sidebar-content">
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+            </div>
+        </aside>
+        </article>
     </div>
 </div>
 @section Scripts {

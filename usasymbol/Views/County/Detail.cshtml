@@ -52,7 +52,7 @@
     </div>
 </nav>
 
-<main>
+<div class="cty-page">
     <section class="cty-profile-hero">
         <div class="cty-container">
             <p class="cty-kicker">Published county profile · Official data · FIPS @county.Fips</p>
@@ -67,7 +67,8 @@
         </div>
     </section>
 
-    <div class="cty-container cty-profile-content">
+    <article class="cty-container page-shell-2col">
+    <div class="cty-profile-content article-content min-w-0">
         <section class="cty-profile-overview">
             <div>
                 <p class="cty-eyebrow">County overview</p>
@@ -209,6 +210,13 @@
             </div>
         </section>
     </div>
-</main>
+
+    <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
+</div>
 
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(structuredData))</script>

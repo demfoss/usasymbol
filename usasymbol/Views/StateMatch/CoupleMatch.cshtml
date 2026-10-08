@@ -50,7 +50,9 @@
         </div>
     </section>
 
-    <main class="sm-shell cm-main">
+    <article class="page-shell-2col page-shell-2col--xl">
+    <div class="article-content min-w-0">
+    <div class="sm-shell cm-main">
         <div class="cm-people">
             @foreach (var person in people)
             {
@@ -163,7 +165,15 @@
                 Statewide averages hide big local differences. <a href="/state-match/methodology">Full methodology and sources</a>.
             </p>
         </section>
-    </main>
+    </div>
+    </div>
+
+    <aside class="article-sidebar hidden xl:block" style="padding-top:28px" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
 </div>
 
 <noscript>

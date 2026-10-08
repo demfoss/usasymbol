@@ -35,7 +35,8 @@
         </div>
     </section>
 
-    <section class="tl-shell">
+    <article class="tl-shell page-shell-2col">
+    <section class="article-content min-w-0">
         <div class="zg-panel" id="address-generator" data-generate-url="/tools/random-address-generator/generate">
             <div class="zg-controls">
                 <div class="zg-field">
@@ -65,6 +66,13 @@
             </p>
         </div>
     </section>
+
+    <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
 </div>
 
 <script>

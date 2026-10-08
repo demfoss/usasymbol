@@ -12,9 +12,8 @@
 
     /* Filter bar */
     .states-filter-bar {
-        position: sticky;
-        top: 73px;
-        z-index: 40;
+        position: relative;
+        z-index: 1;
         background: rgba(248,244,237,.95);
         backdrop-filter: blur(14px);
         border-bottom: 1px solid var(--cream-dark);
@@ -219,11 +218,14 @@
     </div>
 </div>
 
+<div style="background:var(--cream)">
+<article class="page-shell-2col max-w-[1440px] mx-auto lg:px-6 xl:px-8">
+<div class="article-content min-w-0">
 <section style="padding:2.5rem 0 4rem;background:var(--cream)">
     <div class="max-w-7xl mx-auto px-4">
         @if (Model.States.Any())
         {
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
                 @foreach (var state in Model.States)
                 {
                     var flagPath = $"/images/states/flags/medium/{state.Abbreviation.ToLower()}.webp";
@@ -315,3 +317,12 @@
         </a>
     </div>
 </section>
+</div>
+
+<aside class="article-sidebar hidden lg:block" style="padding-top:2.5rem" aria-label="Explore more">
+    <div class="sidebar-content">
+        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+    </div>
+</aside>
+</article>
+</div>

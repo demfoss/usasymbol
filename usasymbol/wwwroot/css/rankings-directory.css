@@ -114,6 +114,18 @@
 .rd-empty p { margin-block: 12px 20px; color: #627087; }
 .rd-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .rankings-directory-page .site-footer { margin-top: 0; }
+/* Content column + 300px ad sidebar: keep card grids readable in the narrower column */
+.rd-wrap { width: min(calc(100% - 48px), 1440px); }
+@media (min-width: 1024px) {
+    .rankings-directory .page-shell-2col .rd-category-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .rankings-directory .page-shell-2col .rd-featured-grid,
+    .rankings-directory .page-shell-2col .rd-category-grid,
+    .rankings-directory .page-shell-2col .rd-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rankings-directory .page-shell-2col .rd-directory-layout { grid-template-columns: 1fr; }
+    .rankings-directory .page-shell-2col .rd-filters { position: static; }
+}
 @media (max-width: 1100px) {
     .rd-category-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .rd-hero { gap: 30px; grid-template-columns: minmax(0, 1fr) 210px; }

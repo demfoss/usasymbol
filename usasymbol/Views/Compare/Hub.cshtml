@@ -17,7 +17,7 @@
 }
 
 <!-- Sticky breadcrumb bar -->
-<div class="sticky top-16 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+<div class="border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
     <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-3">
         <nav aria-label="Breadcrumb">
             <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
@@ -29,7 +29,8 @@
     </div>
 </div>
 
-<div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-8 lg:py-12 article-content">
+<article class="page-shell-2col max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 py-8 lg:py-12">
+<div class="article-content min-w-0">
 
     <!-- HERO -->
     <section class="mb-8 lg:mb-10">
@@ -248,7 +249,17 @@
         </div>
     </section>
 
+    <div class="mt-12 lg:hidden">
+        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+    </div>
 </div>
+
+<aside class="article-sidebar hidden lg:block" aria-label="Explore more">
+    <div class="sidebar-content">
+        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+    </div>
+</aside>
+</article>
 
 <script>
     const compareStates = @Html.Raw(JsonSerializer.Serialize(pickerStates));

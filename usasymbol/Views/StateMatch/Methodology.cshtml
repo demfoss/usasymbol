@@ -31,7 +31,9 @@
         </div>
     </section>
 
-    <section class="sm-shell sm-method-detail">
+    <article class="page-shell-2col sm-shell">
+    <div class="article-content min-w-0">
+    <section class="sm-method-detail">
         <p class="sm-section-kicker">The formula</p>
         <h2>Normalize, weight, rank — nothing hidden in between</h2>
         <div class="sm-method-steps">
@@ -140,4 +142,12 @@
             balanced default. It links back to the full tool.
         </p>
     </section>
+    </div>
+
+    <aside class="article-sidebar hidden lg:block" style="padding-top:28px" aria-label="Explore more">
+        <div class="sidebar-content">
+            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+        </div>
+    </aside>
+    </article>
 </div>

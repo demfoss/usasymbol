@@ -62,7 +62,7 @@
 </section>
 
 <!-- SEARCH BAR -->
-<section class="bg-white py-4 border-b sticky top-16 z-50">
+<section class="bg-white py-4 border-b">
     <div class="max-w-7xl mx-auto px-4">
         <div class="relative w-full">
             <input id="borderSearch"
@@ -79,7 +79,7 @@
 </section>
 
 <!-- FILTER SECTION -->
-<section class="bg-white/95 backdrop-blur border-b sticky top-[120px] z-40 py-3">
+<section class="bg-white/95 backdrop-blur border-b py-3">
     <div class="max-w-7xl mx-auto px-4">
         <!-- Mobile Layout -->
         <div class="md:hidden space-y-3">
@@ -161,12 +161,14 @@
     </div>
 </section>
 
+<article class="page-shell-2col max-w-[1440px] mx-auto lg:px-6 xl:px-8">
+<div class="article-content min-w-0">
 <!-- BORDERS GRID -->
 <section class="py-10 md:py-12 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4">
         @if (list.Any())
         {
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 @foreach (var item in list)
                 {
                     var detailUrl = $"/states/{item.State.Slug}/borders";
@@ -375,6 +377,14 @@
         </div>
     </div>
 </section>
+</div>
+
+<aside class="article-sidebar hidden lg:block py-10" aria-label="Explore more">
+    <div class="sidebar-content">
+        @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+    </div>
+</aside>
+</article>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
