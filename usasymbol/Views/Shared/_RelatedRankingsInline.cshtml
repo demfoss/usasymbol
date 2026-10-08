@@ -1,4 +1,5 @@
 @model USASymbol.Models.ViewModels.LatestContentRailViewModel
+@inject IImageUrlService Images
 
 @* Phones/tablets have no sidebar, so the closest matches sit right after the table,
    where a reader who got the answer decides whether to keep going. Hidden on desktop,
@@ -11,9 +12,20 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             @foreach (var item in Model.Items.Take(3))
             {
+                var hasThumb = !string.IsNullOrWhiteSpace(item.ImageUrl)
+                    && !item.ImageUrl.EndsWith("/usasymbol.png", StringComparison.OrdinalIgnoreCase);
+
                 <a href="@item.Url"
-                   class="group flex items-center justify-between gap-3 border border-slate-200 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-800 transition-all hover:border-slate-400 hover:bg-white">
-                    <span class="line-clamp-2 leading-5">@item.Title</span>
+                   class="group flex items-center gap-3 border border-slate-200 bg-white/70 p-2.5 pr-4 text-sm font-semibold text-slate-800 transition-all hover:border-slate-400 hover:bg-white">
+                    @if (hasThumb)
+                    {
+                        <img src="@Images.Crop(item.ImageUrl, 96, 96)"
+                             alt=""
+                             width="48" height="48"
+                             loading="lazy" decoding="async"
+                             class="h-12 w-12 shrink-0 bg-slate-100 object-cover" />
+                    }
+                    <span class="min-w-0 flex-1 line-clamp-2 leading-5">@item.Title</span>
                     <span class="shrink-0 text-slate-400 transition-colors group-hover:text-slate-700">
                         <i class="fa-solid fa-arrow-right text-xs"></i>
                     </span>
