@@ -18,7 +18,7 @@ hero_image_caption: "The 2024 map divides into 24 solid Republican states, 13 so
 
 author: "USA Symbol Team"
 date_published: "2026-06-20"
-date_modified: "2026-06-20"
+date_modified: "2026-10-10"
 
 seo:
   title: "Red and Blue States | Map, Parties & Swing States"
@@ -32,7 +32,7 @@ page:
     - "Pennsylvania (R+2), Michigan (R+1), and Wisconsin (R+1) are the three swing states of 2024, each decided by under 2 points. All three flipped from the Democratic column in 2020."
     - "Wyoming is the most Republican state at R+44 in 2024. Maryland and Vermont are the most Democratic at D+30 each. The spread between the two extremes is 74 points."
 
-  methodology: "Classifications use 2024 presidential margins and patterns across 2016, 2020, and 2024: solid (same direction all three cycles by 10+ points), lean (same direction two of three), or swing (switched parties between 2020 and 2024 by under 3 points). Maine and Nebraska are classified by statewide result. Source: Associated Press 2024 presidential election results."
+  methodology: "Classifications use 2024 presidential margins and patterns across 2016, 2020, and 2024: solid (same direction all three cycles by 10+ points), lean (same direction two of three), or swing (switched parties between 2020 and 2024 by under 3 points). Maine and Nebraska are classified by statewide result. Source: Associated Press 2024 presidential election results. State government trifecta status (governor plus both legislative chambers) reflects party control as of October 2026."
 
   sources:
     - name: "Associated Press — 2024 Presidential Election Results"
@@ -41,6 +41,12 @@ page:
     - name: "Federal Election Commission — Election Results"
       url: "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/"
       description: "FEC certified federal election results"
+    - name: "Ballotpedia — State Government Trifectas"
+      url: "https://ballotpedia.org/State_government_trifectas"
+      description: "Party control of governorships and state legislative chambers, trifecta and divided government counts"
+    - name: "Ballotpedia — State Legislative Elections, 2026"
+      url: "https://ballotpedia.org/State_legislative_elections,_2026"
+      description: "State legislative and trifecta exposure for the November 3, 2026 elections"
 
 map:
   title: "Red and Blue States 2024 Political Map"
@@ -550,6 +556,43 @@ sections:
       - "Maryland and Vermont share the widest Democratic margins in the table at D+30 each. Massachusetts and Hawaii follow at D+28, making four states that voted Democratic by 28 points or more. Combined, those four states hold 28 electoral votes."
       - "California's D+21 ranks fifth on the Democratic side, but its 54 electoral votes make it the single largest contributor to the Democratic electoral total. The 13 solid-blue states combined hold 173 electoral votes, 56 fewer than the 229 held by the 24 solid-red states and 4 lean-red states together."
 
+  - id: "state-government-trifectas"
+    icon: "fa-solid fa-landmark"
+    title: "State Government Trifectas by Party"
+    paragraphs:
+      - "A trifecta means one party holds the governor's office and both chambers of the legislature, so it can pass a budget or a bill without a single vote from the other side. In October 2026 Republicans hold 23 trifectas, Democrats hold 16, and 11 states have divided government."
+      - "Virginia changed columns most recently. Democrats won the governor's race in November 2025 and kept both chambers of the General Assembly, which created a Democratic trifecta in January 2026 for the first time since 2021. New Jersey also elected a Democratic governor in 2025, and the party's legislative majorities kept its trifecta in place."
+    table:
+      columns:
+        control: "State Control"
+        count: "States"
+        states: "Which States"
+      rows:
+        - control: "Republican trifecta"
+          count: "23"
+          states: "Alabama, Arkansas, Florida, Georgia, Idaho, Indiana, Iowa, Louisiana, Mississippi, Missouri, Montana, Nebraska, New Hampshire, North Dakota, Ohio, Oklahoma, South Carolina, South Dakota, Tennessee, Texas, Utah, West Virginia, Wyoming"
+        - control: "Democratic trifecta"
+          count: "16"
+          states: "California, Colorado, Connecticut, Delaware, Hawaii, Illinois, Maine, Maryland, Massachusetts, New Jersey, New Mexico, New York, Oregon, Rhode Island, Virginia, Washington"
+        - control: "Divided government"
+          count: "11"
+          states: "Alaska, Arizona, Kansas, Kentucky, Michigan, Minnesota, Nevada, North Carolina, Pennsylvania, Vermont, Wisconsin"
+
+  - id: "divided-government-states"
+    icon: "fa-solid fa-code-compare"
+    title: "States With Divided Government"
+    paragraphs:
+      - "Kansas, Kentucky, Arizona, North Carolina, and Wisconsin pair a Democratic governor with a Republican legislature. Vermont and Nevada pair a Republican governor with Democratic legislative majorities. Vermont voted D+30 for president in 2024 yet keeps a Republican governor, one of the clearest gaps between a state's presidential lean and its governor's office."
+      - "Michigan, Pennsylvania, and Minnesota are split inside the legislature itself. Michigan has a Democratic governor and Senate with a Republican House, Pennsylvania has a Democratic governor and House with a Republican Senate, and Minnesota's House has stood tied at 67 to 67 since the 2024 election. Alaska counts as divided because bipartisan coalitions, not one party, run its legislative chambers."
+      - "Nebraska is the oddest entry. Its single-chamber legislature is officially nonpartisan, so no party formally holds a majority, but the governor is Republican and the large majority of its senators are Republicans, so the state is counted as a Republican trifecta."
+
+  - id: "2026-midterm-elections-ballot"
+    icon: "fa-solid fa-check-to-slot"
+    title: "What Is on the Ballot in the 2026 Midterms"
+    paragraphs:
+      - "Voters go to the polls on November 3, 2026 to fill all 435 seats in the U.S. House of Representatives, 35 U.S. Senate seats, and 36 governorships. The Senate total is 33 regular seats plus 2 special elections, in Ohio and Florida, for the seats once held by JD Vance and Marco Rubio."
+      - "House members serve two-year terms, so every seat is up at each federal election, while senators serve six years and roughly one-third of the chamber is up each cycle. Of the 36 governorships, New Hampshire and Vermont elect governors every two years and the other 34 states use four-year terms. Midterm turnout runs far below presidential years, as the [voter turnout by state](/rankings/government/voter-turnout-by-state) table shows."
+
 visual_assets:
   - id: swing-states-voting-booths
     src: /images/rankings/government/red-and-blue-states/swing-states-voting-booths.jpg
@@ -573,6 +616,12 @@ visual_assets:
     layout: full-width-tall
 
 faq:
+  - question: "How many states have a Republican or Democratic trifecta?"
+    answer: "In October 2026, 23 states have a Republican trifecta, 16 have a Democratic trifecta, and 11 have divided government. A trifecta means one party holds the governorship and both legislative chambers."
+
+  - question: "What is on the ballot on November 3, 2026?"
+    answer: "All 435 U.S. House seats, 35 U.S. Senate seats, and 36 governorships are on the ballot. Two of the Senate races are special elections, in Ohio and Florida."
+
   - question: "What are the red states in the US?"
     answer: "24 states voted solidly Republican in 2024: Wyoming, North Dakota, Idaho, Oklahoma, West Virginia, Arkansas, South Dakota, Kentucky, Alabama, Tennessee, Louisiana, Kansas, Mississippi, Missouri, Indiana, Nebraska, Montana, Texas, Utah, Florida, South Carolina, Alaska, Iowa, and Ohio. Together they control 219 electoral votes."
 

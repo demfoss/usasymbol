@@ -8,6 +8,7 @@ auto_link_phrases:
   - "election turnout by state"
   - "states with highest voter turnout"
   - "VEP turnout"
+  - "midterm turnout by state"
 extremes_mode: both
 extremes_title: "Highest and Lowest Voter Turnout by State"
 hero_image: "/images/rankings/government/voter-turnout-by-state/voter-turnout-by-state-hero.jpg"
@@ -16,7 +17,7 @@ hero_image_caption: "Turnout is measured here as the share of the voting-eligibl
 
 author: "USA Symbol Team"
 date_published: "2026-06-20"
-date_modified: "2026-06-20"
+date_modified: "2026-10-10"
 
 seo:
   title: "Voter Turnout by State 2024 | Map & VEP Rates"
@@ -29,13 +30,17 @@ page:
     - "Minnesota has the highest voter turnout of any state at 77.4% of the voting-eligible population in 2024, ahead of Wisconsin (74.2%) and Colorado (73.8%). Five states top 70%: Minnesota, Wisconsin, Colorado, Maine, and New Hampshire."
     - "Hawaii ranks last at 47.5% VEP turnout, the only state below 50% and 4.7 points below West Virginia (52.2%), the second-lowest state. The gap between Minnesota and Hawaii is 29.9 points."
     - "The national VEP turnout in 2024 is approximately 63.7%. Twenty-six states fall below that threshold, including California (56.7%), New York (57.1%), and Texas (56.0%)."
+    - "Oregon had the highest midterm turnout in 2022 at 62.6% of eligible voters, helped by all-mail voting, while Mississippi trailed at 32.5%. National midterm turnout was 45.9%, about 17.8 points below the 2024 presidential rate."
 
-  methodology: "Turnout figures measure the voting-eligible population (VEP) rate, total votes cast divided by all U.S. citizens aged 18 or older who are not disqualified by felony status and excluding non-citizens, a more accurate measure than registered-voter turnout. Figures are from the United States Elections Project (Dr. Michael McDonald, University of Florida), 2024 presidential election data."
+  methodology: "Turnout figures measure the voting-eligible population (VEP) rate, total votes cast divided by all U.S. citizens aged 18 or older who are not disqualified by felony status and excluding non-citizens, a more accurate measure than registered-voter turnout. Figures are from the United States Elections Project (Dr. Michael McDonald, University of Florida), 2024 presidential election data. The 2022 midterm column uses the same VEP definition (total ballots counted for the November 2022 general election) from the University of Florida Election Lab. The District of Columbia is not ranked."
 
   sources:
     - name: "United States Elections Project — 2024 Turnout Data"
       url: "https://electproject.github.io/Early-Vote-2024G/index.html"
       description: "VEP turnout estimates by state for the 2024 general election, compiled by Dr. Michael McDonald"
+    - name: "University of Florida Election Lab — 2022 General Election Turnout"
+      url: "https://election.lab.ufl.edu/voter-turnout/2022-general-election-turnout/"
+      description: "VEP turnout rates by state for the November 2022 midterm general election"
     - name: "Federal Election Commission — 2024 Federal Elections"
       url: "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/"
       description: "Official certified vote totals by state"
@@ -55,6 +60,7 @@ table:
     rank: "Rank"
     state: "State"
     turnout_2024_pct: "2024 VEP Turnout"
+    turnout_2022_pct: "2022 Midterm VEP Turnout"
 
   metric_default: turnout_2024_pct
   sort_default: desc
@@ -65,300 +71,350 @@ table:
       state_slug: "minnesota"
       postal_code: "MN"
       turnout_2024_pct: 77.4
+      turnout_2022_pct: 59.5
 
     - rank: 2
       state: "Wisconsin"
       state_slug: "wisconsin"
       postal_code: "WI"
       turnout_2024_pct: 74.2
+      turnout_2022_pct: 60.1
 
     - rank: 3
       state: "Colorado"
       state_slug: "colorado"
       postal_code: "CO"
       turnout_2024_pct: 73.8
+      turnout_2022_pct: 58.2
 
     - rank: 4
       state: "Maine"
       state_slug: "maine"
       postal_code: "ME"
       turnout_2024_pct: 73.0
+      turnout_2022_pct: 60.6
 
     - rank: 5
       state: "New Hampshire"
       state_slug: "new-hampshire"
       postal_code: "NH"
       turnout_2024_pct: 71.8
+      turnout_2022_pct: 56.3
 
     - rank: 6
       state: "Montana"
       state_slug: "montana"
       postal_code: "MT"
       turnout_2024_pct: 69.5
+      turnout_2022_pct: 53.2
 
     - rank: 7
       state: "Oregon"
       state_slug: "oregon"
       postal_code: "OR"
       turnout_2024_pct: 68.9
+      turnout_2022_pct: 62.6
 
     - rank: 8
       state: "Pennsylvania"
       state_slug: "pennsylvania"
       postal_code: "PA"
       turnout_2024_pct: 68.4
+      turnout_2022_pct: 54.4
 
     - rank: 9
       state: "Michigan"
       state_slug: "michigan"
       postal_code: "MI"
       turnout_2024_pct: 68.2
+      turnout_2022_pct: 59.0
 
     - rank: 10
       state: "Vermont"
       state_slug: "vermont"
       postal_code: "VT"
       turnout_2024_pct: 67.9
+      turnout_2022_pct: 55.6
 
     - rank: 11
       state: "Washington"
       state_slug: "washington"
       postal_code: "WA"
       turnout_2024_pct: 67.4
+      turnout_2022_pct: 54.8
 
     - rank: 12
       state: "Iowa"
       state_slug: "iowa"
       postal_code: "IA"
       turnout_2024_pct: 67.0
+      turnout_2022_pct: 52.2
 
     - rank: 13
       state: "Virginia"
       state_slug: "virginia"
       postal_code: "VA"
       turnout_2024_pct: 65.9
+      turnout_2022_pct: 47.5
 
     - rank: 14
       state: "Alaska"
       state_slug: "alaska"
       postal_code: "AK"
       turnout_2024_pct: 65.5
+      turnout_2022_pct: 50.3
 
     - rank: 15
       state: "Georgia"
       state_slug: "georgia"
       postal_code: "GA"
       turnout_2024_pct: 65.2
+      turnout_2022_pct: 51.9
 
     - rank: 16
       state: "Idaho"
       state_slug: "idaho"
       postal_code: "ID"
       turnout_2024_pct: 64.9
+      turnout_2022_pct: 42.5
 
     - rank: 17
       state: "Arizona"
       state_slug: "arizona"
       postal_code: "AZ"
       turnout_2024_pct: 64.6
+      turnout_2022_pct: 49.2
 
     - rank: 18
       state: "North Carolina"
       state_slug: "north-carolina"
       postal_code: "NC"
       turnout_2024_pct: 64.4
+      turnout_2022_pct: 47.6
 
     - rank: 19
       state: "Nebraska"
       state_slug: "nebraska"
       postal_code: "NE"
       turnout_2024_pct: 64.0
+      turnout_2022_pct: 48.4
 
     - rank: 20
       state: "New Jersey"
       state_slug: "new-jersey"
       postal_code: "NJ"
       turnout_2024_pct: 63.8
+      turnout_2022_pct: 41.1
 
     - rank: 21
       state: "Utah"
       state_slug: "utah"
       postal_code: "UT"
       turnout_2024_pct: 63.6
+      turnout_2022_pct: 47.1
 
     - rank: 22
       state: "Wyoming"
       state_slug: "wyoming"
       postal_code: "WY"
       turnout_2024_pct: 63.3
+      turnout_2022_pct: 45.3
 
     - rank: 23
       state: "Delaware"
       state_slug: "delaware"
       postal_code: "DE"
       turnout_2024_pct: 63.1
+      turnout_2022_pct: 42.7
 
     - rank: 24
       state: "Massachusetts"
       state_slug: "massachusetts"
       postal_code: "MA"
       turnout_2024_pct: 62.9
+      turnout_2022_pct: 48.9
 
     - rank: 25
       state: "Connecticut"
       state_slug: "connecticut"
       postal_code: "CT"
       turnout_2024_pct: 62.8
+      turnout_2022_pct: 48.7
 
     - rank: 26
       state: "Maryland"
       state_slug: "maryland"
       postal_code: "MD"
       turnout_2024_pct: 62.6
+      turnout_2022_pct: 46.2
 
     - rank: 27
       state: "Nevada"
       state_slug: "nevada"
       postal_code: "NV"
       turnout_2024_pct: 62.4
+      turnout_2022_pct: 45.9
 
     - rank: 28
       state: "South Dakota"
       state_slug: "south-dakota"
       postal_code: "SD"
       turnout_2024_pct: 62.2
+      turnout_2022_pct: 52.7
 
     - rank: 29
       state: "Ohio"
       state_slug: "ohio"
       postal_code: "OH"
       turnout_2024_pct: 62.0
+      turnout_2022_pct: 47.1
 
     - rank: 30
       state: "North Dakota"
       state_slug: "north-dakota"
       postal_code: "ND"
       turnout_2024_pct: 61.8
+      turnout_2022_pct: 41.9
 
     - rank: 31
       state: "Florida"
       state_slug: "florida"
       postal_code: "FL"
       turnout_2024_pct: 61.6
+      turnout_2022_pct: 48.5
 
     - rank: 32
       state: "South Carolina"
       state_slug: "south-carolina"
       postal_code: "SC"
       turnout_2024_pct: 61.4
+      turnout_2022_pct: 42.6
 
     - rank: 33
       state: "Missouri"
       state_slug: "missouri"
       postal_code: "MO"
       turnout_2024_pct: 61.1
+      turnout_2022_pct: 49.6
 
     - rank: 34
       state: "Illinois"
       state_slug: "illinois"
       postal_code: "IL"
       turnout_2024_pct: 60.9
+      turnout_2022_pct: 45.8
 
     - rank: 35
       state: "Rhode Island"
       state_slug: "rhode-island"
       postal_code: "RI"
       turnout_2024_pct: 60.5
+      turnout_2022_pct: 44.0
 
     - rank: 36
       state: "Kansas"
       state_slug: "kansas"
       postal_code: "KS"
       turnout_2024_pct: 60.3
+      turnout_2022_pct: 47.6
 
     - rank: 37
       state: "Louisiana"
       state_slug: "louisiana"
       postal_code: "LA"
       turnout_2024_pct: 60.0
+      turnout_2022_pct: 41.9
 
     - rank: 38
       state: "Alabama"
       state_slug: "alabama"
       postal_code: "AL"
       turnout_2024_pct: 59.4
+      turnout_2022_pct: 37.3
 
     - rank: 39
       state: "Kentucky"
       state_slug: "kentucky"
       postal_code: "KY"
       turnout_2024_pct: 59.1
+      turnout_2022_pct: 44.8
 
     - rank: 40
       state: "Indiana"
       state_slug: "indiana"
       postal_code: "IN"
       turnout_2024_pct: 58.7
+      turnout_2022_pct: 37.3
 
     - rank: 41
       state: "Tennessee"
       state_slug: "tennessee"
       postal_code: "TN"
       turnout_2024_pct: 58.3
+      turnout_2022_pct: 33.3
 
     - rank: 42
       state: "Mississippi"
       state_slug: "mississippi"
       postal_code: "MS"
       turnout_2024_pct: 57.7
+      turnout_2022_pct: 32.5
 
     - rank: 43
       state: "Oklahoma"
       state_slug: "oklahoma"
       postal_code: "OK"
       turnout_2024_pct: 57.4
+      turnout_2022_pct: 39.6
 
     - rank: 44
       state: "New York"
       state_slug: "new-york"
       postal_code: "NY"
       turnout_2024_pct: 57.1
+      turnout_2022_pct: 42.5
 
     - rank: 45
       state: "California"
       state_slug: "california"
       postal_code: "CA"
       turnout_2024_pct: 56.7
+      turnout_2022_pct: 42.9
 
     - rank: 46
       state: "Texas"
       state_slug: "texas"
       postal_code: "TX"
       turnout_2024_pct: 56.0
+      turnout_2022_pct: 41.5
 
     - rank: 47
       state: "New Mexico"
       state_slug: "new-mexico"
       postal_code: "NM"
       turnout_2024_pct: 55.5
+      turnout_2022_pct: 46.2
 
     - rank: 48
       state: "Arkansas"
       state_slug: "arkansas"
       postal_code: "AR"
       turnout_2024_pct: 55.0
+      turnout_2022_pct: 41.5
 
     - rank: 49
       state: "West Virginia"
       state_slug: "west-virginia"
       postal_code: "WV"
       turnout_2024_pct: 52.2
+      turnout_2022_pct: 35.4
 
     - rank: 50
       state: "Hawaii"
       state_slug: "hawaii"
       postal_code: "HI"
       turnout_2024_pct: 47.5
+      turnout_2022_pct: 40.2
 
 sections:
   - id: "highest-voter-turnout-states"
@@ -381,6 +437,121 @@ sections:
     paragraphs:
       - "California (56.7%, rank 45), New York (57.1%, rank 44), and Texas (56.0%, rank 46) are three of the four most populous states in the country. All three rank in the bottom seven by turnout. Together they hold 122 electoral votes but produce well below-average participation rates."
       - "Florida, the third-most-populous state with 30 electoral votes, ranks 31st at 61.6%, closer to the national average of 63.7%. Pennsylvania (68.4%, rank 8) and Michigan (68.2%, rank 9) are the two large states that exceed the average by a substantial margin."
+
+  - id: "midterm-voter-turnout-by-state"
+    icon: "fa-solid fa-check-to-slot"
+    title: "Midterm Voter Turnout by State"
+    paragraphs:
+      - "Oregon had the highest turnout in the 2022 midterms at 62.6% of eligible voters. Oregon mails a ballot to every registered voter, who fills it out at home and returns it by mail or drop box, so there is no line at the polls. Washington (54.8%) and Colorado (58.2%) also mail ballots to all active voters, and both land in the top 10. See [mail-in voting by state](/rankings/law/mail-in-voting-by-state) for every state's approach."
+      - "Maine (60.6%), Wisconsin (60.1%), Minnesota (59.5%), Michigan (59.0%), and New Hampshire (56.3%) each let residents register on Election Day, a rule covered in [same-day voter registration states](/rankings/law/same-day-voter-registration-states). Michigan also had a governor's race and a statewide abortion ballot measure in 2022, and Pennsylvania (54.4%) had open races for both governor and U.S. Senate."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        turnout_2022: "2022 Midterm VEP Turnout"
+        turnout_2024: "2024 VEP Turnout"
+      rows:
+        - rank: "1"
+          state: "Oregon"
+          turnout_2022: "62.6%"
+          turnout_2024: "68.9%"
+        - rank: "2"
+          state: "Maine"
+          turnout_2022: "60.6%"
+          turnout_2024: "73.0%"
+        - rank: "3"
+          state: "Wisconsin"
+          turnout_2022: "60.1%"
+          turnout_2024: "74.2%"
+        - rank: "4"
+          state: "Minnesota"
+          turnout_2022: "59.5%"
+          turnout_2024: "77.4%"
+        - rank: "5"
+          state: "Michigan"
+          turnout_2022: "59.0%"
+          turnout_2024: "68.2%"
+        - rank: "6"
+          state: "Colorado"
+          turnout_2022: "58.2%"
+          turnout_2024: "73.8%"
+        - rank: "7"
+          state: "New Hampshire"
+          turnout_2022: "56.3%"
+          turnout_2024: "71.8%"
+        - rank: "8"
+          state: "Vermont"
+          turnout_2022: "55.6%"
+          turnout_2024: "67.9%"
+        - rank: "9"
+          state: "Washington"
+          turnout_2022: "54.8%"
+          turnout_2024: "67.4%"
+        - rank: "10"
+          state: "Pennsylvania"
+          turnout_2022: "54.4%"
+          turnout_2024: "68.4%"
+
+  - id: "lowest-midterm-voter-turnout-states"
+    icon: "fa-solid fa-arrow-trend-down"
+    title: "States with the Lowest Midterm Turnout"
+    paragraphs:
+      - "Mississippi had the lowest midterm turnout in 2022 at 32.5%, followed by Tennessee (33.3%) and West Virginia (35.4%). Mississippi and West Virginia had neither a U.S. Senate race nor a governor's race that year, and Tennessee reelected its governor by a wide margin, so none of the three had a close contest at the top of the ballot."
+      - "Texas (41.5%) and Arkansas (41.5%) both sit in the bottom 10 even though each elected a governor in 2022. New Jersey (41.1%) is the only state in the bottom 10 that ranks in the top 20 in 2024, a 22.7 point drop that is one of the steepest in the table."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        turnout_2022: "2022 Midterm VEP Turnout"
+        turnout_2024: "2024 VEP Turnout"
+      rows:
+        - rank: "50"
+          state: "Mississippi"
+          turnout_2022: "32.5%"
+          turnout_2024: "57.7%"
+        - rank: "49"
+          state: "Tennessee"
+          turnout_2022: "33.3%"
+          turnout_2024: "58.3%"
+        - rank: "48"
+          state: "West Virginia"
+          turnout_2022: "35.4%"
+          turnout_2024: "52.2%"
+        - rank: "47"
+          state: "Indiana"
+          turnout_2022: "37.3%"
+          turnout_2024: "58.7%"
+        - rank: "46"
+          state: "Alabama"
+          turnout_2022: "37.3%"
+          turnout_2024: "59.4%"
+        - rank: "45"
+          state: "Oklahoma"
+          turnout_2022: "39.6%"
+          turnout_2024: "57.4%"
+        - rank: "44"
+          state: "Hawaii"
+          turnout_2022: "40.2%"
+          turnout_2024: "47.5%"
+        - rank: "43"
+          state: "New Jersey"
+          turnout_2022: "41.1%"
+          turnout_2024: "63.8%"
+        - rank: "42"
+          state: "Texas"
+          turnout_2022: "41.5%"
+          turnout_2024: "56.0%"
+        - rank: "41"
+          state: "Arkansas"
+          turnout_2022: "41.5%"
+          turnout_2024: "55.0%"
+
+  - id: "midterm-turnout-drop-off"
+    icon: "fa-solid fa-chart-line"
+    title: "Midterm vs Presidential Election Turnout"
+    paragraphs:
+      - "National turnout fell from 63.7% in 2024 to 45.9% in the 2022 midterms, a drop of 17.8 points, and every state in the table sits lower in 2022. Minnesota fell 17.9 points, from 77.4% to 59.5%, and Wisconsin fell 14.1 points. Mississippi lost the most, 25.2 points, with Tennessee close behind at 25.0."
+      - "Oregon's turnout fell only 6.3 points, from 68.9% to 62.6%, the smallest drop of any state, and Hawaii followed at 7.3 points. Oregon mails every voter a ballot and was the first state to register eligible residents automatically. Many states now also give voters days or weeks to cast a ballot ahead of time, as [early voting by state](/rankings/law/early-voting-by-state) shows. A few states also treat Election Day as a public holiday, listed in [Election Day holiday states](/rankings/law/election-day-holiday-states)."
 
 visual_assets:
   - id: high-turnout-voters
@@ -413,6 +584,12 @@ faq:
 
   - question: "What is the national voter turnout in 2024?"
     answer: "National VEP turnout in 2024 is approximately 63.7%. Twenty-six of the 50 states fall below that figure. The 2024 rate is somewhat lower than the 2020 record of 66.9%."
+
+  - question: "What was voter turnout in the 2022 midterm elections by state?"
+    answer: "Oregon had the highest 2022 midterm turnout at 62.6% of eligible voters, ahead of Maine (60.6%) and Wisconsin (60.1%). Mississippi had the lowest at 32.5%, with Tennessee at 33.3%. National midterm turnout was 45.9%."
+
+  - question: "Why is voter turnout lower in midterm elections?"
+    answer: "No presidential race tops the ballot in a midterm, so fewer occasional voters take part. Every state in the table had lower turnout in 2022 than in 2024, and the national rate fell from 63.7% to 45.9%."
 
   - question: "What is VEP voter turnout and how does it differ from registered-voter turnout?"
     answer: "VEP (Voting Eligible Population) turnout divides total votes cast by all U.S. citizens aged 18 or older who are legally eligible to vote, excluding non-citizens and people disqualified by felony conviction. Registered-voter turnout uses a smaller denominator, making it appear higher. VEP is the standard measure used by researchers because registration rates vary widely by state."
