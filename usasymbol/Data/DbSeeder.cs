@@ -543,6 +543,41 @@ namespace USASymbol.Data
                         Description = "Explore official state grains, beans, honeys, and other crops recognized by U.S. states.",
                         ImageUrl = "/images/symbol-categories/crops.webp"
                     },
+                    new SymbolCategory
+                    {
+                        Type = "pies",
+                        Name = "State Pies",
+                        Description = "Explore official state pies, from Key lime to pecan, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/desserts.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "cookies",
+                        Name = "State Cookies",
+                        Description = "Discover official state cookies, from the chocolate chip to the bizcochito, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/desserts.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "mushrooms",
+                        Name = "State Mushrooms",
+                        Description = "Explore official state mushrooms, from morels to chanterelles, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/crops.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "snacks",
+                        Name = "State Snacks",
+                        Description = "Discover official state snacks, from popcorn to Jell-O, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/dishes.webp"
+                    },
+                    new SymbolCategory
+                    {
+                        Type = "breads",
+                        Name = "State Breads",
+                        Description = "See the official state breads, frybread and pan de campo, recognized by U.S. states.",
+                        ImageUrl = "/images/symbol-categories/dishes.webp"
+                    },
 
                 };
 
@@ -825,7 +860,7 @@ namespace USASymbol.Data
                 { "alabama", ("The Yellowhammer State", "Unofficial", 0, "", "References the Civil War nickname for Alabama Confederate troops who wore bright yellow cloth on their cavalry uniforms.") },
                 { "arkansas", ("The Natural State", "Official", 1995, "Act 1352 of 1995", "Promotes the state's pristine natural beauty and outdoor tourism, replacing the former 'Land of Opportunity' nickname.") },
                 { "delaware", ("The First State", "Official", 2002, "Volume 73, Chapter 266", "Honors Delaware as the very first state to ratify the United States Constitution on December 7, 1787.") },
-                { "florida", ("The Sunshine State", "Official", 1997, "Florida Statutes § 15.045", "A long-standing promotional and tourism phrase officially codified to celebrate Florida's warm, sunny climate.") },
+                { "florida", ("The Sunshine State", "Official", 1970, "Florida Statutes § 15.045", "A long-standing promotional and tourism phrase officially codified to celebrate Florida's warm, sunny climate.") },
                 { "georgia", ("The Peach State", "Unofficial", 0, "", "Recognizes Georgia's deep historic reputation for producing exceptionally high-quality peaches.") },
                 { "kentucky", ("The Bluegrass State", "Unofficial", 0, "", "Named for the fertile, bluish-flowering grass pastures in the central part of the state, famous for breeding racehorses.") },
                 { "louisiana", ("The Pelican State", "Unofficial", 0, "", "A tribute to the state bird, which is deeply tied to Louisiana's coastal ecology and historical heraldry.") },
@@ -835,7 +870,7 @@ namespace USASymbol.Data
                 { "oklahoma", ("The Sooner State", "Unofficial", 0, "", "Refers to the eager pioneers who entered the Unassigned Lands before the official start of the 1889 Land Rush.") },
                 { "south-carolina", ("The Palmetto State", "Unofficial", 0, "", "Refers to the resilient native palmetto trees whose spongy wood helped defend a key fort during the Revolutionary War.") },
                 { "tennessee", ("The Volunteer State", "Unofficial", 0, "", "Recognizes the remarkably massive turnout of volunteer soldiers from Tennessee during the War of 1812.") },
-                { "texas", ("The Lone Star State", "Unofficial", 0, "", "A tribute to the single star on the state flag, representing Texas's unique history as an independent republic.") },
+                { "texas", ("The Lone Star State", "Official", 2015, "House Concurrent Resolution 78 (84th Legislature)", "A tribute to the single star on the state flag, representing Texas's unique history as an independent republic.") },
                 { "virginia", ("The Old Dominion", "Unofficial", 0, "", "A historic title granted by King Charles II for Virginia's fierce loyalty to the Crown during the English Civil War.") },
                 { "west-virginia", ("The Mountain State", "Unofficial", 0, "", "Refers to the state's completely mountainous and rugged terrain, nestled deeply within the Appalachians.") },
 
@@ -991,7 +1026,7 @@ namespace USASymbol.Data
                 { "colorado", ("Colorado State Flag", 1911, 1964, "Senate Bill 118", "Q211113", "The colors represent the state's environmental features: blue skies, gold sunshine, white snow-capped mountains, and red earth.") },
                 { "connecticut", ("Connecticut State Flag", 1897, 1957, "Chapter 227", "Q151249", "Features the state shield with three grapevines representing the three oldest settlements: Windsor, Wethersfield, and Hartford.") },
                 { "delaware", ("Delaware State Flag", 1913, null, "Volume 27, Chapter 166", "Q18640", "Uses the buff and colonial blue colors of General George Washington's uniform, featuring the state coat of arms.") },
-                { "florida", ("Florida State Flag", 1899, 1985, "Joint Resolution No. 4", "Q46522", "Displays a red saltire (cross of St. Andrew) with the state seal proudly superimposed in the center.") },
+                { "florida", ("Florida State Flag", 1900, 1985, "Joint Resolution No. 4", "Q46522", "Displays a red saltire (cross of St. Andrew) with the state seal proudly superimposed in the center.") },
                 { "georgia", ("Georgia State Flag", 2003, null, "House Bill 380", "Q119159", "Bears the state coat of arms and the motto 'In God We Trust', surrounded by 13 stars for the original colonies.") },
 
                 { "hawaii", ("Hawaii State Flag", 1845, 1959, "Royal Decree of King Kamehameha III", "Q500437", "The 'Ka Hae Hawaii' uniquely features the British Union Jack and eight stripes representing the major Hawaiian islands.") },

@@ -29,6 +29,7 @@
     bool isStateMatch = currentPath.StartsWith("/state-match");
     bool isParks = currentPath.StartsWith("/national-parks");
     bool isTools = currentPath.StartsWith("/tools");
+    bool isQuizzes = currentPath.StartsWith("/quizzes");
     bool isRankings = currentPath.StartsWith("/rankings") || currentPath.StartsWith("/county-rankings");
     bool isSymbolDetail = System.Text.RegularExpressions.Regex.IsMatch(
         currentPath,
@@ -72,12 +73,18 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <link rel="canonical" href="@canonicalHref" />
+    @if (ViewData["NoCanonical"] is not true)
+    {
+        <link rel="canonical" href="@canonicalHref" />
+    }
 
     <meta property="og:title" content="@(ViewData["Title"] ?? "USA State Symbols")" />
     <meta property="og:description" content="@(ViewData["Description"] ?? "Explore official state symbols across all 50 U.S. states")" />
     <meta property="og:type" content="@(ViewData["OgType"] ?? "website")" />
+    @if (ViewData["NoCanonical"] is not true)
+    {
     <meta property="og:url" content="@(ViewData["OgUrl"] ?? $"{siteBaseUrl}{(currentPath == "/" ? "/" : currentPath.TrimEnd('/'))}")" />
+    }
     <meta property="og:image" content="@ogImageUrl" />
     <meta property="og:image:width" content="@(ViewData["OgImageWidth"] ?? "1200")" />
     <meta property="og:image:height" content="@(ViewData["OgImageHeight"] ?? "630")" />
@@ -147,13 +154,13 @@
                     </a>
 
                     <div class="site-nav-links">
-                        <a asp-controller="Home" asp-action="Index" class="@(isHome ? "nav-link is-active" : "nav-link")">Home</a>
                         <a asp-controller="State" asp-action="Listing" class="@(isStates ? "nav-link is-active" : "nav-link")">States</a>
                         <a asp-controller="Symbol" asp-action="Categories" class="@(isSymbols ? "nav-link is-active" : "nav-link")">Symbols</a>
                         <a href="/rankings" class="@(isRankings ? "nav-link is-active" : "nav-link")">Rankings</a>
                         <a href="/national-parks" class="@(isParks ? "nav-link is-active" : "nav-link")">Parks</a>
                         <a href="/compare-states" class="@(isCompare ? "nav-link is-active" : "nav-link")">Compare</a>
                         <a href="/tools" class="@(isTools ? "nav-link is-active" : "nav-link")">Tools</a>
+                        <a asp-controller="Quiz" asp-action="Index" class="@(isQuizzes ? "nav-link is-active" : "nav-link")">Quizzes</a>
                         <a asp-controller="Collections" asp-action="Index" class="@(isCollections ? "nav-link is-active" : "nav-link")">Collections</a>
                         <a href="/state-match" class="@(isStateMatch ? "nav-link is-active nav-cta" : "nav-link nav-cta")">Find Your State <i class="fa-solid fa-arrow-right" aria-hidden="true" style="margin-left:8px"></i></a>
                     </div>
@@ -191,6 +198,10 @@
                         </a>
                         <a href="/tools" class="@(isTools ? "mobile-menu-link is-active" : "mobile-menu-link")">
                             <span>Tools</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                        <a asp-controller="Quiz" asp-action="Index" class="@(isQuizzes ? "mobile-menu-link is-active" : "mobile-menu-link")">
+                            <span>Quizzes</span>
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
                         <a href="/rankings" class="@(isRankings ? "mobile-menu-link is-active" : "mobile-menu-link")">

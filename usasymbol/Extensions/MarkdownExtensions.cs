@@ -45,6 +45,17 @@ namespace USASymbol.Extensions
         private static readonly Regex H1Regex = new(@"(?m)^\s{2,}h1:\s*""?(.+?)""?\s*$", RegexOptions.Compiled);
         private static readonly Regex AutoLinkPhrasesRegex = new(@"(?m)^auto_link_phrases:\s*\n((?:[ \t]+-[ \t]+.+\n?)+)", RegexOptions.Compiled);
         private static readonly Regex PhraseListItemRegex = new(@"(?m)^[ \t]+-[ \t]+""?(.+?)""?\s*$", RegexOptions.Compiled);
+        private static readonly Regex CompoundToponymRegex = new(
+            @"\b(?:Sierra|Lake|Mount|Mt\.?|Fort|Port|Cape|Gulf of|University of|Bank of|Bay of)\s+(?:Nevada|Michigan|Washington|Georgia|Virginia|Mexico|Mississippi|Texas|Florida|California|Arizona|Colorado|Ohio|Oregon|Utah|Idaho|Maine|Iowa|Indiana|Illinois|Alaska|Hawaii|Wisconsin)\b" +
+            @"|\b(?:Washington\s+(?:Post|Monument|Times|Nationals|Commanders|Redskins))\b" +
+            @"|\bNew\s+York\s+(?:Times|Post|Yankees|Mets|Giants|Jets)\b" +
+            @"|\bWest\s+Texas\b|\bEast\s+Texas\b",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        // " Fall", " Condor", " Gold Rush": next word starts with a capital letter (same-line, single space).
+        private static readonly Regex CapitalisedWordAfterRegex =
+            new(@"^ [A-Z][a-z]", RegexOptions.Compiled);
+
         private static readonly Regex LeadingUsRegex = new(@"^U\.?S\.?\s+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Dictionary<string, string> StateSlugs = new(StringComparer.OrdinalIgnoreCase)
@@ -290,6 +301,11 @@ namespace USASymbol.Extensions
 
                 foreach (var phrase in ExtractPhrasesFromYaml(content, url))
                 {
+                    // a bare state name belongs to the state hub, never to a per-state sub-section
+                    // ("Nevada" must not point at /most-dangerous-cities/nevada)
+                    if (StateSlugs.ContainsKey(phrase))
+                        continue;
+
                     // skip if another URL already owns this phrase (first writer wins)
                     if (!seenPhraseUrl.Add(phrase.ToLowerInvariant()))
                         continue;
@@ -579,6 +595,22 @@ namespace USASymbol.Extensions
 
             if (target.IsState)
             {
+                // Proper names containing a state name are not references to the state
+                // (Sierra Nevada, Nevada Fall, Washington Post, New York Times, Lake Michigan).
+                foreach (Match compound in CompoundToponymRegex.Matches(text))
+                {
+                    if (match.Index >= compound.Index && end <= compound.Index + compound.Length)
+                        return false;
+                }
+
+                // A lowercase hit ("washington", "georgia" in running prose) is a common word, not a state.
+                if (!char.IsUpper(match.Value[0]))
+                    return false;
+
+                // A capitalised word right after the state means a longer proper name (Nevada Fall, California Condor).
+                if (CapitalisedWordAfterRegex.IsMatch(text[end..]))
+                    return false;
+
                 var tail = text[end..];
                 if (tail.StartsWith(" County", StringComparison.OrdinalIgnoreCase) ||
                     tail.StartsWith(" Parish", StringComparison.OrdinalIgnoreCase) ||

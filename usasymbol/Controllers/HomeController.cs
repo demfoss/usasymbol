@@ -71,12 +71,18 @@ namespace USASymbol.Controllers
         public IActionResult Quiz() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error() =>
-            View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        public IActionResult Error()
+        {
+            ViewData["Robots"] = "noindex, nofollow";
+            ViewData["NoCanonical"] = true;
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
 
         [Route("Error/{statusCode}")]
         public IActionResult Error(int statusCode)
         {
+            ViewData["Robots"] = "noindex, nofollow";
+            ViewData["NoCanonical"] = true;
             if (statusCode == 404)
             {
                 ViewData["Title"] = "Page Not Found - USA Symbol";

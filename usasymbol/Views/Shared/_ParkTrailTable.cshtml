@@ -36,7 +36,13 @@
             @foreach (var trail in Model)
             {
                 <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition-colors">
-                    <td class="py-3 px-3 font-semibold text-slate-900 align-top">@trail.Name</td>
+                    <td class="py-3 px-3 font-semibold text-slate-900 align-top">
+                        @trail.Name
+                        @if (!string.IsNullOrWhiteSpace(trail.Note))
+                        {
+                            <span class="mt-1 block text-[12px] font-normal italic leading-5 text-slate-500 sm:hidden">@trail.Note</span>
+                        }
+                    </td>
                     <td class="py-3 px-3 align-top whitespace-nowrap">
                         <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold @DifficultyBadge(trail.Difficulty)">@DifficultyLabel(trail.Difficulty)</span>
                     </td>
@@ -44,12 +50,6 @@
                     <td class="py-3 px-3 text-slate-700 align-top whitespace-nowrap">@trail.Elevation</td>
                     <td class="py-3 px-3 text-slate-600 align-top hidden sm:table-cell leading-5">@trail.Note</td>
                 </tr>
-                @if (!string.IsNullOrWhiteSpace(trail.Note))
-                {
-                    <tr class="border-b border-slate-100 sm:hidden">
-                        <td colspan="4" class="pb-3 px-3 text-[12px] text-slate-500 leading-5 italic">@trail.Note</td>
-                    </tr>
-                }
             }
         </tbody>
     </table>

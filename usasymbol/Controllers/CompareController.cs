@@ -28,7 +28,7 @@ namespace USASymbol.Controllers
         {
             var model = await _comparison.GetHubViewModelAsync();
 
-            ViewData["Title"] = "Compare U.S. States Side by Side (2026)";
+            ViewData["Title"] = $"Compare U.S. States Side by Side ({DateTime.UtcNow.Year})";
             ViewData["Description"] = "Compare any two U.S. states by cost of living, taxes, housing, jobs, climate, safety, laws, health, and quality of life with sourced data.";
 
             return View(model);
@@ -130,7 +130,7 @@ namespace USASymbol.Controllers
                 }
             }
 
-            ViewData["Title"] = $"{categoryName} by State: Compare All 50 States (2026)";
+            ViewData["Title"] = $"{categoryName} by State: Compare All 50 States ({DateTime.UtcNow.Year})";
             ViewData["Description"] = $"2026 state comparison: {description}";
             ViewData["Canonical"] = $"/compare/{category}";
 

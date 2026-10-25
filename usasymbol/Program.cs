@@ -181,6 +181,9 @@ app.MapGet("/sitemap.xml", async (SitemapCacheService cache) =>
     return Results.Content(xml, "application/xml");
 });
 
+app.MapGet("/llms.txt", (IWebHostEnvironment env) =>
+    Results.Text(USASymbol.Helpers.LlmsTxtBuilder.Build(env.ContentRootPath), "text/plain; charset=utf-8"));
+
 app.MapGet("/sitemap-main.xml", async (SitemapCacheService cache) =>
 {
     var xml = await cache.GetMainSitemapAsync();

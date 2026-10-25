@@ -495,7 +495,8 @@
                 @if (Model.Symbols.Any())
                 {
                     <div class="state-section">
-                        <h2 class="content-h2 mb-5">@symbolsHeading — Complete List</h2>
+                        <h2 class="content-h2 mb-5">@symbolsHeading — Full Table</h2>
+                        <p class="state-body" style="margin-bottom:1rem">This table covers @Model.Symbols.Count official @(Model.Symbols.Count == 1 ? "designation" : "designations") documented on this site. @Model.State.Name may recognize more by statute; we add new ones as we verify them.</p>
                         <div class="state-table-wrap">
                             <table class="state-symbol-table">
                                 <thead>
@@ -659,6 +660,10 @@
                             </div>
                         </div>
                     }
+
+                    <div class="state-section">
+                        @await Html.PartialAsync("_AuthorBox", new USASymbol.Models.ViewModels.AuthorBox { DateModified = Model.HubContent?.DateModified })
+                    </div>
                 }
                 else
                 {
@@ -1043,7 +1048,17 @@
     {
         if (model.HubContent?.Faq.Any() == true)
         {
-            foreach (var faq in model.HubContent.Faq) yield return (faq.Question, faq.Answer);
+            foreach (var faq in model.HubContent.Faq)
+            {
+                var answer = faq.Answer;
+                // Count questions must open with the number so the answer works as a snippet.
+                if (faq.Question.StartsWith("How many official state symbols", StringComparison.OrdinalIgnoreCase) &&
+                    !char.IsDigit(answer.TrimStart().FirstOrDefault()))
+                {
+                    answer = $"{model.State.Name} has {model.Symbols.Count} official state symbols documented on this site. {answer}";
+                }
+                yield return (faq.Question, answer);
+            }
             yield break;
         }
         var bird = model.Symbols.FirstOrDefault(s => s.Type.Equals("bird", StringComparison.OrdinalIgnoreCase));

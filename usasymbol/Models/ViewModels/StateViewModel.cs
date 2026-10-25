@@ -47,6 +47,9 @@ namespace USASymbol.Models.ViewModels
         public StateHubEditorial? Editorial { get; set; }
         public List<StateHubFaq> Faq { get; set; } = new();
         public List<StateHubSource> Sources { get; set; } = new();
+
+        /// <summary>Optional <c>date_modified</c> in hub.yaml; otherwise the file's last write time.</summary>
+        public DateTime? DateModified { get; set; }
     }
 
     public class StateHubFact

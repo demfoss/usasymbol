@@ -15,17 +15,17 @@ hero_image_alt: Police patrol car lights at night representing violent crime dat
 hero_image_caption: Alaska has the highest violent crime rate in the nation at 724.1 per 100,000 residents in 2024. New Mexico follows closely at 717.1.
 author: USA Symbol Team
 date_published: '2026-08-13'
-date_modified: '2026-08-13'
+date_modified: '2026-10-25'
 seo:
   title: Most Dangerous States | Map, Crime Rates & Data
-  description: Alaska has the highest violent crime rate at 724.1 per 100,000 residents. New Mexico follows at 717.1, based on 2024 data.
+  description: Alaska has the highest violent crime rate at 724.1 per 100,000 residents. New Mexico follows at 717.1, and Maine is lowest at 100.1.
 page:
   h1: Most Dangerous States
   quick_answer:
-  - Alaska has the highest violent crime rate in the nation at 724.1 per 100,000 residents in 2024, according to FBI Uniform Crime Reporting data.
-  - New Mexico ranks second at 717.1, just 7 points behind Alaska. Tennessee is third at 592.3, followed by Arkansas at 579.4 and Louisiana at 519.8.
-  - The national violent crime rate was 359.1 per 100,000 in 2024. All five of the top states rank well above that average.
-  methodology: Rates reflect violent crime, murder, rape, robbery, and aggravated assault combined, per 100,000 residents reported to the FBI Uniform Crime Reporting Program for 2024.
+  - Most dangerous states start with Alaska, which has 724.1 violent crimes per 100,000 residents. Reports of assault and sexual violence run unusually high in its remote communities.
+  - Maine is the safest state at 100.1, a rural place with no large city. New Hampshire at 110.1 and Connecticut at 136.0 also sit far below the national rate of 359.1.
+  - New Mexico is only 7 points behind Alaska at 717.1. Tennessee is third at 592.3, with Memphis among the most violent big cities in the country.
+  methodology: Violent crime combines murder, rape, robbery, and aggravated assault per 100,000 residents for 2024, as reported to the FBI Uniform Crime Reporting Program. The national rate was 359.1.
   sources:
   - name: FBI Crime Data Explorer — Estimated Crimes in the United States
     url: https://cde.ucr.cjis.gov/
@@ -34,7 +34,7 @@ map:
   title: Violent Crime Rate by State 2024
   image: /images/rankings/crime/most-dangerous-states/most-dangerous-states-map.webp
   image_alt: U.S. map shaded by violent crime rate per 100,000 residents, from Alaska's 724.1 to Maine's 100.1
-  caption: Alaska leads at 724.1 violent crimes per 100,000, followed by New Mexico at 717.1 and Tennessee at 592.3. Maine is lowest at 100.1.
+  caption: Alaska leads at 724.1 violent crimes per 100,000, with New Mexico at 717.1 and Tennessee at 592.3. Maine is lowest at 100.1, and New Hampshire is next at 110.1.
   metric_key: violent_crime_rate
   metric_label: Violent crime rate per 100K
   name_key: state
@@ -42,11 +42,13 @@ map:
   color_scale: linear
 table:
   caption: 2024 Violent Crime Rate by State
-  note: Rate combines murder, rape, robbery, and aggravated assault per 100,000 residents, as reported to the FBI Uniform Crime Reporting Program for 2024.
+  note: Rate combines murder, rape, robbery, and aggravated assault per 100,000 residents for 2024.
   columns:
     rank: Rank
     state: State
     violent_crime_rate: Violent Crime Rate
+  column_formats:
+    violent_crime_rate: '0.0'
   metric_default: violent_crime_rate
   sort_default: desc
   rows:
@@ -304,27 +306,35 @@ table:
 sections:
 - id: most-dangerous-states-by-violent-crime-rate
   icon: fa-solid fa-triangle-exclamation
-  title: Most Dangerous States by Violent Crime Rate
+  title: Why Alaska Has the Highest Violent Crime Rate
   paragraphs:
-  - Alaska tops the table at 724.1 violent crimes per 100,000 residents, barely ahead of New Mexico's 717.1. Tennessee is a distant third at 592.3.
-  - Arkansas follows at 579.4 and Louisiana at 519.8, rounding out the top five. All five states sit at least 160 points above the national rate of 359.1.
-- id: states-with-a-violent-crime-rate-above-the-national-average
+  - Alaska leads at 724.1 violent crimes per 100,000 residents. The state has long reported one of the highest rape rates in the country, and domestic violence and assault are persistent problems in its small communities.
+  - Distance makes them harder to fight. Many Alaska Native villages sit off the road system and can be reached only by plane, boat, or snowmobile, so police help may be far away. A small population also means a few hundred extra cases can move the rate noticeably.
+- id: why-maine-has-the-lowest-violent-crime-rate
+  icon: fa-solid fa-shield-halved
+  title: Why Maine Has the Lowest Violent Crime Rate
+  paragraphs:
+  - Maine records 100.1 violent crimes per 100,000 residents, with New Hampshire next at 110.1. Portland, the biggest city in Maine, has fewer than 70,000 residents, and most of the state is forest, farmland, and small coastal towns.
+  - Violent crime clusters in cities, and Maine has none of the size that produces it. It is the least densely populated state east of the Mississippi River, as the [population density by state](/rankings/demographics/states-by-population-density) table shows. Connecticut at 136.0 and Rhode Island at 153.6 round out the [safest states in the US](/rankings/crime/safest-states-in-the-us).
+- id: most-dangerous-states-after-alaska
   icon: fa-solid fa-chart-line
-  title: States With a Violent Crime Rate Above the National Average
+  title: Most Dangerous States After Alaska
   paragraphs:
-  - California ranks sixth at 486.0 per 100,000, the most populous state in the top ten. Colorado follows at 476.3 and Missouri at 462.0.
-  - Kansas and South Carolina sit close together at 438.7 and 436.7. Alabama is the last state above the national average of 359.1, at 359.9.
+  - New Mexico trails Alaska by just 7 points at 717.1. Albuquerque, home to roughly a quarter of New Mexicans, has long reported some of the highest violent crime of any large American city, and the [most dangerous cities by state](/rankings/crime/most-dangerous-cities-by-state) ranking shows how city rates can lift a whole state.
+  - Tennessee is third at 592.3, and Memphis is a major reason. Arkansas follows at 579.4 and Louisiana at 519.8, which gives the South three of the top five places.
 faq:
 - question: What is the most dangerous state in America?
-  answer: Alaska has the highest violent crime rate at 724.1 per 100,000 residents in 2024, just ahead of New Mexico at 717.1.
-- question: What state has the second highest crime rate?
-  answer: New Mexico ranks second at 717.1 violent crimes per 100,000, only 7 points behind top-ranked Alaska.
+  answer: Alaska, at 724.1 violent crimes per 100,000 residents. New Mexico comes within 7 points at 717.1, so the top two are nearly tied.
+- question: Which state has the lowest violent crime rate?
+  answer: Maine has the lowest rate at 100.1 per 100,000. New Hampshire is next at 110.1.
 - question: What is the violent crime rate in Texas?
-  answer: Texas has a violent crime rate of 389.4 per 100,000, ranking 17th, above the national average of 359.1.
-- question: Which states are the most dangerous?
-  answer: Alaska, New Mexico, Tennessee, Arkansas, and Louisiana are the five states with the highest violent crime rates, all above 519 per 100,000 in 2024.
+  answer: Texas has a rate of 389.4 per 100,000, which ranks 17th. That is about 30 points above the national rate of 359.1.
 - question: What is the violent crime rate in California?
-  answer: California has a violent crime rate of 486.0 per 100,000, ranking sixth among the states.
+  answer: California has a rate of 486.0 per 100,000 and ranks sixth. It is the most populous state in the top ten, with Colorado close behind at 476.3.
+- question: What is the violent crime rate in New York?
+  answer: New York has a rate of 380.2 per 100,000, ranking 18th and slightly above the national rate.
+- question: How many states are above the national violent crime rate?
+  answer: Twenty-two states top the national rate of 359.1, from Alaska down to Alabama at 359.9. Oregon at 331.0 is the first state below it.
 related:
 - title: Safest States in the US
   url: /rankings/crime/safest-states-in-the-us
@@ -335,13 +345,13 @@ related:
 visual_assets:
 - id: most-dangerous-states-by-violent-crime-rate-visual
   src: /images/rankings/crime/most-dangerous-states/most-dangerous-states-by-violent-crime-rate.jpg
-  alt: Most Dangerous States by Violent Crime Rate related to Most Dangerous States
-  caption: Most Dangerous States by Violent Crime Rate on Most Dangerous States.
+  alt: Alaska, the state with the highest violent crime rate
+  caption: Alaska has the highest violent crime rate at 724.1 per 100,000 residents.
   section: most-dangerous-states-by-violent-crime-rate
   layout: full-width-tall
-- id: states-with-a-violent-crime-rate-above-the-national-average-visual
+- id: why-maine-has-the-lowest-violent-crime-rate-visual
   src: /images/rankings/crime/most-dangerous-states/states-with-a-violent-crime-rate-above-the-national-average.jpg
-  alt: States With a Violent Crime Rate Above the National Average related to Most Dangerous States
-  caption: States With a Violent Crime Rate Above the National Average on Most Dangerous States.
-  section: states-with-a-violent-crime-rate-above-the-national-average
+  alt: Maine, the state with the lowest violent crime rate
+  caption: Maine has the lowest violent crime rate at 100.1 per 100,000 residents.
+  section: why-maine-has-the-lowest-violent-crime-rate
   layout: full-width-tall

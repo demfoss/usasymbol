@@ -145,6 +145,9 @@
             ["url"] = pageUrl,
             ["image"] = ImageObject(stateModel.State.FlagImageUrl ?? ViewData["OgImage"]?.ToString(), pageTitle),
             ["license"] = contentLicenseUrl,
+            ["author"] = Person(null),
+            ["reviewedBy"] = Reviewer(),
+            ["dateModified"] = (stateModel.HubContent?.DateModified ?? DateTime.UtcNow).ToString("yyyy-MM-dd"),
             ["creator"] = Organization(),
             ["publisher"] = Organization(),
             ["speakable"] = new Dictionary<string, object?>
@@ -178,7 +181,7 @@
                 ["@context"] = "https://schema.org",
                 ["@type"] = "ItemList",
                 ["@id"] = $"{pageUrl}#symbols",
-                ["name"] = $"Complete {stateModel.State.Name} State Symbols List",
+                ["name"] = $"{stateModel.State.Name} State Symbols List",
                 ["numberOfItems"] = sortedSymbols.Count,
                 ["itemListElement"] = sortedSymbols.Select((symbol, index) => new Dictionary<string, object?>
                 {
@@ -207,7 +210,7 @@
                 ["@context"] = "https://schema.org",
                 ["@type"] = "Dataset",
                 ["@id"] = $"{pageUrl}#dataset",
-                ["name"] = $"Complete {stateModel.State.Name} State Symbols List",
+                ["name"] = $"{stateModel.State.Name} State Symbols List",
                 ["description"] = pageDescription,
                 ["url"] = pageUrl,
                 ["creator"] = Organization(),

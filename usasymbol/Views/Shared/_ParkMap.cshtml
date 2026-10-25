@@ -64,10 +64,14 @@
         maxZoom: 18
     });
 
+    // Only give up when the tile server is unreachable: a couple of slow or failed tiles
+    // must not replace an otherwise working map with the fallback.
     var tileErrors = 0;
+    var tilesLoaded = 0;
+    tiles.on('tileload', function () { tilesLoaded += 1; });
     tiles.on('tileerror', function () {
         tileErrors += 1;
-        if (tileErrors >= 2) {
+        if (tilesLoaded === 0 && tileErrors >= 4) {
             el.classList.add('hidden');
             if (fallback) fallback.classList.remove('hidden');
         }

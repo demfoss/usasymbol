@@ -89,7 +89,12 @@ namespace USASymbol.Controllers
             ["desserts"] = "fa-solid fa-cookie-bite",
             ["spirits"] = "fa-solid fa-wine-bottle",
             ["dishes"] = "fa-solid fa-bowl-food",
-            ["crops"] = "fa-solid fa-wheat-awn"
+            ["crops"] = "fa-solid fa-wheat-awn",
+            ["pies"] = "fa-solid fa-circle-half-stroke",
+            ["cookies"] = "fa-solid fa-cookie",
+            ["mushrooms"] = "fa-solid fa-seedling",
+            ["snacks"] = "fa-solid fa-bowl-food",
+            ["breads"] = "fa-solid fa-bread-slice"
         };
 
         public SymbolController(
@@ -210,7 +215,10 @@ namespace USASymbol.Controllers
                     .Distinct()
                     .Count();
 
-                if (stateCount == 0 && listingAssets.TryGetValue(c.Type, out var listingFallback))
+                // The DB holds a row for every state in these categories, official or not; the listing YAML
+                // knows which ones really are official, so its filtered count wins.
+                var yamlCountWins = c.Type is "colors" or "coats-of-arms";
+                if ((stateCount == 0 || yamlCountWins) && listingAssets.TryGetValue(c.Type, out var listingFallback) && listingFallback.StateCount > 0)
                     stateCount = listingFallback.StateCount;
 
                 var previewImages = matchedSymbols
@@ -294,6 +302,12 @@ namespace USASymbol.Controllers
                 "fruits" => symbol.Type == "food" && GetFoodBucket(designation) == "fruits",
                 "vegetables" => symbol.Type == "food" && GetFoodBucket(designation) == "vegetables",
                 "nuts" => symbol.Type == "food" && GetFoodBucket(designation) == "nuts",
+                // Narrow hubs sit beside the broad buckets: a state pie is both a "pie" and a "dessert".
+                "pies" => symbol.Type == "food" && designation.Contains("pie", StringComparison.OrdinalIgnoreCase),
+                "cookies" => symbol.Type == "food" && designation.Contains("cookie", StringComparison.OrdinalIgnoreCase),
+                "mushrooms" => symbol.Type == "food" && designation.Contains("mushroom", StringComparison.OrdinalIgnoreCase),
+                "snacks" => symbol.Type == "food" && designation.Contains("snack", StringComparison.OrdinalIgnoreCase),
+                "breads" => symbol.Type == "food" && designation.Contains("bread", StringComparison.OrdinalIgnoreCase),
                 "desserts" => symbol.Type == "food" && GetFoodBucket(designation) == "desserts",
                 "spirits" => symbol.Type == "food" && GetFoodBucket(designation) == "spirits",
                 "dishes" => symbol.Type == "food" && GetFoodBucket(designation) == "dishes",
@@ -387,8 +401,16 @@ namespace USASymbol.Controllers
                     }
                 }
 
-                var stateCount = Regex.Matches(yaml, @"(?m)^\s*state_slug:\s*(.+?)\s*$")
-                    .Select(m => m.Groups[1].Value.Trim().Trim('"', '\''))
+                // Rows start at each "- ..." list item holding a state_slug; a row only counts when the state
+                // really has the symbol: "None designated" placeholders, non-Official colors and
+                // seal-shield look-alikes (coats of arms not marked "Heraldic") are skipped.
+                var stateCount = Regex.Split(yaml, @"(?m)^(?=\s*-\s+\w+:)")
+                    .Where(block => Regex.IsMatch(block, @"(?m)^\s*state_slug:"))
+                    .Where(block => !Regex.IsMatch(block, @"None designated|\bhas no\b", RegexOptions.IgnoreCase))
+                    .Where(block => !Regex.IsMatch(block, @"(?m)^\s*hex_codes:") || !Regex.IsMatch(block, @"(?m)^\s*status:\s*""?(?!Official)\w"))
+                    .Where(block => !Regex.IsMatch(block, @"(?m)^\s*coat_of_arms_slug:") ||
+                                    Regex.IsMatch(block, @"(?m)^\s*notes:\s*""Heraldic"))
+                    .Select(block => Regex.Match(block, @"(?m)^\s*state_slug:\s*(.+?)\s*$").Groups[1].Value.Trim().Trim('"', '\''))
                     .Where(slug => !string.IsNullOrWhiteSpace(slug))
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .Count();
@@ -470,7 +492,7 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var birdSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, birdSlug)
+            var birdSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, birdSlug, "bird")
                              ?? await _symbolService.GetSymbolAsync(state.Id, "bird");
             if (birdSymbol == null)
                 return NotFound();
@@ -527,7 +549,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var mammalSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, mammalSlug);
+            var mammalSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, mammalSlug, "mammal");
             if (mammalSymbol == null || mammalSymbol.Type != "mammal")
             {
                 _logger.LogWarning("mammal symbol not found for state: {StateSlug}, slug: {mammalSlug}", stateSlug, mammalSlug);
@@ -586,7 +608,7 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var firearmSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, firearmSlug)
+            var firearmSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, firearmSlug, "firearm")
                                 ?? await _symbolService.GetSymbolAsync(state.Id, "firearm");
             if (firearmSymbol == null)
                 return NotFound();
@@ -644,7 +666,7 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var dinosaurSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, dinosaurSlug)
+            var dinosaurSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, dinosaurSlug, "dinosaur")
                                 ?? await _symbolService.GetSymbolAsync(state.Id, "dinosaur");
             if (dinosaurSymbol == null)
                 return NotFound();
@@ -702,7 +724,7 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var beverageSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, beverageSlug);
+            var beverageSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, beverageSlug, "beverage");
             if (beverageSymbol == null || beverageSymbol.Type != "beverage")
                 return NotFound();
 
@@ -761,7 +783,7 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var sloganSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, sloganSlug);
+            var sloganSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, sloganSlug, "license-plate");
             if (sloganSymbol == null || sloganSymbol.Type != "license-plate")
                 return NotFound();
 
@@ -820,7 +842,7 @@ namespace USASymbol.Controllers
             if (state == null)
                 return NotFound();
 
-            var mottoSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, mottoSlug)
+            var mottoSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, mottoSlug, "motto")
                              ?? await _symbolService.GetSymbolAsync(state.Id, "motto");
             if (mottoSymbol == null)
                 return NotFound();
@@ -860,7 +882,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var nicknameSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, nicknameSlug)
+            var nicknameSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, nicknameSlug, "nickname")
                                 ?? await _symbolService.GetSymbolAsync(state.Id, "nickname");
             if (nicknameSymbol == null)
             {
@@ -906,7 +928,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var flowerSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, flowerSlug)
+            var flowerSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, flowerSlug, "flower")
                               ?? await _symbolService.GetSymbolAsync(state.Id, "flower");
             if (flowerSymbol == null)
             {
@@ -981,7 +1003,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var flagSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, flagSlug)
+            var flagSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, flagSlug, "flag")
                             ?? await _symbolService.GetSymbolAsync(state.Id, "flag");
             if (flagSymbol == null)
             {
@@ -1055,7 +1077,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var treeSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, treeSlug)
+            var treeSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, treeSlug, "tree")
                             ?? await _symbolService.GetSymbolAsync(state.Id, "tree");
             if (treeSymbol == null)
             {
@@ -1129,7 +1151,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var colorSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, colorSlug)
+            var colorSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, colorSlug, "color")
                              ?? await _symbolService.GetSymbolAsync(state.Id, "color");
             if (colorSymbol == null)
             {
@@ -1201,7 +1223,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var sealSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, sealSlug)
+            var sealSymbol = await _symbolService.GetSymbolBySlugAsync(state.Id, sealSlug, "state-seal")
                             ?? await _symbolService.GetSymbolAsync(state.Id, "state-seal");
             if (sealSymbol == null)
             {
@@ -1266,7 +1288,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, coatOfArmsSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, coatOfArmsSlug, "coat-of-arms")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "coat-of-arms");
             if (symbol == null)
             {
@@ -1341,7 +1363,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, soilSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, soilSlug, "soil")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "soil");
             if (symbol == null)
             {
@@ -1398,7 +1420,7 @@ namespace USASymbol.Controllers
             }
 
             // Try by slug first to correctly handle multi-fossil states (Ohio, Kansas, Vermont)
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, fossilSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, fossilSlug, "fossil")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "fossil");
             if (symbol == null)
             {
@@ -1445,7 +1467,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, sportSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, sportSlug, "sport")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "sport");
             if (symbol == null)
             {
@@ -1489,7 +1511,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, danceSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, danceSlug, "dance")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "dance");
             if (symbol == null)
             {
@@ -1533,7 +1555,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, songSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, songSlug, "song")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "song");
             if (symbol == null)
             {
@@ -1578,7 +1600,7 @@ namespace USASymbol.Controllers
             }
 
             // Try by slug first to correctly handle multi-insect states (Alabama, Delaware, Tennessee, etc.)
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, insectSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, insectSlug, "insect")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "insect");
             if (symbol == null)
             {
@@ -1625,7 +1647,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, mineralSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, mineralSlug, "mineral")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "mineral");
             if (symbol == null)
             {
@@ -1669,7 +1691,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, rockSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, rockSlug, "rock")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "rock");
             if (symbol == null)
             {
@@ -1722,7 +1744,7 @@ namespace USASymbol.Controllers
                 return NotFound();
             }
 
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, gemstoneSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, gemstoneSlug, "gemstone")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "gemstone");
             if (symbol == null)
             {
@@ -1776,7 +1798,7 @@ namespace USASymbol.Controllers
             }
 
             // Try by slug first to correctly handle multi-amphibian states
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, amphibianSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, amphibianSlug, "amphibian")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "amphibian");
             if (symbol == null)
             {
@@ -1824,7 +1846,7 @@ namespace USASymbol.Controllers
             }
 
             // Try by slug first to correctly handle multi-fish states
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, fishSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, fishSlug, "fish")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "fish");
             if (symbol == null)
             {
@@ -1872,7 +1894,7 @@ namespace USASymbol.Controllers
             }
 
             // Try by slug first to correctly handle multi-reptile states
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, reptileSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, reptileSlug, "reptile")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "reptile");
             if (symbol == null)
             {
@@ -1931,7 +1953,7 @@ namespace USASymbol.Controllers
             }
 
             // Try by slug first to correctly handle multi-food states (most states have several)
-            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, foodSlug)
+            var symbol = await _symbolService.GetSymbolBySlugAsync(state.Id, foodSlug, "food")
                          ?? await _symbolService.GetSymbolAsync(state.Id, "food");
             if (symbol == null)
             {

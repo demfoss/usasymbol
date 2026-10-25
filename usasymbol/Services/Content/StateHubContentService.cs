@@ -65,6 +65,7 @@ namespace USASymbol.Services
 
                 if (hub != null)
                 {
+                    hub.DateModified ??= File.GetLastWriteTimeUtc(path);
                     _cache.Set(cacheKey, hub, new MemoryCacheEntryOptions
                     {
                         SlidingExpiration = TimeSpan.FromHours(6)

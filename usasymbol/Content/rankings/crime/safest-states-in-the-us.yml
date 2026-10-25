@@ -15,17 +15,17 @@ hero_image_alt: Quiet small-town main street representing low violent crime data
 hero_image_caption: Maine has the lowest violent crime rate in the nation at 100.1 per 100,000 residents in 2024. New Hampshire follows closely at 110.1.
 author: USA Symbol Team
 date_published: '2026-08-13'
-date_modified: '2026-08-13'
+date_modified: '2026-10-25'
 seo:
   title: Safest States in the US | Map, Rates & Data
-  description: Maine has the lowest violent crime rate at 100.1 per 100,000 residents. New Hampshire follows at 110.1, based on 2024 data.
+  description: Maine has the lowest violent crime rate at 100.1 per 100,000 residents. New Hampshire follows at 110.1, and Alaska is highest at 724.1.
 page:
   h1: Safest States in the US
   quick_answer:
-  - Maine ranks as the safest state in the country, with the lowest violent crime rate at 100.1 per 100,000 residents in 2024, according to FBI data.
-  - New Hampshire is second-safest at 110.1, followed by Connecticut at 136.0 and Rhode Island at 153.6. Wyoming rounds out the top five at 203.4.
-  - The national violent crime rate was 359.1 per 100,000 in 2024. All five of the safest states sit well below that average.
-  methodology: Rates reflect violent crime, murder, rape, robbery, and aggravated assault combined, per 100,000 residents reported to the FBI Uniform Crime Reporting Program for 2024. States are ranked from lowest to highest rate.
+  - Maine is the safest state in the US, with a violent crime rate of 100.1 per 100,000 residents. Its largest city, Portland, has fewer than 70,000 people, so the state has no big urban core.
+  - Alaska has the highest rate at 724.1, followed by New Mexico at 717.1. Many Alaska villages are far from any road and have little local policing, and the state reports some of the nation's highest rates of sexual assault.
+  - Connecticut and Rhode Island are among the most crowded states in the country, yet they rank third and fourth. Massachusetts, their New England neighbor, lands 25th at 314.7.
+  methodology: FBI Uniform Crime Reporting Program estimates for 2024, counting murder, rape, robbery, and aggravated assault per 100,000 residents. States are ranked from the lowest rate to the highest.
   sources:
   - name: FBI Crime Data Explorer — Estimated Crimes in the United States
     url: https://cde.ucr.cjis.gov/
@@ -34,7 +34,7 @@ map:
   title: Safest States by Violent Crime Rate 2024
   image: /images/rankings/crime/safest-states-in-the-us/safest-states-in-the-us-map.webp
   image_alt: U.S. map shaded by violent crime rate per 100,000 residents, from Maine's low of 100.1 to Alaska's high of 724.1
-  caption: Maine has the lowest violent crime rate at 100.1 per 100,000, followed by New Hampshire at 110.1 and Connecticut at 136.0. Alaska is highest at 724.1.
+  caption: Maine has the lowest violent crime rate at 100.1 per 100,000, followed by New Hampshire at 110.1 and Connecticut at 136.0. Alaska is highest at 724.1, with New Mexico close behind at 717.1.
   metric_key: violent_crime_rate
   metric_label: Violent crime rate per 100K
   name_key: state
@@ -42,7 +42,7 @@ map:
   color_scale: linear
 table:
   caption: 2024 Safest States by Violent Crime Rate
-  note: Rate combines murder, rape, robbery, and aggravated assault per 100,000 residents, as reported to the FBI Uniform Crime Reporting Program for 2024. Table is sorted from safest to most dangerous.
+  note: Rate combines murder, rape, robbery, and aggravated assault per 100,000 residents in 2024. Sorted from safest to most dangerous.
   columns:
     rank: Rank
     state: State
@@ -304,27 +304,81 @@ table:
 sections:
 - id: safest-states-by-violent-crime-rate
   icon: fa-solid fa-shield-halved
-  title: Safest States by Violent Crime Rate
+  title: Why Maine Is the Safest State
   paragraphs:
-  - Maine posts the lowest violent crime rate in the country at 100.1 per 100,000 residents, just below New Hampshire's 110.1. Connecticut is third-safest at 136.0.
-  - Rhode Island follows at 153.6 and Wyoming at 203.4, rounding out the top five. All five sit at least 155 points below the national rate of 359.1.
+  - Maine records 100.1 violent crimes per 100,000 residents, the lowest rate in the country. Violent crime clusters in big cities, and Maine has none, since its largest city, Portland, has fewer than 70,000 residents. Most of the state is forest, farmland, and small towns.
+  - Alaska sits at the other end with 724.1, and its problem is not big cities. Many villages are reachable only by air or boat and have little or no local police presence, and Alaska reports some of the nation's highest rates of sexual assault. New Mexico is next at 717.1, as the full list of the [most dangerous states](/rankings/crime/most-dangerous-states) shows.
+  table:
+    columns:
+      rank: Rank
+      state: State
+      violent_crime_rate: Violent Crime Rate
+    rows:
+    - rank: 1
+      state: Maine
+      state_slug: maine
+      violent_crime_rate: 100.1
+    - rank: 2
+      state: New Hampshire
+      state_slug: new-hampshire
+      violent_crime_rate: 110.1
+    - rank: 3
+      state: Connecticut
+      state_slug: connecticut
+      violent_crime_rate: 136.0
+    - rank: 4
+      state: Rhode Island
+      state_slug: rhode-island
+      violent_crime_rate: 153.6
+    - rank: 5
+      state: Wyoming
+      state_slug: wyoming
+      violent_crime_rate: 203.4
+    - rank: 6
+      state: Mississippi
+      state_slug: mississippi
+      violent_crime_rate: 210.5
+    - rank: 7
+      state: Kentucky
+      state_slug: kentucky
+      violent_crime_rate: 213.1
+    - rank: 8
+      state: Hawaii
+      state_slug: hawaii
+      violent_crime_rate: 217.7
+    - rank: 8
+      state: New Jersey
+      state_slug: new-jersey
+      violent_crime_rate: 217.7
+    - rank: 10
+      state: Virginia
+      state_slug: virginia
+      violent_crime_rate: 217.9
+- id: safest-states-in-new-england
+  icon: fa-solid fa-tree
+  title: Safest New England States
+  paragraphs:
+  - Maine, New Hampshire, Connecticut, and Rhode Island take the top four places, with rates from 100.1 to 153.6. Connecticut and Rhode Island are among the most densely populated states, so crowding alone does not push a rate up.
+  - Vermont, one of the most rural states, ranks only 11th at 219.1. Massachusetts, home to Boston, is 25th at 314.7, which puts the region's safest and busiest states more than 200 points apart.
 - id: states-with-a-violent-crime-rate-below-the-national-average
   icon: fa-solid fa-chart-line
-  title: States With a Violent Crime Rate Below the National Average
+  title: States Below the National Violent Crime Rate
   paragraphs:
-  - 29 states post a violent crime rate below the national average of 359.1 per 100,000. Mississippi ranks sixth-safest at 210.5, and Kentucky follows at 213.1.
-  - Hawaii and New Jersey tie for eighth-safest at 217.7. Oregon is the last state under the national average, at 331.0.
+  - Twenty-nine states fall below the national rate of 359.1 per 100,000, and Oregon at 331.0 is the last of them. Wyoming, the least populous state in the country, ranks fifth at 203.4.
+  - Hawaii and New Jersey tie for eighth at 217.7. A chain of Pacific islands and the most densely populated state in the nation end up with the same rate. Murder is only one part of the total, and the [murder rate by state](/rankings/crime/murder-rate-by-state) follows a different order.
 faq:
-- question: What is the safest state in America?
-  answer: Maine has the lowest violent crime rate at 100.1 per 100,000 residents in 2024, just ahead of New Hampshire at 110.1.
-- question: What is the second safest state?
-  answer: New Hampshire ranks second-safest at 110.1 violent crimes per 100,000, only 10 points behind top-ranked Maine.
+- question: What is the safest state in the US?
+  answer: Maine is the safest state. New Hampshire is second at 110.1, and those two are the only states under 120 violent crimes per 100,000 residents.
+- question: Which state has the highest violent crime rate?
+  answer: Alaska, at 724.1 per 100,000 residents. New Mexico follows at 717.1 and Tennessee at 592.3.
 - question: Is Vermont a safe state?
-  answer: Vermont ranks 11th-safest with a violent crime rate of 219.1 per 100,000, well below the national average of 359.1.
-- question: Which states are the safest?
-  answer: Maine, New Hampshire, Connecticut, Rhode Island, and Wyoming are the five states with the lowest violent crime rates, all below 204 per 100,000 in 2024.
+  answer: Vermont ranks 11th at 219.1, well below the national rate of 359.1. Maine and New Hampshire both have lower rates.
 - question: What is the violent crime rate in New York?
-  answer: New York has a violent crime rate of 380.2 per 100,000, ranking 33rd-safest among the states.
+  answer: New York has a rate of 380.2 per 100,000, which ranks 33rd and sits just above the national rate of 359.1.
+- question: What is the national violent crime rate?
+  answer: 359.1 per 100,000 residents in 2024. Twenty-nine states fall below it.
+- question: What is the violent crime rate in California?
+  answer: California has a rate of 486.0 per 100,000, ranking 45th. Texas is 34th at 389.4 and Florida 20th at 267.1.
 related:
 - title: Most Dangerous States
   url: /rankings/crime/most-dangerous-states

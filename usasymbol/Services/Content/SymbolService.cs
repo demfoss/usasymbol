@@ -62,6 +62,12 @@ namespace USASymbol.Services
                 .FirstOrDefaultAsync(s => s.StateId == stateId && s.Slug == slug);
         }
 
+        public async Task<Symbol?> GetSymbolBySlugAsync(int stateId, string slug, string type)
+        {
+            return await _context.Symbols
+                .FirstOrDefaultAsync(s => s.StateId == stateId && s.Slug == slug && s.Type == type);
+        }
+
         internal static List<VisualAsset> VisualAssets(Dictionary<object, object> data)
         {
             return USASymbol.Services.Yaml.YamlParse.VisualAssets(data);

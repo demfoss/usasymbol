@@ -153,7 +153,7 @@ namespace USASymbol.Services
                 return result;
             }
 
-            foreach (var file in GetLatestFiles(basePath, "*.yml", take))
+            foreach (var file in GetLatestFiles(basePath, "*.yml", take, IsRailSafe))
             {
                 var rel = Path.GetRelativePath(basePath, file);
                 var parts = rel.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
@@ -195,7 +195,15 @@ namespace USASymbol.Services
             return result;
         }
 
-        private static IEnumerable<string> GetLatestFiles(string basePath, string pattern, int take)
+        // The rail sits under symbol pages (nicknames, flowers), so dark crime rankings are kept out of it.
+        private static bool IsRailSafe(string file)
+        {
+            var folder = Path.GetFileName(Path.GetDirectoryName(file)) ?? string.Empty;
+            return !string.Equals(folder, "crime", StringComparison.OrdinalIgnoreCase)
+                && !RankingTopicTags.Derive(Path.GetFileNameWithoutExtension(file)).Contains("Crime & Safety");
+        }
+
+        private static IEnumerable<string> GetLatestFiles(string basePath, string pattern, int take, Func<string, bool>? filter = null)
         {
             if (!Directory.Exists(basePath) || take <= 0)
             {
@@ -203,6 +211,7 @@ namespace USASymbol.Services
             }
 
             return Directory.EnumerateFiles(basePath, pattern, SearchOption.AllDirectories)
+                .Where(path => filter == null || filter(path))
                 .Select(path => new FileInfo(path))
                 .OrderByDescending(file => file.LastWriteTimeUtc)
                 .Take(take)

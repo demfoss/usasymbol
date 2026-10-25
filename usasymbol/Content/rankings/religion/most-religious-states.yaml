@@ -13,20 +13,21 @@ hero_image_alt: "Map of the United States shaded by the share of highly religiou
 
 author: "USA Symbol Team"
 date_published: "2026-05-24"
-date_modified: "2026-05-26"
+date_modified: "2026-10-25"
 
 seo:
-  title: "Most Religious States 2026 | Map & Rankings"
-  description: "Mississippi has the highest share of highly religious adults at 50%, followed by South Carolina, Louisiana, South Dakota, and Utah."
+  title: "Most Religious States | Map, Rankings & Facts"
+  description: "Mississippi is the most religious state, with 50% of adults highly religious. Vermont is the least religious at 13%, and Utah ranks sixth at 42%."
 
 page:
   h1: "Most Religious States"
 
   quick_answer:
-    - "Mississippi is the most religious state in 2026, with 50% of adults classified as highly religious. South Carolina ranks second at 46%, followed by Louisiana and South Dakota at 45%, and Utah at 42%."
-    - "The ranking is based on Pew Research Center's 2023–24 Religious Landscape Study, which classifies adults as highly religious using four combined measures: prayer frequency, belief in God or a universal spirit with absolute certainty, the importance of religion in daily life, and religious service attendance."
+    - "The most religious state is Mississippi, where 50% of adults are highly religious. Southern Baptist and Black Protestant congregations anchor community life across its small towns and rural counties."
+    - "Vermont is the least religious state at 13%. Only 17% of Vermonters attend services at least monthly and 30% believe in God with absolute certainty, the lowest marks in the country on both."
+    - "Utah ranks sixth at 42%, yet only 55% of Utahns say they are certain God exists, the lowest of any top-10 state. Its 48% service attendance still beats Louisiana, Tennessee, and Arkansas."
 
-  methodology: "This ranking uses Pew Research Center's 2023–24 Religious Landscape Study (n=36,908, conducted July 17, 2023–March 4, 2024). Pew classifies adults as highly religious based on a combined scale using prayer frequency, belief in God or a universal spirit with absolute certainty, the importance of religion, and religious service attendance at least monthly. Adults scoring 7–8 out of 8 are classified as highly religious."
+  methodology: "Pew Research Center's 2023–24 Religious Landscape Study of 36,908 adults. Highly religious means scoring 7–8 out of 8 on prayer, certain belief in God or a universal spirit, importance of religion, and monthly service attendance."
 
   sources:
     - name: "Pew Research Center — How religious is your state? (2023–24 Religious Landscape Study)"
@@ -34,10 +35,10 @@ page:
       description: "State-level religiousness rankings from a 36,908-respondent national survey, published September 16, 2025"
 
 map:
-  title: "Most Religious States 2026: Highly Religious Adults (%) Map"
+  title: "Most Religious States Map"
   image: "/images/rankings/religion/most-religious-states/most-religious-states-map.svg"
   image_alt: "Map of the United States shaded by the share of highly religious adults, with the Deep South darkest and northern New England lightest"
-  caption: "Mississippi leads the ranking, while South Carolina, Louisiana, and South Dakota cluster close behind at the high end."
+  caption: "Mississippi leads at 50%, followed by South Carolina at 46% and Louisiana and South Dakota at 45%. Vermont is lowest at 13%."
   metric_key: highly_religious_pct
   metric_label: "highly religious adults"
   color_scheme: orange
@@ -559,38 +560,139 @@ table:
       believe_in_god_pct: 30
 
 sections:
-  - id: "mississippi-leads-all-four-sub-measures"
-    icon: "fa-solid fa-chart-bar"
-    title: "Mississippi Leads on All Four Sub-Measures"
+  - id: "why-mississippi-most-religious"
+    icon: "fa-solid fa-church"
+    title: "Why Mississippi Is the Most Religious State"
     paragraphs:
-      - "Mississippi (50%) is the only state that scores highest on all four Pew sub-measures simultaneously: religion_important (61%), attend_services (54%), pray_daily (62%), and believe_in_god (74%). South Carolina (46%) ranks second overall but does not lead on any individual sub-measure. The 4-point gap between first and second place is larger than the 1-point gap separating second from third."
-      - "Mississippi's believe_in_god rate (74%) is 3 points above Arkansas (73%) and 4 points above South Carolina (71%), both of which rank lower overall. Its pray_daily rate (62%) is 4 points above Louisiana (58%) and Arkansas (58%), the next closest states on that measure."
+      - "Mississippi tops all four measures, from 54% attending services to 74% believing in God with certainty. Church life there runs through Southern Baptist and Black Protestant congregations in small towns, and the largest church, Pinelake Church, is Southern Baptist. Compare it with the [biggest church in each state](/rankings/religion/biggest-church-by-state)."
+      - "South Carolina sits four points behind at 46%, a wider gap than the single point separating it from Louisiana at 45%. Tennessee at 44% rounds out a top five where South Dakota is the only state outside the South."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        highly_religious_pct: "Religious Adults (%)"
+        attend_services_pct: "Attend Services (%)"
+      rows:
+        - rank: 1
+          state: "Mississippi"
+          state_slug: "mississippi"
+          highly_religious_pct: "50%"
+          attend_services_pct: "54%"
+        - rank: 2
+          state: "South Carolina"
+          state_slug: "south-carolina"
+          highly_religious_pct: "46%"
+          attend_services_pct: "47%"
+        - rank: 3
+          state: "Louisiana"
+          state_slug: "louisiana"
+          highly_religious_pct: "45%"
+          attend_services_pct: "45%"
+        - rank: 3
+          state: "South Dakota"
+          state_slug: "south-dakota"
+          highly_religious_pct: "45%"
+          attend_services_pct: "50%"
+        - rank: 5
+          state: "Tennessee"
+          state_slug: "tennessee"
+          highly_religious_pct: "44%"
+          attend_services_pct: "44%"
+        - rank: 6
+          state: "Utah"
+          state_slug: "utah"
+          highly_religious_pct: "42%"
+          attend_services_pct: "48%"
+        - rank: 7
+          state: "North Carolina"
+          state_slug: "north-carolina"
+          highly_religious_pct: "41%"
+          attend_services_pct: "43%"
+        - rank: 8
+          state: "Alabama"
+          state_slug: "alabama"
+          highly_religious_pct: "40%"
+          attend_services_pct: "44%"
+        - rank: 8
+          state: "Arkansas"
+          state_slug: "arkansas"
+          highly_religious_pct: "40%"
+          attend_services_pct: "41%"
 
-  - id: "utah-believe-gap"
-    icon: "fa-solid fa-circle-info"
-    title: "Utah's believe_in_god Rate Is the Lowest in the Top 10"
+  - id: "why-vermont-least-religious"
+    icon: "fa-solid fa-snowflake"
+    title: "Why Vermont Is the Least Religious State"
     paragraphs:
-      - "Utah (42%) ranks sixth most religious, but its believe_in_god rate (55%) is the lowest of any state in the top 10. Arkansas (40%), which ranks 8th, scores 73% on believe_in_god, 18 points higher than Utah despite ranking lower overall. Louisiana (45%), ranked 3rd, scores 72% on believe_in_god versus Utah's 55%."
-      - "South Dakota (45%) ties Louisiana for third place. Its attend_services rate (50%) is the highest of any top-10 state other than Mississippi (54%). South Dakota's believe_in_god rate (62%) is 10 points below Louisiana's (72%) despite both states scoring 45% overall."
+      - "Vermont has the lowest share of highly religious adults at 13%, and it also trails on attendance (17%) and certain belief in God (30%). White-steepled village churches are a Vermont postcard staple, but a culture that prizes independence from institutions and the back-to-the-land newcomers of the 1960s and 1970s helped make it one of the most secular states."
+      - "New Hampshire (15%) and Maine (17%) fill the next two spots, so the whole northern New England corner sits at the bottom. The full [least religious states](/rankings/religion/least-religious-states) ranking shows Nevada and Oregon tied at 19% just outside that group."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        highly_religious_pct: "Religious Adults (%)"
+        attend_services_pct: "Attend Services (%)"
+      rows:
+        - rank: 50
+          state: "Vermont"
+          state_slug: "vermont"
+          highly_religious_pct: "13%"
+          attend_services_pct: "17%"
+        - rank: 49
+          state: "New Hampshire"
+          state_slug: "new-hampshire"
+          highly_religious_pct: "15%"
+          attend_services_pct: "18%"
+        - rank: 48
+          state: "Maine"
+          state_slug: "maine"
+          highly_religious_pct: "17%"
+          attend_services_pct: "19%"
+        - rank: 46
+          state: "Nevada"
+          state_slug: "nevada"
+          highly_religious_pct: "19%"
+          attend_services_pct: "20%"
+        - rank: 46
+          state: "Oregon"
+          state_slug: "oregon"
+          highly_religious_pct: "19%"
+          attend_services_pct: "20%"
+        - rank: 45
+          state: "Massachusetts"
+          state_slug: "massachusetts"
+          highly_religious_pct: "20%"
+          attend_services_pct: "20%"
 
-  - id: "four-way-tie-rank-10"
-    icon: "fa-solid fa-equals"
-    title: "Four States Tie at Rank 10 With Different Sub-Score Profiles"
+  - id: "is-utah-religious"
+    icon: "fa-solid fa-mountain"
+    title: "Is Utah One of the Most Religious States"
     paragraphs:
-      - "Georgia, Kansas, North Dakota, and Oklahoma all score 38% highly religious, tying at rank 10. North Dakota leads the group on attend_services (43%) but scores lowest on believe_in_god (59%). Georgia leads on pray_daily (56%) and believe_in_god (66%). Kansas scores lowest on both attend_services (39%) and pray_daily (50%)."
+      - "Utah ranks sixth at 42%, but its strength is practice rather than certainty. Attendance reaches 48% and daily prayer 51%, yet only 55% say they believe in God with absolute certainty, against 73% in Arkansas and 74% in Mississippi."
+      - "Salt Lake City is the headquarters of the Church of Jesus Christ of Latter-day Saints, which shapes the weekly rhythm of Utah life. South Dakota, tied for third at 45%, shows a similar pattern, with 50% attendance but only 62% certain belief."
 
 faq:
   - question: "What is the most religious state in the United States?"
-    answer: "Mississippi is the most religious state, with 50% of adults classified as highly religious in Pew Research Center's 2023–24 Religious Landscape Study. South Carolina ranks second at 46%, followed by Louisiana and South Dakota at 45%."
+    answer: "Mississippi, where 50% of adults are highly religious. South Carolina is second at 46%, and Louisiana and South Dakota tie for third at 45%."
 
   - question: "What is the least religious state in the United States?"
-    answer: "Vermont is the least religious state, with 13% of adults classified as highly religious in Pew Research Center's 2023–24 Religious Landscape Study. New Hampshire (15%) and Maine (17%) rank second and third least religious."
+    answer: "Vermont, at 13%. New Hampshire (15%) and Maine (17%) are the next lowest."
 
-  - question: "Why is Mississippi the most religious state?"
-    answer: "Mississippi scores highest on all four Pew sub-measures simultaneously: religion_important (61%), attend_services (54%), pray_daily (62%), and believe_in_god (74%). No other state in the top 10 leads on all four at once."
+  - question: "Why does Mississippi have the most religious adults?"
+    answer: "Mississippi ranks first on prayer, attendance, belief, and importance of religion all at once, with 62% praying daily and 61% calling religion important. No other state leads on all four."
 
   - question: "Is Utah more religious than Mississippi?"
-    answer: "No. Mississippi (50% highly religious) ranks above Utah (42%, sixth). Utah's believe_in_god rate (55%) is the lowest of any state in the top 10, 19 points below Mississippi's (74%)."
+    answer: "No. Utah is at 42% and Mississippi at 50%. Utah's belief in God with certainty (55%) is 19 points below Mississippi's 74%."
 
-  - question: "How does Pew Research measure religiousness by state?"
-    answer: "Pew uses four measures: daily prayer, belief in God or a universal spirit with absolute certainty, religion very important in daily life, and attending religious services at least monthly. Adults scoring 7–8 out of 8 are classified as highly religious. The 2023–24 study surveyed 36,908 U.S. adults."
+  - question: "Which state attends church the most?"
+    answer: "Mississippi, where 54% of adults attend services at least monthly. South Dakota is next at 50%, ahead of Utah at 48% and South Carolina at 47%."
+
+  - question: "Which states have the lowest church attendance?"
+    answer: "Vermont at 17%, New Hampshire at 18%, and Maine and Hawaii at 19%."
+
+related:
+  - title: "Least Religious States"
+    url: /rankings/religion/least-religious-states
+  - title: "Biggest Church in Each State"
+    url: /rankings/religion/biggest-church-by-state
+  - title: "Red and Blue States"
+    url: /rankings/government/red-and-blue-states
