@@ -1,0 +1,169 @@
+type: ranking
+slug: coal-production-by-state
+category: infrastructure
+url: /rankings/infrastructure/coal-production-by-state
+
+hero_image: "/images/rankings/october-31-photos/coal-hero.jpg"
+hero_image_alt: "Large haul truck carrying coal through an open-pit mine"
+
+author: "USA Symbol Team"
+date_published: "2026-10-31"
+date_modified: "2026-10-31"
+seo:
+  title: "Coal Production by State 2026 | Map & Rankings"
+  description: "Wyoming mined 190,731 thousand short tons of coal in 2024, more than any other state. West Virginia is second and Pennsylvania third."
+page:
+  h1: "Coal Production by State 2026"
+  quick_answer:
+    - "Coal production by state is led by Wyoming at 190,731 thousand short tons in 2024, dug from the thick, shallow seams of the Powder River Basin."
+    - "West Virginia ranks second at 79,533 thousand short tons, mostly from underground mines in the Appalachian coalfields. Pennsylvania is third at 40,597 and is home to nearly all American anthracite."
+    - "Missouri is last among the 20 producing states at 147 thousand short tons. Alabama posted the biggest gain of any state, up 19.4% to 14,382 from its steelmaking coal mines, while Wyoming fell 19.6% from 237,261."
+  methodology: "Coal production in thousand short tons for 2024 and 2023 from the U.S. Energy Information Administration Annual Coal Report, Table 1. Only states with reported coal mining are listed, and Oklahoma, which reported none in 2024, is omitted."
+  sources:
+    - name: "U.S. Energy Information Administration. Annual Coal Report 2024"
+      url: "https://www.eia.gov/coal/annual/"
+      description: "Coal production and number of mines by state and mine type, 2024 and 2023"
+table:
+  caption: "Coal production by state, 2024, in thousand short tons"
+  columns:
+    rank: "Rank"
+    state: "State"
+    coal_production: "Coal Produced 2024 (thousand short tons)"
+    coal_production_2023: "Coal Produced 2023 (thousand short tons)"
+    change_pct: "Change From 2023"
+  metric_default: coal_production
+  sort_default: desc
+  column_formats:
+    coal_production: "N0"
+    coal_production_2023: "N0"
+    change_pct: "0.0'%'"
+  rows:
+    - { rank: 1, state: "Wyoming", state_slug: "wyoming", postal_code: "WY", coal_production: 190731, coal_production_2023: 237261, change_pct: -19.6 }
+    - { rank: 2, state: "West Virginia", state_slug: "west-virginia", postal_code: "WV", coal_production: 79533, coal_production_2023: 84560, change_pct: -5.9 }
+    - { rank: 3, state: "Pennsylvania", state_slug: "pennsylvania", postal_code: "PA", coal_production: 40597, coal_production_2023: 42647, change_pct: -4.8 }
+    - { rank: 4, state: "Illinois", state_slug: "illinois", postal_code: "IL", coal_production: 34230, coal_production_2023: 36865, change_pct: -7.2 }
+    - { rank: 5, state: "Montana", state_slug: "montana", postal_code: "MT", coal_production: 26983, coal_production_2023: 29072, change_pct: -7.2 }
+    - { rank: 6, state: "North Dakota", state_slug: "north-dakota", postal_code: "ND", coal_production: 25415, coal_production_2023: 24087, change_pct: 5.5 }
+    - { rank: 7, state: "Kentucky", state_slug: "kentucky", postal_code: "KY", coal_production: 24309, coal_production_2023: 28346, change_pct: -14.2 }
+    - { rank: 8, state: "Indiana", state_slug: "indiana", postal_code: "IN", coal_production: 20147, coal_production_2023: 23782, change_pct: -15.3 }
+    - { rank: 9, state: "Alabama", state_slug: "alabama", postal_code: "AL", coal_production: 14382, coal_production_2023: 12043, change_pct: 19.4 }
+    - { rank: 10, state: "Colorado", state_slug: "colorado", postal_code: "CO", coal_production: 12391, coal_production_2023: 12371, change_pct: 0.2 }
+    - { rank: 11, state: "Texas", state_slug: "texas", postal_code: "TX", coal_production: 12297, coal_production_2023: 13815, change_pct: -11.0 }
+    - { rank: 12, state: "Virginia", state_slug: "virginia", postal_code: "VA", coal_production: 9750, coal_production_2023: 10548, change_pct: -7.6 }
+    - { rank: 13, state: "Utah", state_slug: "utah", postal_code: "UT", coal_production: 7420, coal_production_2023: 6921, change_pct: 7.2 }
+    - { rank: 14, state: "New Mexico", state_slug: "new-mexico", postal_code: "NM", coal_production: 7199, coal_production_2023: 7987, change_pct: -9.9 }
+    - { rank: 15, state: "Mississippi", state_slug: "mississippi", postal_code: "MS", coal_production: 2041, coal_production_2023: 2685, change_pct: -24.0 }
+    - { rank: 16, state: "Ohio", state_slug: "ohio", postal_code: "OH", coal_production: 1795, coal_production_2023: 1947, change_pct: -7.8 }
+    - { rank: 17, state: "Maryland", state_slug: "maryland", postal_code: "MD", coal_production: 1321, coal_production_2023: 1280, change_pct: 3.2 }
+    - { rank: 18, state: "Alaska", state_slug: "alaska", postal_code: "AK", coal_production: 1004, coal_production_2023: 1009, change_pct: -0.5 }
+    - { rank: 19, state: "Louisiana", state_slug: "louisiana", postal_code: "LA", coal_production: 264, coal_production_2023: 289, change_pct: -8.5 }
+    - { rank: 20, state: "Missouri", state_slug: "missouri", postal_code: "MO", coal_production: 147, coal_production_2023: 140, change_pct: 5.5 }
+map:
+  title: "Coal Production by State"
+  image_alt: "Map of the United States colored by 2024 coal production in thousand short tons"
+  caption: "Wyoming is highest at 190,731 thousand short tons and Missouri lowest at 147. West Virginia at 79,533 and Pennsylvania at 40,597 follow Wyoming."
+  metric_key: coal_production
+  metric_label: "Coal Produced 2024 (thousand short tons)"
+  name_key: state
+  color_scheme: amber
+  color_scale: log
+sections:
+  - id: why-wyoming-produces-the-most-coal
+    icon: "fa-solid fa-industry"
+    title: "Why Wyoming Produces the Most Coal"
+    paragraphs:
+      - "Wyoming mined more than twice as much coal as West Virginia. The Powder River Basin holds seams up to 100 feet thick under shallow cover, so crews strip the rock off and load coal straight from open pits instead of tunneling for it, which keeps costs among the lowest in the world."
+      - "The coal is sub-bituminous, low in sulfur and burned mostly in power plants, and trains carry it to utilities across the country. Output fell from 237,261 to 190,731 as plants switched to natural gas and [wind energy](/rankings/infrastructure/wind-energy-by-state)."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        coal_production: "Coal Produced 2024 (thousand short tons)"
+      rows:
+        - { rank: 1, state: "Wyoming", coal_production: "190,731" }
+        - { rank: 2, state: "West Virginia", coal_production: "79,533" }
+        - { rank: 3, state: "Pennsylvania", coal_production: "40,597" }
+        - { rank: 4, state: "Illinois", coal_production: "34,230" }
+        - { rank: 5, state: "Montana", coal_production: "26,983" }
+        - { rank: 6, state: "North Dakota", coal_production: "25,415" }
+        - { rank: 7, state: "Kentucky", coal_production: "24,309" }
+        - { rank: 8, state: "Indiana", coal_production: "20,147" }
+        - { rank: 9, state: "Alabama", coal_production: "14,382" }
+        - { rank: 10, state: "Colorado", coal_production: "12,391" }
+  - id: west-virginia-and-appalachian-coal-production
+    icon: "fa-solid fa-mountain"
+    title: "West Virginia and Appalachian Coal Production"
+    paragraphs:
+      - "West Virginia produced 79,533 thousand short tons, and most of it came out of underground mines in the northern and southern coalfields. Much of that bituminous coal is the metallurgical grade that steelmakers turn into coke, which is why the state stays on top of the list across the [Appalachian states](/rankings/geography/appalachian-states)."
+      - "Pennsylvania mines 2,958 thousand short tons of anthracite, a hard coal found around Scranton and Wilkes-Barre. Alabama grew 19.4% on its Warrior Basin steelmaking coal, while Kentucky shrank 14.2%."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        coal_production: "Coal Produced 2024 (thousand short tons)"
+        change_pct: "Change From 2023"
+      rows:
+        - { rank: 2, state: "West Virginia", coal_production: "79,533", change_pct: "-5.9%" }
+        - { rank: 3, state: "Pennsylvania", coal_production: "40,597", change_pct: "-4.8%" }
+        - { rank: 7, state: "Kentucky", coal_production: "24,309", change_pct: "-14.2%" }
+        - { rank: 9, state: "Alabama", coal_production: "14,382", change_pct: "19.4%" }
+        - { rank: 12, state: "Virginia", coal_production: "9,750", change_pct: "-7.6%" }
+        - { rank: 16, state: "Ohio", coal_production: "1,795", change_pct: "-7.8%" }
+  - id: states-with-the-least-coal-production
+    icon: "fa-solid fa-gem"
+    title: "States With the Least Coal Production"
+    paragraphs:
+      - "Missouri produced just 147 thousand short tons from a single mine, and Louisiana 264 from another. Louisiana's mine digs lignite, the soft brown coal that also feeds nearby power plants in Mississippi and Texas."
+      - "Alaska's 1,004 comes from one mine near Healy, which supplies power plants around Fairbanks. Where coal fades, renewables often fill the gap, as the [renewable energy by state](/rankings/infrastructure/renewable-energy-by-state) ranking shows."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        coal_production: "Coal Produced 2024 (thousand short tons)"
+      rows:
+        - { rank: 20, state: "Missouri", coal_production: "147" }
+        - { rank: 19, state: "Louisiana", coal_production: "264" }
+        - { rank: 18, state: "Alaska", coal_production: "1,004" }
+        - { rank: 17, state: "Maryland", coal_production: "1,321" }
+        - { rank: 16, state: "Ohio", coal_production: "1,795" }
+        - { rank: 15, state: "Mississippi", coal_production: "2,041" }
+        - { rank: 14, state: "New Mexico", coal_production: "7,199" }
+        - { rank: 13, state: "Utah", coal_production: "7,420" }
+        - { rank: 12, state: "Virginia", coal_production: "9,750" }
+        - { rank: 11, state: "Texas", coal_production: "12,297" }
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/october-31-photos/coal-excavators.jpg"
+    alt: "Excavators working in a large surface mine"
+    section: why-wyoming-produces-the-most-coal
+    layout: full-width-tall
+  - id: section-2
+    src: "/images/rankings/october-31-photos/coal-miners.jpg"
+    alt: "Miners pushing a cart through a dark mine shaft"
+    section: west-virginia-and-appalachian-coal-production
+    layout: full-width-tall
+
+faq:
+  - question: "Which state produces the most coal?"
+    answer: "Wyoming, with 190,731 thousand short tons in 2024. Its surface mines in the Powder River Basin work seams far thicker than any in the East."
+  - question: "How much coal does West Virginia produce?"
+    answer: "West Virginia produced 79,533 thousand short tons in 2024, second in the country and down 5.9% from 2023. Coal has been mined there since the 1800s, and the state is still the leading source of Appalachian steelmaking coal."
+  - question: "How much coal does Pennsylvania produce?"
+    answer: "Pennsylvania produced 40,597 thousand short tons, third in the country. Nearly all American anthracite comes from its northeastern fields."
+  - question: "Which state produces the least coal?"
+    answer: "Missouri, at 147 thousand short tons from one mine. Louisiana is next lowest at 264."
+  - question: "Which states produced more coal in 2024 than in 2023?"
+    answer: "Six did. Alabama rose 19.4%, Utah 7.2%, North Dakota and Missouri 5.5% each, Maryland 3.2% and Colorado 0.2%. Every other state mined less."
+  - question: "Does North Dakota produce coal as well as oil?"
+    answer: "Yes, 25,415 thousand short tons of lignite, sixth in the country, mostly from surface mines that feed power plants and a coal gasification plant. The state's Bakken wells put it near the top of [oil production by state](/rankings/infrastructure/oil-production-by-state) too."
+related:
+  - title: "Wind Energy by State"
+    url: "/rankings/infrastructure/wind-energy-by-state"
+  - title: "Solar Energy by State"
+    url: "/rankings/infrastructure/solar-energy-by-state"
+  - title: "Renewable Energy by State"
+    url: "/rankings/infrastructure/renewable-energy-by-state"
+  - title: "Oil Production by State"
+    url: "/rankings/infrastructure/oil-production-by-state"
+  - title: "Appalachian States"
+    url: "/rankings/geography/appalachian-states"
