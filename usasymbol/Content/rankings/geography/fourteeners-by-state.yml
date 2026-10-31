@@ -1,0 +1,114 @@
+type: ranking
+slug: fourteeners-by-state
+category: geography
+tags: [Geography]
+url: /rankings/geography/fourteeners-by-state
+
+hero_image: "/images/rankings/october-31-photos/fourteeners-hero.jpg"
+hero_image_alt: "Rocky Colorado fourteener summit above an alpine lake"
+
+
+author: "USA Symbol Team"
+date_published: "2026-10-31"
+date_modified: "2026-10-31"
+seo:
+  title: "Fourteeners by State | Map, Peaks & Elevations"
+  description: "Colorado has 53 fourteeners, more than any other state. Alaska has 29, California 12 and Washington 2. Denali is the highest at 20,310 feet."
+page:
+  h1: "Fourteeners by State"
+  quick_answer:
+    - "Colorado has the most fourteeners at 53, thanks to the Sawatch, Mosquito and Sangre de Cristo ranges, which pack dozens of summits above 14,000 feet into one stretch of the Rockies."
+    - "Alaska has 29 and holds the tallest of all, Denali at 20,310 feet. California has 12, topped by Mount Whitney, the highest summit in the lower 48. Washington has 2, both on Mount Rainier."
+  methodology: "Peaks of 14,000 feet or higher with at least 300 feet of topographic prominence, from the Wikipedia list of 96 U.S. fourteeners. Border peaks are counted in Alaska. Only states with at least one are listed. Lists with looser rules, such as the 58 Colorado peaks on many hiking lists, give higher counts."
+  sources:
+    - name: "Wikipedia. Fourteener"
+      url: "https://en.wikipedia.org/wiki/Fourteener"
+      description: "Fourteeners by state using a 300-foot prominence rule"
+    - name: "Wikipedia. List of the highest major summits of the United States"
+      url: "https://en.wikipedia.org/wiki/List_of_the_highest_major_summits_of_the_United_States"
+      description: "Peak elevations, prominence and state"
+    - name: "USGS. Topographic maps and elevation data"
+      url: "https://www.usgs.gov/"
+      description: "Federal survey data behind peak elevations"
+table:
+  caption: "Fourteeners (peaks of 14,000 feet or higher) by state"
+  columns:
+    rank: "Rank"
+    state: "State"
+    fourteeners: "Fourteeners"
+    highest_peak: "Highest fourteener"
+    elevation_ft: "Elevation (ft)"
+  column_formats:
+    elevation_ft: "N0"
+  metric_default: fourteeners
+  sort_default: desc
+  rows:
+    - { rank: 1, state: "Colorado", state_slug: "colorado", postal_code: "CO", fourteeners: 53, highest_peak: "Mount Elbert", elevation_ft: 14440 }
+    - { rank: 2, state: "Alaska", state_slug: "alaska", postal_code: "AK", fourteeners: 29, highest_peak: "Denali", elevation_ft: 20310 }
+    - { rank: 3, state: "California", state_slug: "california", postal_code: "CA", fourteeners: 12, highest_peak: "Mount Whitney", elevation_ft: 14505 }
+    - { rank: 4, state: "Washington", state_slug: "washington", postal_code: "WA", fourteeners: 2, highest_peak: "Mount Rainier", elevation_ft: 14417 }
+map:
+  title: "Fourteeners by State"
+  image_alt: "Map of the United States colored by the number of peaks of 14,000 feet or higher in each state"
+  caption: "Colorado has 53 fourteeners and Alaska 29. California has 12 and Washington 2, and no other state has any."
+  metric_key: fourteeners
+  metric_label: "Fourteeners"
+  name_key: state
+  color_scheme: orange
+  color_scale: log
+sections:
+  - id: why-colorado-has-the-most-fourteeners
+    icon: "fa-solid fa-mountain"
+    title: "Why Colorado Has the Most Fourteeners"
+    paragraphs:
+      - "Colorado leads with 53 because the Rocky Mountains peak here. Mount Elbert, at 14,440 feet in the Sawatch Range, is the highest summit of the Rockies and of Colorado, and neighbors such as Mount Massive and Mount Harvard crowd just below it."
+      - "Few other places hold so many summits within a few thousand feet of the same height. Even the valleys at the foot of these peaks sit high, which is why Colorado also tops the [average elevation by state](/rankings/geography/average-elevation-by-state) list."
+  - id: fourteeners-in-alaska-california-and-washington
+    icon: "fa-solid fa-person-hiking"
+    title: "Fourteeners in Alaska, California and Washington"
+    paragraphs:
+      - "Alaska has 29, and they dwarf the rest. Denali at 20,310 feet is the tallest mountain in North America, and the Alaska and St. Elias ranges hold peaks that rise far above the 14,000-foot mark. California has 12, led by Mount Whitney at 14,505 feet, the highest summit in the lower 48. Every state's top summit is listed in the [highest point by state](/rankings/geography/highest-point-by-state) ranking."
+      - "Washington's two, Mount Rainier and Liberty Cap, share one mountain. Rainier is a volcano, and so are California's Mount Shasta and Alaska's Mount Wrangell, as the [states with volcanoes](/rankings/geography/states-with-volcanoes) page explains."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        highest_peak: "Highest fourteener"
+        elevation_ft: "Elevation (ft)"
+      rows:
+        - { rank: 1, state: "Alaska", highest_peak: "Denali", elevation_ft: "20,310" }
+        - { rank: 2, state: "California", highest_peak: "Mount Whitney", elevation_ft: "14,505" }
+        - { rank: 3, state: "Colorado", highest_peak: "Mount Elbert", elevation_ft: "14,440" }
+        - { rank: 4, state: "Washington", highest_peak: "Mount Rainier", elevation_ft: "14,417" }
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/october-31-photos/fourteeners-sierra.jpg"
+    alt: "Snow-capped mountains above a golden meadow at sunset"
+    section: why-colorado-has-the-most-fourteeners
+    layout: full-width-tall
+  - id: section-2
+    src: "/images/rankings/october-31-photos/fourteeners-alaska.jpg"
+    alt: "Snow-covered peak in the Alaska Range"
+    section: fourteeners-in-alaska-california-and-washington
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the most fourteeners?"
+    answer: "Colorado, with 53. Its Sawatch Range alone is packed with giants such as Mount Elbert, Mount Massive and Mount Harvard."
+  - question: "How many fourteeners are in Colorado?"
+    answer: "Colorado has 53 by the 300-foot prominence rule. Many hiking lists count 58 by also including peaks such as El Diente Peak and North Maroon Peak, which are connected to a taller neighbor."
+  - question: "How many fourteeners are in Alaska?"
+    answer: "Alaska has 29. They include Denali at 20,310 feet, the highest summit in North America."
+  - question: "How many fourteeners are in California?"
+    answer: "California has 12, including Mount Whitney, Mount Williamson, White Mountain Peak and Mount Shasta. Most stand along the Sierra Nevada crest."
+  - question: "Which states have no fourteeners?"
+    answer: "Forty-six states have none. All 96 in the country are west of the Mississippi River, and only Colorado, Alaska, California and Washington have any."
+  - question: "What is the highest fourteener in the lower 48 states?"
+    answer: "Mount Whitney in California, at 14,505 feet. Colorado's tallest is Mount Elbert at 14,440 feet."
+related:
+  - title: "Highest Point by State"
+    url: "/rankings/geography/highest-point-by-state"
+  - title: "Average Elevation by State"
+    url: "/rankings/geography/average-elevation-by-state"
+  - title: "States With Volcanoes"
+    url: "/rankings/geography/states-with-volcanoes"

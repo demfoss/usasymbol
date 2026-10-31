@@ -1,0 +1,158 @@
+type: ranking
+slug: wolf-population-by-state
+category: nature
+url: /rankings/nature/wolf-population-by-state
+
+hero_image: "/images/rankings/october-31-photos/wolf-hero.jpg"
+hero_image_alt: "Gray wolf howling in the snow"
+
+author: "USA Symbol Team"
+date_published: "2026-10-31"
+date_modified: "2026-10-31"
+seo:
+  title: "Wolf Population by State | Map & Facts"
+  description: "Alaska has the most gray wolves of any state at about 9,450. Minnesota follows at 2,919, and Colorado has the fewest at 32."
+page:
+  h1: "Wolf Population by State"
+  quick_answer:
+    - "Alaska has the most gray wolves of any state at about 9,450, the midpoint of a 7,700 to 11,200 range. Wolves never disappeared there, and the state still has vast roadless forest and tundra."
+    - "Colorado has the fewest at 32, all descended from animals released since December 2023 after voters approved a return in 2020. California follows at about 55, a population that began when the wolf OR-7 wandered in from Oregon in 2011."
+    - "Minnesota holds 2,919 wolves, the most in the lower 48 states. It is the only one where wolves survived the extermination campaigns of the 1900s."
+  methodology: "Latest wolf estimate reported by each state wildlife agency, compiled by the Wolf Conservation Center from state and federal data. Counts come from different years and survey methods, shown in the year column. Alaska is ranked by the midpoint of its 7,700 to 11,200 range. States with no resident wolves and states without a published estimate, such as Utah, are omitted."
+  sources:
+    - name: "Wolf Conservation Center. How many wild wolves are in the United States?"
+      url: "https://nywolf.org/learn/u-s-wolf-populations/"
+      description: "State wolf counts with years, linked to each state wildlife agency report"
+    - name: "Newsweek. Map Shows States With Most Gray Wolves"
+      url: "https://www.newsweek.com/map-shows-states-with-most-gray-wolves-as-trump-signs-delisting-order-12409111"
+      description: "Cross check of state counts from agency data"
+    - name: "Washington Department of Fish and Wildlife. Gray Wolf Conservation and Management 2025 Annual Report"
+      url: "https://wdfw.wa.gov/publications/02707"
+      description: "Minimum of 270 wolves and 49 packs at the end of 2025"
+    - name: "Oregon Department of Fish and Wildlife. 2025 Annual Wolf Report"
+      url: "https://dfw.state.or.us/Wolves/docs/oregon_wolf_program/2025_Annual_Wolf_Report_FINAL_260417.pdf"
+      description: "Minimum of 230 wolves at the end of 2025"
+    - name: "Colorado Parks and Wildlife. Annual Gray Wolf Report 2026"
+      url: "https://s3.amazonaws.com/images.gearjunkie.com/uploads/2026/05/Wolf-Annual-Report-2026-4-30-26-Accessible.pdf"
+      description: "At least 32 wolves at the end of March 2026"
+table:
+  caption: "Latest state-reported gray wolf estimate by state"
+  columns:
+    rank: "Rank"
+    state: "State"
+    estimated_wolves: "Estimated Wolves"
+    estimate_year: "Year of Estimate"
+  column_formats:
+    estimated_wolves: "N0"
+  metric_default: estimated_wolves
+  sort_default: desc
+  rows:
+    - { rank: 1, state: "Alaska", state_slug: "alaska", postal_code: "AK", estimated_wolves: 9450, estimate_year: "2017", notes: "Midpoint of the reported range of 7,700 to 11,200" }
+    - { rank: 2, state: "Minnesota", state_slug: "minnesota", postal_code: "MN", estimated_wolves: 2919, estimate_year: "Winter 2022-23" }
+    - { rank: 3, state: "Wisconsin", state_slug: "wisconsin", postal_code: "WI", estimated_wolves: 1200, estimate_year: "2024-25", notes: "Approximate state figure" }
+    - { rank: 4, state: "Idaho", state_slug: "idaho", postal_code: "ID", estimated_wolves: 1129, estimate_year: "2025", notes: "Approximate, from a modeling method that can yield higher estimates" }
+    - { rank: 5, state: "Michigan", state_slug: "michigan", postal_code: "MI", estimated_wolves: 762, estimate_year: "2023", notes: "Excludes 37 wolves on Isle Royale National Park in April 2025" }
+    - { rank: 6, state: "Montana", state_slug: "montana", postal_code: "MT", estimated_wolves: 725, estimate_year: "2025" }
+    - { rank: 7, state: "Washington", state_slug: "washington", postal_code: "WA", estimated_wolves: 270, estimate_year: "2025", notes: "Minimum count in 49 packs" }
+    - { rank: 8, state: "Wyoming", state_slug: "wyoming", postal_code: "WY", estimated_wolves: 253, estimate_year: "2025" }
+    - { rank: 9, state: "Oregon", state_slug: "oregon", postal_code: "OR", estimated_wolves: 230, estimate_year: "2025", notes: "Minimum count in 30 packs" }
+    - { rank: 10, state: "California", state_slug: "california", postal_code: "CA", estimated_wolves: 55, estimate_year: "2026", notes: "About 55, including adults, yearlings and pups" }
+    - { rank: 11, state: "Colorado", state_slug: "colorado", postal_code: "CO", estimated_wolves: 32, estimate_year: "2026", notes: "At least 32 at the end of March 2026" }
+map:
+  title: "Wolf Population by State"
+  image_alt: "Map of the United States colored by the estimated gray wolf population of each state"
+  caption: "Alaska is the darkest state at about 9,450 wolves, followed by Minnesota at 2,919. Colorado is the lightest at 32, with California next at about 55."
+  metric_key: estimated_wolves
+  metric_label: "Estimated Wolves"
+  name_key: state
+  color_scheme: green
+  color_scale: log
+sections:
+  - id: why-alaska-has-the-most-wolves
+    icon: "fa-solid fa-paw"
+    title: "Why Alaska Has the Most Wolves"
+    paragraphs:
+      - "Alaska has about 9,450 wolves and is the only state where they were never wiped out. Millions of acres of forest, tundra and mountains hold moose and caribou, the prey wolves depend on, and few roads cut through that country."
+      - "Minnesota at 2,919 is the lower 48 leader because a remnant pack survived in the northeastern forests when hunters, trappers and bounty programs cleared wolves from almost every other state. From there wolves spread east, which is how Wisconsin and Michigan regained their own packs. Bears share much of that northern forest, as the [black bear population by state](/rankings/nature/bear-population-by-state) shows."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        estimated_wolves: "Estimated Wolves"
+        estimate_year: "Year of Estimate"
+      rows:
+        - { rank: 1, state: "Alaska", estimated_wolves: "9,450", estimate_year: "2017" }
+        - { rank: 2, state: "Minnesota", estimated_wolves: "2,919", estimate_year: "Winter 2022-23" }
+        - { rank: 3, state: "Wisconsin", estimated_wolves: "1,200", estimate_year: "2024-25" }
+        - { rank: 4, state: "Idaho", estimated_wolves: "1,129", estimate_year: "2025" }
+        - { rank: 5, state: "Michigan", estimated_wolves: "762", estimate_year: "2023" }
+  - id: wolves-in-the-northern-rockies
+    icon: "fa-solid fa-mountain"
+    title: "Wolves in the Northern Rockies"
+    paragraphs:
+      - "Idaho at 1,129, Montana at 725 and Wyoming at 253 owe their wolves to a federal program. Wolves from Canada were released in Yellowstone National Park and central Idaho in 1995 and 1996, and their descendants spread across the region."
+      - "Wolves did not stop at state lines. Packs from Idaho moved west into Oregon and Washington, which now hold 230 and 270. Hunters and ranchers in the Rockies still debate wolves and elk herds, a theme that also appears in [hunting license sales by state](/rankings/sports/hunting-license-sales-by-state)."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        estimated_wolves: "Estimated Wolves"
+        estimate_year: "Year of Estimate"
+      rows:
+        - { rank: 4, state: "Idaho", estimated_wolves: "1,129", estimate_year: "2025" }
+        - { rank: 6, state: "Montana", estimated_wolves: "725", estimate_year: "2025" }
+        - { rank: 7, state: "Washington", estimated_wolves: "270", estimate_year: "2025" }
+        - { rank: 8, state: "Wyoming", estimated_wolves: "253", estimate_year: "2025" }
+        - { rank: 9, state: "Oregon", estimated_wolves: "230", estimate_year: "2025" }
+  - id: states-with-the-fewest-wolves
+    icon: "fa-solid fa-tree"
+    title: "States With the Fewest Wolves"
+    paragraphs:
+      - "Colorado has 32 wolves, the fewest on the list. Voters narrowly approved bringing wolves back in 2020, and the state began releasing animals captured elsewhere in December 2023."
+      - "California has about 55. Its first wild wolf in nearly a century was OR-7, a collared male that crossed from Oregon in December 2011. Packs later settled in the northern part of the state."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        estimated_wolves: "Estimated Wolves"
+        estimate_year: "Year of Estimate"
+      rows:
+        - { rank: 11, state: "Colorado", estimated_wolves: "32", estimate_year: "2026" }
+        - { rank: 10, state: "California", estimated_wolves: "55", estimate_year: "2026" }
+        - { rank: 9, state: "Oregon", estimated_wolves: "230", estimate_year: "2025" }
+        - { rank: 8, state: "Wyoming", estimated_wolves: "253", estimate_year: "2025" }
+        - { rank: 7, state: "Washington", estimated_wolves: "270", estimate_year: "2025" }
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/october-31-photos/wolf-yellowstone.jpg"
+    alt: "Pack of wolves standing on a snowy ridge at the edge of a forest"
+    section: why-alaska-has-the-most-wolves
+    layout: full-width-tall
+  - id: section-2
+    src: "/images/rankings/october-31-photos/wolf-howl.jpg"
+    alt: "White wolves howling together"
+    section: wolves-in-the-northern-rockies
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the most wolves?"
+    answer: "Alaska, with about 9,450 gray wolves at the midpoint of its reported range. Minnesota is second at 2,919."
+  - question: "How many wolves are in Minnesota?"
+    answer: "Minnesota has an estimated 2,919 wolves from the winter 2022-23 survey. Wolves in the northeastern forests were never fully eliminated, so the state kept a breeding population while neighbors lost theirs."
+  - question: "How many wolves are in Colorado?"
+    answer: "Colorado has at least 32 wolves as of March 2026. Reintroduction began in December 2023 under a 2020 ballot measure."
+  - question: "Are there wolves in California?"
+    answer: "Yes, about 55. The state has had wild wolves again since OR-7 crossed from Oregon in 2011."
+  - question: "Why did wolves disappear from most states?"
+    answer: "Bounties, poison and trapping, driven by fear of livestock losses, removed wolves from nearly all of the lower 48 by the mid-1900s. Alaska and northern Minnesota were the main exceptions."
+  - question: "Are there wolves in Yellowstone National Park?"
+    answer: "Yes. Yellowstone is in Wyoming, which has an estimated 253 wolves, and wolves were reintroduced there in 1995 and 1996 after about seven decades without them."
+related:
+  - title: "Black Bear Population by State"
+    url: "/rankings/nature/bear-population-by-state"
+  - title: "Deadliest Animals by State"
+    url: "/rankings/nature/deadliest-animals-by-state"
+  - title: "Hunting License Sales by State"
+    url: "/rankings/sports/hunting-license-sales-by-state"
+  - title: "Wild Horses by State"
+    url: "/rankings/nature/wild-horses-by-state"
