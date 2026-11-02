@@ -67,10 +67,10 @@
 | # | slug | Угол | Источник | Статус |
 |---|---|---|---|---|
 | 140 | education/librarian-salary-by-state | BLS 25-4022 | BLS OEWS | [x] 2026-10-08 · 50 штатов |
-| 141 | education/school-principal-salary-by-state | BLS 11-9032 | BLS OEWS | [ ] |
-| 142 | education/college-professor-salary-by-state | BLS 25-1099 | BLS OEWS | [ ] |
+| 141 | education/school-principal-salary-by-state | BLS 11-9032 | BLS OEWS | [x] Написано 2026-11-02 |
+| 142 | education/college-professor-salary-by-state | BLS 25-1099 | BLS OEWS | [x] Написано 2026-11-02 |
 | 143 | education/substitute-teacher-salary-by-state | BLS 25-3031 | BLS OEWS | [x] 2026-10-08 · 49 штатов, Colorado без оценки, employment DE/ME скрыт |
-| 144 | education/teacher-assistant-salary-by-state | BLS 25-9045 | BLS OEWS | [ ] |
+| 144 | education/teacher-assistant-salary-by-state | BLS 25-9045 | BLS OEWS | [x] Написано 2026-11-02 |
 | 145 | education/school-bus-driver-salary-by-state | BLS 53-3051 | BLS OEWS | [x] 2026-10-08 · 50 штатов |
 | 146 | education/charter-schools-by-state | Миннесота открыла первую чартерную школу (1992) | NCES | [ ] |
 | 147 | education/ap-exam-pass-rate-by-state | Доля выпускников, сдавших AP | College Board | [ ] |
@@ -381,13 +381,13 @@
 | 312 | economy/dental-assistant-salary-by-state | BLS 31-9091 | BLS OEWS | [x] 2026-10-08 · 50 штатов, 49 оценок, Kansas без данных |
 | 313 | economy/pharmacy-technician-salary-by-state | BLS 29-2052 | BLS OEWS | [x] 2026-10-08 · 50 штатов, OEWS May 2025 |
 | 314 | economy/surgical-technologist-salary-by-state | BLS 29-2055 | BLS OEWS | [x] 2026-10-08 · 50 штатов, OEWS May 2025 |
-| 315 | economy/ultrasound-technician-salary-by-state | Diagnostic medical sonographers | BLS OEWS 29-2032 | [ ] |
-| 316 | economy/mri-technologist-salary-by-state | BLS 29-2035 | BLS OEWS | [ ] |
-| 317 | economy/medical-lab-technician-salary-by-state | BLS 29-2010 | BLS OEWS | [ ] |
-| 318 | economy/phlebotomist-salary-by-state | BLS 31-9097 | BLS OEWS | [ ] |
-| 319 | economy/home-health-aide-salary-by-state | BLS 31-1120 | BLS OEWS | [ ] |
-| 320 | economy/dietitian-salary-by-state | BLS 29-1031 | BLS OEWS | [ ] |
-| 321 | economy/optometrist-salary-by-state | BLS 29-1041 | BLS OEWS | [ ] |
+| 315 | economy/ultrasound-technician-salary-by-state | Diagnostic medical sonographers | BLS OEWS 29-2032 | [x] Написано 2026-11-02 |
+| 316 | economy/mri-technologist-salary-by-state | BLS 29-2035 | BLS OEWS | [x] Написано 2026-11-02 |
+| 317 | economy/medical-lab-technician-salary-by-state | BLS 29-2010 | BLS OEWS | [x] Написано 2026-11-02 |
+| 318 | economy/phlebotomist-salary-by-state | BLS 31-9097 | BLS OEWS | [x] Написано 2026-11-02 |
+| 319 | economy/home-health-aide-salary-by-state | BLS 31-1120 | BLS OEWS | [x] Написано 2026-11-02 |
+| 320 | economy/dietitian-salary-by-state | BLS 29-1031 | BLS OEWS | [x] Написано 2026-11-02 |
+| 321 | economy/optometrist-salary-by-state | BLS 29-1041 | BLS OEWS | [x] Написано 2026-11-02 |
 | 322 | economy/chiropractor-salary-by-state | BLS 29-1011 | BLS OEWS | [ ] |
 | 323 | economy/audiologist-salary-by-state | BLS 29-1181 | BLS OEWS | [ ] |
 | 324 | economy/athletic-trainer-salary-by-state | BLS 29-9091 | BLS OEWS | [ ] |
