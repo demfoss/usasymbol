@@ -388,16 +388,16 @@
 | 319 | economy/home-health-aide-salary-by-state | BLS 31-1120 | BLS OEWS | [x] Написано 2026-11-02 |
 | 320 | economy/dietitian-salary-by-state | BLS 29-1031 | BLS OEWS | [x] Написано 2026-11-02 |
 | 321 | economy/optometrist-salary-by-state | BLS 29-1041 | BLS OEWS | [x] Написано 2026-11-02 |
-| 322 | economy/chiropractor-salary-by-state | BLS 29-1011 | BLS OEWS | [ ] |
-| 323 | economy/audiologist-salary-by-state | BLS 29-1181 | BLS OEWS | [ ] |
-| 324 | economy/athletic-trainer-salary-by-state | BLS 29-9091 | BLS OEWS | [ ] |
-| 325 | economy/mental-health-counselor-salary-by-state | BLS 21-1018 | BLS OEWS | [ ] |
-| 326 | economy/marriage-and-family-therapist-salary-by-state | BLS 21-1013 | BLS OEWS | [ ] |
-| 327 | economy/security-guard-salary-by-state | BLS 33-9032 | BLS OEWS | [ ] |
-| 328 | economy/detective-salary-by-state | BLS 33-3021 | BLS OEWS | [ ] |
-| 329 | economy/911-dispatcher-salary-by-state | BLS 43-5031 | BLS OEWS | [ ] |
-| 330 | economy/probation-officer-salary-by-state | BLS 21-1092 | BLS OEWS | [ ] |
-| 331 | economy/game-warden-salary-by-state | Fish and game wardens | BLS OEWS 33-3031 | [ ] |
+| 322 | economy/chiropractor-salary-by-state | BLS 29-1011 | BLS OEWS | [x] Написано 2026-11-03 |
+| 323 | economy/audiologist-salary-by-state | BLS 29-1181 | BLS OEWS | [x] Написано 2026-11-03 |
+| 324 | economy/athletic-trainer-salary-by-state | BLS 29-9091 | BLS OEWS | [x] Написано 2026-11-03 |
+| 325 | economy/mental-health-counselor-salary-by-state | BLS 21-1018 | BLS OEWS | [x] Написано 2026-11-03 |
+| 326 | economy/marriage-and-family-therapist-salary-by-state | BLS 21-1013 | BLS OEWS | [x] Написано 2026-11-03 |
+| 327 | economy/security-guard-salary-by-state | BLS 33-9032 | BLS OEWS | [x] Написано 2026-11-03 |
+| 328 | economy/detective-salary-by-state | BLS 33-3021 | BLS OEWS | [x] Написано 2026-11-03 |
+| 329 | economy/911-dispatcher-salary-by-state | BLS 43-5031 | BLS OEWS | [x] Написано 2026-11-03 |
+| 330 | economy/probation-officer-salary-by-state | BLS 21-1092 | BLS OEWS | [x] Написано 2026-11-03 |
+| 331 | economy/game-warden-salary-by-state | Fish and game wardens | BLS OEWS 33-3031 | [x] Написано 2026-11-03 |
 | 332 | economy/judge-salary-by-state | BLS 23-1023 | BLS OEWS | [ ] |
 | 333 | economy/mail-carrier-salary-by-state | BLS 43-5052 | BLS OEWS | [ ] |
 | 334 | economy/air-traffic-controller-salary-by-state | BLS 53-2021 | BLS OEWS | [ ] |

@@ -15,7 +15,7 @@ hero_image_alt: "Map of the United States showing average annual fog days by sta
 
 author: "USA Symbol Team"
 date_published: "2026-08-28"
-date_modified: "2026-08-29"
+date_modified: "2026-11-03"
 
 seo:
   title: "Fog Days by State | Map, Rankings & Facts"
@@ -29,7 +29,7 @@ page:
     - "Florida ranks second at 198 days in Jacksonville, and Texas is third at 194 days in Houston. All three sit along the Gulf of Mexico or the Atlantic Coast."
     - "Hawaii logs zero fog days at Honolulu, the lowest total on record. Kansas, Alaska, Nevada, New Mexico, and Arizona all measure under 10 days, at 2.4, 4.8, 5, 5.9, and 7."
 
-  methodology: "Two datasets are combined because no single source covers all 50 states. For 31 states, figures show average annual days with fog, including light mist, at a representative city, from 1961-1990 station normals. For the other 19 states, figures show average annual days with heavy fog only (visibility of 1/4 mile or less), a stricter count, from 1991-2020 station normals. The data source column marks which definition applies to each row; comparing a state from one column directly against a state from the other should be read with that difference in mind."
+  methodology: "Figures use 1961-1990 NOAA city normals for 31 states and 1991-2020 NCEI heavy-fog station normals for 19 states. Values represent the listed city or station."
 
   sources:
     - name: "Current Results: Annual Days of Cloud and Fog at US Cities"
@@ -45,8 +45,9 @@ table:
     state: "State"
     avg_fog_days_per_year: "Avg Fog Days/Year"
     representative_city: "Representative City"
-    data_source: "Data Source"
-    notes: "Notes"
+
+  column_formats:
+    avg_fog_days_per_year: "0.###"
 
   metric_default: avg_fog_days_per_year
   sort_default: desc
@@ -107,7 +108,6 @@ table:
       avg_fog_days_per_year: 166
       representative_city: "Columbus"
       data_source: "NOAA normals, incl. mist (1961-90)"
-      notes: "Ties with Rhode Island at 166 days"
 
     - rank: 7
       state: "Rhode Island"
@@ -116,7 +116,6 @@ table:
       avg_fog_days_per_year: 166
       representative_city: "Providence"
       data_source: "NOAA normals, incl. mist (1961-90)"
-      notes: "Ties with Ohio at 166 days"
 
     - rank: 9
       state: "Washington"
@@ -181,7 +180,6 @@ table:
       avg_fog_days_per_year: 142
       representative_city: "Milwaukee"
       data_source: "NOAA normals, incl. mist (1961-90)"
-      notes: "Ties with Kentucky at 142 days"
 
     - rank: 16
       state: "Kentucky"
@@ -190,7 +188,6 @@ table:
       avg_fog_days_per_year: 142
       representative_city: "Louisville"
       data_source: "NOAA normals, incl. mist (1961-90)"
-      notes: "Ties with Wisconsin at 142 days"
 
     - rank: 18
       state: "Massachusetts"
@@ -287,7 +284,6 @@ table:
       avg_fog_days_per_year: 49.2
       representative_city: "Concord"
       data_source: "NCEI heavy fog, 1/4-mi vis. (1991-2020)"
-      notes: "Concord is the state capital and the station on record; Manchester is New Hampshire's largest city"
 
     - rank: 30
       state: "Utah"
@@ -456,7 +452,6 @@ table:
       avg_fog_days_per_year: 0
       representative_city: "Honolulu"
       data_source: "NOAA normals, incl. mist (1961-90)"
-      notes: "No measurable annual fog recorded at this station"
 
 map:
   title: "Average Fog Days by State Map"
@@ -515,12 +510,6 @@ faq:
 
   - question: "Which states get fewer than 10 fog days a year?"
     answer: "Five states average under 10 days: Kansas at 2.4 in Wichita, Alaska at 4.8 in Anchorage, Nevada at 5 in Las Vegas, New Mexico at 5.9 in Albuquerque, and Arizona at 7 in Phoenix. Hawaii is lower still, at zero in Honolulu."
-
-  - question: "How many days of fog does West Virginia get a year?"
-    answer: "West Virginia averages 64.8 days of heavy fog a year at Charleston, using a stricter measurement than most of the other states. That is the highest total among the 19 states added to this ranking most recently."
-
-  - question: "Do all 50 states have fog day data in this ranking?"
-    answer: "Yes, but the count comes from two different measurements. Thirty-one states use fog days including light mist from 1961-1990 station records, while the other 19, including West Virginia and New Hampshire, use a stricter heavy-fog count from 1991-2020 station records."
 
 related:
   - title: "Average Humidity by State"
