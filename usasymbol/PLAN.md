@@ -1,6 +1,6 @@
 # usasymbol.com — план развития
 
-> Обновлено: 2026-10-03. Основа — выгрузки Search Console (сентябрь 2026) + аудит репозитория.
+> Обновлено: 2026-11-04. Основа — выгрузки Search Console (29.07–28.10.2026, раздел 0 ниже) + аудит репозитория.
 > Контент: 648 рейтингов, 283 коллекции, 11 квизов, 40 ranking-hubs, weird-laws и weird-alcohol-laws на все 50 штатов.
 > Сделанное не удаляется, а помечается ✅ / `[x]` с датой (чтобы не писать повторно), плюс запись в «Журнале» внизу.
 
@@ -9,6 +9,135 @@
 ## ▶ ОЧЕРЕДЬ РАБОТ — начинать отсюда
 
 Главный вывод: сайт уже широкий. Рост — в **качестве существующих страниц**, а не в новых темах.
+
+### 0. Срез GSC 29.07–28.10.2026 (база для сравнения) и фокус
+
+> Источник: выгрузки GSC «Диаграмма / Запросы / Страницы» за 92 дня. Только Google, это клики, а не пользователи GA4. В «Страницах» и «Запросах» только строки с ≥3 (стр.) и ≥7 показов, хвост обрезан. Цель раздела: через 1, 2, 3 месяца взять тот же отчёт и сравнить. Ничего на сайте по этим выводам пока не менялось.
+
+**Выводы**
+- Клики/день выросли ×2,2 (110 → 246), показы ×1,8 (23 → 42 тыс.), позиция 17,2 → 10,1, CTR 0,48% → 0,58%. Скачок позиции 1.09 (17,7 → 11,6), затем плавное улучшение до 8,4 к 28.09 и откат к 9–11 в октябре, когда пришли новые страницы с хвостовыми позициями.
+- Часть роста сезонная: база — летний минимум (школа вернулась ~17.08). Честно оценивать только в паре «тот же период год назад» или между соседними 28-дневками.
+- Недельный ритм: суббота/воскресенье на 20–30% ниже будней. Сравнивать только полные недели.
+- Деньги в кликах дают: (1) узкие числовые рейтинги, ответ которых не умещается в сниппет (capitals-by-elevation CTR 3,4%, nobel 9,5%, arson 5,9%, organ-donor 7,6%, goat 3,7%); (2) флаги с объектами (animals 213 кликов, stars 70, people 47); (3) длинный хвост agriculture/compare/weird-laws по 3–25 кликов на позициях 4–9; (4) квизы (abbreviations 80 кликов).
+- Пустые показы (zero-click): letter-y 78 тыс. показов при CTR 0,10%, 4-letter-states 37 тыс. / 0,11%, grammy 30,6 тыс. / 0,02%, borders-страницы ~300 тыс. / 0,1–0,3%. Больше такого не писать.
+- Крупнейшие незабранные рынки: образование (позиции 16–22, ~40 тыс. показов на 4 страницах), списки символов (flags 41, birds 29, flowers 29,5, mammals 22, trees 20, nicknames 24), abbreviations (поз. 54, 21 тыс. показов), capital-cities (поз. 47, 13,5 тыс.), land-area (поз. 31, 20 тыс.), average-height (76 тыс. показов, CTR 0,26%, поз. 8,6).
+- Выборы 03.11.2026: midterm-turnout, voter-turnout, governor-races, congressional-districts уже в выдаче, red-and-blue-states на поз. 38.
+
+**Базовые значения: 29.07–28.10.2026 (клики / показы / позиция)**
+
+| Группа | Страница | Клики | Показы | Поз. |
+|---|---|---|---|---|
+| Сайт | в сумме за 92 дня (оценка по средним) | ≈17 500 | ≈3,2 млн | ≈12 |
+| Сайт | неделя 29.07–04.08 → 22–28.10 | 770 → 1 725 | 162 252 → 297 762 | 17,2 → 10,1 |
+| Ядро | / (главная) | 493 | 33 964 | 8,16 |
+| Ядро | /states | 52 | 12 971 | 7,39 |
+| Ядро | /symbols | 6 | 9 704 | 7,40 |
+| Ядро | guides/state-abbreviations | 10 | 20 861 | 53,72 |
+| Ядро | states-capital-cities | 16 | 13 524 | 47,46 |
+| Ядро | states-by-land-area | 10 | 20 483 | 31,42 |
+| Символы | symbols/flags | 11 | 5 550 | 41,45 |
+| Символы | symbols/birds | 12 | 2 748 | 29,04 |
+| Символы | symbols/flowers | 3 | 2 508 | 29,54 |
+| Символы | symbols/mammals | 16 | 6 606 | 21,95 |
+| Символы | symbols/trees | 13 | 2 739 | 19,82 |
+| Символы | symbols/nicknames | 10 | 2 190 | 24,11 |
+| Символы | symbols/mottos | 28 | 6 194 | 13,26 |
+| Символы | symbols/colors | 131 | 22 085 | 8,67 |
+| Символы | symbols/fruits | 126 | 10 759 | 9,90 |
+| Образование | public-school-rankings-by-state | 196 | 15 020 | 16,65 |
+| Образование | states-by-k12-education | 50 | 11 751 | 20,95 |
+| Образование | teacher-salary-by-state | 69 | 10 946 | 20,02 |
+| Образование | smartest-states | 101 | 8 186 | 11,07 |
+| Образование | school-spending-by-state | 21 | 1 475 | 17,67 |
+| Образование | average-act-score-by-state | 4 | 558 | 37,01 |
+| Показы без кликов | average-height-by-state | 196 | 76 472 | 8,61 |
+| Показы без кликов | states-containing-the-letter-y | 79 | 78 344 | 5,46 |
+| Показы без кликов | states-neighboring-states | 88 | 51 981 | 10,25 |
+| Показы без кликов | 4-letter-states | 43 | 37 545 | 6,44 |
+| Показы без кликов | grammy-winners-by-state | 6 | 30 566 | 6,12 |
+| Лидеры по кликам | capitals-by-elevation | 460 | 13 456 | 4,62 |
+| Лидеры по кликам | fortune-500-companies-by-state | 240 | 10 797 | 8,99 |
+| Лидеры по кликам | states-with-animals-on-the-flag | 213 | 8 790 | 6,28 |
+| Лидеры по кликам | states-by-starting-letter | 203 | 16 949 | 7,01 |
+| Лидеры по кликам | mcdonalds-by-state (✅ переписана 02.10) | 195 | 33 711 | 7,57 |
+| Лидеры по кликам | states-with-no-snow (✅ переписана 02.10) | 121 | 35 696 | 8,13 |
+| Выборы | midterm-turnout-by-state | 25 | 574 | 5,90 |
+| Выборы | voter-turnout-by-state | 18 | 1 529 | 8,09 |
+| Выборы | governor-races-2026-by-state | 4 | 323 | 14,58 |
+| Выборы | congressional-districts-and-2030-apportionment | 9 | 935 | 8,22 |
+| Выборы | trifecta-states-by-party-control | 5 | 722 | 9,60 |
+| Выборы | red-and-blue-states | 9 | 2 182 | 38,08 |
+
+**Ключевые запросы (клики / показы / поз.)**: state symbols 101 / 6 380 / 5,95 · state symbols usa 18 / 2 331 / 4,06 · state colors 14 / 1 538 / 6,56 · usa symbols 12 / 1 896 / 10,13 · state fruits 11 / 1 046 / 8,43 · state flags with animals 32 / 263 / 3,03 · fortune 500 companies by state 26 / 259 / 6,94 · state capitals by elevation 23 / 103 / 1,67 · teacher salary by state 2026 14 / 471 / 7,94 · state school rankings 15 / 330 / 8,42 · states ranked by education 7 / 482 / 18,44 · education rankings by state 3 / 837 / 22,71 · state education rankings 2 / 251 / 18,19 · state abbreviations quiz 7 / 223 / 9,33 · compare us states 14 / 30 / 3,2 · average height by state 4 / 567 / 9,52.
+
+**Тест borders (запущен 02.10, тестовые 10 страниц)**: за 92 дня, в основном ДО теста: тест-группа 322 клика / 161 797 показов (CTR 0,20%); контроль (27 страниц с ≥3 кликов, хвост обрезан, завышен) 291 / 103 648 (CTR 0,28%). Для вердикта брать GSC с фильтром дат 02.10 → середина ноября против 02.09 → 01.10 по тем же URL, а не эти итоги.
+
+**Контрольные точки.** Каждый раз выгружать «Диаграмма», «Страницы», «Запросы» за 28 дней, выровненных по дням недели, и заполнять колонку в таблице базы:
+- 28.11.2026 (1 мес.): чистка после выборов; ноябрь против октября. Ожидать провал на День благодарения.
+- 28.12.2026 (2 мес.): праздничный минимум, сравнивать только позиции и CTR, не клики.
+- 28.01.2027 (3 мес.): первое честное сравнение после каникул; смотреть образование, символы, abbreviations.
+- Позже: каждые 28 дней и ежегодно с тем же месяцем 2025.
+- Регэксп-фильтры страниц в GSC для групп: `/rankings/education/`, `/rankings/agriculture/`, `/rankings/law/`, `/compare/`, `/states/[^/]+/borders`, `/states/[^/]+/surnames`, `/collections/flags/`, `/collections/laws/`, `/symbols`, `/quizzes`, `/rankings/government/`.
+
+**На что делать упор в новых рейтингах (проверено по Content/, на сайте нет)**
+
+Критерий: ответ не умещается в сниппет (таблица на 50 штатов + карта), есть «почему», тема нужна школьникам/учителям или тянет любопытство. Не писать: «сколько точек сети X», буквы/длина названий, массовые YMYL-законы.
+
+| Приоритет | Кластер | Страницы (slug) | Почему |
+|---|---|---|---|
+| 1 | Образование (самая большая очередь спроса, поз. 16–22) | education/naep-reading-scores-by-state, naep-math-scores-by-state, student-teacher-ratio-by-state, teacher-shortage-by-state, college-tuition-by-state, bachelors-degree-attainment-by-state, college-enrollment-rate-by-state, school-cellphone-ban-states, four-day-school-week-by-state, school-start-date-by-state | Поддерживают ядро (public-school, k12, teacher-salary) внутренними ссылками и тематическим весом; запросы «state education rankings» и «school start date» сезонны (осень, январь) |
+| 2 | Данные с «вау»-фактом по географии | geography/tallest-state-capitol-buildings (запрос уже поз. 1), fourteeners-by-state, longest-river-by-state, largest-lake-by-state, islands-by-state, ghost-towns-by-state | Рядом с лидером capitals-by-elevation; «Миссури длиннее Миссисипи», «самый высокий капитолий» |
+| 3 | «Most popular X by state» (tv-show 30 кликов, college-team 28, fast-food 27, emoji, halloween) | culture/most-popular-pizza-topping-by-state, most-popular-soda-by-state, most-popular-ice-cream-flavor-by-state, most-popular-thanksgiving-pie-by-state, most-popular-baby-name-by-state, most-popular-music-genre-by-state, most-popular-streaming-service-by-state, most-popular-hobby-by-state | Низкий порог данных (опросы Google Trends, YouGov, SSA), интересно пользователям, шерится на Reddit/Pinterest |
+| 4 | Спорт «из какого штата игроки» | sports/nfl-players-born-by-state, nba-players-born-by-state, mlb-players-born-by-state, heisman-winners-by-state, mlb-hall-of-famers-by-state | Рядом с рабочими nobel/astronauts/olympic-medals (CTR 4–10%); есть nascar-drivers и ufc-fighters, которые уже дают клики |
+| 5 | Законы с мягкой формулировкой | law/romeo-and-juliet-laws-by-state (≈110 показов уже), dui-penalties-by-state, speeding-ticket-fines-by-state, hitchhiking-laws-by-state | Запросы существуют; брать только 50 штатов с проверяемым первичным источником (статуты) |
+| 6 | Природа и здоровье | nature/wolf-population-by-state, bird-species-by-state, health/air-quality-by-state, skin-cancer-rate-by-state, demographics/largest-ancestry-by-state, foreign-born-population-by-state | Нужны для хабов Health, Outdoors, Population; сезонность слабая |
+| 7 | Культура и еда | culture/roller-coasters-by-state, museums-per-capita-by-state, libraries-per-capita-by-state, food/breweries-per-capita-by-state, wineries-by-state | Туристические и «per capita» темы, как golf-courses и hunting-license-sales |
+| 8 | Агро-хвост (в основном закрыт, 133 страницы) | agriculture/duck-production-by-state, tree-nut-production-by-state, alpaca-population-by-state, rabbit-population-by-state | Хвост 5–25 кликов на страницу, но тема почти исчерпана; брать только с понятной статистикой USDA |
+| После итогов 2026 | Выборы | Обновить существующие evergreen-страницы и завершить архивные страницы цикла 2026 | Не создавать одноразовую страницу результатов. Цель — актуальность на годы, а не краткий трафик после Election Day |
+
+Правила отбора: перед каждой страницей запускать `node tools/check-backlog.js`, а затем искать файл в `Content/rankings` и `Content/collections` (скрипт даёт ложные «EXISTS» по частичному совпадению слов). Формат серии: пачка 10 страниц, пауза 4–6 недель, GSC, масштабирование.
+Квизы: уже есть 11 (abbreviations, birds, capitals, flags, flag-identification, license-plate-slogans, mottos, nicknames, seals, shapes, general). Новые квизы в приоритете ниже новых рейтингов; идея только одна, «neighbors quiz» (запрос «what states border…» имеет огромный спрос).
+
+### 0.1. Политические страницы — долгосрочная актуальность после Midterms 2026
+
+> Исправлено 2026-11-04: отдельную `government/midterm-results-by-state` не создавать. Одноразовая сводка быстро устареет и будет конкурировать с уже существующими страницами. Стратегия — поддерживать evergreen-рейтинги, а страницы с `2026` в URL один раз довести до точного исторического итога и сохранить как архив цикла.
+
+**Что можно сделать сейчас, потому что это не зависит от незавершённого подсчёта:**
+
+- [ ] Проверить `government/governor-term-limits-by-state` по конституциям и официальным справочникам; добавить правило регулярной ежегодной проверки. Это evergreen-страница, результаты отдельных выборов её не меняют.
+- [ ] Улучшить `government/red-and-blue-states` как долгосрочную страницу: чётко разделить presidential lean, текущий state government control и swing-state methodology. Midterm-победа не должна автоматически перекрашивать президентскую классификацию.
+- [ ] Подготовить evergreen-кандидат `government/senate-classes-by-state`: два места каждого штата, классы 1/2/3, длина срока и год следующей регулярной гонки. Обновляется по календарю и не привязан к хайпу одного цикла.
+- [ ] Подготовить evergreen-кандидат `government/governor-election-cycle-by-state`: срок губернатора, обычный год выборов, двух- или четырёхлетний цикл, next election и связь с term limits.
+- [ ] Зафиксировать для всех current-control страниц поля `data_as_of`/`date_modified` и источник, чтобы читателю было видно, на какую дату актуальны губернатор, палаты и trifecta.
+
+**Страницы цикла 2026 — завершить и затем не превращать в постоянно меняющуюся ленту:**
+
+- [ ] `government/governor-races-2026-by-state`: после сертификации заменить предвыборные формулировки на итоговые winners/flips, сохранить incumbents, retirements и term-limited governors как исторический справочник 2026. После финальной сверки обновлять только при исправлении ошибки.
+- [ ] `government/senate-seats-up-in-2026-by-state`: после сертификации добавить итог победителей, смены партий и final Senate composition; сохранить объяснение Class 2 и special elections. После финальной сверки заморозить как архив 2026.
+
+**Evergreen-страницы, которые должны обновляться дальше:**
+
+- [ ] `government/red-and-blue-states` — после каждого президентского цикла пересчитывать margins/classification; партийный контроль штатов проверять ежегодно и после вступления новых администраций в должность.
+- [ ] `government/trifecta-states-by-party-control` — обновлять после выборов и ещё раз после вступления избранных лиц в должность; всегда различать incoming и current control.
+- [ ] `government/governor-term-limits-by-state` — ежегодная юридическая проверка и внеплановый апдейт после изменения конституции/закона.
+- [ ] `government/midterm-turnout-by-state` — хранить сравнимые завершённые циклы 2018/2022/2026, а не только последний год; обновлять после устойчивой версии UF Election Lab.
+- [ ] `government/voter-turnout-by-state` — синхронизировать методику, годы сравнения и ссылки с midterm turnout.
+- [ ] `government/women-in-state-legislatures-by-state` — ежегодно обновлять после публикации CAWP/NCSL нового состава.
+- [ ] Compare/state stats: `governor-party`, контроль House/Senate, trifecta и источники — ежегодно и после смены власти; `political-lean` обновлять только по принятой presidential methodology.
+- [ ] Хаб Voting & Elections и related-блоки — связывать evergreen-страницы и архивы циклов, не создавать отдельные одноразовые results URLs.
+
+**Контрольные даты:**
+
+| Дата | Что сделать | Тип страницы |
+|---|---|---|
+| 2026-11-18 | Проверить оставшиеся AP calls по Alaska и Mississippi; ничего не называть final до завершения ключевых гонок | Архивы цикла 2026 |
+| 2026-12-11 | После поздних сертификаций завершить `governor-races-2026-by-state` и `senate-seats-up-in-2026-by-state`; проверить recount/lawsuit | Архивы цикла 2026 |
+| 2027-01-15 | Обновить current governor/House/Senate/trifecta после вступления новых составов в должность | Evergreen current-control |
+| 2027-02-15 | При наличии устойчивых VEP estimates добавить 2026 как третий завершённый цикл, не удаляя 2018/2022 | Evergreen turnout |
+| Ежегодно 15 января | Аудит current-control, women in legislatures, источников и `date_modified` | Evergreen |
+| После президентских выборов | Пересчитать red/blue/swing classification по заранее зафиксированной методике | Evergreen political lean |
+
+**Критерий качества:** страница должна отвечать на повторяющийся запрос пользователя и оставаться полезной после окончания новостного цикла. Выборные результаты — AP плюс официальный штатный источник; legislative control/trifectas — NCSL плюс штатные результаты; turnout — единая версия UF Election Lab для всех 50 штатов. Не создавать новый URL, если информацию можно устойчиво встроить в существующий evergreen-рейтинг или сохранить в архиве конкретного цикла.
 
 ### 1. Переписать топ-страницы по промпту ranking.md (3–5 стр./нед.)
 
@@ -386,6 +515,8 @@
 
 | Дата | Что сделано | Проверить |
 |---|---|---|
+| 2026-11-04 | План политических страниц переработан под долгосрочную актуальность: одноразовая midterm-results отменена; страницы 2026 завершаются как архивы, red/blue, trifectas, term limits, turnout и state control поддерживаются как evergreen; добавлены идеи senate classes и governor election cycle | Не гнаться за кратким election-day трафиком; ежегодный аудит 15 января, отдельные проверки сертификации и стабильной VEP turnout |
+| 2026-10-31 | Разбор GSC за 29.07–28.10: добавлен раздел 0 в очередь (выводы, базовая таблица значений для сравнения через 1/2/3 месяца, контрольные даты, регэксп-фильтры, приоритеты новых рейтингов с примерами ненаписанных). Страницы не менялись | Выгрузки 28.11.2026, 28.12.2026, 28.01.2027; тест borders с датами 02.10 → середина ноября |
 | 2026-10-10 | Пакет к midterms 2026: 22 новые политические страницы. Механика выборов (voter-id, early-voting, mail-in, same-day registration, automatic registration, felon voting, ranked-choice, closed/open primaries, redistricting, ballot initiative, recall, election-day holiday), власть и партии (trifectas, Senate 2026, governors 2026, bellwether, congressional districts и 2030, women in legislatures, midterm turnout), темы дебатов (Medicaid expansion, E-Verify, campaign contribution limits). Обновлены red-and-blue-states, voter-turnout, electoral-votes, хабы voting-elections, health-healthcare, jobs-wages. Фото из Wikimedia: часть под CC BY / CC BY-SA без подписей на сайте | Данные собраны без NCSL и Ballotpedia (403), сверить шаткое по первичным источникам: voter-id (NE, MO, NH, IA, OK, ME), early-voting даты, primaries (OH, TN, MD, CT, ID, IA, KS), redistricting (MD, OR, IA, ME, VT, NY, RI, UT) и карты 2025-26, recall, election-day holiday, трифекты на октябрь, 2030 (MN, RI), CAWP. Подписи авторов CC BY-фото |
 | 2026-10-08 | Завершены выбранные 10 страниц по ranking.md: hairdresser, massage-therapist, librarian, substitute-teacher, school-bus-driver; human-composting, minimum-age-for-state-legislators, marijuana-home-grow, menthol-cigarette-bans, assault-weapons-ban-states. Зарплаты OEWS May 2025 сверены вручную, пропуски сохранены, юридические даты и судебные статусы вынесены в таблицы. Обновлены шесть соответствующих хабов и BACKLOG №140, 143, 145, 622, 647, 649, 935. Все 37 готовых новых страниц рабочего дерева и шесть хабов вернули HTTP 200. Полный список с файлами и URL сохранён в Content/content-pipeline/reports/rankings-written-2026-10-08.md. Контент редактировался вручную | Проверить отображение после публикации, обновлять судебные статусы и будущие даты |
 | 2026-10-08 | Дописана следующая параллельная десятка по ranking.md. Профессии BACKLOG №134, 135, 312–314: hairdresser, massage-therapist, dental-assistant, pharmacy-technician, surgical-technologist. В каждой 50 строк, OEWS May 2025, пропуски Virginia, Vermont и Kansas сохранены. Законы: human-composting (14 принятых разрешений, California с 2027), plastic-bag-bans (11 общештатных законов, местные правила Hawaii исключены), right-to-repair (9 общих законов об электронике, Kansas с 2027), salary-history-ban (18 штатов, Virginia 2026), child-support-age (50 обычных возрастов с учебными и другими исключениями). Карты, таблицы, FAQ, первичные источники и ручная сверка. Обновлены Jobs & Wages, Family & Marriage, Housing & Property и BACKLOG. Полный список последних двух партий сохранён в artifacts/rankings-written-2026-10-08.md | Проверить опубликованные страницы после деплоя, обновить будущие юридические даты в 2027 |

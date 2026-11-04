@@ -1,0 +1,171 @@
+type: ranking
+slug: snap-recipients-by-state
+category: government
+url: /rankings/government/snap-recipients-by-state
+auto_link_phrases:
+  - "SNAP recipients by state"
+  - "food stamp recipients by state"
+  - "states with the most SNAP recipients"
+extremes_mode: both
+extremes_title: "States With the Most and Fewest SNAP Recipients"
+hero_image: "/images/rankings/government/snap-recipients-by-state/snap-recipients-by-state-hero.jpg"
+hero_image_alt: "Family shopping for fresh groceries in a supermarket"
+hero_image_caption: "California has the most SNAP participants at 5,161,672. Wyoming has the fewest at 24,262."
+
+author: "USA Symbol Team"
+date_published: "2026-11-04"
+date_modified: "2026-11-04"
+
+seo:
+  title: "SNAP Recipients by State 2026 | Map & Rankings"
+  description: "California has the most SNAP recipients at 5,161,672. Wyoming has the fewest at 24,262."
+
+page:
+  h1: "SNAP Recipients by State 2026"
+  quick_answer:
+    - "SNAP recipients by state are most numerous in California, where 5,161,672 people participated in February 2026. The country's largest state population drives much of that total."
+    - "Wyoming has the fewest participants at 24,262. Its small population keeps the raw count below every other state."
+    - "Texas ranks second with 3,112,380 participants, followed by New York with 2,790,322 and Florida with 2,546,175."
+  methodology: "Counts are USDA FNS initial February 2026 participation figures published May 8, 2026. Washington, D.C. and U.S. territories are excluded."
+  sources:
+    - name: "USDA Food and Nutrition Service. SNAP Number of Persons Participating"
+      url: "https://fns-prod.azureedge.us/sites/default/files/resource-files/snap-persons-5.pdf"
+      description: "State participation counts for February 2026"
+    - name: "USDA Food and Nutrition Service. SNAP Data Tables"
+      url: "https://www.fns.usda.gov/pd/supplemental-nutrition-assistance-program-snap"
+      description: "Official program participation data hub"
+
+map:
+  title: "SNAP Recipients by State Map"
+  image: "/images/maps/snap-recipients-by-state.png"
+  image_alt: "U.S. map shaded by the number of SNAP participants in each state"
+  caption: "California has 5,161,672 participants, the most in the nation. Wyoming has the fewest at 24,262."
+  metric_key: participants
+  metric_label: "SNAP Participants"
+  color_scheme: green
+  color_scale: log
+
+visual_assets:
+  - id: states-with-most-snap-recipients
+    src: "/images/rankings/government/snap-recipients-by-state/states-with-most-snap-recipients.jpg"
+    alt: "Busy supermarket produce aisle in a large city"
+    caption: "California, Texas, New York, and Florida have the country's four largest participant totals."
+    section: "states-with-most-snap-recipients"
+    layout: full-width-tall
+  - id: states-with-fewest-snap-recipients
+    src: "/images/rankings/government/snap-recipients-by-state/states-with-fewest-snap-recipients.jpg"
+    alt: "Fresh packaged fruit displayed in a supermarket aisle"
+    caption: "Wyoming's small population produces the lowest raw participant count."
+    section: "states-with-fewest-snap-recipients"
+    layout: full-width-tall
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    participants: "SNAP Participants"
+  metric_default: participants
+  sort_default: desc
+  column_formats:
+    participants: "N0"
+  rows:
+    - { rank: 1, state: "California", state_slug: "california", postal_code: "CA", participants: 5161672 }
+    - { rank: 2, state: "Texas", state_slug: "texas", postal_code: "TX", participants: 3112380 }
+    - { rank: 3, state: "New York", state_slug: "new-york", postal_code: "NY", participants: 2790322 }
+    - { rank: 4, state: "Florida", state_slug: "florida", postal_code: "FL", participants: 2546175 }
+    - { rank: 5, state: "Pennsylvania", state_slug: "pennsylvania", postal_code: "PA", participants: 1755370 }
+    - { rank: 6, state: "Illinois", state_slug: "illinois", postal_code: "IL", participants: 1693396 }
+    - { rank: 7, state: "Michigan", state_slug: "michigan", postal_code: "MI", participants: 1400731 }
+    - { rank: 8, state: "Ohio", state_slug: "ohio", postal_code: "OH", participants: 1346906 }
+    - { rank: 9, state: "Georgia", state_slug: "georgia", postal_code: "GA", participants: 1294939 }
+    - { rank: 10, state: "North Carolina", state_slug: "north-carolina", postal_code: "NC", participants: 1200632 }
+    - { rank: 11, state: "Massachusetts", state_slug: "massachusetts", postal_code: "MA", participants: 954453 }
+    - { rank: 12, state: "Washington", state_slug: "washington", postal_code: "WA", participants: 871156 }
+    - { rank: 13, state: "New Jersey", state_slug: "new-jersey", postal_code: "NJ", participants: 778176 }
+    - { rank: 14, state: "Oregon", state_slug: "oregon", postal_code: "OR", participants: 717017 }
+    - { rank: 15, state: "Virginia", state_slug: "virginia", postal_code: "VA", participants: 695447 }
+    - { rank: 16, state: "Alabama", state_slug: "alabama", postal_code: "AL", participants: 690555 }
+    - { rank: 17, state: "Louisiana", state_slug: "louisiana", postal_code: "LA", participants: 681120 }
+    - { rank: 18, state: "Wisconsin", state_slug: "wisconsin", postal_code: "WI", participants: 654524 }
+    - { rank: 19, state: "Maryland", state_slug: "maryland", postal_code: "MD", participants: 641973 }
+    - { rank: 20, state: "Missouri", state_slug: "missouri", postal_code: "MO", participants: 618825 }
+    - { rank: 21, state: "Tennessee", state_slug: "tennessee", postal_code: "TN", participants: 599520 }
+    - { rank: 22, state: "Oklahoma", state_slug: "oklahoma", postal_code: "OK", participants: 596824 }
+    - { rank: 23, state: "Colorado", state_slug: "colorado", postal_code: "CO", participants: 583013 }
+    - { rank: 24, state: "Kentucky", state_slug: "kentucky", postal_code: "KY", participants: 572689 }
+    - { rank: 25, state: "Indiana", state_slug: "indiana", postal_code: "IN", participants: 530190 }
+    - { rank: 26, state: "South Carolina", state_slug: "south-carolina", postal_code: "SC", participants: 509596 }
+    - { rank: 27, state: "Arizona", state_slug: "arizona", postal_code: "AZ", participants: 448976 }
+    - { rank: 28, state: "New Mexico", state_slug: "new-mexico", postal_code: "NM", participants: 442803 }
+    - { rank: 29, state: "Minnesota", state_slug: "minnesota", postal_code: "MN", participants: 435116 }
+    - { rank: 30, state: "Nevada", state_slug: "nevada", postal_code: "NV", participants: 425885 }
+    - { rank: 31, state: "Connecticut", state_slug: "connecticut", postal_code: "CT", participants: 326708 }
+    - { rank: 32, state: "Mississippi", state_slug: "mississippi", postal_code: "MS", participants: 322162 }
+    - { rank: 33, state: "West Virginia", state_slug: "west-virginia", postal_code: "WV", participants: 255410 }
+    - { rank: 34, state: "Iowa", state_slug: "iowa", postal_code: "IA", participants: 247380 }
+    - { rank: 35, state: "Arkansas", state_slug: "arkansas", postal_code: "AR", participants: 225116 }
+    - { rank: 36, state: "Kansas", state_slug: "kansas", postal_code: "KS", participants: 170894 }
+    - { rank: 37, state: "Hawaii", state_slug: "hawaii", postal_code: "HI", participants: 158822 }
+    - { rank: 38, state: "Utah", state_slug: "utah", postal_code: "UT", participants: 154397 }
+    - { rank: 39, state: "Maine", state_slug: "maine", postal_code: "ME", participants: 153160 }
+    - { rank: 40, state: "Nebraska", state_slug: "nebraska", postal_code: "NE", participants: 134074 }
+    - { rank: 41, state: "Rhode Island", state_slug: "rhode-island", postal_code: "RI", participants: 127709 }
+    - { rank: 42, state: "Idaho", state_slug: "idaho", postal_code: "ID", participants: 124433 }
+    - { rank: 43, state: "Delaware", state_slug: "delaware", postal_code: "DE", participants: 105044 }
+    - { rank: 44, state: "New Hampshire", state_slug: "new-hampshire", postal_code: "NH", participants: 74442 }
+    - { rank: 45, state: "Montana", state_slug: "montana", postal_code: "MT", participants: 72705 }
+    - { rank: 46, state: "South Dakota", state_slug: "south-dakota", postal_code: "SD", participants: 70862 }
+    - { rank: 47, state: "Alaska", state_slug: "alaska", postal_code: "AK", participants: 66344 }
+    - { rank: 48, state: "Vermont", state_slug: "vermont", postal_code: "VT", participants: 61039 }
+    - { rank: 49, state: "North Dakota", state_slug: "north-dakota", postal_code: "ND", participants: 51843 }
+    - { rank: 50, state: "Wyoming", state_slug: "wyoming", postal_code: "WY", participants: 24262 }
+
+sections:
+  - id: "states-with-most-snap-recipients"
+    icon: "fa-solid fa-basket-shopping"
+    title: "States With Most SNAP Recipients"
+    paragraphs:
+      - "California leads with 5,161,672 participants. Its population is larger than any other state's, and the program also reaches households facing the state's high housing and food costs."
+    table:
+      numbered: true
+      columns: { state: "State", participants: "SNAP Participants" }
+      rows:
+        - { state: "California", participants: "5,161,672" }
+        - { state: "Texas", participants: "3,112,380" }
+        - { state: "New York", participants: "2,790,322" }
+        - { state: "Florida", participants: "2,546,175" }
+        - { state: "Pennsylvania", participants: "1,755,370" }
+  - id: "states-with-fewest-snap-recipients"
+    icon: "fa-solid fa-arrow-down-wide-short"
+    title: "States With Fewest SNAP Recipients"
+    paragraphs:
+      - "Wyoming has 24,262 participants, fewer than half North Dakota's 51,843. Wyoming is the least populous state, so even a statewide federal program serves a smaller raw total there."
+    table:
+      numbered: true
+      columns: { state: "State", participants: "SNAP Participants" }
+      rows:
+        - { state: "Wyoming", participants: "24,262" }
+        - { state: "North Dakota", participants: "51,843" }
+        - { state: "Vermont", participants: "61,039" }
+        - { state: "Alaska", participants: "66,344" }
+        - { state: "South Dakota", participants: "70,862" }
+
+faq:
+  - question: "Which state has the most SNAP recipients?"
+    answer: "California has the most, with 5,161,672 participants in February 2026. California's very large population helps push the raw total to first place."
+  - question: "Which state has the fewest SNAP recipients?"
+    answer: "Wyoming has the fewest, with 24,262 participants. Wyoming also has the smallest state population in the country."
+  - question: "How many SNAP recipients are in Texas?"
+    answer: "Texas has 3,112,380 SNAP participants, the second-highest total after California."
+  - question: "How many SNAP recipients are in New York?"
+    answer: "New York has 2,790,322 participants and ranks third among the states."
+  - question: "What does SNAP stand for?"
+    answer: "SNAP stands for Supplemental Nutrition Assistance Program. Benefits are loaded onto electronic cards that eligible households can use for approved food purchases."
+
+related:
+  - title: "Medicaid Enrollment by State"
+    url: "/rankings/government/medicaid-enrollment-by-state"
+  - title: "Social Security Recipients by State"
+    url: "/rankings/government/social-security-recipients-by-state"
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"
