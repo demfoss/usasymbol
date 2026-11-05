@@ -1,0 +1,212 @@
+type: ranking
+slug: mlb-players-born-by-state
+category: sports
+url: /rankings/sports/mlb-players-born-by-state
+
+hero_image: "/images/rankings/sports/mlb-players-born-by-state/hero.jpg"
+hero_image_alt: "Baseball pitcher in mid-delivery on the mound in a stadium"
+
+auto_link_phrases:
+  - "MLB players born by state"
+  - "which state has produced the most MLB players"
+  - "major league baseball players by birth state"
+extremes_mode: topOnly
+extremes_title: "States That Produce the Most MLB Players"
+
+author: "USA Symbol Team"
+date_published: "2026-11-05"
+date_modified: "2026-11-05"
+
+seo:
+  title: "MLB Players Born by State | Map & Birthplaces"
+  description: "California is the birthplace of 2,556 major league players, more than any other state. Pennsylvania follows with 1,528 and New York with 1,289."
+
+page:
+  h1: "MLB Players Born by State"
+
+  quick_answer:
+    - "California is the birthplace of more major league players than any other state at 2,556, helped by a huge population and a baseball season that never has to wait for spring."
+    - "Pennsylvania ranks second at 1,528, ahead of New York at 1,289 and Texas at 1,215. Missouri, at 692, outproduces Georgia, Alabama, and New Jersey."
+    - "Alaska ranks last at 13 and Wyoming is next at 17, since short summers leave little time for the sport."
+
+  methodology: "Counts major league players by US birth state from Baseball-Reference's Batting Totals by Birth State table, checked November 5, 2026. Players born in the District of Columbia, US territories, and other countries are excluded."
+
+  sources:
+    - name: "Baseball-Reference. Batting Totals by Birth State"
+      url: "https://www.baseball-reference.com/bio/state_bat.shtml"
+      description: "Player counts by US birth state, checked November 5, 2026"
+
+map:
+  title: "MLB Players Born by State Map"
+  image_alt: "Map of the United States colored by the number of major league baseball players born in each state"
+  caption: "California, the darkest state, is the birthplace of 2,556 players, with Pennsylvania at 1,528 and New York at 1,289. Alaska is the lightest at 13."
+  metric_key: players
+  metric_label: "players"
+  color_scheme: green
+  color_scale: log
+
+table:
+  searchable: true
+  sortable: true
+  caption: "Major league players by birth state, as of November 5, 2026"
+  metric_default: players
+  sort_default: desc
+  column_formats:
+    players: "N0"
+  columns:
+    rank: "Rank"
+    state: "State"
+    players: "Players"
+  rows:
+    - { rank: 1, state: "California", state_slug: "california", postal_code: "CA", players: 2556 }
+    - { rank: 2, state: "Pennsylvania", state_slug: "pennsylvania", postal_code: "PA", players: 1528 }
+    - { rank: 3, state: "New York", state_slug: "new-york", postal_code: "NY", players: 1289 }
+    - { rank: 4, state: "Texas", state_slug: "texas", postal_code: "TX", players: 1215 }
+    - { rank: 5, state: "Illinois", state_slug: "illinois", postal_code: "IL", players: 1165 }
+    - { rank: 6, state: "Ohio", state_slug: "ohio", postal_code: "OH", players: 1101 }
+    - { rank: 7, state: "Florida", state_slug: "florida", postal_code: "FL", players: 769 }
+    - { rank: 8, state: "Missouri", state_slug: "missouri", postal_code: "MO", players: 692 }
+    - { rank: 9, state: "Massachusetts", state_slug: "massachusetts", postal_code: "MA", players: 686 }
+    - { rank: 10, state: "Georgia", state_slug: "georgia", postal_code: "GA", players: 589 }
+    - { rank: 11, state: "North Carolina", state_slug: "north-carolina", postal_code: "NC", players: 528 }
+    - { rank: 12, state: "Alabama", state_slug: "alabama", postal_code: "AL", players: 514 }
+    - { rank: 13, state: "New Jersey", state_slug: "new-jersey", postal_code: "NJ", players: 486 }
+    - { rank: 14, state: "Michigan", state_slug: "michigan", postal_code: "MI", players: 464 }
+    - { rank: 15, state: "Indiana", state_slug: "indiana", postal_code: "IN", players: 436 }
+    - { rank: 16, state: "Tennessee", state_slug: "tennessee", postal_code: "TN", players: 434 }
+    - { rank: 17, state: "Virginia", state_slug: "virginia", postal_code: "VA", players: 402 }
+    - { rank: 18, state: "Maryland", state_slug: "maryland", postal_code: "MD", players: 358 }
+    - { rank: 19, state: "Louisiana", state_slug: "louisiana", postal_code: "LA", players: 357 }
+    - { rank: 20, state: "Kentucky", state_slug: "kentucky", postal_code: "KY", players: 351 }
+    - { rank: 21, state: "Oklahoma", state_slug: "oklahoma", postal_code: "OK", players: 313 }
+    - { rank: 22, state: "Mississippi", state_slug: "mississippi", postal_code: "MS", players: 284 }
+    - { rank: 23, state: "South Carolina", state_slug: "south-carolina", postal_code: "SC", players: 261 }
+    - { rank: 23, state: "Wisconsin", state_slug: "wisconsin", postal_code: "WI", players: 261 }
+    - { rank: 25, state: "Kansas", state_slug: "kansas", postal_code: "KS", players: 243 }
+    - { rank: 26, state: "Arkansas", state_slug: "arkansas", postal_code: "AR", players: 236 }
+    - { rank: 27, state: "Iowa", state_slug: "iowa", postal_code: "IA", players: 234 }
+    - { rank: 28, state: "Washington", state_slug: "washington", postal_code: "WA", players: 230 }
+    - { rank: 29, state: "Connecticut", state_slug: "connecticut", postal_code: "CT", players: 210 }
+    - { rank: 30, state: "Minnesota", state_slug: "minnesota", postal_code: "MN", players: 192 }
+    - { rank: 31, state: "Arizona", state_slug: "arizona", postal_code: "AZ", players: 151 }
+    - { rank: 32, state: "Oregon", state_slug: "oregon", postal_code: "OR", players: 144 }
+    - { rank: 33, state: "West Virginia", state_slug: "west-virginia", postal_code: "WV", players: 135 }
+    - { rank: 34, state: "Nebraska", state_slug: "nebraska", postal_code: "NE", players: 123 }
+    - { rank: 35, state: "Colorado", state_slug: "colorado", postal_code: "CO", players: 112 }
+    - { rank: 36, state: "Rhode Island", state_slug: "rhode-island", postal_code: "RI", players: 83 }
+    - { rank: 37, state: "Maine", state_slug: "maine", postal_code: "ME", players: 80 }
+    - { rank: 38, state: "Delaware", state_slug: "delaware", postal_code: "DE", players: 66 }
+    - { rank: 39, state: "Nevada", state_slug: "nevada", postal_code: "NV", players: 58 }
+    - { rank: 39, state: "New Hampshire", state_slug: "new-hampshire", postal_code: "NH", players: 58 }
+    - { rank: 41, state: "Utah", state_slug: "utah", postal_code: "UT", players: 52 }
+    - { rank: 42, state: "Hawaii", state_slug: "hawaii", postal_code: "HI", players: 50 }
+    - { rank: 43, state: "South Dakota", state_slug: "south-dakota", postal_code: "SD", players: 39 }
+    - { rank: 44, state: "Vermont", state_slug: "vermont", postal_code: "VT", players: 38 }
+    - { rank: 45, state: "New Mexico", state_slug: "new-mexico", postal_code: "NM", players: 35 }
+    - { rank: 46, state: "Idaho", state_slug: "idaho", postal_code: "ID", players: 34 }
+    - { rank: 47, state: "Montana", state_slug: "montana", postal_code: "MT", players: 27 }
+    - { rank: 48, state: "North Dakota", state_slug: "north-dakota", postal_code: "ND", players: 20 }
+    - { rank: 49, state: "Wyoming", state_slug: "wyoming", postal_code: "WY", players: 17 }
+    - { rank: 50, state: "Alaska", state_slug: "alaska", postal_code: "AK", players: 13 }
+
+sections:
+  - id: "why-california-has-the-most-mlb-players"
+    icon: "fa-solid fa-baseball"
+    title: "Why California Has the Most MLB Players"
+    paragraphs:
+      - "California is the birthplace of 2,556 major leaguers, about 1,000 more than second-place Pennsylvania. Mild weather lets kids play almost year-round, and the Pacific Coast League has run professional baseball on the West Coast since 1903. Ted Williams, Joe DiMaggio, and Barry Bonds all came from the state."
+      - "California also has the largest population in the country, which adds raw numbers to the climate advantage. Its own big league clubs show up in [MLB teams by state]."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        players: "Players"
+      rows:
+        - { rank: 1, state: "California", players: "2,556" }
+        - { rank: 2, state: "Pennsylvania", players: "1,528" }
+        - { rank: 3, state: "New York", players: "1,289" }
+        - { rank: 4, state: "Texas", players: "1,215" }
+        - { rank: 5, state: "Illinois", players: "1,165" }
+        - { rank: 6, state: "Ohio", players: "1,101" }
+        - { rank: 7, state: "Florida", players: "769" }
+        - { rank: 8, state: "Missouri", players: "692" }
+        - { rank: 9, state: "Massachusetts", players: "686" }
+        - { rank: 10, state: "Georgia", players: "589" }
+
+  - id: "pennsylvania-ohio-and-missouri-mlb-players"
+    icon: "fa-solid fa-trophy"
+    title: "Pennsylvania, Ohio and Missouri MLB Players"
+    paragraphs:
+      - "Pennsylvania, at 1,528, beats both New York and Texas. Baseball took hold in its industrial towns early, and Honus Wagner, born near Pittsburgh, was one of the first stars of the modern game. Ohio, at 1,101, is sixth and home to the Cincinnati Red Stockings, the first fully professional team, formed in 1869."
+      - "Missouri is eighth at 692, ahead of Georgia at 589 and Alabama at 514, with Yogi Berra born in St. Louis. Alabama still sent Hank Aaron from Mobile and Willie Mays from Westfield, two of the greatest players ever. Minor leagues feed the pipeline, as seen in [minor league baseball teams by state]."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        players: "Players"
+      rows:
+        - { rank: 2, state: "Pennsylvania", players: "1,528" }
+        - { rank: 6, state: "Ohio", players: "1,101" }
+        - { rank: 8, state: "Missouri", players: "692" }
+        - { rank: 10, state: "Georgia", players: "589" }
+        - { rank: 12, state: "Alabama", players: "514" }
+
+  - id: "states-with-the-fewest-mlb-players"
+    icon: "fa-solid fa-snowflake"
+    title: "States With the Fewest MLB Players"
+    paragraphs:
+      - "Alaska is last at 13, followed by Wyoming at 17 and North Dakota at 20. Long winters shorten the youth season, and outdoor fields in these states are frozen or buried in snow into the spring."
+      - "Vermont, at 38, gave baseball Carlton Fisk, born in Bellows Falls, who caught in the majors until age 45. Hawaii, at 50, has produced players such as Kurt Suzuki despite sitting far from the mainland."
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        players: "Players"
+      rows:
+        - { rank: 44, state: "Vermont", players: "38" }
+        - { rank: 46, state: "Idaho", players: "34" }
+        - { rank: 47, state: "Montana", players: "27" }
+        - { rank: 48, state: "North Dakota", players: "20" }
+        - { rank: 49, state: "Wyoming", players: "17" }
+        - { rank: 50, state: "Alaska", players: "13" }
+
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/sports/mlb-players-born-by-state/section-1.jpg"
+    alt: "Baseball batter in a green uniform waiting for a pitch"
+    section: why-california-has-the-most-mlb-players
+    layout: full-width-tall
+  - id: section-2
+    src: "/images/rankings/sports/mlb-players-born-by-state/section-2.jpg"
+    alt: "Aerial view of a baseball stadium and diamond filled with fans"
+    section: pennsylvania-ohio-and-missouri-mlb-players
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has produced the most MLB players?"
+    answer: "California, with 2,556 major leaguers born there. Pennsylvania is second at 1,528 and New York third at 1,289."
+
+  - question: "How many MLB players are from Texas?"
+    answer: "Texas has 1,215 and ranks fourth. Nolan Ryan, born in Refugio, is its best-known pitcher."
+
+  - question: "How many MLB players are from Ohio?"
+    answer: "Ohio has 1,101 and ranks sixth. The Cincinnati Red Stockings, the first fully professional team, began play there in 1869."
+
+  - question: "Which state has the fewest MLB players?"
+    answer: "Alaska has just 13. Wyoming is next at 17, and North Dakota has 20."
+
+  - question: "How many MLB players are from Alabama?"
+    answer: "Alabama has 514, which ranks 12th. Hank Aaron and Willie Mays, two of the game's greatest sluggers, were born there."
+
+  - question: "How many MLB players are from Missouri?"
+    answer: "Missouri has 692 and ranks eighth. Yogi Berra, the Hall of Fame catcher, grew up on The Hill in St. Louis."
+
+related:
+  - title: "MLB Teams by State"
+    url: "/rankings/sports/mlb-teams-by-state"
+  - title: "Minor League Baseball Teams by State"
+    url: "/rankings/sports/minor-league-baseball-teams-by-state"
+  - title: "NBA Players Born by State"
+    url: "/rankings/sports/nba-players-born-by-state"
+  - title: "Youth Sports Participation by State"
+    url: "/rankings/sports/youth-sports-participation-by-state"
