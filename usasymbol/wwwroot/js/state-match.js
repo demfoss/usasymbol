@@ -48,7 +48,8 @@
         presets[name] = scorer.preset(name);
     });
 
-    // Nine forced-choice pairs covering all 11 metrics at least once. Weight math in
+    // Nine forced-choice pairs covering the core starter metrics. Additional metrics remain
+    // opt-in sliders so the quick quiz stays short. Weight math in
     // finishQuiz() scores each metric by win-rate (wins ÷ appearances), so a metric asked
     // about twice isn't unfairly advantaged over one asked about once.
     var QUIZ_QUESTIONS = [
@@ -91,7 +92,9 @@
     var SLIDER_GROUPS = [
         { name: "Economy", icon: "fa-solid fa-sack-dollar", keys: ["cost", "income", "jobs", "housing"] },
         { name: "Community", icon: "fa-solid fa-people-roof", keys: ["safety", "health", "education"] },
-        { name: "Climate & taxes", icon: "fa-solid fa-sun", keys: ["warmth", "incometax", "propertytax", "salestax"] }
+        { name: "Climate & taxes", icon: "fa-solid fa-sun", keys: ["warmth", "incometax", "propertytax", "salestax"] },
+        { name: "Work & daily life", icon: "fa-solid fa-briefcase", keys: ["jobgrowth", "rent", "childcare", "commute"], optional: true },
+        { name: "Wellbeing", icon: "fa-solid fa-heart-pulse", keys: ["lifeexpectancy", "sunny"], optional: true }
     ];
 
     buildSliders();
@@ -189,6 +192,7 @@
 
     function readWeightsFromUrl() {
         var result = defaults();
+        var url = new URL(window.location.href);
 
         // A preset landing page (e.g. /match/low-taxes) seeds its own weights server-side.
         // A shared "?w=" link (checked next) still wins over the page's own preset default.
@@ -204,8 +208,13 @@
             });
         }
 
-        var encoded = new URL(window.location.href).searchParams.get("w");
+        var encoded = url.searchParams.get("w");
         if (!encoded) {
+            var focusedKey = url.searchParams.get("focus");
+            if (focusedKey && metricByKey.has(focusedKey)) {
+                metrics.forEach(function (metric) { result[metric.key] = 0; });
+                result[focusedKey] = 100;
+            }
             return result;
         }
 
@@ -335,19 +344,33 @@
         var grouped = {};
         SLIDER_GROUPS.forEach(function (group) { group.keys.forEach(function (key) { grouped[key] = true; }); });
         var groups = SLIDER_GROUPS.map(function (group) {
-            return { name: group.name, icon: group.icon, metrics: group.keys.map(function (key) { return metricByKey.get(key); }).filter(Boolean) };
+            return {
+                name: group.name,
+                icon: group.icon,
+                optional: Boolean(group.optional),
+                metrics: group.keys.map(function (key) { return metricByKey.get(key); }).filter(Boolean)
+            };
         });
         var leftover = metrics.filter(function (metric) { return !grouped[metric.key]; });
         if (leftover.length) {
-            groups.push({ name: "Other", icon: "fa-solid fa-ellipsis", metrics: leftover });
+            groups.push({ name: "Other", icon: "fa-solid fa-ellipsis", optional: true, metrics: leftover });
         }
 
-        sliderHost.innerHTML = groups.filter(function (group) { return group.metrics.length; }).map(function (group) {
+        var visibleGroups = groups.filter(function (group) { return group.metrics.length && !group.optional; });
+        var optionalGroups = groups.filter(function (group) { return group.metrics.length && group.optional; });
+
+        function groupHtml(group) {
             return '<div class="sm-slider-group" role="group" aria-label="' + escapeHtml(group.name) + '">' +
                 '<p class="sm-slider-group-title"><i class="' + escapeHtml(group.icon) + '" aria-hidden="true"></i>' + escapeHtml(group.name) + '</p>' +
                 group.metrics.map(sliderHtml).join("") +
                 '</div>';
-        }).join("");
+        }
+
+        sliderHost.innerHTML = visibleGroups.map(groupHtml).join("") +
+            (optionalGroups.length
+                ? '<details class="sm-more-priorities"><summary>More priorities <span>6 optional factors</span></summary><div>' +
+                    optionalGroups.map(groupHtml).join("") + '</div></details>'
+                : '');
 
         function sliderHtml(metric) {
             var safeKey = escapeHtml(metric.key);

@@ -49,6 +49,7 @@ table:
     opioid_death_rate: Death Rate
   metric_default: opioid_death_rate
   sort_default: desc
+  higher_is_better: false
   rows:
   - rank: 1
     state: West Virginia
@@ -307,6 +308,11 @@ table:
     state_slug: nebraska
     postal_code: NE
     opioid_death_rate: 3.3
+  national:
+    value: 16.0
+    label: "U.S. overall (age-adjusted)"
+    source: "CDC NCHS via KFF"
+    year: 2024
 sections:
 - id: states-with-the-highest-opioid-overdose-death-rate
   icon: fa-solid fa-triangle-exclamation

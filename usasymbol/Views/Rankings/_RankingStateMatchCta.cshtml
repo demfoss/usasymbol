@@ -1,0 +1,21 @@
+@using USASymbol.Services
+@model RankingCompareData
+@inject IStateMatchService StateMatchService
+@{
+    var comparisonSlug = Model?.MetricSlug?.Trim() ?? "";
+    var matchKey = string.IsNullOrWhiteSpace(comparisonSlug)
+        ? null
+        : StateMatchService.GetMetricKeyForComparisonSlug(comparisonSlug);
+    if (string.IsNullOrWhiteSpace(matchKey)) { return; }
+}
+<aside class="ranking-match-cta" aria-label="Use this ranking in State Match">
+    <div class="ranking-match-cta__icon"><i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i></div>
+    <div>
+        <p class="ranking-match-cta__eyebrow">Personalize this ranking</p>
+        <h2>Should this factor shape where you live?</h2>
+        <p>Open State Match with this criterion at maximum importance. You can add other priorities there.</p>
+    </div>
+    <a href="/state-match?focus=@matchKey">
+        Use in State Match <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+    </a>
+</aside>

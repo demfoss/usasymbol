@@ -81,20 +81,10 @@
                     <p class="pdh-deck pdh-deck--large">@Model.Description</p>
                 }
 
-                <dl class="pdh-facts">
-                    @if (Model.EntryCount > 0)
-                    {
-                        <div><dt>Entries ranked</dt><dd>@Model.EntryCount</dd></div>
-                    }
-                    @if (Model.StatesRepresented > 0)
-                    {
-                        <div><dt>States represented</dt><dd>@Model.StatesRepresented</dd></div>
-                    }
-                    @if (Model.Items.FirstOrDefault() is { } leader && !string.IsNullOrWhiteSpace(leader.Value))
-                    {
-                        <div><dt>@Model.MetricLabel</dt><dd>@leader.Value</dd></div>
-                    }
-                </dl>
+                @if (Model.PageModel.IsRanking)
+                {
+                    <p class="pdh-byline">Reviewed by <a href="/about/artsiom-dusau">Artsiom Dusau</a>@(string.IsNullOrWhiteSpace(updatedLabel) ? "" : " \u00B7 Updated " + updatedLabel)</p>
+                }
 
                 <div class="pdh-actions pdh-actions--spread">
                     @await Html.PartialAsync("_PageDataHeroJumps", Model)
@@ -115,7 +105,8 @@
                     <div class="pdh-chart-row @(item.Rank == 1 ? "pdh-chart-row--leader" : null)">
                         <div class="pdh-rank">@item.Rank</div>
                         <div>
-                            @if (!string.IsNullOrWhiteSpace(item.State))
+                            @if (!string.IsNullOrWhiteSpace(item.State) &&
+                                 !string.Equals(item.Title, item.State, StringComparison.OrdinalIgnoreCase))
                             {
                                 <a class="pdh-state" href="/states/@item.StateSlug">@item.State</a>
                             }
@@ -307,7 +298,7 @@
         <nav class="pdh-tags" aria-label="Topics">
             @foreach (var chip in Model.Chips)
             {
-                <a class="pdh-tag" href="@chip.Url"><span aria-hidden="true">#</span>@chip.Label</a>
+                <a class="pdh-tag" href="@chip.Url">@chip.Label</a>
             }
         </nav>
     }

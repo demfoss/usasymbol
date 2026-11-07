@@ -2,67 +2,21 @@
 @using Usasymbol.Helpers
 @using USASymbol.Extensions
 @using USASymbol.Services
-@inject USASymbol.Services.Interface.IBorderService BorderService
+@using System.Globalization
 
 @{
     var sectionId = (ViewData["QuickAnswerSectionId"] as string ?? "quick-answer").Trim();
     var tableSectionId = (ViewData["RankingTableSectionId"] as string ?? "ranking-table").Trim();
-    var title = string.IsNullOrWhiteSpace(Model.Content.Page.QuickAnswerTitle)
-        ? Model.Content.Page.H1
-        : Model.Content.Page.QuickAnswerTitle;
-
-    // Preferred path: everything comes from the structured table (state, value, rank).
     var rank = RankingTakeawaysBuilder.Build(Model);
-
-    // Fallback for pages without a numeric state table: best-effort parse of the prose bullets.
     var stories = rank == null && Model.HasQuickAnswer
         ? KeyTakeawaysBuilder.BuildBigNumberStories(Model.Content.Page.QuickAnswer)
         : new List<BigNumberStory>();
-
-    string citeText = "";
-    TakeawayStateOption? cmpA = null, cmpB = null;
-    string cmpUrl = "", cmpNote = "";
-    string topSlug = "";
-    if (rank != null)
-    {
-        // Compare strip: the leader vs a bordering state that is in this ranking; if it has no
-        // usable neighbour (Alaska, Hawaii, DC), vs the opposite end of the ranking.
-        var byRank = rank.Options.Where(o => KeyTakeawaysBuilder.IsState(o.Slug)).OrderBy(o => o.Rank).ThenBy(o => o.Name, StringComparer.Ordinal).ToList();
-        cmpA = byRank.FirstOrDefault();
-        if (cmpA != null)
-        {
-            topSlug = cmpA.Slug;
-            var border = await BorderService.GetBorderContentAsync(cmpA.Slug);
-            var neighbours = (border?.BorderSummary?.BorderingStatesList ?? "")
-                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(n => n.ToLowerInvariant().Replace(' ', '-'))
-                .ToHashSet();
-            cmpB = byRank.Where(o => o != cmpA && neighbours.Contains(o.Slug))
-                         .OrderBy(o => Math.Abs(o.Number - cmpA.Number)).FirstOrDefault();
-            cmpB ??= byRank.Count > 1 ? byRank[^1] : null;
-            if (cmpB != null && cmpB != cmpA)
-            {
-                cmpUrl = "/compare/" + ComparisonService.CanonicalPairSlug(cmpA.Slug, cmpB.Slug);
-                if (Math.Abs(cmpB.Number) > 1e-9)
-                {
-                    var diff = (cmpA.Number - cmpB.Number) / Math.Abs(cmpB.Number) * 100d;
-                    cmpNote = $"{cmpA.Name} is {Math.Round(Math.Abs(diff)):0}% {(diff >= 0 ? "higher" : "lower")}";
-                }
-            }
-            else
-            {
-                cmpA = null; cmpB = null;
-            }
-        }
-
-
-        var req = Context.Request;
-        var pagePath = !string.IsNullOrWhiteSpace(Model.Content.Url) ? Model.Content.Url : req.Path.Value;
-        var absUrl = $"{req.Scheme}://{req.Host}{pagePath}";
-        var firstSource = Model.Content.Page.Sources?.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s.Name))?.Name;
-        citeText = $"USA Symbol. “{Model.Content.Page.H1}.” {absUrl}"
-            + (string.IsNullOrWhiteSpace(firstSource) ? "" : $" Data: {firstSource}.");
-    }
+    var req = Context.Request;
+    var pagePath = !string.IsNullOrWhiteSpace(Model.Content.Url) ? Model.Content.Url : req.Path.Value;
+    var absUrl = $"{req.Scheme}://{req.Host}{pagePath}";
+    var firstSource = Model.Content.Page.Sources?.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s.Name))?.Name;
+    var citeText = $"USA Symbol. “{Model.Content.Page.H1}.” {absUrl}"
+        + (string.IsNullOrWhiteSpace(firstSource) ? "" : $" Data: {firstSource}.");
 }
 
 @if (rank != null)
@@ -71,146 +25,101 @@
         <h2 id="kt-rank-title" class="kt-rank__title">Key takeaways</h2>
         <p class="kt-rank__summary">@rank.Summary</p>
 
-        <div class="kt-rank__cards kt-rank__cards--@rank.Cards.Count">
-            @foreach (var card in rank.Cards)
-            {
-                <article class="kt-rank__card kt-rank__card--@card.Tone">
-                    <p class="kt-rank__role">@card.Role</p>
-                    <p class="kt-rank__state">
-                        @for (var i = 0; i < card.States.Count; i++)
-                        {
-                            var st = card.States[i];
-                            if (i > 0) { <span class="kt-rank__amp"> &amp; </span> }
-                            <a href="#@tableSectionId" data-kt-row="@st.Slug">@st.Name</a>
-                        }
-                        @if (card.ExtraStates > 0)
-                        {
-                            <span class="kt-rank__more">+@card.ExtraStates more</span>
-                        }
-                    </p>
-                    <p class="kt-rank__value">@card.Value</p>
-                    @if (!string.IsNullOrWhiteSpace(rank.Unit))
-                    {
-                        <p class="kt-rank__unit">@rank.Unit</p>
-                    }
-                    <span class="kt-rank__bar" aria-hidden="true"><i style="width:@card.BarPercent.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)%"></i></span>
-                    @if (!string.IsNullOrWhiteSpace(card.Context))
-                    {
-                        <p class="kt-rank__ctx">@card.Context</p>
-                    }
-                </article>
-            }
-        </div>
-
-        @if (cmpA != null && cmpB != null)
-        {
-            <a class="kt-rank__compare" href="@cmpUrl">
-                <span class="kt-rank__compare-pair"><strong>@cmpA.Name</strong> @cmpA.Value <em>vs</em> <strong>@cmpB.Name</strong> @cmpB.Value</span>
-                <span class="kt-rank__compare-cta">@(string.IsNullOrEmpty(cmpNote) ? "" : cmpNote + " · ")Compare these states <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
-            </a>
-        }
-
-        <div class="kt-rank__tools" data-kt-top="@topSlug" data-kt-top-name="@(cmpA?.Name)">
+        <div class="kt-rank__personal" data-kt-personal>
+            <div class="kt-rank__head">
+                <label for="kt-you-select" class="kt-rank__you-label">How does your state compare?</label>
+            </div>
             <label class="kt-rank__you">
-                <span class="kt-rank__you-label">Where does your state stand?</span>
-                <select data-kt-you aria-label="Pick your state to see where it ranks">
-                    <option value="">Choose a state</option>
+                <select id="kt-you-select" data-kt-you aria-controls="kt-state-result">
+                    <option value="">Choose your state</option>
                     @foreach (var o in rank.Options)
                     {
-                        <option value="@o.Slug" data-rank="@o.Rank" data-value="@o.Value" data-ctx="@o.Context">@o.Name</option>
+                        var target = o.Slug == rank.Leader.Slug ? rank.Alternative : rank.Leader;
+                        var compareUrl = rank.HasSpread ? "/compare/" + ComparisonService.CanonicalPairSlug(o.Slug, target.Slug) : "";
+                        <option value="@o.Slug" data-statement="@o.Statement" data-context="@o.Context" data-typical="@(o.IsTypical ? "true" : "false")" data-postal="@o.Postal"
+                                data-position="@o.Position.ToString("0.###", CultureInfo.InvariantCulture)"
+                                data-compare-url="@compareUrl" data-compare-name="@target.Name">@o.Name</option>
                     }
                 </select>
             </label>
-            <p class="kt-rank__you-out" data-kt-you-out aria-live="polite"></p>
-            <button type="button" class="kt-rank__cite" data-kt-cite="@citeText">
-                <i class="fa-solid fa-quote-left" aria-hidden="true"></i>
-                <span>Cite this data</span>
-            </button>
+
+            <p class="kt-rank__geo" data-kt-geo hidden>Selected from your location. Change it any time.</p>
+            <div id="kt-state-result" class="kt-rank__result" data-kt-result hidden>
+                <div aria-live="polite" aria-atomic="true">
+                    <p class="kt-rank__statement" data-kt-statement></p>
+                    <p class="kt-rank__context" data-kt-context></p>
+                    <p class="kt-rank__typical" data-kt-typical>@rank.TypicalStatement</p>
+                </div>
+
+                @if (rank.HasSpread)
+                {
+                    <div class="kt-rank__scale" role="img" data-kt-scale data-kt-scale-leader="@rank.Leader.Statement">
+                        <div class="kt-rank__median-label" aria-hidden="true" style="left:@rank.TypicalPosition.ToString("0.###", CultureInfo.InvariantCulture)%">Typical</div>
+                        <div class="kt-rank__track" aria-hidden="true">
+                            @foreach (var dot in rank.DotPositions)
+                            {
+                                <span class="kt-rank__dot" style="left:@dot.ToString("0.###", CultureInfo.InvariantCulture)%"></span>
+                            }
+                            <span class="kt-rank__marker kt-rank__marker--typical" style="left:@rank.TypicalPosition.ToString("0.###", CultureInfo.InvariantCulture)%"></span>
+                            <span class="kt-rank__marker kt-rank__marker--leader" style="left:@rank.Leader.Position.ToString("0.###", CultureInfo.InvariantCulture)%"></span>
+                            <span class="kt-rank__marker kt-rank__marker--you" data-kt-marker></span>
+                        </div>
+                        <div class="kt-rank__ends" aria-hidden="true"><span>@rank.MinLabel</span>@if (rank.LogScale) { <span class="kt-rank__log">log scale</span> }<span>@rank.MaxLabel</span></div>
+                        <div class="kt-rank__legend" aria-hidden="true">
+                            <span><i class="kt-rank__key kt-rank__key--you"></i><span data-kt-scale-name></span></span>
+                            <span><i class="kt-rank__key kt-rank__key--dot"></i>Other states</span>
+                            <span><i class="kt-rank__key kt-rank__key--typical"></i>Typical state</span>
+                            <span><i class="kt-rank__key kt-rank__key--leader"></i>@rank.Leader.Name</span>
+                        </div>
+                    </div>
+                }
+
+                <div class="kt-rank__actions">
+                    <a class="kt-rank__compare-button" data-kt-compare hidden></a>
+                    <label class="kt-rank__compare-any" data-kt-compare-any-wrap hidden>
+                        <select data-kt-compare-any aria-label="Compare with another state"></select>
+                    </label>
+                    <a href="#@tableSectionId" class="kt-rank__table-link" data-kt-row><span class="kt-rank__table-text">See in table</span> <span aria-hidden="true">→</span></a>
+                    <button type="button" class="kt-rank__share" data-kt-share><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> <span>Share</span></button>
+                </div>
+            </div>
+            <noscript><p><a href="#@tableSectionId">Find your state in the full table.</a></p></noscript>
         </div>
+
+        @if (rank.Facts.Count > 0)
+        {
+            <ul class="kt-rank__facts">
+                @foreach (var fact in rank.Facts)
+                {
+                    <li>
+                        @if (fact.States.Count > 0)
+                        {
+                            <details class="kt-rank__disclosure">
+                                <summary>@fact.Text <span class="kt-rank__list-hint">View states</span></summary>
+                                <ul class="kt-rank__state-list">
+                                    @foreach (var state in fact.States)
+                                    {
+                                        <li><a href="#@tableSectionId" data-kt-row="@state.Slug">@state.Name</a></li>
+                                    }
+                                </ul>
+                            </details>
+                        }
+                        else
+                        {
+                            @fact.Text
+                        }
+                    </li>
+                }
+            </ul>
+        }
+
     </section>
-
-    <script>
-    (function () {
-        var root = document.getElementById(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(sectionId)));
-        if (!root) return;
-        var tableId = root.getAttribute('data-kt-table');
-
-        function flash(row) {
-            row.classList.remove('kt-row-flash');
-            void row.offsetWidth;
-            row.classList.add('kt-row-flash');
-        }
-        function goToRow(slug) {
-            var table = document.getElementById(tableId);
-            var row = table && table.querySelector('tr[data-state-slug="' + slug + '"]');
-            if (!row) return false;
-            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            flash(row);
-            return true;
-        }
-
-        root.addEventListener('click', function (e) {
-            var a = e.target.closest('a[data-kt-row]');
-            if (a && goToRow(a.getAttribute('data-kt-row'))) e.preventDefault();
-
-            var cite = e.target.closest('[data-kt-cite]');
-            if (cite) {
-                var text = cite.getAttribute('data-kt-cite');
-                var label = cite.querySelector('span');
-                var done = function () {
-                    var old = label.textContent;
-                    label.textContent = 'Copied';
-                    setTimeout(function () { label.textContent = old; }, 1800);
-                };
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(done, function () { window.prompt('Copy this citation:', text); });
-                } else {
-                    window.prompt('Copy this citation:', text);
-                }
-            }
-        });
-
-        var select = root.querySelector('[data-kt-you]');
-        var out = root.querySelector('[data-kt-you-out]');
-        if (select && out) {
-            select.addEventListener('change', function () {
-                var opt = select.options[select.selectedIndex];
-                if (!opt || !opt.value) { out.innerHTML = ''; return; }
-                var ctx = opt.getAttribute('data-ctx');
-                out.innerHTML = '';
-                var strong = document.createElement('strong');
-                strong.textContent = opt.text + ': #' + opt.getAttribute('data-rank') + ' · ' + opt.getAttribute('data-value');
-                out.appendChild(strong);
-                if (ctx) out.appendChild(document.createTextNode(' · ' + ctx));
-                var link = document.createElement('a');
-                link.href = '#' + tableId;
-                link.textContent = 'See in table';
-                link.addEventListener('click', function (ev) {
-                    if (goToRow(opt.value)) ev.preventDefault();
-                });
-                out.appendChild(document.createTextNode(' · '));
-                out.appendChild(link);
-
-                var tools = select.closest('[data-kt-top]');
-                var top = tools && tools.getAttribute('data-kt-top');
-                if (top && top !== opt.value) {
-                    var pair = [opt.value, top].sort();
-                    var cmp = document.createElement('a');
-                    cmp.href = '/compare/' + pair[0] + '-vs-' + pair[1];
-                    cmp.textContent = 'Compare ' + opt.text + ' with ' + tools.getAttribute('data-kt-top-name') + ' (#1)';
-                    out.appendChild(document.createTextNode(' · '));
-                    out.appendChild(cmp);
-                }
-            });
-        }
-    })();
-    </script>
+    <script src="~/js/rankings/takeaways.js" asp-append-version="true" defer></script>
 }
 else if (stories.Count >= 2)
 {
     <section id="@sectionId" class="kt-story scroll-mt-24" aria-labelledby="kt-story-title">
         <h2 id="kt-story-title" class="kt-story__title">Key takeaways</h2>
-
         <div class="kt-story__grid @(stories.Count == 2 ? "kt-story__grid--2" : "")">
             @foreach (var story in stories)
             {

@@ -51,6 +51,7 @@ table:
     theft_rate: Theft Rate per 100K
   metric_default: theft_rate
   sort_default: desc
+  higher_is_better: false
   rows:
   - rank: 1
     state: California
@@ -302,6 +303,11 @@ table:
     state_slug: new-hampshire
     postal_code: NH
     theft_rate: 48
+  national:
+    value: 250.2
+    label: "U.S. overall"
+    source: "NICB Hot Spots"
+    year: 2024
 sections:
 - id: states-with-the-highest-car-theft-rates
   icon: fa-solid fa-car-burst

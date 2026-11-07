@@ -37,6 +37,7 @@ page:
       description: "State-by-state average auto loan balance and year-over-year change, Q3 2024"
 
 table:
+  higher_is_better: false
   columns:
     rank: "Rank"
     state: "State"
@@ -352,6 +353,11 @@ table:
       avg_balance: 19503
       yoy_change_pct: 2.0
       notes: "Lowest average auto loan balance of any state"
+  national:
+    value: 24297
+    label: "U.S. average"
+    source: "Experian"
+    year: 2024
 
 map:
   title: "Average Car Loan Balance by State Map"

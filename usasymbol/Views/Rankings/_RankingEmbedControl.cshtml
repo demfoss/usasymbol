@@ -1,0 +1,71 @@
+@model PageDetailViewModel
+@{
+    var content = Model.Content;
+    var hasMap = content?.Map != null;
+    var hasTable = content?.Table?.Rows.Count > 0;
+    if (content == null || (!hasMap && !hasTable)) { return; }
+    var pageUrl = $"https://usasymbol.com{(string.IsNullOrWhiteSpace(content.Url) ? $"/rankings/{content.Category}/{content.Slug}" : content.Url)}";
+    var pageTitle = System.Net.WebUtility.HtmlEncode(content.Page?.H1 ?? content.Map?.Title ?? "Ranking");
+    var baseEmbed = $"https://usasymbol.com/embed/rankings/{content.Category}/{content.Slug}";
+    // The link sits OUTSIDE the iframe so search engines count it as a normal backlink.
+    var sourceHtml = $"<p>Source: <a href=\"{pageUrl}\">{pageTitle} — USA Symbol</a></p>";
+    var tableHeight = hasTable ? Math.Clamp(170 + content.Table!.Rows.Count * 38, 320, 760) : 0;
+    var mapTitle = System.Net.WebUtility.HtmlEncode(content.Map?.Title ?? pageTitle);
+    var firstFormat = hasMap ? "map" : "table";
+    var pngPath = ViewData["MapSharePngPath"] as string ?? ViewData["MapPngPath"] as string;
+    var hasImage = hasMap && ViewData["MapSharePngPath"] is string;
+    var imageUrl = hasImage ? "https://usasymbol.com" + (string)ViewData["MapSharePngPath"]! : "";
+    var thing = hasMap ? "map" : "table";
+}
+<div class="ranking-map-actions" data-map-actions>
+    <button type="button" class="ranking-map-actions__primary" data-embed-toggle aria-expanded="false" aria-controls="ranking-embed-panel">
+        <i class="fa-solid fa-code" aria-hidden="true"></i> <span>Embed this @thing</span>
+    </button>
+    @if (hasMap && !string.IsNullOrWhiteSpace(pngPath))
+    {
+        <a class="ranking-map-actions__secondary" href="@pngPath" download="@(content.Slug)-map.png">
+            <i class="fa-solid fa-image" aria-hidden="true"></i> <span>Download PNG</span>
+        </a>
+    }
+    <span class="ranking-map-actions__hint">Free to use on your website or class page</span>
+</div>
+<div class="ranking-embed-control" id="ranking-embed-panel" hidden
+     data-url-map="@(hasMap ? baseEmbed + "/map" : "")" data-url-table="@(hasTable ? baseEmbed + "/table" : "")"
+     data-title-map="@mapTitle" data-title-table="@pageTitle table"
+     data-height-map="760" data-height-table="@tableHeight"
+     data-url-image="@imageUrl" data-title-image="@mapTitle"
+     data-source-html="@sourceHtml" data-format="@firstFormat">
+    <div class="ranking-embed-control__body">
+        @if ((hasMap ? 1 : 0) + (hasTable ? 1 : 0) + (hasImage ? 1 : 0) > 1)
+        {
+            <div class="ranking-embed-control__tabs" role="tablist" aria-label="Embed format">
+                @if (hasMap) { <button type="button" role="tab" aria-selected="true" data-embed-format="map">Interactive map</button> }
+                @if (hasImage) { <button type="button" role="tab" aria-selected="@(!hasMap ? "true" : "false")" data-embed-format="image">Image</button> }
+                @if (hasTable) { <button type="button" role="tab" aria-selected="@(!hasMap && !hasImage ? "true" : "false")" data-embed-format="table">Full table</button> }
+            </div>
+        }
+        <div class="ranking-embed-control__grid">
+            <div class="ranking-embed-control__preview">
+                <p class="ranking-embed-control__label">Live preview</p>
+                <div class="ranking-embed-control__frame" data-embed-preview-frame></div>
+            </div>
+            <div class="ranking-embed-control__settings">
+                <label class="ranking-embed-control__label" for="embed-size">Size</label>
+                <select id="embed-size" data-embed-size>
+                    <option value="responsive">Responsive (full width of your page)</option>
+                    <option value="900">Large, 900 px wide</option>
+                    <option value="700">Medium, 700 px wide</option>
+                    <option value="500">Small, 500 px wide</option>
+                </select>
+                <label class="ranking-embed-control__label" for="embed-code">Code</label>
+                <textarea id="embed-code" readonly rows="6" data-embed-code></textarea>
+                <div class="ranking-embed-control__row">
+                    <button type="button" data-copy-embed>Copy code</button>
+                    <a href="@baseEmbed/@firstFormat" target="_blank" rel="noopener" data-embed-open>Open in new tab</a>
+                </div>
+                <p class="ranking-embed-control__note">Free to use with attribution. The code includes a text link to this page, please keep it.</p>
+                <p class="ranking-embed-control__status" data-embed-status role="status" aria-live="polite"></p>
+            </div>
+        </div>
+    </div>
+</div>

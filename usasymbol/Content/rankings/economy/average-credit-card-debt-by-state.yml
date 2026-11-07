@@ -37,6 +37,7 @@ page:
       description: "State-by-state average credit card debt per consumer, sourced from TransUnion data, updated March 2025"
 
 table:
+  higher_is_better: false
   columns:
     rank: "Rank"
     state: "State"
@@ -299,6 +300,11 @@ table:
       postal_code: "KS"
       avg_debt: 5227
       notes: "Lowest average credit card debt of any state"
+  national:
+    value: 6580
+    label: "U.S. average"
+    source: "TransUnion"
+    year: 2025
 
 map:
   title: "Average Credit Card Debt by State Map"

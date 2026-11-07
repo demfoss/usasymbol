@@ -1,0 +1,171 @@
+/* Keep the extremes layout and markup together, independently of the Tailwind bundle. */
+.ranking-extremes__charts { align-items: start; }
+
+.ranking-extremes .ranking-extreme-list--good { --extreme-bar: #3b7ea8; }
+.ranking-extremes .ranking-extreme-list--bad { --extreme-bar: #c4553f; }
+
+.ranking-extremes .ranking-extreme-card__unit {
+    margin: .3rem 0 .75rem;
+    color: #5f7183;
+    font: 500 .75rem/1.3 var(--font-sans);
+}
+
+.ranking-extremes__scale-note {
+    margin: .75rem 0 0;
+    color: var(--extreme-muted);
+    font: 400 .78rem/1.5 var(--font-sans);
+}
+
+.ranking-extremes .ranking-extreme-row__rank {
+    white-space: nowrap;
+    color: #5f7183;
+    font: 600 .75rem/1.3 var(--font-sans);
+}
+
+.ranking-extremes .ranking-extreme-row__state {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    min-width: 0;
+    overflow: visible;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+}
+
+.ranking-extremes .ranking-extreme-row__flag {
+    display: block;
+    flex: 0 0 1.5rem;
+    width: 1.5rem;
+    height: 1rem;
+    overflow: hidden;
+    border: 1px solid rgb(15 23 42 / 14%);
+    border-radius: 2px;
+    background: #f3f5f8;
+}
+
+.ranking-extremes .ranking-extreme-row__flag img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.ranking-extremes .ranking-extreme-row__value {
+    min-width: 3ch;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.ranking-extreme-list__header p {
+    margin: .35rem 0 0;
+    color: var(--extreme-muted);
+    font: 400 .75rem/1.4 var(--font-sans);
+}
+
+.ranking-extreme-group {
+    min-width: 0;
+    padding: 1rem;
+    border-bottom: 1px solid var(--extreme-soft-line);
+}
+
+.ranking-extreme-group:last-child { border-bottom: 0; }
+
+.ranking-extreme-group__heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-bottom: .65rem;
+}
+
+.ranking-extremes .ranking-extreme-group__heading h4 {
+    margin: 0;
+    color: var(--extreme-ink);
+    font: 600 .85rem/1.4 var(--font-sans);
+}
+
+.ranking-extremes .ranking-extreme-group__states {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin: .8rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ranking-extremes .ranking-extreme-group__states li { margin: 0; max-width: 100%; }
+
+.ranking-extreme-group__states a {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .35rem .5rem;
+    border: 1px solid var(--extreme-line);
+    border-radius: .35rem;
+    color: var(--extreme-muted);
+    font: 400 .75rem/1.4 var(--font-sans);
+    text-decoration: none;
+}
+
+.ranking-extreme-group__states a:hover,
+.ranking-extreme-group__states a:focus-visible { color: #1e3a6e; border-color: #94a3b8; }
+
+.ranking-extremes .ranking-extreme-row__track { position: relative; }
+
+.ranking-extreme-row__track--diverging::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--bar-origin, 50%);
+    width: 1px;
+    background: #526174;
+    content: "";
+}
+
+
+/* Row: rank, flag, state and value on one line, the bar full-width below. Bars always start at the same x. */
+.ranking-extremes .ranking-extreme-row {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr) auto;
+    grid-template-areas: "rank state value" ". track track";
+    column-gap: .6rem;
+    row-gap: .4rem;
+    align-items: center;
+    padding: .7rem .9rem;
+    border-bottom: 1px solid var(--extreme-soft-line, #eef2f5);
+}
+.ranking-extremes .ranking-extreme-row:last-child { border-bottom: 0; }
+.ranking-extremes .ranking-extreme-row__rank { grid-area: rank; color: #4b5d6e; font: 600 13px/1.3 var(--font-sans); font-variant-numeric: tabular-nums; }
+.ranking-extremes .ranking-extreme-row__rank.is-first { color: #a8791a; }
+.ranking-extremes .ranking-extreme-row__state { grid-area: state; color: #0e1a26; font: 600 15px/1.3 var(--font-sans); text-decoration: none; }
+.ranking-extremes .ranking-extreme-row__state:hover { text-decoration: underline; text-decoration-color: #d5bd88; text-underline-offset: 3px; }
+.ranking-extremes .ranking-extreme-row__value { grid-area: value; color: #0e1a26; font: 600 15px/1.3 var(--font-sans); font-variant-numeric: tabular-nums; min-width: 6ch; text-align: right; }
+.ranking-extremes .ranking-extreme-row__track { grid-area: track; height: 6px; border-radius: 3px; background: #edf1f5; overflow: hidden; }
+.ranking-extremes .ranking-extreme-row__track > span { display: block; height: 100%; border-radius: 3px; }
+.ranking-extremes .ranking-extreme-row.is-mine { outline: 2px solid #b98a1e; outline-offset: -2px; border-radius: 8px; background: #fffaf0; }
+@media (hover: hover) { .ranking-extremes .ranking-extreme-row:hover { background: #f6f9fb; } }
+
+/* Lists as plain cards: one border, no grey header band */
+.ranking-extremes .ranking-extreme-list { background: #fff; border: 1px solid #d6dfe7; border-radius: var(--r-md, 12px); box-shadow: none; overflow: hidden; }
+.ranking-extremes .ranking-extreme-list__header { padding: 14px 16px 6px; background: transparent; border-bottom: 0; }
+.ranking-extremes .ranking-extreme-list__header h3 { margin: 0; color: #0e1a26; font: 600 14px/1.3 var(--font-sans); text-transform: none; letter-spacing: 0; }
+.ranking-extremes__gap { margin: .6rem 0 0; color: #0e1a26; font: 400 1rem/1.5 var(--font-sans); }
+.ranking-extremes__all { margin: 1rem 0 0; text-align: center; }
+.ranking-extremes__all a { color: #173e61; font: 600 14px/1.4 var(--font-sans); text-decoration: underline; text-decoration-color: #d5bd88; text-underline-offset: 4px; }
+.ranking-extremes__tabs, .ranking-extremes__more { display: none; }
+
+/* Phones: Most | Fewest switch, five rows with a "Show 10" button; height stays the same when switching */
+@media (max-width: 767px) {
+    .ranking-extremes__tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 0 0 12px; padding: 3px; border: 1px solid #d6dfe7; border-radius: 10px; background: #f4f7f9; }
+    .ranking-extremes__tabs button { height: 40px; border: 0; border-radius: 8px; background: transparent; color: #455a6b; font: 700 14px/1 var(--font-sans); cursor: pointer; }
+    .ranking-extremes__tabs button[aria-selected="true"] { background: #fff; color: #173e61; box-shadow: 0 1px 2px rgba(14,26,38,.14); }
+    .ranking-extremes__charts--paired .ranking-extreme-list { display: none; }
+    .ranking-extremes__charts--paired .ranking-extreme-list.is-active { display: block; }
+    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="5"],
+    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="6"],
+    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="7"],
+    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="8"],
+    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="9"] { display: none; }
+    .ranking-extremes__more { display: block; width: 100%; height: 44px; margin-top: 10px; border: 1px solid #c9d4de; border-radius: 10px; background: #fff; color: #173e61; font: 700 14px/1 var(--font-sans); cursor: pointer; }
+}

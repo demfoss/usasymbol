@@ -40,6 +40,7 @@ page:
       description: "Map and ranking coverage of state-level average credit scores"
 
 table:
+  higher_is_better: true
   columns:
     rank: "Rank"
     state: "State"
@@ -407,6 +408,11 @@ table:
       score_2024: 680
       change_pts: -3
       notes: "Lowest average credit score of any state"
+  national:
+    value: 713
+    label: "U.S. average"
+    source: "Experian"
+    year: 2025
 
 map:
   title: "Average Credit Score by State Map"

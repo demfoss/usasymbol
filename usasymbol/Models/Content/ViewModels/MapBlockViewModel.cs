@@ -33,6 +33,8 @@ namespace Usasymbol.ViewModels
         public string? GeneratedImagePath { get; set; }
 
         public List<(string Color, string Label)> LegendSteps { get; set; } = new();
+        public List<MapLegendGroup> LegendGroups { get; set; } = new();
+        public string LegendTitle { get; set; } = string.Empty;
         public bool IsCategorical { get; set; }
         public List<FilterGroup> FilterGroups { get; set; } = new();
 

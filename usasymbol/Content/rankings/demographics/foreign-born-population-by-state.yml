@@ -93,6 +93,9 @@ table:
     - { rank: 48, state: "Mississippi", state_slug: "mississippi", postal_code: "MS", foreign_born_pct: 2.7, foreign_born_population: 79645 }
     - { rank: 49, state: "Montana", state_slug: "montana", postal_code: "MT", foreign_born_pct: 2.1, foreign_born_population: 24386 }
     - { rank: 49, state: "West Virginia", state_slug: "west-virginia", postal_code: "WV", foreign_born_pct: 2.1, foreign_born_population: 37253 }
+  national:
+    weight_key: foreign_born_population
+    weight_kind: cases
 map:
   title: "Foreign-Born Population by State"
   image_alt: "Map of the United States colored by the share of each state's population that is foreign-born"

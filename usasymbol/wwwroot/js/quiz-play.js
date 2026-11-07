@@ -431,10 +431,10 @@
     var timed = !!cfg.session;
     var total = timed ? answered : roundLimit();
     var pct = total ? Math.round(correct / total * 100) : 0;
-    var emoji = pct === 100 ? "🏆" : pct >= 80 ? "🎉" : pct >= 60 ? "👍" : pct >= 40 ? "🙂" : "📚";
+    var resultIcon = pct >= 80 ? "trophy" : pct >= 60 ? "graduation-cap" : "book-open";
     var verdict = pct === 100 ? "A perfect round."
       : pct >= 80 ? "Very strong. Just a slip or two."
-      : pct >= 60 ? "Solid. You know more than most."
+      : pct >= 60 ? "A solid round. Review the answers to fill in the gaps."
       : pct >= 40 ? "Not bad. A fresh round might go better."
       : "A good place to start. Play again and it will stick.";
     if (!answered) verdict = "Time ran out before the first answer. Try again.";
@@ -445,11 +445,16 @@
         var bestAll = JSON.parse(localStorage.getItem("usas.quiz.best") || "{}") || {};
         var prev = bestAll[Q.slug];
         if (!prev || correct / total > prev.s / prev.n) { bestAll[Q.slug] = { s: correct, n: total }; localStorage.setItem("usas.quiz.best", JSON.stringify(bestAll)); }
+        if (Q.slug.endsWith("-state-symbols-quiz")) {
+          var states = JSON.parse(localStorage.getItem("usas.quiz.states") || "{}") || {};
+          states[Q.slug.slice(0, -"-state-symbols-quiz".length)] = true;
+          localStorage.setItem("usas.quiz.states", JSON.stringify(states));
+        }
       } catch (e) { }
     }
     var html = '<div class="qz-res">';
     html += '<div class="qz-res-mode">' + esc(cfg.name) + (timed ? " · 60 seconds" : "") + "</div>";
-    html += '<div class="qz-res-emoji" aria-hidden="true">' + emoji + "</div>";
+    html += '<div class="qz-res-icon" aria-hidden="true"><svg class="quiz-icon"><use href="/icons/quiz.svg#' + resultIcon + '"></use></svg></div>';
     html += '<div class="qz-res-score">' + correct + '<span> / ' + (total || 0) + "</span></div>";
     html += '<p class="qz-res-verdict">' + verdict + "</p>";
     html += '<div class="qz-res-stats"><div><b>' + points + '</b><span>points</span></div><div><b>' + bestStreak + '</b><span>best streak</span></div><div><b>' + secs + 's</b><span>time</span></div></div>';

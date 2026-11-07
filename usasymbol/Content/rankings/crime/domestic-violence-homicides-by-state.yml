@@ -57,6 +57,7 @@ table:
 
   metric_default: homicide_rate
   sort_default: desc
+  higher_is_better: false
   column_formats:
     homicide_rate: "0.00"
 
@@ -397,6 +398,11 @@ table:
       postal_code: "PA"
       homicide_rate: 0.25
       victims: 16
+  national:
+    value: 1.34
+    label: "U.S. overall"
+    source: "Violence Policy Center, FBI SHR"
+    year: 2020
 
 sections:
   - id: "why-alaska-has-the-highest-rate-of-women-murdered-by-men"

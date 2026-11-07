@@ -49,6 +49,7 @@ table:
     violent_crime_rate: Violent Crime Rate
   metric_default: violent_crime_rate
   sort_default: asc
+  higher_is_better: false
   rows:
   - rank: 1
     state: Maine
@@ -301,6 +302,11 @@ table:
     state_slug: alaska
     postal_code: AK
     violent_crime_rate: 724.1
+  national:
+    value: 359.1
+    label: "U.S. overall"
+    source: "FBI UCR"
+    year: 2024
 sections:
 - id: safest-states-by-violent-crime-rate
   icon: fa-solid fa-shield-halved

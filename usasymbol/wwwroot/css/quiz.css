@@ -1,6 +1,6 @@
 /*
  * Quiz pages. Uses the same tokens as the data heroes (page-data-hero.css):
- * cold paper, navy ink, gold accent; Bricolage Grotesque / Newsreader / IBM Plex Mono.
+ * cold paper, navy ink, gold accent; var(--font-sans) / var(--font-sans) / var(--font-sans).
  */
 
 .qz-hero,
@@ -15,9 +15,7 @@
     --qz-gold: #a8791a;
     --qz-gold-soft: #efe0be;
     --qz-gold-tint: #fbf4e4;
-    --qz-display: "Bricolage Grotesque", "Manrope", system-ui, sans-serif;
-    --qz-body: "Newsreader", Georgia, "Times New Roman", serif;
-    --qz-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+
 }
 
 /* ---------- hero (same paper strip as the breadcrumb above it) ---------- */
@@ -36,18 +34,10 @@
     .qz-hero-inner { padding-inline: 28px; }
 }
 
-.qz-eyebrow {
-    margin: 0 0 10px;
-    color: var(--qz-gold);
-    font: 600 11px/1.3 var(--qz-mono);
-    letter-spacing: .14em;
-    text-transform: uppercase;
-}
-
 .qz-title {
     margin: 0;
     color: var(--qz-ink);
-    font: 800 clamp(1.9rem, 4.4vw, 3rem)/1.05 var(--qz-display);
+    font: 800 clamp(1.9rem, 4.4vw, 3rem)/1.05 var(--font-sans);
     letter-spacing: -.02em;
     text-wrap: balance;
 }
@@ -56,7 +46,7 @@
     max-width: 44rem;
     margin: 14px 0 0;
     color: var(--qz-ink-2);
-    font: 400 1.125rem/1.55 var(--qz-body);
+    font: 400 1.125rem/1.55 var(--font-sans);
 }
 
 /* ---------- start panel ---------- */
@@ -79,7 +69,7 @@
     margin: 0 0 12px;
     padding: 0;
     color: var(--qz-ink);
-    font: 700 1rem/1.3 var(--qz-display);
+    font: 700 1rem/1.3 var(--font-sans);
 }
 
 .qz-modes {
@@ -134,20 +124,20 @@
 .qz-mode-name {
     display: block;
     color: var(--qz-ink);
-    font: 700 1.05rem/1.2 var(--qz-display);
+    font: 700 1.05rem/1.2 var(--font-sans);
 }
 
 .qz-mode-desc {
     display: block;
     margin-top: 6px;
     color: var(--qz-ink-2);
-    font: 400 .98rem/1.4 var(--qz-body);
+    font: 400 .98rem/1.4 var(--font-sans);
 }
 
 .qz-round {
     margin: 16px 0 0;
     color: var(--qz-ink-2);
-    font: 400 1.02rem/1.5 var(--qz-body);
+    font: 400 1.02rem/1.5 var(--font-sans);
 }
 
 .qz-round strong {
@@ -158,7 +148,7 @@
 .qz-meta {
     margin: 4px 0 0;
     color: var(--qz-ink-3);
-    font: 500 11px/1.5 var(--qz-mono);
+    font: 500 11px/1.5 var(--font-sans);
     letter-spacing: .06em;
     text-transform: uppercase;
 }
@@ -173,7 +163,7 @@
     background: var(--qz-ink);
     color: #fff;
     cursor: pointer;
-    font: 700 1.05rem/1.2 var(--qz-display);
+    font: 700 1.05rem/1.2 var(--font-sans);
     letter-spacing: .01em;
     transition: background-color .16s ease, transform .16s ease;
 }
@@ -184,18 +174,4 @@
 
 /* ---------- game screen tweaks ---------- */
 /* The feedback area reserves its space but only looks like a box once it has text. */
-.qz-feedback {
-    min-height: 56px;
-    margin-top: 20px;
-    padding: 14px 16px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.qz-feedback:has(#feedbackText:not(:empty)) {
-    border-color: var(--qz-line-soft);
-    background: var(--qz-paper);
-}

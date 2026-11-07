@@ -40,6 +40,10 @@ table:
     area_codes: "Active Area Codes"
   metric_default: area_code_count
   sort_default: desc
+  metric:
+    unit_singular: "area code"
+    unit_plural: "area codes"
+    additive: true
   rows:
     - { rank: 1, state: "California", state_slug: "california", postal_code: "CA", area_code_count: 41, area_codes: "209, 213, 279, 310, 323, 341, 350, 357, 369, 408, 415, 424, 442, 510, 530, 559, 562, 619, 626, 628, 650, 657, 661, 669, 707, 714, 738, 747, 760, 805, 818, 820, 831, 837, 840, 858, 909, 916, 925, 949, 951" }
     - { rank: 2, state: "Texas", state_slug: "texas", postal_code: "TX", area_code_count: 29, area_codes: "210, 214, 254, 281, 325, 346, 361, 409, 430, 432, 469, 512, 621, 682, 713, 726, 737, 806, 817, 830, 832, 903, 915, 936, 940, 945, 956, 972, 979" }

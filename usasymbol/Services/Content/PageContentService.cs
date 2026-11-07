@@ -242,6 +242,21 @@ namespace USASymbol.Services
                     FillColor   = mapD.ContainsKey("fill_color")   ? Str(mapD, "fill_color")   : null,
                     ColorScheme = mapD.ContainsKey("color_scheme") ? Str(mapD, "color_scheme") : "blue",
                     ColorScale  = mapD.ContainsKey("color_scale")  ? Str(mapD, "color_scale")  : "linear",
+                    ValueType   = mapD.ContainsKey("value_type") ? Str(mapD, "value_type") : null,
+                    UnitLabel   = mapD.ContainsKey("unit_label") ? Str(mapD, "unit_label") : null,
+                    Decimals    = Int(mapD, "decimals"),
+                    LegendMode  = mapD.ContainsKey("legend_mode") ? Str(mapD, "legend_mode") : null,
+                    ReferenceValue = Double(mapD, "reference_value"),
+                    ReferenceLabel = mapD.ContainsKey("reference_label") ? Str(mapD, "reference_label") : null,
+                    ReferenceTolerance = Double(mapD, "reference_tolerance"),
+                    CategoryOrder = mapD.TryGetValue("category_order", out var orderObj) && orderObj is List<object> orderList
+                        ? orderList.Select(value => value?.ToString() ?? "").Where(value => !string.IsNullOrWhiteSpace(value)).Distinct(StringComparer.OrdinalIgnoreCase).ToList()
+                        : new List<string>(),
+                    Breaks      = mapD.TryGetValue("breaks", out var breaksObj) && breaksObj is List<object> breaksList
+                        ? breaksList.Select(value => double.TryParse(Convert.ToString(value, CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Any,
+                            System.Globalization.CultureInfo.InvariantCulture, out var boundary) ? boundary : double.NaN)
+                            .Where(double.IsFinite).Distinct().OrderBy(value => value).ToList()
+                        : new List<double>(),
                     ShowLabels   = mapD.ContainsKey("show_labels")   && Str(mapD, "show_labels").Equals("true", StringComparison.OrdinalIgnoreCase),
                     TextOverlay  = mapD.ContainsKey("text_overlay")  && Str(mapD, "text_overlay").Equals("true", StringComparison.OrdinalIgnoreCase),
                     SummaryKey  = mapD.ContainsKey("summary_key")  ? Str(mapD, "summary_key")  : null,
@@ -426,7 +441,35 @@ namespace USASymbol.Services
             if (d.TryGetValue("searchable",   out var s)) table.Searchable    = s?.ToString()?.ToLower() == "true";
             if (d.TryGetValue("sortable",     out var o)) table.Sortable      = o?.ToString()?.ToLower() == "true";
             if (d.TryGetValue("default_column", out var dc)) table.DefaultColumn = dc?.ToString();
+            if (d.TryGetValue("sort_default", out var sd)) table.SortDefault = sd?.ToString();
+            if (d.TryGetValue("metric", out var metricObj) && metricObj is Dictionary<object, object> metric)
+            {
+                table.Metric = new RankingMetric
+                {
+                    UnitSingular = metric.TryGetValue("unit_singular", out var singular) ? singular?.ToString() : null,
+                    UnitPlural = metric.TryGetValue("unit_plural", out var plural) ? plural?.ToString() : null,
+                    Additive = metric.TryGetValue("additive", out var additive) && bool.TryParse(additive?.ToString(), out var isAdditive) && isAdditive,
+                    PopulationKey = metric.TryGetValue("population_key", out var population) ? population?.ToString() : null,
+                    PreviousValueKey = metric.TryGetValue("previous_value_key", out var previous) ? previous?.ToString() : null,
+                    PreviousYear = metric.TryGetValue("previous_year", out var year) && int.TryParse(year?.ToString(), out var previousYear) ? previousYear : null
+                };
+            }
             if (d.TryGetValue("display_mode", out var dm)) table.DisplayMode = dm?.ToString();
+            if (d.TryGetValue("national", out var nationalObj) && nationalObj is Dictionary<object, object> nat)
+            {
+                table.National = new NationalReference
+                {
+                    Value = Double(nat, "value"),
+                    Label = nat.TryGetValue("label", out var natLabel) ? natLabel?.ToString() : null,
+                    OtherLabel = nat.TryGetValue("other_label", out var natOther) ? natOther?.ToString() : null,
+                    Source = nat.TryGetValue("source", out var natSource) ? natSource?.ToString() : null,
+                    Year = nat.TryGetValue("year", out var natYear) && int.TryParse(natYear?.ToString(), out var natYearValue) ? natYearValue : null,
+                    WeightKey = nat.TryGetValue("weight_key", out var natWeight) ? natWeight?.ToString() : null,
+                    WeightKind = nat.TryGetValue("weight_kind", out var natKind) ? natKind?.ToString() : null
+                };
+            }
+            if (d.TryGetValue("caption", out var tableCaption)) table.Caption = tableCaption?.ToString();
+            if (d.TryGetValue("note", out var tableNote)) table.Note = tableNote?.ToString();
             if (d.TryGetValue("higher_is_better", out var hib) && bool.TryParse(hib?.ToString(), out var hibValue))
                 table.HigherIsBetter = hibValue;
 
@@ -475,7 +518,13 @@ namespace USASymbol.Services
                 foreach (var col in table.Columns)
                 {
                     if (formatsD.TryGetValue(col.Key, out var fmtObj) && fmtObj != null)
-                        col.Format = fmtObj.ToString();
+                    {
+                        var fmt = fmtObj.ToString() ?? "";
+                        // A format with no digit placeholder (e.g. "percent") would print as literal text in every cell.
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(fmt, @"^[CcNnPpFfEeGgDdXxRr]\d{0,2}$|[0#]"))
+                            throw new InvalidDataException($"Unknown column format '{fmt}' for column '{col.Key}'. Use a .NET format like C0, N0, \"0.0'%'\".");
+                        col.Format = fmt;
+                    }
                 }
             }
 
@@ -498,8 +547,33 @@ namespace USASymbol.Services
                 }
 
             UpgradeNumericColumns(table);
+            AddShareOfNationalColumn(table);
 
             return table;
+        }
+
+        /// <summary>
+        /// For additive metrics with an official U.S. total (table.national.value), adds a
+        /// "Share of U.S." column right after the metric column. Never guesses a total.
+        /// </summary>
+        private static void AddShareOfNationalColumn(PageTable table)
+        {
+            var totals = Usasymbol.Helpers.TableTotals.Resolve(table);
+            if (totals == null) return;
+            const string key = "share_of_us";
+            if (table.Columns.Any(c => c.Key == key)) return;
+            var index = table.Columns.FindIndex(c => c.Key == totals.MetricKey);
+            table.Columns.Insert(index + 1, new TableColumn
+            {
+                Key = key, Label = "U.S. share", Type = "number", Format = "0.0\"%\"", Sortable = true
+            });
+            foreach (var row in table.Rows)
+            {
+                var value = Usasymbol.Helpers.TableTotals.Number(row, totals.MetricKey);
+                // Stored as an invariant string: the table formatter strips commas, so a culture-formatted
+                // "22,9" would otherwise be read back as 229.
+                if (value is double v) row.Data[key] = Math.Round(v / totals.Total * 100, 1).ToString("0.0", CultureInfo.InvariantCulture);
+            }
         }
 
         /// <summary>
@@ -512,6 +586,8 @@ namespace USASymbol.Services
             foreach (var col in table.Columns)
             {
                 if (col.Type != "text") continue;
+                // Area codes are identifiers, even when every row contains a single code.
+                if (col.Key.Equals("area_codes", StringComparison.OrdinalIgnoreCase)) continue;
 
                 var values = table.Rows
                     .Select(r => r.Data.TryGetValue(col.Key, out var v) ? v : null)
@@ -833,6 +909,8 @@ namespace USASymbol.Services
 
             if (k == "state")                      return "state-link";
             if (k is "rank" or "order" or "#")     return "rank";
+            // Lists of telephone codes must wrap as text; "area" below describes measurements.
+            if (k == "area_codes")                 return "text";
 
             if (k.Contains("population") || k.Contains("area")   || k.Contains("land")   ||
                 k.Contains("water")      || k.Contains("total")   || k.Contains("count")  ||
@@ -1015,7 +1093,7 @@ namespace USASymbol.Services
         private static double? Double(Dictionary<object, object> d, string key)
         {
             if (!d.TryGetValue(key, out var value) || !double.TryParse(
-                    value?.ToString(), NumberStyles.Float | NumberStyles.AllowThousands,
+                    Convert.ToString(value, CultureInfo.InvariantCulture), NumberStyles.Float | NumberStyles.AllowThousands,
                     CultureInfo.InvariantCulture, out var parsed))
                 return null;
 

@@ -6,7 +6,24 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace USASymbol.Services;
 
-public sealed record StateRankEntry(string Category, string Slug, string Title, string Url, int Rank, int Total, string Value, bool IsLowest, int TieCount);
+public sealed record StateRankEntry(
+    string Category,
+    string Slug,
+    string Title,
+    string Url,
+    int Rank,
+    int Total,
+    string Value,
+    bool IsLowest,
+    int TieCount,
+    bool HigherIsBetter,
+    string SourceName,
+    string SourceUrl,
+    DateTime? DateModified)
+{
+    public bool IsHighest => Rank == 1;
+    public bool IsGoodNews => (IsHighest && HigherIsBetter) || (IsLowest && !HigherIsBetter);
+}
 
 public sealed record StateTeaser(string Title, string Url, string Badge, string Value);
 
@@ -37,6 +54,28 @@ public sealed class StateRankIndexService(IWebHostEnvironment environment, IMemo
     {
         var built = await GetBuiltAsync();
         return built.Teasers.GetValueOrDefault($"{category}/{slug}");
+    }
+
+    /// <summary>
+    /// Directional, sufficiently complete ranking facts for one state. The returned rows are
+    /// suitable inputs for an editorial press pack, but callers should still describe them as
+    /// "highest" or "lowest" rather than treating every numerical #1 as good news.
+    /// </summary>
+    public async Task<IReadOnlyList<StateRankEntry>> GetStateEntriesAsync(string stateSlug)
+    {
+        if (string.IsNullOrWhiteSpace(stateSlug)) return Array.Empty<StateRankEntry>();
+
+        var built = await GetBuiltAsync();
+        if (!built.ByState.TryGetValue(stateSlug, out var entries))
+            return Array.Empty<StateRankEntry>();
+
+        return entries
+            .Where(IsExtreme)
+            .OrderBy(entry => entry.IsLowest ? 1 : 0)
+            .ThenBy(entry => entry.IsLowest ? 0 : entry.Rank)
+            .ThenBy(entry => entry.Category, StringComparer.Ordinal)
+            .ThenBy(entry => entry.Title, StringComparer.Ordinal)
+            .ToList();
     }
 
     public async Task WarmUpAsync() => await GetBuiltAsync();
@@ -140,7 +179,11 @@ public sealed class StateRankIndexService(IWebHostEnvironment environment, IMemo
         if (table.ContainsKey("display_mode")) return null;
         // Only explicitly directional metrics are suitable for "stands out" superlatives.
         // Neutral counts and facts deliberately omit this flag in ranking YAML.
-        if (!bool.TryParse(table.GetValueOrDefault("higher_is_better")?.ToString(), out _)) return null;
+        if (!bool.TryParse(table.GetValueOrDefault("higher_is_better")?.ToString(), out var higherIsBetter)) return null;
+        // Some directional metrics are still poor cross-page comparisons: raw totals mostly
+        // measure population, and a few legacy titles do not describe their numeric metric.
+        if (bool.TryParse(table.GetValueOrDefault("state_index")?.ToString(), out var includeInIndex) && !includeInIndex)
+            return null;
 
         var metric = (table.GetValueOrDefault("default_column") ?? table.GetValueOrDefault("metric_default"))?.ToString();
         if (string.IsNullOrWhiteSpace(metric) || table.GetValueOrDefault("rows") is not List<object> rows) return null;
@@ -173,6 +216,19 @@ public sealed class StateRankIndexService(IWebHostEnvironment environment, IMemo
         if (string.IsNullOrWhiteSpace(title)) title = slug.Replace('-', ' ');
         var url = root.GetValueOrDefault("url")?.ToString();
         if (string.IsNullOrWhiteSpace(url)) url = $"/rankings/{category}/{slug}";
+        var page = root.GetValueOrDefault("page") as Dictionary<object, object>;
+        var source = (page?.GetValueOrDefault("sources") as List<object>)?
+            .OfType<Dictionary<object, object>>()
+            .FirstOrDefault();
+        var sourceName = source?.GetValueOrDefault("name")?.ToString()?.Trim() ?? "";
+        var sourceUrl = source?.GetValueOrDefault("url")?.ToString()?.Trim() ?? "";
+        DateTime? dateModified = DateTime.TryParse(
+            root.GetValueOrDefault("date_modified")?.ToString(),
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AssumeUniversal,
+            out var parsedDate)
+                ? parsedDate
+                : null;
 
         var ordered = points.OrderByDescending(p => p.Value).ToList();
         var entries = new List<(string, StateRankEntry)>();
@@ -181,7 +237,14 @@ public sealed class StateRankIndexService(IWebHostEnvironment environment, IMemo
         foreach (var p in points)
         {
             var rank = 1 + ordered.Count(o => o.Value > p.Value);
-            var entry = new StateRankEntry(category, slug, title!, url!, rank, points.Count, p.Raw, Math.Abs(p.Value - min) < 1e-9, ordered.Count(o => o.Value == p.Value));
+            var entry = new StateRankEntry(
+                category, slug, title!, url!, rank, points.Count, p.Raw,
+                Math.Abs(p.Value - min) < 1e-9,
+                ordered.Count(o => o.Value == p.Value),
+                higherIsBetter,
+                sourceName,
+                sourceUrl,
+                dateModified);
             entries.Add((p.Slug, entry));
             if (rank == 1 && (leader == null || string.CompareOrdinal(p.Slug, leaderSlug) < 0))
             {

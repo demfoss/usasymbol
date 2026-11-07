@@ -11,11 +11,11 @@ date_published: "2026-11-05"
 date_modified: "2026-11-05"
 
 seo:
-  title: "GDP per Capita by State 2025 | Map & Rankings"
+  title: "GDP per Capita by State | Map & Rankings"
   description: "New York leads state GDP per capita at $123,273 in 2025. Mississippi ranks last at $55,117 per resident."
 
 page:
-  h1: "GDP per Capita by State 2025"
+  h1: "GDP per Capita by State"
   quick_answer:
     - "GDP per capita by state is highest in New York at $123,273 in 2025. Finance, information and professional services generate high output in its large metropolitan economy."
     - "Delaware ranks second at $115,043, followed by Massachusetts at $113,724. Corporate and financial activity lifts Delaware despite its small population."
@@ -30,6 +30,7 @@ page:
       description: "July 1, 2025 resident population estimates used as the denominator"
 
 table:
+  higher_is_better: true
   caption: "Current-dollar GDP per resident by state in 2025"
   note: "GDP per capita is statewide production divided by resident population."
   columns:
@@ -92,6 +93,9 @@ table:
     - { rank: 48, state: "West Virginia", state_slug: "west-virginia", postal_code: "WV", gdp_per_capita: 63020, population: 1766147 }
     - { rank: 49, state: "Arkansas", state_slug: "arkansas", postal_code: "AR", gdp_per_capita: 62922, population: 3114791 }
     - { rank: 50, state: "Mississippi", state_slug: "mississippi", postal_code: "MS", gdp_per_capita: 55117, population: 2954160 }
+  national:
+    weight_key: population
+    weight_kind: population
 
 map:
   title: "GDP per Capita by State in 2025"

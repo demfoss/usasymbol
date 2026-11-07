@@ -49,6 +49,7 @@ table:
     assault_rate: Aggravated Assault Rate
   metric_default: assault_rate
   sort_default: desc
+  higher_is_better: false
   rows:
   - rank: 1
     state: New Mexico
@@ -300,6 +301,11 @@ table:
     state_slug: maine
     postal_code: ME
     assault_rate: 55.0
+  national:
+    value: 256.1
+    label: "U.S. overall"
+    source: "FBI UCR"
+    year: 2024
 sections:
 - id: states-with-the-highest-aggravated-assault-rate
   icon: fa-solid fa-triangle-exclamation

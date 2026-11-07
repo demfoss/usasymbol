@@ -48,6 +48,7 @@ table:
 
   metric_default: rate
   sort_default: desc
+  higher_is_better: false
 
   rows:
     - rank: 1
@@ -354,6 +355,11 @@ table:
       rate: 6.7
       deaths: 682
       notes: "Lowest age-adjusted suicide rate of any state"
+  national:
+    value: 14.1
+    label: "U.S. overall (age-adjusted)"
+    source: "CDC NCHS"
+    year: 2023
 
 map:
   title: "Suicide Rate by State Map"

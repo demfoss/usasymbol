@@ -41,6 +41,7 @@ page:
       description: "State-by-state table with percent of households paying condo or HOA fees and median monthly fee"
 
 table:
+  higher_is_better: false
   columns:
     rank: "Rank"
     state: "State"
@@ -456,6 +457,11 @@ table:
       median_monthly_fee: 47
       annual_fee: 564
       pct_of_homes_in_hoa: 12.1
+  national:
+    value: 135
+    label: "U.S. median"
+    source: "Census Bureau ACS"
+    year: 2024
 
 map:
   title: "Average HOA Fee by State Map"

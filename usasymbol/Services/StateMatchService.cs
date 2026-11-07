@@ -10,6 +10,9 @@ namespace USASymbol.Services
     {
         Task<StateMatchPageViewModel> BuildAsync();
 
+        /// <summary>Returns the State Match key for an existing comparison/ranking metric.</summary>
+        string? GetMetricKeyForComparisonSlug(string comparisonSlug);
+
         /// <summary>
         /// Scores and ranks every place for a given set of metric weights — the same
         /// normalize → weight → rank pipeline the client runs in state-match.js, run
@@ -57,7 +60,13 @@ namespace USASymbol.Services
             new MetricBinding("warmth", "average-temperature", "Warm climate", "Higher annual temperature", "Average annual statewide temperature.", "fa-solid fa-sun", 10),
             new MetricBinding("incometax", "income-tax", "Income tax", "Lower state income tax", "Top marginal state income tax rate. 0% = no state income tax.", "fa-solid fa-file-invoice-dollar", 5),
             new MetricBinding("propertytax", "property-tax", "Property tax", "Lower property tax rate", "Effective real-estate property tax rate as a percent of home value.", "fa-solid fa-house-circle-check", 5),
-            new MetricBinding("salestax", "sales-tax", "Sales tax", "Lower state sales tax", "State-level sales tax rate. 0% = no state sales tax (local taxes may apply).", "fa-solid fa-receipt", 5)
+            new MetricBinding("salestax", "sales-tax", "Sales tax", "Lower state sales tax", "State-level sales tax rate. 0% = no state sales tax (local taxes may apply).", "fa-solid fa-receipt", 5),
+            new MetricBinding("jobgrowth", "job-growth", "Job growth", "Faster employment growth", "Recent year-over-year employment growth.", "fa-solid fa-chart-line", 0),
+            new MetricBinding("childcare", "childcare-costs", "Childcare", "Lower infant childcare cost", "Average annual center-based infant childcare cost.", "fa-solid fa-baby", 0),
+            new MetricBinding("commute", "commute-time", "Commute", "Shorter average commute", "Mean travel time to work for commuters.", "fa-solid fa-car", 0),
+            new MetricBinding("rent", "median-rent", "Rent", "Lower median rent", "Median monthly gross rent.", "fa-solid fa-building", 0),
+            new MetricBinding("lifeexpectancy", "life-expectancy", "Life expectancy", "Longer life expectancy", "Average life expectancy at birth.", "fa-solid fa-heart-pulse", 0),
+            new MetricBinding("sunny", "sunny-days", "Sunshine", "More sunny days", "Average number of sunny days per year.", "fa-solid fa-cloud-sun", 0)
         };
 
         private readonly IStateService _stateService;
@@ -82,6 +91,12 @@ namespace USASymbol.Services
         public string GetOccupationSalariesJson() => ReadContentJson("occupation-median-salary.json");
 
         public string GetIncomeTaxScheduleJson() => ReadContentJson("state-income-tax-2025.json");
+
+        public string? GetMetricKeyForComparisonSlug(string comparisonSlug) =>
+            Bindings.FirstOrDefault(binding => string.Equals(
+                binding.ComparisonSlug,
+                comparisonSlug,
+                StringComparison.OrdinalIgnoreCase))?.Key;
 
         private string ReadContentJson(string fileName) =>
             CachedContentJson.GetOrAdd(fileName, name =>

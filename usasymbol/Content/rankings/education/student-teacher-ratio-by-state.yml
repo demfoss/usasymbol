@@ -26,6 +26,7 @@ page:
       url: "https://nces.ed.gov/ccd/tables/202324_summary_2.asp"
       description: "Student membership, teachers in full-time equivalents and pupil/teacher ratio by state"
 table:
+  higher_is_better: false
   caption: "Public school students per teacher by state, school year 2023-24"
   columns:
     rank: "Rank"
@@ -88,6 +89,10 @@ table:
     - { rank: 48, state: "New Hampshire", state_slug: "new-hampshire", postal_code: "NH", ratio: 11.5, students: 166594, teachers: 14494 }
     - { rank: 49, state: "Maine", state_slug: "maine", postal_code: "ME", ratio: 11.3, students: 172545, teachers: 15288 }
     - { rank: 50, state: "Vermont", state_slug: "vermont", postal_code: "VT", ratio: 10.4, students: 82455, teachers: 7962 }
+  national:
+    value: 15.2
+    label: "U.S. overall"
+    source: "NCES Common Core of Data 2023-24"
 map:
   title: "Student-Teacher Ratio by State"
   image_alt: "Map of the United States colored by public school students per teacher in each state"

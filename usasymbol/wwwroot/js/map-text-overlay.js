@@ -21,7 +21,7 @@
         t.setAttribute('y', cy);
         t.setAttribute('text-anchor', 'middle');
         t.setAttribute('dominant-baseline', 'central');
-        t.setAttribute('font-family', '"Manrope", "Inter", system-ui, sans-serif');
+        t.setAttribute('font-family', '"Public Sans", "Public Sans Fallback", system-ui, sans-serif');
         t.setAttribute('font-weight', '800');
         t.setAttribute('font-size', fontSize);
         t.setAttribute('fill', '#ffffff');

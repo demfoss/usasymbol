@@ -18,13 +18,9 @@
     margin: 0 0 clamp(2rem, 4vw, 3rem);
 }
 
-.kt-story__head {
-    padding: 0 0 1.1rem;
-}
-
 .kt-story__eyebrow {
     margin: 0 0 .4rem;
-    font: 600 10.5px/1.3 "IBM Plex Mono", ui-monospace, monospace;
+    font: 600 12px/1.3 var(--font-sans);
     letter-spacing: .12em;
     text-transform: uppercase;
     color: var(--kt-ink-2);
@@ -32,7 +28,7 @@
 
 .kt-story__title {
     margin: 0;
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-weight: 700;
     font-size: clamp(1.6rem, 3vw, 2.1rem);
     line-height: 1.15;
@@ -72,7 +68,7 @@
 
 .kt-story__label {
     margin: 0;
-    font: 600 10.5px/1.45 "IBM Plex Mono", ui-monospace, monospace;
+    font: 600 12px/1.45 var(--font-sans);
     letter-spacing: .1em;
     text-transform: uppercase;
     color: var(--kt-ink-3);
@@ -80,7 +76,7 @@
 
 .kt-story__number {
     margin: .5rem 0 0;
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-weight: 700;
     font-size: clamp(2rem, 4.5vw, 2.7rem);
     line-height: .95;
@@ -94,7 +90,7 @@
 
 .kt-story__subject {
     margin: 0;
-    font: 600 11px/1.35 "IBM Plex Mono", ui-monospace, monospace;
+    font: 600 12px/1.35 var(--font-sans);
     letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--kt-ink-2);
@@ -112,7 +108,7 @@
 
 .kt-story__copy {
     margin: .9rem 0 0;
-    font-family: "Manrope", system-ui, sans-serif;
+    font-family: var(--font-sans);
     font-size: .92rem;
     line-height: 1.55;
     color: var(--kt-ink-2);
@@ -170,7 +166,7 @@
 
 .kt-typed__eyebrow {
     margin: 0;
-    font: 600 11px/1.3 "IBM Plex Mono", ui-monospace, monospace;
+    font: 600 12px/1.3 var(--font-sans);
     letter-spacing: .16em;
     text-transform: uppercase;
     color: var(--kt-ink-2);
@@ -178,7 +174,7 @@
 
 .kt-typed__title {
     margin: 0;
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-weight: 700;
     font-size: clamp(1.4rem, 2.6vw, 1.7rem);
     line-height: 1.2;
@@ -211,7 +207,7 @@
 .kt-typed__coverage-label {
     flex: 0 0 auto;
     margin: 0;
-    font: 600 12px/1.3 "IBM Plex Mono", ui-monospace, monospace;
+    font: 600 12px/1.3 var(--font-sans);
     letter-spacing: .04em;
     color: var(--kt-ink-2);
     white-space: nowrap;
@@ -242,7 +238,7 @@
 
 .kt-typed__split-label {
     margin: 0 0 .6rem;
-    font: 600 11px/1.3 "IBM Plex Mono", ui-monospace, monospace;
+    font: 600 12px/1.3 var(--font-sans);
     letter-spacing: .1em;
     text-transform: uppercase;
     color: var(--kt-brass);
@@ -250,7 +246,7 @@
 
 .kt-typed__split-quote {
     margin: 0;
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 1.15rem;
     line-height: 1.35;
     color: var(--kt-ink);
@@ -318,7 +314,7 @@
 }
 
 /* ---------------------------------------------------------------- */
-/* .kt-rank -> data-driven ranking takeaways (summary + 3 cards)     */
+/* Shared state-ranking insights and personal comparison. */
 
 .kt-rank {
     --kt-ink: #0e1a26;
@@ -334,7 +330,7 @@
 
 .kt-rank__title {
     margin: 0 0 .5rem;
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-weight: 700;
     font-size: clamp(1.4rem, 2.6vw, 1.75rem);
     line-height: 1.2;
@@ -344,173 +340,87 @@
 .kt-rank__summary {
     margin: 0 0 1.1rem;
     max-width: 62ch;
-    font-family: "Manrope", system-ui, sans-serif;
+    font-family: var(--font-sans);
     font-size: 1.02rem;
     line-height: 1.6;
     color: var(--kt-ink);
 }
 
-.kt-rank__cards {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.kt-rank__personal {
+    padding: clamp(1.1rem, 3vw, 1.6rem);
     border: 1px solid var(--kt-line);
+    border-radius: var(--r-md, 10px);
     background: #fff;
-    box-shadow: 0 1px 0 rgba(14, 26, 38, .03), 0 14px 30px -22px rgba(14, 26, 38, .35);
-}
-
-.kt-rank__cards--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-.kt-rank__card {
-    padding: 1.15rem 1.3rem 1.2rem;
-    border-top: 3px solid var(--kt-accent, var(--kt-slate));
-    --kt-accent: var(--kt-slate);
-}
-
-.kt-rank__card + .kt-rank__card { border-left: 1px solid var(--kt-line); }
-.kt-rank__card--high { --kt-accent: var(--kt-gold); }
-.kt-rank__card--good { --kt-accent: var(--kt-good); }
-.kt-rank__card--bad { --kt-accent: var(--kt-bad); }
-.kt-rank__card--low, .kt-rank__card--mid { --kt-accent: var(--kt-slate); }
-.kt-rank__card--neutral { --kt-accent: #9fb0bf; }
-
-.kt-rank__role {
-    margin: 0;
-    font: 600 10.5px/1.3 "IBM Plex Mono", ui-monospace, monospace;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--kt-accent);
-}
-
-.kt-rank__state {
-    margin: .45rem 0 0;
-    font-family: "Libre Baskerville", Georgia, serif;
-    font-weight: 700;
-    font-size: 1.12rem;
-    line-height: 1.25;
     color: var(--kt-ink);
+    font-family: var(--font-sans);
 }
-
-.kt-rank__state a {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px solid var(--kt-line);
-}
-
-.kt-rank__state a:hover { border-color: var(--kt-accent); }
-.kt-rank__amp, .kt-rank__more { font-weight: 400; font-size: .85rem; color: var(--kt-ink-2); }
-
-.kt-rank__value {
-    margin: .6rem 0 0;
-    font-family: "Libre Baskerville", Georgia, serif;
-    font-weight: 700;
-    font-size: clamp(1.9rem, 4vw, 2.5rem);
-    line-height: 1;
-    letter-spacing: -.02em;
-    font-variant-numeric: tabular-nums lining-nums;
-    color: var(--kt-accent);
-}
-
-.kt-rank__unit {
-    margin: .35rem 0 0;
-    font: 500 11px/1.4 "IBM Plex Mono", ui-monospace, monospace;
-    letter-spacing: .04em;
-    color: var(--kt-ink-2);
-}
-
-.kt-rank__bar {
-    display: block;
-    margin-top: .8rem;
-    height: 4px;
-    background: #e8eef3;
-}
-
-.kt-rank__bar i { display: block; height: 100%; background: var(--kt-accent); }
-
-.kt-rank__ctx {
-    margin: .55rem 0 0;
-    font-family: "Manrope", system-ui, sans-serif;
-    font-size: .8rem;
-    color: var(--kt-ink-2);
-}
-
-.kt-rank__tools {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: .6rem 1rem;
-    margin-top: .9rem;
-    font-family: "Manrope", system-ui, sans-serif;
-    font-size: .88rem;
-    color: var(--kt-ink-2);
-}
-
-.kt-rank__you { display: inline-flex; align-items: center; gap: .5rem; }
-.kt-rank__you-label { font: 600 10.5px/1 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
-.kt-rank__you select { padding: .35rem .5rem; border: 1px solid var(--kt-line); background: #fff; color: var(--kt-ink); font: inherit; }
-.kt-rank__you-out { margin: 0; flex: 1 1 14rem; color: var(--kt-ink); }
-.kt-rank__you-out a { color: var(--kt-ink); border-bottom: 1px solid var(--kt-line); text-decoration: none; }
-
-.kt-rank__cite {
-    margin-left: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: .4rem;
-    padding: .35rem .7rem;
-    border: 1px solid var(--kt-line);
+.kt-rank__head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; margin-bottom: .75rem; }
+.kt-rank__you { display: block; }
+.kt-rank__you-label { font-size: .94rem; font-weight: 600; }
+.kt-rank__you select {
+    width: min(100%, 21rem);
+    min-height: 44px;
+    padding: .65rem .8rem;
+    border: 1px solid #b7c5d0;
+    border-radius: 3px;
     background: #fff;
-    color: var(--kt-ink-2);
+    color: var(--kt-ink);
     font: inherit;
     cursor: pointer;
 }
-
-.kt-rank__cite:hover { color: var(--kt-ink); border-color: var(--kt-ink-2); }
-
-/* Row flash when a card jumps to its table row */
+.kt-rank__result { margin-top: 1.5rem; }
+.kt-rank [hidden] { display: none !important; }
+.kt-rank__statement {
+    margin: 0 0 .65rem;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+.kt-rank__context, .kt-rank__typical { margin: .25rem 0; color: var(--kt-ink-2); font-size: .92rem; line-height: 1.6; }
+.kt-rank__scale { position: relative; margin: 1.5rem 0; padding: 1.4rem 7px 0; }
+.kt-rank__median-label { position: absolute; top: 0; transform: translateX(-50%); margin-left: 7px; color: #6f8090; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.kt-rank__track { position: relative; height: 2px; background: #d7e0e7; }
+.kt-rank__marker, .kt-rank__dot { position: absolute; top: 50%; transform: translate(-50%, -50%); }
+.kt-rank__dot { width: 8px; height: 8px; border-radius: 50%; background: #aab7c2; }
+.kt-rank__marker--typical { width: 2px; height: 18px; background: #6f8090; }
+.kt-rank__marker--leader { width: 12px; height: 12px; border: 2px solid #8f6410; background: #fff; border-radius: 50%; }
+.kt-rank__marker--you { z-index: 2; width: 16px; height: 16px; border-radius: 50%; background: #173e61; box-shadow: 0 0 0 3px #fff; }
+.kt-rank__ends { display: flex; justify-content: space-between; margin-top: .75rem; color: var(--kt-ink-2); font-size: .74rem; font-variant-numeric: tabular-nums; }
+.kt-rank__log { color: #6f8090; font-style: italic; }
+.kt-rank__legend { display: flex; flex-wrap: wrap; gap: .55rem 1rem; margin-top: .6rem; color: var(--kt-ink-2); font-size: .75rem; }
+.kt-rank__legend > span { display: inline-flex; align-items: center; gap: .4rem; }
+.kt-rank__key { display: inline-block; width: 10px; height: 10px; flex-shrink: 0; border-radius: 50%; }
+.kt-rank__key--you { background: #173e61; }
+.kt-rank__key--dot { width: 8px; height: 8px; background: #aab7c2; }
+.kt-rank__key--typical { width: 2px; height: 12px; border-radius: 0; background: #6f8090; }
+.kt-rank__key--leader { border: 2px solid #8f6410; background: #fff; }
+.kt-rank__actions { display: flex; align-items: center; flex-wrap: wrap; gap: .65rem 1.25rem; margin-top: 1.25rem; font-size: .86rem; }
+.kt-rank__compare-button { display: inline-flex; align-items: center; min-height: 44px; padding: .65rem 1rem; border-radius: 3px; background: #173e61; color: #fff; text-decoration: none; }
+.kt-rank__compare-button:hover { background: #0f2d48; }
+.kt-rank__table-link { display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; color: var(--kt-ink); text-decoration: none; }
+.kt-rank__table-text { text-decoration: underline; text-underline-offset: 4px; }
+.kt-rank__share { display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; margin-left: auto; padding: 0 .9rem; border: 1px solid var(--navy-line, #c9d4de); border-radius: var(--r-sm, 4px); background: #fff; color: var(--navy, #173e61); font: inherit; cursor: pointer; }
+.kt-rank__share:hover { border-color: var(--navy, #173e61); background: var(--navy-tint, #eef3f8); }
+.kt-rank__facts { display: grid; gap: .85rem; margin: 1.35rem 0 0; padding-left: 1.2rem; color: var(--kt-ink); font: .94rem/1.65 var(--font-sans); }
+.kt-rank__facts > li { padding-left: .25rem; }
+.kt-rank__disclosure summary { cursor: pointer; }
+.kt-rank__list-hint { margin-left: .35rem; font-size: .78rem; color: var(--kt-ink-2); text-decoration: underline; text-underline-offset: 3px; }
+.kt-rank__state-list { display: flex; flex-wrap: wrap; gap: .4rem 1rem; margin: .75rem 0 0; padding: 0; list-style: none; }
+.kt-rank__state-list a { color: #173e61; text-decoration: underline; text-underline-offset: 3px; }
+.kt-rank__citation { display: flex; justify-content: flex-end; margin-top: .8rem; }
+.kt-rank__cite { display: inline-flex; align-items: center; gap: .4rem; min-height: 36px; padding: .25rem 0; border: 0; background: transparent; color: var(--kt-ink-2); font: .78rem/1.4 var(--font-sans); cursor: pointer; }
+.kt-rank__cite:hover { color: var(--kt-ink); text-decoration: underline; text-underline-offset: 3px; }
+.kt-rank :is(a, button, select, summary):focus-visible { outline: 2px solid #173e61; outline-offset: 4px; }
 @keyframes kt-row-flash { from { background-color: #fbefc9; } to { background-color: transparent; } }
 .kt-row-flash > td { animation: kt-row-flash 2.4s ease-out; }
-
-@media (max-width: 760px) {
-    .kt-rank__cards,
-    .kt-rank__cards--2 { grid-template-columns: 1fr; }
-
-    .kt-rank__card {
-        display: grid;
-        grid-template-columns: 4.5rem 1fr auto;
-        align-items: baseline;
-        gap: 0 .75rem;
-        padding: .75rem 1rem;
-        border-top: 0;
-        border-left: 3px solid var(--kt-accent);
-    }
-
-    .kt-rank__card + .kt-rank__card { border-top: 1px solid var(--kt-line); border-left: 3px solid var(--kt-accent); }
-    .kt-rank__state { margin: 0; font-size: 1rem; }
-    .kt-rank__value { margin: 0; font-size: 1.25rem; }
-    .kt-rank__unit, .kt-rank__bar, .kt-rank__ctx { display: none; }
-    .kt-rank__cite { margin-left: 0; }
+@media (prefers-reduced-motion: reduce) { .kt-row-flash > td { animation: none; background: #fbefc9; } }
+@media (max-width: 480px) {
+    .kt-rank__actions { align-items: stretch; flex-direction: column; gap: .35rem; }
+    .kt-rank__compare-button { justify-content: center; }
+    .kt-rank__table-link, .kt-rank__share { justify-content: center; margin-left: 0; }
 }
-
-/* Compare strip: leader vs neighbour with the numbers, one click to the pair page */
-.kt-rank__compare {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: .25rem 1rem;
-    margin-top: .8rem;
-    padding: .65rem .9rem;
-    border: 1px solid var(--kt-line);
-    background: #f7f9fb;
-    color: var(--kt-ink);
-    text-decoration: none;
-    font-family: "Manrope", system-ui, sans-serif;
-    font-size: .9rem;
-}
-
-.kt-rank__compare:hover { border-color: var(--kt-ink-2); }
-.kt-rank__compare-pair { font-variant-numeric: tabular-nums; }
-.kt-rank__compare-pair em { font-style: normal; color: var(--kt-ink-2); margin: 0 .25rem; }
-.kt-rank__compare-cta { color: var(--kt-ink-2); font-size: .82rem; }
 
 /* State-based teasers under the ranking table: "Kentucky also stands out in" */
 .state-teasers {
@@ -518,7 +428,7 @@
     padding: .9rem 1rem;
     border: 1px solid #d6dfe7;
     background: #fff;
-    font-family: "Manrope", system-ui, sans-serif;
+    font-family: var(--font-sans);
 }
 
 .state-teasers__title { margin: 0 0 .5rem; font-size: .88rem; color: #455a6b; }
@@ -532,7 +442,9 @@
 .state-teasers__list i { margin-left: auto; font-size: .7rem; color: #5f7183; }
 .state-teasers__badge {
     flex: 0 0 auto; min-width: 3.4rem; padding: .15rem .45rem; text-align: center;
-    font: 600 .7rem/1.3 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase;
+    font: 600 .75rem/1.3 var(--font-sans); letter-spacing: .05em; text-transform: uppercase;
     color: #8f6410; background: #f8f0dc;
 }
 .state-teasers__name { min-width: 0; }
+.kt-rank__geo { margin: .6rem 0 0; color: var(--kt-ink-2); font-size: .78rem; }
+.kt-rank__compare-any select { min-height: 44px; max-width: 15rem; padding: .5rem .7rem; border: 1px solid #b7c5d0; border-radius: var(--r-sm, 4px); background: #fff; color: var(--kt-ink); font: inherit; font-size: .86rem; cursor: pointer; }

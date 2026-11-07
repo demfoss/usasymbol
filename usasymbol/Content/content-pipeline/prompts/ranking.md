@@ -137,9 +137,36 @@ YAML SAFETY — mistakes that broke live pages (all hard rules)
 - Inside any flow mapping `{ ... }` or flow list `[ ... ]` (columns, column_formats, rows, sources), put EVERY text value in double quotes. An unquoted comma splits the value. Real bug: `columns: { incidence_rate: New Cases per 100,000 }` created a phantom column "000" in the table header, and `{name: BLS Handbook, Public Safety, url: ...}` cut a source name in half. Write `incidence_rate: "New Cases per 100,000"` and `name: "BLS Handbook, Public Safety"`. When unsure, use block style (one key per line) instead of flow style.
 - Every key declared under `table.columns` (and `column_formats`) must exist in the rows. Never declare a column (hourly wage, notes) the rows do not carry. It renders as an empty column.
 - The table must rank the metric in `metric_default` so that rank 1 is the LARGEST value. If the topic is "lower is better" or the metric is itself a place (score 1 = best), the key takeaways block and the state index skip the page. Keep the real measured value (a rate, a price, a count) as the metric column, not a rank.
-- If a bigger number is clearly bad news (cancer, crime, mortality, taxes) or clearly good news (salary, graduation), add `higher_is_better: false` or `true` under `table:`. Leave it out for neutral counts (area codes, land area, production). It only drives red and blue accents.
+- If a bigger number is clearly bad news (cancer, crime, mortality, taxes) or clearly good news (salary, graduation), add `higher_is_better: false` or `true` under `table:`. Leave it out for neutral counts (area codes, land area, production). The flag drives good/bad accents and makes the metric eligible for the cross-page state index.
+- Add `state_index: false` under `table:` when direction is meaningful on the page but a cross-page superlative would mislead, especially for raw totals dominated by population or when a legacy page title does not describe the default metric. Prefer a per-capita/rate metric when one exists.
 - Do not write quick_answer sentences that open with a year ("In 2024, Texas led with 90") or a count of states ("All 50 states"). Open with the state and its metric value, so the first number in each sentence is the metric. Name D.C. as "District of Columbia" only inside the table. In prose say it explicitly and do not let it be the first state named unless it is truly #1.
 - The block under the hero and the "also stands out in" links are generated from the table. Keep the table complete (all 50 states unless the topic truly covers fewer) and with unique, numeric values.
+- U.S. reference (`table.national`): when the payload or the cited official source publishes a national figure for the SAME metric and year (CDC national prevalence, BLS national mean wage, Census U.S. rate), add it so the table shows "+x vs U.S." and the Highest/Lowest bars measure distance from it:
+  ```yaml
+  table:
+    national:
+      value: 9.9            # same unit as the metric column, taken from the source, never calculated by you
+      label: "U.S. adults"  # short noun phrase for the whole country
+      source: "CDC BRFSS"
+      year: 2023
+  ```
+  If there is no official national figure but the table carries a population column (rate per capita) add `national: { weight_key: population, weight_kind: population }`; if it carries a count of cases next to a rate use `weight_kind: cases` and the count column as `weight_key`. This produces a labelled population-weighted average, so use it only when EVERY row has the weight. Never put a plain average of the states into `value`, never guess a national number, and omit the block entirely for ranks, categorical topics and anything with no honest U.S. equivalent.
+- U.S. total for additive metrics (counts, production, inventory, acres, population, dollars that add up): when the cited official source publishes the U.S. total for the SAME metric, year and coverage, ALWAYS add it. Together with a `metric:` block it makes the table show a "Share of U.S." column, an "Other states" row (only when fewer than 50 states are listed) and a "U.S. total" row:
+  ```yaml
+  table:
+    metric:
+      unit_singular: "head of cattle on feed"
+      unit_plural: "head of cattle on feed"
+      additive: true         # the state values really sum to the national figure
+    national:
+      value: 11450000        # the official U.S. total, in the same unit as the metric column, copied from the source
+      label: "U.S. total, feedlots with 1,000+ head capacity"   # state the coverage when the table is narrower than "all"
+      source: "USDA NASS Cattle on Feed"
+      year: 2026
+      other_label: "Other states"   # optional: name the remainder honestly when it is not just more states ("Federal offshore", "D.C. and territories")
+  ```
+  Rules: the unit goes in `metric.unit_*` (it appears in the takeaways, the footnote and the extremes lists, so write it as a noun phrase: "head of cattle", "acres", "barrels"). Set `additive: true` only for true totals, never for rates, averages, medians, prices, indexes or percentages. The listed states must not add up to MORE than `value`; if they do, the figure covers a different scope and must not be used. Take the national value only from the source named in `sources`, at the same year and coverage as the table; if the source does not publish a U.S. total, leave `national` out instead of adding the rows up yourself. Add `table.note` (one sentence) when the table covers only some states or a narrower population, and say what the "Other states" row contains.
+  Every new ranking whose metric is an additive total MUST be checked for this block before it is finished. Keep `national.label` short ("U.S. total"); put the coverage in `table.note`. Date the metric column header ("Jan 1, 2026", not "Cattle on Feed") and, when the table has a prior-period column, label it the same way ("Jan 1, 2025"). The methodology must say in one sentence each how the share of the U.S. and any change column are calculated, and must not contradict the table (write "not ranked", never "omitted", when an "Other states" row is shown).
 
 CATEGORICAL TOPICS (legal status, yes/no, allowed/banned)
 - When the topic is a status rather than a quantity, show the status as a text column ("Legal", "Restricted", "Illegal").

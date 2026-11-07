@@ -1,0 +1,59 @@
+@using System.Globalization
+@using Usasymbol.Helpers
+@model RankingExtremeListModel
+@inject IImageUrlService Images
+@{
+    var side = Model.Side;
+    var presentation = Model.Presentation;
+    string Percent(double value) => value.ToString("0.###", CultureInfo.InvariantCulture) + "%";
+}
+
+<section id="@side.Id" class="ranking-extreme-list @presentation.Tone(Model.Table, side.Highest)" data-extreme-side="@(side.Highest ? "highest" : "lowest")" data-mobile-rows="@Model.MobileRows">
+    <div class="ranking-extreme-list__header">
+        <h3>@(Model.Table.Metric?.Additive == true ? (side.Highest ? "Most" : "Fewest") : side.Label) @presentation.UnitLabel.ToLowerInvariant()</h3>
+        @if (side.Grouped)
+        {
+            <p>@side.Rows.Count states; tied groups are shown in full.</p>
+        }
+    </div>
+    @if (side.Grouped)
+    {
+        @foreach (var group in side.Groups)
+        {
+            var placement = presentation.Ranking.For(group.States[0].Row)!;
+            var bar = presentation.Bar(group.Value);
+            <section class="ranking-extreme-group">
+                <div class="ranking-extreme-group__heading">
+                    <h4>@group.Heading</h4>
+                    <span class="ranking-extreme-row__rank" title="@placement.Tooltip">@placement.Label</span>
+                </div>
+                <div class="ranking-extreme-row__track @(presentation.Diverging ? "ranking-extreme-row__track--diverging" : "") @presentation.BarTone(Model.Table, group.Value)" aria-hidden="true"
+                     style="--bar-origin:@Percent(presentation.BaselinePercent)">
+                    <span style="margin-left:@Percent(bar.Left);width:@Percent(bar.Width)"></span>
+                </div>
+                <ul class="ranking-extreme-group__states">
+                    @foreach (var point in group.States)
+                    {
+                        <li>
+                            <a href="/states/@point.StateSlug" title="@placement.Context">
+                                <span class="ranking-extreme-row__flag"><img src="@Images.Thumb($"/images/flags/{point.StateSlug}/flag.webp")" alt="" width="28" height="18" loading="lazy" /></span>
+                                <span>@point.State</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </section>
+        }
+    }
+    else
+    {
+        <div class="ranking-extreme-list__rows">
+            @{ var rowIndex = 0; }
+            @foreach (var point in side.Rows)
+            {
+                @await Html.PartialAsync("~/Views/Rankings/_RankingExtremeRow.cshtml",
+                    new RankingExtremeRowModel(presentation, point, Model.Table, rowIndex++, Model.Colors))
+            }
+        </div>
+    }
+</section>

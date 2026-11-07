@@ -86,6 +86,34 @@ namespace usasymbol.Models
 
         [JsonPropertyName("link_label")]
         public string LinkLabel { get; set; } = string.Empty;
+
+        [JsonPropertyName("answer_image_url")]
+        public string AnswerImageUrl { get; set; } = string.Empty;
+
+        [JsonPropertyName("family_key")]
+        public string FamilyKey { get; set; } = string.Empty;
+
+        [JsonPropertyName("related_answers")]
+        public List<QuizAnswerLink> RelatedAnswers { get; set; } = new();
+    }
+
+    public class QuizAnswerLink
+    {
+        public string Answer { get; set; } = "";
+        public string State { get; set; } = "";
+        public string Url { get; set; } = "";
+    }
+
+    public class InlineQuizResultDto
+    {
+        public List<InlineQuizAnswerDto> Answers { get; set; } = new();
+        public int TimeSpentSeconds { get; set; }
+    }
+
+    public class InlineQuizAnswerDto
+    {
+        public string Question { get; set; } = "";
+        public string Choice { get; set; } = "";
     }
 
     public class QuizFaq

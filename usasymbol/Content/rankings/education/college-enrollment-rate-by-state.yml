@@ -26,6 +26,7 @@ page:
       url: "https://data.census.gov/table/ACSDT1Y2024.B14003"
       description: "Population 20 to 24 years enrolled and not enrolled in school by state"
 table:
+  higher_is_better: true
   caption: "Share of 20 to 24 year olds enrolled in school by state"
   columns:
     rank: "Rank"
@@ -87,6 +88,9 @@ table:
     - { rank: 48, state: "South Dakota", state_slug: "south-dakota", postal_code: "SD", enrolled_pct: 27.9, population_20_24: 58398 }
     - { rank: 49, state: "Montana", state_slug: "montana", postal_code: "MT", enrolled_pct: 27.5, population_20_24: 73816 }
     - { rank: 50, state: "Alaska", state_slug: "alaska", postal_code: "AK", enrolled_pct: 18.2, population_20_24: 50498 }
+  national:
+    weight_key: population_20_24
+    weight_kind: population
 map:
   title: "College Enrollment Rate by State"
   image_alt: "Map of the United States colored by the share of 20 to 24 year olds enrolled in school in each state"

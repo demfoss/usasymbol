@@ -49,6 +49,7 @@ table:
     murder_rate: Murder Rate
   metric_default: murder_rate
   sort_default: desc
+  higher_is_better: false
   rows:
   - rank: 1
     state: Louisiana
@@ -314,6 +315,11 @@ table:
     state_slug: new-hampshire
     postal_code: NH
     murder_rate: 1.0
+  national:
+    value: 5.0
+    label: "U.S. overall"
+    source: "FBI UCR"
+    year: 2024
 sections:
 - id: states-with-the-highest-murder-rate
   icon: fa-solid fa-triangle-exclamation

@@ -20,7 +20,7 @@
     linear-gradient(135deg, #102540, #173e69 64%, #205b88); }
 .sl-hero-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(270px, .75fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
 .sl-kicker, .sl-eyebrow { margin: 0 0 .55rem; color: #b7d7eb; font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-.sl-hero h1 { margin: 0; color: #fff; font: 700 clamp(2.5rem, 6vw, 4.8rem)/1.03 "Libre Baskerville", Georgia, serif; letter-spacing: -.04em; }
+.sl-hero h1 { margin: 0; color: #fff; font: 700 clamp(2.5rem, 6vw, 4.8rem)/1.03 var(--font-sans); letter-spacing: -.04em; }
 .sl-deck { max-width: 720px; margin: 1.15rem 0 1.5rem; color: #d9e7f2; font-size: clamp(1rem, 2vw, 1.22rem); line-height: 1.65; }
 .sl-verdict { max-width: 700px; padding: 1rem 1.15rem; border: 1px solid rgba(255,255,255,.17); border-left: 3px solid #e6b95d; border-radius: .7rem; background: rgba(4, 20, 38, .28); }
 .sl-verdict span { display: block; margin-bottom: .28rem; color: #f1cf87; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
@@ -44,7 +44,7 @@
 .sl-jump a:hover { color: var(--sl-blue); }
 .sl-content { padding-block: 1.2rem 4rem; }
 .sl-section { scroll-margin-top: 70px; padding: clamp(2.4rem, 6vw, 4.6rem) 0; border-bottom: 1px solid var(--sl-line); }
-.sl-section h2, .sl-next h2, .sl-related h2 { margin: 0; color: var(--sl-ink); font: 700 clamp(1.55rem, 3vw, 2.25rem)/1.2 "Libre Baskerville", Georgia, serif; letter-spacing: -.025em; }
+.sl-section h2, .sl-next h2, .sl-related h2 { margin: 0; color: var(--sl-ink); font: 700 clamp(1.55rem, 3vw, 2.25rem)/1.2 var(--font-sans); letter-spacing: -.025em; }
 .sl-section .sl-eyebrow, .sl-next .sl-eyebrow { color: #54728c; }
 .sl-overview { display: grid; grid-template-columns: minmax(240px, .75fr) minmax(0, 1.5fr); gap: 3rem; align-items: start; }
 .sl-overview > p { margin: 0; color: #34475e; font-size: clamp(1rem, 2vw, 1.15rem); line-height: 1.8; }
@@ -53,7 +53,7 @@
 .sl-editorial-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
 .sl-editorial-grid article { padding: 1.25rem; border: 1px solid var(--sl-line); border-radius: .8rem; background: #fff; }
 .sl-editorial-grid article > i { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: var(--sl-soft-blue); color: var(--sl-blue); font-size: .78rem; }
-.sl-editorial-grid h3 { margin: .85rem 0 .55rem; color: var(--sl-ink); font: 700 1rem/1.35 "Libre Baskerville", Georgia, serif; }
+.sl-editorial-grid h3 { margin: .85rem 0 .55rem; color: var(--sl-ink); font: 700 1rem/1.35 var(--font-sans); }
 .sl-editorial-grid p { margin: 0; color: #4b5d72; font-size: .8rem; line-height: 1.7; }
 .sl-county-highlights { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .65rem; }
 .sl-county-highlights article { min-width: 0; padding: .9rem; border: 1px solid var(--sl-line); border-radius: .7rem; background: #fff; }

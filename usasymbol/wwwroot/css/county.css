@@ -19,7 +19,7 @@
     linear-gradient(135deg,#10263e,#173f65 62%,#176a72); color: #fff; }
 .cty-hero-grid { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(280px,.75fr); align-items: center; gap: clamp(2rem,7vw,5rem); }
 .cty-hero .cty-kicker, .cty-profile-hero .cty-kicker { color: #a8d9d5; }
-.cty-hero h1, .cty-profile-hero h1 { margin: 0; color: #fff; font: 700 clamp(2.5rem,6vw,4.8rem)/1.04 "Libre Baskerville",Georgia,serif; letter-spacing: -.04em; }
+.cty-hero h1, .cty-profile-hero h1 { margin: 0; color: #fff; font: 700 clamp(2.5rem,6vw,4.8rem)/1.04 var(--font-sans); letter-spacing: -.04em; }
 .cty-deck { max-width: 760px; margin: 1.1rem 0 0; color: #d9e7f0; font-size: clamp(1rem,2vw,1.15rem); line-height: 1.7; }
 .cty-actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.4rem; }
 .cty-button { display: inline-flex; min-height: 44px; align-items: center; padding: .7rem .9rem; border: 1px solid transparent; border-radius: .5rem; font-size: .78rem; font-weight: 800; text-decoration: none; }
@@ -48,7 +48,7 @@
 .cty-map-tip span { color: #cbdbe7; font-size: .59rem; }
 .cty-map-error { padding: 3rem; color: var(--cty-muted); text-align: center; }
 .cty-section-head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.3rem; }
-.cty-section-head h2, .cty-method h2, .cty-profile-content h2 { margin: 0; color: var(--cty-ink); font: 700 clamp(1.55rem,3vw,2.2rem)/1.2 "Libre Baskerville",Georgia,serif; letter-spacing: -.025em; }
+.cty-section-head h2, .cty-method h2, .cty-profile-content h2 { margin: 0; color: var(--cty-ink); font: 700 clamp(1.55rem,3vw,2.2rem)/1.2 var(--font-sans); letter-spacing: -.025em; }
 .cty-section-head > p { max-width: 450px; margin: 0; color: var(--cty-muted); font-size: .78rem; line-height: 1.6; }
 .cty-controls { display: grid; grid-template-columns: 1fr auto; gap: .7rem; padding: .75rem; border: 1px solid var(--cty-line); border-radius: .7rem; background: #fff; }
 .cty-controls label { position: relative; }
@@ -99,11 +99,6 @@
 .cty-range-labels { display: grid; grid-template-columns: 1fr auto 1fr; color: #788697; font-size: .63rem; }
 .cty-range-labels b { color: #344a62; }
 .cty-range-labels span:last-child { text-align: right; }
-.cty-scope-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .8rem; }
-.cty-scope-grid article { padding: 1.15rem; border: 1px solid var(--cty-line); border-radius: .7rem; background: #fff; }
-.cty-scope-grid i { color: var(--cty-teal); }
-.cty-scope-grid h3 { margin: .75rem 0 .45rem; font-size: .88rem; }
-.cty-scope-grid p { margin: 0; color: var(--cty-muted); font-size: .75rem; line-height: 1.65; }
 .cty-metric-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .8rem; }
 .cty-metric-card { padding: 1rem; border: 1px solid var(--cty-line); border-radius: .7rem; background: #fff; }
 .cty-metric-card > div:first-child { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
@@ -148,7 +143,7 @@
 
 @media (max-width: 850px) {
     .cty-hero-grid, .cty-method-grid, .cty-profile-overview { grid-template-columns: 1fr; }
-    .cty-profile-stats, .cty-scope-grid, .cty-metric-grid, .cty-editorial-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .cty-profile-stats, .cty-metric-grid, .cty-editorial-grid{ grid-template-columns: repeat(2,minmax(0,1fr)); }
     .cty-nearby { grid-template-columns: repeat(2,minmax(0,1fr)); }
     .cty-next, .cty-source-note { display: block; }
     .cty-next > div:last-child, .cty-source-note > a { margin-top: 1rem; justify-content: flex-start; }
@@ -160,7 +155,7 @@
     .cty-section-head { display: block; }
     .cty-section-head > p { margin-top: .65rem; }
     .cty-result-line span { display: none; }
-    .cty-profile-stats, .cty-scope-grid, .cty-metric-grid, .cty-editorial-grid, .cty-procon-grid, .cty-nearby { grid-template-columns: 1fr; }
+    .cty-profile-stats, .cty-metric-grid, .cty-editorial-grid, .cty-procon-grid, .cty-nearby{ grid-template-columns: 1fr; }
     .cty-actions .cty-button { width: 100%; justify-content: center; }
     .cty-map-toolbar { display: block; }
     .cty-map-toolbar select { width: 100%; min-width: 0; }

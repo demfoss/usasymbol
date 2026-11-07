@@ -41,7 +41,7 @@
     var activeFilters = {};
     var activeLegendBucket = null;
     var legendEl = document.getElementById('map-legend');
-    var legendStepButtons = legendEl ? Array.prototype.slice.call(legendEl.querySelectorAll('.map-legend-step')) : [];
+    var legendStepButtons = legendEl ? Array.prototype.slice.call(legendEl.querySelectorAll('[data-legend-key]')) : [];
     var metricLabel = (dataEl.dataset.metricLabel || '').trim();
     var iconOverlay = null; // cached after first filter interaction
     var searchableStates = [];
@@ -61,65 +61,6 @@
     searchableStates.sort(function (a, b) {
         return a.name.localeCompare(b.name);
     });
-
-    // Value-based legend buckets (max 5). Quintile cut points are snapped to
-    // distinct values so equal values never split across buckets and chip
-    // ranges never overlap (no more "0 – 0" / "0 – 2" / "2 – 8").
-    var legendBuckets = [];
-    (function () {
-        var sortedKeys = Object.keys(stateData)
-            .filter(function (k) { return stateData[k] && stateData[k].nv != null; })
-            .sort(function (a, b) { return stateData[a].nv - stateData[b].nv; });
-        var n = sortedKeys.length;
-        if (!n) return;
-
-        var displayByValue = {};
-        var distinct = [];
-        sortedKeys.forEach(function (k) {
-            var v = stateData[k].nv;
-            if (!distinct.length || distinct[distinct.length - 1] !== v) distinct.push(v);
-            if (!(v in displayByValue)) displayByValue[v] = stateData[k].v || String(v);
-        });
-
-        // Upper bound (inclusive) of each bucket, snapped to distinct values
-        var cuts = [];
-        if (distinct.length <= 5) {
-            cuts = distinct.slice();
-        } else {
-            for (var b = 1; b <= 5; b++) {
-                var v = stateData[sortedKeys[Math.min(n - 1, Math.ceil(b * n / 5) - 1)]].nv;
-                if (!cuts.length || cuts[cuts.length - 1] < v) cuts.push(v);
-            }
-            var maxVal = distinct[distinct.length - 1];
-            if (cuts[cuts.length - 1] < maxVal) cuts[cuts.length - 1] = maxVal;
-        }
-
-        var lo = distinct[0];
-        cuts.forEach(function (hi) {
-            legendBuckets.push({
-                lo: lo,
-                hi: hi,
-                count: 0,
-                label: lo === hi
-                    ? displayByValue[lo]
-                    : displayByValue[lo] + ' – ' + displayByValue[hi]
-            });
-            for (var j = 0; j < distinct.length; j++) {
-                if (distinct[j] > hi) { lo = distinct[j]; break; }
-            }
-        });
-
-        sortedKeys.forEach(function (k) {
-            var v = stateData[k].nv;
-            for (var i = 0; i < legendBuckets.length; i++) {
-                if (v <= legendBuckets[i].hi) {
-                    stateData[k].legendBucket = i;
-                    legendBuckets[i].count++;
-                    break;
-                }
-            }
-        });
-    })();
 
     function parseJson(raw, fallback) {
         if (!raw) return fallback;
@@ -198,7 +139,7 @@
         if (!groupsMatch) return false;
 
         if (activeLegendBucket !== null) {
-            return record.legendBucket === activeLegendBucket;
+            return Array.isArray(record.lk) && record.lk.indexOf(activeLegendBucket) !== -1;
         }
 
         return true;
@@ -209,8 +150,19 @@
         if (!path || !record) return;
 
         path.dataset.baseFill = record.fill;
-        path.style.fill = isMatch ? (activeColor || record.fill) : '#ffffff';
-        path.style.opacity = '1';
+        path.style.fill = record.nd ? 'url(#map-no-data-pattern)' : (activeColor || record.fill);
+        path.style.opacity = isMatch ? '1' : '0.18';
+    }
+
+    function textColor(fill) {
+        var hex = String(fill || '').trim().replace('#', '');
+        if (hex.length === 3) hex = hex.split('').map(function (character) { return character + character; }).join('');
+        if (!/^[0-9a-f]{6}$/i.test(hex)) return '#0f172a';
+        var channels = [0, 2, 4].map(function (offset) {
+            var value = parseInt(hex.slice(offset, offset + 2), 16) / 255;
+            return value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+        });
+        return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722 > 0.2 ? '#0f172a' : '#ffffff';
     }
 
     function toDetailParts(value) {
@@ -484,21 +436,15 @@
     }
 
     function applyFilters() {
-        var selectedGroup = null;
-        var selectedOption = null;
-
-        filterGroups.forEach(function (group) {
-            if (activeFilters[group.key]) {
-                selectedGroup = group;
-                selectedOption = activeFilters[group.key];
-            }
+        var selectedLegend = legendStepButtons.find(function (button) {
+            return button.dataset.legendKey === activeLegendBucket;
         });
+        var legendColor = selectedLegend ? selectedLegend.style.getPropertyValue('--legend-color') : null;
 
         Object.keys(stateData).forEach(function (key) {
             var record = stateData[key];
             var isMatch = matchesFilters(record);
-            var activeColor = selectedGroup && selectedOption ? getOptionColor(selectedGroup, selectedOption) : record.fill;
-            setStateVisual(key, record, isMatch, activeColor);
+            setStateVisual(key, record, isMatch, isMatch && legendColor ? legendColor : record.fill);
         });
 
         smallStateButtons.forEach(function (button) {
@@ -508,10 +454,17 @@
 
             var isMatch = matchesFilters(record);
             button.style.opacity = isMatch ? '1' : '0.3';
-            button.style.background = selectedGroup && selectedOption && isMatch
-                ? getOptionColor(selectedGroup, selectedOption)
-                : (isMatch ? record.fill : '#ffffff');
-            button.style.color = isMatch ? '#ffffff' : '#334155';
+            button.style.backgroundColor = isMatch && legendColor ? legendColor : record.fill;
+            button.style.color = textColor(isMatch && legendColor ? legendColor : record.fill);
+            button.classList.toggle('is-no-data', !!record.nd);
+        });
+
+        container.querySelectorAll('.state-labels text').forEach(function (label) {
+            var record = getStateRecord(label.textContent.trim());
+            if (!record) return;
+            var isMatch = matchesFilters(record);
+            label.style.fill = textColor(isMatch && legendColor ? legendColor : record.fill);
+            label.style.opacity = isMatch ? '1' : '0.35';
         });
 
         if (!iconOverlay) iconOverlay = container.querySelector('#icon-overlay');
@@ -637,106 +590,58 @@
             var key = button.dataset.filterKey;
             var value = button.dataset.filterValue;
             button.classList.toggle('is-active', activeFilters[key] === value);
+            button.setAttribute('aria-pressed', activeFilters[key] === value ? 'true' : 'false');
         });
     }
 
     function syncLegendButtons() {
         if (!legendEl) return;
         legendEl.classList.toggle('has-active', activeLegendBucket !== null);
+        var detail = document.getElementById('map-legend-detail');
+        var selected = null;
         legendStepButtons.forEach(function (button) {
-            var idx = parseInt(button.getAttribute('data-step-index'), 10);
-            var bucketIdx = isNaN(idx) ? -1 : parseInt(button.dataset.legendBucket || idx, 10);
-            var isActive = activeLegendBucket !== null && bucketIdx === activeLegendBucket;
+            var isActive = activeLegendBucket === button.dataset.legendKey;
             button.classList.toggle('is-active', isActive);
             button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+            if (isActive) selected = button;
         });
-        var chipsEl = document.getElementById('map-legend-chips');
-        if (chipsEl) {
-            Array.prototype.forEach.call(chipsEl.querySelectorAll('.map-filter-chip--range'), function (chip) {
-                var idx = parseInt(chip.getAttribute('data-bucket-index'), 10);
-                var isActive = activeLegendBucket !== null && idx === activeLegendBucket;
-                chip.classList.toggle('is-active', isActive);
-                chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-            });
-        }
+        if (detail) detail.textContent = selected
+            ? selected.dataset.description + '. Select again to show all states.'
+            : 'Select a group to highlight states.';
     }
 
     function initLegend() {
-        if (!legendStepButtons.length || !legendBuckets.length) return;
-
-        // The bottom legend renders one swatch per gradient step; buckets are
-        // value-based and can be fewer, so each step maps to its nearest bucket.
-        function bucketForStep(idx) {
-            if (legendBuckets.length >= legendStepButtons.length) return Math.min(idx, legendBuckets.length - 1);
-            return Math.min(legendBuckets.length - 1,
-                Math.floor(idx * legendBuckets.length / legendStepButtons.length));
-        }
-
         legendStepButtons.forEach(function (button) {
-            var idx = parseInt(button.getAttribute('data-step-index'), 10);
-            if (isNaN(idx) || idx < 0) return;
-            var bucketIdx = bucketForStep(idx);
-            button.dataset.legendBucket = String(bucketIdx);
-
             button.addEventListener('click', function () {
-                activeLegendBucket = activeLegendBucket === bucketIdx ? null : bucketIdx;
+                var key = button.dataset.legendKey;
+                activeLegendBucket = activeLegendBucket === key ? null : key;
                 applyFilters();
             });
         });
-
-        // Render gradient filter chips ABOVE the map when there are no categorical filters
-        if (!filtersHost || filterGroups.length) return;
-
-        var groupWrap = document.createElement('div');
-        groupWrap.className = 'map-filter-group';
-
-        var groupLabel = document.createElement('div');
-        groupLabel.className = 'map-filter-label';
-        groupLabel.textContent = 'Filter by ' + (metricLabel || 'value');
-        groupWrap.appendChild(groupLabel);
-
-        var chipsList = document.createElement('div');
-        chipsList.className = 'map-filter-options';
-        chipsList.id = 'map-legend-chips';
-
-        legendBuckets.forEach(function (bucket, i) {
-            if (!bucket.count) return;
-
-            // Pick the swatch color of the legend step closest to this bucket
-            var stepIdx = legendBuckets.length > 1
-                ? Math.round(i * (legendStepButtons.length - 1) / (legendBuckets.length - 1))
-                : legendStepButtons.length - 1;
-            var swatchEl = legendStepButtons[stepIdx] && legendStepButtons[stepIdx].querySelector('.map-legend-step__swatch');
-            var color = swatchEl ? swatchEl.style.background : '#94a3b8';
-
-            var chip = document.createElement('button');
-            chip.type = 'button';
-            chip.className = 'map-filter-chip map-filter-chip--range';
-            chip.style.setProperty('--chip-fill', color);
-            chip.setAttribute('data-bucket-index', String(i));
-
-            chip.setAttribute('aria-pressed', 'false');
-            chip.innerHTML =
-                '<span class="map-filter-chip__label-wrap">' +
-                    '<span class="map-filter-chip__range-swatch" style="background:' + color + '"></span>' +
-                    '<span class="map-filter-chip__label">' + bucket.label + '</span>' +
-                '</span>';
-
-            var countSpan = document.createElement('span');
-            countSpan.className = 'map-filter-chip__count';
-            countSpan.textContent = String(bucket.count);
-            chip.appendChild(countSpan);
-
-            chip.addEventListener('click', function () {
-                activeLegendBucket = activeLegendBucket === i ? null : i;
-                applyFilters();
-            });
-
-            chipsList.appendChild(chip);
-        });
-
-        groupWrap.appendChild(chipsList);
-        filtersHost.appendChild(groupWrap);
+        // An SVG pattern distinguishes missing values from the lightest numeric group.
+        var svg = container.querySelector('svg');
+        if (svg && !svg.querySelector('#map-no-data-pattern')) {
+            var ns = 'http://www.w3.org/2000/svg';
+            var defs = document.createElementNS(ns, 'defs');
+            var pattern = document.createElementNS(ns, 'pattern');
+            pattern.id = 'map-no-data-pattern';
+            pattern.setAttribute('width', '6');
+            pattern.setAttribute('height', '6');
+            pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+            var background = document.createElementNS(ns, 'rect');
+            background.setAttribute('width', '6');
+            background.setAttribute('height', '6');
+            background.setAttribute('fill', '#e2e8f0');
+            var line = document.createElementNS(ns, 'path');
+            line.setAttribute('d', 'M-1,1 l2,-2 M0,6 l6,-6 M5,7 l2,-2');
+            line.setAttribute('stroke', '#94a3b8');
+            line.setAttribute('stroke-width', '1');
+            pattern.appendChild(background);
+            pattern.appendChild(line);
+            defs.appendChild(pattern);
+            svg.insertBefore(defs, svg.firstChild);
+        }
+        applyFilters();
     }
 
     function focusStateFromButton(key, button) {
@@ -880,7 +785,7 @@
 
             path.setAttribute('tabindex', '0');
             path.setAttribute('role', 'button');
-            path.setAttribute('aria-label', record.n || key);
+            path.setAttribute('aria-label', (record.n || key) + ': ' + (record.nd ? 'No data' : record.v || 'No data'));
 
             path.addEventListener('focus', function (event) {
                 var rect = event.target.getBoundingClientRect();
@@ -899,7 +804,6 @@
     }
 
     renderFilters();
-    applyFilters();
     initLegend();
     } // end boot()
 

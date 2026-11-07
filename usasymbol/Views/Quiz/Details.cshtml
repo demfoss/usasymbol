@@ -407,9 +407,6 @@
 </style>
 
 @section Styles {
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/quiz.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/quiz-play.css" asp-append-version="true">
 }
@@ -668,7 +665,7 @@
                     {
                         <details class="qz-details" style="padding:12px 14px;border:1px solid #e7edf2;border-radius:8px">
                             <summary>@f.Question</summary>
-                            <div class="pt-2" style="color:#55697b;font:400 1.05rem/1.6 Newsreader,Georgia,serif">@f.Answer.RenderAutoLinks()</div>
+                            <div class="pt-2" style="color:#55697b;font:400 1.05rem/1.6 var(--font-sans)">@f.Answer.RenderAutoLinks()</div>
                         </details>
                     }
                 </div>

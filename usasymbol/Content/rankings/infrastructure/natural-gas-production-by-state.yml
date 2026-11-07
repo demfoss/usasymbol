@@ -32,6 +32,16 @@ table:
     gas_production: "Gas Produced 2024 (million cubic feet)"
     gas_production_2023: "Gas Produced 2023 (million cubic feet)"
   metric_default: gas_production
+  metric:
+    unit_singular: "million cubic feet"
+    unit_plural: "million cubic feet"
+    additive: true
+  national:
+    value: 41383893
+    label: "U.S. total, including Federal offshore"
+    source: "EIA Natural Gas Marketed Production"
+    year: 2024
+    other_label: "Federal offshore"
   sort_default: desc
   column_formats:
     gas_production: "N0"

@@ -7,14 +7,14 @@
     --hub-blue: #0f4d97;
     color: var(--hub-ink);
     background: #fff;
-    font-family: 'Manrope', system-ui, sans-serif;
+    font-family: var(--font-sans);
     line-height: 1.5;
 }
 .home-hub *, .home-hub *::before, .home-hub *::after { box-sizing: border-box; }
 .home-hub h1, .home-hub h2, .home-hub h3 {
     margin: 0;
     color: inherit;
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: var(--font-sans);
     font-weight: 700;
     letter-spacing: -.025em;
     text-wrap: balance;
@@ -58,14 +58,8 @@
 .home-hub .hub-feature { color: #fff; }
 .hub-feature > img { position: absolute; inset: 0; z-index: -2; }
 .hub-feature--photo::before { position: absolute; inset: 0; z-index: -1; content: ''; background: linear-gradient(180deg, #04152b52 0%, #04152b8f 48%, #04152bea 100%); }
-.hub-feature--blue { background: linear-gradient(140deg, #173b72, #0b5b99); }
-.home-hub .hub-feature--light { background: linear-gradient(140deg, #fff, #edf3f7); color: var(--hub-ink); }
-.hub-feature--photo.hub-feature--blue::before { background: linear-gradient(165deg, #0c2c5cd6, #0b5b99cc); }
-.hub-feature--photo.hub-feature--light::before { background: linear-gradient(175deg, #ffffffe3, #dbe8f0d9); }
-.hub-feature--photo.hub-feature--light .hub-icon { background: #e6eef5; border-color: #dce7ee; color: var(--hub-blue); }
 .hub-icon { width: 43px; height: 43px; display: inline-grid; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #edf3f7; color: var(--hub-blue); font-size: 19px; }
 .hub-feature .hub-icon { background: #ffffff24; color: #fff; border: 1px solid #ffffff38; }
-.hub-feature--light .hub-icon { background: #e6eef5; border-color: #dce7ee; color: var(--hub-blue); }
 .hub-kicker { display: block; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 .hub-feature .hub-kicker { margin-top: 17px; opacity: .85; }
 .home-hub .hub-feature h2, .home-hub .hub-feature p, .home-hub .hub-feature .hub-cta, .home-hub .hub-feature .hub-kicker { color: #fff; text-shadow: 0 1px 12px #000000a6; }
@@ -89,8 +83,6 @@
 .hub-primary p { margin-top: 10px; color: var(--hub-muted); font-size: 13px; line-height: 1.7; }
 .hub-primary .hub-cta, .hub-small .hub-cta, .hub-symbol .hub-cta, .hub-reference .hub-cta, .hub-map-detail .hub-cta { color: var(--hub-blue); }
 .hub-primary--green { background: linear-gradient(135deg, #eef9f0, #f8fcf8); grid-template-columns: 35% 65%; }
-.hub-data-art { display: grid; place-items: center; color: #17865e; }
-.hub-data-art > i { display: grid; place-items: center; width: 86px; height: 86px; border-radius: 50%; background: #17865e12; font-size: 38px; }
 .hub-small-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
 .hub-small { display: flex; flex-direction: column; padding: 16px; border: 1px solid var(--hub-line); border-radius: 13px; background: #fff; }
 .hub-small-title { display: flex; align-items: center; gap: 9px; }

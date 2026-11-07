@@ -48,7 +48,19 @@ table:
     state: State
     gun_deaths: Total Deaths
   metric_default: gun_deaths
+  metric:
+    unit_singular: "firearm death"
+    unit_plural: "firearm deaths"
+    additive: true
+  national:
+    value: 44447
+    label: "U.S. total, including D.C."
+    source: "CDC WONDER via KFF"
+    year: 2024
+    other_label: "Other (incl. D.C.)"
   sort_default: desc
+  higher_is_better: false
+  state_index: false
   rows:
   - rank: 1
     state: Texas

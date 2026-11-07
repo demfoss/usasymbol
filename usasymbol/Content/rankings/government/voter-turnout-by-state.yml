@@ -20,7 +20,7 @@ date_published: "2026-06-20"
 date_modified: "2026-10-10"
 
 seo:
-  title: "Voter Turnout by State 2024 | Map & VEP Rates"
+  title: "Voter Turnout by State | Map & VEP Rates"
   description: "Minnesota had the highest voter turnout in 2024 at 77.4% of eligible voters, while Hawaii had the lowest at 47.5%."
 
 page:
@@ -56,6 +56,7 @@ map:
   color_scale: linear
 
 table:
+  higher_is_better: true
   columns:
     rank: "Rank"
     state: "State"
@@ -415,6 +416,11 @@ table:
       postal_code: "HI"
       turnout_2024_pct: 47.5
       turnout_2022_pct: 40.2
+  national:
+    value: 63.7
+    label: "U.S. overall"
+    source: "United States Elections Project"
+    year: 2024
 
 sections:
   - id: "highest-voter-turnout-states"

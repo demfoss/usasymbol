@@ -38,7 +38,7 @@
     var MATCH_HIGH = { r: 0x12, g: 0x33, b: 0x3a };
 
     // Slider value -> scoring weight. Squared so a priority you push to 100 really dominates:
-    // 100 vs 15 is 44x, not 6.7x — with a straight average of 11 metrics, states that are
+    // 100 vs 15 is 44x, not 6.7x — with a straight average of many metrics, states that are
     // decent at everything (New Hampshire) stayed #1 no matter which slider moved.
     // Keep in sync with StateMatchService.EffectiveWeight on the server.
     function effectiveWeight(slider) {

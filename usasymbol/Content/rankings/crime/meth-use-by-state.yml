@@ -56,6 +56,7 @@ table:
 
   metric_default: meth_use_pct
   sort_default: desc
+  higher_is_better: false
   column_formats:
     meth_use_pct: "0.00'%'"
 
@@ -310,6 +311,10 @@ table:
       state_slug: "maryland"
       postal_code: "MD"
       meth_use_pct: 0.43
+  national:
+    value: 0.88
+    label: "U.S. people aged 12+"
+    source: "SAMHSA NSDUH 2023-2024"
 
 sections:
   - id: "states-with-the-highest-meth-use-rate"

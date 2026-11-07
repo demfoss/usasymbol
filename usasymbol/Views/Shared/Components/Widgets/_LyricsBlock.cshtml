@@ -33,7 +33,7 @@
         <div id="@lyricsTextId" class="grid gap-6 px-5 py-6 sm:grid-cols-2 sm:px-6 sm:py-8">
             @foreach (var verse in Model.LyricsVerses!.Where(v => !string.IsNullOrWhiteSpace(v)))
             {
-                <p class="font-serif italic leading-8 text-slate-800 whitespace-pre-line">@verse.Trim()</p>
+                <p class="italic leading-8 text-slate-800 whitespace-pre-line">@verse.Trim()</p>
             }
         </div>
         @if (Model.LyricsIsUserProvided || !string.IsNullOrWhiteSpace(Model.LyricsSourceUrl))

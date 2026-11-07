@@ -1,239 +1,111 @@
-@using System.Globalization
-@using USASymbol.Models.Content
-@using USASymbol.Models.ViewModels
+@using Usasymbol.Helpers
 @model USASymbol.Models.ViewModels.PageDetailViewModel
 
 @{
-    var table = Model.Content?.Table;
-    if (table == null || table.Rows.Count < 3) { return; }
+    var content = Model.Content;
+    var mode = content?.ExtremesMode?.Trim().ToLowerInvariant();
+    if (mode is not ("both" or "toponly" or "bottomonly")) { return; }
+    var ranking = RankingPresentation.Create(content?.Table);
+    if (ranking == null || ranking.Ordered.Any(p => !KeyTakeawaysBuilder.IsState(p.StateSlug))) { return; }
+    if (ranking.Ordered.Select(p => p.StateSlug).Distinct(StringComparer.OrdinalIgnoreCase).Count() != ranking.Ordered.Count) { return; }
 
-    // Mode from YAML extremes_mode field. If omitted or invalid, do not render the block.
-    var rawMode = (Model.Content?.ExtremesMode ?? "none").Trim().ToLowerInvariant();
-    if (string.IsNullOrWhiteSpace(rawMode) || rawMode == "none") { return; }
-    if (rawMode is not ("both" or "toponly" or "bottomonly")) { return; }
-    var showTop    = rawMode is "both" or "toponly";
-    var showBottom = rawMode is "both" or "bottomonly";
-
-    // System keys never used as the metric column
-    var systemKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        { "rank", "order", "state", "state_slug", "postal_code",
-          "symbol_slug", "custom_url", "symbol_image" };
-
-    // Metric column: prefer DefaultColumn, otherwise first non-system non-image column
-    var metricKey = table.DefaultColumn
-        ?? table.Columns
-               .Where(c => !systemKeys.Contains(c.Key) && c.Type != "image" && c.Type != "url")
-               .Select(c => c.Key)
-               .FirstOrDefault();
-
-    if (metricKey == null) { return; }
-
-    var metricCol    = table.Columns.FirstOrDefault(c => c.Key == metricKey);
-    var metricLabel  = metricCol?.Label ?? metricKey;
-    var extremesTitle = Model.Content?.ExtremesTitle;
-
-    // Parse a row's metric value as double (for bar-width math)
-    double? ParseVal(TableRow row)
+    // Few rows: the two lists would just repeat the table, so show every state in one chart instead.
+    // 20-34 rows: 5 + 5; 35 and more: 10 + 10 (5 + "Show 10" on phones).
+    var total = ranking.Ordered.Count;
+    var showAll = total < 20;
+    var sideLimit = total >= 35 ? 10 : 5;
+    var presentation = new RankingExtremesPresentation(content!, ranking,
+        mode is "both" or "toponly", mode is "both" or "bottomonly", sideLimit);
+    var sides = new[] { presentation.Top, presentation.Bottom }.Where(side => side != null).ToList();
+    var paired = sides.Count == 2;
+    var additive = content!.Table?.Metric?.Additive == true;
+    var heading = showAll
+        ? $"How the {total} States Compare"
+        : string.IsNullOrWhiteSpace(content.ExtremesTitle)
+            ? $"{(paired ? (additive ? "Most and Fewest" : "Highest and Lowest") : sides[0]!.Label)} {presentation.UnitLabel} by State"
+            : content.ExtremesTitle;
+    var points = ranking.Ordered;
+    var maxPoint = points.MaxBy(p => p.Value)!;
+    var minPoint = points.MinBy(p => p.Value)!;
+    string? gap = !presentation.Diverging && minPoint.Value > 0 && maxPoint.Value / minPoint.Value >= 2
+        ? $"{maxPoint.State} ({maxPoint.DisplayValue}) is {(maxPoint.Value / minPoint.Value).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)}\u00D7 {minPoint.State} ({minPoint.DisplayValue})."
+        : null;
+    // Map bucket colours per state (postal code), reused for the bars.
+    IReadOnlyDictionary<string, string>? barColors = null;
+    if (content.Map != null && content.Table?.Rows?.Count > 0)
     {
-        if (!row.Has(metricKey)) return null;
-        var raw = row.Data[metricKey]?.ToString() ?? "";
-        raw = raw.Replace(",", "").Replace("$", "").Replace("%", "").Trim();
-        return double.TryParse(raw, NumberStyles.Any, CultureInfo.InvariantCulture, out var d) ? d : (double?)null;
+        var choropleth = string.IsNullOrWhiteSpace(content.Map.MetricKey)
+            ? ChoroplethBuilder.BuildFlat(content.Table.Rows)
+            : ChoroplethBuilder.Build(content.Map, content.Table.Rows,
+                content.Table.Columns.FirstOrDefault(column => column.Key == content.Map.MetricKey));
+        barColors = choropleth.Entries
+            .Where(e => !string.IsNullOrEmpty(e.PostalCode) && !string.IsNullOrEmpty(e.FillColor))
+            .GroupBy(e => e.PostalCode, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First().FillColor, StringComparer.OrdinalIgnoreCase);
     }
-
-    // Pre-compute values; skip rows where metric is unparseable
-    var rowsWithVals = table.Rows
-        .Select(r => (Row: r, Val: ParseVal(r)))
-        .Where(x => x.Val.HasValue)
-        .ToList();
-
-    if (rowsWithVals.Count < 3) { return; }
-    // The block links each row to a state; skip tables whose rows are not states (e.g. letters).
-    if (rowsWithVals.Any(x => string.IsNullOrWhiteSpace(x.Row.GetString("state_slug")))) { return; }
-
-    // Rows are already sorted best-rank-first in the YAML
-    var topRows    = rowsWithVals.Take(10).ToList();
-    var bottomRows = showBottom && rowsWithVals.Count > 10
-        ? rowsWithVals.TakeLast(10).ToList()
-        : new List<(TableRow Row, double? Val)>();
-
-    if (!showTop && bottomRows.Count == 0) { return; }
-
-    // Highlight cards: first and last row
-    var topCard    = topRows.FirstOrDefault();
-    var bottomCard = bottomRows.LastOrDefault();
-
-    // Bar width helpers — rank 1 always gets the widest bar within its group
-    var topMax = topRows.Max(x => x.Val!.Value);
-    var topMin = topRows.Min(x => x.Val!.Value);
-
-    double TopBarPct(double val)
-    {
-        // If top row = highest value: direct ratio
-        if (topRows[0].Val!.Value >= topRows[^1].Val!.Value)
-            return topMax > 0 ? Math.Round(val / topMax * 100, 1) : 0;
-        // Top row = lowest value (e.g. year founded): invert
-        return (topMax > topMin)
-            ? Math.Round((topMax - val) / (topMax - topMin) * 100, 1)
-            : 100.0;
-    }
-
-    double BotBarPct(double val)
-    {
-        if (bottomRows.Count == 0) return 0;
-        var botMax = bottomRows.Max(x => x.Val!.Value);
-        var botMin = bottomRows.Min(x => x.Val!.Value);
-        // In the "lowest" chart, smaller values should look smaller visually.
-        // Example: 0% should render as an empty bar, not a full one.
-        return (botMax > botMin)
-            ? Math.Round((val - botMin) / (botMax - botMin) * 100, 1)
-            : 100.0;
-    }
-
-    // Unit: the map's metric label when it describes this column ("New Cases per 100,000"), else the column label.
-    var mapInfo = Model.Content?.Map;
-    var unitLabel = (mapInfo != null && !string.IsNullOrWhiteSpace(mapInfo.MetricLabel)
-                     && string.Equals(mapInfo.MetricKey, metricKey, StringComparison.OrdinalIgnoreCase))
-        ? mapInfo.MetricLabel!.Trim()
-        : metricLabel;
-    var hib = table.HigherIsBetter;
-    // Warm = worse, cool = better; neutral when the page has no direction flag.
-    var topTone = hib == null ? "" : (hib == true ? "ranking-extreme-list--good" : "ranking-extreme-list--bad");
-    var botTone = hib == null ? "" : (hib == true ? "ranking-extreme-list--bad" : "ranking-extreme-list--good");
-    string RowRank(TableRow r, int fallback) =>
-        int.TryParse(r.GetString("rank").Replace(",", ""), out var rk) ? rk.ToString() : fallback.ToString();
-
-    string F(double v) => v.ToString("F1", CultureInfo.InvariantCulture);
-
-    // Helpers to pull common row fields
-    string RowState(TableRow r) => r.GetString("state");
-    string RowSlug(TableRow r)  => r.GetString("state_slug");
-    string RowVal(TableRow r)   => r.Has(metricKey) ? r.Data[metricKey]?.ToString() ?? "" : "";
+    var tableAnchor = (ViewData["RankingTableSectionId"] as string ?? "ranking-table").Trim();
 }
 
-<div class="content-divider ranking-extremes">
+<div class="content-divider ranking-extremes" data-extremes>
     <div class="ranking-extremes__heading">
-        @if (!string.IsNullOrWhiteSpace(extremesTitle))
+        <h2>@heading</h2>
+        @if (presentation.Diverging)
         {
-            <h2>@extremesTitle</h2>
+            <p class="ranking-extremes__scale-note">
+                @if (presentation.National != null)
+                {
+                    <text>Bars show distance from the U.S. figure, @presentation.MeanDisplay. @presentation.National.Caption.</text>
+                }
+                else
+                {
+                    <text>Bars show deviation from the mean across @ranking.Ordered.Count states: @presentation.MeanDisplay @presentation.UnitLabel.ToLowerInvariant(). Each state has equal weight.</text>
+                }
+            </p>
         }
-        else if (showTop && showBottom)
+        else if (gap != null)
         {
-            <h2>Highest and Lowest @unitLabel by State</h2>
-        }
-        else if (showTop)
-        {
-            <h2>Top 10 States by @metricLabel</h2>
-        }
-        else
-        {
-            <h2>Bottom 10 States by @metricLabel</h2>
+            <p class="ranking-extremes__gap">@gap</p>
         }
     </div>
 
-    @* ── Highlight cards ── *@
-    <div class="ranking-extremes__cards @(showTop && showBottom ? "ranking-extremes__cards--paired" : "")">
-
-        @if (showTop && topCard.Row != null)
+    @if (showAll)
+    {
+        <section class="ranking-extreme-list ranking-extreme-list--all">
+            <div class="ranking-extreme-list__header"><h3>@presentation.UnitLabel by state</h3></div>
+            <div class="ranking-extreme-list__rows">
+                @{ var allIndex = 0; }
+                @foreach (var point in points.OrderByDescending(p => p.Value).ThenBy(p => p.State, StringComparer.OrdinalIgnoreCase))
+                {
+                    @await Html.PartialAsync("~/Views/Rankings/_RankingExtremeRow.cshtml",
+                        new RankingExtremeRowModel(presentation, point, content.Table!, allIndex++, barColors))
+                }
+            </div>
+        </section>
+    }
+    else
+    {
+        @if (paired)
         {
-            var slug = RowSlug(topCard.Row);
-            <article class="ranking-extreme-card">
-                <p class="ranking-extreme-card__label">Highest</p>
-                <p class="ranking-extreme-card__value">@RowVal(topCard.Row)</p>
-                <p class="ranking-extreme-card__unit">@unitLabel</p>
-                <a class="ranking-extreme-card__state" href="/states/@slug">
-                    <img src="/images/flags/@slug/flag.webp" alt="@RowState(topCard.Row) flag"
-                         width="32" height="21"
-                         onerror="this.style.display='none'" loading="lazy" />
-                    <span>@RowState(topCard.Row)</span>
-                </a>
-            </article>
-        }
-
-        @if (showBottom && bottomCard.Row != null)
-        {
-            var slug = RowSlug(bottomCard.Row);
-            <article class="ranking-extreme-card">
-                <p class="ranking-extreme-card__label">Lowest</p>
-                <p class="ranking-extreme-card__value">@RowVal(bottomCard.Row)</p>
-                <p class="ranking-extreme-card__unit">@unitLabel</p>
-                <a class="ranking-extreme-card__state" href="/states/@slug">
-                    <img src="/images/flags/@slug/flag.webp" alt="@RowState(bottomCard.Row) flag"
-                         width="32" height="21"
-                         onerror="this.style.display='none'" loading="lazy" />
-                    <span>@RowState(bottomCard.Row)</span>
-                </a>
-            </article>
-        }
-
-    </div>
-
-    @* ── Bar charts ── *@
-    <div class="ranking-extremes__charts @(showTop && showBottom ? "ranking-extremes__charts--paired" : "")">
-
-        @* Top chart *@
-        @if (showTop && topRows.Any())
-        {
-            <div class="ranking-extreme-list @topTone">
-                <div class="ranking-extreme-list__header">
-                    <h3>
-                        @(showBottom ? "Top 10 Highest" : "Top 10") — @unitLabel
-                    </h3>
-                </div>
-                <div class="ranking-extreme-list__rows">
-                    @{ var topIndex = 0; }
-                    @foreach (var (row, val) in topRows)
-                    {
-                        topIndex++;
-                        var barW = F(TopBarPct(val!.Value));
-                        var slug = RowSlug(row);
-                        <div class="ranking-extreme-row">
-                            <span class="ranking-extreme-row__rank">@RowRank(row, topIndex)</span>
-                            <span class="ranking-extreme-row__flag"><img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
-                                 width="28" height="18"
-                                 onerror="this.style.visibility='hidden'" loading="lazy" /></span>
-                            <a href="/states/@slug" class="ranking-extreme-row__state">@RowState(row)</a>
-                            <div class="ranking-extreme-row__track" aria-hidden="true">
-                                <span style="width:@barW%"></span>
-                            </div>
-                            <span class="ranking-extreme-row__value">@RowVal(row)</span>
-                        </div>
-                    }
-                </div>
+            <div class="ranking-extremes__tabs" role="tablist" aria-label="Show">
+                <button type="button" role="tab" aria-selected="true" data-extremes-tab="highest">@(additive ? "Most" : "Highest")</button>
+                <button type="button" role="tab" aria-selected="false" data-extremes-tab="lowest">@(additive ? "Fewest" : "Lowest")</button>
             </div>
         }
-
-        @* Bottom chart *@
-        @if (showBottom && bottomRows.Any())
+        <div class="ranking-extremes__charts @(paired ? "ranking-extremes__charts--paired" : "")">
+            @foreach (var side in sides)
+            {
+                @await Html.PartialAsync("~/Views/Rankings/_RankingExtremeList.cshtml",
+                    new RankingExtremeListModel(presentation, side!, content.Table!, 5, barColors))
+            }
+        </div>
+        @if (sideLimit > 5)
         {
-            <div class="ranking-extreme-list @botTone">
-                <div class="ranking-extreme-list__header">
-                    <h3>
-                        Top 10 Lowest — @unitLabel
-                    </h3>
-                </div>
-                <div class="ranking-extreme-list__rows">
-                    @{ var botIndex = rowsWithVals.Count + 1; }
-                    @foreach (var (row, val) in Enumerable.Reverse(bottomRows))
-                    {
-                        botIndex--;
-                        var barW = F(BotBarPct(val!.Value));
-                        var slug = RowSlug(row);
-                        <div class="ranking-extreme-row">
-                            <span class="ranking-extreme-row__rank">@RowRank(row, botIndex)</span>
-                            <span class="ranking-extreme-row__flag"><img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
-                                 width="28" height="18"
-                                 onerror="this.style.visibility='hidden'" loading="lazy" /></span>
-                            <a href="/states/@slug" class="ranking-extreme-row__state">@RowState(row)</a>
-                            <div class="ranking-extreme-row__track" aria-hidden="true">
-                                <span style="width:@barW%"></span>
-                            </div>
-                            <span class="ranking-extreme-row__value">@RowVal(row)</span>
-                        </div>
-                    }
-                </div>
-            </div>
+            <button type="button" class="ranking-extremes__more" data-extremes-more>Show @sideLimit</button>
         }
-
-    </div>
+    }
+    <p class="ranking-extremes__all"><a href="#@tableAnchor">See full table <span aria-hidden="true">&rarr;</span></a></p>
 </div>
+@if (!showAll)
+{
+    <script src="~/js/rankings/ranking-extremes.js" asp-append-version="true" defer></script>
+}

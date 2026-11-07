@@ -43,7 +43,7 @@ namespace usasymbol.Services
             _cache = cache;
         }
 
-        private sealed record Row(string State, string Value, string? Extra);
+        private sealed record Row(string State, string Value, string? Extra, string Image, string Year, string Note);
 
         private sealed class Table
         {
@@ -97,7 +97,10 @@ namespace usasymbol.Services
                     var value = item.GetValueOrDefault(field)?.ToString()?.Trim().Trim('"');
                     var extra = extraField == null ? null : item.GetValueOrDefault(extraField)?.ToString()?.Trim();
                     if (string.IsNullOrWhiteSpace(state) || string.IsNullOrWhiteSpace(value)) continue;
-                    list.Add(new Row(state!, value!, extra));
+                    list.Add(new Row(state!, value!, extra,
+                        item.GetValueOrDefault("symbol_image")?.ToString() ?? "",
+                        item.GetValueOrDefault("year_adopted")?.ToString() ?? "",
+                        item.GetValueOrDefault("notes")?.ToString() ?? ""));
                 }
 
                 // Only states with a single entry, so the "correct" answer is never ambiguous.
@@ -218,10 +221,42 @@ namespace usasymbol.Services
                 }
 
                 var link = LinkFor(table.Label, stateName);
+                // A photograph is a question variant, not an additional topic in a five-question round.
+                if (!string.IsNullOrWhiteSpace(mine.Image) && result.Count > before &&
+                    table.Label is "bird" or "flower" or "tree" or "dinosaur" or "reptile" or "fossil")
+                {
+                    var original = result[before];
+                    if (original.CorrectAnswer == mine.Value)
+                    {
+                        var visual = Make($"Identify {stateName}'s state {table.Label}, shown here.",
+                            original.CorrectAnswer, original.Choices.Where(choice => choice != original.CorrectAnswer).ToList(), original.Explanation);
+                        visual.ImageUrl = mine.Image;
+                        result.Add(visual);
+                    }
+                }
                 for (var i = before; i < result.Count; i++)
                 {
                     result[i].LinkUrl = link.Url;
                     result[i].LinkLabel = link.Label;
+                    result[i].AnswerImageUrl = mine.Image;
+                    result[i].FamilyKey = table.Label;
+                    var adoption = int.TryParse(mine.Year, out var year) && year is >= 1700 and <= 2100 ? $"Adopted in {year}." : "";
+                    var fact = System.Text.RegularExpressions.Regex.Match(mine.Note, @"^.+?[.!?](?:\s|$)").Value.Trim();
+                    if (fact.Length > 180) fact = "";
+                    var detail = (adoption + " " + fact).Trim();
+                    if (detail.Length > 0)
+                        result[i].Explanation = result[i].CorrectAnswer == mine.Value ? detail : result[i].Explanation + " " + detail;
+                    foreach (var choice in result[i].Choices.Where(choice => choice != result[i].CorrectAnswer))
+                    {
+                        var other = others.OrderBy(row => row.State, StringComparer.OrdinalIgnoreCase)
+                            .FirstOrDefault(row => row.Value.Equals(choice, StringComparison.OrdinalIgnoreCase)
+                                || row.State.Equals(choice, StringComparison.OrdinalIgnoreCase));
+                        if (other != null)
+                            result[i].RelatedAnswers.Add(new QuizAnswerLink
+                            {
+                                Answer = other.Value, State = other.State, Url = LinkFor(table.Label, other.State).Url
+                            });
+                    }
                 }
             }
             return result;

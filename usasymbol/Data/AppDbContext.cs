@@ -19,6 +19,7 @@ namespace USASymbol.Data
         public DbSet<SymbolCategory> SymbolCategories { get; set; }
         public DbSet<QuizAttempt> QuizAttempts { get; set; }
         public DbSet<QuizEvent> QuizEvents { get; set; }
+        public DbSet<RankingEngagement> RankingEngagements { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,18 @@ namespace USASymbol.Data
                 entity.Property(e => e.QuestionKey).HasMaxLength(300);
                 entity.Property(e => e.Choice).HasMaxLength(200);
                 entity.HasIndex(e => new { e.QuizSlug, e.EventType });
+            });
+
+            modelBuilder.Entity<RankingEngagement>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Category).IsRequired().HasMaxLength(80);
+                entity.Property(e => e.RankingSlug).IsRequired().HasMaxLength(180);
+                entity.Property(e => e.VisitorHash).IsRequired().HasMaxLength(64).IsFixedLength();
+                entity.Property(e => e.Reaction).HasMaxLength(16);
+                entity.HasIndex(e => new { e.Category, e.RankingSlug, e.VisitorHash }).IsUnique();
+                entity.HasIndex(e => new { e.Category, e.RankingSlug, e.Reaction });
+                entity.HasIndex(e => e.LastViewedAt);
             });
 
             modelBuilder.Entity<State>(entity =>

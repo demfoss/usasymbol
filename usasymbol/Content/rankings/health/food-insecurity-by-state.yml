@@ -36,6 +36,7 @@ table:
     very_low: "0.0'%'"
   metric_default: food_insecurity
   sort_default: desc
+  higher_is_better: false
   rows:
     - { rank: 1, state: "Arkansas", state_slug: "arkansas", postal_code: "AR", food_insecurity: 19.4, very_low: 7.6 }
     - { rank: 2, state: "Kentucky", state_slug: "kentucky", postal_code: "KY", food_insecurity: 18.8, very_low: 9.0 }
@@ -87,6 +88,10 @@ table:
     - { rank: 48, state: "Vermont", state_slug: "vermont", postal_code: "VT", food_insecurity: 9.4, very_low: 3.7 }
     - { rank: 49, state: "New Hampshire", state_slug: "new-hampshire", postal_code: "NH", food_insecurity: 9.1, very_low: 4.4 }
     - { rank: 50, state: "North Dakota", state_slug: "north-dakota", postal_code: "ND", food_insecurity: 9.0, very_low: 4.1 }
+  national:
+    value: 13.3
+    label: "U.S. households"
+    source: "USDA ERS 2022-2024"
 map:
   title: "Food Insecurity by State"
   image_alt: "Map of the United States colored by the percent of food insecure households in each state"

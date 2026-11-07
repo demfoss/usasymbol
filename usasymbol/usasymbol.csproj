@@ -14,6 +14,10 @@
   <ItemGroup>
     <Compile Remove="obj-verify\**\*.cs;bin-verify\**\*.cs;tmp\**\*.cs;artifacts\**\*.cs;tools\**\*.cs" />
     <Content Remove="obj-verify\**;bin-verify\**;tmp\**;artifacts\**" />
+    <Content Remove="tools\RankingPresentationChecks\**" />
+    <Content Remove="tools\InlineQuizChecks\**" />
+    <Content Remove="tools\RankingTakeawaysChecks\**" />
+    <Content Remove="tools\MapLegendChecks\**" />
     <None Remove="obj-verify\**;bin-verify\**;tmp\**;artifacts\**" />
     <EmbeddedResource Remove="obj-verify\**;bin-verify\**;tmp\**;artifacts\**" />
   </ItemGroup>

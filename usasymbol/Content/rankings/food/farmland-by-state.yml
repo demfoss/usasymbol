@@ -53,6 +53,15 @@ table:
 
   metric_default: farmland_acres
   sort_default: desc
+  metric:
+    unit_singular: "acre of farmland"
+    unit_plural: "acres of farmland"
+    additive: true
+  national:
+    value: 880100848
+    label: "U.S. total land in farms"
+    source: "USDA NASS 2022 Census of Agriculture"
+    year: 2022
   column_formats:
     percent_of_land: "0.0'%'"
 

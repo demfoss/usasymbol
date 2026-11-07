@@ -34,6 +34,7 @@ table:
     inactive_pct: "0.0'%'"
   metric_default: inactive_pct
   sort_default: desc
+  higher_is_better: false
   rows:
     - { rank: 1, state: "Mississippi", state_slug: "mississippi", postal_code: "MS", inactive_pct: 30.6 }
     - { rank: 2, state: "West Virginia", state_slug: "west-virginia", postal_code: "WV", inactive_pct: 28.7 }
@@ -84,6 +85,11 @@ table:
     - { rank: 47, state: "Utah", state_slug: "utah", postal_code: "UT", inactive_pct: 16.8 }
     - { rank: 48, state: "Vermont", state_slug: "vermont", postal_code: "VT", inactive_pct: 16.0 }
     - { rank: 49, state: "Colorado", state_slug: "colorado", postal_code: "CO", inactive_pct: 15.6 }
+  national:
+    value: 22.5
+    label: "U.S. adults"
+    source: "CDC BRFSS"
+    year: 2024
 map:
   title: "Physical Inactivity by State"
   image_alt: "Map of the United States colored by the share of adults with no leisure-time physical activity in each state"

@@ -1,7 +1,7 @@
 .rankings-directory-page { background: #fff; }
-.rankings-directory { color: #0b1a36; background: #fff; font: 14px/1.6 'Manrope', system-ui, sans-serif; }
+.rankings-directory { color: #0b1a36; background: #fff; font: 14px/1.6 var(--font-sans); }
 .rankings-directory * { box-sizing: border-box; }
-.rankings-directory h1, .rankings-directory h2, .rankings-directory h3 { margin: 0; color: inherit; font-family: Georgia, 'Times New Roman', serif; font-weight: 700; letter-spacing: -.025em; line-height: 1.16; }
+.rankings-directory h1, .rankings-directory h2, .rankings-directory h3 { margin: 0; color: inherit; font-weight: 700; letter-spacing: -.025em; line-height: 1.16; }
 .rankings-directory p { margin: 0; }
 .rankings-directory a { color: inherit; text-decoration: none; }
 .rankings-directory a:focus-visible, .rankings-directory button:focus-visible, .rankings-directory summary:focus-visible, .rankings-directory select:focus-visible { outline: 3px solid #b38a35; outline-offset: 4px; }
@@ -21,13 +21,13 @@
 .rd-search:focus-within { border-color: #0f4d97; box-shadow: 0 0 0 3px #0f4d9714; }
 .rd-search input { width: 100%; min-width: 0; padding: 14px 0; border: none; outline: none; background: transparent; color: #0b1a36; font: inherit; font-size: 13px; }
 .rd-search input::placeholder { color: #718098; }
-.rd-button { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 10px 20px; border: 1px solid #163c70; border-radius: 10px; background: #163c70; color: #fff; font: 800 12px/1.4 'Manrope', system-ui, sans-serif; cursor: pointer; }
+.rd-button { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 10px 20px; border: 1px solid #163c70; border-radius: 10px; background: #163c70; color: #fff; font: 800 12px/1.4 var(--font-sans); cursor: pointer; }
 .rd-button:hover { background: #0b2e57; }
 .rd-button--soft { color: #0f4d97; background: #edf3f9; border-color: #dbe5ef; }
 .rd-button--soft:hover { background: #dfeaf5; }
 .rd-hero-stat { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 28px; border-radius: 18px; background: #f0f5f9; border: 1px solid #dce6ee; }
 .rd-hero-stat > i { margin-bottom: 15px; color: #0f4d97; font-size: 24px; }
-.rd-hero-stat strong { font: 700 64px/1 Georgia, serif; letter-spacing: -.04em; }
+.rd-hero-stat strong { font: 700 64px/1 var(--font-sans); letter-spacing: -.04em; }
 .rd-hero-stat > span { margin-top: 9px; font-size: 12px; font-weight: 800; color: #405670; }
 .rd-hero-stat p { margin-top: 20px; font-size: 12px; color: #6c7890; }
 .rd-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
@@ -64,7 +64,7 @@
 .rd-featured--photo:hover { border-color: transparent; box-shadow: 0 10px 28px #05122640; }
 .rd-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 25px; }
 .rd-metrics a { display: grid; grid-template-columns: 1fr auto; padding: 20px; border: 1px solid #e0e7ef; border-radius: 12px; }
-.rd-metrics strong { grid-column: 1 / -1; font: 700 30px/1.1 Georgia, serif; }
+.rd-metrics strong { grid-column: 1 / -1; font: 700 30px/1.1 var(--font-sans); }
 .rd-metrics span { margin-top: 8px; color: #627087; font-size: 12px; }
 .rd-metrics i { align-self: end; color: #0f4d97; font-size: 12px; }
 .rd-directory-section { scroll-margin-top: 106px; padding-bottom: 64px; }
@@ -82,7 +82,7 @@
 .rd-filter-links a > span:last-child { font-size: 10px; color: #708098; }
 .rd-filter-links a.is-active, .rd-filter-links a:hover { background: #e8f0f9; color: #0f4d97; font-weight: 800; }
 .rd-year-filter { margin-top: 20px; padding: 18px 5px 0; border-top: 1px solid #e3e8ef; }
-.rankings-directory select { max-width: 100%; padding: 10px 25px 10px 10px; border: 1px solid #dbe3ed; border-radius: 8px; background: #fff; color: #263e5c; font: 12px/1.5 'Manrope', system-ui, sans-serif; }
+.rankings-directory select { max-width: 100%; padding: 10px 25px 10px 10px; border: 1px solid #dbe3ed; border-radius: 8px; background: #fff; color: #263e5c; font: 12px/1.5 var(--font-sans); }
 .rd-year-filter select { width: 100%; }
 .rd-year-filter p { margin-top: 9px; color: #6c7890; font-size: 10px; line-height: 1.7; }
 .rd-year-filter button { width: 100%; margin-top: 13px; min-height: 38px; }

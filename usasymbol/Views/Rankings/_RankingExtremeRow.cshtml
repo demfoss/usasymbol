@@ -1,0 +1,27 @@
+@using System.Globalization
+@using Usasymbol.Helpers
+@model RankingExtremeRowModel
+@inject IImageUrlService Images
+@{
+    var point = Model.Point;
+    var presentation = Model.Presentation;
+    var placement = presentation.Ranking.For(point.Row)!;
+    var bar = presentation.Bar(point.Value);
+    string Percent(double value) => value.ToString("0.###", CultureInfo.InvariantCulture) + "%";
+    // Bars take the colour of the map bucket the state falls into, so the list and the map match.
+    var postal = point.Row.GetString("postal_code");
+    string? barColor = !presentation.Diverging && Model.Colors != null && !string.IsNullOrEmpty(postal) && Model.Colors.TryGetValue(postal, out var found) ? found : null;
+    var rankText = placement.Label.StartsWith("T", StringComparison.Ordinal) ? placement.Label : "#" + placement.Label;
+}
+<div class="ranking-extreme-row" data-state="@point.StateSlug" data-index="@Model.Index">
+    <span class="ranking-extreme-row__rank @(placement.Rank == 1 && placement.TieCount == 1 ? "is-first" : "")" title="@placement.Tooltip">@rankText</span>
+    <a href="/states/@point.StateSlug" class="ranking-extreme-row__state">
+        <span class="ranking-extreme-row__flag"><img src="@Images.Thumb($"/images/flags/{point.StateSlug}/flag.webp")" alt="" width="28" height="18" loading="lazy" /></span>
+        <span>@point.State</span>
+    </a>
+    <span class="ranking-extreme-row__value">@point.DisplayValue</span>
+    <div class="ranking-extreme-row__track @(presentation.Diverging ? "ranking-extreme-row__track--diverging" : "") @presentation.BarTone(Model.Table, point.Value)" aria-hidden="true"
+         style="--bar-origin:@Percent(presentation.BaselinePercent)">
+        <span style="margin-left:@Percent(bar.Left);width:@Percent(bar.Width)@(barColor != null ? ";background:" + barColor : "")"></span>
+    </div>
+</div>

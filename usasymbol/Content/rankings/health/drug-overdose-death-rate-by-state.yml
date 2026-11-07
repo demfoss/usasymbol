@@ -45,6 +45,7 @@ table:
 
   metric_default: rate
   sort_default: desc
+  higher_is_better: false
 
   rows:
     - rank: 1
@@ -347,6 +348,9 @@ table:
       postal_code: "NE"
       rate: 8.1
       deaths: 155
+  national:
+    weight_key: deaths
+    weight_kind: cases
 
 map:
   title: "Drug Overdose Death Rate by State Map"

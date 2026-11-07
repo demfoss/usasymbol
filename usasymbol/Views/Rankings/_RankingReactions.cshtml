@@ -1,0 +1,32 @@
+@model PageDetailViewModel
+@{
+    var content = Model.Content;
+    if (content == null) { return; }
+    var options = new[]
+    {
+        (Key: "surprising", Label: "Surprising", Icon: "fa-solid fa-bolt"),
+        (Key: "expected", Label: "Expected", Icon: "fa-solid fa-circle-check"),
+        (Key: "useful", Label: "Useful", Icon: "fa-solid fa-lightbulb")
+    };
+}
+<section class="ranking-reactions content-divider"
+         data-ranking-reactions
+         data-category="@content.Category"
+         data-slug="@content.Slug"
+         aria-labelledby="ranking-reactions-title">
+    <p id="ranking-reactions-title" class="ranking-reactions__title">What did this ranking feel like?</p>
+    <div class="ranking-reactions__buttons" role="group" aria-label="React to this ranking">
+        @foreach (var option in options)
+        {
+            <button type="button" data-reaction="@option.Key" aria-pressed="false">
+                <span class="ranking-reactions__label"><i class="@option.Icon" aria-hidden="true"></i> @option.Label</span>
+                <span class="ranking-reactions__result" aria-hidden="true">
+                    <span class="ranking-reactions__bar"><span data-bar></span></span>
+                    <span class="ranking-reactions__pct" data-pct></span>
+                </span>
+                <span class="ranking-reactions__you" data-you hidden>you</span>
+            </button>
+        }
+    </div>
+    <p class="ranking-reactions__status" data-reaction-status role="status" aria-live="polite">Tap one to see how others voted.</p>
+</section>

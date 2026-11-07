@@ -15,6 +15,8 @@ namespace Usasymbol.Helpers
         public string MinDisplayValue { get; set; } = string.Empty;
         public string MaxDisplayValue { get; set; } = string.Empty;
         public List<(string Color, string Label)> LegendSteps { get; set; } = new();
+        public List<MapLegendGroup> LegendGroups { get; set; } = new();
+        public string LegendTitle { get; set; } = string.Empty;
     }
 
     public static class ChoroplethBuilder
@@ -32,22 +34,6 @@ namespace Usasymbol.Helpers
             string? Summary,
             IReadOnlyDictionary<string, IReadOnlyList<string>> Filters
         );
-
-        private static readonly Dictionary<string, ((int r, int g, int b) light, (int r, int g, int b) dark)> Schemes = new()
-        {
-            ["blue"]   = ((219, 234, 254), (30,  58,  138)),
-            ["green"]  = ((220, 252, 231), (20,  83,  45)),
-            ["green-red"] = ((220, 252, 231), (127, 29, 29)),
-            ["red-green"] = ((254, 226, 226), (20,  83,  45)),
-            ["orange"] = ((255, 237, 213), (124, 45,  18)),
-            ["purple"] = ((243, 232, 255), (74,  4,   78)),
-            ["red"]    = ((254, 226, 226), (127, 29,  29)),
-            ["warm"]   = ((254, 249, 195), (120, 53,  15)),
-            ["teal"]   = ((204, 251, 241), (19,  78,  74)),
-            ["amber"]  = ((254, 243, 199), (146, 64,  14)),
-            ["pink"]   = ((252, 231, 243), (131, 24,  67)),
-            ["yellow"] = ((254, 249, 195), (161, 98,  7)),
-        };
 
         private const string NoDataColor = "#e2e8f0";
         private const string FlatColor   = "#bfdbfe";
@@ -70,6 +56,8 @@ namespace Usasymbol.Helpers
             ["red-dark"] = "#4d183e",
             ["green-dark"] = "#0b7a5c",
             ["green"] = "#169873",
+            ["green-light"] = "#86efac",
+            ["yellow-dark"] = "#a16207",
             ["slate"] = "#475569",
             ["gray"] = "#94a3b8",
             ["grey"] = "#94a3b8",
@@ -97,81 +85,40 @@ namespace Usasymbol.Helpers
             ["wisconsin"] = "WI", ["wyoming"] = "WY",
         };
 
-        public static ChoroplethResult Build(PageMap map, List<TableRow> rows)
+        public static ChoroplethResult Build(PageMap map, List<TableRow> rows, TableColumn? metricColumn = null)
         {
-            var schemeName = map.ColorScheme?.ToLower() ?? "blue";
-            var scheme = Schemes.ContainsKey(schemeName) ? Schemes[schemeName] : Schemes["blue"];
-            var useLog = string.Equals(map.ColorScale, "log", StringComparison.OrdinalIgnoreCase);
             var key = map.MetricKey!;
+            var parsed = ToMapRows(rows, map, key, r => r.GetString(key));
+            if (IsCategoricalMap(map) || map.ValueType is "category" or "ordinal" or "boolean")
+                return BuildCategorical(parsed, map);
 
-            var parsed = ToMapRows(rows, map, key, r => FormatValue(r, key));
+            var numeric = parsed.Any(row => row.NumericValue.HasValue)
+                || map.ValueType is "percent" or "rate" or "currency" or "count" or "large_count" or "year" or "rank_only"
+                || metricColumn?.Type == "number";
+            if (!numeric) return BuildCategorical(parsed, map);
 
-            if (schemeName == "diverging")
-                return BuildDiverging(parsed, map);
+            var entries = parsed.Select(row => new StateMapEntry(
+                row.PostalCode, row.StateName, row.StateSlug, row.NumericValue, row.Rank,
+                row.DisplayValue, NoDataColor, row.Details, row.ImageUrl,
+                null, null, row.Summary, row.Filters))
+                .GroupBy(entry => entry.PostalCode, StringComparer.OrdinalIgnoreCase)
+                .Select(CombineEntries).ToList();
+            return MapLegendBuilder.Numeric(CompleteStates(entries), map, metricColumn);
+        }
 
-            var values = parsed.Where(x => x.NumericValue.HasValue).Select(x => x.NumericValue!.Value).ToList();
-            if (!values.Any())
+        private static List<StateMapEntry> CompleteStates(List<StateMapEntry> entries)
+        {
+            // SVG always displays all fifty states, including states omitted from the source table.
+            // Include them in search, missing-data counts and filtering as well.
+            if (entries.Count == 0) return entries;
+            var present = entries.Select(entry => entry.PostalCode).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            foreach (var (slug, postal) in SlugToPostal)
             {
-                if (IsCategoricalMap(map))
-                    return BuildCategorical(parsed, map);
-
-                return BuildFlat(rows, key, map);
+                if (present.Contains(postal)) continue;
+                entries.Add(new StateMapEntry(postal, FormatLabel(slug), slug.Replace(' ', '-'),
+                    null, null, "No data", NoDataColor, Array.Empty<MapEntryDetail>()));
             }
-
-            double min = values.Min();
-            double max = values.Max();
-
-            var entries = parsed.Select(x =>
-            {
-                string fill;
-                if (!x.NumericValue.HasValue || min >= max)
-                    fill = NoDataColor;
-                else
-                {
-                    double t = useLog ? LogScale(x.NumericValue.Value, min, max) : LinearScale(x.NumericValue.Value, min, max);
-                    fill = Lerp(t, scheme.light, scheme.dark);
-                }
-                return new StateMapEntry(
-                    x.PostalCode,
-                    x.StateName,
-                    x.StateSlug,
-                    x.NumericValue,
-                    x.Rank,
-                    x.DisplayValue,
-                    fill,
-                    x.Details,
-                    x.ImageUrl,
-                    null,
-                    null,
-                    x.Summary,
-                    x.Filters);
-            })
-            .GroupBy(e => e.PostalCode, StringComparer.OrdinalIgnoreCase)
-            .Select(CombineEntries)
-            .ToList();
-
-            var minEntry = entries.Where(e => e.NumericValue.HasValue).OrderBy(e => e.NumericValue).First();
-            var maxEntry = entries.Where(e => e.NumericValue.HasValue).OrderByDescending(e => e.NumericValue).First();
-
-            var steps = new List<(string Color, string Label)>();
-            for (int i = 0; i < 5; i++)
-            {
-                double t = i / 4.0;
-                double value = useLog
-                    ? Math.Exp(Math.Log(Math.Max(min, 1)) + t * (Math.Log(Math.Max(max, 1)) - Math.Log(Math.Max(min, 1))))
-                    : min + t * (max - min);
-                steps.Add((Lerp(t, scheme.light, scheme.dark), FormatStepValue(value)));
-            }
-
-            return new ChoroplethResult
-            {
-                Entries          = entries,
-                LightColor       = ToHex(scheme.light),
-                DarkColor        = ToHex(scheme.dark),
-                MinDisplayValue  = minEntry.DisplayValue,
-                MaxDisplayValue  = maxEntry.DisplayValue,
-                LegendSteps      = steps,
-            };
+            return entries;
         }
 
         public static ChoroplethResult BuildFlat(List<TableRow> rows, string? preferredDisplayKey = null, PageMap? map = null)
@@ -211,76 +158,7 @@ namespace Usasymbol.Helpers
                 .Select(CombineEntries)
                 .ToList();
 
-            return new ChoroplethResult { Entries = entries };
-        }
-
-        private static ChoroplethResult BuildDiverging(List<MapSourceRow> rows, PageMap map)
-        {
-            var withValues = rows.Where(r => r.NumericValue.HasValue).ToList();
-            if (!withValues.Any())
-                return BuildCategorical(rows, map);
-
-            var positives = withValues.Where(r => r.NumericValue!.Value > 0).Select(r => r.NumericValue!.Value).ToList();
-            var negatives = withValues.Where(r => r.NumericValue!.Value < 0).Select(r => r.NumericValue!.Value).ToList();
-
-            double maxPos = positives.Any() ? positives.Max() : 1;
-            double minNeg = negatives.Any() ? negatives.Min() : -1;
-
-            (int r, int g, int b) greenLight = (220, 252, 231);
-            (int r, int g, int b) greenDark  = (20,  83,  45);
-            (int r, int g, int b) redLight   = (254, 226, 226);
-            (int r, int g, int b) redDark    = (127, 29,  29);
-
-            var entries = rows.Select(x =>
-            {
-                string fill;
-                if (!x.NumericValue.HasValue)
-                    fill = NoDataColor;
-                else if (x.NumericValue.Value > 0)
-                    fill = Lerp(x.NumericValue.Value / maxPos, greenLight, greenDark);
-                else if (x.NumericValue.Value < 0)
-                    fill = Lerp(Math.Abs(x.NumericValue.Value) / Math.Abs(minNeg), redLight, redDark);
-                else
-                    fill = "#e2e8f0";
-
-                return new StateMapEntry(
-                    x.PostalCode, x.StateName, x.StateSlug,
-                    x.NumericValue, x.Rank, x.DisplayValue, fill,
-                    x.Details, x.ImageUrl, null, null, x.Summary, x.Filters);
-            })
-            .GroupBy(e => e.PostalCode, StringComparer.OrdinalIgnoreCase)
-            .Select(CombineEntries)
-            .ToList();
-
-            var steps = new List<(string Color, string Label)>
-            {
-                (Lerp(1.0, redLight,   redDark),   SignedLabel(minNeg)),
-                (Lerp(0.4, redLight,   redDark),   SignedLabel(minNeg / 3.0)),
-                ("#e2e8f0",                         "0"),
-                (Lerp(0.4, greenLight, greenDark),  SignedLabel(maxPos / 3.0)),
-                (Lerp(1.0, greenLight, greenDark),  SignedLabel(maxPos)),
-            };
-
-            return new ChoroplethResult
-            {
-                Entries         = entries,
-                LightColor      = ToHex(redLight),
-                DarkColor       = ToHex(greenDark),
-                MinDisplayValue = SignedLabel(minNeg),
-                MaxDisplayValue = SignedLabel(maxPos),
-                LegendSteps     = steps,
-            };
-        }
-
-        private static string SignedLabel(double value)
-        {
-            var abs = Math.Abs(value);
-            string formatted;
-            if (abs >= 1_000_000)      formatted = $"{abs / 1_000_000:F1}M";
-            else if (abs >= 1_000)     formatted = ((long)Math.Round(abs)).ToString("N0", CultureInfo.InvariantCulture);
-            else if (abs % 1 == 0)     formatted = ((long)abs).ToString();
-            else                       formatted = abs.ToString("G3", CultureInfo.InvariantCulture);
-            return value < 0 ? $"−{formatted}" : value > 0 ? $"+{formatted}" : "0";
+            return MapLegendBuilder.Categories(CompleteStates(entries), map ?? new PageMap());
         }
 
         private static ChoroplethResult BuildCategorical(List<MapSourceRow> rows, PageMap map)
@@ -335,41 +213,7 @@ namespace Usasymbol.Helpers
                 .Select(CombineEntries)
                 .ToList();
 
-            return new ChoroplethResult { Entries = entries, LegendSteps = BuildCategoricalLegend(entries, map) };
-        }
-
-        // A swatch legend only helps when colors mark real, named groups shared by
-        // more than one state (e.g. "Football" vs "Basketball"). When nearly every
-        // state has its own distinct value (e.g. each state's own unique slogan or
-        // seal name), listing all of them just repeats the table below, so the
-        // legend is left empty and the map shows a hover/tap hint instead.
-        private const int MaxMeaningfulLegendGroups = 14;
-
-        private static List<(string Color, string Label)> BuildCategoricalLegend(List<StateMapEntry> entries, PageMap? map = null)
-        {
-            if (map?.ColorMap.Count > 0)
-                return map.ColorMap
-                    .Select(kv => (Color: ResolveColorToken(kv.Value) ?? kv.Value, Label: kv.Key))
-                    .ToList();
-
-            var groups = entries
-                .Where(e => !string.IsNullOrWhiteSpace(e.DisplayValue) && e.DisplayValue != "No value")
-                .GroupBy(e => e.FillColor, StringComparer.OrdinalIgnoreCase)
-                .OrderByDescending(g => g.Count())
-                .ThenBy(g => g.Key, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            if (groups.Count == 0 || groups.Count > MaxMeaningfulLegendGroups)
-                return new List<(string Color, string Label)>();
-
-            return groups
-                .Select(g =>
-                {
-                    var labels = g.Select(e => e.DisplayValue).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-                    var label = labels.Count == 1 ? labels[0] : $"{labels[0]} +{labels.Count - 1} more";
-                    return (g.Key, label);
-                })
-                .ToList();
+            return MapLegendBuilder.Categories(CompleteStates(entries), map);
         }
 
         public static bool IsCategoricalMap(PageMap map) =>
@@ -377,7 +221,7 @@ namespace Usasymbol.Helpers
             string.Equals(map.ColorScheme, "categorical", StringComparison.OrdinalIgnoreCase) ||
             map.ColorMap.Count > 0;
 
-        private static string? ResolveColorToken(string? color)
+        internal static string? ResolveColorToken(string? color)
         {
             if (string.IsNullOrWhiteSpace(color)) return null;
             var trimmed = color.Trim();
@@ -677,17 +521,6 @@ namespace Usasymbol.Helpers
             return postal?.ToUpper() ?? string.Empty;
         }
 
-        private static double LinearScale(double value, double min, double max)
-            => (value - min) / (max - min);
-
-        private static double LogScale(double value, double min, double max)
-        {
-            double sv = Math.Max(value, 1), sn = Math.Max(min, 1), sx = Math.Max(max, 1);
-            return (Math.Log(sv) - Math.Log(sn)) / (Math.Log(sx) - Math.Log(sn));
-        }
-
-        // Used to extend the categorical palette beyond its 15 curated colors so
-        // large category counts (e.g. 27+ candy types) never reuse a color.
         private static string HslToHex(double hue, double saturation, double lightness)
         {
             hue = ((hue % 360) + 360) % 360;
@@ -712,30 +545,19 @@ namespace Usasymbol.Helpers
             ));
         }
 
-        private static string Lerp(double t, (int r, int g, int b) light, (int r, int g, int b) dark)
-        {
-            t = Math.Clamp(t, 0, 1);
-            int r = (int)(light.r + t * (dark.r - light.r));
-            int g = (int)(light.g + t * (dark.g - light.g));
-            int b = (int)(light.b + t * (dark.b - light.b));
-            return $"#{r:x2}{g:x2}{b:x2}";
-        }
-
         private static string ToHex((int r, int g, int b) c) => $"#{c.r:x2}{c.g:x2}{c.b:x2}";
-
-        private static string FormatStepValue(double value)
-        {
-            if (value >= 1_000_000) return $"{value / 1_000_000:F1}M";
-            if (value >= 1_000)     return ((long)Math.Round(value)).ToString("N0", CultureInfo.InvariantCulture);
-            return value % 1 == 0   ? ((long)value).ToString() : value.ToString("G3", CultureInfo.InvariantCulture);
-        }
 
         private static double? TryDouble(TableRow row, string key)
         {
+            if (row.Data.TryGetValue(key, out var value) && value is sbyte or byte or short or ushort or int or uint or long or ulong or float or double or decimal)
+            {
+                var number = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                return double.IsFinite(number) ? number : null;
+            }
             var raw = row.GetString(key);
             if (string.IsNullOrWhiteSpace(raw)) return null;
-            var clean = raw.Replace(",", "").Replace("%", "").Trim();
-            return double.TryParse(clean, NumberStyles.Any, CultureInfo.InvariantCulture, out var d) ? d : null;
+            var clean = raw.Replace(",", "").Replace("%", "").Replace("$", "").Trim();
+            return double.TryParse(clean, NumberStyles.Any, CultureInfo.InvariantCulture, out var d) && double.IsFinite(d) ? d : null;
         }
 
         private static int? TryInt(TableRow row, string key)
@@ -744,18 +566,5 @@ namespace Usasymbol.Helpers
             return int.TryParse(raw, out var i) ? i : null;
         }
 
-        private static string FormatValue(TableRow row, string key)
-        {
-            var raw = row.GetString(key);
-            if (string.IsNullOrEmpty(raw)) return "—";
-            var clean = raw.Replace(",", "").Replace("%", "").Trim();
-            if (double.TryParse(clean, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
-            {
-                if (d >= 1_000_000) return $"{d / 1_000_000:F1}M";
-                if (d >= 1_000) return d.ToString("N0", CultureInfo.InvariantCulture);
-                return d % 1 == 0 ? ((long)d).ToString() : d.ToString("G4", CultureInfo.InvariantCulture);
-            }
-            return raw;
-        }
     }
 }

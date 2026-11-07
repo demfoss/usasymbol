@@ -1,0 +1,123 @@
+type: ranking
+slug: cattle-on-feed-by-state
+category: agriculture
+url: /rankings/agriculture/cattle-on-feed-by-state
+auto_link_phrases:
+  - "cattle on feed by state"
+  - "feedlot cattle by state"
+  - "states with the most cattle on feed"
+  - "cattle feedlot inventory by state"
+extremes_mode: both
+extremes_title: "States With the Most and Fewest Cattle on Feed"
+hero_image: "/images/rankings/agriculture/cattle-on-feed-by-state/cattle-on-feed-by-state-hero.jpg"
+hero_image_alt: "Beef cattle gathered in a large feedlot"
+hero_image_caption: "Nebraska had 2,620,000 cattle on feed in large feedlots on January 1, 2026, the highest state total."
+author: "USA Symbol Team"
+date_published: "2026-11-07"
+date_modified: "2026-11-07"
+seo:
+  title: "Cattle on Feed by State 2026 | Map & Rankings"
+  description: "Nebraska leads with 2,620,000 cattle on feed, followed by Texas with 2,530,000 and Kansas with 2,390,000."
+page:
+  h1: "Cattle on Feed by State 2026"
+  quick_answer:
+    - "Nebraska has the most cattle on feed at 2,620,000, linking Great Plains cattle supplies with abundant corn and a major meatpacking corridor."
+    - "Texas ranks second with 2,530,000 cattle on feed, while Kansas is close behind at 2,390,000."
+    - "Arizona has 210,000 cattle on feed, the fewest among the 11 states published separately in the January 2026 large-feedlot table."
+  methodology: "USDA NASS Cattle on Feed reports inventory on January 1, 2026, in feedlots with capacity of 1,000 or more head. USDA publishes 11 states separately; all other states are combined as Other States and are not ranked. U.S. share is each state's inventory divided by the U.S. total for these feedlots, 11,450,000 head. Change compares January 1, 2026 with January 1, 2025."
+  sources:
+    - name: "USDA NASS. Cattle on Feed, January 23, 2026"
+      url: "https://www.nass.usda.gov/Publications/Todays_Reports/reports/cofd0126.pdf"
+      description: "Cattle on feed inventory in 1,000-plus-capacity feedlots by state"
+    - name: "USDA NASS. Cattle on Feed Survey"
+      url: "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cattle_On_Feed/"
+      description: "Survey definition, coverage, and publication schedule"
+table:
+  caption: "Cattle on Feed by State on January 1, 2026"
+  note: "Inventory covers feedlots with capacity of 1,000 or more head. States outside the 11 published separately are combined as Other States."
+  columns:
+    rank: "Rank"
+    state: "State"
+    cattle_on_feed: "Jan 1, 2026"
+    prior_year: "Jan 1, 2025"
+    year_change_pct: "Change"
+  column_formats:
+    year_change_pct: "0.0'%'"
+  metric_default: cattle_on_feed
+  sort_default: desc
+  state_index: false
+  metric:
+    unit_singular: "head of cattle on feed"
+    unit_plural: "head of cattle on feed"
+    additive: true
+  national:
+    value: 11450000
+    label: "U.S. total"
+    source: "USDA NASS Cattle on Feed"
+    year: 2026
+  rows:
+    - { rank: 1, state: "Nebraska", state_slug: "nebraska", postal_code: "NE", cattle_on_feed: 2620000, prior_year: 2580000, year_change_pct: 1.6 }
+    - { rank: 2, state: "Texas", state_slug: "texas", postal_code: "TX", cattle_on_feed: 2530000, prior_year: 2780000, year_change_pct: -9.0 }
+    - { rank: 3, state: "Kansas", state_slug: "kansas", postal_code: "KS", cattle_on_feed: 2390000, prior_year: 2400000, year_change_pct: -0.4 }
+    - { rank: 4, state: "Colorado", state_slug: "colorado", postal_code: "CO", cattle_on_feed: 890000, prior_year: 1050000, year_change_pct: -15.2 }
+    - { rank: 5, state: "Iowa", state_slug: "iowa", postal_code: "IA", cattle_on_feed: 680000, prior_year: 650000, year_change_pct: 4.6 }
+    - { rank: 6, state: "California", state_slug: "california", postal_code: "CA", cattle_on_feed: 500000, prior_year: 520000, year_change_pct: -3.8 }
+    - { rank: 7, state: "Idaho", state_slug: "idaho", postal_code: "ID", cattle_on_feed: 345000, prior_year: 330000, year_change_pct: 4.5 }
+    - { rank: 8, state: "Oklahoma", state_slug: "oklahoma", postal_code: "OK", cattle_on_feed: 325000, prior_year: 360000, year_change_pct: -9.7 }
+    - { rank: 9, state: "Washington", state_slug: "washington", postal_code: "WA", cattle_on_feed: 270000, prior_year: 255000, year_change_pct: 5.9 }
+    - { rank: 10, state: "South Dakota", state_slug: "south-dakota", postal_code: "SD", cattle_on_feed: 235000, prior_year: 230000, year_change_pct: 2.2 }
+    - { rank: 11, state: "Arizona", state_slug: "arizona", postal_code: "AZ", cattle_on_feed: 210000, prior_year: 233000, year_change_pct: -9.9 }
+map:
+  title: "Cattle on Feed by State Map"
+  image_alt: "U.S. map shaded by cattle on feed in large feedlots on January 1, 2026"
+  caption: "Nebraska leads with 2,620,000 cattle on feed, followed by Texas at 2,530,000 and Kansas at 2,390,000."
+  metric_key: cattle_on_feed
+  metric_label: "Cattle on Feed"
+  color_scheme: orange
+  color_scale: linear
+sections:
+  - id: "why-nebraska-leads-cattle-on-feed"
+    icon: "fa-solid fa-cow"
+    title: "Why Nebraska Leads Cattle on Feed"
+    paragraphs:
+      - "Nebraska leads with 2,620,000 cattle on feed because it combines Great Plains cattle country with a huge corn crop and large meatpacking plants. Keeping feed grain, cattle, and processors close together lowers the cost of moving bulky inputs and finished animals."
+      - "Arizona is last among the 11 separately published states at 210,000. Its smaller cattle base and dependence on irrigated feed crops limit the scale seen across the central Plains."
+  - id: "plains-states-dominate-feedlots"
+    icon: "fa-solid fa-wheat-awn"
+    title: "Plains States Dominate Feedlots"
+    paragraphs:
+      - "Nebraska, Texas, and Kansas together hold 7,540,000 cattle on feed in large lots. The same region links ranches to feed grains and slaughter plants, a production chain also visible in [beef production by state](/rankings/agriculture/beef-production-by-state)."
+      - "Texas fell from 2,780,000 cattle on January 1, 2025, to 2,530,000 one year later, while Nebraska rose from 2,580,000 to 2,620,000 and moved into first place."
+visual_assets:
+  - id: "why-nebraska-leads-cattle-on-feed-visual"
+    src: "/images/rankings/agriculture/cattle-on-feed-by-state/why-nebraska-leads-cattle-on-feed.jpg"
+    alt: "Cattle eating in a feedlot in the Great Plains"
+    caption: "Nebraska had 2,620,000 cattle on feed in large feedlots on January 1, 2026."
+    section: "why-nebraska-leads-cattle-on-feed"
+    layout: "full-width-tall"
+  - id: "plains-states-dominate-feedlots-visual"
+    src: "/images/rankings/agriculture/cattle-on-feed-by-state/plains-states-dominate-feedlots.jpg"
+    alt: "Large beef cattle herd representing feedlots across the Plains"
+    caption: "Nebraska, Texas, and Kansas account for the three largest published feedlot inventories."
+    section: "plains-states-dominate-feedlots"
+    layout: "full-width-tall"
+faq:
+  - question: "Which state has the most cattle on feed?"
+    answer: "Nebraska has the most cattle on feed in large feedlots at 2,620,000 on January 1, 2026."
+  - question: "How many cattle are on feed in Texas?"
+    answer: "Texas has 2,530,000 cattle on feed in feedlots with capacity of 1,000 or more head, second behind Nebraska."
+  - question: "What does cattle on feed mean?"
+    answer: "Cattle on feed are steers and heifers being fed grain, silage, hay, or protein supplements for the slaughter market and expected to produce a carcass grading Select or better."
+  - question: "Are small feedlots included?"
+    answer: "This state ranking covers feedlots with capacity of 1,000 or more head. Smaller lots are outside the state table used here."
+  - question: "Which published state has the fewest cattle on feed?"
+    answer: "Arizona has the smallest total among the 11 states published separately, with 210,000 cattle on feed."
+related:
+  - title: "Beef Production by State"
+    url: "/rankings/agriculture/beef-production-by-state"
+  - title: "Cattle Ranching by State"
+    url: "/rankings/agriculture/cattle-ranching-by-state"
+  - title: "Corn Production by State"
+    url: "/rankings/agriculture/corn-production-by-state"
+  - title: "Agricultural GDP by State"
+    url: "/rankings/agriculture/agricultural-gdp-by-state"

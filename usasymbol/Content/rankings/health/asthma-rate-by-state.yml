@@ -15,10 +15,10 @@ author: USA Symbol Team
 date_published: '2026-11-05'
 date_modified: '2026-11-05'
 seo:
-  title: Asthma Rate by State 2023 | Map & Rankings
+  title: Asthma Rate by State | Map & Rankings
   description: West Virginia has the highest adult current asthma rate at 13.9%. Mississippi has the lowest published rate at 7.1%.
 page:
-  h1: Asthma Rate by State 2023
+  h1: Asthma Rate by State
   quick_answer:
   - Asthma rate by state estimates put West Virginia first at 13.9% of adults. The Appalachian state also faces high smoking exposure and occupational respiratory hazards.
   - Maine ranks second at 12.9%, followed by Rhode Island at 12.2%.
@@ -44,6 +44,10 @@ table:
   sortable: true
   metric_default: asthma_rate
   sort_default: desc
+  higher_is_better: false
+  national:
+    weight_key: adults_with_asthma
+    weight_kind: cases
   columns:
     rank: Rank
     state: State

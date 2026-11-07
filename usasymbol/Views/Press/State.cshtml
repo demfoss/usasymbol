@@ -1,0 +1,97 @@
+@model StatePressPackViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/press-pack.css" asp-append-version="true" />
+}
+
+<div class="press-pack">
+    <header class="press-pack__hero">
+        <p class="press-pack__eyebrow">Editorial workspace · noindex</p>
+        <h1>@Model.StateName press data pack</h1>
+        <p>Automatically screened ranking facts with direct methodology and source links. Review the wording before sending.</p>
+    </header>
+
+    <nav class="press-pack__filters" aria-label="Filter facts by category">
+        <a class="@(Model.SelectedCategory == null ? "is-active" : "")" href="/press/state/@Model.StateSlug">All</a>
+        @foreach (var category in Model.Categories)
+        {
+            <a class="@(Model.SelectedCategory == category ? "is-active" : "")"
+               href="/press/state/@Model.StateSlug?category=@category">@category.Replace('-', ' ')</a>
+        }
+    </nav>
+
+    <section class="press-pack__email" aria-labelledby="press-email-title">
+        <div>
+            <p class="press-pack__label">Suggested outreach</p>
+            <h2 id="press-email-title">Ready-to-edit email</h2>
+        </div>
+        <button type="button" data-copy-target="press-email">Copy email</button>
+        <pre id="press-email">Subject: @Model.EmailSubject
+
+@Model.EmailBody</pre>
+    </section>
+
+    <section class="press-pack__facts" aria-labelledby="press-facts-title">
+        <div class="press-pack__section-head">
+            <div>
+                <p class="press-pack__label">Screened facts</p>
+                <h2 id="press-facts-title">@Model.Facts.Count usable angles</h2>
+            </div>
+            <p>“Good news” uses the metric's declared direction; highest and lowest remain factual even when the result is unfavorable.</p>
+        </div>
+
+        @if (Model.Facts.Count == 0)
+        {
+            <p class="press-pack__empty">No press-safe extremes are available for this filter.</p>
+        }
+        else
+        {
+            <ol>
+                @foreach (var fact in Model.Facts)
+                {
+                    <li>
+                        <div class="press-pack__fact-topline">
+                            <span class="press-pack__position">@fact.PositionLabel</span>
+                            <span class="@(fact.Entry.IsGoodNews ? "press-pack__tone press-pack__tone--positive" : "press-pack__tone")">
+                                @(fact.Entry.IsGoodNews ? "positive extreme" : "context required")
+                            </span>
+                        </div>
+                        <h3><a href="@fact.Entry.Url">@fact.Entry.Title</a></h3>
+                        <p>@fact.Sentence</p>
+                        <dl>
+                            <div><dt>Value</dt><dd>@fact.Entry.Value</dd></div>
+                            <div><dt>Coverage</dt><dd>@fact.Entry.Total states</dd></div>
+                            <div><dt>Updated</dt><dd>@(fact.Entry.DateModified?.ToString("MMMM d, yyyy") ?? "Not specified")</dd></div>
+                        </dl>
+                        @if (!string.IsNullOrWhiteSpace(fact.Entry.SourceName))
+                        {
+                            <p class="press-pack__source">
+                                Source:
+                                @if (!string.IsNullOrWhiteSpace(fact.Entry.SourceUrl))
+                                {
+                                    <a href="@fact.Entry.SourceUrl" rel="noopener noreferrer">@fact.Entry.SourceName</a>
+                                }
+                                else
+                                {
+                                    @fact.Entry.SourceName
+                                }
+                            </p>
+                        }
+                    </li>
+                }
+            </ol>
+        }
+    </section>
+</div>
+
+<script>
+document.querySelectorAll('[data-copy-target]').forEach(function (button) {
+    button.addEventListener('click', async function () {
+        var target = document.getElementById(button.dataset.copyTarget);
+        if (!target) return;
+        await navigator.clipboard.writeText(target.textContent.trim());
+        button.textContent = 'Copied';
+        window.setTimeout(function () { button.textContent = 'Copy email'; }, 1800);
+    });
+});
+</script>

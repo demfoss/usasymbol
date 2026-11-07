@@ -12,11 +12,17 @@ namespace USASymbol.Models.Content
     public class PageTable
     {
         public string? Title { get; set; }
+        /// <summary>YAML <c>table.caption</c>: accessible table caption.</summary>
+        public string? Caption { get; set; }
+        /// <summary>YAML <c>table.note</c>: coverage note shown under the table.</summary>
+        public string? Note { get; set; }
         public List<TableColumn> Columns { get; set; } = new();
         public List<TableRow> Rows { get; set; } = new();
         public List<string> ToggleableColumns { get; set; } = new();
         public List<string> HiddenColumns { get; set; } = new();
         public string? DefaultColumn { get; set; }
+        public string? SortDefault { get; set; }
+        public RankingMetric? Metric { get; set; }
         public bool Searchable { get; set; } = true;
         public bool Sortable { get; set; } = true;
 
@@ -33,6 +39,41 @@ namespace USASymbol.Models.Content
         /// Drives the colour semantics of the Key takeaways block.
         /// </summary>
         public bool? HigherIsBetter { get; set; }
+
+        /// <summary>
+        /// Optional YAML block <c>table.national</c>: the U.S. reference for the default metric.
+        /// Either an official <c>value</c> (with source and year) or a population-weighted
+        /// <c>weight_key</c>/<c>weight_kind</c> pooled estimate. Never a plain mean of states.
+        /// </summary>
+        public NationalReference? National { get; set; }
+    }
+
+    public class NationalReference
+    {
+        /// <summary>Official national figure in the same unit as the metric column.</summary>
+        public double? Value { get; set; }
+        public string? Label { get; set; }
+        /// <summary>Name of the remainder row ("Other states" by default), e.g. "Federal offshore".</summary>
+        public string? OtherLabel { get; set; }
+        public string? Source { get; set; }
+        public int? Year { get; set; }
+
+        /// <summary>Row key used to weight a pooled estimate (population or case count).</summary>
+        public string? WeightKey { get; set; }
+
+        /// <summary>"population" (rate x population) or "cases" (count of cases; population = cases / rate).</summary>
+        public string? WeightKind { get; set; }
+    }
+
+    /// <summary>Optional table.metric YAML metadata for safe, grammatical ranking insights.</summary>
+    public class RankingMetric
+    {
+        public string? UnitSingular { get; set; }
+        public string? UnitPlural { get; set; }
+        public bool Additive { get; set; }
+        public string? PopulationKey { get; set; }
+        public string? PreviousValueKey { get; set; }
+        public int? PreviousYear { get; set; }
     }
 
     public class TableColumn
@@ -274,6 +315,16 @@ namespace USASymbol.Models.Content
         public string? FillColor { get; set; }
         public string ColorScheme { get; set; } = "blue";
         public string ColorScale { get; set; } = "linear";
+        // Optional map-only overrides; existing pages infer formatting from their metric column.
+        public string? ValueType { get; set; }
+        public string? UnitLabel { get; set; }
+        public int? Decimals { get; set; }
+        public List<double> Breaks { get; set; } = new();
+        public List<string> CategoryOrder { get; set; } = new();
+        public string? LegendMode { get; set; }
+        public double? ReferenceValue { get; set; }
+        public string? ReferenceLabel { get; set; }
+        public double? ReferenceTolerance { get; set; }
         public bool ShowLabels { get; set; } = false;
         public bool TextOverlay { get; set; } = false;
         public string? SummaryKey { get; set; }

@@ -21,6 +21,10 @@
             var toggleable = table.ToggleableColumns;
             var defaultCol = table.DefaultColumn ?? toggleable.FirstOrDefault();
             var tableQuickFilter = table == firstTable ? quickFilter : null;
+            var ranking = RankingPresentation.Create(table);
+            var orderedRows = (ranking?.Rows(table) ?? table.Rows).ToList();
+            var national = table == firstTable ? NationalReferenceResolver.Resolve(table, ranking?.Insights) : null;
+            var nationalKey = ranking?.Insights.MetricColumn.Key;
 
             if (!columns.Any()) { continue; }
 
@@ -32,8 +36,17 @@
                 </h3>
             }
 
+            @if (national != null)
+            {
+                <p class="ranking-national-note"><strong>U.S.: @national.Display</strong> <span>@national.Caption</span></p>
+            }
+            <div class="ranking-table-frame">
             <div class="ranking-table-scroll @(Model.Tables.Count > 1 ? "ranking-table-scroll--spaced" : "")">
                 <table class="rankingTable">
+                    @if (!string.IsNullOrWhiteSpace(table.Caption ?? table.Title))
+                    {
+                        <caption class="sr-only">@(table.Caption ?? table.Title)</caption>
+                    }
 
                     <!-- HEADER -->
                     <thead>
@@ -68,9 +81,10 @@
 
                     <!-- BODY -->
                     <tbody class="rankingTbody">
-                        @for (int i = 0; i < table.Rows.Count; i++)
+                        @for (int i = 0; i < orderedRows.Count; i++)
                         {
-                            var row        = table.Rows[i];
+                            var row        = orderedRows[i];
+                            var placement  = ranking?.For(row);
                             var stateSlug  = row.GetString("state_slug");
                             var stateName  = row.GetString("state");
                             var postalCode = row.GetString("postal_code") ?? row.GetString("state_code") ?? row.GetString("abbr") ?? row.GetString("abbreviation");
@@ -110,7 +124,7 @@
                             }
                             var rowSearchText = string.Join(" ", searchParts.Where(s => !string.IsNullOrEmpty(s))).ToLowerInvariant();
                             var rowRankRaw = row.GetString("rank");
-                            var rowRank = int.TryParse((rowRankRaw ?? string.Empty).Replace(",", ""), out var parsedRank) ? parsedRank : 0;
+                            var rowRank = placement?.Rank ?? (int.TryParse((rowRankRaw ?? string.Empty).Replace(",", ""), out var parsedRank) ? parsedRank : 0);
                             var flagDesignFamily = row.GetString("design_family") ?? "";
                             var flagHasSeal = row.GetString("has_seal") ?? "";
                             var flagHasText = row.GetString("has_text") ?? "";
@@ -143,8 +157,8 @@
                                         {
                                             case "rank":
                                             {
-                                                var rankStr = FormatValue(cellValue, col);
-                                                <span class="ranking-rank">
+                                                var rankStr = placement?.Label ?? FormatValue(cellValue, col);
+                                                <span class="ranking-rank" title="@placement?.Tooltip">
                                                     @rankStr
                                                 </span>
                                                 break;
@@ -236,6 +250,12 @@
                                                 <span class="ranking-number">
                                                     @FormatValue(cellValue, col)
                                                 </span>
+                                                @if (national != null && string.Equals(col.Key, nationalKey, StringComparison.OrdinalIgnoreCase)
+                                                     && double.TryParse(cellValue?.ToString()?.Replace(",", "").Replace("%", ""), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var nationalCellValue)
+                                                     && national.Delta(nationalCellValue) is { } nationalDelta)
+                                                {
+                                                    <span class="ranking-vs-us" title="Difference from the U.S. figure (@national.Display)">@nationalDelta vs U.S.</span>
+                                                }
                                                 break;
 
                                             case "date":
@@ -312,7 +332,34 @@
                             </tr>
                         }
                     </tbody>
+                    @{ var totals = table == firstTable ? TableTotals.Resolve(table) : null; }
+                    @if (totals != null)
+                    {
+                        var en = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+                        var metricFormat = columns.FirstOrDefault(c => c.Key == totals.MetricKey)?.Format ?? "N0";
+                        var labelKey = columns.FirstOrDefault(c => c.Key == "state" || c.Type == "state-link" || c.Type == "text")?.Key;
+                        <tfoot class="ranking-totals">
+                            @foreach (var line in new[] { (Label: totals.OtherLabel, Value: totals.Other, Show: totals.ShowOther, IsTotal: false), (Label: totals.TotalLabel, Value: totals.Total, Show: true, IsTotal: true) })
+                            {
+                                if (!line.Show) { continue; }
+                                <tr class="@(line.IsTotal ? "ranking-totals__total" : "ranking-totals__other")">
+                                    @foreach (var col in columns)
+                                    {
+                                        if (col.Key == "state_slug") { continue; }
+                                        var tdHidden = toggleable.Contains(col.Key) && col.Key != defaultCol && toggleable.Count > 1 ? "hidden" : "";
+                                        string cell = col.Key == labelKey ? line.Label
+                                            : col.Key == totals.MetricKey ? line.Value.ToString(metricFormat, en)
+                                            : col.Key == "share_of_us" ? (line.Value / totals.Total * 100).ToString("0.0", en) + "%"
+                                            : col.Key == "rank" ? ""
+                                            : "\u2014";
+                                        <td class="ranking-cell @tdHidden @(col.Key == labelKey ? "ranking-totals__label" : null)" style="@(col.Type == "number" || col.Type == "rank" ? "text-align:right" : null)">@cell</td>
+                                    }
+                                </tr>
+                            }
+                        </tfoot>
+                    }
                 </table>
+            </div>
             </div>
         }
 
@@ -344,6 +391,16 @@
 }
 
 @functions {
+    // "Change"/"growth" columns read better as +5.9% and \u22129.9% (a true minus, same width as the plus).
+    static string SignedChange(TableColumn col, double value, string text)
+    {
+        var name = (col.Key + " " + col.Label).ToLowerInvariant();
+        if (!(name.Contains("change") || name.Contains("growth"))) return text;
+        if (value > 0 && !text.StartsWith("+")) return "+" + text;
+        if (text.StartsWith("-")) return "\u2212" + text.Substring(1);
+        return text;
+    }
+
     string FormatValue(object? value, TableColumn col)
     {
         if (value == null) return "—";
@@ -356,9 +413,9 @@
             case "rank":
                 var usCulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
                 if (long.TryParse(s.Replace(",", "").Replace(" ", ""), out var n))
-                    return n.ToString(col.Format ?? "N0", usCulture);
+                    return SignedChange(col, n, n.ToString(col.Format ?? "N0", usCulture));
                 if (double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
-                    return dbl.ToString(col.Format ?? "N2", usCulture);
+                    return SignedChange(col, dbl, dbl.ToString(col.Format ?? "N2", usCulture));
                 return s;
 
             case "date":

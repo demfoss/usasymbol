@@ -12,8 +12,8 @@ namespace usasymbol.Controllers
     [Route("quizzes")]
     public class QuizController : Controller
     {
-        private static readonly HashSet<string> Modes = new() { "practice", "classic", "timed", "daily" };
-        private static readonly HashSet<string> EventTypes = new() { "start", "answer", "complete" };
+        private static readonly HashSet<string> Modes = new() { "practice", "classic", "timed", "daily", "inline" };
+        private static readonly HashSet<string> EventTypes = new() { "start", "answer", "complete", "result_click" };
         private const int MinAnswersForMistakes = 20;
 
         private readonly QuizService _quizService;
@@ -142,7 +142,7 @@ namespace usasymbol.Controllers
 
             n = Math.Clamp(n, 1, 200);
             s = Math.Clamp(s, 0, n);
-            var mode = (m ?? "").ToLowerInvariant() switch { "classic" => "Classic", "timed" => "Timed", "daily" => "Daily quiz", _ => "Practice" };
+            var mode = (m ?? "").ToLowerInvariant() switch { "classic" => "Classic", "timed" => "Timed", "daily" => "Daily quiz", "inline" => "Quick quiz", _ => "Practice" };
             var marks = new string((g ?? "").Where(c => c == '0' || c == '1').Take(20).ToArray());
 
             var png = _shareImages.Render(quiz.Seo?.Title ?? quiz.Title, s, n, mode, marks);
@@ -163,6 +163,7 @@ namespace usasymbol.Controllers
 
             var known = quiz.Questions.Select(q => q.Question.Trim()).ToHashSet();
             var choicesByQuestion = quiz.Questions.GroupBy(q => q.Question.Trim()).ToDictionary(g => g.Key, g => g.First().Choices);
+            var correctByQuestion = quiz.Questions.GroupBy(q => q.Question.Trim()).ToDictionary(g => g.Key, g => g.First().CorrectAnswer);
             var now = DateTime.UtcNow;
             var rows = new List<QuizEvent>();
 
@@ -177,6 +178,16 @@ namespace usasymbol.Controllers
                     key = (e.Q ?? "").Trim();
                     if (!known.Contains(key)) continue;   // ignore anything that is not a real question
                 }
+                if (type == "result_click")
+                {
+                    key = (e.Q ?? "").Trim();
+                    if (key.Length > 300 || !(key is "share" or "again" ||
+                        key.StartsWith("/quizzes/", StringComparison.Ordinal) ||
+                        key.StartsWith("/states/", StringComparison.Ordinal) || key == "/quizzes")) continue;
+                }
+                var validChoice = type == "answer" && e.P != null &&
+                    choicesByQuestion.TryGetValue(key!, out var opts) && opts.Contains(e.P) ? e.P : null;
+                if (mode == "inline" && type == "answer" && validChoice == null) continue;
 
                 rows.Add(new QuizEvent
                 {
@@ -184,8 +195,8 @@ namespace usasymbol.Controllers
                     Mode = mode,
                     EventType = type,
                     QuestionKey = key,
-                    IsCorrect = type == "answer" ? e.C : null,
-                    Choice = type == "answer" && e.P != null && choicesByQuestion.TryGetValue(key!, out var opts) && opts.Contains(e.P) ? e.P : null,
+                    IsCorrect = type == "answer" ? (validChoice != null ? validChoice == correctByQuestion[key!] : e.C) : null,
+                    Choice = validChoice,
                     CreatedAt = now
                 });
             }
@@ -205,13 +216,71 @@ namespace usasymbol.Controllers
             return NoContent();
         }
 
+        /// <summary>Five-question widget results, scored against the same server-side question pool.</summary>
+        [HttpPost("{slug}/inline-result")]
+        [RequestSizeLimit(16384)]
+        public async Task<IActionResult> SaveInlineResult(string slug, [FromBody] InlineQuizResultDto dto)
+        {
+            var quiz = _quizService.GetBySlug(slug);
+            if (quiz == null) return NotFound();
+            if (dto?.Answers == null || dto.Answers.Count != 5 ||
+                dto.Answers.Any(answer => answer == null || string.IsNullOrWhiteSpace(answer.Question)) ||
+                dto.Answers.Select(answer => answer.Question.Trim()).Distinct().Count() != 5) return BadRequest();
+
+            var known = quiz.Questions.GroupBy(question => question.Question.Trim()).ToDictionary(group => group.Key, group => group.First());
+            var score = 0;
+            foreach (var answer in dto.Answers)
+            {
+                if (!known.TryGetValue(answer.Question.Trim(), out var question) || !question.Choices.Contains(answer.Choice)) return BadRequest();
+                if (answer.Choice == question.CorrectAnswer) score++;
+            }
+
+            try
+            {
+                var percentage = score * 20;
+                var prior = _context.QuizAttempts.Where(attempt => attempt.QuizSlug == slug && attempt.Mode == "inline" && attempt.QuestionCount == 5);
+                var rounds = await prior.CountAsync();
+                int? percentile = rounds >= MinAnswersForMistakes
+                    ? (int)Math.Round(await prior.CountAsync(attempt => attempt.Score < percentage) * 100d / rounds / 5) * 5 : null;
+                var questions = dto.Answers.Select(answer => answer.Question.Trim()).ToList();
+                var accuracies = await _context.QuizEvents
+                    .Where(e => e.QuizSlug == slug && e.Mode == "inline" && e.EventType == "answer" && e.QuestionKey != null && questions.Contains(e.QuestionKey) && e.IsCorrect != null)
+                    .GroupBy(e => e.QuestionKey!)
+                    .Select(group => new { Question = group.Key, Answers = group.Count(), Correct = group.Count(e => e.IsCorrect == true) })
+                    .Where(group => group.Answers >= MinAnswersForMistakes).ToListAsync();
+                var hardest = accuracies.OrderBy(question => (double)question.Correct / question.Answers).FirstOrDefault();
+                _context.QuizAttempts.Add(new QuizAttempt
+                {
+                    QuizSlug = slug, Mode = "inline", Score = percentage, QuestionCount = 5,
+                    TimeSpentSeconds = Math.Clamp(dto.TimeSpentSeconds, 0, 7200), CreatedAt = DateTime.UtcNow
+                });
+                await _context.SaveChangesAsync();
+                Response.Headers.CacheControl = "no-store";
+                return Ok(new
+                {
+                    rounds, percentile, hardestQuestion = hardest?.Question, questionAnswers = hardest?.Answers,
+                    correctPercent = hardest == null ? (int?)null : (int)Math.Round(hardest.Correct * 100d / hardest.Answers)
+                });
+            }
+            catch
+            {
+                // An unavailable analytics database must not interrupt a quiz or invent comparison data.
+                return NoContent();
+            }
+        }
+
         [HttpPost("{slug}/result")]
         public async Task<IActionResult> SaveResult(string slug, [FromBody] QuizResultDto dto)
         {
+            var mode = (dto?.Mode ?? "classic").Trim().ToLowerInvariant();
+            // Inline rounds must go through the answer-key validator, not this legacy score endpoint.
+            if (dto == null || !Modes.Contains(mode) || mode == "inline" || dto.Score is < 0 or > 100 ||
+                dto.QuestionCount is < 0 or > 200 || dto.TimeSpentSeconds is < 0 or > 7200) return BadRequest();
+            if (_quizService.GetBySlug(slug) == null) return NotFound();
             var attempt = new QuizAttempt
             {
                 QuizSlug = slug,
-                Mode = dto.Mode ?? "classic",
+                Mode = mode,
                 Score = dto.Score,
                 QuestionCount = dto.QuestionCount,
                 TimeSpentSeconds = dto.TimeSpentSeconds,

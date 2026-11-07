@@ -15,10 +15,10 @@ author: USA Symbol Team
 date_published: '2026-11-05'
 date_modified: '2026-11-05'
 seo:
-  title: Lyme Disease Cases by State 2023 | Map & Data
+  title: Lyme Disease Cases by State | Map & Data
   description: New York reported 22,173 Lyme disease cases in 2023, followed by Pennsylvania with 16,671. Alaska and Wyoming each reported 2.
 page:
-  h1: Lyme Disease Cases by State 2023
+  h1: Lyme Disease Cases by State
   quick_answer:
   - Lyme disease cases by state put New York first with 22,173 reports in 2023. Its forests and suburban woodlands overlap the range of blacklegged ticks.
   - Pennsylvania ranks second with 16,671 cases, while Massachusetts ranks third with 9,715.
@@ -44,7 +44,18 @@ table:
   searchable: true
   sortable: true
   metric_default: cases
+  metric:
+    unit_singular: "reported Lyme disease case"
+    unit_plural: "reported Lyme disease cases"
+    additive: true
+  national:
+    value: 89468
+    label: "U.S. total reported cases"
+    source: "CDC Lyme Disease Surveillance Data"
+    year: 2023
   sort_default: desc
+  higher_is_better: false
+  state_index: false
   columns:
     rank: Rank
     state: State

@@ -6,6 +6,11 @@
 @model USASymbol.Models.ViewModels.PageDetailViewModel
 @inject IImageUrlService Images
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/ranking-engagement.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ranking-extremes.css" asp-append-version="true" />
+}
+
 @{
     var content = Model.Content;
     var categoryTitle = string.IsNullOrWhiteSpace(Model.CategoryTitle) ? "Rankings" : Model.CategoryTitle;
@@ -103,15 +108,42 @@
 
 @await Html.PartialAsync("_StructuredData", Model)
 
+@if (ViewData["MapSharePngPath"] is string sharePng && !string.IsNullOrWhiteSpace(sharePng))
+{
+    var imageJson = JsonSerializer.Serialize(new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "ImageObject",
+        ["contentUrl"] = baseUrl + sharePng,
+        ["name"] = content?.Map?.Title ?? content?.Page?.H1,
+        ["creditText"] = "USA Symbol",
+        ["creator"] = new Dictionary<string, string> { ["@type"] = "Organization", ["name"] = "USA Symbol", ["url"] = baseUrl },
+        ["copyrightNotice"] = "USA Symbol, free to use with attribution",
+        ["acquireLicensePage"] = canonicalUrl
+    });
+    <script type="application/ld+json">@Html.Raw(imageJson.Replace("</", "<\\/"))</script>
+}
+
 <script src="~/js/rankings/rankingTable.js" asp-append-version="true"></script>
+<script src="~/js/rankings/ranking-engagement.js" asp-append-version="true" defer></script>
 
 <script>
-    window.addEventListener('scroll', () => {
-        const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrolled = (windowHeight > 0) ? (window.scrollY / windowHeight) * 100 : 0;
+    (function () {
         const progressBar = document.getElementById('progressBar');
-        if (progressBar) progressBar.style.width = Math.min(scrolled, 100) + '%';
-    });
+        let ticking = false;
+        function update() {
+            ticking = false;
+            const doc = document.documentElement;
+            const scrollable = doc.scrollHeight - doc.clientHeight;
+            const p = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+            if (progressBar) progressBar.style.setProperty('--p', p);
+        }
+        window.addEventListener('scroll', () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(update);
+        }, { passive: true });
+    })();
 
     document.addEventListener('DOMContentLoaded', function () {
         const btn = document.getElementById('tocBackToTop');

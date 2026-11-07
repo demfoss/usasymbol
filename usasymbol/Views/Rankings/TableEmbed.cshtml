@@ -1,0 +1,202 @@
+@using System.Globalization
+@using USASymbol.Models.Content
+@model PageDetailViewModel
+@{
+    Layout = null;
+    var content = Model.Content!;
+    var table = content.Table!;
+    var title = content.Page?.H1 ?? "U.S. state ranking";
+    var rankingUrl = $"https://usasymbol.com{(string.IsNullOrWhiteSpace(content.Url) ? $"/rankings/{content.Category}/{content.Slug}" : content.Url)}";
+    var hidden = new HashSet<string>(table.HiddenColumns, StringComparer.OrdinalIgnoreCase);
+    var skipTypes = new[] { "image", "link", "color-swatches" };
+    var columns = table.Columns
+        .Where(c => !hidden.Contains(c.Key) && !skipTypes.Contains(c.Type, StringComparer.OrdinalIgnoreCase))
+        .ToList();
+    var barKey = !string.IsNullOrWhiteSpace(table.DefaultColumn) && columns.Any(c => c.Key == table.DefaultColumn && c.Type == "number")
+        ? table.DefaultColumn
+        : columns.FirstOrDefault(c => c.Type == "number")?.Key;
+    double Num(TableRow row, string key) =>
+        double.TryParse((row.GetString(key) ?? "").Replace(",", "").Replace("$", "").Replace("%", ""),
+            NumberStyles.Float, CultureInfo.InvariantCulture, out var n) ? n : double.NaN;
+    var barMax = barKey == null ? 0 : table.Rows.Select(r => Num(r, barKey)).Where(n => !double.IsNaN(n)).DefaultIfEmpty(0).Max(n => Math.Abs(n));
+    var source = content.Page?.Sources?.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s.Name))?.Name;
+    var en = CultureInfo.GetCultureInfo("en-US");
+    string Show(TableRow row, TableColumn col)
+    {
+        var raw = row.GetString(col.Key);
+        if (string.IsNullOrWhiteSpace(raw)) return "—";
+        if ((col.Type == "number" || col.Type == "rank") && double.TryParse(raw.Replace(",", "").Replace("$", "").Replace("%", ""),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out var n))
+        {
+            if (string.Equals(col.Format, "percent", StringComparison.OrdinalIgnoreCase))
+                return n.ToString("0.##", en) + "%";
+            var whole = n == Math.Floor(n);
+            var fmt = col.Format ?? (whole ? "N0" : "N2");
+            string text;
+            try { text = n.ToString(fmt, en); } catch (FormatException) { text = n.ToString(whole ? "N0" : "N2", en); }
+            var colName = (col.Key + " " + col.Label).ToLowerInvariant();
+            if (colName.Contains("change") || colName.Contains("growth"))
+            {
+                if (n > 0 && !text.StartsWith("+")) text = "+" + text;
+                else if (text.StartsWith("-")) text = "\u2212" + text.Substring(1);
+            }
+            if (raw.Contains('$') && !text.Contains('$')) text = "$" + text;
+            if (raw.Contains('%') && !text.Contains('%')) text += "%";
+            return text;
+        }
+        return raw;
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>@title | USA Symbol</title>
+    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+    <style>
+        :root{--ink:#0e1a26;--ink2:#55697b;--line:#d6dfe7;--navy:#173e61;--gold:#b98a1e;--bar:#8fa3ae}
+        *{box-sizing:border-box}
+        body.table-embed{margin:0;background:#fff;color:var(--ink);font-family:var(--font-sans,system-ui,-apple-system,"Segoe UI",sans-serif);font-size:14px;line-height:1.4}
+        .te{display:flex;flex-direction:column;height:100vh;padding:12px}
+        .te__head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 10px}
+        .te__title{margin:0;font-size:17px;font-weight:700;letter-spacing:-.01em}
+        .te__search{flex:1 1 150px;max-width:220px;height:34px;padding:0 10px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:13px}
+        .te__scroll{flex:1;min-height:0;overflow:auto;border:1px solid var(--line);border-radius:10px}
+        table{width:100%;border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums}
+        th{position:sticky;top:0;z-index:1;background:#f4f7f9;border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);white-space:nowrap;cursor:pointer;user-select:none}
+        th[data-num]{text-align:right}
+        th[aria-sort=ascending]::after{content:" \25B2";font-size:9px}
+        th[aria-sort=descending]::after{content:" \25BC";font-size:9px}
+        td{padding:8px 12px;border-bottom:1px solid #eef2f5;vertical-align:middle}
+        tr:last-child td{border-bottom:0}
+        tbody tr:hover td{background:#f9fbfc}
+        td[data-num]{text-align:right;white-space:nowrap}
+        td.rank{width:48px;color:var(--ink2);font-weight:700}
+        tr.top td.rank{color:var(--gold)}
+        td a{color:var(--navy);font-weight:600;text-decoration:none}
+        td a:hover{text-decoration:underline}
+        .metric{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+        .metric>span{min-width:5.2em;text-align:right}.metric i{display:block;flex:0 0 90px;height:6px;border-radius:99px;background:#e6ecf1;overflow:hidden}
+        .metric i b{display:block;height:100%;border-radius:99px;background:var(--bar)}
+        tr.top .metric i b{background:var(--gold)}
+        tr.foot td{background:#f8fafb;font-weight:700;border-top:1px solid var(--line);border-bottom:0}
+        .te__foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--ink2)}
+        .te__foot a{color:var(--navy);font-weight:700;text-decoration:none;border-bottom:1px solid #d5bd88}
+        .te__empty{display:none;padding:18px;text-align:center;color:var(--ink2)}
+        @@media (max-width:520px){.metric i{display:none}th,td{padding:8px}}
+    </style>
+</head>
+<body class="table-embed">
+<div class="te">
+    <div class="te__head">
+        <h1 class="te__title">@title</h1>
+        <input class="te__search" type="search" placeholder="Search" aria-label="Search the table" data-te-search />
+    </div>
+    <div class="te__scroll">
+        <table data-te-table>
+            <caption style="position:absolute;left:-9999px">@(table.Title ?? title)</caption>
+            <thead>
+            <tr>
+                @foreach (var col in columns)
+                {
+                    <th scope="col" @(col.Type == "number" || col.Type == "rank" ? "data-num" : null) data-key="@col.Key">@col.Label</th>
+                }
+            </tr>
+            </thead>
+            <tbody>
+            @{ var index = 0; }
+            @foreach (var row in table.Rows)
+            {
+                index++;
+                <tr class="@(index <= 3 ? "top" : null)">
+                    @foreach (var col in columns)
+                    {
+                        var numeric = col.Type == "number" || col.Type == "rank";
+                        var shown = Show(row, col);
+                        var sortValue = numeric ? Num(row, col.Key) : double.NaN;
+                        <td class="@(col.Type == "rank" ? "rank" : null)" @(numeric ? "data-num" : null)
+                            data-v="@(numeric && !double.IsNaN(sortValue) ? sortValue.ToString("R", CultureInfo.InvariantCulture) : shown)">
+                            @if (col.Type == "state-link" && !string.IsNullOrWhiteSpace(row.GetString("state_slug")))
+                            {
+                                <a href="https://usasymbol.com/states/@row.GetString("state_slug")" target="_top" rel="noopener">@shown</a>
+                            }
+                            else if (col.Key == barKey && barMax > 0 && !double.IsNaN(sortValue))
+                            {
+                                <span class="metric"><i aria-hidden="true"><b style="width:@((Math.Abs(sortValue) / barMax * 100).ToString("0.#", CultureInfo.InvariantCulture))%"></b></i><span>@shown</span></span>
+                            }
+                            else
+                            {
+                                @shown
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+            </tbody>
+            @{ var totals = Usasymbol.Helpers.TableTotals.Resolve(table); }
+            @if (totals != null)
+            {
+                var labelKey = columns.FirstOrDefault(c => c.Type == "state-link" || c.Type == "text")?.Key;
+                <tfoot>
+                    @foreach (var line in new[] { (Label: totals.OtherLabel, Value: totals.Other, Show: totals.ShowOther), (Label: totals.TotalLabel, Value: totals.Total, Show: true) })
+                    {
+                        if (!line.Show) { continue; }
+                        <tr class="foot">
+                            @foreach (var col in columns)
+                            {
+                                var cell = col.Key == labelKey ? line.Label
+                                    : col.Key == totals.MetricKey ? line.Value.ToString(col.Format ?? "N0", en)
+                                    : col.Key == "share_of_us" ? (line.Value / totals.Total * 100).ToString("0.0", en) + "%"
+                                    : col.Type == "rank" ? ""
+                                    : "\u2014";
+                                <td @(col.Type == "number" || col.Type == "rank" ? "data-num" : null)>@cell</td>
+                            }
+                        </tr>
+                    }
+                </tfoot>
+            }
+        </table>
+        <p class="te__empty" data-te-empty>No matching rows.</p>
+    </div>
+    <div class="te__foot">
+        <span>&copy; <strong>USA Symbol</strong></span>
+        <a href="@rankingUrl" target="_top" rel="noopener">View the full ranking and methodology &rarr;</a>
+    </div>
+</div>
+<script>
+(function () {
+    var table = document.querySelector('[data-te-table]');
+    var body = table.tBodies[0];
+    var heads = Array.from(table.tHead.rows[0].cells);
+    heads.forEach(function (th, i) {
+        th.addEventListener('click', function () {
+            var asc = th.getAttribute('aria-sort') !== 'ascending';
+            heads.forEach(function (h) { h.removeAttribute('aria-sort'); });
+            th.setAttribute('aria-sort', asc ? 'ascending' : 'descending');
+            var num = th.hasAttribute('data-num');
+            var rows = Array.from(body.rows);
+            rows.sort(function (a, b) {
+                var x = a.cells[i].dataset.v, y = b.cells[i].dataset.v;
+                var r = num ? (parseFloat(x) || 0) - (parseFloat(y) || 0) : x.localeCompare(y);
+                return asc ? r : -r;
+            });
+            rows.forEach(function (row) { body.appendChild(row); });
+        });
+    });
+    var search = document.querySelector('[data-te-search]');
+    var empty = document.querySelector('[data-te-empty]');
+    search.addEventListener('input', function () {
+        var q = search.value.trim().toLowerCase(), shown = 0;
+        Array.from(body.rows).forEach(function (row) {
+            var hit = !q || row.textContent.toLowerCase().indexOf(q) !== -1;
+            row.hidden = !hit;
+            if (hit) shown++;
+        });
+        empty.style.display = shown ? 'none' : 'block';
+    });
+})();
+</script>
+</body>
+</html>

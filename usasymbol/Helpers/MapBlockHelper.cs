@@ -54,9 +54,10 @@ namespace Usasymbol.Helpers
                 ChoroplethResult result;
 
                 if (!string.IsNullOrWhiteSpace(map.MetricKey))
-                    result = ChoroplethBuilder.Build(map, table.Rows);
+                    result = ChoroplethBuilder.Build(map, table.Rows,
+                        table.Columns.FirstOrDefault(column => column.Key == map.MetricKey));
                 else
-                    result = ChoroplethBuilder.BuildFlat(table.Rows);
+                    result = ChoroplethBuilder.BuildFlat(table.Rows, map: map);
 
                 model.Entries         = result.Entries;
                 model.LightColor      = result.LightColor;
@@ -68,20 +69,13 @@ namespace Usasymbol.Helpers
                         ? ChoroplethBuilder.FormatLabel(map.MetricKey)
                         : string.Empty);
                 model.LegendSteps     = result.LegendSteps;
+                model.LegendGroups    = result.LegendGroups;
+                model.LegendTitle     = result.LegendTitle;
 
                 model.Entries = await EnrichEntriesAsync(model.Entries, sp);
 
-                if (model.IsCategorical && model.FilterGroups.Count == 0 && result.LegendSteps.Count > 0)
-                {
-                    model.FilterGroups.Add(new MapBlockViewModel.FilterGroup
-                    {
-                        Key = "_category",
-                        Label = string.IsNullOrWhiteSpace(model.MetricLabel) ? "Filter by status" : $"Filter by {model.MetricLabel}",
-                        Style = "chips",
-                        AccentColor = "#0f766e",
-                        UseColors = true
-                    });
-                }
+                // The legend already filters the mapped metric. Keep only additional facets.
+                model.FilterGroups.RemoveAll(group => group.Key == "_category" || group.Key == map.MetricKey);
             }
 
             var componentHelper = sp.GetRequiredService<IViewComponentHelper>();

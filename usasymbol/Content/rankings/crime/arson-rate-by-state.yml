@@ -60,6 +60,7 @@ table:
 
   metric_default: arson_rate
   sort_default: desc
+  higher_is_better: false
   column_formats:
     arson_rate: "0.0"
 
@@ -413,6 +414,9 @@ table:
       postal_code: "AK"
       arson_rate: 0.1
       cases: 1
+  national:
+    weight_key: cases
+    weight_kind: cases
 
 sections:
   - id: "states-with-the-most-arson-cases"

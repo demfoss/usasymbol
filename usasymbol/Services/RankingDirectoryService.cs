@@ -84,6 +84,9 @@ public sealed class RankingDirectoryService(IWebHostEnvironment environment, IMe
                         var meta = _reader.Deserialize<RankingMetadata>(new StringReader(text));
                         if (meta == null || string.IsNullOrWhiteSpace(meta.Page?.H1)) return;
                         var slug = Path.GetFileNameWithoutExtension(file);
+                        // This legacy 2022 page redirects to the maintained crime ranking.
+                        if (id.Equals("health", StringComparison.OrdinalIgnoreCase) &&
+                            slug.Equals("states-by-crime-rate", StringComparison.OrdinalIgnoreCase)) return;
                         var topic = GetTopic(id, slug, meta.Subcategory);
                         var tags = RankingTopicTags.Derive(slug, meta.Tags).ToList();
                         if (topic == "General" && tags.Count > 0) topic = tags[0];

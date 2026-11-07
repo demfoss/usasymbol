@@ -49,6 +49,7 @@ map:
   color_scale: linear
 
 table:
+  higher_is_better: false
   searchable: true
   sortable: true
   metric_default: debt
@@ -460,6 +461,9 @@ table:
       avg_debt: 29115
       debt: "$29,115"
       with_debt: "11.2%"
+  national:
+    weight_key: with_debt
+    weight_kind: population
 
 compare:
   metric_slug: student-loan-debt

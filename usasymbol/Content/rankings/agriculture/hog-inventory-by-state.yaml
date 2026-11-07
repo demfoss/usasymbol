@@ -1,0 +1,151 @@
+type: ranking
+slug: hog-inventory-by-state
+category: agriculture
+url: /rankings/agriculture/hog-inventory-by-state
+auto_link_phrases:
+  - "hog inventory by state"
+  - "pig population by state"
+  - "states with the most hogs"
+  - "hogs and pigs by state"
+extremes_mode: both
+extremes_title: "States With the Most and Fewest Hogs"
+hero_image: "/images/rankings/agriculture/hog-inventory-by-state/hog-inventory-by-state-hero.jpg"
+hero_image_alt: "Hogs standing together on a farm"
+hero_image_caption: "Iowa had 25,300,000 hogs and pigs on December 1, 2025, the largest published state inventory."
+author: "USA Symbol Team"
+date_published: "2026-11-07"
+date_modified: "2026-11-07"
+
+seo:
+  title: "Hog Inventory by State 2025 | Map & Rankings"
+  description: "Iowa had 25,300,000 hogs and pigs on December 1, 2025, more than any other state with a published inventory."
+
+page:
+  h1: "Hog Inventory by State 2025"
+  quick_answer:
+    - "Iowa has the largest published hog inventory at 25,300,000 head, supported by abundant corn and soybean feed and a dense pork-processing network."
+    - "Minnesota ranks second with 9,400,000 hogs and pigs, while North Carolina is third with 7,900,000."
+    - "Kentucky has the smallest published state inventory at 470,000 head; smaller state totals are combined rather than reported separately."
+  methodology: "USDA NASS Quarterly Hogs and Pigs reports inventory on December 1, 2025. Sixteen states are published separately; all remaining states are combined and excluded from the ranking."
+  sources:
+    - name: "USDA NASS. Quarterly Hogs and Pigs, December 2025"
+      url: "https://esmis.nal.usda.gov/sites/default/release-files/795702/hgpg1225.pdf"
+      description: "Breeding, market, and total hog inventory by published state on December 1, 2025"
+    - name: "USDA NASS. United States Hog Inventory Up 1 Percent"
+      url: "https://data.nass.usda.gov/Newsroom/archive/2025/12-23-2025.php"
+      description: "December 2025 national inventory summary and leading-state totals"
+
+table:
+  caption: "Hog and Pig Inventory by State"
+  note: "Head on farms on December 1, 2025. States not published separately are included in the national total but not ranked."
+  columns:
+    rank: "Rank"
+    state: "State"
+    hog_inventory: "Hogs and Pigs (head)"
+  metric_default: hog_inventory
+  metric:
+    unit_singular: "hog or pig"
+    unit_plural: "hogs and pigs"
+    additive: true
+  national:
+    value: 75545000
+    label: "U.S. total, all hogs and pigs"
+    source: "USDA NASS Quarterly Hogs and Pigs"
+    year: 2025
+  sort_default: desc
+  state_index: false
+  rows:
+    - { rank: 1, state: "Iowa", state_slug: "iowa", postal_code: "IA", hog_inventory: 25300000 }
+    - { rank: 2, state: "Minnesota", state_slug: "minnesota", postal_code: "MN", hog_inventory: 9400000 }
+    - { rank: 3, state: "North Carolina", state_slug: "north-carolina", postal_code: "NC", hog_inventory: 7900000 }
+    - { rank: 4, state: "Illinois", state_slug: "illinois", postal_code: "IL", hog_inventory: 5450000 }
+    - { rank: 5, state: "Indiana", state_slug: "indiana", postal_code: "IN", hog_inventory: 4450000 }
+    - { rank: 6, state: "Nebraska", state_slug: "nebraska", postal_code: "NE", hog_inventory: 3650000 }
+    - { rank: 7, state: "Missouri", state_slug: "missouri", postal_code: "MO", hog_inventory: 3400000 }
+    - { rank: 8, state: "Ohio", state_slug: "ohio", postal_code: "OH", hog_inventory: 2750000 }
+    - { rank: 9, state: "South Dakota", state_slug: "south-dakota", postal_code: "SD", hog_inventory: 2190000 }
+    - { rank: 10, state: "Oklahoma", state_slug: "oklahoma", postal_code: "OK", hog_inventory: 2010000 }
+    - { rank: 11, state: "Kansas", state_slug: "kansas", postal_code: "KS", hog_inventory: 1920000 }
+    - { rank: 12, state: "Pennsylvania", state_slug: "pennsylvania", postal_code: "PA", hog_inventory: 1420000 }
+    - { rank: 13, state: "Michigan", state_slug: "michigan", postal_code: "MI", hog_inventory: 1170000 }
+    - { rank: 14, state: "Texas", state_slug: "texas", postal_code: "TX", hog_inventory: 1140000 }
+    - { rank: 15, state: "Colorado", state_slug: "colorado", postal_code: "CO", hog_inventory: 560000 }
+    - { rank: 16, state: "Kentucky", state_slug: "kentucky", postal_code: "KY", hog_inventory: 470000 }
+
+map:
+  title: "Hog Inventory by State Map"
+  image_alt: "U.S. map shaded by hog and pig inventory, led by Iowa at 25,300,000 head"
+  caption: "Iowa leads the published state totals with 25,300,000 hogs and pigs. Kentucky has the smallest separately published inventory at 470,000 head."
+  metric_key: hog_inventory
+  metric_label: "Hogs and Pigs (head)"
+  color_scheme: red
+  color_scale: log
+
+sections:
+  - id: "why-iowa-has-the-most-hogs"
+    icon: "fa-solid fa-piggy-bank"
+    title: "Why Iowa Has the Most Hogs"
+    paragraphs:
+      - "Iowa's 25,300,000 hogs and pigs reflect an unusually complete production chain. Corn and soybeans grown nearby become feed, while breeding farms, finishing barns, packing plants, and transport routes are concentrated in the same state."
+      - "Kentucky's 470,000 head is the smallest separately published total. Its farm economy is better known for cattle, poultry, and horses, while the largest commercial hog systems cluster in the Corn Belt and North Carolina."
+
+  - id: "states-with-the-largest-hog-inventories"
+    icon: "fa-solid fa-chart-column"
+    title: "Largest Hog Inventories by State"
+    paragraphs:
+      - "Minnesota's 9,400,000 head and North Carolina's 7,900,000 place them behind Iowa. North Carolina stands apart geographically: its large hog operations are concentrated in the eastern Coastal Plain rather than the Midwestern grain belt."
+    table:
+      columns:
+        state: "State"
+        hog_inventory: "Hogs and Pigs (head)"
+      rows:
+        - { state: "Iowa", hog_inventory: "25,300,000" }
+        - { state: "Minnesota", hog_inventory: "9,400,000" }
+        - { state: "North Carolina", hog_inventory: "7,900,000" }
+        - { state: "Illinois", hog_inventory: "5,450,000" }
+        - { state: "Indiana", hog_inventory: "4,450,000" }
+
+  - id: "hog-inventory-versus-hog-production"
+    icon: "fa-solid fa-scale-balanced"
+    title: "Hog Inventory Versus Production"
+    paragraphs:
+      - "Inventory counts live hogs present on one date, so it is different from annual [hog production by state](/rankings/agriculture/hog-production-by-state), which measures pounds produced over a year. Iowa leads both measures, but the numbers answer different questions."
+
+visual_assets:
+  - id: "why-iowa-has-the-most-hogs-visual"
+    src: "/images/rankings/agriculture/hog-inventory-by-state/why-iowa-has-the-most-hogs.jpg"
+    alt: "Hogs feeding inside a modern farm building"
+    caption: "Iowa's feed crops and closely connected pork industry support the country's largest published hog inventory."
+    section: "why-iowa-has-the-most-hogs"
+    layout: "full-width-tall"
+  - id: "states-with-the-largest-hog-inventories-visual"
+    src: "/images/rankings/agriculture/hog-inventory-by-state/states-with-the-largest-hog-inventories.jpg"
+    alt: "Group of pigs on a livestock farm"
+    caption: "Minnesota and North Carolina follow Iowa in the December 2025 inventory."
+    section: "states-with-the-largest-hog-inventories"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state has the most hogs?"
+    answer: "Iowa has the largest published inventory, with 25,300,000 hogs and pigs on December 1, 2025."
+  - question: "How many hogs are in Minnesota?"
+    answer: "Minnesota had 9,400,000 hogs and pigs, the second-largest published state inventory."
+  - question: "Does North Carolina or Illinois have more hogs?"
+    answer: "North Carolina has more, with 7,900,000 head compared with Illinois at 5,450,000."
+  - question: "Why does Iowa have so many pigs?"
+    answer: "Iowa combines abundant corn and soybean feed with a long-established network of hog farms, finishing barns, processors, and transport links."
+  - question: "What is the difference between hog inventory and hog production?"
+    answer: "Inventory is the number of live hogs on farms on a specific date. Production measures output over a period, commonly in pounds."
+  - question: "Which ranked state has the fewest hogs?"
+    answer: "Kentucky has the smallest separately published state inventory at 470,000 head. Smaller state totals are grouped together rather than listed individually."
+
+related:
+  - title: "Hog Production by State"
+    url: "/rankings/agriculture/hog-production-by-state"
+  - title: "Corn Production by State"
+    url: "/rankings/agriculture/corn-production-by-state"
+  - title: "Soybean Production by State"
+    url: "/rankings/agriculture/soybean-production-by-state"
+  - title: "Cattle Ranching by State"
+    url: "/rankings/agriculture/cattle-ranching-by-state"
+

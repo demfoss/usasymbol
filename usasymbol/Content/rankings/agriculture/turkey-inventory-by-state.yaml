@@ -1,0 +1,138 @@
+type: ranking
+slug: turkey-inventory-by-state
+category: agriculture
+url: /rankings/agriculture/turkey-inventory-by-state
+auto_link_phrases:
+  - "turkey inventory by state"
+  - "turkey population by state"
+  - "states that raise the most turkeys"
+  - "turkeys raised by state"
+extremes_mode: both
+extremes_title: "States Raising the Most and Fewest Turkeys"
+hero_image: "/images/rankings/agriculture/turkey-inventory-by-state/turkey-inventory-by-state-hero.jpg"
+hero_image_alt: "Flock of domestic turkeys on a farm"
+hero_image_caption: "Minnesota raised 33,500,000 turkeys in 2025, the largest published state total."
+author: "USA Symbol Team"
+date_published: "2026-11-07"
+date_modified: "2026-11-07"
+
+seo:
+  title: "Turkey Population by State 2025 | Map & Rankings"
+  description: "Minnesota raised 33,500,000 turkeys in 2025, ahead of North Carolina at 28,000,000 and Arkansas at 21,500,000."
+
+page:
+  h1: "Turkey Population by State 2025"
+  quick_answer:
+    - "Minnesota raised the most turkeys in 2025 at 33,500,000 birds, reflecting its long-established network of growers, hatcheries, feed suppliers, and processors."
+    - "North Carolina ranks second with 28,000,000 turkeys and produces more pounds than Minnesota because its average market bird is heavier."
+    - "South Dakota raised the fewest among the separately published states at 1,800,000 turkeys."
+  methodology: "USDA NASS Poultry - Production and Value reports turkeys raised during 2025, based on placements from September 1, 2024, through August 31, 2025. Unpublished states are excluded."
+  sources:
+    - name: "USDA NASS. Poultry - Production and Value 2025 Summary"
+      url: "https://www.nass.usda.gov/Publications/Todays_Reports/reports/plva0426.pdf"
+      description: "Final 2025 turkeys raised, production weight, and production value by published state"
+    - name: "USDA Economic Research Service. Turkey Sector Background and Statistics"
+      url: "https://www.ers.usda.gov/newsroom/trending-topics/turkey-sector-background-statistics"
+      description: "Official background on state turkey production and 2025 leading-state head counts"
+
+table:
+  caption: "Turkeys Raised by State"
+  note: "Birds raised in 2025. State estimates not published separately are included in Other States and are not ranked."
+  columns:
+    rank: "Rank"
+    state: "State"
+    turkeys_raised: "Turkeys Raised (head)"
+  metric_default: turkeys_raised
+  sort_default: desc
+  state_index: false
+  rows:
+    - { rank: 1, state: "Minnesota", state_slug: "minnesota", postal_code: "MN", turkeys_raised: 33500000 }
+    - { rank: 2, state: "North Carolina", state_slug: "north-carolina", postal_code: "NC", turkeys_raised: 28000000 }
+    - { rank: 3, state: "Arkansas", state_slug: "arkansas", postal_code: "AR", turkeys_raised: 21500000 }
+    - { rank: 4, state: "Indiana", state_slug: "indiana", postal_code: "IN", turkeys_raised: 20000000 }
+    - { rank: 5, state: "Virginia", state_slug: "virginia", postal_code: "VA", turkeys_raised: 15300000 }
+    - { rank: 6, state: "Missouri", state_slug: "missouri", postal_code: "MO", turkeys_raised: 14700000 }
+    - { rank: 7, state: "Iowa", state_slug: "iowa", postal_code: "IA", turkeys_raised: 10800000 }
+    - { rank: 8, state: "Pennsylvania", state_slug: "pennsylvania", postal_code: "PA", turkeys_raised: 7600000 }
+    - { rank: 9, state: "Ohio", state_slug: "ohio", postal_code: "OH", turkeys_raised: 6200000 }
+    - { rank: 10, state: "California", state_slug: "california", postal_code: "CA", turkeys_raised: 4300000 }
+    - { rank: 10, state: "Michigan", state_slug: "michigan", postal_code: "MI", turkeys_raised: 4300000 }
+    - { rank: 12, state: "West Virginia", state_slug: "west-virginia", postal_code: "WV", turkeys_raised: 4000000 }
+    - { rank: 13, state: "South Dakota", state_slug: "south-dakota", postal_code: "SD", turkeys_raised: 1800000 }
+
+map:
+  title: "Turkey Population by State Map"
+  image_alt: "U.S. map shaded by turkeys raised in 2025, led by Minnesota at 33,500,000 birds"
+  caption: "Minnesota raised 33,500,000 turkeys in 2025, while South Dakota raised 1,800,000, the smallest separately published total."
+  metric_key: turkeys_raised
+  metric_label: "Turkeys Raised (head)"
+  color_scheme: orange
+  color_scale: linear
+
+sections:
+  - id: "why-minnesota-raises-the-most-turkeys"
+    icon: "fa-solid fa-feather-pointed"
+    title: "Why Minnesota Raises the Most Turkeys"
+    paragraphs:
+      - "Minnesota's 33,500,000 turkeys come from a mature industry that links growers with hatcheries, feed mills, veterinarians, and processors. The state's corn and soybean crops also supply the main ingredients in turkey feed."
+      - "South Dakota's 1,800,000 birds form the smallest separately published total. Its livestock economy is centered more heavily on cattle and hogs, while commercial turkey processing is concentrated in Minnesota and other established poultry states."
+
+  - id: "states-that-raise-the-most-turkeys"
+    icon: "fa-solid fa-chart-column"
+    title: "States That Raise the Most Turkeys"
+    paragraphs:
+      - "North Carolina raised 28,000,000 turkeys, second by head, but its 1,094,800,000 pounds led [turkey production by state](/rankings/agriculture/turkey-production-by-state). Minnesota raised more birds but produced 971,500,000 pounds, showing how market weights can reverse the order."
+    table:
+      columns:
+        state: "State"
+        turkeys_raised: "Turkeys Raised (head)"
+      rows:
+        - { state: "Minnesota", turkeys_raised: "33,500,000" }
+        - { state: "North Carolina", turkeys_raised: "28,000,000" }
+        - { state: "Arkansas", turkeys_raised: "21,500,000" }
+        - { state: "Indiana", turkeys_raised: "20,000,000" }
+        - { state: "Virginia", turkeys_raised: "15,300,000" }
+
+  - id: "turkey-head-count-versus-weight"
+    icon: "fa-solid fa-scale-balanced"
+    title: "Turkey Head Count Versus Weight"
+    paragraphs:
+      - "California and Michigan tie at 4,300,000 turkeys, yet Michigan produced 184,040,000 pounds compared with California's 82,990,000. The same bird count can yield very different poundage when states raise different market classes and finished weights."
+
+visual_assets:
+  - id: "why-minnesota-raises-the-most-turkeys-visual"
+    src: "/images/rankings/agriculture/turkey-inventory-by-state/why-minnesota-raises-the-most-turkeys.jpg"
+    alt: "Domestic turkeys moving across a farm enclosure"
+    caption: "Minnesota raised 33,500,000 turkeys in 2025, the largest published state total."
+    section: "why-minnesota-raises-the-most-turkeys"
+    layout: "full-width-tall"
+  - id: "states-that-raise-the-most-turkeys-visual"
+    src: "/images/rankings/agriculture/turkey-inventory-by-state/states-that-raise-the-most-turkeys.jpg"
+    alt: "Large white domestic turkeys on a commercial farm"
+    caption: "North Carolina, Arkansas, and Indiana follow Minnesota in turkeys raised."
+    section: "states-that-raise-the-most-turkeys"
+    layout: "full-width-tall"
+
+faq:
+  - question: "Which state raises the most turkeys?"
+    answer: "Minnesota raised 33,500,000 turkeys in 2025, the largest separately published state total."
+  - question: "How many turkeys does North Carolina raise?"
+    answer: "North Carolina raised 28,000,000 turkeys in 2025, ranking second by head."
+  - question: "Does Minnesota or North Carolina raise more turkeys?"
+    answer: "Minnesota raises more birds, 33,500,000 to North Carolina's 28,000,000. North Carolina produces more total pounds because its average market bird is heavier."
+  - question: "Why does Minnesota raise so many turkeys?"
+    answer: "Minnesota has a long-established cluster of turkey growers, hatcheries, feed suppliers, veterinarians, and processors, plus abundant corn and soybean feed."
+  - question: "Which states tie in turkey population?"
+    answer: "California and Michigan tie at 4,300,000 turkeys raised in 2025."
+  - question: "Which ranked state raises the fewest turkeys?"
+    answer: "South Dakota raised 1,800,000 turkeys, the smallest total among states published separately."
+
+related:
+  - title: "Turkey Production by State"
+    url: "/rankings/agriculture/turkey-production-by-state"
+  - title: "Chicken Production by State"
+    url: "/rankings/agriculture/chicken-production-by-state"
+  - title: "Egg Production by State"
+    url: "/rankings/agriculture/egg-production-by-state"
+  - title: "Corn Production by State"
+    url: "/rankings/agriculture/corn-production-by-state"

@@ -53,7 +53,7 @@
         if (progressBar) {
             const scrollableHeight = Math.max(documentHeight - viewportHeight, 1);
             const scrolled = (scrollTop / scrollableHeight) * 100;
-            progressBar.style.width = Math.min(scrolled, 100) + '%';
+            progressBar.style.setProperty('--p', Math.min(scrolled, 100) / 100);
         }
     }
 

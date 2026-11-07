@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.RateLimiting;
 using USASymbol.Options;
 using usasymbol.Services;
 using usasymbol.Services.Interface;
@@ -30,6 +32,20 @@ builder.Services
 builder.Services.AddContentPipeline(builder.Configuration, builder.Environment);
 
 builder.Services.AddMemoryCache();
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("ranking-engagement", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 30,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
+});
 builder.Services.AddSingleton<IImagePathNormalizer, ImagePathNormalizer>();
 builder.Services.AddSingleton<IImageUrlService, ImageUrlService>();
 builder.Services.AddSingleton<IMapPngService, MapPngService>();
@@ -302,6 +318,21 @@ using (var scope = app.Services.CreateScope())
             "Id INTEGER PRIMARY KEY AUTOINCREMENT, QuizSlug TEXT NOT NULL, Mode TEXT NOT NULL, " +
             "EventType TEXT NOT NULL, QuestionKey TEXT NULL, IsCorrect INTEGER NULL, Choice TEXT NULL, CreatedAt TEXT NOT NULL)");
         try { await context.Database.ExecuteSqlRawAsync("ALTER TABLE QuizEvents ADD COLUMN Choice TEXT NULL"); } catch { /* column already there */ }
+
+        await context.Database.ExecuteSqlRawAsync(
+            "CREATE TABLE IF NOT EXISTS RankingEngagements (" +
+            "Id INTEGER PRIMARY KEY AUTOINCREMENT, Category TEXT NOT NULL, RankingSlug TEXT NOT NULL, " +
+            "VisitorHash TEXT NOT NULL, ViewCount INTEGER NOT NULL, FirstViewedAt TEXT NOT NULL, " +
+            "LastViewedAt TEXT NOT NULL, Reaction TEXT NULL, FirstReactedAt TEXT NULL, LastReactedAt TEXT NULL, " +
+            "ReactionChangeCount INTEGER NOT NULL, CreatedAt TEXT NOT NULL, UpdatedAt TEXT NOT NULL)");
+        await context.Database.ExecuteSqlRawAsync(
+            "CREATE UNIQUE INDEX IF NOT EXISTS IX_RankingEngagements_Category_RankingSlug_VisitorHash " +
+            "ON RankingEngagements (Category, RankingSlug, VisitorHash)");
+        await context.Database.ExecuteSqlRawAsync(
+            "CREATE INDEX IF NOT EXISTS IX_RankingEngagements_Category_RankingSlug_Reaction " +
+            "ON RankingEngagements (Category, RankingSlug, Reaction)");
+        await context.Database.ExecuteSqlRawAsync(
+            "CREATE INDEX IF NOT EXISTS IX_RankingEngagements_LastViewedAt ON RankingEngagements (LastViewedAt)");
     }
 
     // DbSeeder is the source of truth for reference data. Run it after every
@@ -391,6 +422,7 @@ else
 
 app.UseResponseCaching();
 app.UseRouting();
+app.UseRateLimiter();
 app.UseOutputCache();
 
 bool pipelineEnabled;

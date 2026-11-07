@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
+using USASymbol.Models.Content;
 using USASymbol.Models.ViewModels;
 
 namespace Usasymbol.Helpers
@@ -12,17 +10,10 @@ namespace Usasymbol.Helpers
         public string Slug { get; init; } = "";
     }
 
-    public sealed class TakeawayCard
+    public sealed class TakeawayFact
     {
-        /// <summary>"Highest", "#3", "Lowest", "Median".</summary>
-        public string Role { get; init; } = "";
-        /// <summary>high | low | mid | neutral - drives colour; see <see cref="RankingTakeaways.HigherIsBetter"/>.</summary>
-        public string Tone { get; init; } = "neutral";
+        public string Text { get; init; } = "";
         public List<TakeawayState> States { get; init; } = new();
-        public int ExtraStates { get; init; }
-        public string Value { get; init; } = "";
-        public string Context { get; init; } = "";
-        public double BarPercent { get; init; }
     }
 
     public sealed class TakeawayStateOption
@@ -30,254 +21,233 @@ namespace Usasymbol.Helpers
         public string Name { get; init; } = "";
         public string Slug { get; init; } = "";
         public int Rank { get; init; }
+        public string RankLabel { get; init; } = "";
         public double Number { get; init; }
-        public string Value { get; init; } = "";
+        public string Statement { get; init; } = "";
         public string Context { get; init; } = "";
+        public double Position { get; init; }
+        public bool IsTypical { get; init; }
+        public string Postal { get; init; } = "";
     }
 
     public sealed class RankingTakeaways
     {
         public string Summary { get; init; } = "";
-        public string Unit { get; init; } = "";
-        public bool? HigherIsBetter { get; init; }
-        public int RankedCount { get; init; }
-        public List<TakeawayCard> Cards { get; init; } = new();
         public List<TakeawayStateOption> Options { get; init; } = new();
-        public string MedianValue { get; init; } = "";
+        public List<TakeawayFact> Facts { get; init; } = new();
+        public string TypicalStatement { get; init; } = "";
+        public double TypicalPosition { get; init; }
+        public TakeawayStateOption Leader { get; init; } = null!;
+        public TakeawayStateOption Alternative { get; init; } = null!;
+        public bool HasSpread { get; init; }
+        public List<double> DotPositions { get; init; } = new();
+        public string MinLabel { get; init; } = "";
+        public string MaxLabel { get; init; } = "";
+        public bool LogScale { get; init; }
     }
 
-    /// <summary>
-    /// Builds the ranking "Key takeaways" block from the structured table (state, value, rank)
-    /// instead of parsing prose, so subjects, numbers and ties are always consistent with the table.
-    /// </summary>
+    /// <summary>Shared state-ranking insights. Optional facts require explicit metric metadata.</summary>
     public static class RankingTakeawaysBuilder
     {
         private static readonly CultureInfo En = CultureInfo.GetCultureInfo("en-US");
 
         public static RankingTakeaways? Build(PageDetailViewModel model)
         {
-            var content = model?.Content;
-            var insights = RankingNumericInsightsViewModel.Create(content?.Table);
-            if (insights == null || insights.Ranked.Count < 4)
-                return null;
+            var content = model.Content;
+            var table = content?.Table;
+            if (table == null) return null;
+            var stateTable = new PageTable
+            {
+                Columns = table.Columns,
+                DefaultColumn = table.DefaultColumn,
+                SortDefault = table.SortDefault,
+                Rows = table.Rows.Where(row => KeyTakeawaysBuilder.IsState(row.GetString("state_slug"))).ToList()
+            };
+            var presentation = RankingPresentation.Create(stateTable);
+            var insights = presentation?.Insights;
+            if (insights == null) return null;
 
             var ranked = insights.Ranked;
+            // A state picker cannot represent multiple cities, items or years for the same state.
+            if (ranked.Select(p => p.StateSlug).Distinct(StringComparer.OrdinalIgnoreCase).Count() != ranked.Count)
+                return null;
+
             var column = insights.MetricColumn;
+            var metric = table!.Metric;
             var max = ranked[0].Value;
             var min = ranked[^1].Value;
-            if (Math.Abs(max - min) < 1e-9)
-                return null;
-
-            // Small ordinal/categorical scales produce technically correct but
-            // unhelpful superlatives (for example, governor age requirements).
-            if (ranked.Select(p => p.Value).Distinct().Count() < 10)
-                return null;
-
-            // Rank-valued metrics (lower = better, e.g. best-states-for-fishing) would make
-            // "Highest" point at the wrong state: if table rank #1 is not the max value, skip.
-            var rankOne = ranked.FirstOrDefault(p => p.Row.GetString("rank").Trim() == "1");
-            if (rankOne != null && Math.Abs(rankOne.Value - max) > 1e-9)
-                return null;
-
-            var unit = ResolveUnit(content!, column);
-            var hib = content!.Table?.HigherIsBetter;
             var median = insights.Median;
+            var ordered = presentation!.Ordered;
 
-            string Show(RankingNumericPoint p) => DisplayFor(p, column);
-            string Delta(double v) => DeltaText(v, median);
-
-            // Competition ranking by value: ties share a rank, the next distinct value skips ahead.
-            var groups = ranked.GroupBy(p => p.Value).OrderByDescending(g => g.Key).ToList();
-            var rankOfGroup = new Dictionary<double, int>();
-            var running = 1;
-            foreach (var g in groups)
+            var rawValues = ranked.Select(p => p.Row.GetString(column.Key)).ToList();
+            var prefix = rawValues.Any(v => v.Contains('$')) && !Format(1, column).Contains('$') ? "$" : "";
+            var suffix = rawValues.Any(v => v.Contains('%')) && !Format(1, column).Contains('%') ? "%" : "";
+            string Show(double value) => prefix + Format(value, column) + suffix;
+            string Amount(double value) => HasUnits(metric)
+                ? $"{Show(value)} {Unit(metric, value)}" : Show(value);
+            string SentenceAmount(double value) => HasUnits(metric)
+                ? $"{ProseNumber(value, column)} {Unit(metric, value)}" : Show(value);
+            // Strongly skewed positive data would pile every dot against the left edge on a linear axis.
+            var logScale = min > 0 && max / min >= 40;
+            double Scale(double value) => max == min ? 50 : logScale
+                ? Math.Clamp((Math.Log(value) - Math.Log(min)) / (Math.Log(max) - Math.Log(min)) * 100, 0, 100)
+                : Math.Clamp((value - Math.Min(0, min)) / (max - Math.Min(0, min)) * 100, 0, 100);
+            string ShortLabel(double value) => prefix + Format(value, column) + suffix;
+            string ContextFor(RankingPlacement placement, double value)
             {
-                rankOfGroup[g.Key] = running;
-                running += g.Count();
+                if (placement.TieCount > 1 || placement.IsLast || placement.Rank == 1) return placement.Context;
+                var others = ranked.Count - 1;
+                var beaten = placement.TotalCount - placement.Rank;
+                return $"Ranked #{placement.Rank} of {placement.TotalCount}, ahead of {beaten} of the other {others} states.";
             }
 
-            var top = groups[0].ToList();
-            var bottom = groups[^1].ToList();
-            var lowestIsCrowded = bottom.Count >= 3;
-
-            var cards = new List<TakeawayCard>
-            {
-                new()
-                {
-                    Role = "Highest",
-                    Tone = ToneFor(true, hib),
-                    States = ToStates(top),
-                    ExtraStates = Math.Max(0, top.Count - 2),
-                    Value = Show(top[0]),
-                    Context = Delta(max),
-                    BarPercent = BarPercent(max, min, max)
-                }
-            };
-
-            if (groups.Count >= 3)
-            {
-                var second = groups[1].ToList();
-                cards.Add(new TakeawayCard
-                {
-                    Role = "#" + rankOfGroup[groups[1].Key],
-                    Tone = "neutral",
-                    States = ToStates(second),
-                    ExtraStates = Math.Max(0, second.Count - 2),
-                    Value = Show(second[0]),
-                    Context = Delta(second[0].Value),
-                    BarPercent = BarPercent(second[0].Value, min, max)
-                });
-            }
-
-            if (lowestIsCrowded)
-            {
-                // "Lowest" is meaningless when many states share the floor value (e.g. one area code each).
-                var nearest = ranked.OrderBy(p => Math.Abs(p.Value - median)).First();
-                cards.Add(new TakeawayCard
-                {
-                    Role = "Median",
-                    Tone = "mid",
-                    States = new List<TakeawayState> { new() { Name = nearest.State, Slug = nearest.StateSlug } },
-                    Value = insights.MedianDisplay,
-                    Context = $"{bottom.Count} states share the lowest value ({Show(bottom[0])})",
-                    BarPercent = BarPercent(median, min, max)
-                });
-            }
-            else
-            {
-                cards.Add(new TakeawayCard
-                {
-                    Role = "Lowest",
-                    Tone = ToneFor(false, hib),
-                    States = ToStates(bottom),
-                    ExtraStates = Math.Max(0, bottom.Count - 2),
-                    Value = Show(bottom[0]),
-                    Context = Delta(min),
-                    BarPercent = BarPercent(min, min, max)
-                });
-            }
-
-            var options = ranked
-                .GroupBy(p => p.StateSlug, StringComparer.OrdinalIgnoreCase)
-                .Select(g => g.First())
-                .OrderBy(p => p.State, StringComparer.OrdinalIgnoreCase)
+            var options = ranked.OrderBy(p => p.State, StringComparer.OrdinalIgnoreCase)
                 .Select(p => new TakeawayStateOption
                 {
                     Name = p.State,
                     Slug = p.StateSlug,
-                    Rank = rankOfGroup[p.Value],
+                    Rank = presentation.For(p.Row)!.Rank,
+                    RankLabel = presentation.For(p.Row)!.Label,
                     Number = p.Value,
-                    Value = Show(p),
-                    Context = Delta(p.Value)
-                })
-                .ToList();
+                    Statement = HasUnits(metric)
+                        ? $"{p.State} has {Amount(p.Value)}"
+                        : $"{p.State} records {Show(p.Value)} for {ResolveLabel(content!, column)}",
+                    Context = ContextFor(presentation.For(p.Row)!, p.Value),
+                    Position = Scale(p.Value),
+                    IsTypical = Math.Abs(p.Value - median) < 1e-9,
+                    Postal = p.Row.GetString("postal_code")
+                }).ToList();
+
+            var values = ranked.Select(p => p.Value).OrderBy(v => v).ToList();
+            var q1 = Quantile(values, .25);
+            var q3 = Quantile(values, .75);
+            // For counts use inclusive whole-number bounds, rather than fractional objects.
+            if (metric?.Additive == true && values.All(v => v == Math.Truncate(v)))
+            {
+                q1 = Math.Floor(q1);
+                q3 = Math.Ceiling(q3);
+            }
+            var lead = "";
+            if (!presentation.Ascending && min >= 0 && median > 0 && max / median >= 1.5 && max != min &&
+                ordered.Count(p => p.Value == max) == 1)
+                lead = $"{ordered[0].State} leads with {SentenceAmount(max)}, about {(max / median).ToString("0.#", En)}× the typical state. ";
+            var summary = lead + (q1 == q3
+                ? $"The middle half of states shares the same figure: {SentenceAmount(q1)}."
+                : HasUnits(metric)
+                    ? $"The middle half of states has between {ProseNumber(q1, column)} and {SentenceAmount(q3)}."
+                    : $"The middle half of states falls between {Show(q1)} and {Show(q3)} for {ResolveLabel(content!, column)}.");
+            if (ranked.Count != table.Rows.Count)
+                summary += $" Based on {ranked.Count} states with numeric data.";
+
+            var facts = new List<TakeawayFact>();
+            var floor = ranked.Where(p => p.Value == min).OrderBy(p => p.State).ToList();
+            if (floor.Count > 1 && floor.Count < ranked.Count)
+            {
+                facts.Add(new TakeawayFact
+                {
+                    Text = HasUnits(metric)
+                        ? $"{Capitalize(CountWord(floor.Count))} states each have {SentenceAmount(min)}."
+                        : $"{Capitalize(CountWord(floor.Count))} states share the lowest figure of {Show(min)} for {ResolveLabel(content!, column)}.",
+                    States = floor.Select(p => new TakeawayState { Name = p.State, Slug = p.StateSlug }).ToList()
+                });
+            }
+
+            // Never sum rates, percentages, salaries, scores or ranks by guessing from their label.
+            if (metric?.Additive == true && min >= 0 && ranked.Sum(p => p.Value) > 0)
+            {
+                var share = ranked.Take(3).Sum(p => p.Value) / ranked.Sum(p => p.Value) * 100;
+                if (ranked.Count > 3 && max != min) facts.Add(new TakeawayFact
+                {
+                    Text = $"The three largest state totals account for {share.ToString("0.#", En)}% of the combined total across these states."
+                });
+
+                if (!string.IsNullOrWhiteSpace(metric.PopulationKey) &&
+                    ranked.All(p => TryNumber(p.Row, metric.PopulationKey, out var population) && population > 0))
+                {
+                    var perPerson = ranked.Select(p =>
+                    {
+                        TryNumber(p.Row, metric.PopulationKey, out var population);
+                        return new { Point = p, Population = population, Rate = p.Value / population };
+                    }).OrderByDescending(p => p.Rate).ToList();
+                    var first = perPerson[0];
+                    // Do not turn another tie into an arbitrary per-person leader.
+                    if (first.Rate > perPerson[1].Rate && first.Rate > 0 && HasUnits(metric))
+                        facts.Add(new TakeawayFact
+                        {
+                            Text = $"Per person, {first.Point.State} has the most {metric.UnitPlural}: one {metric.UnitSingular} per {(first.Population / first.Point.Value).ToString("N0", En)} residents."
+                        });
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(metric?.PreviousValueKey) && metric.PreviousYear.HasValue)
+            {
+                var changes = ranked.Select(p => new
+                {
+                    Point = p,
+                    Previous = TryNumber(p.Row, metric.PreviousValueKey, out var previous) ? (double?)previous : null
+                }).ToList();
+                if (changes.All(p => p.Previous.HasValue))
+                {
+                    var biggest = changes.OrderByDescending(p => Math.Abs(p.Point.Value - p.Previous!.Value)).ToList();
+                    var change = biggest[0].Point.Value - biggest[0].Previous!.Value;
+                    if (change != 0 && Math.Abs(change) > Math.Abs(biggest[1].Point.Value - biggest[1].Previous!.Value))
+                        facts.Add(new TakeawayFact
+                        {
+                            Text = $"{biggest[0].Point.State} has changed the most since {metric.PreviousYear}: from {Amount(biggest[0].Previous!.Value)} to {Amount(biggest[0].Point.Value)}."
+                        });
+                }
+            }
 
             return new RankingTakeaways
             {
-                Summary = BuildSummary(top, bottom, groups.Count, max, min, unit, column, ranked, lowestIsCrowded, Show),
-                Unit = unit,
-                HigherIsBetter = hib,
-                RankedCount = ranked.Count,
-                Cards = cards,
+                Summary = summary,
+                TypicalStatement = HasUnits(metric)
+                    ? $"The typical state has {SentenceAmount(median)}."
+                    : $"The typical state records {Show(median)} on this measure.",
+                TypicalPosition = Scale(median),
                 Options = options,
-                MedianValue = insights.MedianDisplay
+                Facts = facts,
+                Leader = options.First(p => p.Slug == ordered[0].StateSlug),
+                Alternative = options.First(p => p.Slug == (ordered.FirstOrDefault(p => p.Value != ordered[0].Value) ?? ordered[1]).StateSlug),
+                HasSpread = max != min,
+                DotPositions = ranked.Select(p => Math.Round(Scale(p.Value), 2)).ToList(),
+                MinLabel = ShortLabel(min),
+                MaxLabel = ShortLabel(max),
+                LogScale = logScale
             };
         }
 
-        // Sentences are assembled from computed facts (ties, gap, spread) so they differ page to page.
-        private static string BuildSummary(
-            List<RankingNumericPoint> top, List<RankingNumericPoint> bottom, int distinctValues,
-            double max, double min, string unit, USASymbol.Models.Content.TableColumn column,
-            IReadOnlyList<RankingNumericPoint> ranked, bool lowestIsCrowded, Func<RankingNumericPoint, string> show)
+        private static bool HasUnits(RankingMetric? metric) =>
+            !string.IsNullOrWhiteSpace(metric?.UnitSingular) && !string.IsNullOrWhiteSpace(metric.UnitPlural);
+        private static string Unit(RankingMetric? metric, double value) => value == 1 ? metric!.UnitSingular! : metric!.UnitPlural!;
+        private static string ResolveLabel(PageContent content, TableColumn column) =>
+            (string.Equals(content.Map?.MetricKey, column.Key, StringComparison.OrdinalIgnoreCase)
+                ? content.Map?.MetricLabel ?? column.Label : column.Label).Trim().ToLowerInvariant();
+        private static string Format(double value, TableColumn column)
         {
-            var unitPart = string.IsNullOrWhiteSpace(unit) ? "" : $" ({unit})";
-            var lead = top.Count == 1
-                ? $"{top[0].State} leads at {show(top[0])}{unitPart}"
-                : $"{JoinNames(top)} tie for first at {show(top[0])}{unitPart}";
-
-            string tail;
-            if (lowestIsCrowded)
-            {
-                tail = $"{bottom.Count} states share the lowest value, {show(bottom[0])}";
-            }
-            else
-            {
-                tail = bottom.Count == 1
-                    ? $"{bottom[0].State} is lowest at {show(bottom[0])}"
-                    : $"{JoinNames(bottom)} are lowest at {show(bottom[0])}";
-            }
-
-            var gap = "";
-            if (min > 0 && max / min >= 1.15 && !lowestIsCrowded)
-            {
-                var ratio = max / min;
-                gap = ratio >= 10
-                    ? $" The top value is {ratio.ToString("N0", En)}× the bottom."
-                    : $" The top value is {ratio.ToString("N1", En)}× the bottom.";
-            }
-            else if (max - min > 0 && ranked.Count >= 3)
-            {
-                gap = $" The median state sits at {show(ranked[ranked.Count / 2])}.";
-            }
-
-            return $"{lead}; {tail}.{gap}";
+            var format = column.Format ?? "N2";
+            if (format == "N0" && value != Math.Truncate(value)) format = "N1";
+            try { return value.ToString(format, En); }
+            catch (FormatException) { return value.ToString("N2", En); }
         }
-
-        private static string JoinNames(List<RankingNumericPoint> pts)
+        private static string ProseNumber(double value, TableColumn column) =>
+            value >= 0 && value <= 12 && value == Math.Truncate(value) ? CountWord((int)value) : Format(value, column);
+        private static string CountWord(int count) => count switch
         {
-            var names = pts.Select(p => p.State).ToList();
-            if (names.Count <= 2) return string.Join(" and ", names);
-            return $"{names[0]}, {names[1]} and {names.Count - 2} more";
-        }
-
-        private static List<TakeawayState> ToStates(List<RankingNumericPoint> pts) =>
-            pts.Take(2).Select(p => new TakeawayState { Name = p.State, Slug = p.StateSlug }).ToList();
-
-        private static string ToneFor(bool isHigh, bool? higherIsBetter)
+            0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+            6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten", 11 => "eleven", 12 => "twelve",
+            _ => count.ToString("N0", En)
+        };
+        private static string Capitalize(string text) => char.ToUpperInvariant(text[0]) + text[1..];
+        private static double Quantile(IReadOnlyList<double> values, double fraction)
         {
-            // Counts and descriptive facts have no good/bad direction. Keep both
-            // extremes visually neutral until the content explicitly opts in.
-            if (higherIsBetter == null) return "neutral";
-            var good = isHigh == higherIsBetter.Value;
-            return good ? "good" : "bad";
+            var index = (values.Count - 1) * fraction;
+            var lower = (int)Math.Floor(index);
+            var upper = (int)Math.Ceiling(index);
+            return values[lower] + (values[upper] - values[lower]) * (index - lower);
         }
-
-        private static string ResolveUnit(USASymbol.Models.Content.PageContent content, USASymbol.Models.Content.TableColumn column)
-        {
-            var map = content.Map;
-            if (map != null && !string.IsNullOrWhiteSpace(map.MetricLabel) &&
-                string.Equals(map.MetricKey, column.Key, StringComparison.OrdinalIgnoreCase))
-                return map.MetricLabel!.Trim();
-            return column.Label?.Trim() ?? "";
-        }
-
-        private static string DisplayFor(RankingNumericPoint p, USASymbol.Models.Content.TableColumn column)
-        {
-            // Keep "$", "%" and similar decorations that the plain number format would drop.
-            if (p.Row.Data.TryGetValue(column.Key, out var raw) && raw is string s &&
-                (s.Contains('$') || s.Contains('%')))
-                return s.Trim();
-            return p.DisplayValue;
-        }
-
-        private static string DeltaText(double value, double median)
-        {
-            if (Math.Abs(median) < 1e-9 || median < 0 || value < 0) return "";
-            var pct = (value - median) / median * 100d;
-            if (Math.Abs(pct) < 0.5) return "At the median";
-            if (value / median >= 2d)
-                return $"{(value / median).ToString("0.#", En)}× the median state";
-            var rounded = Math.Round(Math.Abs(pct), 0);
-            return pct > 0
-                ? $"+{rounded.ToString("N0", En)}% vs median state"
-                : $"−{rounded.ToString("N0", En)}% vs median state";
-        }
-
-        private static double BarPercent(double value, double min, double max)
-        {
-            if (min >= 0) return max <= 0 ? 0 : Math.Clamp(value / max * 100d, 4, 100);
-            var range = max - min;
-            return range <= 0 ? 0 : Math.Clamp((value - min) / range * 100d, 4, 100);
-        }
+        private static bool TryNumber(TableRow row, string key, out double value) =>
+            double.TryParse(row.GetString(key).Replace(",", "").Replace("$", "").Replace("%", "").Replace("−", "-"),
+                NumberStyles.Float, CultureInfo.InvariantCulture, out value) && double.IsFinite(value);
     }
 }

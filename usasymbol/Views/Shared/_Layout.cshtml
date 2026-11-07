@@ -99,24 +99,13 @@
     <meta name="p:domain_verify" content="b51fe0a585fdde3d137d1f624a53ba30" />
     <meta name="robots" content="@(ViewData["Robots"] ?? "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1")" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" /></noscript>
 
-    <link rel="preload"
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
-          as="style" />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
-          rel="stylesheet"
-          media="print"
-          onload="this.media='all'" />
-    <noscript>
-        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
-              rel="stylesheet" />
-    </noscript>
+    <link rel="preload" href="/fonts/public-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/source-serif-4-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 
     @RenderSection("LcpPreload", required: false)
     <link rel="stylesheet" href="~/css/editorial-typography.css" asp-append-version="true" />
@@ -124,7 +113,9 @@
     <link rel="stylesheet" href="~/css/symbol-detail.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/page-data-hero.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/key-takeaways.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/inline-quiz.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site-chrome.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/typography.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
 
     <script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/caff0b5b-639b-4c21-b511-f3a7f23a9f21.js"></script>

@@ -1,0 +1,43 @@
+@using System.Globalization
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+@inject IImageUrlService Images
+@{
+    var sources = Model.VisibleSources;
+    var methodology = Model.Content?.Page?.Methodology;
+    var hasMethodology = !string.IsNullOrWhiteSpace(methodology);
+    var hasSources = sources?.Any() == true;
+    var updated = (Model.AuthorBox?.DateModified ?? DateTime.UtcNow).ToString("MMM d, yyyy", CultureInfo.InvariantCulture);
+}
+@if (hasMethodology || hasSources)
+{
+    @* One block instead of Methodology + Sources + author card + archive boilerplate. *@
+    <section id="sources" class="ranking-about scroll-mt-24" aria-labelledby="about-data-title">
+        <span id="methodology" aria-hidden="true"></span>
+        <h2 id="about-data-title" class="content-h2">About this data</h2>
+
+        @if (hasMethodology)
+        {
+            <p class="content-p mt-4 max-w-3xl text-slate-700">@methodology!.RenderAutoLinks()</p>
+        }
+
+        @if (hasSources)
+        {
+            <h3 class="ranking-about__sub">@(sources!.Count == 1 ? "Source" : "Sources")</h3>
+            @await Html.PartialAsync("_SourceLinksList", sources)
+        }
+
+        <div class="ranking-about__foot">
+            <span class="ranking-about__author">
+                <a href="/about/artsiom-dusau" class="ranking-about__avatar" tabindex="-1" aria-hidden="true">
+                    <img src="@Images.Full("/images/profile/artsiom-dusau.png")" alt="" width="32" height="32" loading="lazy"
+                         onerror="this.style.display='none'">
+                </a>
+                <span>Reviewed by <a href="/about/artsiom-dusau">Artsiom Dusau</a>, Founder &amp; Editor<span class="ranking-about__sep">·</span>Page updated @updated</span>
+            </span>
+            <span class="ranking-about__links">
+                <a href="/about">About our process</a>
+                <a href="/contact">Report an error</a>
+            </span>
+        </div>
+    </section>
+}

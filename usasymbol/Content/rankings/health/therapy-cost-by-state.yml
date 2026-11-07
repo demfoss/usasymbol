@@ -49,6 +49,7 @@ table:
 
   metric_default: avg_cost
   sort_default: desc
+  higher_is_better: false
 
   column_formats:
     avg_cost: "C0"
@@ -181,6 +182,11 @@ table:
       postal_code: "MO"
       avg_cost: 122
       national_diff: -17
+  national:
+    value: 139
+    label: "U.S. average"
+    source: "SimplePractice"
+    year: 2024
 
 map:
   title: "Average Therapy Cost by State Map"

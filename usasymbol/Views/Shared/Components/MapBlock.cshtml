@@ -22,7 +22,6 @@
     string choroplethJson = "{}";
     string filterGroupsJson = "[]";
     var smallStateRight = new[] { "VT", "NH", "MA", "RI", "CT", "NJ", "DE", "MD", "DC" };
-    var smallStateLeft = new[] { "HI" };
     if (hasSvg && Model?.Entries?.Count > 0)
     {
         var opts = new JsonSerializerOptions
@@ -40,6 +39,8 @@
                 r = e.Rank,
                 f = e.FillColor,
                 nv = e.NumericValue,
+                lk = Model.LegendGroups.Where(group => group.StateCodes.Contains(e.PostalCode)).Select(group => group.Key),
+                nd = Model.LegendGroups.Any(group => group.IsNoData && group.StateCodes.Contains(e.PostalCode)),
                 summary = e.Summary,
                 details = e.Details.Select(d => new { l = d.Label, v = d.Value, g = d.Group }),
                 filters = e.Filters,
@@ -75,22 +76,60 @@
             <style>@Html.Raw(Model.ColorCss)</style>
         }
         <div class="map-block__shell">
-            <div id="map-filter-groups" class="map-filters" aria-label="Map filters"></div>
+            @if (Model.LegendGroups.Count > 0)
+            {
+                <div id="map-legend" class="map-legend" role="group" aria-label="Map legend and filters">
+                    @if (!string.IsNullOrWhiteSpace(Model.LegendTitle))
+                    {
+                        <p class="map-legend__title">@Model.LegendTitle</p>
+                    }
+                    <div class="map-legend__scroll" tabindex="0" aria-label="Map value groups; scroll for more">
+                        <div class="map-legend__items">
+                            @foreach (var group in Model.LegendGroups)
+                            {
+                                <button type="button" class="map-legend-item @(group.IsNoData ? "map-legend-item--missing" : "")"
+                                        data-legend-key="@group.Key" data-description="@group.Tooltip"
+                                        style="--legend-color:@group.Color"
+                                        title="@group.Tooltip" aria-label="@group.Label. @group.Tooltip" aria-pressed="false"
+                                        aria-describedby="map-legend-detail">
+                                    <span class="map-legend-item__heading">
+                                        <span class="map-legend-item__swatch" aria-hidden="true"></span>
+                                        <span>@group.Label</span>
+                                        <span class="map-legend-item__check" aria-hidden="true">&#10003;</span>
+                                    </span>
+                                    @if (!string.IsNullOrWhiteSpace(group.Range))
+                                    {
+                                        <span class="map-legend-item__range">@group.Range@(group.IsNoData ? "" : $" · {group.StateCodes.Count} {(group.StateCodes.Count == 1 ? "state" : "states")}")</span>
+                                    }
+                                    else if (!group.IsNoData)
+                                    {
+                                        <span class="map-legend-item__range">@group.StateCodes.Count @(group.StateCodes.Count == 1 ? "state" : "states")</span>
+                                    }
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    <p id="map-legend-detail" class="map-legend__detail" aria-live="polite" aria-atomic="true">Select a group to highlight states.</p>
+                </div>
+            }
+            <div class="map-search" id="map-search">
+                <div class="map-search__field">
+                    <i class="fa-solid fa-magnifying-glass map-search__icon" aria-hidden="true"></i>
+                    <input id="map-search-input"
+                           class="map-search__input"
+                           type="text"
+                           placeholder="Search for a state"
+                           autocomplete="off"
+                           aria-label="Search for a state"
+                           aria-expanded="false"
+                           aria-controls="map-search-results" />
+                </div>
+                <div id="map-search-results" class="map-search__results hidden" role="listbox" aria-label="States"></div>
+            </div>
+
+            <div id="map-filter-groups" class="map-filters" aria-label="Additional map filters"></div>
 
             <div class="relative min-w-0 max-w-full" id="usmap-wrapper">
-                <div class="map-small-states map-small-states--left" id="map-small-states-left">
-                    @foreach (var code in smallStateLeft.Where(code => Model.Entries.Any(entry => entry.PostalCode == code)))
-                    {
-                        var entry = Model.Entries.First(e => e.PostalCode == code);
-                        <button type="button"
-                                class="map-small-state"
-                                data-state-key="@entry.PostalCode"
-                                style="--state-fill:@entry.FillColor">
-                            @entry.PostalCode
-                        </button>
-                    }
-                </div>
-
                 <div id="usmap-container"
                      class="relative min-w-0 max-w-full overflow-hidden select-none bg-slate-100 shadow-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full [&_svg]:max-w-full"
                      style="aspect-ratio:959/593;min-height:320px"
@@ -121,21 +160,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="map-search" id="map-search">
-                <div class="map-search__field">
-                    <i class="fa-solid fa-magnifying-glass map-search__icon" aria-hidden="true"></i>
-                    <input id="map-search-input"
-                           class="map-search__input"
-                           type="text"
-                           placeholder="Search State or Territory"
-                           autocomplete="off"
-                           aria-label="Search state or territory"
-                           aria-expanded="false"
-                           aria-controls="map-search-results" />
-                </div>
-                <div id="map-search-results" class="map-search__results hidden" role="listbox" aria-label="States"></div>
             </div>
 
             <button type="button" id="map-clear-filters" class="map-clear-btn hidden" aria-label="Clear all map filters">
@@ -171,54 +195,6 @@
             </aside>
         </div>
 
-        @* ── LEGEND ── *@
-        @if (Model.IsNumeric && Model.LegendSteps.Count > 0)
-        {
-            <div class="mt-4 flex flex-wrap items-center gap-x-1 gap-y-2"
-                 id="map-legend"
-                 aria-label="Map legend">
-                @if (!string.IsNullOrEmpty(Model.MetricLabel))
-                {
-                    <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400 mr-2 self-end pb-0.5">@Model.MetricLabel</span>
-                }
-                @for (int si = 0; si < Model.LegendSteps.Count; si++)
-                {
-                    var step = Model.LegendSteps[si];
-                    <button type="button"
-                            class="map-legend-step"
-                            data-step-index="@si"
-                            aria-pressed="false">
-                        <span class="map-legend-step__swatch" style="background:@step.Color"></span>
-                        <span class="map-legend-step__label tabular-nums">@step.Label</span>
-                    </button>
-                }
-                <div class="flex flex-col items-center gap-0.5 ml-2">
-                    <span class="inline-block h-3 w-8 border border-slate-300 bg-[#e2e8f0] flex-shrink-0" aria-hidden="true"></span>
-                    <span class="text-[10px] text-slate-400">No data</span>
-                </div>
-            </div>
-        }
-        else if (!Model.IsNumeric && Model.LegendSteps.Count > 0)
-        {
-            @* Categorical legend: only rendered when colors mark real groups
-               shared by more than one state, so it stays a handful of items
-               instead of a 50-line wall of text. *@
-            <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2" aria-label="Map legend">
-                @if (!string.IsNullOrEmpty(Model.MetricLabel))
-                {
-                    <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400">@Model.MetricLabel</span>
-                }
-                @foreach (var step in Model.LegendSteps)
-                {
-                    <div class="flex items-center gap-1.5">
-                        <span class="inline-block h-2.5 w-2.5 rounded-full flex-shrink-0"
-                              style="background:@step.Color" aria-hidden="true"></span>
-                        <span class="text-[12px] font-medium text-slate-600">@step.Label</span>
-                    </div>
-                }
-            </div>
-        }
-        @* ── JSON for tooltip JS (embedded in HTML, server-rendered) ── *@
         <script type="application/json"
                 id="choropleth-data"
                 data-metric-label="@Model.MetricLabel"

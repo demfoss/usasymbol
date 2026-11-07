@@ -1,181 +1,102 @@
 @using System.Text.Json
-@using System.Text.Json.Serialization
+@using usasymbol.Services
 @model USASymbol.Views.Shared.Components.InlineQuizViewModel
-
+@inject IImageUrlService Images
 @{
-    var pool = Model.Pool.Select(q => new
+    var payload = new
     {
-        q = q.Question,
-        c = q.Choices,
-        a = q.CorrectAnswer,
-        e = q.Explanation
-    });
-    var poolJson = JsonSerializer.Serialize(pool, new JsonSerializerOptions
-    {
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    }).Replace("</", "<\\/");
+        slug = Model.Slug, stateName = Model.StateName, stateSlug = Model.StateSlug,
+        perRound = Model.PerRound, title = Model.Title, fullQuizUrl = Model.FullQuizUrl,
+        pool = Model.Pool.Select(q => new
+        {
+            q = q.Question, c = q.Choices, a = q.CorrectAnswer, e = q.Explanation,
+            image = string.IsNullOrWhiteSpace(q.ImageUrl) ? "" : Images.Card(q.ImageUrl),
+            answerImage = string.IsNullOrWhiteSpace(q.AnswerImageUrl) ? "" : Images.Thumb(q.AnswerImageUrl),
+            linkUrl = q.LinkUrl, linkLabel = q.LinkLabel, family = q.FamilyKey,
+            related = q.RelatedAnswers.Select(answer => new { answer = answer.Answer, state = answer.State, url = answer.Url })
+        }),
+        states = StateLinks.AbbrToName.Select(state => new
+        {
+            abbr = state.Key, name = state.Value, slug = StateLinks.Slug(state.Value),
+            url = "/quizzes/" + StateSymbolQuizBuilder.SlugFor(state.Value)
+        })
+    };
 }
 
-<section id="@Model.Id" class="not-prose my-10 clear-both" data-nosnippet aria-label="@Model.Title">
-    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<section id="@Model.Id" class="iq-widget not-prose" data-nosnippet aria-labelledby="@Model.Id-title">
+    <div class="iq-card">
+        <header class="iq-header">
+            <svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#circle-question"></use></svg>
+            <h2 id="@Model.Id-title" title="Quick quiz · @Model.Title"><span>Quick quiz</span><span aria-hidden="true"> · </span>@Model.Title</h2>
+            <ol class="iq-progress" data-iq="progress" aria-label="Question progress">
+                @for (var i = 0; i < Model.PerRound; i++)
+                {
+                    <li aria-label="Question @(i + 1)" class="iq-dot"></li>
+                }
+            </ol>
+        </header>
 
-        <div class="flex items-start gap-4 border-b border-slate-100 bg-gradient-to-r from-amber-50 via-white to-white px-5 py-5 sm:px-7">
-            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-amber-300">
-                <i class="fa-solid fa-circle-question text-lg" aria-hidden="true"></i>
-            </span>
-            <div class="min-w-0">
-                <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-amber-600">Quick quiz</div>
-                <h2 class="mt-0.5 text-xl font-bold leading-snug text-slate-900 sm:text-2xl">@Model.Title</h2>
-                <p class="mt-1 text-sm leading-6 text-slate-600">@Model.Intro</p>
+        <div class="iq-body">
+            <div data-iq="stage" hidden>
+                <h3 class="iq-question" data-iq="question" tabindex="-1"></h3>
+                <div class="iq-question-image" data-iq="image" hidden></div>
+                <div class="iq-answers" data-iq="answers"></div>
+                <div class="iq-feedback" data-iq="feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+                <div class="iq-next-row"><button type="button" class="iq-button iq-button--primary" data-iq="next" hidden>Next <svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#arrow-right"></use></svg></button></div>
             </div>
+
+            <div class="iq-result" data-iq="result" hidden>
+                <div class="iq-result__icon" aria-hidden="true"><span data-iq="result-icon"></span></div>
+                <h3 class="iq-result__score" data-iq="result-heading" tabindex="-1"><span data-iq="final">0</span> / @Model.PerRound</h3>
+                <p class="iq-result__verdict" data-iq="verdict"></p>
+                <p class="iq-result__record" data-iq="record"></p>
+                <p class="iq-result__community" data-iq="community" hidden></p>
+                <details class="iq-review" data-iq="review">
+                    <summary>Review all @Model.PerRound answers</summary>
+                    <ol data-iq="review-list"></ol>
+                </details>
+                @if (!string.IsNullOrEmpty(Model.StateSlug))
+                {
+                    <details class="iq-collection" data-iq="collection">
+                        <summary data-iq="collection-label">Your state collection</summary>
+                        <div class="iq-collection__grid" data-iq="collection-grid"></div>
+                    </details>
+                }
+                <div class="iq-result__actions">
+                    <button type="button" class="iq-button iq-button--primary" data-iq="share"><svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#share-nodes"></use></svg> Share score</button>
+                    <button type="button" class="iq-button" data-iq="again"><svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#rotate-right"></use></svg> @Model.PerRound new questions</button>
+                </div>
+                <p class="iq-share-status" data-iq="share-status" aria-live="polite"></p>
+                <a class="iq-full-link" href="@Model.FullQuizUrl" data-iq="destination">@Model.FullQuizLabel <svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#arrow-right"></use></svg></a>
+            </div>
+            <noscript><p><a href="@Model.FullQuizUrl">Open the @Model.Title quiz.</a> JavaScript is needed to answer questions.</p></noscript>
         </div>
-
-        <div class="px-5 py-6 sm:px-7">
-            @* ---- question stage ---- *@
-            <div data-iq="stage">
-                <div class="mb-4 flex items-center justify-between text-xs font-semibold text-slate-500">
-                    <span>Question <span data-iq="num">1</span> of @Model.PerRound</span>
-                    <span>Score <span data-iq="score" class="text-slate-900">0</span></span>
-                </div>
-                <div class="mb-5 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                    <div data-iq="bar" class="h-full rounded-full bg-amber-500 transition-all duration-300" style="width:0%"></div>
-                </div>
-
-                <h3 data-iq="question" class="mb-4 text-lg font-semibold leading-7 text-slate-900"></h3>
-                <div data-iq="answers" class="grid grid-cols-1 gap-3 sm:grid-cols-2"></div>
-
-                <div data-iq="feedback" class="mt-4 hidden rounded-xl px-4 py-3 text-sm leading-6" role="status" aria-live="polite"></div>
-
-                <button type="button" data-iq="next"
-                        class="mt-4 hidden w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 sm:w-auto sm:px-8">
-                    Next question <i class="fa-solid fa-arrow-right ml-1 text-xs" aria-hidden="true"></i>
-                </button>
-            </div>
-
-            @* ---- result ---- *@
-            <div data-iq="result" class="hidden text-center">
-                <div class="text-5xl" data-iq="emoji" aria-hidden="true"></div>
-                <div class="mt-2 text-3xl font-bold text-slate-900"><span data-iq="final">0</span> / @Model.PerRound</div>
-                <p data-iq="verdict" class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600"></p>
-                <div class="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                    <button type="button" data-iq="again"
-                            class="w-full rounded-xl bg-amber-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-amber-400 sm:w-auto">
-                        <i class="fa-solid fa-rotate-right mr-1 text-xs" aria-hidden="true"></i> Play again with new questions
-                    </button>
-                    <a href="@Model.FullQuizUrl"
-                       class="w-full rounded-xl border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-800 no-underline transition hover:bg-slate-50 sm:w-auto">
-                        @Model.FullQuizLabel
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        @if (Model.More.Any())
-        {
-            <div class="border-t border-slate-100 bg-slate-50 px-5 py-5 sm:px-7">
-                <div class="mb-3 flex items-center justify-between gap-3">
-                    <div class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">More quizzes</div>
-                    <a href="/quizzes" class="text-xs font-semibold text-blue-700 no-underline hover:underline">All quizzes <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i></a>
-                </div>
-                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    @foreach (var q in Model.More)
-                    {
-                        <a href="/quizzes/@q.Slug"
-                           class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 no-underline transition hover:border-slate-300 hover:shadow-sm">
-                            <span class="min-w-0 text-sm font-semibold leading-snug text-slate-800">@q.Title</span>
-                            <span class="shrink-0 text-xs font-medium text-slate-400">@q.Difficulty</span>
-                        </a>
-                    }
-                </div>
-            </div>
-        }
     </div>
 
-    <script>
-    (function () {
-        var root = document.getElementById('@Model.Id');
-        if (!root) return;
-        var POOL = @Html.Raw(poolJson);
-        var PER = @Model.PerRound;
-        var $ = function (n) { return root.querySelector('[data-iq="' + n + '"]'); };
-        var stage = $('stage'), result = $('result'), answers = $('answers'), feedback = $('feedback'),
-            nextBtn = $('next'), qEl = $('question'), numEl = $('num'), scoreEl = $('score'), bar = $('bar');
-        var round, idx, score, locked;
-
-        function shuffle(a) {
-            a = a.slice();
-            for (var i = a.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var t = a[i]; a[i] = a[j]; a[j] = t;
-            }
-            return a;
+    <section class="iq-keep-playing" data-iq="more" aria-labelledby="@Model.Id-more" hidden>
+        <div class="iq-keep-playing__heading"><h3 id="@Model.Id-more">Keep playing</h3><a href="/quizzes" data-iq="destination">All quizzes <svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#arrow-right"></use></svg></a></div>
+        @if (Model.Neighbors.Any())
+        {
+            <h4>Try a neighbor</h4>
+            <ul class="iq-destinations">
+                @foreach (var quiz in Model.Neighbors)
+                {
+                    var name = quiz.Title.Replace(" State Symbols Quiz", "");
+                    <li><a href="/quizzes/@quiz.Slug" data-iq="destination"><svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#map-location-dot"></use></svg><span><strong>@name symbols</strong><small>@(quiz.QuestionsPerRound > 0 ? Math.Min(quiz.QuestionsPerRound, quiz.Questions.Count) : Math.Min(10, quiz.Questions.Count)) questions</small></span><svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#arrow-right"></use></svg></a></li>
+                }
+            </ul>
         }
-
-        function start() {
-            round = shuffle(POOL).slice(0, PER);
-            idx = 0; score = 0;
-            result.classList.add('hidden');
-            stage.classList.remove('hidden');
-            scoreEl.textContent = '0';
-            show();
+        @if (Model.More.Any())
+        {
+            <h4>Explore a topic</h4>
+            <ul class="iq-destinations">
+                @foreach (var quiz in Model.More)
+                {
+                    <li><a href="/quizzes/@quiz.Slug" data-iq="destination"><svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#compass"></use></svg><span><strong>@quiz.Title</strong><small>@(quiz.QuestionsPerRound > 0 ? Math.Min(quiz.QuestionsPerRound, quiz.Questions.Count) : Math.Min(10, quiz.Questions.Count)) questions</small></span><svg class="quiz-icon" aria-hidden="true"><use href="/icons/quiz.svg#arrow-right"></use></svg></a></li>
+                }
+            </ul>
         }
-
-        function show() {
-            var q = round[idx];
-            locked = false;
-            numEl.textContent = idx + 1;
-            bar.style.width = (idx / PER * 100) + '%';
-            qEl.textContent = q.q;
-            feedback.className = 'mt-4 hidden rounded-xl px-4 py-3 text-sm leading-6';
-            nextBtn.classList.add('hidden');
-            nextBtn.textContent = idx === PER - 1 ? 'See my result' : 'Next question';
-            answers.innerHTML = '';
-            shuffle(q.c).forEach(function (choice) {
-                var b = document.createElement('button');
-                b.type = 'button';
-                b.className = 'iq-choice w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50';
-                b.textContent = choice;
-                b.addEventListener('click', function () { pick(b, choice, q); });
-                answers.appendChild(b);
-            });
-        }
-
-        function pick(btn, choice, q) {
-            if (locked) return;
-            locked = true;
-            var ok = choice === q.a;
-            if (ok) { score++; scoreEl.textContent = score; }
-            Array.prototype.forEach.call(answers.children, function (b) {
-                b.disabled = true;
-                b.classList.remove('hover:border-slate-400', 'hover:bg-slate-50');
-                if (b.textContent === q.a) b.className = b.className.replace('border-slate-200 bg-white', 'border-emerald-500 bg-emerald-50 text-emerald-900');
-                else if (b === btn) b.className = b.className.replace('border-slate-200 bg-white', 'border-rose-400 bg-rose-50 text-rose-900');
-                else b.classList.add('opacity-50');
-            });
-            feedback.textContent = (ok ? 'Correct! ' : 'Not quite. ') + (q.e || '');
-            feedback.className = 'mt-4 rounded-xl px-4 py-3 text-sm leading-6 ' + (ok ? 'bg-emerald-50 text-emerald-900' : 'bg-rose-50 text-rose-900');
-            nextBtn.classList.remove('hidden');
-            nextBtn.focus({ preventScroll: true });
-        }
-
-        nextBtn.addEventListener('click', function () {
-            idx++;
-            if (idx < PER) { show(); return; }
-            bar.style.width = '100%';
-            stage.classList.add('hidden');
-            result.classList.remove('hidden');
-            $('final').textContent = score;
-            var r = score / PER;
-            $('emoji').textContent = r === 1 ? '🏆' : r >= 0.8 ? '🎉' : r >= 0.6 ? '👍' : r >= 0.4 ? '🙂' : '📚';
-            $('verdict').textContent = r === 1 ? 'Perfect round. Nothing got past you.'
-                : r >= 0.8 ? 'Very strong. Just a slip or two.'
-                : r >= 0.6 ? 'Solid. You know more than most people.'
-                : r >= 0.4 ? 'Not bad. A fresh round might go better.'
-                : 'Good news: there are plenty more questions to learn from.';
-        });
-
-        $('again').addEventListener('click', function () { start(); root.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); });
-        start();
-    })();
-    </script>
+    </section>
+    <script type="application/json" data-iq="data">@Html.Raw(JsonSerializer.Serialize(payload))</script>
 </section>
+<script src="~/js/inline-quiz.js" asp-append-version="true" defer></script>

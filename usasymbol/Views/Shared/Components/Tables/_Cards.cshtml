@@ -34,6 +34,7 @@
                     .ToList();
 
                 var tableQuickFilter = table == cardsFirstTable ? cardsQuickFilter : null;
+                var ranking = RankingPresentation.Create(table);
 
                 @* Title — only for multi-table layouts *@
                 @if (Model.Tables.Count > 1 && !string.IsNullOrWhiteSpace(table.Title))
@@ -43,8 +44,9 @@
                     </h3>
                 }
 
-                foreach (var row in table.Rows)
+                foreach (var row in ranking?.Rows(table) ?? table.Rows)
                 {
+                    var placement = ranking?.For(row);
                     var stateSlug = row.GetString("state_slug");
                     var stateName = row.GetString("state") ?? "";
                     // Empty when the row has no real state page (e.g. Washington D.C., Canadian
@@ -185,9 +187,9 @@
 
                     @if (rankValue != null)
                     {
-                        <span class="inline-flex h-5 min-w-[1.75rem] items-center justify-center rounded-full
+                        <span title="@placement?.Tooltip" class="inline-flex h-5 min-w-[1.75rem] items-center justify-center rounded-full
                                      border border-slate-200 bg-white text-[11px] font-extrabold text-slate-800 tabular-nums">
-                            @rankValue
+                            @(placement?.Label ?? rankValue)
                         </span>
                     }
                 </div>

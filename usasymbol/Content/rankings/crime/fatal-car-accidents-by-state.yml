@@ -48,7 +48,19 @@ table:
     state: State
     traffic_deaths: Total Deaths
   metric_default: traffic_deaths
+  metric:
+    unit_singular: "traffic death"
+    unit_plural: "traffic deaths"
+    additive: true
+  national:
+    value: 39254
+    label: "U.S. total, including D.C."
+    source: "IIHS / NHTSA FARS"
+    year: 2024
+    other_label: "Other (incl. D.C.)"
   sort_default: desc
+  higher_is_better: false
+  state_index: false
   rows:
   - rank: 1
     state: Texas

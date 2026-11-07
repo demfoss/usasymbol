@@ -1,0 +1,28 @@
+@using Usasymbol.Helpers
+@model PageDetailViewModel
+@{
+    Layout = null;
+    var content = Model.Content!;
+    var title = content.Map?.Title ?? content.Page?.H1 ?? "U.S. state ranking map";
+    var rankingUrl = $"https://usasymbol.com/rankings/{content.Category}/{content.Slug}";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>@title | USA Symbol</title>
+    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ranking-engagement.css" asp-append-version="true" />
+</head>
+<body class="ranking-map-embed">
+    <main>
+        @await Html.RenderMapBlockAsync(content.Map, content.Table, content.Slug)
+        <footer class="ranking-map-embed__attribution">
+            <span>Source visualization: <strong>USA Symbol</strong></span>
+            <a href="@rankingUrl" target="_top" rel="noopener">View the full ranking and methodology →</a>
+        </footer>
+    </main>
+</body>
+</html>

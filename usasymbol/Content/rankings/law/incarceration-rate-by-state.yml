@@ -40,6 +40,7 @@ page:
       description: "State and federal prison population figures for additional national context"
 
 table:
+  higher_is_better: false
   columns:
     rank: "Rank"
     state: "State"
@@ -406,6 +407,11 @@ table:
       total_incarcerated: 16798
       population: 6982740
       notes: "Lowest incarceration rate of any state"
+  national:
+    value: 608
+    label: "U.S. overall"
+    source: "Prison Policy Initiative"
+    year: 2024
 
 map:
   title: "Incarceration Rate by State Map"

@@ -1768,7 +1768,7 @@
         const scrolled = (window.scrollY / windowHeight) * 100;
         const progressBar = document.getElementById('progressBar');
         if (progressBar) {
-            progressBar.style.width = Math.min(scrolled, 100) + '%';
+            progressBar.style.setProperty('--p', Math.min(scrolled, 100) / 100);
         }
     });
 </script>

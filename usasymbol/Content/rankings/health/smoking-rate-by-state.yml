@@ -36,6 +36,7 @@ table:
     smoking_rate: "Adults Who Smoke"
   metric_default: smoking_rate
   sort_default: desc
+  higher_is_better: false
   column_formats:
     smoking_rate: "0.0'%'"
   rows:
@@ -89,6 +90,11 @@ table:
     - { rank: 48, state: "Maryland", state_slug: "maryland", postal_code: "MD", smoking_rate: 7.8 }
     - { rank: 49, state: "California", state_slug: "california", postal_code: "CA", smoking_rate: 7.6 }
     - { rank: 50, state: "Utah", state_slug: "utah", postal_code: "UT", smoking_rate: 5.7 }
+  national:
+    value: 11.6
+    label: "U.S. adults"
+    source: "CDC BRFSS via America's Health Rankings"
+    year: 2024
 map:
   title: "Adult Smoking Rate by State"
   image_alt: "Map of the United States colored by the share of adults who smoke cigarettes"

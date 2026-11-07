@@ -291,7 +291,8 @@ namespace USASymbol.Services
                     continue;
                 }
 
-                if (IsRemoteUrl(image) || LocalImageExists(image))
+                // Images live on Bunny CDN, not in the deployed wwwroot, so a local File.Exists check always fails in production.
+                if (IsRemoteUrl(image) || image.StartsWith("/images/", StringComparison.OrdinalIgnoreCase))
                 {
                     return image;
                 }
@@ -314,18 +315,6 @@ namespace USASymbol.Services
             }
 
             return normalized.StartsWith("/", StringComparison.Ordinal) ? normalized : "/" + normalized;
-        }
-
-        private bool LocalImageExists(string image)
-        {
-            var pathOnly = image.Split('?', '#')[0];
-            if (string.IsNullOrWhiteSpace(pathOnly) || !pathOnly.StartsWith("/images/", StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-
-            var relativePath = pathOnly.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
-            return File.Exists(Path.Combine(_env.WebRootPath, relativePath));
         }
 
         private static bool IsRemoteUrl(string image)

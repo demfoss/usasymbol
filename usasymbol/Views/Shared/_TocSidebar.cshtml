@@ -308,21 +308,27 @@
             }
         }
 
-        const observer = new IntersectionObserver((entries) => {
-            const visible = entries
-                .filter(e => e.isIntersecting)
-                .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-
-            if (visible?.target?.id) {
-                updateActiveState(visible.target.id);
-            }
-        }, {
-            root: null,
-            rootMargin: `-${headerOffset}px 0px -72% 0px`,
-            threshold: 0
-        });
-
-        pairs.forEach(p => observer.observe(p.el));
+        // Active section = the last one whose top has scrolled past the header line.
+        // At the very bottom of the page the last section wins, so short final blocks still highlight.
+        let spyTicking = false;
+        function spy() {
+            spyTicking = false;
+            const line = headerOffset + 24;
+            let current = null;
+            pairs.forEach(pair => {
+                if (pair.el.getBoundingClientRect().top <= line) current = pair.id;
+            });
+            const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+            if (atBottom) current = pairs[pairs.length - 1].id;
+            updateActiveState(current);
+        }
+        window.addEventListener('scroll', function () {
+            if (spyTicking) return;
+            spyTicking = true;
+            requestAnimationFrame(spy);
+        }, { passive: true });
+        window.addEventListener('resize', spy);
+        spy();
 
         links.forEach(link => {
             link.addEventListener('click', function (e) {

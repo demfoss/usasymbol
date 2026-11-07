@@ -45,6 +45,7 @@ table:
 
   metric_default: rate
   sort_default: desc
+  higher_is_better: false
 
   rows:
     - rank: 1
@@ -351,6 +352,11 @@ table:
       rate: 2.97
       deaths: 35
       notes: "Lowest infant mortality rate of any state"
+  national:
+    value: 5.52
+    label: "U.S. overall"
+    source: "CDC NCHS"
+    year: 2024
 
 map:
   title: "Infant Mortality Rate by State Map"

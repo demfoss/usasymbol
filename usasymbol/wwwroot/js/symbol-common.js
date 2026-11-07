@@ -192,7 +192,7 @@ function initProgressBar() {
         window.addEventListener('scroll', () => {
             const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
             const scrolled = (window.scrollY / windowHeight) * 100;
-            progressBar.style.width = Math.min(scrolled, 100) + '%';
+            progressBar.style.setProperty('--p', Math.min(scrolled, 100) / 100);
         });
     }
 }

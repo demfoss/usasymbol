@@ -11,11 +11,11 @@ date_published: "2026-11-05"
 date_modified: "2026-11-05"
 
 seo:
-  title: "GDP by State 2025 | Map & Rankings"
+  title: "GDP by State | Map & Rankings"
   description: "California has the largest state economy at $4.30 trillion in 2025. Vermont has the smallest GDP at $49.7 billion."
 
 page:
-  h1: "GDP by State 2025"
+  h1: "GDP by State"
   quick_answer:
     - "GDP by state is highest in California at $4.30 trillion in 2025, powered by its enormous population and major technology, entertainment, trade and agricultural industries."
     - "Texas ranks second at $2.93 trillion, followed by New York at $2.47 trillion. Those three states together produce a vast share of national economic output."
@@ -39,6 +39,16 @@ table:
   column_formats:
     gdp_billions: "C1"
   metric_default: gdp_billions
+  metric:
+    unit_singular: "billion dollars of GDP"
+    unit_plural: "billion dollars of GDP"
+    additive: true
+  national:
+    value: 30861.3
+    label: "U.S. total GDP (includes federal activity not allocated to states)"
+    source: "BEA SAGDP1 GDP by State"
+    year: 2025
+    other_label: "Not allocated to states"
   sort_default: desc
   rows:
     - { rank: 1, state: "California", state_slug: "california", postal_code: "CA", gdp_billions: 4297.4 }

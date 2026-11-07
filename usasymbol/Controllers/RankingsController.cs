@@ -99,6 +99,12 @@ namespace USASymbol.Controllers
         {
             try
             {
+                // Retire the stale 2022 health-category duplicate in favor of the
+                // maintained crime ranking. Existing inbound links keep working.
+                if (category.Equals("health", System.StringComparison.OrdinalIgnoreCase) &&
+                    slug.Equals("states-by-crime-rate", System.StringComparison.OrdinalIgnoreCase))
+                    return RedirectPermanent("/rankings/crime/crime-rate-by-state");
+
                 var content = await _service.GetContentAsync(category, slug);
                 if (content == null)
                 {
@@ -114,11 +120,22 @@ namespace USASymbol.Controllers
                 {
                     var choropleth = string.IsNullOrWhiteSpace(content.Map.MetricKey)
                         ? ChoroplethBuilder.BuildFlat(content.Table.Rows)
-                        : ChoroplethBuilder.Build(content.Map, content.Table.Rows);
+                        : ChoroplethBuilder.Build(content.Map, content.Table.Rows,
+                            content.Table.Columns.FirstOrDefault(column => column.Key == content.Map.MetricKey));
 
                     var mapPngPath = await _mapPngService.EnsureMapPngAsync(slug, choropleth.Entries);
                     if (mapPngPath != null)
                         ViewData["MapPngPath"] = mapPngPath;
+
+                    var sharePath = await _mapPngService.EnsureSharePngAsync(
+                        slug,
+                        content.Map.Title ?? content.Page?.H1 ?? slug,
+                        choropleth.Entries,
+                        choropleth.LegendGroups,
+                        content.Page?.Sources?.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s.Name))?.Name,
+                        $"https://usasymbol.com{(string.IsNullOrWhiteSpace(content.Url) ? $"/rankings/{category}/{slug}" : content.Url)}");
+                    if (sharePath != null)
+                        ViewData["MapSharePngPath"] = sharePath;
                 }
 
                 // Closest matches go to the sidebar (visible for the whole read, and the
@@ -154,6 +171,98 @@ namespace USASymbol.Controllers
                 _logger.LogError(ex, "Error loading ranking: {Category}/{Slug}", category, slug);
                 throw;
             }
+        }
+
+        [HttpGet("/embed/rankings/{category}/{slug}/map")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept-Encoding")]
+        public async Task<IActionResult> MapEmbed(string category, string slug)
+        {
+            var content = await _service.GetContentAsync(category, slug);
+            if (content?.Map == null) return NotFound();
+
+            if (content.ComputedData != null && content.Tables.Count == 0)
+                await BuildComputedTableAsync(content);
+
+            Response.Headers["X-Robots-Tag"] = "noindex, nofollow";
+            Response.Headers["Content-Security-Policy"] = "frame-ancestors *";
+            Response.Headers["Cache-Control"] = "public, max-age=3600";
+
+            return View("MapEmbed", new PageDetailViewModel { Content = content });
+        }
+
+        [HttpGet("/download/rankings/{category}/{slug}.csv")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any)]
+        public async Task<IActionResult> DownloadCsv(string category, string slug)
+        {
+            var content = await _service.GetContentAsync(category, slug);
+            if (content == null) return NotFound();
+
+            if (content.ComputedData != null && content.Tables.Count == 0)
+                await BuildComputedTableAsync(content);
+
+            var table = content.Table;
+            if (table == null || table.Rows.Count == 0) return NotFound();
+
+            var hidden = new System.Collections.Generic.HashSet<string>(table.HiddenColumns, System.StringComparer.OrdinalIgnoreCase);
+            var skipTypes = new[] { "image", "link", "color-swatches" };
+            var columns = table.Columns
+                .Where(c => c.Key != "state_slug" && !hidden.Contains(c.Key)
+                            && !skipTypes.Contains(c.Type, System.StringComparer.OrdinalIgnoreCase))
+                .ToList();
+
+            static string Csv(string? value)
+            {
+                var text = value ?? "";
+                // Neutralise spreadsheet formula injection, then quote when needed.
+                if (text.Length > 0 && "=+@\t\r".IndexOf(text[0]) >= 0) text = "'" + text;
+                return text.IndexOfAny(new[] { ',', '"', '\n', '\r' }) >= 0 ? "\"" + text.Replace("\"", "\"\"") + "\"" : text;
+            }
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine(string.Join(",", columns.Select(c => Csv(c.Label))));
+            foreach (var row in table.Rows)
+                sb.AppendLine(string.Join(",", columns.Select(c => Csv(row.GetString(c.Key)))));
+
+            var totals = Usasymbol.Helpers.TableTotals.Resolve(table);
+            if (totals != null)
+            {
+                var inv = System.Globalization.CultureInfo.InvariantCulture;
+                var labelKey = columns.FirstOrDefault(c => c.Key == "state" || c.Type == "state-link" || c.Type == "text")?.Key;
+                string Cell(string label, double value, TableColumn c) =>
+                    c.Key == labelKey ? Csv(label)
+                    : c.Key == totals.MetricKey ? value.ToString("0.##", inv)
+                    : c.Key == "share_of_us" ? (value / totals.Total * 100).ToString("0.0", inv)
+                    : "";
+                if (totals.ShowOther)
+                    sb.AppendLine(string.Join(",", columns.Select(c => Cell(totals.OtherLabel, totals.Other, c))));
+                sb.AppendLine(string.Join(",", columns.Select(c => Cell(totals.TotalLabel, totals.Total, c))));
+            }
+
+            var pageUrl = $"https://usasymbol.com{(string.IsNullOrWhiteSpace(content.Url) ? $"/rankings/{category}/{slug}" : content.Url)}";
+            sb.AppendLine();
+            sb.AppendLine(Csv($"\u00A9 {System.DateTime.UtcNow.Year} USA Symbol, {pageUrl}"));
+
+            var bytes = new System.Text.UTF8Encoding(true).GetPreamble().Concat(System.Text.Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
+            return File(bytes, "text/csv; charset=utf-8", slug + ".csv");
+        }
+
+        [HttpGet("/embed/rankings/{category}/{slug}/table")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, VaryByHeader = "Accept-Encoding")]
+        public async Task<IActionResult> TableEmbed(string category, string slug)
+        {
+            var content = await _service.GetContentAsync(category, slug);
+            if (content == null) return NotFound();
+
+            if (content.ComputedData != null && content.Tables.Count == 0)
+                await BuildComputedTableAsync(content);
+
+            if (content.Table == null || content.Table.Rows.Count == 0) return NotFound();
+
+            Response.Headers["X-Robots-Tag"] = "noindex, nofollow";
+            Response.Headers["Content-Security-Policy"] = "frame-ancestors *";
+            Response.Headers["Cache-Control"] = "public, max-age=3600";
+
+            return View("TableEmbed", new PageDetailViewModel { Content = content });
         }
 
         private async Task BuildComputedTableAsync(PageContent content)

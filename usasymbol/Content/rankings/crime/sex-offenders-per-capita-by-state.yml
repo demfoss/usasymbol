@@ -60,6 +60,7 @@ table:
 
   metric_default: offenders_per_100k
   sort_default: desc
+  higher_is_better: false
 
   rows:
     - rank: 1
@@ -412,6 +413,9 @@ table:
       offenders_per_100k: 51
       total_registered: 4695
       note: "New Jersey's figure reflects 2024 registry data, the most recent public count available for the state."
+  national:
+    weight_key: total_registered
+    weight_kind: cases
 
 sections:
   - id: "why-oregon-has-the-highest-sex-offender-registry-rate"

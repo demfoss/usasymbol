@@ -14,6 +14,23 @@ document.addEventListener('DOMContentLoaded', function () {
     initRowHoverSync();
     initNotePopover();
     initOverflowGuard();
+    document.addEventListener('ranking:reveal-row', function () {
+        const search = document.getElementById('tableSearch');
+        if (search) search.value = '';
+        activeChipValue = '';
+        document.querySelectorAll('#quickFilterChips .filterChip').forEach(chip => {
+            const active = !chip.dataset.chipValue;
+            chip.classList.toggle('is-active', active);
+            chip.setAttribute('aria-pressed', String(active));
+        });
+        document.querySelectorAll('#flagListingFilters [data-flag-filter]').forEach(control => {
+            control.value = '';
+            activeFlagFilters[control.dataset.flagFilter] = '';
+        });
+        document.getElementById('clearFlagFilters')?.classList.add('hidden');
+        applyFilters();
+        document.querySelector('.viewBtn[data-view="table"]')?.click();
+    });
 });
 
 // ============================================
@@ -26,6 +43,18 @@ function initOverflowGuard() {
     const wrappers = document.querySelectorAll('.ranking-table-scroll');
     if (!wrappers.length) return;
 
+    // Edge-fade hint (phones): show it while there is more table to the right
+    const syncMoreHint = wrapper => {
+        const frame = wrapper.closest('.ranking-table-frame');
+        if (!frame) return;
+        const more = wrapper.scrollWidth - wrapper.clientWidth - wrapper.scrollLeft > 2;
+        frame.classList.toggle('has-more', more);
+    };
+    wrappers.forEach(wrapper => {
+        wrapper.addEventListener('scroll', () => syncMoreHint(wrapper), { passive: true });
+        syncMoreHint(wrapper);
+    });
+
     const check = () => {
         wrappers.forEach(wrapper => {
             const table = wrapper.querySelector('table');
@@ -34,6 +63,7 @@ function initOverflowGuard() {
                 'ranking-table-scroll--overflow',
                 table.offsetWidth > wrapper.clientWidth + 1
             );
+            syncMoreHint(wrapper);
         });
     };
 
@@ -66,7 +96,13 @@ function initViewToggle() {
     const cardsView = document.getElementById('cardsView');
     const tableView = document.getElementById('tableView');
 
-    if (!cardsView || !tableView) return;
+    if (!tableView) return;
+
+    // Table-only pages (rankings): no cards markup, just reveal the table
+    if (!cardsView) {
+        tableView.classList.remove('hidden');
+        return;
+    }
 
     // Tailwind lg breakpoint
     const mq = window.matchMedia('(min-width: 1024px)');
@@ -351,13 +387,15 @@ function applySort(table, th, direction) {
         const bNum = parseFloat(String(bVal).replace(/[^0-9.-]/g, ''));
 
         if (!isNaN(aNum) && !isNaN(bNum)) {
-            return direction === 'asc' ? aNum - bNum : bNum - aNum;
+            const difference = direction === 'asc' ? aNum - bNum : bNum - aNum;
+            return difference || (a.dataset.state || '').localeCompare(b.dataset.state || '', 'en');
         }
 
         // String sort
-        return direction === 'asc'
+        const difference = direction === 'asc'
             ? String(aVal).localeCompare(String(bVal))
             : String(bVal).localeCompare(String(aVal));
+        return difference || (a.dataset.state || '').localeCompare(b.dataset.state || '', 'en');
     });
 
     // Re-append sorted rows

@@ -39,6 +39,7 @@ table:
     per_100k: "0.0"
   metric_default: per_100k
   sort_default: desc
+  higher_is_better: true
   rows:
     - { rank: 1, state: "Massachusetts", state_slug: "massachusetts", postal_code: "MA", per_100k: 475.7, physicians: 34030, population: 7154084 }
     - { rank: 2, state: "New York", state_slug: "new-york", postal_code: "NY", per_100k: 428.3, physicians: 85662, population: 20002427 }
@@ -90,6 +91,9 @@ table:
     - { rank: 48, state: "Mississippi", state_slug: "mississippi", postal_code: "MS", per_100k: 232.1, physicians: 6857, population: 2954160 }
     - { rank: 49, state: "Nevada", state_slug: "nevada", postal_code: "NV", per_100k: 216.8, physicians: 7115, population: 3282188 }
     - { rank: 50, state: "Idaho", state_slug: "idaho", postal_code: "ID", per_100k: 209.9, physicians: 4261, population: 2029733 }
+  national:
+    weight_key: population
+    weight_kind: population
 map:
   title: "Doctors per Capita by State"
   image_alt: "Map of the United States colored by physicians per 100,000 residents in each state"

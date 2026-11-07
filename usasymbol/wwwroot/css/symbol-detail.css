@@ -36,7 +36,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
     align-items: center;
     gap: 7px;
     color: #8496a5;
-    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-family: var(--font-sans);
     font-size: 11px;
     font-weight: 400;
     line-height: 1.6;
@@ -95,7 +95,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
     width: 100%;
     margin: 0 0 42px;
     color: var(--sdh-ink);
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 16px;
     font-weight: 400;
     line-height: 1.5;
@@ -133,7 +133,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
     gap: 7px 10px;
     margin: 0 0 15px;
     color: var(--sdh-ink-2);
-    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-family: var(--font-sans);
     font-size: 11px;
     font-weight: 400;
     line-height: 1.5;
@@ -175,7 +175,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
     max-width: 860px;
     margin: 0 0 11px;
     color: var(--sdh-ink);
-    font-family: "Manrope", system-ui, sans-serif;
+    font-family: var(--font-sans);
     font-size: clamp(2.25rem, 4.15vw, 3.55rem);
     font-weight: 800;
     line-height: .99;
@@ -187,7 +187,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
 #symbol-detail-hero .sdh-subtitle {
     margin: 0 0 18px;
     color: var(--sdh-ink-2);
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 1.08rem;
     font-style: italic;
     font-weight: 400;
@@ -198,7 +198,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
     max-width: 59ch;
     margin: 18px 0 24px;
     color: var(--sdh-ink-2);
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.75;
@@ -220,7 +220,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
 #symbol-detail-hero .sdh-spec dt {
     padding-top: 3px;
     color: var(--sdh-ink-3);
-    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-family: var(--font-sans);
     font-size: 10px;
     font-weight: 500;
     line-height: 1.45;
@@ -231,7 +231,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
 #symbol-detail-hero .sdh-spec dd {
     min-width: 0;
     color: var(--sdh-ink);
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-size: .92rem;
     line-height: 1.55;
     overflow-wrap: anywhere;
@@ -342,7 +342,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
     gap: 2px;
     margin-top: 9px;
     color: var(--sdh-ink-3);
-    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-family: var(--font-sans);
     font-size: 10px;
     font-weight: 400;
     line-height: 1.65;
@@ -361,7 +361,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
     gap: 12px 18px;
     margin-top: 20px;
     color: var(--sdh-ink-3);
-    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-family: var(--font-sans);
     font-size: 10px;
     font-weight: 400;
     line-height: 1.55;
@@ -435,7 +435,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
     color: var(--sdh-ink-2);
     box-shadow: none;
     cursor: pointer;
-    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-family: var(--font-sans);
     font-size: 10px;
     font-weight: 500;
     line-height: 1.2;
@@ -472,7 +472,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
 #symbol-detail-hero .sdh-quote-label {
     margin-bottom: 15px;
     color: var(--sdh-ink-3);
-    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-family: var(--font-sans);
     font-size: 10px;
     font-weight: 500;
     letter-spacing: .1em;
@@ -481,7 +481,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
 
 #symbol-detail-hero .sdh-quote-text {
     color: var(--sdh-ink);
-    font-family: "Manrope", system-ui, sans-serif;
+    font-family: var(--font-sans);
     font-size: clamp(1.45rem, 2.7vw, 2.05rem);
     font-style: normal;
     font-weight: 700;
@@ -493,7 +493,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
 #symbol-detail-hero .sdh-quote-translation {
     margin-top: 14px;
     color: var(--sdh-ink-2);
-    font-family: "Libre Baskerville", Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 1rem;
     font-style: italic;
     font-weight: 400;
@@ -508,7 +508,7 @@ nav[aria-label="Breadcrumb"]:has(.sd-breadcrumbs) > div {
     padding-top: 14px;
     border-top: 1px solid var(--sdh-line-soft);
     color: var(--sdh-ink-3);
-    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-family: var(--font-sans);
     font-size: 9.5px;
     font-weight: 500;
     line-height: 1.55;

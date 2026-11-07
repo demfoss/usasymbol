@@ -43,6 +43,7 @@ page:
       description: "Reference compilation of state-level homelessness figures and point-in-time count methodology"
 
 table:
+  higher_is_better: false
   columns:
     rank: "Rank"
     state: "State"
@@ -50,6 +51,16 @@ table:
     homeless_rate: "Rate per 10,000"
 
   metric_default: homeless_total
+  metric:
+    unit_singular: "person experiencing homelessness"
+    unit_plural: "people experiencing homelessness"
+    additive: true
+  national:
+    value: 771480
+    label: "U.S. total, including D.C. and territories"
+    source: "HUD 2024 AHAR Part 1"
+    year: 2024
+    other_label: "D.C. and territories"
   sort_default: desc
 
   rows:

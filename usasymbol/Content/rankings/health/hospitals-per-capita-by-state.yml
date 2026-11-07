@@ -44,6 +44,7 @@ table:
 
   metric_default: beds_per_1000
   sort_default: desc
+  higher_is_better: true
   column_formats:
     beds_per_1000: "N2"
 
@@ -299,6 +300,11 @@ table:
       postal_code: "WA"
       beds_per_1000: 1.57
       notes: "Lowest hospital bed density of any state"
+  national:
+    value: 2.28
+    label: "U.S. average"
+    source: "KFF State Health Facts"
+    year: 2024
 
 map:
   title: "Hospital Beds Per Capita by State Map"

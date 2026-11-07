@@ -321,7 +321,8 @@ namespace USASymbol.Services
             var rows = primaryTable!.Rows;
             var choropleth = string.IsNullOrWhiteSpace(content.Map.MetricKey)
                 ? ChoroplethBuilder.BuildFlat(rows)
-                : ChoroplethBuilder.Build(content.Map, rows);
+                : ChoroplethBuilder.Build(content.Map, rows,
+                    content.Table?.Columns.FirstOrDefault(column => column.Key == content.Map.MetricKey));
 
             if (choropleth.Entries.Count == 0)
             {

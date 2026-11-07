@@ -5,7 +5,7 @@
 .usas-site .site-logo { gap: 12px; }
 .usas-site .site-logo-mark { width: 43px; height: 43px; border-radius: 12px; background: #fff; border: 1px solid #e3e8ef; box-shadow: none; }
 .usas-site .site-logo-mark img { border-radius: 8px; }
-.usas-site .site-logo-copy strong { color: #0b1a36; font: 700 23px/1.1 Georgia, serif; letter-spacing: -.025em; }
+.usas-site .site-logo-copy strong { color: #0b1a36; font: 700 23px/1.1 var(--font-sans); letter-spacing: -.025em; }
 .usas-site .site-logo-copy span { font-size: 10px; letter-spacing: .03em; color: #6c7890; }
 .usas-site .site-nav-links { gap: 3px; }
 .usas-site .nav-link { padding: 10px 12px; border-radius: 7px; color: #44536a; font-size: 12px; }
@@ -20,9 +20,9 @@
 .usas-site .site-footer::before, .usas-site .site-footer::after { content: none; }
 .usas-site .site-footer-wrap { width: min(calc(100% - 48px), 1390px); max-width: none; padding: 0; }
 .usas-site .site-footer-grid { grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 35px; }
-.usas-site .site-footer-brand h3 { font: 700 29px/1.2 Georgia, serif; }
+.usas-site .site-footer-brand h3 { font: 700 29px/1.2 var(--font-sans); }
 .usas-site .site-footer-brand p { max-width: 340px; font-size: 13px; line-height: 1.8; color: #bfccdc; }
-.usas-site .site-footer-column h3 { margin-bottom: 20px; font: 700 17px/1.3 Georgia, serif; }
+.usas-site .site-footer-column h3 { margin-bottom: 20px; font: 700 17px/1.3 var(--font-sans); }
 .usas-site .site-footer-list { gap: 11px; }
 .usas-site .site-footer-list a, .usas-site .site-footer-list button { color: #bfccdc; font-size: 12px; line-height: 1.6; }
 .usas-site .site-footer-list a:hover, .usas-site .site-footer-list button:hover { color: #fff; }
@@ -62,3 +62,166 @@
     .usas-site .site-footer-brand { grid-column: 1 / -1; }
     .usas-site .site-footer-bottom { flex-direction: column; align-items: flex-start; gap: 15px; }
 }
+
+/* Reading progress bar: pure transform, no width animation, no layout work on scroll.
+   Pages set --p (0..1) from their scroll handlers. */
+#progressBar {
+    width: 100% !important;
+    height: 2px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform-origin: 0 50%;
+    transform: scaleX(var(--p, 0));
+    transition: none !important;
+    will-change: transform;
+    pointer-events: none;
+}
+
+/* Fixed-height header: nothing in it changes size on scroll. */
+@media (max-width: 1100px) {
+    .usas-site .site-header { backdrop-filter: none; -webkit-backdrop-filter: none; background: #fff; contain: layout style; }
+}
+
+/* Mobile TOC button sits above the bottom anchor ad instead of under it */
+@media (max-width: 1023px) {
+    #floatingTocBtn { bottom: calc(env(safe-area-inset-bottom, 0px) + 7rem) !important; }
+}
+
+/* ---------- Design tokens (radius) ---------- */
+:root {
+    --r-sm: 6px;
+    --r-md: 12px;
+    --r-pill: 999px;
+    --header-h: 56px;
+}
+
+/* ---------- Compact mobile header: 56px, bare logo, bare 44x44 burger ---------- */
+@media (max-width: 600px) {
+    .usas-site .site-nav-frame { min-height: var(--header-h); height: var(--header-h); padding: 0; }
+    .usas-site .site-logo-mark { width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; }
+    .usas-site .site-logo-mark img { width: 36px; height: 36px; }
+    .usas-site .site-logo-copy span { display: none; }
+    .usas-site .site-logo-copy strong { font-size: 20px; }
+    .usas-site .mobile-nav-button { width: 44px; height: 44px; border: 0; background: transparent; border-radius: var(--r-md); }
+    .usas-site .mobile-nav-button i { font-size: 20px; color: #0b1a36; }
+    html { scroll-padding-top: calc(var(--header-h) + 12px); }
+
+    /* progress line glued to the bottom edge of the header, gold instead of navy */
+    #progressBar {
+        top: var(--header-h) !important;
+        background: linear-gradient(90deg, #b8893a, #d9b46a) !important;
+        z-index: 60 !important;
+    }
+}
+@media (min-width: 601px) {
+    html { scroll-padding-top: 96px; }
+}
+
+/* ---------- Hover only on real hover devices (no sticky hover after a tap on iOS) ---------- */
+@media (hover: none) {
+    .tableRow:hover { --ranking-row-bg: #fff; }
+    .tableRow--clickable:hover .ranking-state > span:last-child { color: inherit; text-decoration: none; }
+    .tableRow:active { --ranking-row-bg: #f4f7f9; }
+    .rankingCard:hover { box-shadow: none; transform: none; }
+}
+
+/* ---------- One H2 style across ranking/listing/collection pages ---------- */
+.usas-site .page-flow-shell .article-content h2:not(.iq-widget h2) {
+    margin: 0 0 .9rem;
+    color: #0e1a26;
+    font-family: var(--font-sans);
+    font-size: clamp(1.3rem, 2.3vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: -.025em;
+    line-height: 1.2;
+}
+
+/* =====================================================================
+   Ranking design system pass: one UI font, navy/teal palette, radius tokens
+   ===================================================================== */
+:root {
+
+    --navy: #173e61;
+    --navy-deep: #0f2d48;
+    --navy-tint: #eef3f8;
+    --navy-line: #cfdbe7;
+    --gold: #b8893a;
+    --teal-bar: #2f7f78;
+}
+
+/* --- 1. Fonts: data components are all var(--font-sans) (no serif inside widgets) --- */
+.rankingTable,
+.ranking-search input,
+.kt-story__title, .kt-story__number, .kt-typed__title, .kt-typed__split-quote,
+.kt-rank__title, .kt-rank__statement,
+.ranking-extreme-card__value, .ranking-extreme-card__state,
+.ranking-extreme-row__state, .ranking-extremes__heading h2 {
+    font-family: var(--font-sans);
+}
+.ranking-extreme-card__value, .kt-story__number { font-variant-numeric: tabular-nums; }
+
+/* --- 2. Colors: no bright blue; navy links with gold underline --- */
+.usas-site .page-flow-shell .article-content a:not([class]),
+.usas-site .page-flow-shell .article-content p a,
+.usas-site .page-flow-shell .article-content li a {
+    color: var(--navy);
+    text-decoration: underline;
+    text-decoration-color: #d5bd88;
+    text-underline-offset: 3px;
+}
+.usas-site .page-flow-shell .article-content p a:hover,
+.usas-site .page-flow-shell .article-content li a:hover { color: var(--navy-deep); text-decoration-color: var(--gold); }
+
+.usas-site .text-blue-700, .usas-site .text-blue-600, .usas-site .hover\:text-blue-900:hover, .usas-site .text-blue-900 { color: var(--navy); }
+.usas-site .border-blue-200, .usas-site .border-blue-300 { border-color: var(--navy-line); }
+.usas-site .bg-blue-50 { background-color: var(--navy-tint); }
+.usas-site .bg-blue-600 { background-color: var(--navy); }
+.usas-site .hover\:bg-blue-700:hover { background-color: var(--navy-deep); }
+.usas-site .focus\:border-blue-500:focus { border-color: var(--navy); }
+.usas-site .focus\:ring-blue-100:focus, .usas-site .focus-visible\:ring-blue-200:focus-visible { --tw-ring-color: rgb(23 62 97 / .18); }
+.usas-site .decoration-blue-300 { text-decoration-color: #d5bd88; }
+
+/* Quiz promo under the data */
+.rk-promo { border: 1px solid var(--navy-line); border-radius: var(--r-md); background: var(--navy-tint); transition: border-color .15s ease; }
+.rk-promo:hover { border-color: var(--navy); }
+.rk-promo__icon { border-radius: var(--r-sm); background: var(--navy); }
+.rk-promo__kicker { color: var(--gold); }
+.rk-promo__btn { border-radius: var(--r-sm); background: var(--navy); transition: background-color .15s ease; }
+.rk-promo:hover .rk-promo__btn { background: var(--navy-deep); }
+
+/* Highest / lowest bars share the map's teal ramp instead of two unrelated hues */
+.ranking-extremes .ranking-extreme-list--good,
+.ranking-extremes .ranking-extreme-list--bad { --extreme-bar: var(--teal-bar); }
+
+/* --- 3. Radius tokens: sm = buttons/inputs, md = cards/containers, pill = chips/toggles --- */
+.ranking-search,
+.ranking-sort-select select,
+#choropleth-map .map-search__input,
+#choropleth-map .map-search__results,
+.kt-rank__compare-button,
+.rk-btn-quiet,
+.ranking-controls .noteTrigger { border-radius: var(--r-sm); }
+
+.rk-btn-quiet { border: 1px solid var(--navy-line); background: #fff; color: var(--navy); transition: border-color .15s ease, background-color .15s ease; }
+.rk-btn-quiet:hover { border-color: var(--navy); background: var(--navy-tint); }
+
+.kt-rank__cite { padding: .3rem .75rem; border: 1px solid var(--navy-line); border-radius: var(--r-sm); background: #fff; color: var(--navy); }
+.kt-rank__cite:hover { border-color: var(--navy); background: var(--navy-tint); text-decoration: none; }
+
+.kt-rank [class*="compare"]:not(.kt-rank__compare-button):not(button):not(a),
+.ranking-extreme-card,
+.ranking-extreme-list,
+.ranking-data-shell,
+.ranking-primary-table .ranking-table-frame,
+.ranking-table-scroll,
+.pdh-top-card, .pdh-chart, .pdh-map-panel { border-radius: var(--r-md); }
+.ranking-data-shell { overflow: clip; }
+
+#choropleth-map .map-filter-chip { border-radius: var(--r-sm); }
+.ranking-extremes .ranking-extreme-row__flag, .ranking-state img { border-radius: 3px; }
+
+/* --- "vs U.S." reference: second line under the metric value + a short source note --- */
+.ranking-vs-us { display: block; margin-top: .1rem; color: #5f7183; font: 500 .7rem/1.3 var(--font-sans); white-space: nowrap; }
+.ranking-national-note { margin: 0 0 .6rem; color: #5f7183; font: 400 .78rem/1.5 var(--font-sans); }
+.ranking-national-note strong { margin-right: .4rem; color: #0e1a26; font-weight: 700; }

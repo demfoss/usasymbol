@@ -166,8 +166,12 @@ namespace Usasymbol.Helpers
             }
 
             var metricKey = ResolveMetricKey(table, content, titleKey);
-            var metricValue = string.IsNullOrWhiteSpace(metricKey) ? string.Empty : row.GetString(metricKey);
-            var numericValue = ParseNumber(metricValue);
+            var rawMetric = string.IsNullOrWhiteSpace(metricKey) ? string.Empty : row.GetString(metricKey);
+            var numericValue = ParseNumber(rawMetric);
+            var metricColumn = string.IsNullOrWhiteSpace(metricKey)
+                ? null
+                : table.Columns.FirstOrDefault(c => string.Equals(c.Key, metricKey, StringComparison.OrdinalIgnoreCase));
+            var metricValue = FormatMetric(rawMetric, numericValue, metricColumn);
             var rankText = First(row, "rank", "position", "order");
             var rank = int.TryParse(rankText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedRank)
                 ? parsedRank
@@ -264,6 +268,23 @@ namespace Usasymbol.Helpers
         private static string First(TableRow row, params string[] keys)
         {
             return keys.Select(row.GetString).FirstOrDefault(value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+        }
+
+        // Same display rules as the ranking table: thousands separators, column format, % for percents.
+        private static string FormatMetric(string raw, double? number, TableColumn? column)
+        {
+            if (string.IsNullOrWhiteSpace(raw) || number is null || column is null ||
+                !string.Equals(column.Type, "number", StringComparison.OrdinalIgnoreCase))
+                return raw;
+
+            var culture = CultureInfo.GetCultureInfo("en-US");
+            if (string.Equals(column.Format, "percent", StringComparison.OrdinalIgnoreCase))
+                return number.Value.ToString("0.##", culture) + "%";
+
+            var isWhole = number.Value == Math.Floor(number.Value);
+            var format = column.Format ?? (isWhole ? "N0" : "N2");
+            try { return number.Value.ToString(format, culture); }
+            catch (FormatException) { return number.Value.ToString(isWhole ? "N0" : "N2", culture); }
         }
 
         private static double? ParseNumber(string value)

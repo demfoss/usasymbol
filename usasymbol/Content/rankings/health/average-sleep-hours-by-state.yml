@@ -44,6 +44,7 @@ table:
   sortable: true
   metric_default: pct_insufficient
   sort_default: desc
+  higher_is_better: false
   column_formats:
     pct_insufficient: "0.0'%'"
   columns:
@@ -302,6 +303,11 @@ table:
       state_slug: "vermont"
       postal_code: "VT"
       pct_insufficient: 29.6
+  national:
+    value: 35.5
+    label: "U.S. adults"
+    source: "CDC BRFSS via America's Health Rankings"
+    year: 2022
 
 map:
   title: "Sleep Deprivation by State Map"
