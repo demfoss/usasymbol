@@ -10,12 +10,12 @@ const pages = [
   ["car-dealerships-by-state", ["car dealership showroom", "new cars dealership lot", "car salesperson showroom"]],
   ["grocery-stores-by-state", ["grocery store supermarket aisle", "fresh produce supermarket", "grocery shopping cart aisle"]],
   ["hotels-by-state", ["hotel building exterior", "hotel reception lobby", "hotel room interior"]],
-  ["ace-hardware-locations-by-state", ["hardware store tools", "hardware store aisle", "home improvement hand tools"]],
+  ["ace-hardware-locations-by-state", ["hardware store tools", "hardware tools shop", "small town hardware store"]],
   ["autozone-locations-by-state", ["auto parts store", "car parts shelves", "automotive parts tools"]],
   ["oreilly-auto-parts-locations-by-state", ["automotive parts store", "car repair parts", "auto mechanic parts"]],
-  ["harbor-freight-locations-by-state", ["power tools hardware store", "tool store aisle", "workshop power tools"]],
-  ["petco-locations-by-state", ["pet store dog aisle", "pet supplies store", "dog shopping pet store"]],
-  ["petsmart-locations-by-state", ["pet shop cat dog", "pet food store aisle", "pet supplies shopping"]],
+  ["harbor-freight-locations-by-state", ["power tools hardware store", "tools workshop bench", "workshop power tools"]],
+  ["petco-locations-by-state", ["dog pet shop", "dog food bowl", "cat pet toys"]],
+  ["petsmart-locations-by-state", ["dog cat together", "dog toys", "cat food bowl"]],
   ["ulta-beauty-locations-by-state", ["cosmetics beauty store", "makeup store shelves", "beauty products retail"]],
 ];
 
