@@ -1,0 +1,29 @@
+@model USASymbol.Models.ViewModels.PageDetailViewModel
+@inject USASymbol.Services.StateRankIndexService StateRankIndex
+
+@* "Kentucky also ranks #1 in ..." - state-based internal links computed once from all ranking tables
+   (deterministic, capped inbound links per page). Rendered on the server, plain links. *@
+@{
+    var teasers = await StateRankIndex.GetTeasersAsync(Model.Content?.Category ?? "", Model.Content?.Slug ?? "");
+}
+
+@if (teasers != null && teasers.Items.Count > 0)
+{
+    <nav class="state-teasers" aria-label="@teasers.StateName in other rankings">
+        <p class="state-teasers__title">
+            <a href="/states/@teasers.StateSlug">@teasers.StateName</a> also stands out in
+        </p>
+        <ul class="state-teasers__list">
+            @foreach (var t in teasers.Items)
+            {
+                <li>
+                    <a href="@t.Url">
+                        <span class="state-teasers__badge">@t.Badge</span>
+                        <span class="state-teasers__name">@t.Title</span>
+                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

@@ -90,6 +90,19 @@
             : 100.0;
     }
 
+    // Unit: the map's metric label when it describes this column ("New Cases per 100,000"), else the column label.
+    var mapInfo = Model.Content?.Map;
+    var unitLabel = (mapInfo != null && !string.IsNullOrWhiteSpace(mapInfo.MetricLabel)
+                     && string.Equals(mapInfo.MetricKey, metricKey, StringComparison.OrdinalIgnoreCase))
+        ? mapInfo.MetricLabel!.Trim()
+        : metricLabel;
+    var hib = table.HigherIsBetter;
+    // Warm = worse, cool = better; neutral when the page has no direction flag.
+    var topTone = hib == null ? "" : (hib == true ? "ranking-extreme-list--good" : "ranking-extreme-list--bad");
+    var botTone = hib == null ? "" : (hib == true ? "ranking-extreme-list--bad" : "ranking-extreme-list--good");
+    string RowRank(TableRow r, int fallback) =>
+        int.TryParse(r.GetString("rank").Replace(",", ""), out var rk) ? rk.ToString() : fallback.ToString();
+
     string F(double v) => v.ToString("F1", CultureInfo.InvariantCulture);
 
     // Helpers to pull common row fields
@@ -106,7 +119,7 @@
         }
         else if (showTop && showBottom)
         {
-            <h2>Highest and Lowest @metricLabel by State</h2>
+            <h2>Highest and Lowest @unitLabel by State</h2>
         }
         else if (showTop)
         {
@@ -127,6 +140,7 @@
             <article class="ranking-extreme-card">
                 <p class="ranking-extreme-card__label">Highest</p>
                 <p class="ranking-extreme-card__value">@RowVal(topCard.Row)</p>
+                <p class="ranking-extreme-card__unit">@unitLabel</p>
                 <a class="ranking-extreme-card__state" href="/states/@slug">
                     <img src="/images/flags/@slug/flag.webp" alt="@RowState(topCard.Row) flag"
                          width="32" height="21"
@@ -142,6 +156,7 @@
             <article class="ranking-extreme-card">
                 <p class="ranking-extreme-card__label">Lowest</p>
                 <p class="ranking-extreme-card__value">@RowVal(bottomCard.Row)</p>
+                <p class="ranking-extreme-card__unit">@unitLabel</p>
                 <a class="ranking-extreme-card__state" href="/states/@slug">
                     <img src="/images/flags/@slug/flag.webp" alt="@RowState(bottomCard.Row) flag"
                          width="32" height="21"
@@ -159,21 +174,24 @@
         @* Top chart *@
         @if (showTop && topRows.Any())
         {
-            <div class="ranking-extreme-list">
+            <div class="ranking-extreme-list @topTone">
                 <div class="ranking-extreme-list__header">
                     <h3>
-                        @(showBottom ? "Top 10 Highest" : "Top 10") — @metricLabel
+                        @(showBottom ? "Top 10 Highest" : "Top 10") — @unitLabel
                     </h3>
                 </div>
                 <div class="ranking-extreme-list__rows">
+                    @{ var topIndex = 0; }
                     @foreach (var (row, val) in topRows)
                     {
+                        topIndex++;
                         var barW = F(TopBarPct(val!.Value));
                         var slug = RowSlug(row);
                         <div class="ranking-extreme-row">
-                            <img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
+                            <span class="ranking-extreme-row__rank">@RowRank(row, topIndex)</span>
+                            <span class="ranking-extreme-row__flag"><img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
                                  width="28" height="18"
-                                 onerror="this.style.visibility='hidden'" loading="lazy" />
+                                 onerror="this.style.visibility='hidden'" loading="lazy" /></span>
                             <a href="/states/@slug" class="ranking-extreme-row__state">@RowState(row)</a>
                             <div class="ranking-extreme-row__track" aria-hidden="true">
                                 <span style="width:@barW%"></span>
@@ -188,21 +206,24 @@
         @* Bottom chart *@
         @if (showBottom && bottomRows.Any())
         {
-            <div class="ranking-extreme-list">
+            <div class="ranking-extreme-list @botTone">
                 <div class="ranking-extreme-list__header">
                     <h3>
-                        Top 10 Lowest — @metricLabel
+                        Top 10 Lowest — @unitLabel
                     </h3>
                 </div>
                 <div class="ranking-extreme-list__rows">
+                    @{ var botIndex = rowsWithVals.Count + 1; }
                     @foreach (var (row, val) in Enumerable.Reverse(bottomRows))
                     {
+                        botIndex--;
                         var barW = F(BotBarPct(val!.Value));
                         var slug = RowSlug(row);
                         <div class="ranking-extreme-row">
-                            <img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
+                            <span class="ranking-extreme-row__rank">@RowRank(row, botIndex)</span>
+                            <span class="ranking-extreme-row__flag"><img src="/images/flags/@slug/flag.webp" alt="@RowState(row) flag"
                                  width="28" height="18"
-                                 onerror="this.style.visibility='hidden'" loading="lazy" />
+                                 onerror="this.style.visibility='hidden'" loading="lazy" /></span>
                             <a href="/states/@slug" class="ranking-extreme-row__state">@RowState(row)</a>
                             <div class="ranking-extreme-row__track" aria-hidden="true">
                                 <span style="width:@barW%"></span>

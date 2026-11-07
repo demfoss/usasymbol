@@ -160,7 +160,14 @@
                                                              class="h-5 w-auto object-contain rounded-sm flex-shrink-0"
                                                              loading="lazy" decoding="async" />
                                                     }
-                                                    <span>@(cellValue?.ToString() ?? stateName ?? "—")</span>
+                                                    @if (!string.IsNullOrEmpty(stateSlug) && string.IsNullOrWhiteSpace(effectiveSymbolUrl))
+                                                    {
+                                                        <a href="/states/@stateSlug">@(cellValue?.ToString() ?? stateName ?? "—")</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@(cellValue?.ToString() ?? stateName ?? "—")</span>
+                                                    }
                                                 </span>
                                                 break;
                                             }

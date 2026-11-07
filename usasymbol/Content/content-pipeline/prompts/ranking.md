@@ -133,6 +133,14 @@ TABLE & MAP — hard rules
 - Every ranking MUST have a map block: metric_key pointing at the main numeric column, a metric_label, and a non-blue color_scheme (green, teal, orange, amber, purple, red, red-green). Use color_scale: log when the top value is 20x+ the bottom.
 - Each key data angle (per capita, largest X, oldest X, prices) gets its own section with a small top-10 table under a searchable H2. Never extra columns in the main table.
 
+YAML SAFETY — mistakes that broke live pages (all hard rules)
+- Inside any flow mapping `{ ... }` or flow list `[ ... ]` (columns, column_formats, rows, sources), put EVERY text value in double quotes. An unquoted comma splits the value. Real bug: `columns: { incidence_rate: New Cases per 100,000 }` created a phantom column "000" in the table header, and `{name: BLS Handbook, Public Safety, url: ...}` cut a source name in half. Write `incidence_rate: "New Cases per 100,000"` and `name: "BLS Handbook, Public Safety"`. When unsure, use block style (one key per line) instead of flow style.
+- Every key declared under `table.columns` (and `column_formats`) must exist in the rows. Never declare a column (hourly wage, notes) the rows do not carry. It renders as an empty column.
+- The table must rank the metric in `metric_default` so that rank 1 is the LARGEST value. If the topic is "lower is better" or the metric is itself a place (score 1 = best), the key takeaways block and the state index skip the page. Keep the real measured value (a rate, a price, a count) as the metric column, not a rank.
+- If a bigger number is clearly bad news (cancer, crime, mortality, taxes) or clearly good news (salary, graduation), add `higher_is_better: false` or `true` under `table:`. Leave it out for neutral counts (area codes, land area, production). It only drives red and blue accents.
+- Do not write quick_answer sentences that open with a year ("In 2024, Texas led with 90") or a count of states ("All 50 states"). Open with the state and its metric value, so the first number in each sentence is the metric. Name D.C. as "District of Columbia" only inside the table. In prose say it explicitly and do not let it be the first state named unless it is truly #1.
+- The block under the hero and the "also stands out in" links are generated from the table. Keep the table complete (all 50 states unless the topic truly covers fewer) and with unique, numeric values.
+
 CATEGORICAL TOPICS (legal status, yes/no, allowed/banned)
 - When the topic is a status rather than a quantity, show the status as a text column ("Legal", "Restricted", "Illegal").
 - The map still needs a numeric metric_key. Use a numeric column the payload provides (minimum age, fine amount, year enacted, or a status code the payload defines). Never invent a numeric encoding yourself.

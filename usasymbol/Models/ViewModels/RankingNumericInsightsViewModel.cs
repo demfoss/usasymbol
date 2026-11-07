@@ -44,6 +44,10 @@ namespace USASymbol.Models.ViewModels
         public IReadOnlyList<RankingNumericPoint> Distribution { get; init; } = Array.Empty<RankingNumericPoint>();
         public bool HasFiftyStateDistribution => Distribution.Count == 50;
         public int RankedCount { get; init; }
+        public TableColumn MetricColumn { get; init; } = null!;
+
+        /// <summary>All ranked points, highest value first (ties ordered by state name).</summary>
+        public IReadOnlyList<RankingNumericPoint> Ranked { get; init; } = Array.Empty<RankingNumericPoint>();
 
         public static RankingNumericInsightsViewModel? Create(PageTable? table)
         {
@@ -105,7 +109,9 @@ namespace USASymbol.Models.ViewModels
                     ? BuildDistributionSummary(distribution, metricColumn)
                     : "",
                 Distribution = distribution,
-                RankedCount = points.Count
+                RankedCount = points.Count,
+                MetricColumn = metricColumn,
+                Ranked = ordered
             };
         }
 

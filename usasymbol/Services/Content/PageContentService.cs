@@ -427,6 +427,8 @@ namespace USASymbol.Services
             if (d.TryGetValue("sortable",     out var o)) table.Sortable      = o?.ToString()?.ToLower() == "true";
             if (d.TryGetValue("default_column", out var dc)) table.DefaultColumn = dc?.ToString();
             if (d.TryGetValue("display_mode", out var dm)) table.DisplayMode = dm?.ToString();
+            if (d.TryGetValue("higher_is_better", out var hib) && bool.TryParse(hib?.ToString(), out var hibValue))
+                table.HigherIsBetter = hibValue;
 
 
             if (table.DefaultColumn == null && d.TryGetValue("metric_default", out var md))
@@ -447,6 +449,10 @@ namespace USASymbol.Services
                 {
                     var key = kvp.Key?.ToString() ?? "";
                     if (key == "") continue;
+
+                    // Defensive: an unquoted comma inside a flow mapping ("New Cases per 100,000")
+                    // splits into a phantom key "000" with a null label. Never render it as a column.
+                    if (kvp.Value == null && key.All(char.IsDigit)) continue;
 
                     var label = kvp.Value?.ToString() ?? key;
                     var col = new TableColumn

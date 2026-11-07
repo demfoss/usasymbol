@@ -26,6 +26,13 @@ namespace USASymbol.Models.Content
         /// sortable/searchable data table. Set via YAML field <c>table.display_mode</c>.
         /// </summary>
         public string? DisplayMode { get; set; }
+
+        /// <summary>
+        /// Optional YAML flag <c>table.higher_is_better</c>: true = a bigger number is good news,
+        /// false = bad news (cancer, crime, mortality), null = neutral (area codes, land area).
+        /// Drives the colour semantics of the Key takeaways block.
+        /// </summary>
+        public bool? HigherIsBetter { get; set; }
     }
 
     public class TableColumn

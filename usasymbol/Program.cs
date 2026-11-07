@@ -91,6 +91,7 @@ builder.Services.AddScoped<IStateAbbreviationContentService, StateAbbreviationCo
 builder.Services.AddScoped<ISurnamesService, SurnamesService>();
 builder.Services.AddScoped<IRankingsContentService, RankingsContentService>();
 builder.Services.AddSingleton<RankingDirectoryService>();
+builder.Services.AddSingleton<StateRankIndexService>();
 builder.Services.AddScoped<IListingsContentService, ListingsContentService>();
 builder.Services.AddScoped<ICollectionsContentService, CollectionsContentService>();
 builder.Services.AddSingleton<CollectionsDirectoryService>();
@@ -156,6 +157,9 @@ var app = builder.Build();
 
 if (isImageSyncCommand)
 {
+// Build the state -> rankings index in the background so the first ranking page is not slowed down.
+app.Lifetime.ApplicationStarted.Register(() => _ = Task.Run(() => app.Services.GetRequiredService<StateRankIndexService>().WarmUpAsync()));
+
     using var scope = app.Services.CreateScope();
     var runner = scope.ServiceProvider.GetRequiredService<BunnyImageSyncRunner>();
     var exitCode = await runner.RunAsync(rebuildBunnyImageManifest, CancellationToken.None);

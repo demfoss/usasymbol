@@ -7,3 +7,4 @@ Agent rule for this workspace:
 - Do not use PowerShell `Get-Content` output as the source of truth for Unicode punctuation in content files. Verify suspicious characters with a UTF-8-safe read method before editing.
 - After any encoding-related issue, do not expand the scope to "fix similar files" without the user's explicit approval. Limit work to the single requested file unless told otherwise.
 - In content files, never use scripts to normalize punctuation, quotes, dashes, or SEO text at scale. Use targeted manual edits only.
+- In YAML flow mappings `{ ... }`, always double-quote text values: an unquoted comma ("New Cases per 100,000") splits the value and creates phantom columns. Full rules: Content/content-pipeline/prompts/ranking.md, section "YAML SAFETY".

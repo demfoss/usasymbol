@@ -58,9 +58,14 @@ namespace Usasymbol.Helpers
             ("Wisconsin", "wisconsin"), ("Wyoming", "wyoming"),
         };
 
-        private static readonly Regex CurrencyPattern = new(@"\$\d[\d,]*(?:\.\d+)?", RegexOptions.Compiled);
-        private static readonly Regex PercentPattern = new(@"\d[\d,]*(?:\.\d+)?%", RegexOptions.Compiled);
-        private static readonly Regex NumberTokenPattern = new(@"\b\d[\d,]*(?:\.\d+)?\b", RegexOptions.Compiled);
+        // Thousands groups must be exactly ",ddd" so a trailing comma ("in 2024, with") is not swallowed.
+        /// <summary>True when the slug is one of the 50 states (not DC, not a region).</summary>
+        public static bool IsState(string? slug) =>
+            !string.IsNullOrWhiteSpace(slug) && States.Any(s => string.Equals(s.Slug, slug, StringComparison.OrdinalIgnoreCase));
+
+        private static readonly Regex CurrencyPattern = new(@"\$\d+(?:,\d{3})*(?:\.\d+)?", RegexOptions.Compiled);
+        private static readonly Regex PercentPattern = new(@"\d+(?:,\d{3})*(?:\.\d+)?%", RegexOptions.Compiled);
+        private static readonly Regex NumberTokenPattern = new(@"\b\d+(?:,\d{3})*(?:\.\d+)?\b", RegexOptions.Compiled);
         private static readonly Regex BareYearPattern = new(@"^(?:1[5-9]\d{2}|20\d{2})$", RegexOptions.Compiled);
 
         // Finds the first number-like token in reading order (currency, percent, or plain
@@ -320,6 +325,13 @@ namespace Usasymbol.Helpers
                     matches.Add((state.Name, state.Slug, m.Index));
                 }
             }
+
+            // Drop matches nested inside a longer state name ("Virginia" inside "West Virginia",
+            // "Dakota"-style substrings), otherwise the shorter name can win the "closest" pick.
+            matches = matches
+                .Where(m => !matches.Any(o =>
+                    o.Name.Length > m.Name.Length && o.Index <= m.Index && o.Index + o.Name.Length >= m.Index + m.Name.Length))
+                .ToList();
 
             if (matches.Count == 0)
             {

@@ -1,38 +1,239 @@
 @model USASymbol.Models.ViewModels.PageDetailViewModel
 @using Usasymbol.Helpers
 @using USASymbol.Extensions
+@using USASymbol.Services
+@inject USASymbol.Services.Interface.IBorderService BorderService
 
 @{
     var sectionId = (ViewData["QuickAnswerSectionId"] as string ?? "quick-answer").Trim();
+    var tableSectionId = (ViewData["RankingTableSectionId"] as string ?? "ranking-table").Trim();
     var title = string.IsNullOrWhiteSpace(Model.Content.Page.QuickAnswerTitle)
         ? Model.Content.Page.H1
         : Model.Content.Page.QuickAnswerTitle;
-    var stories = Model.HasQuickAnswer
+
+    // Preferred path: everything comes from the structured table (state, value, rank).
+    var rank = RankingTakeawaysBuilder.Build(Model);
+
+    // Fallback for pages without a numeric state table: best-effort parse of the prose bullets.
+    var stories = rank == null && Model.HasQuickAnswer
         ? KeyTakeawaysBuilder.BuildBigNumberStories(Model.Content.Page.QuickAnswer)
         : new List<BigNumberStory>();
+
+    string citeText = "";
+    TakeawayStateOption? cmpA = null, cmpB = null;
+    string cmpUrl = "", cmpNote = "";
+    string topSlug = "";
+    if (rank != null)
+    {
+        // Compare strip: the leader vs a bordering state that is in this ranking; if it has no
+        // usable neighbour (Alaska, Hawaii, DC), vs the opposite end of the ranking.
+        var byRank = rank.Options.Where(o => KeyTakeawaysBuilder.IsState(o.Slug)).OrderBy(o => o.Rank).ThenBy(o => o.Name, StringComparer.Ordinal).ToList();
+        cmpA = byRank.FirstOrDefault();
+        if (cmpA != null)
+        {
+            topSlug = cmpA.Slug;
+            var border = await BorderService.GetBorderContentAsync(cmpA.Slug);
+            var neighbours = (border?.BorderSummary?.BorderingStatesList ?? "")
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(n => n.ToLowerInvariant().Replace(' ', '-'))
+                .ToHashSet();
+            cmpB = byRank.Where(o => o != cmpA && neighbours.Contains(o.Slug))
+                         .OrderBy(o => Math.Abs(o.Number - cmpA.Number)).FirstOrDefault();
+            cmpB ??= byRank.Count > 1 ? byRank[^1] : null;
+            if (cmpB != null && cmpB != cmpA)
+            {
+                cmpUrl = "/compare/" + ComparisonService.CanonicalPairSlug(cmpA.Slug, cmpB.Slug);
+                if (Math.Abs(cmpB.Number) > 1e-9)
+                {
+                    var diff = (cmpA.Number - cmpB.Number) / Math.Abs(cmpB.Number) * 100d;
+                    cmpNote = $"{cmpA.Name} is {Math.Round(Math.Abs(diff)):0}% {(diff >= 0 ? "higher" : "lower")}";
+                }
+            }
+            else
+            {
+                cmpA = null; cmpB = null;
+            }
+        }
+
+
+        var req = Context.Request;
+        var pagePath = !string.IsNullOrWhiteSpace(Model.Content.Url) ? Model.Content.Url : req.Path.Value;
+        var absUrl = $"{req.Scheme}://{req.Host}{pagePath}";
+        var firstSource = Model.Content.Page.Sources?.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s.Name))?.Name;
+        citeText = $"USA Symbol. “{Model.Content.Page.H1}.” {absUrl}"
+            + (string.IsNullOrWhiteSpace(firstSource) ? "" : $" Data: {firstSource}.");
+    }
 }
 
-@if (stories.Count >= 2)
+@if (rank != null)
 {
-    <div id="@sectionId" class="kt-story scroll-mt-24">
-        <p class="kt-story__eyebrow">Key takeaways</p>
-        <h2 class="kt-story__title">@title</h2>
+    <section id="@sectionId" class="kt-rank scroll-mt-24" aria-labelledby="kt-rank-title" data-kt-table="@tableSectionId">
+        <h2 id="kt-rank-title" class="kt-rank__title">Key takeaways</h2>
+        <p class="kt-rank__summary">@rank.Summary</p>
+
+        <div class="kt-rank__cards kt-rank__cards--@rank.Cards.Count">
+            @foreach (var card in rank.Cards)
+            {
+                <article class="kt-rank__card kt-rank__card--@card.Tone">
+                    <p class="kt-rank__role">@card.Role</p>
+                    <p class="kt-rank__state">
+                        @for (var i = 0; i < card.States.Count; i++)
+                        {
+                            var st = card.States[i];
+                            if (i > 0) { <span class="kt-rank__amp"> &amp; </span> }
+                            <a href="#@tableSectionId" data-kt-row="@st.Slug">@st.Name</a>
+                        }
+                        @if (card.ExtraStates > 0)
+                        {
+                            <span class="kt-rank__more">+@card.ExtraStates more</span>
+                        }
+                    </p>
+                    <p class="kt-rank__value">@card.Value</p>
+                    @if (!string.IsNullOrWhiteSpace(rank.Unit))
+                    {
+                        <p class="kt-rank__unit">@rank.Unit</p>
+                    }
+                    <span class="kt-rank__bar" aria-hidden="true"><i style="width:@card.BarPercent.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)%"></i></span>
+                    @if (!string.IsNullOrWhiteSpace(card.Context))
+                    {
+                        <p class="kt-rank__ctx">@card.Context</p>
+                    }
+                </article>
+            }
+        </div>
+
+        @if (cmpA != null && cmpB != null)
+        {
+            <a class="kt-rank__compare" href="@cmpUrl">
+                <span class="kt-rank__compare-pair"><strong>@cmpA.Name</strong> @cmpA.Value <em>vs</em> <strong>@cmpB.Name</strong> @cmpB.Value</span>
+                <span class="kt-rank__compare-cta">@(string.IsNullOrEmpty(cmpNote) ? "" : cmpNote + " · ")Compare these states <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+        }
+
+        <div class="kt-rank__tools" data-kt-top="@topSlug" data-kt-top-name="@(cmpA?.Name)">
+            <label class="kt-rank__you">
+                <span class="kt-rank__you-label">Where does your state stand?</span>
+                <select data-kt-you aria-label="Pick your state to see where it ranks">
+                    <option value="">Choose a state</option>
+                    @foreach (var o in rank.Options)
+                    {
+                        <option value="@o.Slug" data-rank="@o.Rank" data-value="@o.Value" data-ctx="@o.Context">@o.Name</option>
+                    }
+                </select>
+            </label>
+            <p class="kt-rank__you-out" data-kt-you-out aria-live="polite"></p>
+            <button type="button" class="kt-rank__cite" data-kt-cite="@citeText">
+                <i class="fa-solid fa-quote-left" aria-hidden="true"></i>
+                <span>Cite this data</span>
+            </button>
+        </div>
+    </section>
+
+    <script>
+    (function () {
+        var root = document.getElementById(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(sectionId)));
+        if (!root) return;
+        var tableId = root.getAttribute('data-kt-table');
+
+        function flash(row) {
+            row.classList.remove('kt-row-flash');
+            void row.offsetWidth;
+            row.classList.add('kt-row-flash');
+        }
+        function goToRow(slug) {
+            var table = document.getElementById(tableId);
+            var row = table && table.querySelector('tr[data-state-slug="' + slug + '"]');
+            if (!row) return false;
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            flash(row);
+            return true;
+        }
+
+        root.addEventListener('click', function (e) {
+            var a = e.target.closest('a[data-kt-row]');
+            if (a && goToRow(a.getAttribute('data-kt-row'))) e.preventDefault();
+
+            var cite = e.target.closest('[data-kt-cite]');
+            if (cite) {
+                var text = cite.getAttribute('data-kt-cite');
+                var label = cite.querySelector('span');
+                var done = function () {
+                    var old = label.textContent;
+                    label.textContent = 'Copied';
+                    setTimeout(function () { label.textContent = old; }, 1800);
+                };
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(done, function () { window.prompt('Copy this citation:', text); });
+                } else {
+                    window.prompt('Copy this citation:', text);
+                }
+            }
+        });
+
+        var select = root.querySelector('[data-kt-you]');
+        var out = root.querySelector('[data-kt-you-out]');
+        if (select && out) {
+            select.addEventListener('change', function () {
+                var opt = select.options[select.selectedIndex];
+                if (!opt || !opt.value) { out.innerHTML = ''; return; }
+                var ctx = opt.getAttribute('data-ctx');
+                out.innerHTML = '';
+                var strong = document.createElement('strong');
+                strong.textContent = opt.text + ': #' + opt.getAttribute('data-rank') + ' · ' + opt.getAttribute('data-value');
+                out.appendChild(strong);
+                if (ctx) out.appendChild(document.createTextNode(' · ' + ctx));
+                var link = document.createElement('a');
+                link.href = '#' + tableId;
+                link.textContent = 'See in table';
+                link.addEventListener('click', function (ev) {
+                    if (goToRow(opt.value)) ev.preventDefault();
+                });
+                out.appendChild(document.createTextNode(' · '));
+                out.appendChild(link);
+
+                var tools = select.closest('[data-kt-top]');
+                var top = tools && tools.getAttribute('data-kt-top');
+                if (top && top !== opt.value) {
+                    var pair = [opt.value, top].sort();
+                    var cmp = document.createElement('a');
+                    cmp.href = '/compare/' + pair[0] + '-vs-' + pair[1];
+                    cmp.textContent = 'Compare ' + opt.text + ' with ' + tools.getAttribute('data-kt-top-name') + ' (#1)';
+                    out.appendChild(document.createTextNode(' · '));
+                    out.appendChild(cmp);
+                }
+            });
+        }
+    })();
+    </script>
+}
+else if (stories.Count >= 2)
+{
+    <section id="@sectionId" class="kt-story scroll-mt-24" aria-labelledby="kt-story-title">
+        <h2 id="kt-story-title" class="kt-story__title">Key takeaways</h2>
 
         <div class="kt-story__grid @(stories.Count == 2 ? "kt-story__grid--2" : "")">
             @foreach (var story in stories)
             {
                 <article class="kt-story__card">
-                    <p class="kt-story__label">@story.Label</p>
-                    <div class="kt-story__number">@story.Number</div>
                     @if (!string.IsNullOrWhiteSpace(story.Subject))
                     {
-                        <p class="kt-story__subject">@story.Subject</p>
+                        <p class="kt-story__subject">
+                            @if (!string.IsNullOrWhiteSpace(story.SubjectSlug))
+                            {
+                                <a href="/states/@story.SubjectSlug">@story.Subject</a>
+                            }
+                            else
+                            {
+                                @story.Subject
+                            }
+                        </p>
                     }
+                    <div class="kt-story__number">@story.Number</div>
                     <p class="kt-story__copy">@story.Copy.RenderAutoLinks()</p>
                 </article>
             }
         </div>
-    </div>
+    </section>
 }
 else if (Model.HasQuickAnswer)
 {

@@ -83,18 +83,22 @@
                 @await Html.PartialAsync("Components/Tables/_Table", tableVM)
             </div>
 
+            @await Html.PartialAsync("~/Views/Rankings/_StateTeasers.cshtml", Model)
+
             @if (hasRelatedRankings)
             {
                 @await Html.PartialAsync("_RelatedRankingsInline", relatedRankings)
             }
         </div>
 
+        @* Distribution block intentionally hidden (it repeats the takeaways/extremes); component kept: _RankingDistribution.cshtml
         @if (numericInsights != null)
         {
             <div class="ranking-insights-after-table">
                 @await Html.PartialAsync("~/Views/Rankings/_RankingDistribution.cshtml", Model)
             </div>
         }
+        *@
 
         <div class="relative content-flow site-content page-flow-content">
             @if (content?.Heatmap != null)
