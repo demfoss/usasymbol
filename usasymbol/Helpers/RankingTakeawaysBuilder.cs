@@ -111,7 +111,7 @@ namespace Usasymbol.Helpers
                     Number = p.Value,
                     Statement = HasUnits(metric)
                         ? $"{p.State} has {Amount(p.Value)}"
-                        : $"{p.State} records {Show(p.Value)} for {ResolveLabel(content!, column)}",
+                        : $"{p.State} is at {Show(p.Value)}",
                     Context = ContextFor(presentation.For(p.Row)!, p.Value),
                     Position = Scale(p.Value),
                     IsTypical = Math.Abs(p.Value - median) < 1e-9,
@@ -122,20 +122,28 @@ namespace Usasymbol.Helpers
             var q1 = Quantile(values, .25);
             var q3 = Quantile(values, .75);
             // For counts use inclusive whole-number bounds, rather than fractional objects.
-            if (metric?.Additive == true && values.All(v => v == Math.Truncate(v)))
+            var wholeNumbers = values.All(v => v == Math.Truncate(v));
+            if (wholeNumbers)
             {
                 q1 = Math.Floor(q1);
                 q3 = Math.Ceiling(q3);
             }
-            var lead = "";
-            if (!presentation.Ascending && min >= 0 && median > 0 && max / median >= 1.5 && max != min &&
-                ordered.Count(p => p.Value == max) == 1)
-                lead = $"{ordered[0].State} leads with {SentenceAmount(max)}, about {(max / median).ToString("0.#", En)}× the typical state. ";
-            var summary = lead + (q1 == q3
-                ? $"The middle half of states shares the same figure: {SentenceAmount(q1)}."
-                : HasUnits(metric)
-                    ? $"The middle half of states has between {ProseNumber(q1, column)} and {SentenceAmount(q3)}."
-                    : $"The middle half of states falls between {Show(q1)} and {Show(q3)} for {ResolveLabel(content!, column)}.");
+            var typical = wholeNumbers ? Math.Round(median, MidpointRounding.AwayFromZero) : median;
+            // Plain wording: the leader, what a typical state has, and the range half of all states fall in.
+            // The unit is named once, in the first sentence; later numbers stay bare.
+            var range = $"{Show(q1)} and {Show(q3)}";
+            var higherIsBad = table.HigherIsBetter == false;
+            string summary;
+            if (q1 == q3)
+                summary = $"Half of all states share the same figure: {SentenceAmount(q1)}.";
+            else if (!presentation.Ascending && min >= 0 && median > 0 && max != min &&
+                     ordered.Count(p => p.Value == max) == 1)
+                summary = (higherIsBad
+                              ? $"{ordered[0].State} is highest at {SentenceAmount(max)}."
+                              : $"{ordered[0].State} leads with {SentenceAmount(max)}.")
+                          + $" A typical state has about {Show(typical)}, and half of all states fall between {range}.";
+            else
+                summary = $"Half of all states fall between {range}.";
             if (ranked.Count != table.Rows.Count)
                 summary += $" Based on {ranked.Count} states with numeric data.";
 
@@ -202,8 +210,8 @@ namespace Usasymbol.Helpers
             {
                 Summary = summary,
                 TypicalStatement = HasUnits(metric)
-                    ? $"The typical state has {SentenceAmount(median)}."
-                    : $"The typical state records {Show(median)} on this measure.",
+                    ? $"A typical state has about {SentenceAmount(typical)}."
+                    : $"A typical state has about {Show(typical)}.",
                 TypicalPosition = Scale(median),
                 Options = options,
                 Facts = facts,

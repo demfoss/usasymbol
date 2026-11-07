@@ -27,8 +27,10 @@
     var points = ranking.Ordered;
     var maxPoint = points.MaxBy(p => p.Value)!;
     var minPoint = points.MinBy(p => p.Value)!;
-    string? gap = !presentation.Diverging && minPoint.Value > 0 && maxPoint.Value / minPoint.Value >= 2
-        ? $"{maxPoint.State} ({maxPoint.DisplayValue}) is {(maxPoint.Value / minPoint.Value).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)}\u00D7 {minPoint.State} ({minPoint.DisplayValue})."
+    // Plain wording: "California's 385 is about 38 times Delaware's 10."
+    var ratio = minPoint.Value > 0 ? maxPoint.Value / minPoint.Value : 0;
+    string? gap = !presentation.Diverging && ratio >= 2
+        ? $"{maxPoint.State}\u2019s {maxPoint.DisplayValue} is {(ratio >= 100 ? "more than 100" : ratio >= 10 ? "about " + Math.Round(ratio, MidpointRounding.AwayFromZero).ToString("0") : "about " + ratio.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))} times {minPoint.State}\u2019s {minPoint.DisplayValue}."
         : null;
     // Map bucket colours per state (postal code), reused for the bars.
     IReadOnlyDictionary<string, string>? barColors = null;

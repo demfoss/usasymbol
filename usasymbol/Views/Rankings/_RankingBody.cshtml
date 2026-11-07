@@ -105,17 +105,25 @@
             @{
                 var footUnit = content?.Table?.Metric?.UnitPlural;
                 var footNote = content?.Table?.Note;
-                var footSource = Model.VisibleSources.FirstOrDefault();
+                // "T-46" is explained once under the table. Sources live only in "About this data".
+                string? tieNote = null;
+                var tieRanking = RankingPresentation.Create(content?.Table);
+                if (tieRanking != null)
+                {
+                    var firstTie = tieRanking.Ordered
+                        .Select(p => tieRanking.For(p.Row))
+                        .Where(pl => pl != null && pl.TieCount > 1)
+                        .OrderBy(pl => pl!.Rank)
+                        .FirstOrDefault();
+                    if (firstTie != null) { tieNote = $"T-{firstTie.Rank} means tied for {firstTie.Rank}{(firstTie.Rank % 100 is >= 11 and <= 13 ? "th" : (firstTie.Rank % 10) switch { 1 => "st", 2 => "nd", 3 => "rd", _ => "th" })} place."; }
+                }
             }
-            @if (!string.IsNullOrWhiteSpace(footUnit) || !string.IsNullOrWhiteSpace(footNote) || footSource != null)
+            @if (!string.IsNullOrWhiteSpace(footUnit) || !string.IsNullOrWhiteSpace(footNote) || tieNote != null)
             {
                 <p class="ranking-table-footnote">
                     @if (!string.IsNullOrWhiteSpace(footUnit)) { <span>Unit: <strong>@footUnit</strong>.</span> }
                     @if (!string.IsNullOrWhiteSpace(footNote)) { <span>@footNote</span> }
-                    @if (footSource != null)
-                    {
-                        <span>Source: @if (!string.IsNullOrWhiteSpace(footSource.Url)) { <a href="@footSource.Url" rel="noopener">@footSource.Name</a><text>.</text> } else { <text>@footSource.Name.</text> }</span>
-                    }
+                    @if (tieNote != null) { <span>@tieNote</span> }
                 </p>
             }
 

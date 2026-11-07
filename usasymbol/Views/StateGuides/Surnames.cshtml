@@ -342,10 +342,6 @@
     .origin-filter.is-muted {
         opacity: .55;
     }
-    .origin-header p,
-    .origin-header + p {
-        display: none;
-    }
     .example-chip {
         display: inline-flex;
         align-items: center;
@@ -500,15 +496,13 @@
             {
                 <section class="mb-10 border-t border-b border-slate-200/80 py-5">
                     <div class="origin-header mb-4 flex flex-wrap items-center justify-between gap-3">
-                        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Name origins â€” top @content.Surnames.Count surnames</p>
+                        <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Name origins — top @content.Surnames.Count surnames</span>
                         <button type="button"
                                 id="originFilterReset"
                                 class="hidden text-[12px] font-semibold text-slate-500 underline decoration-slate-300 underline-offset-4 hover:text-slate-900 hover:decoration-slate-500">
                             Show all origins
                         </button>
-                        <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Name origins - top @content.Surnames.Count surnames</span>
                     </div>
-                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-4">Name origins — top @content.Surnames.Count surnames</p>
                     <!-- Stacked bar -->
                     <div class="flex h-3 w-full overflow-hidden rounded-full mb-4 bg-slate-100">
                         @foreach (var g in originGroups)
@@ -626,6 +620,7 @@
                         </div>
                         }
                     }
+                </div>
             </section>
 
             <!-- UNIQUELY THIS STATE ──────────────────────── -->
@@ -691,7 +686,7 @@
                             <div class="px-5 py-5">
                                 <div class="flex items-center gap-3 mb-3">
                                     <div class="inline-flex h-8 w-8 shrink-0 items-center justify-center bg-slate-100 text-slate-600">
-                                        <i class="@eg.Icon text-sm"></i>
+                                        <i class="fa-solid @eg.Icon text-sm"></i>
                                     </div>
                                     <h3 class="text-[15px] font-bold text-slate-900">@eg.Type</h3>
                                 </div>
@@ -921,5 +916,10 @@
         });
 
         render();
+
+        // Back/forward cache can restore a filtered state: always start with every name visible.
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) { activeOrigin = ''; render(); }
+        });
     })();
 </script>

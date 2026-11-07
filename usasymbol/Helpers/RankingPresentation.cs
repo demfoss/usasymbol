@@ -11,7 +11,7 @@ public sealed record RankingPlacement(int Rank, int TieCount, int TotalCount, bo
         ? $"Tied with {TieCount - 1} other {(TieCount == 2 ? "state" : "states")}."
         : $"Ranked #{Rank} of {TotalCount} states.";
     public string Context => TieCount == TotalCount
-        ? $"All {TotalCount} states are tied on this measure."
+        ? $"All {TotalCount} states have the same figure."
         : TieCount > 1 ? $"Tied for {(Rank == 1 ? "first" : IsLast ? "last" : $"#{Rank}")} with {TieCount - 1} other {(TieCount == 2 ? "state" : "states")}."
         : IsLast ? $"Ranked last among {TotalCount} states." : Tooltip;
 }

@@ -162,10 +162,6 @@
     .ranking-extremes__tabs button[aria-selected="true"] { background: #fff; color: #173e61; box-shadow: 0 1px 2px rgba(14,26,38,.14); }
     .ranking-extremes__charts--paired .ranking-extreme-list { display: none; }
     .ranking-extremes__charts--paired .ranking-extreme-list.is-active { display: block; }
-    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="5"],
-    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="6"],
-    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="7"],
-    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="8"],
-    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row[data-index="9"] { display: none; }
+    .ranking-extremes:not(.is-expanded) .ranking-extreme-list .ranking-extreme-row.is-extra { display: none; }
     .ranking-extremes__more { display: block; width: 100%; height: 44px; margin-top: 10px; border: 1px solid #c9d4de; border-radius: 10px; background: #fff; color: #173e61; font: 700 14px/1 var(--font-sans); cursor: pointer; }
 }
