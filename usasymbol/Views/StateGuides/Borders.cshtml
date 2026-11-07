@@ -183,8 +183,14 @@
             parkName = ResolveCardPark(c.Name, c.ParkName, c.Image)
         });
 
-    ViewData["Title"] = Model.BorderContent?.SeoTitle ?? $"{Model.State.Name} Borders";
-    ViewData["Description"] = Model.BorderContent?.SeoDescription ?? $"What borders {Model.State.Name}?";
+    // Neighbor states with comparison slugs (from the same border data the page already uses)
+    var neighborStates = borderingStateNames
+        .Where(n => stateCodes.ContainsKey(n))
+        .Select(n => (Name: n, Slug: n.ToLowerInvariant().Replace(" ", "-")))
+        .ToList();
+    var hasStateNeighbors = neighborStates.Count > 0;
+
+    // Title/description are set in StateGuidesController.Borders (single source of truth).
     ViewData["OgImage"] = ogImage;
     ViewData["OgType"] = "article";
     ViewData["Canonical"] = canonicalUrl;
@@ -848,6 +854,41 @@
         </section>
     }
 
+    <!-- COMPARE WITH NEIGHBORS -->
+    @if (hasStateNeighbors)
+    {
+        <section id="compare-neighbors" class="mb-12 scroll-mt-20">
+            <div class="border border-slate-200 bg-white p-6 md:p-8">
+                <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                    <i class="fas fa-scale-balanced text-blue-700" aria-hidden="true"></i>
+                    Compare @Model.State.Name With Its Neighbors
+                </h2>
+                <p class="text-gray-600 mb-5">See how @Model.State.Name stacks up against each bordering state on cost of living, taxes, schools and more.</p>
+                <ul class="divide-y divide-slate-200 border border-slate-200">
+                    @for (var ni = 0; ni < neighborStates.Count; ni++)
+                    {
+                        var nb = neighborStates[ni];
+                        var pairSlug = USASymbol.Services.ComparisonService.CanonicalPairSlug(Model.State.Slug, nb.Slug);
+                        <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3">
+                            <a href="/compare/@pairSlug" class="font-semibold text-blue-700 hover:underline">@Model.State.Name vs @nb.Name</a>
+                            @if (true)
+                            {
+                                <span class="text-sm text-slate-500">
+                                    <a href="/compare/@pairSlug/cost-of-living" class="hover:underline">Cost of living</a>
+                                    <span class="text-slate-300">·</span>
+                                    <a href="/compare/@pairSlug/income-tax" class="hover:underline">Income tax</a>
+                                    <span class="text-slate-300">·</span>
+                                    <a href="/compare/@pairSlug/public-school-rank" class="hover:underline">Schools</a>
+                                </span>
+                            }
+                        </li>
+                    }
+                </ul>
+                <p class="mt-4 text-sm"><a href="/compare-states" class="font-semibold text-blue-700 hover:underline">Compare any two states →</a></p>
+            </div>
+        </section>
+    }
+
     @if (Model.HasSections)
     {
         var contentSections = borderContent.Sections!;
@@ -1093,7 +1134,7 @@
                 </h2>
                 <div class="space-y-3 md:space-y-4">
                     @{
-                        var faqItems = borderContent.Faq!;
+                        var faqItems = USASymbol.Helpers.BorderFaqFilter.Dedupe(borderContent.Faq!, Model.State.Name);
                     }
                     @foreach (var faq in faqItems)
                     {
@@ -1559,7 +1600,7 @@
 <!-- SCHEMA.ORG - FAQ -->
 @if (Model.HasFaq)
 {
-    var faqItems = borderContent.Faq!;
+    var faqItems = USASymbol.Helpers.BorderFaqFilter.Dedupe(borderContent.Faq!, Model.State.Name);
 
     <script type="application/ld+json">
         {

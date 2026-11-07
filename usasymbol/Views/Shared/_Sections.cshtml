@@ -67,22 +67,15 @@
         var sectionId = $"section-{item.Id}";
 
         @* Inline image: look up from visual_assets by section's Img id *@
-        <section id="@sectionId" class="scroll-mt-24 py-10 lg:py-12 flow-root">
+        <section id="@sectionId" class="scroll-mt-24 py-6 lg:py-8 flow-root">
 
             <!-- Section header -->
-            <header class="mb-5 lg:mb-6">
-                <div class="flex items-center gap-3 mb-2">
-                    <span class="text-[11px] font-semibold tracking-widest uppercase text-gray-500">
-                        Section
-                    </span>
-                    <span class="h-px flex-1 bg-gray-200/70"></span>
-                </div>
-
+            <header class="mb-4 lg:mb-5">
                 @if (!string.IsNullOrWhiteSpace(item.Icon))
                 {
-                    <div class="flex items-center gap-4">
-                        <span class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-                            <i class="@item.Icon text-sm"></i>
+                    <div class="flex items-center gap-3">
+                        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-500">
+                            <i class="@item.Icon text-xs"></i>
                         </span>
                         <h2 class="content-h2">
                             @item.Title
@@ -428,7 +421,7 @@
             || (string.IsNullOrWhiteSpace(timelineAfterSectionId) && item.Id == "official-designation")) &&
             story?.Timeline?.Any() == true)
         {
-            <section class="my-10 lg:my-12">
+            <section class="my-8 lg:my-10">
                 <div class="flex items-center gap-3 mb-6">
                     <h3 class="text-lg font-semibold text-slate-900">Key milestones</h3>
                     <span class="h-px flex-1 bg-slate-200/70"></span>
@@ -491,14 +484,10 @@
             || (string.IsNullOrWhiteSpace(bigStatAfterSectionId) && item.Id == "in-the-state")) &&
             story?.BigStat != null)
         {
-            <section class="my-12 lg:my-14">
-                <div class="rounded-[1.8rem] bg-[radial-gradient(circle_at_top,rgba(186,230,253,0.18),transparent_45%),linear-gradient(180deg,rgba(248,250,252,0.76),rgba(255,255,255,0.98))] p-10 lg:p-12 text-center shadow-[0_24px_48px_-36px_rgba(15,23,42,0.28)]">
-                    <div class="text-5xl lg:text-6xl font-semibold text-gray-900 mb-3">
-                        @story.BigStat.Number
-                    </div>
-                    <div class="text-gray-700 text-base lg:text-lg max-w-md mx-auto">
-                        @story.BigStat.Description
-                    </div>
+            <section class="my-6 lg:my-8">
+                <div class="bigstat">
+                    <div class="bigstat-number">@story.BigStat.Number</div>
+                    <div class="bigstat-text">@story.BigStat.Description.RenderAutoLinks()</div>
                 </div>
             </section>
         }
@@ -509,18 +498,11 @@
             || (string.IsNullOrWhiteSpace(expertQuoteAfterSectionId) && item.Id == "state-symbolism")) &&
             story?.ExpertQuote != null && !string.IsNullOrWhiteSpace(story.ExpertQuote.Text))
         {
-            <section class="my-10 lg:my-12">
-                <figure class="border-l-4 border-slate-300 pl-6 py-2">
-                    <blockquote class="text-lg lg:text-xl text-gray-900 leading-relaxed mb-4">
-                        "@story.ExpertQuote.Text"
-                    </blockquote>
-                    @if (!string.IsNullOrWhiteSpace(story.ExpertQuote.Source))
-                    {
-                        <figcaption class="text-sm text-gray-600 font-medium">
-                            — @story.ExpertQuote.Source
-                        </figcaption>
-                    }
-                </figure>
+            <section class="my-6 lg:my-8">
+                @await Html.PartialAsync("_SourceQuote", null, new ViewDataDictionary(ViewData) {
+                    { "Text", story.ExpertQuote.Text },
+                    { "Source", story.ExpertQuote.Source }
+                })
             </section>
         }
     }

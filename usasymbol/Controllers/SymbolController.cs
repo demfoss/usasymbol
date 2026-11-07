@@ -2065,8 +2065,26 @@ namespace USASymbol.Controllers
 
         private static List<USASymbol.Models.Symbol> GetRelatedSymbols(IEnumerable<USASymbol.Models.Symbol> symbols, int currentSymbolId, int take = 6)
         {
-            return symbols
+            var list = symbols.ToList();
+            var current = list.FirstOrDefault(s => s.Id == currentSymbolId);
+
+            // Symbols that share a word with the current one (orange juice -> orange blossom, orange, ...)
+            // come first; everything else keeps its original order.
+            var stop = new HashSet<string> { "state", "great", "seal", "series", "soil", "official", "coat", "arms", "the", "of" };
+            var separators = new[] { ' ', '-', ',', '\'' };
+            var tokens = (current?.Name ?? string.Empty)
+                .Split(separators, StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.ToLowerInvariant())
+                .Where(t => t.Length >= 4 && !stop.Contains(t))
+                .ToHashSet();
+
+            int Score(USASymbol.Models.Symbol s) => tokens.Count == 0 ? 0
+                : s.Name.Split(separators, StringSplitOptions.RemoveEmptyEntries)
+                    .Count(t => tokens.Contains(t.ToLowerInvariant()));
+
+            return list
                 .Where(s => s.Id != currentSymbolId)
+                .OrderByDescending(Score)
                 .Take(take)
                 .ToList();
         }

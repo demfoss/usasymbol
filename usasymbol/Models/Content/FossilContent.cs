@@ -32,6 +32,8 @@ namespace USASymbol.Models.Content
         public string HeroImageCaption { get; set; } = string.Empty;
         public string IntroText { get; set; } = string.Empty;
 
+        public ExpertQuoteData? ExpertQuote { get; set; }
+        public string ExpertQuoteAfterSectionId { get; set; } = string.Empty;
         public List<FossilSection> Sections { get; set; } = new();
         public List<FossilFaq> Faq { get; set; } = new();
         public List<FossilSource> Sources { get; set; } = new();

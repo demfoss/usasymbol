@@ -45,6 +45,11 @@
 
             <div class="clear-both"></div>
         </div>
+
+        @if (Model.SportContent?.ExpertQuote != null && !string.IsNullOrWhiteSpace(Model.SportContent.ExpertQuoteAfterSectionId) && string.Equals(item.Id, Model.SportContent.ExpertQuoteAfterSectionId, StringComparison.OrdinalIgnoreCase))
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.SportContent.ExpertQuote)
+        }
     }
 
     var orphanAssets = visualAssets

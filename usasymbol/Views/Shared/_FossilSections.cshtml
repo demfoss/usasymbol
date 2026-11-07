@@ -150,6 +150,11 @@
 
             <div class="clear-both"></div>
         </div>
+
+        @if (Model.FossilContent?.ExpertQuote != null && !string.IsNullOrWhiteSpace(Model.FossilContent.ExpertQuoteAfterSectionId) && string.Equals(item.Id, Model.FossilContent.ExpertQuoteAfterSectionId, StringComparison.OrdinalIgnoreCase))
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.FossilContent.ExpertQuote)
+        }
     }
 
     @if (!renderedInlineFacts && inlineFactsSection?.Facts?.Any() == true && !hasAboutSection)

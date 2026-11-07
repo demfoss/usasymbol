@@ -1,0 +1,22 @@
+@model USASymbol.Models.ViewModels.SymbolPageContext
+
+@if (!string.IsNullOrWhiteSpace(Model.UniqueBadge) || !string.IsNullOrWhiteSpace(Model.RankBadge) || !string.IsNullOrWhiteSpace(Model.AgeBadge))
+{
+    <ul class="sc-badges" aria-label="Symbol context">
+        @if (!string.IsNullOrWhiteSpace(Model.UniqueBadge))
+        {
+            <li class="sc-badge @(Model.IsUnique ? "sc-badge--unique" : "")">
+                <i class="fa-solid @(Model.IsUnique ? "fa-fingerprint" : "fa-people-group")" aria-hidden="true"></i>
+                @Model.UniqueBadge
+            </li>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.RankBadge))
+        {
+            <li class="sc-badge"><i class="fa-regular fa-calendar" aria-hidden="true"></i> @Model.RankBadge</li>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.AgeBadge))
+        {
+            <li class="sc-badge"><i class="fa-regular fa-clock" aria-hidden="true"></i> @Model.AgeBadge</li>
+        }
+    </ul>
+}

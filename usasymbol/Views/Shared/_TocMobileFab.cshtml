@@ -8,7 +8,7 @@
 
     void Add(string id, string title)
     {
-        if (items.Count >= 6) return;
+        if (items.Count >= 8) return;
         if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(title)) return;
         if (items.Any(x => x.Id == id)) return;
         items.Add((id, title));
@@ -19,6 +19,17 @@
         if (string.IsNullOrWhiteSpace(id))
         {
             return string.Empty;
+        }
+
+        var special = id.Trim().ToLowerInvariant() switch
+        {
+            "answer-fast" => "Quick Answer",
+            "adoption-law" => "Adoption Law",
+            _ => null
+        };
+        if (special != null)
+        {
+            return special;
         }
 
         var parts = id
@@ -43,7 +54,7 @@
             Add("overview", "Overview");
         }
 
-        var topSections = (symbolModel.Sections ?? new List<IContentSection>()).Take(4).ToList();
+        var topSections = (symbolModel.Sections ?? new List<IContentSection>()).Take(6).ToList();
         foreach (var sec in topSections)
         {
             Add($"section-{sec.Id}", LabelFromSectionId(sec.Id));

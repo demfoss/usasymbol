@@ -28,17 +28,19 @@ namespace USASymbol.Services
     /// <summary>Computes the overall win/loss score shown on state comparison pages (Compare/Overview and the CategoryHub featured-comparison card).</summary>
     public static class ComparisonScoreCalculator
     {
-        // Only numeric metrics with an actual winner count; geography-only pairs will have 0 wins.
+        // Only metrics with an objective "better" direction count toward the score. Size, population,
+        // density, elevation, seasonal temperature extremes, rainfall, homeownership, politics and laws
+        // are descriptive, not better/worse, so they are shown side by side but never "won".
         private static readonly HashSet<string> ScorableSlugs = new()
         {
-            "population","density","college-educated","median-income","minimum-wage","poverty-rate",
-            "employment-population-ratio","regional-price-parity","livability-score","cost-of-living",
-            "gas-price","electricity-rates","average-temperature","summer-temperature","winter-temperature","sunny-days","annual-precipitation",
-            "commute-time","home-value","median-rent","owner-costs-with-mortgage",
-            "owner-costs-without-mortgage","homeownership-rate","home-value-to-income",
-            "rent-to-income","owner-costs-to-income","income-tax","sales-tax","property-tax","land-area","highest-point",
-            "life-expectancy","violent-crime"
+            "median-income","minimum-wage","poverty-rate","employment-population-ratio",
+            "regional-price-parity","livability-score","cost-of-living","gas-price","electricity-rates",
+            "sunny-days","commute-time","home-value","median-rent","owner-costs-with-mortgage",
+            "owner-costs-without-mortgage","home-value-to-income","rent-to-income","owner-costs-to-income",
+            "income-tax","sales-tax","property-tax","life-expectancy","violent-crime"
         };
+
+        public static bool IsScorable(string metricSlug) => ScorableSlugs.Contains(metricSlug);
 
         public static ComparisonScoreResult Calculate(StatePairComparisonViewModel pair)
         {

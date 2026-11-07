@@ -31,6 +31,8 @@
     var accent = CompareAccentColor.Resolve(
         colorContentA?.ColorData.Select(c => c.Hex).ToList(),
         colorContentB?.ColorData.Select(c => c.Hex).ToList());
+    ViewData["AccentA"] = accent.HexA;
+    ViewData["AccentB"] = accent.HexB;
 
     if (isPurchasingPowerPage)
     {
@@ -93,35 +95,30 @@
 
     if (isCostPage)
     {
-        var parts = new List<string>();
+        var byState = new Dictionary<string, List<string>> { [Model.StateA.Slug] = new(), [Model.StateB.Slug] = new() };
 
         if (Model.StatsA?.CostOfLivingIndex != null && Model.StatsB?.CostOfLivingIndex != null)
         {
             var cheaper = Model.StatsA.CostOfLivingIndex < Model.StatsB.CostOfLivingIndex ? Model.StateA : Model.StateB;
-            var pricier = cheaper == Model.StateA ? Model.StateB : Model.StateA;
-            var diff = Math.Abs(Model.StatsA.CostOfLivingIndex.Value - Model.StatsB.CostOfLivingIndex.Value);
-            parts.Add($"{cheaper.Name} is cheaper overall by {diff:F1} cost-of-living points");
+            var diff0 = Math.Abs(Model.StatsA.CostOfLivingIndex.Value - Model.StatsB.CostOfLivingIndex.Value);
+            byState[cheaper.Slug].Add($"is cheaper overall by {diff0:F1} cost-of-living points");
         }
-
-        if (Model.StatsA?.IncomeTaxRatePct == 0 && Model.StatsB?.IncomeTaxRatePct != 0)
-        {
-            parts.Add($"{Model.StateA.Name} has no state income tax");
-        }
-        else if (Model.StatsB?.IncomeTaxRatePct == 0 && Model.StatsA?.IncomeTaxRatePct != 0)
-        {
-            parts.Add($"{Model.StateB.Name} has no state income tax");
-        }
-
+        if (Model.StatsA?.IncomeTaxRatePct == 0 && Model.StatsB?.IncomeTaxRatePct != 0) byState[Model.StateA.Slug].Add("has no state income tax");
+        else if (Model.StatsB?.IncomeTaxRatePct == 0 && Model.StatsA?.IncomeTaxRatePct != 0) byState[Model.StateB.Slug].Add("has no state income tax");
         if (Model.StatsA?.MedianHomeValue != null && Model.StatsB?.MedianHomeValue != null)
         {
-            var lower = Model.StatsA.MedianHomeValue < Model.StatsB.MedianHomeValue ? Model.StateA : Model.StateB;
-            parts.Add($"{lower.Name} has lower median home values");
+            var lowerHome = Model.StatsA.MedianHomeValue < Model.StatsB.MedianHomeValue ? Model.StateA : Model.StateB;
+            byState[lowerHome.Slug].Add("has lower median home values");
         }
 
-        if (parts.Any())
+        string JoinFacts(List<string> l) => l.Count <= 2 ? string.Join(" and ", l) : string.Join(", ", l.Take(l.Count - 1)) + ", and " + l.Last();
+        var clauses = new[] { Model.StateA, Model.StateB }
+            .Where(st => byState[st.Slug].Count > 0)
+            .Select(st => $"{st.Name} {JoinFacts(byState[st.Slug])}")
+            .ToList();
+        if (clauses.Any())
         {
-            directAnswer = string.Join(", but ", new[] { parts.First() }.Concat(parts.Skip(1).Take(2)));
-            directAnswer += ".";
+            directAnswer = string.Join("; ", clauses) + ".";
         }
 
         if (Model.StatsA?.CostOfLivingIndex != null && Model.StatsB?.CostOfLivingIndex != null)
@@ -132,8 +129,8 @@
             intentCards.Add((
                 "fa-solid fa-cart-shopping",
                 "Overall",
-                $"{lower.Name} feels cheaper overall",
-                $"{lower.Name} has the lower cost-of-living index, beating {higher.Name} by {diff:F1} points on the overall affordability baseline.",
+                $"{lower.Name} is cheaper overall",
+                $"Cost-of-living index (100 = U.S. average): {Number(lower == Model.StateA ? Model.StatsA?.CostOfLivingIndex : Model.StatsB?.CostOfLivingIndex)} in {lower.Name} vs {Number(higher == Model.StateA ? Model.StatsA?.CostOfLivingIndex : Model.StatsB?.CostOfLivingIndex)} in {higher.Name}, a gap of {diff:F1} points.",
                 "from-amber-100 via-orange-50 to-white",
                 "/compare/" + Model.PairSlug + "/cost-of-living"));
         }
@@ -146,8 +143,8 @@
             intentCards.Add((
                 "fa-solid fa-house",
                 "Housing",
-                $"pay about {ratio:F1}x more for a home",
-                $"{lower.Name} has the lower median home value, while buying in {higher.Name} costs materially more at the median.",
+                $"Homes cost {ratio:F1}× more in {higher.Name}",
+                $"Median home value: {Money(lower == Model.StateA ? Model.StatsA?.MedianHomeValue : Model.StatsB?.MedianHomeValue)} in {lower.Name} vs {Money(higher == Model.StateA ? Model.StatsA?.MedianHomeValue : Model.StatsB?.MedianHomeValue)} in {higher.Name}.",
                 "from-sky-100 via-cyan-50 to-white",
                 "/compare/" + Model.PairSlug + "/home-value"));
         }
@@ -159,8 +156,8 @@
             intentCards.Add((
                 "fa-solid fa-key",
                 "Rent Pressure",
-                $"{lower.Name} puts less pressure on a median paycheck",
-                $"Median rent takes a smaller share of household income in {lower.Name} than in {higher.Name}, which makes monthly budgeting easier.",
+                $"Rent takes a smaller share of income in {lower.Name}",
+                $"Median rent is {Percent(lower == Model.StateA ? Model.StatsA?.RentToIncomeRatioPct() : Model.StatsB?.RentToIncomeRatioPct(), 0)} of median household income in {lower.Name} vs {Percent(higher == Model.StateA ? Model.StatsA?.RentToIncomeRatioPct() : Model.StatsB?.RentToIncomeRatioPct(), 0)} in {higher.Name}.",
                 "from-emerald-100 via-lime-50 to-white",
                 "/compare/" + Model.PairSlug + "/rent-to-income"));
         }
@@ -171,7 +168,7 @@
                 "fa-solid fa-file-invoice-dollar",
                 "Taxes",
                 $"{Model.StateA.Name} has no state income tax",
-                $"{Model.StateA.Name} gives residents a cleaner paycheck-level tax advantage, while {Model.StateB.Name} still taxes income at the state level.",
+                $"{Model.StateB.Name}'s top state income tax rate is {Percent(Model.StatsB?.IncomeTaxRatePct, 1)}.",
                 "from-rose-100 via-pink-50 to-white",
                 "/compare/" + Model.PairSlug + "/income-tax"));
         }
@@ -181,7 +178,7 @@
                 "fa-solid fa-file-invoice-dollar",
                 "Taxes",
                 $"{Model.StateB.Name} has no state income tax",
-                $"{Model.StateB.Name} gives residents a cleaner paycheck-level tax advantage, while {Model.StateA.Name} still taxes income at the state level.",
+                $"{Model.StateA.Name}'s top state income tax rate is {Percent(Model.StatsA?.IncomeTaxRatePct, 1)}.",
                 "from-rose-100 via-pink-50 to-white",
                 "/compare/" + Model.PairSlug + "/income-tax"));
         }
@@ -192,7 +189,7 @@
                 "fa-solid fa-file-invoice-dollar",
                 "Taxes",
                 $"{lower.Name} keeps more income after state tax",
-                $"{lower.Name} has the lower top state income tax rate, which softens the total cost picture even when prices are close.",
+                $"Top state income tax rate: {Percent(lower == Model.StateA ? Model.StatsA?.IncomeTaxRatePct : Model.StatsB?.IncomeTaxRatePct, 1)} in {lower.Name} vs {Percent(lower == Model.StateA ? Model.StatsB?.IncomeTaxRatePct : Model.StatsA?.IncomeTaxRatePct, 1)} in the other state.",
                 "from-rose-100 via-pink-50 to-white",
                 "/compare/" + Model.PairSlug + "/income-tax"));
         }
@@ -440,7 +437,6 @@
     @* ── Hero: direct answer ─────────────────────────────────────────── *@
     <section class="cmp2-metric-hero">
         <div class="cmp2-shell">
-            <span class="cmp2-metric-hero-badge"><i class="@Model.Metric.Icon" aria-hidden="true"></i> @Model.Metric.GroupName</span>
             <h1>@titleA vs @titleB: @Model.Metric.Name</h1>
             @if (!string.IsNullOrWhiteSpace(directAnswer))
             {
@@ -474,7 +470,7 @@
                             </div>
                             @if (isWinner)
                             {
-                                <span class="cmp2-metric-winner-tag"><i class="fa-solid fa-crown" aria-hidden="true"></i> Winner</span>
+                                <span class="cmp2-metric-winner-tag"><i class="fa-solid fa-check" aria-hidden="true"></i> Leads</span>
                             }
                         </div>
                         <div class="cmp2-metric-card-value">
@@ -485,34 +481,11 @@
                 }
             </div>
 
-            @if (Model.Result.NumericA.HasValue && Model.Result.NumericB.HasValue && Model.Metric.Type != USASymbol.Models.MetricType.Text)
-            {
-                var maxVal = Math.Max(Model.Result.NumericA.Value, Model.Result.NumericB.Value);
-                var pctA = maxVal > 0 ? (int)Math.Round(Model.Result.NumericA.Value / maxVal * 100) : 0;
-                var pctB = maxVal > 0 ? (int)Math.Round(Model.Result.NumericB.Value / maxVal * 100) : 0;
-                var winA = Model.Result.WinnerSlug == Model.StateA.Slug;
-                var winB = Model.Result.WinnerSlug == Model.StateB.Slug;
-                <div class="cmp2-vbar-block">
-                    <p class="cmp2-eyebrow" style="margin-bottom:14px;">Visual comparison</p>
-                    <div class="cmp2-vbar-row">
-                        <div class="cmp2-vbar-label"><span>@Model.StateA.Name</span><b>@DashIfNull(Model.Result.DisplayValueA)</b></div>
-                        <div class="cmp2-vbar-track"><div class="cmp2-vbar-fill" style="width:@(pctA)%;background:@(winA ? accent.HexA : "var(--cmp-line-strong)")"></div></div>
-                    </div>
-                    <div class="cmp2-vbar-row">
-                        <div class="cmp2-vbar-label"><span>@Model.StateB.Name</span><b>@DashIfNull(Model.Result.DisplayValueB)</b></div>
-                        <div class="cmp2-vbar-track"><div class="cmp2-vbar-fill" style="width:@(pctB)%;background:@(winB ? accent.HexB : "var(--cmp-line-strong)")"></div></div>
-                    </div>
-                </div>
-            }
-
+            <p class="cmp2-diffline"><a href="/compare/@Model.PairSlug#decision">See what your salary is worth in each state &rarr;</a></p>
             @if (Model.Result.DifferenceText != null)
             {
                 var winner = Model.Result.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
-                <div class="cmp2-note is-plain" style="text-align:center;">
-                    <p style="margin:0;font-size:14px;color:var(--cmp-ink-2);">
-                        Difference: <strong style="color:var(--cmp-ink);">@Model.Result.DifferenceText</strong> &mdash; @winner.Name leads.
-                    </p>
-                </div>
+                <p class="cmp2-diffline">Difference: <strong>@Model.Result.DifferenceText</strong>. @winner.Name leads.</p>
             }
         </div>
     </section>
@@ -535,7 +508,6 @@
                 @if (intentCards.Any())
                 {
                     <div class="cmp2-head">
-                        <p class="cmp2-eyebrow">@intentHeading</p>
                         <h2 class="cmp2-title" style="margin-bottom:4px;">@Model.Metric.Name in context</h2>
                         <p class="cmp2-sub" style="margin-bottom:0;">@intentSubline</p>
                     </div>
@@ -558,7 +530,7 @@
 
                 @if (isCostPage)
                 {
-                    <h2 class="cmp2-title">Cost stack</h2>
+                    <h2 class="cmp2-title">What things cost</h2>
                     <div class="cmp2-stack-grid">
                         <div class="cmp2-stack-card">
                             <div class="cmp2-stack-head"><img src="@Images.Thumb(Model.StateA.FlagImageUrl)" onerror="this.style.display='none'" alt="@Model.StateA.Name flag" />@Model.StateA.Name</div>
@@ -594,14 +566,6 @@
                                     <div><dt>Median household income</dt><dd>@Money(Model.StatsA?.MedianHouseholdIncome)</dd></div>
                                     <div><dt>Income after median rent</dt><dd>@Money(Model.StatsA?.IncomeAfterMedianRentMonthly() is double aIncomeAfterRent ? (int?)Math.Round(aIncomeAfterRent) : null)</dd></div>
                                     <div><dt>Minimum wage</dt><dd>@DashIfNull(ComparisonMetricsConfig.GetBySlug("minimum-wage")?.GetDisplayValue(Model.StateA, Model.StatsA))</dd></div>
-                                </dl>
-                            </div>
-                            <div class="cmp2-stack-section">
-                                <div class="cmp2-stack-section-label">Laws</div>
-                                <dl class="cmp2-stack-mini">
-                                    <div><dt>Gun laws</dt><dd>@DashIfNull(ComparisonMetricsConfig.GetBySlug("gun-laws-status")?.GetDisplayValue(Model.StateA, Model.StatsA))</dd></div>
-                                    <div><dt>Alcohol system</dt><dd>@DashIfNull(ComparisonMetricsConfig.GetBySlug("alcohol-laws")?.GetDisplayValue(Model.StateA, Model.StatsA))</dd></div>
-                                    <div><dt>Marijuana status</dt><dd>@DashIfNull(ComparisonMetricsConfig.GetBySlug("marijuana-legalization")?.GetDisplayValue(Model.StateA, Model.StatsA))</dd></div>
                                 </dl>
                             </div>
                         </div>
@@ -640,14 +604,6 @@
                                     <div><dt>Median household income</dt><dd>@Money(Model.StatsB?.MedianHouseholdIncome)</dd></div>
                                     <div><dt>Income after median rent</dt><dd>@Money(Model.StatsB?.IncomeAfterMedianRentMonthly() is double bIncomeAfterRent ? (int?)Math.Round(bIncomeAfterRent) : null)</dd></div>
                                     <div><dt>Minimum wage</dt><dd>@DashIfNull(ComparisonMetricsConfig.GetBySlug("minimum-wage")?.GetDisplayValue(Model.StateB, Model.StatsB))</dd></div>
-                                </dl>
-                            </div>
-                            <div class="cmp2-stack-section">
-                                <div class="cmp2-stack-section-label">Laws</div>
-                                <dl class="cmp2-stack-mini">
-                                    <div><dt>Gun laws</dt><dd>@DashIfNull(ComparisonMetricsConfig.GetBySlug("gun-laws-status")?.GetDisplayValue(Model.StateB, Model.StatsB))</dd></div>
-                                    <div><dt>Alcohol system</dt><dd>@DashIfNull(ComparisonMetricsConfig.GetBySlug("alcohol-laws")?.GetDisplayValue(Model.StateB, Model.StatsB))</dd></div>
-                                    <div><dt>Marijuana status</dt><dd>@DashIfNull(ComparisonMetricsConfig.GetBySlug("marijuana-legalization")?.GetDisplayValue(Model.StateB, Model.StatsB))</dd></div>
                                 </dl>
                             </div>
                         </div>
@@ -706,19 +662,6 @@
                     </div>
                 }
 
-                @if (standoutPoints.Any())
-                {
-                    <div class="cmp2-note">
-                        <h2>What stands out</h2>
-                        <ul>
-                            @foreach (var point in standoutPoints.Take(4))
-                            {
-                                <li>@point</li>
-                            }
-                        </ul>
-                    </div>
-                }
-
                 @if (isCostPage)
                 {
                     <h2 class="cmp2-title">Affordability ratios</h2>
@@ -759,7 +702,7 @@
                             ("/compare/" + Model.PairSlug + "/density",             "Population Density")
                         };
                 }
-                <h2 class="cmp2-title">Related pages</h2>
+                <h2 class="cmp2-title">Related metrics</h2>
                 <div class="cmp2-related-grid">
                     @foreach (var (href, label) in relatedLinks)
                     {
@@ -1180,7 +1123,7 @@
         <section class="cmp2-block">
             <div class="cmp2-shell">
                 <div class="cmp2-head">
-                    <p class="cmp2-eyebrow">Related context</p>
+                    
                     <h2 class="cmp2-title" style="margin-bottom:4px;">@ctxTitle</h2>
                     @if (!string.IsNullOrWhiteSpace(ctxNote))
                     {
@@ -1256,16 +1199,32 @@
             keyFacts.Add(("Difference", Model.Result.DifferenceText, false));
 
         var metFaq = new List<(string Q, string A)>();
-        if (Model.Result.DisplayValueA != null)
-            metFaq.Add(($"What is {titleA}'s {mLow}?",
-                $"{titleA}'s {mLow} is {Model.Result.DisplayValueA}."));
-        if (Model.Result.DisplayValueB != null)
-            metFaq.Add(($"What is {titleB}'s {mLow}?",
-                $"{titleB}'s {mLow} is {Model.Result.DisplayValueB}."));
+        if (isCostPage && Model.StatsA?.CostOfLivingIndex != null && Model.StatsB?.CostOfLivingIndex != null)
+        {
+            var cheapSt  = Model.StatsA.CostOfLivingIndex < Model.StatsB.CostOfLivingIndex ? Model.StateA : Model.StateB;
+            var priceySt = cheapSt == Model.StateA ? Model.StateB : Model.StateA;
+            var cheapS   = cheapSt == Model.StateA ? Model.StatsA : Model.StatsB;
+            var priceyS  = cheapSt == Model.StateA ? Model.StatsB : Model.StatsA;
+            var idxPct   = Math.Round((priceyS!.CostOfLivingIndex!.Value / cheapS!.CostOfLivingIndex!.Value - 1) * 100);
+            var homeNote = priceyS.MedianHomeValue.HasValue && cheapS.MedianHomeValue.HasValue
+                ? $" Median home value is {Money(priceyS.MedianHomeValue)} vs {Money(cheapS.MedianHomeValue)}, about {Math.Round((double)priceyS.MedianHomeValue.Value / cheapS.MedianHomeValue.Value, 1):F1}×."
+                : "";
+            metFaq.Add(($"How much more expensive is {priceySt.Name} than {cheapSt.Name}?",
+                $"{priceySt.Name} scores {Number(priceyS.CostOfLivingIndex)} on the cost-of-living index vs {Number(cheapS.CostOfLivingIndex)} for {cheapSt.Name}, about {idxPct:F0}% higher.{homeNote}"));
+            if (priceyS.MedianGrossRent.HasValue && cheapS.MedianGrossRent.HasValue)
+                metFaq.Add(($"Is it cheaper to rent or buy in {cheapSt.Name} than in {priceySt.Name}?",
+                    $"Both are cheaper in {cheapSt.Name}. Median rent is {MoneyPerMonth(cheapS.MedianGrossRent)} vs {MoneyPerMonth(priceyS.MedianGrossRent)}, and owner costs with a mortgage are {MoneyPerMonth(cheapS.MedianOwnerCostsWithMortgage)} vs {MoneyPerMonth(priceyS.MedianOwnerCostsWithMortgage)}."));
+            if (cheapS.RegionalPriceParity.HasValue && priceyS.RegionalPriceParity.HasValue)
+            {
+                var needed = Math.Round(100000 * priceyS.RegionalPriceParity.Value / cheapS.RegionalPriceParity.Value / 1000) * 1000;
+                metFaq.Add(($"How much do you need to earn in {priceySt.Name} to match $100,000 in {cheapSt.Name}?",
+                    $"About ${needed:N0} before taxes, using BEA regional price parities ({Number(priceyS.RegionalPriceParity)} vs {Number(cheapS.RegionalPriceParity)}). Enter your own salary in the <a href=\"/compare/{Model.PairSlug}?salary=100000#decision\">salary calculator</a>."));
+            }
+        }
         if (Model.Result.WinnerSlug != null && !string.IsNullOrWhiteSpace(directAnswer))
         {
             var compareWord = Model.Metric.HigherIsBetter ? "higher" : "lower";
-            metFaq.Add(($"Which state has a {compareWord} {mLow} — {titleA} or {titleB}?", directAnswer));
+            metFaq.Add(($"Which state has a {compareWord} {mLow}, {titleA} or {titleB}?", directAnswer));
         }
         if (!string.IsNullOrWhiteSpace(Model.Result.DifferenceText) && hasNumbers)
         {
@@ -1304,34 +1263,6 @@
         }
     }
 
-    @if (!string.IsNullOrWhiteSpace(contextParagraph) || keyFacts.Any())
-    {
-        <section class="cmp2-block">
-            <div class="cmp2-shell">
-                @if (!string.IsNullOrWhiteSpace(contextParagraph))
-                {
-                    <div class="cmp2-head">
-                        <p class="cmp2-eyebrow">What this means</p>
-                        <h2 class="cmp2-title" style="margin-bottom:10px;">@titleA vs @titleB: @mName in context</h2>
-                        <p class="cmp2-sub" style="margin-bottom:0;max-width:70ch;">@contextParagraph</p>
-                    </div>
-                }
-                @if (keyFacts.Any())
-                {
-                    <div class="cmp2-fact-grid" style="margin-top:0;">
-                        @foreach (var (label, value, isWin) in keyFacts)
-                        {
-                            <div class="cmp2-fact-chip @(isWin ? "is-winner" : "")">
-                                <div class="label">@label @if (isWin) { <i class="fa-solid fa-crown" aria-hidden="true"></i> }</div>
-                                <div class="value">@value</div>
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
-        </section>
-    }
-
     @if (metFaq.Any())
     {
         if (!string.IsNullOrWhiteSpace(metFaqJson))
@@ -1342,15 +1273,14 @@
         <section class="cmp2-block">
             <div class="cmp2-shell">
                 <div class="cmp2-head">
-                    <p class="cmp2-eyebrow">People also ask</p>
-                    <h2 class="cmp2-title" style="margin-bottom:0;">@titleA vs @titleB @mName — common questions</h2>
+                    <h2 class="cmp2-title" style="margin-bottom:0;">@titleA vs @titleB @mName FAQ</h2>
                 </div>
                 <div class="cmp2-faq-list" style="margin-top:20px;">
                     @foreach (var (q, a) in metFaq)
                     {
                         <div class="cmp2-faq-item">
                             <h3 class="cmp2-faq-q"><span class="cmp2-faq-q-mark">Q</span>@q</h3>
-                            <p class="cmp2-faq-a">@a</p>
+                            <p class="cmp2-faq-a">@Html.Raw(a)</p>
                         </div>
                     }
                 </div>
@@ -1360,14 +1290,9 @@
 
     <section class="cmp2-block">
         <div class="cmp2-shell">
-            <div class="cmp2-head" style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;">
-                <div>
-                    <h2 class="cmp2-title" style="margin-bottom:4px;">More comparisons: @titleA vs @titleB</h2>
-                    <p class="cmp2-sub" style="margin-bottom:0;">Grouped tabs keep the deep-dive links tighter and easier to scan.</p>
-                </div>
-                <a href="/compare/@Model.PairSlug" class="cmp2-tab" style="text-decoration:none;">
-                    <i class="fa-solid fa-table-columns" aria-hidden="true"></i> Full comparison
-                </a>
+            <div class="cmp2-head cmp2-head--row">
+                <h2 class="cmp2-title">More comparisons: @titleA vs @titleB</h2>
+                <a href="/compare/@Model.PairSlug" class="cmp2-tab cmp2-tab--link">Full comparison <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </div>
 
             @{
@@ -1402,7 +1327,6 @@
                                 <a href="/compare/@Model.PairSlug/@metric.Slug" class="cmp2-related-card">
                                     <i class="@metric.Icon" aria-hidden="true"></i>
                                     <span>@metric.Name</span>
-                                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
                                 </a>
                             }
                         </div>
@@ -1415,20 +1339,22 @@
     <section class="cmp2-block">
         <div class="cmp2-shell">
             <h2 class="cmp2-title" style="font-size:18px;">Explore each state</h2>
-            <div class="cmp2-related-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,auto));">
-                <a href="/states/@Model.StateA.Slug" class="cmp2-related-card">
-                    <img src="@Images.Thumb(Model.StateA.FlagImageUrl)" onerror="this.style.display='none'" alt="@Model.StateA.Name flag" />
-                    <span>@Model.StateA.Name symbols</span>
-                </a>
-                <a href="/states/@Model.StateB.Slug" class="cmp2-related-card">
-                    <img src="@Images.Thumb(Model.StateB.FlagImageUrl)" onerror="this.style.display='none'" alt="@Model.StateB.Name flag" />
-                    <span>@Model.StateB.Name symbols</span>
-                </a>
-                <a href="/compare-states" class="cmp2-related-card">
-                    <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
-                    <span>Compare other states</span>
-                </a>
+            <div class="cmp2-statecards">
+                @foreach (var st in new[] { Model.StateA, Model.StateB })
+                {
+                    <div class="cmp2-statecard">
+                        <a class="cmp2-statecard-head" href="/states/@st.Slug">
+                            <img src="@Images.Thumb(st.FlagImageUrl)" onerror="this.style.display='none'" alt="@st.Name flag" />
+                            <span>@st.Name symbols</span>
+                        </a>
+                        <div class="cmp2-statecard-links">
+                            <a href="/states/@st.Slug/living">Living in @st.Name</a>
+                            <a href="/states/@st.Slug/abbreviation">@st.Name abbreviation</a>
+                        </div>
+                    </div>
+                }
             </div>
+            <p class="cmp2-statelink"><a href="/compare-states"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Compare other states</a></p>
         </div>
     </section>
 
@@ -1478,7 +1404,6 @@
         <div class="cmp2-shell">
             <div class="cmp2-method-card">
                 <div class="cmp2-method-head">
-                    <i class="fa-solid fa-database" aria-hidden="true"></i>
                     <div>
                         <h2 class="cmp2-title" style="margin-bottom:2px;font-size:18px;">Data source and freshness</h2>
                     </div>

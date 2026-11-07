@@ -321,11 +321,6 @@ public static class ComparisonMetricSourceCatalog
                 "https://www.nea.org/resource-library/educator-pay-and-student-spending-how-does-your-state-rank",
                 "2024–25",
                 "Average public school teacher salary."),
-            "k12-rank" => Source(
-                "U.S. News & World Report — Best States for K-12 Education",
-                "https://www.usnews.com/news/best-states/rankings/education/k-12-education",
-                "2026 incorporated ranking",
-                "Rank 1 is best; the ranking combines achievement and school-quality indicators."),
             "school-spending" => Source(
                 "World Population Review — Per Pupil Spending by State",
                 "https://worldpopulationreview.com/state-rankings/per-pupil-spending-by-state",

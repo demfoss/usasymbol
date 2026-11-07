@@ -1,11 +1,15 @@
 @{
     var cards = new[]
     {
-        new { Eyebrow = "Data", Title = "State Rankings", Description = "Compare all 50 states by population, land area, statehood date, and more.", Cta = "View Rankings", Href = "/rankings", Icon = "fa-ranking-star", Tint = "bg-[#F5F7FD] text-[#4F67B8]", Line = "bg-[#9DB0E8]" },
-        new { Eyebrow = "Curated", Title = "Collections", Description = "Themed lists - states sharing the same bird, oldest symbols, flags with bears, and more.", Cta = "Browse Collections", Href = "/collections", Icon = "fa-list", Tint = "bg-[#F2FAF5] text-[#1E8A5E]", Line = "bg-[#8FD0B2]" },
-        new { Eyebrow = "Compare", Title = "Compare States", Description = "Side-by-side comparison of population, area, income, taxes, climate, and more.", Cta = "Compare Now", Href = "/compare-states", Icon = "fa-scale-balanced", Tint = "bg-[#F2F9FC] text-[#1E7EA8]", Line = "bg-[#8AC7DB]" },
-        new { Eyebrow = "Genealogy", Title = "Last Names by State", Description = "Top 20 most common surnames per state - with origins, meanings, and heritage context. Is yours on the list?", Cta = "Explore Last Names", Href = "/guides/surnames", Icon = "fa-users", Tint = "bg-[#F7F5FB] text-[#5D5A86]", Line = "bg-[#C6BDD9]" }
+        new { Eyebrow = "Data", Title = "State Rankings", Description = "Compare all 50 states by population, land area, statehood date, and more.", Cta = "View Rankings", Href = "/rankings", Match = new[] { "/rankings" }, Icon = "fa-ranking-star", Tint = "bg-[#F5F7FD] text-[#4F67B8]", Line = "bg-[#9DB0E8]" },
+        new { Eyebrow = "Curated", Title = "Collections", Description = "Themed lists - states sharing the same bird, oldest symbols, flags with bears, and more.", Cta = "Browse Collections", Href = "/collections", Match = new[] { "/collections" }, Icon = "fa-list", Tint = "bg-[#F2FAF5] text-[#1E8A5E]", Line = "bg-[#8FD0B2]" },
+        new { Eyebrow = "Compare", Title = "Compare States", Description = "Side-by-side comparison of population, area, income, taxes, climate, and more.", Cta = "Compare Now", Href = "/compare-states", Match = new[] { "/compare-states", "/compare/" }, Icon = "fa-scale-balanced", Tint = "bg-[#F2F9FC] text-[#1E7EA8]", Line = "bg-[#8AC7DB]" },
+        new { Eyebrow = "Genealogy", Title = "Last Names by State", Description = "Top 20 most common surnames per state - with origins, meanings, and heritage context. Is yours on the list?", Cta = "Explore Last Names", Href = "/guides/surnames", Match = new[] { "/guides/surnames" }, Icon = "fa-users", Tint = "bg-[#F7F5FB] text-[#5D5A86]", Line = "bg-[#C6BDD9]" }
     };
+
+    // The sidebar never links to the section the reader is already in.
+    var currentPath = (Context.Request.Path.Value ?? "/").ToLowerInvariant();
+    cards = cards.Where(c => !c.Match.Any(m => currentPath == m.TrimEnd('/') || currentPath.StartsWith(m.EndsWith("/") ? m : m + "/"))).ToArray();
 }
 
 <section class="border-t border-slate-200/70 pt-4">

@@ -10,27 +10,27 @@ namespace USASymbol.Services
     {
         public static readonly IReadOnlyDictionary<string, string> Descriptions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["demographics"] = "Population, growth, domestic migration, density, and education levels across all 50 states.",
-            ["economy"] = "Median income, poverty, employment, living wage, and the real cost of a paycheck in every state.",
-            ["jobs"] = "Minimum wage and unemployment benefits by state.",
-            ["quality-of-life"] = "Cost of living, commute times, gas and electricity prices, and overall livability by state.",
-            ["climate"] = "Average and seasonal temperatures, sunny days, rainfall, wind speed, and lightning density across all 50 states.",
-            ["housing"] = "Home values, rent, and how much of an income housing actually costs in every state.",
-            ["retirement"] = "A composite score for comparing states to retire in.",
-            ["taxes"] = "Income, sales, property, grocery, vehicle, estate, and inheritance taxes across all 50 states.",
-            ["politics"] = "2024 presidential margins, governor party, and legislative control by state.",
-            ["laws"] = "Gun, alcohol, marijuana, abortion, right-to-work, and marriage-age laws across all 50 states.",
-            ["geography"] = "Land area, highest points, statehood dates, and capitals for every state.",
-            ["health"] = "Life expectancy, insurance, obesity, infant mortality, and overdose rates across all 50 states.",
-            ["safety"] = "Violent and property crime rates by state.",
-            ["education"] = "School rankings, spending per pupil, teacher pay, and graduation rates by state.",
-            ["disasters"] = "Hurricane, tornado, earthquake, and wildfire risk across all 50 states.",
-            ["culture"] = "Zoos, casinos, UFO reports, and popular cars across all 50 states.",
-            ["infrastructure"] = "Water quality, power reliability, roads, renewable electricity, and major airports across all 50 states.",
+            ["demographics"] = "Population, density, growth since 2020, domestic migration, and degree levels.",
+            ["economy"] = "Median income, poverty rate, unemployment, job growth, childcare cost, and regional price parity.",
+            ["jobs"] = "Minimum wage and unemployment benefits.",
+            ["quality-of-life"] = "Livability score, cost of living, commute time, gas and electricity prices, and car insurance.",
+            ["climate"] = "Average, summer, and winter temperature, sunny days, rainfall, wind speed, and lightning.",
+            ["housing"] = "Home value, rent, owner costs, homeownership rate, and rent and home price relative to income.",
+            ["retirement"] = "Retirement score.",
+            ["taxes"] = "Income, sales, property, grocery, vehicle, and estate taxes, plus total tax burden.",
+            ["politics"] = "Presidential margin, governor party, legislature control, trifecta, and electoral votes.",
+            ["laws"] = "Gun, alcohol, marijuana, abortion, right-to-work, and marriage-age laws.",
+            ["geography"] = "Land area, highest point, statehood date, capital, and region.",
+            ["health"] = "Life expectancy, uninsured rate, obesity, infant mortality, and overdose deaths.",
+            ["safety"] = "Violent and property crime rates.",
+            ["education"] = "School rankings, spending per pupil, teacher salary, graduation rates, and student debt.",
+            ["disasters"] = "Hurricane, tornado, earthquake, and wildfire risk.",
+            ["culture"] = "Zoos, casinos, UFO sightings, and the most popular car.",
+            ["infrastructure"] = "Water quality, power outages, road quality, renewable electricity, and largest airport.",
         };
 
         public static string Get(string categorySlug, string fallbackCategoryName) =>
-            Descriptions.TryGetValue(categorySlug, out var desc) ? desc : $"Compare {fallbackCategoryName.ToLowerInvariant()} across all 50 states.";
+            Descriptions.TryGetValue(categorySlug, out var desc) ? desc : $"{fallbackCategoryName} metrics for every state.";
 
         public static readonly IReadOnlyDictionary<string, string> Icons = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {

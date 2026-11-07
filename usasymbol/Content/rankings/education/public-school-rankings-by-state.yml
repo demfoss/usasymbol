@@ -34,6 +34,9 @@ page:
     - name: "World Population Review — Public School Rankings by State"
       url: "https://worldpopulationreview.com/state-rankings/public-school-rankings-by-state"
       description: "State public school rankings with one-year change, 2025 edition"
+    - name: "US News & World Report — Best States for Education"
+      url: "https://www.usnews.com/news/best-states/rankings/education/k-12-education"
+      description: "Annual state K-12 education rankings based on NAEP scores, graduation rates, and quality indicators"
 
 map:
   title: "Public School Rankings by State Map"
@@ -389,6 +392,13 @@ sections:
       - "California gained 24 places, the largest one-year rise, moving from 32nd to 8th. Florida climbed 17 spots to 24th, Delaware rose 15 to 21st, and Kentucky and Georgia each added 13."
       - "South Dakota fell 18 places to 36th and Michigan dropped 14 to 37th. North Dakota and Montana each lost 13, landing at 32nd and 33rd."
 
+  - id: "k12-ranking-vs-this-index"
+    icon: "fa-solid fa-graduation-cap"
+    title: "How the US News K-12 Ranking Differs"
+    paragraphs:
+      - "The US News K-12 education ranking measures a narrower slice of school quality: pre-K enrollment, NAEP reading and math scores in grades 4 and 8, high school graduation rates, and school quality indicators. By that measure Massachusetts ranks first, followed by New Jersey and Connecticut, while New Mexico, Nevada, and West Virginia sit near the bottom."
+      - "This index adds school funding, higher education quality, and safety, which is why New York leads here and Massachusetts places third. Spending alone does not decide the order. New York and Wyoming spend among the most per pupil yet land outside the top five of the US News K-12 list, while Massachusetts pairs above-average spending with strong accountability standards."
+
 visual_assets:
   - id: best-public-schools
     src: /images/rankings/education/public-school-rankings-by-state/best-public-schools.jpg
@@ -419,7 +429,13 @@ faq:
     answer: "Arizona ranks 50th. Alaska at 49th, Nevada at 48th, Oklahoma at 47th, and New Mexico at 46th fill out the bottom five."
 
   - question: "Is Massachusetts the best state for education?"
-    answer: "Massachusetts places third in this index after leading in 2024. The [US News K-12 ranking](/rankings/education/states-by-k12-education) still puts Massachusetts first, since it weighs test scores and graduation rates without this index's funding, higher education, and safety factors."
+    answer: "Massachusetts places third in this index after leading in 2024. The US News K-12 ranking still puts Massachusetts first, since it weighs test scores and graduation rates without this index's funding, higher education, and safety factors."
+
+  - question: "Which state has the best K-12 education?"
+    answer: "Massachusetts ranks first for K-12 education in the US News & World Report ranking, ahead of New Jersey and Connecticut. The state scores highest on NAEP reading and math assessments and has a graduation rate above 90%."
+
+  - question: "What factors determine K-12 education rankings?"
+    answer: "US News weights four main factors: pre-K enrollment (10%), NAEP test scores in 4th and 8th grade reading and math (40%), high school graduation rates (40%), and college readiness (10%). NAEP is often called the Nation's Report Card and is administered every two years to a nationally representative sample of students."
 
   - question: "Where does Texas rank in public schools?"
     answer: "Texas ranks 34th in 2025, an improvement of six places over 2024."
@@ -431,8 +447,8 @@ faq:
     answer: "Florida ranks 24th, up 17 places from 2024. Only California gained more ground in a single year."
 
 related:
-  - title: "States by K-12 Education"
-    url: "/rankings/education/states-by-k12-education"
+  - title: "School Spending by State"
+    url: "/rankings/education/school-spending-by-state"
   - title: "Teacher Salary by State"
     url: "/rankings/education/teacher-salary-by-state"
   - title: "Student Loan Debt by State"

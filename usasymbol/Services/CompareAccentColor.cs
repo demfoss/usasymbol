@@ -20,8 +20,8 @@ namespace USASymbol.Services
 
         public static CompareAccentPair Resolve(IReadOnlyList<string>? colorsA, IReadOnlyList<string>? colorsB)
         {
-            var candidatesA = (colorsA ?? Array.Empty<string>()).Where(IsValidHex).ToList();
-            var candidatesB = (colorsB ?? Array.Empty<string>()).Where(IsValidHex).ToList();
+            var candidatesA = (colorsA ?? Array.Empty<string>()).Where(IsValidHex).Where(IsVivid).ToList();
+            var candidatesB = (colorsB ?? Array.Empty<string>()).Where(IsValidHex).Where(IsVivid).ToList();
 
             var hexA = candidatesA.FirstOrDefault() ?? FallbackA;
             var hexB = candidatesB.FirstOrDefault() ?? FallbackB;
@@ -32,8 +32,22 @@ namespace USASymbol.Services
                 hexB = altB ?? RotateHue(hexB, 40);
             }
 
+            // Blue next to red reads as party politics; swap the red side for the neutral amber.
+            if (IsBlue(hexA) && IsRed(hexB)) hexB = FallbackB;
+            else if (IsRed(hexA) && IsBlue(hexB)) hexA = FallbackB;
+
             return new CompareAccentPair(hexA, ForegroundFor(hexA), hexB, ForegroundFor(hexB));
         }
+
+        /// <summary>Saturated mid-tone colors only: white, near-black and grays make a column look switched off.</summary>
+        private static bool IsVivid(string hex)
+        {
+            var (_, s, l) = ToHsl(hex);
+            return s >= 0.3 && l >= 0.18 && l <= 0.7;
+        }
+
+        private static bool IsBlue(string hex) { var (h, s, _) = ToHsl(hex); return s > 0.25 && h >= 190 && h <= 260; }
+        private static bool IsRed(string hex) { var (h, s, _) = ToHsl(hex); return s > 0.25 && (h >= 340 || h <= 15); }
 
         private static bool IsValidHex(string? hex) =>
             !string.IsNullOrWhiteSpace(hex) && Regex.IsMatch(hex.Trim(), "^#?[0-9a-fA-F]{6}$");

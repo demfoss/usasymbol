@@ -1,30 +1,54 @@
 @model USASymbol.Models.ViewModels.IStateScopedViewModel
 @inject IImageUrlService Images
 
+@inject USASymbol.Services.Interface.IBorderService BorderService
+
 @{
     var allStates = ViewData["AllStates"] as IEnumerable<dynamic>;
     var currentSlug = Model.State.Slug;
     var region = Model.State.Region;
 
-    var seed = (currentSlug ?? "").GetHashCode();
-    var rng = new Random(seed);
+    // Bordering states first (real neighbors), then same-region states in a stable order.
+    // string.GetHashCode is randomized per process, so a seeded Random changed on every restart.
+    List<dynamic> pick = new();
+    if (allStates != null)
+    {
+        var borderContent = await BorderService.GetBorderContentAsync(currentSlug ?? string.Empty);
+        var neighborNames = (borderContent?.BorderSummary?.BorderingStatesList ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-    var sameRegion = allStates?
-        .Where(s => string.Equals((string?)s.Region, region, StringComparison.OrdinalIgnoreCase) && (string)s.Slug != currentSlug)
-        .OrderBy(_ => rng.Next())
-        .Take(5)
-        .ToList();
+        foreach (var name in neighborNames)
+        {
+            var match = allStates.FirstOrDefault(s => string.Equals((string)s.Name, name, StringComparison.OrdinalIgnoreCase) && (string)s.Slug != currentSlug);
+            if (match != null && pick.Count < 5) pick.Add(match);
+        }
 
-    var pick = (sameRegion?.Any() == true
-            ? sameRegion
-            : allStates?
-                .Where(s => (string)s.Slug != currentSlug)
-                .OrderBy(_ => rng.Next())
-                .Take(5)
-                .ToList());
+        var offset = Math.Abs((currentSlug ?? string.Empty).Sum(ch => (int)ch));
+        var sameRegion = allStates
+            .Where(s => string.Equals((string?)s.Region, region, StringComparison.OrdinalIgnoreCase) && (string)s.Slug != currentSlug)
+            .OrderBy(s => (string)s.Slug)
+            .ToList();
+        for (var i = 0; i < sameRegion.Count && pick.Count < 5; i++)
+        {
+            var candidate = sameRegion[(offset + i) % sameRegion.Count];
+            if (!pick.Any(p => (string)p.Slug == (string)candidate.Slug)) pick.Add(candidate);
+        }
+
+        if (pick.Count == 0)
+        {
+            pick = allStates.Where(s => (string)s.Slug != currentSlug).OrderBy(s => (string)s.Slug).Take(5).ToList();
+        }
+    }
 }
 
-@if (!(ViewData["HideRelatedStates"] as bool? ?? false) && pick?.Any() == true)
+@if (Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel symbolModel)
+{
+    if (!(ViewData["HideRelatedStates"] as bool? ?? false))
+    {
+        @await Component.InvokeAsync("SymbolContext", new { model = symbolModel, part = "sidebar" })
+    }
+}
+else if (!(ViewData["HideRelatedStates"] as bool? ?? false) && pick.Any())
 {
     <section class="related-states-minimal">
         <h2 class="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#13231D]">

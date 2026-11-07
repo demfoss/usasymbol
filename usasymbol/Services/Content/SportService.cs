@@ -59,6 +59,16 @@ namespace USASymbol.Services.Content
                         IntroText = GetString(data, "intro_text")
                     };
 
+                    content.ExpertQuoteAfterSectionId = GetString(data, "expert_quote_after_section");
+                    if (data.TryGetValue("expert_quote", out var expertQuoteObj) && expertQuoteObj is Dictionary<object, object> expertQuoteDict)
+                    {
+                        content.ExpertQuote = new ExpertQuoteData
+                        {
+                            Text = GetString(expertQuoteDict, "text"),
+                            Source = GetString(expertQuoteDict, "source")
+                        };
+                    }
+
                     if (data.ContainsKey("sections") && data["sections"] is List<object> sections)
                     {
                         foreach (var sec in sections)

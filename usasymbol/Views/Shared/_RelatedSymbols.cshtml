@@ -48,7 +48,7 @@
                         else
                         {
                             <div class="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600">
-                                <span class="text-lg font-semibold">@GetSymbolInitial(symbol.Name)</span>
+                                <i class="fa-solid @USASymbol.Helpers.SymbolTypeInfo.Icon(symbol.Type) text-xl" aria-hidden="true"></i>
                             </div>
                         }
                     </div>

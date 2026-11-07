@@ -23,3 +23,8 @@
 {
     <p class="sdh-deck">@Model.Description</p>
 }
+
+@if (Model.PageModel != null)
+{
+    @await Component.InvokeAsync("SymbolContext", new { model = Model.PageModel, part = "badges" })
+}

@@ -1,0 +1,95 @@
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+@{
+    var author = string.IsNullOrWhiteSpace(Model.Author) ? "USA Symbol" : Model.Author;
+    var modified = Model.DateModified?.ToString("yyyy-MM-dd") ?? string.Empty;
+}
+
+<div class="cite" data-nosnippet data-cite-modified="@modified">
+    <button type="button" class="cite-btn" aria-haspopup="dialog" aria-expanded="false">
+        <i class="fa-solid fa-quote-right" aria-hidden="true"></i>
+        <span>Cite this page</span>
+    </button>
+    <div class="cite-pop" role="dialog" aria-label="Cite this page" hidden>
+        <div class="cite-tabs" role="tablist">
+            <button type="button" role="tab" data-style="apa" aria-selected="true">APA</button>
+            <button type="button" role="tab" data-style="mla" aria-selected="false">MLA</button>
+            <button type="button" role="tab" data-style="chicago" aria-selected="false">Chicago</button>
+        </div>
+        <p class="cite-text" tabindex="0"></p>
+        <div class="cite-actions">
+            <button type="button" class="cite-copy"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy citation</span></button>
+            <button type="button" class="cite-link"><i class="fa-solid fa-link" aria-hidden="true"></i> <span>Copy link</span></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var root = document.currentScript.previousElementSibling;
+        var btn = root.querySelector('.cite-btn');
+        var pop = root.querySelector('.cite-pop');
+        var text = root.querySelector('.cite-text');
+        var tabs = root.querySelectorAll('[role=tab]');
+        var style = 'apa';
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        var author = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(author));
+        var modified = root.getAttribute('data-cite-modified');
+
+        function parts(name) {
+            var p = name.trim().split(/\s+/);
+            return { first: p.slice(0, -1).join(' '), last: p[p.length - 1] };
+        }
+
+        function build() {
+            var h1 = document.querySelector('h1');
+            var title = (h1 ? h1.textContent : document.title).replace(/\s+/g, ' ').trim();
+            var url = (document.querySelector('link[rel=canonical]') || {}).href || location.href.split('#')[0];
+            var d = modified ? new Date(modified + 'T00:00:00') : new Date();
+            var now = new Date();
+            var y = d.getFullYear();
+            var isOrg = author === 'USA Symbol' || /team/i.test(author);
+            var a = parts(author);
+            if (style === 'apa') {
+                var who = isOrg ? 'USA Symbol' : a.last + ', ' + a.first.split(' ').map(function (x) { return x[0] + '.'; }).join(' ');
+                return who + '. (' + y + ', ' + months[d.getMonth()] + ' ' + d.getDate() + '). ' + title + '. ' + (isOrg ? '' : 'USA Symbol. ') + url;
+            }
+            if (style === 'mla') {
+                var whoM = isOrg ? '' : a.last + ', ' + a.first + '. ';
+                return whoM + '"' + title + '." USA Symbol, ' + d.getDate() + ' ' + months[d.getMonth()].slice(0, 3) + '. ' + y + ', ' + url.replace(/^https?:\/\//, '') + '. Accessed ' + now.getDate() + ' ' + months[now.getMonth()].slice(0, 3) + '. ' + now.getFullYear() + '.';
+            }
+            var whoC = isOrg ? 'USA Symbol' : a.last + ', ' + a.first;
+            return whoC + '. "' + title + '." USA Symbol. ' + months[d.getMonth()] + ' ' + d.getDate() + ', ' + y + '. ' + url + '.';
+        }
+
+        function render() { text.textContent = build(); }
+        function flash(el, label) {
+            var s = el.querySelector('span'), old = s.textContent;
+            s.textContent = label;
+            setTimeout(function () { s.textContent = old; }, 1800);
+        }
+        function copy(str, el, label) {
+            if (navigator.clipboard) navigator.clipboard.writeText(str).then(function () { flash(el, label); });
+        }
+        function close() { pop.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+
+        btn.addEventListener('click', function () {
+            var open = pop.hidden;
+            pop.hidden = !open;
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) render();
+        });
+        tabs.forEach(function (t) {
+            t.addEventListener('click', function () {
+                style = t.getAttribute('data-style');
+                tabs.forEach(function (x) { x.setAttribute('aria-selected', x === t ? 'true' : 'false'); });
+                render();
+            });
+        });
+        root.querySelector('.cite-copy').addEventListener('click', function () { copy(text.textContent, this, 'Copied'); });
+        root.querySelector('.cite-link').addEventListener('click', function () {
+            copy((document.querySelector('link[rel=canonical]') || {}).href || location.href.split('#')[0], this, 'Copied');
+        });
+        document.addEventListener('click', function (e) { if (!root.contains(e.target)) close(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    })();
+</script>

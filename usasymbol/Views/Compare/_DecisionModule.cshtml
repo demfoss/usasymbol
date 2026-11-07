@@ -1,6 +1,7 @@
 @model USASymbol.Models.ViewModels.StatePairComparisonViewModel
 @using USASymbol.Services
 @inject IImageUrlService Images
+@inject IStateMatchService StateMatch
 
 @{
     var accentA = ViewData["AccentA"] as string ?? "#1D5A8F";
@@ -123,18 +124,37 @@
 
     string SlugOf(string s) => new string(s.ToLowerInvariant().Where(ch => char.IsLetterOrDigit(ch) || ch == ' ').ToArray()).Trim().Replace(' ', '-');
 
-    var overallVerdictTitle = score.Winner != null
-        ? $"{score.Winner.Name} fits you better"
+    var leaderState = score.Winner;
+    var overallVerdictTitle = leaderState != null
+        ? $"{leaderState.Name} leads on {(leaderState == score.StateA ? score.WinsA : score.WinsB)} of {score.Total} scored metrics"
         : "It's close between these two";
-    var overallVerdictBody = score.Winner != null
-        ? $"{score.Winner.Name} wins {(score.Winner == score.StateA ? score.WinsA : score.WinsB)} of {score.Total} scored metrics against {(score.Winner == score.StateA ? score.StateB.Name : score.StateA.Name)}."
-        : $"{score.StateA.Name} and {score.StateB.Name} split the {score.Total} scored metrics roughly evenly — pick a priority below to see who pulls ahead where it matters to you.";
+    var overallVerdictBody = leaderState != null
+        ? $"{score.StateA.Name} leads on {score.WinsA} and {score.StateB.Name} on {score.WinsB}. Only metrics with a clear better-or-worse direction are scored; politics, laws, size and population are shown but never counted. Pick a priority above to see who leads where it matters to you."
+        : $"{score.StateA.Name} and {score.StateB.Name} split the {score.Total} scored metrics evenly. Pick a priority above to see who pulls ahead where it matters to you.";
+
+    // Bracket schedules for just these two states (same 2025 data as the Take-Home Pay tool).
+    string taxJson = "{}";
+    try
+    {
+        var all = System.Text.Json.Nodes.JsonNode.Parse(StateMatch.GetIncomeTaxScheduleJson())!;
+        var states = new System.Text.Json.Nodes.JsonObject();
+        foreach (var st in new[] { Model.StateA, Model.StateB })
+        {
+            var node = all["states"]?[st.Abbreviation];
+            if (node != null) states[st.Abbreviation] = node.DeepClone();
+        }
+        taxJson = new System.Text.Json.Nodes.JsonObject
+        {
+            ["taxYear"] = all["taxYear"]?.DeepClone(),
+            ["states"] = states
+        }.ToJsonString();
+    }
+    catch { /* calculator hides itself without schedules */ }
 }
 
 <section class="cmp2-block cmp2-decision" id="decision">
     <div class="cmp2-shell">
-        <p class="cmp2-eyebrow">What matters to you?</p>
-        <h2 class="cmp2-title">Tell us your priority, get a verdict</h2>
+        <h2 class="cmp2-title">Pick a priority</h2>
 
         <div class="dm-chips" id="dm-chips">
             <button type="button" class="dm-chip is-active" data-target="dm-verdict-all">
@@ -150,7 +170,7 @@
 
         <div class="dm-verdict-wrap">
             <div class="dm-verdict" id="dm-verdict-all">
-                <p class="dm-verdict-label">Your match</p>
+                <p class="dm-verdict-label">Overall</p>
                 <h3 class="dm-verdict-title"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> @overallVerdictTitle</h3>
                 <p class="dm-verdict-body">@overallVerdictBody</p>
             </div>
@@ -158,7 +178,7 @@
             {
                 var headline = g.Cards[0];
                 <div class="dm-verdict is-hidden" id="dm-verdict-@SlugOf(g.Chip)">
-                    <p class="dm-verdict-label">Your match &mdash; @Html.Raw(g.Chip)</p>
+                    <p class="dm-verdict-label">If you care about @Html.Raw(g.Chip)</p>
                     <h3 class="dm-verdict-title"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> @headline.Title</h3>
                     <p class="dm-verdict-body">@headline.Body <a href="@headline.Link">See full data &rarr;</a></p>
                     @if (g.Cards.Count > 1)
@@ -174,31 +194,22 @@
             }
         </div>
 
-        @if (Model.StatsA?.RegionalPriceParity != null && Model.StatsB?.RegionalPriceParity != null)
+        @if (Model.StatsA?.RegionalPriceParity != null && Model.StatsB?.RegionalPriceParity != null && taxJson.Contains("\"states\""))
         {
             var rppA = Model.StatsA.RegionalPriceParity.Value;
             var rppB = Model.StatsB.RegionalPriceParity.Value;
-            var pp100A = Model.StatsA.PurchasingPower100 ?? Math.Round(100.0 * 100.0 / rppA, 2);
-            var pp100B = Model.StatsB.PurchasingPower100 ?? Math.Round(100.0 * 100.0 / rppB, 2);
-            var colA = Model.StatsA.CostOfLivingIndex ?? rppA;
-            var colB = Model.StatsB.CostOfLivingIndex ?? rppB;
-            var taxA = Model.StatsA.IncomeTaxRatePct ?? 0.0;
-            var taxB = Model.StatsB.IncomeTaxRatePct ?? 0.0;
             string F2(double v) => v.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+            string Inv(double? v) => v?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "";
 
             <div class="dm-calc" id="dm-calc"
-                 data-pp100-a="@F2(pp100A)" data-pp100-b="@F2(pp100B)"
-                 data-col-a="@F2(colA)" data-col-b="@F2(colB)"
-                 data-tax-a="@F2(taxA)" data-tax-b="@F2(taxB)"
+                 data-rpp-a="@F2(rppA)" data-rpp-b="@F2(rppB)"
+                 data-abbr-a="@Model.StateA.Abbreviation" data-abbr-b="@Model.StateB.Abbreviation"
                  data-name-a="@Model.StateA.Name" data-name-b="@Model.StateB.Name"
-                 data-rent-a="@(Model.StatsA?.MedianGrossRent?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
-                 data-rent-b="@(Model.StatsB?.MedianGrossRent?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
-                 data-mortgage-a="@(Model.StatsA?.MedianOwnerCostsWithMortgage?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
-                 data-mortgage-b="@(Model.StatsB?.MedianOwnerCostsWithMortgage?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
-                 data-no-mortgage-a="@(Model.StatsA?.MedianOwnerCostsWithoutMortgage?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")"
-                 data-no-mortgage-b="@(Model.StatsB?.MedianOwnerCostsWithoutMortgage?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")">
+                 data-rent-a="@Inv(Model.StatsA?.MedianGrossRent)" data-rent-b="@Inv(Model.StatsB?.MedianGrossRent)"
+                 data-mortgage-a="@Inv(Model.StatsA?.MedianOwnerCostsWithMortgage)" data-mortgage-b="@Inv(Model.StatsB?.MedianOwnerCostsWithMortgage)"
+                 data-no-mortgage-a="@Inv(Model.StatsA?.MedianOwnerCostsWithoutMortgage)" data-no-mortgage-b="@Inv(Model.StatsB?.MedianOwnerCostsWithoutMortgage)">
+                <script type="application/json" id="dm-tax-data">@Html.Raw(taxJson)</script>
 
-                <p class="cmp2-eyebrow">Run the numbers</p>
                 <h3 class="cmp2-title dm-calc-title">What's your salary really worth?</h3>
 
                 <div class="dm-calc-inputs">
@@ -210,39 +221,55 @@
                         </div>
                         <input type="range" id="dm-salary-slider" min="10000" max="500000" step="5000" value="100000">
                     </label>
-                    <label class="dm-field">
-                        <span>Housing scenario</span>
-                        <select id="dm-housing">
-                            <option value="rent">Median rent</option>
-                            <option value="mortgage">Owner costs with mortgage</option>
-                            <option value="noMortgage">Owner costs without mortgage</option>
-                        </select>
-                    </label>
+                    <div class="dm-field-row">
+                        <label class="dm-field">
+                            <span>Filing status</span>
+                            <select id="dm-status">
+                                <option value="single">Single</option>
+                                <option value="married">Married, filing jointly</option>
+                            </select>
+                        </label>
+                        <label class="dm-field">
+                            <span>Housing</span>
+                            <select id="dm-housing">
+                                <option value="rent">Renting (median rent)</option>
+                                <option value="mortgage">Owning, with mortgage</option>
+                                <option value="noMortgage">Owning, no mortgage</option>
+                            </select>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="dm-calc-grid">
                     <article class="dm-calc-card" style="--dm-accent:@accentA">
                         <h4>@Model.StateA.Name</h4>
                         <dl>
+                            <div><dt>State income tax</dt><dd id="dm-tax-a">—</dd></div>
                             <div><dt>After state tax</dt><dd id="dm-takehome-a">—</dd></div>
                             <div><dt>Housing / month</dt><dd id="dm-housing-a">—</dd></div>
-                            <div><dt>Left after housing</dt><dd id="dm-left-a">—</dd></div>
-                            <div class="dm-calc-highlight"><dt>Cost-adjusted remainder</dt><dd id="dm-real-a">—</dd></div>
+                            <div><dt>Housing as share of pay</dt><dd id="dm-share-a">—</dd></div>
+                            <div class="dm-calc-highlight"><dt>Buying power</dt><dd id="dm-real-a">—</dd></div>
                         </dl>
                     </article>
                     <article class="dm-calc-card" style="--dm-accent:@accentB">
                         <h4>@Model.StateB.Name</h4>
                         <dl>
+                            <div><dt>State income tax</dt><dd id="dm-tax-b">—</dd></div>
                             <div><dt>After state tax</dt><dd id="dm-takehome-b">—</dd></div>
                             <div><dt>Housing / month</dt><dd id="dm-housing-b">—</dd></div>
-                            <div><dt>Left after housing</dt><dd id="dm-left-b">—</dd></div>
-                            <div class="dm-calc-highlight"><dt>Cost-adjusted remainder</dt><dd id="dm-real-b">—</dd></div>
+                            <div><dt>Housing as share of pay</dt><dd id="dm-share-b">—</dd></div>
+                            <div class="dm-calc-highlight"><dt>Buying power</dt><dd id="dm-real-b">—</dd></div>
                         </dl>
                     </article>
                 </div>
 
                 <p class="dm-calc-insight" id="dm-calc-insight"></p>
-                <p class="dm-calc-fine">Illustrative estimate only. Uses top marginal state income tax rate, BEA Regional Price Parity, and median housing costs — excludes federal tax, utilities, insurance, childcare, and debt.</p>
+                <p class="dm-calc-fine">
+                    Estimate for 2025. State income tax uses each state's brackets and standard deduction (<a href="/tools/take-home-pay-by-state">same data as our take-home pay tool</a>).
+                    Buying power is pay after state tax divided by the BEA Regional Price Parity, so it is in national-average dollars. That index already includes housing, so rent is shown for reference and is not subtracted a second time.
+                    Federal tax is the same in both states and left out. Local taxes, credits and payroll levies such as CA SDI are not modeled.
+                    State averages hide big gaps between cities, so treat this as a starting point. <a href="#" id="dm-share" role="button">Copy link to this result</a>.
+                </p>
             </div>
         }
     </div>
@@ -269,46 +296,83 @@
     var salary = document.getElementById('dm-salary');
     var slider = document.getElementById('dm-salary-slider');
     var housing = document.getElementById('dm-housing');
-
-    var pp100A = parseFloat(root.dataset.pp100A), pp100B = parseFloat(root.dataset.pp100B);
-    var colA = parseFloat(root.dataset.colA), colB = parseFloat(root.dataset.colB);
-    var taxA = parseFloat(root.dataset.taxA), taxB = parseFloat(root.dataset.taxB);
+    var status = document.getElementById('dm-status');
+    var taxes = JSON.parse(document.getElementById('dm-tax-data').textContent);
+    var rppA = parseFloat(root.dataset.rppA), rppB = parseFloat(root.dataset.rppB);
+    var abbrA = root.dataset.abbrA, abbrB = root.dataset.abbrB;
     var nameA = root.dataset.nameA, nameB = root.dataset.nameB;
+
+    // Same bracket math as the Take-Home Pay tool (state-match-core.js).
+    function bracketTax(taxable, brackets) {
+        var tax = 0;
+        for (var i = 0; i < brackets.length; i++) {
+            var floor = brackets[i][0];
+            var ceiling = i + 1 < brackets.length ? brackets[i + 1][0] : Infinity;
+            if (taxable <= floor) break;
+            tax += (Math.min(taxable, ceiling) - floor) * brackets[i][1] / 100;
+        }
+        return tax;
+    }
+    function phased(amount, po, gross) {
+        if (!amount) return 0;
+        if (!po) return amount;
+        return Math.max(0, amount - Math.max(0, gross - po.start) * po.rate / 100);
+    }
+    function stateTax(abbr, gross, st) {
+        var entry = taxes.states[abbr];
+        if (!entry || entry.none) return 0;
+        var sc = entry[st];
+        var ded = phased(sc.deduction, sc.deductionPhaseout, gross);
+        var exm = phased(sc.exemption, sc.exemptionPhaseout, gross);
+        return bracketTax(Math.max(0, gross - ded - exm), sc.brackets);
+    }
 
     function num(v) { var n = parseFloat(v); return Number.isFinite(n) ? n : 0; }
     function usd(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+    function pct(n) { return (Math.round(n * 10) / 10) + '%'; }
     function housingFor(side, mode) {
         if (mode === 'mortgage') return num(root.dataset['mortgage' + side]);
         if (mode === 'noMortgage') return num(root.dataset['noMortgage' + side]);
         return num(root.dataset['rent' + side]);
     }
+    function set(id, text) { document.getElementById(id).textContent = text; }
 
     function update() {
         var gross = Math.max(0, num(salary.value));
-        var mode = housing.value;
+        var mode = housing.value, st = status.value;
+        var out = {};
+        [['A', abbrA, rppA], ['B', abbrB, rppB]].forEach(function (x) {
+            var side = x[0], tax = stateTax(x[1], gross, st);
+            var takeHome = gross - tax;
+            var rentYear = housingFor(side, mode) * 12;
+            var real = takeHome / (x[2] / 100);
+            var l = side.toLowerCase();
+            set('dm-tax-' + l, usd(tax) + ' (' + pct(gross ? tax / gross * 100 : 0) + ')');
+            set('dm-takehome-' + l, usd(takeHome));
+            set('dm-housing-' + l, usd(rentYear / 12));
+            set('dm-share-' + l, takeHome ? pct(rentYear / takeHome * 100) : '—');
+            set('dm-real-' + l, usd(real));
+            out[side] = real;
+        });
+        var aLead = out.A >= out.B;
+        var gap = Math.abs(out.A - out.B);
+        set('dm-calc-insight', (aLead ? nameA : nameB) + ' stretches this salary about ' + usd(gap) + ' further per year after state tax and local prices.');
+    }
 
-        var takeHomeA = gross - gross * (taxA / 100);
-        var takeHomeB = gross - gross * (taxB / 100);
-        var housingA = housingFor('A', mode) * 12;
-        var housingB = housingFor('B', mode) * 12;
-        var leftA = takeHomeA - housingA;
-        var leftB = takeHomeB - housingB;
-        var realA = leftA / Math.max(0.01, colA / 100);
-        var realB = leftB / Math.max(0.01, colB / 100);
-
-        document.getElementById('dm-takehome-a').textContent = usd(takeHomeA);
-        document.getElementById('dm-takehome-b').textContent = usd(takeHomeB);
-        document.getElementById('dm-housing-a').textContent = usd(housingA / 12);
-        document.getElementById('dm-housing-b').textContent = usd(housingB / 12);
-        document.getElementById('dm-left-a').textContent = usd(leftA);
-        document.getElementById('dm-left-b').textContent = usd(leftB);
-        document.getElementById('dm-real-a').textContent = usd(realA);
-        document.getElementById('dm-real-b').textContent = usd(realB);
-
-        var winner = realA >= realB ? nameA : nameB;
-        var gap = Math.abs(realA - realB);
-        document.getElementById('dm-calc-insight').textContent =
-            winner + ' leaves about ' + usd(gap) + ' more cost-adjusted spending room per year in this scenario.';
+    function fromUrl() {
+        var q = new URLSearchParams(location.search);
+        var sal = parseInt(q.get('salary'), 10);
+        if (sal >= 10000 && sal <= 1000000) { salary.value = sal; slider.value = Math.min(sal, 500000); }
+        if (q.get('status') === 'married') status.value = 'married';
+        var h = q.get('housing');
+        if (h === 'own') housing.value = 'mortgage'; else if (h === 'own-free') housing.value = 'noMortgage';
+    }
+    function shareUrl() {
+        var q = new URLSearchParams();
+        q.set('salary', Math.round(num(salary.value)));
+        q.set('status', status.value);
+        q.set('housing', housing.value === 'rent' ? 'rent' : (housing.value === 'mortgage' ? 'own' : 'own-free'));
+        return location.origin + location.pathname + '?' + q.toString() + '#decision';
     }
 
     salary.addEventListener('input', function () {
@@ -318,6 +382,15 @@
     });
     slider.addEventListener('input', function () { salary.value = this.value; update(); });
     housing.addEventListener('change', update);
+    status.addEventListener('change', update);
+    document.getElementById('dm-share').addEventListener('click', function (e) {
+        e.preventDefault();
+        var url = shareUrl(), self = this;
+        (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () {
+            self.textContent = 'Link copied';
+        }, function () { window.prompt('Copy this link', url); });
+    });
+    fromUrl();
     update();
 })();
 </script>

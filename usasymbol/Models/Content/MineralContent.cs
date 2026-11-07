@@ -38,6 +38,8 @@ namespace USASymbol.Models.Content
         public string HeroImageCaption { get; set; } = string.Empty;
         public string IntroText { get; set; } = string.Empty;
 
+        public ExpertQuoteData? ExpertQuote { get; set; }
+        public string ExpertQuoteAfterSectionId { get; set; } = string.Empty;
         public List<MineralSection> Sections { get; set; } = new();
         public List<MineralFaq> Faq { get; set; } = new();
         public List<MineralSource> Sources { get; set; } = new();

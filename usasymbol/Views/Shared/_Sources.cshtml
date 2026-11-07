@@ -18,7 +18,7 @@
                 @await Html.PartialAsync("_SourceLinksList", Model.Sources!)
 
                 <div class="mt-6 border-t border-slate-200/70 pt-4">
-                    <div class="flex flex-col gap-2 text-[12px] text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex flex-col gap-2 text-[13px] text-slate-600 sm:flex-row sm:items-center sm:justify-between">
                         <div>Information is cross-referenced with official state archives.</div>
                         <div>
                             Found an error?
@@ -29,4 +29,9 @@
             </div>
         </div>
     </div>
+}
+
+@if (!Model.IsNationalSymbol)
+{
+    @await Component.InvokeAsync("SymbolContext", new { model = Model, part = "prevnext" })
 }

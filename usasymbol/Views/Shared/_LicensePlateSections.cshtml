@@ -40,20 +40,13 @@
 
     foreach (var item in displaySections)
     {
-        <div id="section-@item.Id" class="scroll-mt-24 py-10 lg:py-12 flow-root border-t border-slate-200/70 first:border-t-0 first:pt-0">
-            <header class="mb-5 lg:mb-6">
-                <div class="flex items-center gap-3 mb-2">
-                    <span class="text-[11px] font-semibold tracking-widest uppercase text-gray-500">
-                        Section
-                    </span>
-                    <span class="h-px flex-1 bg-gray-200/70"></span>
-                </div>
-
+        <div id="section-@item.Id" class="scroll-mt-24 py-6 lg:py-8 flow-root border-t border-slate-200/70 first:border-t-0 first:pt-0">
+            <header class="mb-4 lg:mb-5">
                 @if (!string.IsNullOrWhiteSpace(item.Icon))
                 {
-                    <div class="flex items-center gap-4">
-                        <span class="inline-flex h-11 w-11 shrink-0 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-                            <i class="@item.Icon text-sm"></i>
+                    <div class="flex items-center gap-3">
+                        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-500">
+                            <i class="@item.Icon text-xs"></i>
                         </span>
                         <h2 class="content-h2">
                             @item.Title

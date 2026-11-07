@@ -2,6 +2,7 @@
 @using USASymbol.Services
 @inject IImageUrlService Images
 @inject usasymbol.Services.Interface.IColorService ColorSvc
+@inject usasymbol.Services.Interface.IStateService StateSvc
 
 @{
     var titleA = Model.StateA.Name;
@@ -33,93 +34,43 @@
     var sunshineResult = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == "sunny-days");
     var climateResult = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == "average-temperature");
 
-    var heroSummaryParts = new List<string>();
-    if (costOfLivingResult?.WinnerSlug != null)
+    // One clause per state: "Texas is cheaper and has no state income tax; California has higher incomes and more sunshine."
+    var heroClauses = new Dictionary<string, List<string>> { [Model.StateA.Slug] = new(), [Model.StateB.Slug] = new() };
+    void Lead(MetricComparisonResult? r, string phrase)
     {
-        var cheaper = costOfLivingResult.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
-        heroSummaryParts.Add($"{cheaper.Name} is cheaper overall");
+        if (r?.WinnerSlug != null && heroClauses.TryGetValue(r.WinnerSlug, out var list)) list.Add(phrase);
     }
-    if (purchasingPowerResult?.WinnerSlug != null)
-    {
-        var strongerDollar = purchasingPowerResult.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
-        heroSummaryParts.Add($"$100 goes further in {strongerDollar.Name}");
-    }
-    if (incomeResult?.WinnerSlug != null)
-    {
-        var higherIncome = incomeResult.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
-        heroSummaryParts.Add($"{higherIncome.Name} has higher incomes");
-    }
+    Lead(costOfLivingResult, "is cheaper overall");
+    Lead(incomeResult, "has higher incomes");
     if (incomeTaxResult?.WinnerSlug != null)
     {
-        var lowerTax = incomeTaxResult.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
-        var lowerTaxValue = incomeTaxResult.WinnerSlug == Model.StateA.Slug ? incomeTaxResult.DisplayValueA : incomeTaxResult.DisplayValueB;
-        heroSummaryParts.Add(lowerTaxValue == "0.00%" ? $"{lowerTax.Name} has no state income tax" : $"{lowerTax.Name} has lower state income tax");
+        var taxNumeric = incomeTaxResult.WinnerSlug == Model.StateA.Slug ? incomeTaxResult.NumericA : incomeTaxResult.NumericB;
+        Lead(incomeTaxResult, taxNumeric == 0 ? "has no state income tax" : "has lower state income tax");
     }
-    if (sunshineResult?.WinnerSlug != null)
-    {
-        var sunnier = sunshineResult.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
-        heroSummaryParts.Add($"{sunnier.Name} gets more sunshine");
-    }
-    else if (climateResult?.WinnerSlug != null)
-    {
-        var warmer = climateResult.WinnerSlug == Model.StateA.Slug ? Model.StateA : Model.StateB;
-        heroSummaryParts.Add($"{warmer.Name} has the warmer climate");
-    }
+    if (sunshineResult?.WinnerSlug != null) Lead(sunshineResult, "gets more sunshine");
 
-    string? heroSummary = heroSummaryParts.Count switch
+    string JoinPhrases(List<string> l) => l.Count <= 2 ? string.Join(" and ", l) : string.Join(", ", l.Take(l.Count - 1)) + ", and " + l.Last();
+    var heroClauseText = new List<string>();
+    foreach (var st in new[] { Model.StateA, Model.StateB })
     {
-        0 => costOfLivingResult?.SummaryText,
-        1 => heroSummaryParts[0] + ".",
-        2 => heroSummaryParts[0] + ", while " + heroSummaryParts[1] + ".",
-        _ => heroSummaryParts[0] + ", while " + string.Join(", ", heroSummaryParts.Skip(1).Take(heroSummaryParts.Count - 2)) + ", and " + heroSummaryParts.Last() + "."
+        var l = heroClauses[st.Slug];
+        if (l.Count > 0) heroClauseText.Add($"{st.Name} {JoinPhrases(l)}");
+    }
+    string? heroSummary = heroClauseText.Count > 0
+        ? string.Join("; ", heroClauseText) + "."
+        : costOfLivingResult?.SummaryText;
+
+    // ── where each state leads: one table, real numbers, plain metric names ──
+    var leadSlugs = new[]
+    {
+        "cost-of-living", "median-income", "median-rent", "home-value", "property-tax", "income-tax",
+        "violent-crime", "life-expectancy", "uninsured-rate", "college-educated", "job-growth", "sunny-days"
     };
-
-    // ── pros & cons ──
-    string? BuildTradeoffLine(string slug, State state, bool stateWins)
-    {
-        return slug switch
-        {
-            "cost-of-living" => stateWins ? $"{state.Name} has a lower overall cost of living." : $"{state.Name} has a higher overall cost of living.",
-            "home-value-to-income" => stateWins ? $"{state.Name} has a lower housing cost index." : $"{state.Name} has a higher housing cost index.",
-            "home-value" => stateWins ? $"{state.Name} has lower median home values." : $"{state.Name} has higher median home values.",
-            "median-income" => stateWins ? $"{state.Name} shows higher median income." : $"{state.Name} shows lower median income.",
-            "property-tax" => stateWins ? $"{state.Name} has lower property tax rates on average." : $"{state.Name} has higher property tax rates on average.",
-            "violent-crime" => stateWins ? $"{state.Name} has a lower violent crime rate." : $"{state.Name} has a higher violent crime rate.",
-            "job-growth" => stateWins ? $"{state.Name} job growth trend is stronger." : $"{state.Name} job growth trend is weaker.",
-            "life-expectancy" => stateWins ? $"{state.Name} health access/outcomes proxy is higher." : $"{state.Name} health access/outcomes proxy is lower.",
-            "uninsured-rate" => stateWins ? $"{state.Name} health coverage access proxy is stronger." : $"{state.Name} health coverage access proxy is weaker.",
-            "college-educated" => stateWins ? $"{state.Name} education proxy is higher." : $"{state.Name} education proxy is lower.",
-            "sunny-days" => stateWins ? $"{state.Name} has more sunny days." : $"{state.Name} has fewer sunny days.",
-            _ => null
-        };
-    }
-
-    var prosConsSourceSlugs = new[]
-    {
-        "cost-of-living", "home-value-to-income", "home-value", "median-income", "property-tax",
-        "violent-crime", "job-growth", "life-expectancy", "uninsured-rate", "college-educated", "sunny-days"
-    };
-
-    List<string> BuildTradeoffList(State state, bool pros)
-    {
-        var items = new List<string>();
-        foreach (var slug in prosConsSourceSlugs)
-        {
-            var result = Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == slug);
-            if (result?.WinnerSlug == null) continue;
-            var stateWins = result.WinnerSlug == state.Slug;
-            if (stateWins != pros) continue;
-            var line = BuildTradeoffLine(slug, state, stateWins);
-            if (!string.IsNullOrWhiteSpace(line) && !items.Contains(line)) items.Add(line);
-            if (items.Count >= 6) break;
-        }
-        return items;
-    }
-
-    var prosA = BuildTradeoffList(Model.StateA, true);
-    var consA = BuildTradeoffList(Model.StateA, false);
-    var prosB = BuildTradeoffList(Model.StateB, true);
-    var consB = BuildTradeoffList(Model.StateB, false);
+    var leadRows = leadSlugs
+        .Select(slug => Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == slug))
+        .Where(r => r?.WinnerSlug != null && r.DisplayValueA != null && r.DisplayValueB != null)
+        .Cast<MetricComparisonResult>()
+        .ToList();
 
     // ── unified metric comparison tabs (General + one per metric group) ──
     var generalSlugs = new[] {
@@ -145,8 +96,8 @@
     var cmpTabs = new List<MetricComparisonTab>();
     if (generalResults.Any())
     {
-        var gA = generalResults.Count(r => r.WinnerSlug == Model.StateA.Slug);
-        var gB = generalResults.Count(r => r.WinnerSlug == Model.StateB.Slug);
+        var gA = generalResults.Count(r => ComparisonScoreCalculator.IsScorable(r.Metric.Slug) && r.WinnerSlug == Model.StateA.Slug);
+        var gB = generalResults.Count(r => ComparisonScoreCalculator.IsScorable(r.Metric.Slug) && r.WinnerSlug == Model.StateB.Slug);
         cmpTabs.Add(new MetricComparisonTab
         {
             Id = "tab-general", Label = "General", Icon = "fa-solid fa-table-list", Results = generalResults,
@@ -164,8 +115,8 @@
     foreach (var grp in metricGroups)
     {
         var rows = grp.ToList();
-        var grpA = rows.Count(r => r.WinnerSlug == Model.StateA.Slug);
-        var grpB = rows.Count(r => r.WinnerSlug == Model.StateB.Slug);
+        var grpA = rows.Count(r => ComparisonScoreCalculator.IsScorable(r.Metric.Slug) && r.WinnerSlug == Model.StateA.Slug);
+        var grpB = rows.Count(r => ComparisonScoreCalculator.IsScorable(r.Metric.Slug) && r.WinnerSlug == Model.StateB.Slug);
         var ico = groupIconMap.TryGetValue(grp.Key.GroupSlug, out var gi) ? gi : "fa-solid fa-chart-bar";
         cmpTabs.Add(new MetricComparisonTab
         {
@@ -183,6 +134,33 @@
         AccentA = accent.HexA, AccentB = accent.HexB, Tabs = cmpTabs
     };
 
+    // ── hero state pickers ──
+    var allStates = (await StateSvc.GetAllStatesAsync()).OrderBy(x => x.Name).ToList();
+
+    // ── 5 biggest differences: largest relative gaps among comparable numeric metrics ──
+    var diffSlugs = new[]
+    {
+        "income-tax", "property-tax", "sales-tax", "median-rent", "home-value", "median-income",
+        "cost-of-living", "gas-price", "electricity-rates", "violent-crime", "minimum-wage",
+        "land-area", "population", "density"
+    };
+    var bigDiffs = diffSlugs
+        .Select(slug => Model.MetricResults.FirstOrDefault(r => r.Metric.Slug == slug))
+        .Where(r => r != null && r.NumericA.HasValue && r.NumericB.HasValue
+                    && r.DisplayValueA != null && r.DisplayValueB != null
+                    && r.NumericA.Value >= 0 && r.NumericB.Value >= 0
+                    && (r.NumericA.Value > 0 || r.NumericB.Value > 0))
+        .Select(r =>
+        {
+            var hi = Math.Max(r!.NumericA!.Value, r.NumericB!.Value);
+            var lo = Math.Min(r.NumericA.Value, r.NumericB.Value);
+            var ratio = lo == 0 ? double.PositiveInfinity : hi / lo;
+            return (Result: r, Ratio: ratio, AIsHigher: r.NumericA.Value >= r.NumericB.Value);
+        })
+        .OrderByDescending(x => x.Ratio)
+        .Take(5)
+        .ToList();
+
     // ── FAQ ──
     var faqItems = new List<(string Question, string Answer)>();
     {
@@ -195,7 +173,7 @@
             var loVal = Math.Min(r.NumericA.Value, r.NumericB.Value);
             var hiVal = Math.Max(r.NumericA.Value, r.NumericB.Value);
             faqItems.Add(($"Is {titleA} cheaper to live in than {titleB}?",
-                $"{cheaper.Name} has the lower cost of living. On the national index (100 = average), {cheaper.Name} scores {loVal:F1} versus {hiVal:F1} for {pricier.Name} - a gap of {diff:F1} points."));
+                $"{cheaper.Name} has the lower cost of living. On the national index (100 = average), {cheaper.Name} scores {loVal:F1} versus {hiVal:F1} for {pricier.Name}, a gap of {diff:F1} points."));
         }
     }
     {
@@ -207,7 +185,7 @@
             var weaker = isAWin ? Model.StateB : Model.StateA;
             var strongVal = isAWin ? r.DisplayValueA : r.DisplayValueB;
             var weakVal = isAWin ? r.DisplayValueB : r.DisplayValueA;
-            faqItems.Add(($"Where does $100 go further - {titleA} or {titleB}?",
+            faqItems.Add(($"Where does $100 go further, {titleA} or {titleB}?",
                 $"$100 goes further in {stronger.Name}. After BEA regional price adjustments, $100 is worth about {strongVal ?? "-"} in {stronger.Name}, compared with {weakVal ?? "-"} in {weaker.Name}."));
         }
     }
@@ -220,8 +198,8 @@
             var lrgVal = Math.Max(r.NumericA.Value, r.NumericB.Value);
             var smlVal = Math.Min(r.NumericA.Value, r.NumericB.Value);
             var ratio = Math.Round(lrgVal / smlVal, 1);
-            faqItems.Add(($"Which state is bigger - {titleA} or {titleB}?",
-                $"{larger.Name} is larger, covering {lrgVal:N0} sq mi compared with {smlVal:N0} sq mi for {smaller.Name} - roughly {ratio:F1}x the size."));
+            faqItems.Add(($"Which state is bigger, {titleA} or {titleB}?",
+                $"{larger.Name} is larger, covering {lrgVal:N0} sq mi compared with {smlVal:N0} sq mi for {smaller.Name}, roughly {ratio:F1}x the size."));
         }
     }
     {
@@ -246,7 +224,7 @@
             var lower = isAWin ? Model.StateB : Model.StateA;
             var hiVal = isAWin ? r.DisplayValueA : r.DisplayValueB;
             var loVal = isAWin ? r.DisplayValueB : r.DisplayValueA;
-            faqItems.Add(($"Which state has higher household income - {titleA} or {titleB}?",
+            faqItems.Add(($"Which state has higher household income, {titleA} or {titleB}?",
                 $"{higher.Name} has the higher median household income at {hiVal ?? "-"}, versus {loVal ?? "-"} in {lower.Name}."));
         }
     }
@@ -263,7 +241,7 @@
             var answer = loVal == 0
                 ? $"{lower.Name} has no state income tax, while {higher.Name} charges up to {hiDisp ?? "-"}."
                 : $"{lower.Name} has the lower state income tax top rate at {loDisp ?? "-"}, compared with {hiDisp ?? "-"} in {higher.Name}.";
-            faqItems.Add(($"Which state has lower income taxes - {titleA} or {titleB}?", answer));
+            faqItems.Add(($"Which state has lower income taxes, {titleA} or {titleB}?", answer));
         }
     }
     {
@@ -287,7 +265,7 @@
             var sparser = denser == Model.StateA ? Model.StateB : Model.StateA;
             var denVal = r.NumericA > r.NumericB ? r.DisplayValueA : r.DisplayValueB;
             var spaVal = r.NumericA > r.NumericB ? r.DisplayValueB : r.DisplayValueA;
-            faqItems.Add(($"Which state is more densely populated - {titleA} or {titleB}?",
+            faqItems.Add(($"Which state is more densely populated, {titleA} or {titleB}?",
                 $"{denser.Name} is more densely populated at {denVal ?? "-"} people per sq mi. {sparser.Name} is more spread out at {spaVal ?? "-"} people per sq mi."));
         }
     }
@@ -330,6 +308,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/compare-redesign.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/compare-overview.css" asp-append-version="true">
 }
 
 <nav class="cmp2-crumbs">
@@ -344,60 +323,104 @@
 
     @* ── 1. Scoreboard hero ─────────────────────────────────────────── *@
     <section class="cmp2-hero">
-        <div class="cmp2-shell">
-            <h1 class="cmp2-hero-title">@titleA vs @titleB</h1>
+        <div class="cmp2-shell cmp2-hero-shell">
+            <h1 class="cmp2-hero-title" id="cmp2-h1">@titleA vs @titleB</h1>
             @if (heroSummary != null)
             {
                 <p class="cmp2-hero-verdict">@heroSummary</p>
             }
-        </div>
-        <div class="cmp2-hero-split">
-            <div class="cmp2-hero-side" style="background:@accent.HexA;color:@accent.ForegroundA;">
-                <img class="cmp2-hero-flag" src="@Images.Card(Model.StateA.FlagImageUrl)" alt="@Model.StateA.Name flag" onerror="this.style.display='none'" />
-                <div class="cmp2-hero-name">@Model.StateA.Name</div>
-                <div class="cmp2-hero-abbr">@Model.StateA.Abbreviation &middot; @(Model.StateA.Region ?? "United States")</div>
-                <div class="cmp2-hero-score">@overviewScore.WinsA<span class="cmp2-hero-score-of"> / @overviewScore.Total</span></div>
-                <div class="cmp2-hero-label">metrics won</div>
-                @if (overviewScore.Winner == Model.StateA)
-                {
-                    <div class="cmp2-hero-winner-badge"><i class="fa-solid fa-crown" aria-hidden="true"></i> Winner</div>
-                }
+
+            <div class="cmp2-picker" id="cmp2-picker">
+                <label class="cmp2-picker-field">
+                    <span>First state</span>
+                    <select id="cmp2-sel-a" aria-label="Change first state">
+                        @foreach (var st in allStates)
+                        {
+                            <option value="@st.Slug" selected="@(st.Slug == Model.StateA.Slug)">@st.Name</option>
+                        }
+                    </select>
+                </label>
+                <button type="button" id="cmp2-swap" class="cmp2-picker-swap" aria-label="Swap display order" title="Swap display order"><i class="fa-solid fa-right-left" aria-hidden="true"></i></button>
+                <label class="cmp2-picker-field">
+                    <span>Second state</span>
+                    <select id="cmp2-sel-b" aria-label="Change second state">
+                        @foreach (var st in allStates)
+                        {
+                            <option value="@st.Slug" selected="@(st.Slug == Model.StateB.Slug)">@st.Name</option>
+                        }
+                    </select>
+                </label>
             </div>
-            <div class="cmp2-hero-mid">
-                <div class="cmp2-hero-vs cmp-circle">VS</div>
+
+            <div class="cmp2-hero-split" id="cmp2-hero-split">
+                <div class="cmp2-hero-side" data-side="a" style="--side-accent:@accent.HexA">
+                    <img class="cmp2-hero-flag" src="@Images.Card(Model.StateA.FlagImageUrl)" alt="@Model.StateA.Name flag" onerror="this.style.display='none'" />
+                    <div class="cmp2-hero-name">@Model.StateA.Name</div>
+                    <div class="cmp2-hero-abbr">@Model.StateA.Abbreviation &middot; @(Model.StateA.Region ?? "United States")</div>
+                    <div class="cmp2-hero-score">@overviewScore.WinsA<span class="cmp2-hero-score-of"> / @overviewScore.Total</span></div>
+                    <div class="cmp2-hero-label">metrics led</div>
+                    @if (overviewScore.Winner == Model.StateA)
+                    {
+                        <div class="cmp2-hero-winner-badge"><i class="fa-solid fa-check" aria-hidden="true"></i> Leads on @overviewScore.WinsA metrics</div>
+                    }
+                </div>
+                <div class="cmp2-hero-mid"><div class="cmp2-hero-vs cmp-circle">VS</div></div>
+                <div class="cmp2-hero-side" data-side="b" style="--side-accent:@accent.HexB">
+                    <img class="cmp2-hero-flag" src="@Images.Card(Model.StateB.FlagImageUrl)" alt="@Model.StateB.Name flag" onerror="this.style.display='none'" />
+                    <div class="cmp2-hero-name">@Model.StateB.Name</div>
+                    <div class="cmp2-hero-abbr">@Model.StateB.Abbreviation &middot; @(Model.StateB.Region ?? "United States")</div>
+                    <div class="cmp2-hero-score">@overviewScore.WinsB<span class="cmp2-hero-score-of"> / @overviewScore.Total</span></div>
+                    <div class="cmp2-hero-label">metrics led</div>
+                    @if (overviewScore.Winner == Model.StateB)
+                    {
+                        <div class="cmp2-hero-winner-badge"><i class="fa-solid fa-check" aria-hidden="true"></i> Leads on @overviewScore.WinsB metrics</div>
+                    }
+                </div>
             </div>
-            <div class="cmp2-hero-side" style="background:@accent.HexB;color:@accent.ForegroundB;">
-                <img class="cmp2-hero-flag" src="@Images.Card(Model.StateB.FlagImageUrl)" alt="@Model.StateB.Name flag" onerror="this.style.display='none'" />
-                <div class="cmp2-hero-name">@Model.StateB.Name</div>
-                <div class="cmp2-hero-abbr">@Model.StateB.Abbreviation &middot; @(Model.StateB.Region ?? "United States")</div>
-                <div class="cmp2-hero-score">@overviewScore.WinsB<span class="cmp2-hero-score-of"> / @overviewScore.Total</span></div>
-                <div class="cmp2-hero-label">metrics won</div>
-                @if (overviewScore.Winner == Model.StateB)
-                {
-                    <div class="cmp2-hero-winner-badge"><i class="fa-solid fa-crown" aria-hidden="true"></i> Winner</div>
-                }
-            </div>
-        </div>
-        @if (overviewScore.GroupWins.Any())
-        {
-            <div class="cmp2-hero-chips">
-                @foreach (var g in overviewScore.GroupWins.Take(6))
-                {
-                    <span class="cmp2-hero-chip cmp-pill">
-                        <img src="@Images.Thumb(g.Winner.FlagImageUrl)" alt="@g.Winner.Name flag" onerror="this.style.display='none'" />
-                        @g.Winner.Abbreviation wins @g.Group
-                    </span>
-                }
-            </div>
-        }
-        <div class="cmp2-living-links">
-            <span>Continue with the moving guides:</span>
-            <a href="/states/@Model.StateA.Slug/living">Living in @Model.StateA.Name</a>
-            <a href="/states/@Model.StateB.Slug/living">Living in @Model.StateB.Name</a>
-            <a href="/states/living">All 50 states</a>
-            <a href="/state-match">State Match</a>
         </div>
     </section>
+
+    @if (bigDiffs.Count > 0)
+    {
+        <section class="cmp2-block cmp2-bigdiff" id="biggest-differences">
+            <div class="cmp2-shell">
+                <h2 class="cmp2-title">@bigDiffs.Count biggest differences</h2>
+                <div class="cmp2-bigdiff-list">
+                    @foreach (var d in bigDiffs)
+                    {
+                        var note = double.IsPositiveInfinity(d.Ratio)
+                            ? (d.Result.NumericA == 0 ? $"{Model.StateA.Abbreviation} has none" : $"{Model.StateB.Abbreviation} has none")
+                            : $"{(d.AIsHigher ? Model.StateA.Abbreviation : Model.StateB.Abbreviation)} is {d.Ratio.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}\u00d7 higher";
+                        <a class="cmp2-bigdiff-row" href="/compare/@Model.PairSlug/@d.Result.Metric.Slug">
+                            <span class="cmp2-bigdiff-name">@d.Result.Metric.Name</span>
+                            <span class="cmp2-bigdiff-vals"><b style="--v:@accent.HexA">@d.Result.DisplayValueA</b><i>vs</i><b style="--v:@accent.HexB">@d.Result.DisplayValueB</b></span>
+                            <span class="cmp2-bigdiff-note">@note</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <script>
+    (function () {
+        var selA = document.getElementById('cmp2-sel-a'), selB = document.getElementById('cmp2-sel-b');
+        function go() {
+            if (selA.value === selB.value) { return; }
+            window.location.href = '/compare/' + [selA.value, selB.value].sort().join('-vs-');
+        }
+        selA.addEventListener('change', go);
+        selB.addEventListener('change', go);
+
+        // Swap only changes the order the two panels and the title are shown in; the URL stays canonical.
+        var split = document.getElementById('cmp2-hero-split'), h1 = document.getElementById('cmp2-h1');
+        var nameA = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(titleA)), nameB = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(titleB));
+        document.getElementById('cmp2-swap').addEventListener('click', function () {
+            var swapped = split.classList.toggle('is-swapped');
+            h1.textContent = swapped ? nameB + ' vs ' + nameA : nameA + ' vs ' + nameB;
+        });
+    })();
+    </script>
 
     <div class="cmp2-sticky" id="cmp2-sticky">
         <span class="cmp2-sticky-name" style="color:@accent.HexA">@Model.StateA.Abbreviation @overviewScore.WinsA</span>
@@ -417,7 +440,7 @@
         })();
     </script>
 
-    <article class="cmp2-page-shell max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-10">
+    <article class="cmp2-page-shell max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8">
     <div class="min-w-0 article-content">
 
     @* ── 2. Decision module (priorities + consolidated calculator) ────── *@
@@ -426,53 +449,36 @@
     @* ── 3. Unified metric comparison ──────────────────────────────────── *@
     @await Html.PartialAsync("_MetricComparisonList", metricListModel)
 
-    @* ── 4. Pros & cons ─────────────────────────────────────────────────── *@
-    @if (prosA.Any() || consA.Any() || prosB.Any() || consB.Any())
+    @* ── 4. Where each state leads ──────────────────────────────────────── *@
+    @if (leadRows.Any())
     {
         <section class="cmp2-block">
             <div class="cmp2-shell">
                 <div class="cmp2-head">
-                    <p class="cmp2-eyebrow">Tradeoffs</p>
-                    <h2 class="cmp2-title">Pros and cons for each state</h2>
-                    <p class="cmp2-sub">The biggest advantages and drawbacks pulled from affordability, housing, income, taxes, safety, health, education, jobs, and weather.</p>
+                    <h2 class="cmp2-title">Where each state leads</h2>
+                    <p class="cmp2-sub">The leader in each row is marked with a check and bold text.</p>
                 </div>
-                <div class="cmp2-proscons-grid">
-                    <article class="cmp2-proscons-card" style="--pc-accent:@accent.HexA">
-                        <div class="cmp2-proscons-head">
-                            <img class="cmp2-proscons-flag" src="@Images.Card(Model.StateA.FlagImageUrl)" alt="@Model.StateA.Name flag" onerror="this.style.display='none'" />
-                            <h3>@Model.StateA.Name</h3>
-                        </div>
-                        <div class="cmp2-proscons-body">
-                            @if (prosA.Any())
+                <div class="cmp2-leads">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Metric</th>
+                                <th scope="col" style="--lead-accent:@accent.HexA"><img src="@Images.Card(Model.StateA.FlagImageUrl)" alt="" onerror="this.style.display='none'" />@Model.StateA.Name</th>
+                                <th scope="col" style="--lead-accent:@accent.HexB"><img src="@Images.Card(Model.StateB.FlagImageUrl)" alt="" onerror="this.style.display='none'" />@Model.StateB.Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in leadRows)
                             {
-                                <h4>Pros</h4>
-                                <ul>@foreach (var item in prosA) { <li class="pro"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>@item</span></li> }</ul>
+                                var aLeads = r.WinnerSlug == Model.StateA.Slug;
+                                <tr>
+                                    <th scope="row"><a href="/compare/@Model.PairSlug/@r.Metric.Slug">@r.Metric.Name</a></th>
+                                    <td class="@(aLeads ? "is-lead" : "")" style="--lead-accent:@accent.HexA">@if (aLeads) {<i class="fa-solid fa-check" aria-label="Leads"></i>}@r.DisplayValueA</td>
+                                    <td class="@(!aLeads ? "is-lead" : "")" style="--lead-accent:@accent.HexB">@if (!aLeads) {<i class="fa-solid fa-check" aria-label="Leads"></i>}@r.DisplayValueB</td>
+                                </tr>
                             }
-                            @if (consA.Any())
-                            {
-                                <h4 class="is-cons">Cons</h4>
-                                <ul>@foreach (var item in consA) { <li class="con"><i class="fa-solid fa-circle" aria-hidden="true"></i><span>@item</span></li> }</ul>
-                            }
-                        </div>
-                    </article>
-                    <article class="cmp2-proscons-card" style="--pc-accent:@accent.HexB">
-                        <div class="cmp2-proscons-head">
-                            <img class="cmp2-proscons-flag" src="@Images.Card(Model.StateB.FlagImageUrl)" alt="@Model.StateB.Name flag" onerror="this.style.display='none'" />
-                            <h3>@Model.StateB.Name</h3>
-                        </div>
-                        <div class="cmp2-proscons-body">
-                            @if (prosB.Any())
-                            {
-                                <h4>Pros</h4>
-                                <ul>@foreach (var item in prosB) { <li class="pro"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>@item</span></li> }</ul>
-                            }
-                            @if (consB.Any())
-                            {
-                                <h4 class="is-cons">Cons</h4>
-                                <ul>@foreach (var item in consB) { <li class="con"><i class="fa-solid fa-circle" aria-hidden="true"></i><span>@item</span></li> }</ul>
-                            }
-                        </div>
-                    </article>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
@@ -484,16 +490,17 @@
         <section class="cmp2-block">
             <div class="cmp2-shell">
                 <div class="cmp2-head">
-                    <p class="cmp2-eyebrow">People also ask</p>
-                    <h2 class="cmp2-title">@titleA vs @titleB — common questions</h2>
+                    <h2 class="cmp2-title">@titleA vs @titleB FAQ</h2>
                 </div>
                 <div class="cmp2-faq-list">
+                    @{ var faqIdx = 0; }
                     @foreach (var (q, a) in faqItems)
                     {
-                        <div class="cmp2-faq-item">
-                            <h3 class="cmp2-faq-q"><span class="cmp2-faq-q-mark">Q</span>@q</h3>
+                        <details class="cmp2-faq-item cmp2-faq-details" open="@(faqIdx == 0)">
+                            <summary class="cmp2-faq-q"><span class="cmp2-faq-q-mark">Q</span>@q</summary>
                             <p class="cmp2-faq-a">@a</p>
-                        </div>
+                        </details>
+                        faqIdx++;
                     }
                 </div>
             </div>
@@ -529,17 +536,12 @@
     }
     </script>
 
-    @* ── 7. Methodology ────────────────────────────────────────────────── *@
+    @* ── 7. Methodology, sources, cite/embed ───────────────────────────── *@
     <section class="cmp2-block">
         <div class="cmp2-shell">
-            <div class="cmp2-method-card">
-                <div class="cmp2-method-head">
-                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-                    <div>
-                        <h2 class="cmp2-title" style="margin-bottom:2px;">Methodology</h2>
-                        <p class="cmp2-sub" style="margin-bottom:0;">Figures combine government datasets, named research sources, and clearly labeled derived scores. Dataset reviewed <strong>July 23, 2026</strong>.</p>
-                    </div>
-                </div>
+            <details class="cmp2-method-card cmp2-method-details">
+                <summary class="cmp2-method-summary">Sources &amp; methodology <span>Dataset reviewed July 23, 2026</span></summary>
+                <p class="cmp2-sub">Figures combine government datasets, named research sources, and clearly labeled derived scores.</p>
                 <div class="cmp2-method-grid">
                     <div class="cmp2-method-item"><div class="cmp2-method-item-label">Demographics &amp; geography</div><div class="cmp2-method-item-value">2020 Census, American Community Survey, TIGER/Line Files, National Archives</div></div>
                     <div class="cmp2-method-item"><div class="cmp2-method-item-label">Income, housing &amp; cost of living</div><div class="cmp2-method-item-value">American Community Survey, BLS, BEA Regional Price Parities, and named market studies</div></div>
@@ -548,26 +550,56 @@
                 </div>
                 <p class="cmp2-sub">Data periods differ by metric. Open any individual comparison metric to see its primary source, data period, review date, and calculation note. Daily-changing fields such as gas prices are stored snapshots unless the page explicitly says a live feed is used.</p>
                 <div style="border-top:1px solid var(--cmp-line);padding-top:16px;">
-                    <h3 class="cmp2-eyebrow" style="margin-bottom:10px;">Sources</h3>
+                    <h3 class="cmp2-title" style="font-size:18px;margin-bottom:10px;">Sources</h3>
                     <div class="cmp2-source-list">
                         @await Html.PartialAsync("_SourceLinksList", overviewSources)
                     </div>
                 </div>
-                <p class="cmp2-sub" style="margin-top:14px;margin-bottom:0;">See our <a href="/editorial-policy" style="border-bottom:1px solid var(--cmp-gold);">editorial policy</a> for how we review and update these pages.</p>
+                <p class="cmp2-sub" style="margin-top:14px;">See our <a href="/editorial-policy" style="border-bottom:1px solid var(--cmp-gold);">editorial policy</a> for how we review and update these pages.</p>
+
+                @{
+                    var citeUrl = $"https://usasymbol.com/compare/{Model.PairSlug}";
+                    var embedHtml = $"<a href=\"{citeUrl}\">{titleA} vs {titleB}: {overviewScore.WinsA}\u2013{overviewScore.WinsB} on {overviewScore.Total} scored metrics</a> (source: USA Symbol)";
+                }
+                <details class="cmp2-cite">
+                    <summary>Cite or embed this comparison</summary>
+                    <p class="cmp2-sub" style="margin:10px 0 6px;">Link: <a href="@citeUrl">@citeUrl</a></p>
+                    <label class="cmp2-cite-label" for="cmp2-embed">HTML snippet</label>
+                    <textarea id="cmp2-embed" class="cmp2-cite-box" rows="3" readonly onclick="this.select()">@embedHtml</textarea>
+                </details>
+            </details>
+        </div>
+    </section>
+
+    @* ── Related comparisons + moving guides (relevance-ordered) ──────── *@
+    <section class="cmp2-block">
+        <div class="cmp2-shell">
+            @if (Model.RelatedPairs.Any())
+            {
+                <div class="cmp2-head"><h2 class="cmp2-title">Related comparisons</h2></div>
+                <div class="cmp2-related">
+                    @foreach (var (pa, pb) in Model.RelatedPairs)
+                    {
+                        <a href="/compare/@(pa.Slug)-vs-@(pb.Slug)">
+                            <span class="cmp2-related-flags">
+                                <img src="@Images.Card(pa.FlagImageUrl)" alt="" onerror="this.style.display='none'" />
+                                <img src="@Images.Card(pb.FlagImageUrl)" alt="" onerror="this.style.display='none'" />
+                            </span>
+                            <span>@pa.Name vs @pb.Name</span>
+                        </a>
+                    }
+                </div>
+            }
+            <div class="cmp2-living-links cmp2-living-links--foot">
+                <span>Moving between them?</span>
+                <a href="/states/@Model.StateA.Slug/living">Living in @Model.StateA.Name</a>
+                <a href="/states/@Model.StateB.Slug/living">Living in @Model.StateB.Name</a>
+                <a href="/states/living">All 50 states</a>
+                <a href="/state-match">Find Your State</a>
             </div>
         </div>
     </section>
 
-    <div class="cmp2-shell mt-10 lg:hidden">
-        @await Html.PartialAsync("_CompareSidebar", Model)
     </div>
-
-    </div>
-
-    <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
-        <div class="sidebar-content">
-            @await Html.PartialAsync("_CompareSidebar", Model)
-        </div>
-    </aside>
     </article>
 </div>

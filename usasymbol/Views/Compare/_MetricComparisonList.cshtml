@@ -4,7 +4,6 @@
 <section class="cmp2-block" id="metric-comparison">
     <div class="cmp2-shell">
         <div class="cmp2-head">
-            <p class="cmp2-eyebrow">Full comparison</p>
             <h2 class="cmp2-title">Every metric, side by side</h2>
             <p class="cmp2-sub">Pick a category. Each row opens the full breakdown for that metric — national rank, chart, and sourcing.</p>
         </div>
@@ -64,17 +63,21 @@
                             {
                                 <div class="cmp2-diverge">
                                     <div class="cmp2-diverge-side cmp2-diverge-a">
-                                        <span class="cmp2-val @(winA ? "is-winner" : "")" style="@(winA ? $"color:{Model.AccentA}" : "")">@result.DisplayValueA</span>
+                                        <span class="cmp2-val @(winA ? "is-winner" : "")" style="@(winA ? $"color:{Model.AccentA}" : "")"><em class="cmp2-val-abbr">@Model.StateA.Abbreviation</em>@result.DisplayValueA</span>
                                         <div class="cmp2-bar-track">
                                             <div class="cmp2-bar" style="width:@(barA.ToString("F1", System.Globalization.CultureInfo.InvariantCulture))%; background:@(winA ? Model.AccentA : "var(--cmp-line-strong)")"></div>
                                         </div>
                                     </div>
                                     <div class="cmp2-diverge-mid"></div>
+                                    <div class="cmp2-shared" aria-hidden="true">
+                                        <span style="flex:@((barA + barB) > 0 ? barA.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) : "1");background:@Model.AccentA"></span>
+                                        <span style="flex:@((barA + barB) > 0 ? barB.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) : "1");background:@Model.AccentB"></span>
+                                    </div>
                                     <div class="cmp2-diverge-side cmp2-diverge-b">
                                         <div class="cmp2-bar-track">
                                             <div class="cmp2-bar" style="width:@(barB.ToString("F1", System.Globalization.CultureInfo.InvariantCulture))%; background:@(winB ? Model.AccentB : "var(--cmp-line-strong)")"></div>
                                         </div>
-                                        <span class="cmp2-val @(winB ? "is-winner" : "")" style="@(winB ? $"color:{Model.AccentB}" : "")">@result.DisplayValueB</span>
+                                        <span class="cmp2-val @(winB ? "is-winner" : "")" style="@(winB ? $"color:{Model.AccentB}" : "")"><em class="cmp2-val-abbr">@Model.StateB.Abbreviation</em>@result.DisplayValueB</span>
                                     </div>
                                 </div>
                             }

@@ -444,30 +444,7 @@ namespace USASymbol.Services
             // Keep the comparison sitemap focused on demonstrated search demand and
             // high-intent relocation questions. Every metric remains reachable in the UI,
             // but low-demand Cartesian combinations do not consume sitemap crawl budget.
-            var indexableMetricSlugs = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "population", "density", "domestic-migration", "population-growth",
-                "median-income", "unemployment-rate", "job-growth",
-                "single-person-living-wage", "minimum-wage",
-                "cost-of-living", "regional-price-parity", "purchasing-power",
-                "gas-price", "electricity-rates",
-                "average-temperature", "summer-temperature", "winter-temperature",
-                "average-wind-speed", "lightning-density",
-                "home-value", "median-rent", "owner-costs-with-mortgage",
-                "homeownership-rate", "home-insurance",
-                "income-tax", "sales-tax", "property-tax", "tax-burden",
-                "grocery-tax", "death-tax", "vehicle-property-tax",
-                "political-lean", "abortion-laws", "marijuana-legalization",
-                "right-to-work", "gun-laws-status",
-                "land-area", "life-expectancy", "violent-crime",
-                "infant-mortality", "overdose-death-rate",
-                "water-quality", "power-outages", "road-quality",
-                "casinos", "ufo-sightings",
-                "public-school-rank", "teacher-salary", "retirement-score",
-                "best-state-to-live-in", "best-healthcare", "livability-score",
-                "car-insurance", "unemployment-benefit",
-                "annual-precipitation", "sunny-days"
-            };
+            var indexableMetricSlugs = ComparisonService.IndexableMetricSlugs;
             var metricSlugs = ComparisonMetricsConfig.All
                 .Where(metric => indexableMetricSlugs.Contains(metric.Slug))
                 .Select(metric => metric.Slug)

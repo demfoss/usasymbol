@@ -1604,32 +1604,6 @@ namespace USASymbol.Services
             // ── Education (GroupOrder 12) ────────────────────────────────────────
             new()
             {
-                Slug = "k12-rank",
-                Name = "K-12 Education Rank",
-                Description = "US News Best States K-12 education sub-ranking (1 = best, 50 = worst).",
-                GroupSlug = "education",
-                GroupName = "Education",
-                GroupOrder = 12,
-                SortOrder = 1,
-                Unit = "",
-                Icon = "fa-solid fa-graduation-cap",
-                Type = MetricType.Numeric,
-                HigherIsBetter = false,
-                GetNumericValue = (_, stats) => stats?.K12Rank.HasValue == true ? (double)stats.K12Rank.Value : null,
-                GetDisplayValue = (_, stats) => stats?.K12Rank is int r ? $"#{r}" : null,
-                GenerateSummary = (a, sa, b, sb) =>
-                {
-                    if (sa?.K12Rank is null || sb?.K12Rank is null) return "K-12 ranking data is not available.";
-                    if (sa.K12Rank == sb.K12Rank) return $"{a.Name} and {b.Name} share the same K-12 education rank.";
-                    var better = sa.K12Rank < sb.K12Rank ? a : b;
-                    var worse  = better == a ? b : a;
-                    var rankBetter = better == a ? sa.K12Rank!.Value : sb.K12Rank!.Value;
-                    var rankWorse  = better == a ? sb.K12Rank!.Value : sa.K12Rank!.Value;
-                    return $"{better.Name} ranks #{rankBetter} for K-12 education, higher than {worse.Name} at #{rankWorse} (US News).";
-                }
-            },
-            new()
-            {
                 Slug = "hs-graduation-rate",
                 Name = "High School Graduation Rate",
                 Description = "4-year adjusted cohort graduation rate for public high schools (NCES).",
@@ -1723,6 +1697,7 @@ namespace USASymbol.Services
             new()
             {
                 Slug = "public-school-rank",
+                LegacySlugs = new[] { "k12-rank" },
                 Name = "Public School Ranking",
                 Description = "Public school system ranking, 1 = best.",
                 GroupSlug = "education",

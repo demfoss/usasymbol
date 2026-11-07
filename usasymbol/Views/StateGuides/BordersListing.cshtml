@@ -3,8 +3,8 @@
 @inject IImageUrlService Images
 
 @{
-    ViewData["Title"] = "Which U.S. States Border Each Other? – Complete Guide";
-    ViewData["Description"] = $"Discover which U.S. states share borders. Explore all 50 states with interactive maps, neighbor lists, and landlocked info. {Model.InternationalBorderStates} states border Canada or Mexico.";
+    ViewData["Title"] = "Which States Border Each Other | Maps & Neighbor Lists";
+    ViewData["Description"] = $"Look up which states border any state, with maps, neighbor lists, and landlocked status for all 50.{Model.InternationalBorderStates} states border Canada or Mexico.";
 
     var selectedFilter = Context.Request.Query["filter"].ToString();
 
@@ -303,6 +303,37 @@
                 <p class="text-gray-500">Try adjusting your search or filter criteria</p>
             </div>
         }
+    </div>
+</section>
+
+<!-- QUICK LIST: WHAT STATES BORDER EACH STATE -->
+<section class="py-10 bg-white border-t border-gray-100">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">What States Border Each State</h2>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm text-gray-700">
+            @foreach (var item in Model.Items.OrderBy(x => x.State.Name))
+            {
+                var neighborNames = (item.NeighborsList ?? "")
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Where(n => !n.Equals("None", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                <li>
+                    <a href="/states/@item.State.Slug/borders" class="font-semibold text-blue-700 hover:underline">States that border @item.State.Name</a>:
+                    @if (neighborNames.Count == 0)
+                    {
+                        <span>no neighboring states</span>
+                    }
+                    else
+                    {
+                        for (var i = 0; i < neighborNames.Count; i++)
+                        {
+                            var nSlug = neighborNames[i].ToLowerInvariant().Replace(" ", "-");
+                            <a href="/states/@nSlug/borders" class="hover:underline">@neighborNames[i]</a>@(i < neighborNames.Count - 1 ? ", " : "")
+                        }
+                    }
+                </li>
+            }
+        </ul>
     </div>
 </section>
 

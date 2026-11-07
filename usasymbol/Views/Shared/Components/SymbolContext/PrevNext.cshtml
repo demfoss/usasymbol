@@ -1,0 +1,24 @@
+@model USASymbol.Models.ViewModels.SymbolPageContext
+
+@if (Model.Previous != null || Model.Next != null)
+{
+    <nav class="sc-prevnext" aria-label="@Model.StateName state symbols">
+        @if (Model.Previous != null)
+        {
+            <a href="@Model.Previous.Url" rel="prev" class="sc-pn sc-pn--prev">
+                <span class="sc-pn-dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span>
+                <span class="sc-pn-label">@Model.Previous.Label</span>
+                <span class="sc-pn-name">@Model.Previous.Name</span>
+            </a>
+        }
+        else { <span></span> }
+        @if (Model.Next != null)
+        {
+            <a href="@Model.Next.Url" rel="next" class="sc-pn sc-pn--next">
+                <span class="sc-pn-dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                <span class="sc-pn-label">@Model.Next.Label</span>
+                <span class="sc-pn-name">@Model.Next.Name</span>
+            </a>
+        }
+    </nav>
+}

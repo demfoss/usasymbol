@@ -8,96 +8,48 @@
     var title = ViewData["Title"]?.ToString() ?? $"{state.Abbreviation} — {state.Name} State Abbreviation";
     var h1 = ViewData["H1"]?.ToString() ?? $"What Is the Abbreviation for {state.Name}?";
     var description = ViewData["Description"]?.ToString() ?? $"{state.Name}'s abbreviation is {state.Abbreviation}.";
-    var relatedQuestionStates = Model.SimilarStates
-        .Concat(Model.AlphabeticalNeighbors)
-        .Concat(Model.RegionalStates)
-        .GroupBy(s => s.Slug)
-        .Select(g => g.First())
-        .Where(s => s.Slug != state.Slug)
-        .Take(6)
-        .ToList();
-    var patternIndex = state.Slug.Sum(ch => ch) % 4;
-    var abbreviationAnswer = patternIndex switch
-    {
-        0 => $"{state.Name}'s abbreviation is {state.Abbreviation}.",
-        1 => $"{state.Name} is abbreviated {state.Abbreviation}.",
-        2 => $"The abbreviation for {state.Name} is {state.Abbreviation}.",
-        _ => $"{state.Abbreviation} is the standard abbreviation for {state.Name}."
-    };
-    var traditionalAnswer = Model.TraditionalAbbreviation.Equals(state.Name, StringComparison.OrdinalIgnoreCase)
-        ? $"{state.Abbreviation} is the form used in mailing addresses, forms, databases, and current style guides."
-        : patternIndex switch
-        {
-            0 => $"You may also see {Model.TraditionalAbbreviation} in older writing, but {state.Abbreviation} is the form used in mailing addresses, forms, databases, and current style guides.",
-            1 => $"Older sources may use {Model.TraditionalAbbreviation}, but the two-letter postal form {state.Abbreviation} is the modern standard for addresses, forms, databases, and current style guides.",
-            2 => $"In older writing you might see {Model.TraditionalAbbreviation}, but today's mailing, form, and database standard is {state.Abbreviation}.",
-            _ => $"{Model.TraditionalAbbreviation} still appears in older print sources, but {state.Abbreviation} is the standard code used in addresses, forms, databases, and current style guides."
-        };
+    var code = state.Abbreviation;
+    var hasTraditional = !string.Equals(Model.TraditionalAbbreviation, state.Name, StringComparison.OrdinalIgnoreCase);
+    var gpoForm = USASymbol.Helpers.StateAbbreviationFacts.GpoForm(code);
+    var hasGpo = hasTraditional && !string.IsNullOrWhiteSpace(gpoForm)
+        && !string.Equals(gpoForm, Model.TraditionalAbbreviation, StringComparison.Ordinal);
+    var wrongForms = USASymbol.Helpers.StateAbbreviationFacts.WrongForms(code);
+    var whyNote = USASymbol.Helpers.StateAbbreviationFacts.WhyNote(code);
     var indefiniteArticle = "aeiou".Contains(char.ToLowerInvariant(state.Name[0])) ? "an" : "a";
-    var stateCodeAnswer = $"{state.Name}'s two-letter USPS code is {state.Abbreviation}. In practice, people use \"state code,\" \"state abbreviation,\" and \"postal abbreviation\" to mean the same thing here.";
-    var shortFormAnswer = Model.TraditionalAbbreviation.Equals(state.Name, StringComparison.OrdinalIgnoreCase)
-        ? $"{state.Abbreviation} is the short form used in modern addresses, forms, and databases."
-        : $"{state.Abbreviation} is the modern short form for {state.Name}. In older print sources, you may also see {Model.TraditionalAbbreviation}.";
-    var addressExample = $"{state.Capital}, {state.Abbreviation}";
-    var zip = !string.IsNullOrWhiteSpace(Model.CapitalZip) ? Model.CapitalZip : "ZIP";
-    var addressBlock = $"John Smith\n123 Main St\n{state.Capital}, {state.Abbreviation} {zip}";
-    var traditionalTitle = Model.TraditionalAbbreviation.Equals(state.Name, StringComparison.OrdinalIgnoreCase)
-        ? $"When Should You Use {state.Abbreviation}?"
-        : $"{state.Abbreviation} vs. {Model.TraditionalAbbreviation}";
+    var zip = !string.IsNullOrWhiteSpace(Model.CapitalZip)
+        ? Model.CapitalZip
+        : USASymbol.Helpers.StateAbbreviationFacts.Zip(code) ?? "00000";
+    var addressBlock = $"John Smith\n123 Main St\n{state.Capital}, {code} {zip}";
 
-    var faq = new[]
+    var faqList = new List<(string Question, string Answer)>();
+    if (hasTraditional)
     {
-        new
-        {
-            Question = $"What is the abbreviation for {state.Name}?",
-            Answer = $"The standard USPS abbreviation for {state.Name} is {state.Abbreviation}."
-        },
-        new
-        {
-            Question = $"What is the postal abbreviation for {state.Name}?",
-            Answer = $"{state.Abbreviation} is the two-letter postal abbreviation for {state.Name}. It is the form used in mailing addresses, shipping labels, forms, and databases."
-        },
-        new
-        {
-            Question = $"How do you abbreviate {state.Name}?",
-            Answer = $"Abbreviate {state.Name} as {state.Abbreviation} in current USPS, mailing, and database use."
-        },
-        new
-        {
-            Question = $"What is the two-letter abbreviation for {state.Name}?",
-            Answer = $"{state.Abbreviation} is the official two-letter abbreviation for {state.Name}."
-        },
-        new
-        {
-            Question = $"What is the {state.Name} state code?",
-            Answer = $"{state.Abbreviation} is the two-letter state code used for {state.Name} in mailing addresses, forms, spreadsheets, and databases."
-        },
-        new
-        {
-            Question = $"Why is {state.Name} abbreviated {state.Abbreviation}?",
-            Answer = Model.FormationSummary
-        },
-        new
-        {
-            Question = $"What does {state.Abbreviation} stand for?",
-            Answer = $"{state.Abbreviation} stands for {state.Name} in the USPS state abbreviation system."
-        },
-        new
-        {
-            Question = $"What is the old abbreviation for {state.Name}?",
-            Answer = $"Older editorial styles often wrote {state.Name} as {Model.TraditionalAbbreviation}. For mailing and database use, the modern standard is {state.Abbreviation}."
-        },
-        new
-        {
-            Question = $"How do you write {indefiniteArticle} {state.Name} mailing address?",
-            Answer = $"Use the city name, then the two-letter postal code {state.Abbreviation}, then the ZIP Code. For example: {state.Capital}, {state.Abbreviation} 00000."
-        },
-        new
-        {
-            Question = $"What state is {state.Abbreviation}?",
-            Answer = $"{state.Abbreviation} is the postal abbreviation for {state.Name}, located in the {state.Region ?? "United States"} region. The capital is {state.Capital}."
-        }
-    };
+        faqList.Add((
+            $"What is the old abbreviation for {state.Name}?",
+            $"{Model.TraditionalAbbreviation} is the traditional form, still common in AP style and older print sources. The USPS introduced two-letter codes in 1963, and {code} is the one to use on envelopes, forms, and databases."));
+    }
+    else
+    {
+        faqList.Add((
+            $"Is {state.Name} ever abbreviated?",
+            $"AP style spells {state.Name} out in running text. The only abbreviation is the postal code {code}, used in addresses and forms."));
+    }
+    if (hasGpo)
+    {
+        faqList.Add((
+            $"Is it {Model.TraditionalAbbreviation} or {gpoForm}?",
+            $"Both are traditional forms: AP style uses {Model.TraditionalAbbreviation} and GPO style uses {gpoForm} For addresses, use {code}, not either one."));
+    }
+    var neighborText = Model.BorderingStates.Any()
+        ? $" It borders {string.Join(", ", Model.BorderingStates.Select(s => s.Name))}."
+        : string.Empty;
+    faqList.Add((
+        $"What state is {code}?",
+        $"{code} is {state.Name}. The capital is {state.Capital}, and the state is in the {state.Region ?? "United States"} region.{neighborText}"));
+    faqList.Add((
+        $"Does {code} take a period?",
+        $"No. Write {code} as two capital letters with no periods. Forms such as {string.Join(", ", wrongForms.Take(3))} are not valid in a postal address."));
+    var faq = faqList.Select(f => new { f.Question, f.Answer }).ToArray();
 
     var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = null };
     var faqSchema = new Dictionary<string, object?>
@@ -698,23 +650,44 @@
     .sab-verify    { grid-template-columns: 1fr; }
     .sab-usecases  { grid-template-columns: 1fr; }
 }
+/* ── Added: forms table, chips, breadcrumb, author ───── */
+.sab-crumb-inner { max-width: 1180px; margin: 0 auto; padding: .75rem 1rem; }
+.sab-author { margin-top: .75rem; }
+.sab-note { margin-top: .5rem !important; font-size: .85rem !important; color: #64748b !important; }
+.sab-forms-wrap { overflow-x: auto; margin: .35rem -1.6rem -1.5rem; border-top: 1px solid #dbe3ef; }
+.sab-forms { width: 100%; border-collapse: collapse; }
+.sab-forms th { padding: .7rem 1.6rem; background: #f1f5f9; color: #334155; font-size: .78rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; text-align: left; border-bottom: 1px solid #cbd5e1; }
+.sab-forms td { padding: .8rem 1.6rem; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: .93rem; vertical-align: middle; }
+.sab-forms tr:last-child td { border-bottom: none; }
+.sab-forms td:first-child { white-space: nowrap; }
+.sab-form-ok { display: inline-block; padding: .2rem .6rem; background: #1B2A4A; color: #fff; font-weight: 800; letter-spacing: .04em; }
+.sab-form-bad { display: inline-block; margin: .1rem .35rem .1rem 0; padding: .2rem .5rem; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; font-weight: 700; text-decoration: line-through; }
+.sab-chip-label { margin: .9rem 0 .4rem !important; color: #64748b !important; font-size: .75rem !important; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.sab-chips { display: flex; flex-wrap: wrap; gap: .45rem; }
+.sab-chip { display: inline-flex; align-items: center; gap: .45rem; padding: .25rem .7rem .25rem .3rem; border: 1px solid #dbe3ef; background: #f8fafc; color: #0f172a; font-size: .88rem; font-weight: 600; text-decoration: none; }
+.sab-chip b { padding: .15rem .45rem; background: #1B2A4A; color: #fff; font-size: .8rem; letter-spacing: .05em; }
+.sab-chip:hover { border-color: #94a3b8; background: #fff; }
+.sab-links-row { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1.1rem !important; font-size: .9rem !important; }
+.sab-links-row a { color: #1B2A4A; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+@@media (max-width: 640px) {
+    .sab-forms th, .sab-forms td { padding-left: 1.1rem; padding-right: 1.1rem; }
+    .sab-forms-wrap { margin-left: -1.1rem; margin-right: -1.1rem; }
+}
 </style>
 }
 
-<div class="border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
-    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-3">
-        <nav aria-label="Breadcrumb">
-            <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
-                <li class="text-slate-300">/</li>
-                <li><a href="/guides" class="hover:text-slate-900 transition">Guides</a></li>
-                <li class="text-slate-300">/</li>
-                <li><a href="/guides/state-abbreviations" class="hover:text-slate-900 transition">State Abbreviations</a></li>
-                <li class="text-slate-300">/</li>
-                <li class="text-slate-900 font-semibold">@state.Name</li>
-            </ol>
-        </nav>
-    </div>
+<div class="sab-crumb-inner">
+    <nav aria-label="Breadcrumb">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+            <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
+            <li class="text-slate-300">/</li>
+            <li><a href="/guides" class="hover:text-slate-900 transition">Guides</a></li>
+            <li class="text-slate-300">/</li>
+            <li><a href="/guides/state-abbreviations" class="hover:text-slate-900 transition">State Abbreviations</a></li>
+            <li class="text-slate-300">/</li>
+            <li class="text-slate-900 font-semibold">@state.Name</li>
+        </ol>
+    </nav>
 </div>
 
 <div class="sab-shell">
@@ -741,7 +714,7 @@
                     <i class="fa-regular fa-copy"></i>
                     Copy Address Format
                 </button>
-                @if (!string.Equals(Model.TraditionalAbbreviation, state.Name, StringComparison.OrdinalIgnoreCase))
+                @if (hasTraditional)
                 {
                     <button type="button" class="sab-action-btn"
                             data-copy-value="@Model.TraditionalAbbreviation" data-copy-label="traditional form">
@@ -754,13 +727,10 @@
         </div>
 
         <button type="button" class="sab-codebox"
-                data-copy-value="@state.Abbreviation" data-copy-label="@state.Abbreviation">
+                data-copy-value="@state.Abbreviation" data-copy-label="@state.Abbreviation"
+                aria-label="Copy @state.Abbreviation">
             <span class="sab-code-letters">@state.Abbreviation</span>
             <span class="sab-code-name">@state.Name</span>
-            <span class="sab-code-hint">
-                <i class="fa-regular fa-copy"></i>
-                Tap to copy
-            </span>
         </button>
 
         <div class="sab-statbar">
@@ -770,7 +740,7 @@
             </div>
             <div class="sab-statbar-cell">
                 <span class="sab-stat-label">Traditional Form</span>
-                <div class="sab-stat-value">@Model.TraditionalAbbreviation</div>
+                <div class="sab-stat-value">@(hasTraditional ? Model.TraditionalAbbreviation : "Spelled out")</div>
             </div>
             <div class="sab-statbar-cell">
                 <span class="sab-stat-label">Capital</span>
@@ -787,93 +757,68 @@
     <article class="sab-layout">
         <div class="article-content">
 
-
             <section class="sab-section">
-                <h2>@state.Name Abbreviation</h2>
-                <p>@abbreviationAnswer @traditionalAnswer</p>
-                <div class="sab-verify">
-                    <div class="sab-verify-cell">
-                        <span class="sab-verify-label">2-letter postal code</span>
-                        <div class="sab-verify-value">@state.Abbreviation</div>
-                    </div>
-                    <div class="sab-verify-cell">
-                        <span class="sab-verify-label">Traditional / AP style</span>
-                        <div class="sab-verify-value">@Model.TraditionalAbbreviation</div>
-                    </div>
-                    <div class="sab-verify-cell">
-                        <span class="sab-verify-label">Address format</span>
-                        <div class="sab-verify-value">@addressExample</div>
-                    </div>
-                    <div class="sab-verify-cell">
-                        <span class="sab-verify-label">Takes periods?</span>
-                        <div class="sab-verify-value">No — write @state.Abbreviation, not @(state.Abbreviation).</div>
-                    </div>
+                <h2>@state.Name Abbreviation Forms</h2>
+                <div class="sab-forms-wrap">
+                    <table class="sab-forms">
+                        <thead>
+                            <tr><th scope="col">Form</th><th scope="col">Where to use it</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="sab-form-ok">@state.Abbreviation</span></td>
+                                <td>Mailing addresses, forms, spreadsheets, databases</td>
+                            </tr>
+                            @if (hasTraditional)
+                            {
+                                <tr>
+                                    <td><span class="sab-form-ok">@Model.TraditionalAbbreviation</span></td>
+                                    <td>AP style and news writing, when a city comes first</td>
+                                </tr>
+                                @if (hasGpo)
+                                {
+                                    <tr>
+                                        <td><span class="sab-form-ok">@gpoForm</span></td>
+                                        <td>GPO style, used in some government and legal writing</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td><span class="sab-form-ok">@state.Name</span></td>
+                                    <td>AP style spells @state.Name out in running text</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td>
+                                    @foreach (var wrong in wrongForms)
+                                    {
+                                        <span class="sab-form-bad">@wrong</span>
+                                    }
+                                </td>
+                                <td>Not valid for a postal address. A postal code has two capital letters and no periods.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
-
-
-            <section class="sab-section">
-                <h2>@state.Name Abbreviation for Mailing and Forms</h2>
-                <p>@Model.SearchIntentSummary</p>
-                <div class="sab-usecases">
-                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Mailing addresses</div>
-                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Shipping labels</div>
-                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Online checkout forms</div>
-                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Tax documents</div>
-                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Spreadsheets &amp; databases</div>
-                    <div class="sab-usecase"><i class="fa-solid fa-check sab-usecase-check"></i> Government &amp; school records</div>
-                </div>
-                <p>In all of these contexts write <strong>@state.Abbreviation</strong> in uppercase. The form @(state.Abbreviation). with a period is incorrect for postal use.</p>
-            </section>
-
-
-            @{
-                var hasTraditional = !string.Equals(Model.TraditionalAbbreviation, state.Name, StringComparison.OrdinalIgnoreCase);
-                var hasApNote = !string.IsNullOrWhiteSpace(Model.ApStyleNote);
-            }
-            @if (hasTraditional || hasApNote)
-            {
-                <section class="sab-section">
-                    <h2>AP Style and Traditional @state.Name Abbreviation</h2>
-                    <div class="sab-apstyle">
-                        <div class="sab-apstyle-col">
-                            <span class="sab-apstyle-head sab-apstyle-head--postal">Postal &amp; forms</span>
-                            <span class="sab-apstyle-code">@state.Abbreviation</span>
-                            <span class="sab-apstyle-desc">Mailing addresses, shipping labels, online forms, and all data entry.</span>
-                        </div>
-                        <div class="sab-apstyle-col">
-                            <span class="sab-apstyle-head sab-apstyle-head--style">AP Style &amp; editorial</span>
-                            <span class="sab-apstyle-code">@Model.TraditionalAbbreviation</span>
-                            <span class="sab-apstyle-desc">Newspapers, news releases, and most editorial style guides when a city name comes first.</span>
-                        </div>
-                    </div>
-                    @if (hasApNote)
-                    {
-                        <p style="margin-top:.85rem;">@Model.ApStyleNote.RenderAutoLinks()</p>
-                    }
-                </section>
-            }
-
-
-            <section class="sab-section">
-                <h2>What Does @state.Abbreviation Stand For?</h2>
-                <p>@Model.FormationSummary.RenderAutoLinks()</p>
-                <p>@Model.FormationDetail.RenderAutoLinks()</p>
-            </section>
-
 
             <section class="sab-section">
                 <h2>How to Write @indefiniteArticle @state.Name Address</h2>
-                <p>In a U.S. mailing address, write the city name, then <strong>@state.Abbreviation</strong> in uppercase, then the five-digit ZIP Code. Never put a period after the abbreviation.</p>
+                <p>Write the city, a comma, the two-letter code, then the five-digit ZIP Code. No period after the code.</p>
                 <div class="sab-address-block">@addressBlock</div>
-                <p>The same format applies in checkout forms, school worksheets, CRM systems, spreadsheets, shipping labels, and government databases — anywhere a two-letter state code is required.</p>
+                <p class="sab-note">The ZIP Code is an example from @state.Capital.</p>
             </section>
 
-
-            @if (!string.IsNullOrWhiteSpace(Model.StateSpecificTitle) && (Model.StateSpecificParagraphs?.Any() ?? false))
+            @if (!string.IsNullOrWhiteSpace(whyNote) || (Model.StateSpecificParagraphs?.Any() ?? false))
             {
                 <section class="sab-section">
-                    <h2>@Model.StateSpecificTitle</h2>
+                    <h2>Why @state.Name Is @state.Abbreviation</h2>
+                    @if (!string.IsNullOrWhiteSpace(whyNote))
+                    {
+                        <p>@whyNote</p>
+                    }
                     @foreach (var paragraph in Model.StateSpecificParagraphs ?? Enumerable.Empty<string>())
                     {
                         <p>@paragraph.RenderAutoLinks()</p>
@@ -881,31 +826,37 @@
                 </section>
             }
 
-
-            @if (relatedQuestionStates.Any())
+            @if (Model.ConfusableStates.Any() || Model.BorderingStates.Any())
             {
                 <section class="sab-section">
-                    <h2>Related Abbreviation Questions</h2>
-                    <p>These states share a first letter, region, or alphabetical position with @state.Name and are commonly looked up alongside it.</p>
-                    @if (!string.IsNullOrWhiteSpace(Model.ConfusionWarning))
+                    <h2>@state.Abbreviation Compared With Similar Codes</h2>
+                    @if (Model.ConfusableStates.Any())
                     {
-                        <div class="sab-callout">
-                            <i class="fa-solid fa-triangle-exclamation sab-callout-icon"></i>
-                            <p class="sab-callout-text">@Model.ConfusionWarning.RenderAutoLinks()</p>
+                        <p class="sab-chip-label">Often mixed up with</p>
+                        <div class="sab-chips">
+                            @foreach (var other in Model.ConfusableStates)
+                            {
+                                <a href="/states/@other.Slug/abbreviation" class="sab-chip"><b>@other.Abbreviation</b>@other.Name</a>
+                            }
                         </div>
                     }
-                    <div class="sab-related-grid">
-                        @foreach (var relatedState in relatedQuestionStates)
-                        {
-                            <a href="/states/@relatedState.Slug/abbreviation" class="sab-related-card">
-                                <strong>What is the abbreviation for @relatedState.Name?</strong>
-                                <span>@relatedState.Name's abbreviation is @relatedState.Abbreviation.</span>
-                            </a>
-                        }
-                    </div>
+                    @if (Model.BorderingStates.Any())
+                    {
+                        <p class="sab-chip-label">Bordering states</p>
+                        <div class="sab-chips">
+                            @foreach (var other in Model.BorderingStates)
+                            {
+                                <a href="/states/@other.Slug/abbreviation" class="sab-chip"><b>@other.Abbreviation</b>@other.Name</a>
+                            }
+                        </div>
+                    }
+                    <p class="sab-links-row">
+                        <a href="/guides/state-abbreviations">All state abbreviations</a>
+                        <a href="/quizzes/state-abbreviations-quiz">State abbreviations quiz</a>
+                        <a href="/states/@state.Slug">@state.Name symbols and facts</a>
+                    </p>
                 </section>
             }
-
 
             <section class="sab-section">
                 <h2>FAQ</h2>
@@ -922,65 +873,15 @@
 
         </div>
 
-        <aside class="article-sidebar" aria-label="Article sidebar">
+        <aside class="article-sidebar hidden lg:block" aria-label="Explore more">
             <div class="sidebar-content">
-
-                @if (Model.SimilarStates.Any())
-                {
-                    <div class="sab-sidebar-block">
-                        <div class="sab-sidebar-head">Similar Codes</div>
-                        <div class="sab-sidebar-list">
-                            @foreach (var similar in Model.SimilarStates)
-                            {
-                                <a href="/states/@similar.Slug/abbreviation">
-                                    <strong>@similar.Name (@similar.Abbreviation)</strong>
-                                    <span>@similar.Name's abbreviation is @similar.Abbreviation.</span>
-                                </a>
-                            }
-                        </div>
-                    </div>
-                }
-
-                @if (Model.RegionalStates.Any())
-                {
-                    <div class="sab-sidebar-block">
-                        <div class="sab-sidebar-head">Nearby States</div>
-                        <div class="sab-sidebar-list">
-                            @foreach (var regional in Model.RegionalStates)
-                            {
-                                <a href="/states/@regional.Slug/abbreviation">
-                                    <strong>@regional.Name (@regional.Abbreviation)</strong>
-                                    <span>@regional.Name's abbreviation is @regional.Abbreviation.</span>
-                                </a>
-                            }
-                        </div>
-                    </div>
-                }
-
-                <div class="sab-sidebar-block">
-                    <div class="sab-sidebar-head">Explore</div>
-                    <div class="sab-explore">
-                        <button id="sabShareBtn" class="sab-explore-btn sab-explore-btn--dark">
-                            <i class="fa-solid fa-share-nodes"></i>
-                            Share
-                        </button>
-                        <a href="/guides/state-abbreviations" class="sab-explore-btn">
-                            <i class="fa-solid fa-table"></i>
-                            All 50 Codes
-                        </a>
-                        <a href="/states/@state.Slug" class="sab-explore-btn">
-                            <i class="fa-solid fa-flag-usa"></i>
-                            @state.Name Symbols
-                        </a>
-                    </div>
-                </div>
-
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
             </div>
         </aside>
     </article>
 
-    <div style="margin-top:1.5rem; max-width:860px;">
-        @await Html.PartialAsync("_AuthorBox", new USASymbol.Models.ViewModels.AuthorBox { DateModified = new DateTime(2026, 5, 28) })
+    <div class="sab-author">
+        @await Html.PartialAsync("_AuthorBox", new USASymbol.Models.ViewModels.AuthorBox { DateModified = new DateTime(2026, 11, 7) })
     </div>
 
 </div>
@@ -1010,21 +911,5 @@
             copyText(el.getAttribute('data-copy-value') || '', el.getAttribute('data-copy-label') || 'value');
         });
     });
-
-    var shareBtn = document.getElementById('sabShareBtn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', function () {
-            if (navigator.share) {
-                navigator.share({ title: document.title, url: window.location.href }).catch(function () {});
-            } else {
-                navigator.clipboard.writeText(window.location.href).then(function () {
-                    shareBtn.textContent = 'Copied!';
-                    setTimeout(function () {
-                        shareBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Share';
-                    }, 2000);
-                });
-            }
-        });
-    }
 }());
 </script>

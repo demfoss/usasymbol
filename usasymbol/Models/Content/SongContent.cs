@@ -22,6 +22,8 @@ namespace USASymbol.Models.Content
         public string HeroImageCaption { get; set; } = string.Empty;
         public string IntroText { get; set; } = string.Empty;
 
+        public ExpertQuoteData? ExpertQuote { get; set; }
+        public string ExpertQuoteAfterSectionId { get; set; } = string.Empty;
         public string Composer { get; set; } = string.Empty;
         public string Lyricist { get; set; } = string.Empty;
         public int? PublicationYear { get; set; }

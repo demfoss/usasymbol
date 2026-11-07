@@ -151,6 +151,11 @@
 
             <div class="clear-both"></div>
         </div>
+
+        @if (Model.MineralContent?.ExpertQuote != null && !string.IsNullOrWhiteSpace(Model.MineralContent.ExpertQuoteAfterSectionId) && string.Equals(item.Id, Model.MineralContent.ExpertQuoteAfterSectionId, StringComparison.OrdinalIgnoreCase))
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.MineralContent.ExpertQuote)
+        }
     }
 
     @if (!renderedInlineFacts && inlineFactsSection?.Facts?.Any() == true && !hasWhatIsSection)

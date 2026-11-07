@@ -106,6 +106,119 @@ namespace USASymbol.Services
             ("colorado", "utah"),
         };
 
+        /// <summary>Second row on the compare hub: neighbors and common moving routes.</summary>
+        public static readonly IReadOnlyList<(string Slug1, string Slug2)> NeighborAndMovePairs = new List<(string, string)>
+        {
+            ("oregon", "washington"),
+            ("maryland", "virginia"),
+            ("new-jersey", "new-york"),
+            ("michigan", "ohio"),
+            ("arizona", "nevada"),
+            ("california", "idaho"),
+            ("new-york", "north-carolina"),
+            ("florida", "illinois"),
+        };
+
+        /// <summary>Bordering states by postal code, used for the hub's "compare with a neighbor" chips.</summary>
+        public static readonly IReadOnlyDictionary<string, string[]> StateNeighborsByAbbreviation = new Dictionary<string, string[]>
+        {
+            ["AL"] = new[] { "FL", "GA", "MS", "TN" },
+            ["AZ"] = new[] { "CA", "NV", "UT", "CO", "NM" },
+            ["AR"] = new[] { "LA", "MS", "TN", "MO", "OK", "TX" },
+            ["CA"] = new[] { "OR", "NV", "AZ" },
+            ["CO"] = new[] { "WY", "NE", "KS", "OK", "NM", "AZ", "UT" },
+            ["CT"] = new[] { "NY", "MA", "RI" },
+            ["DE"] = new[] { "MD", "PA", "NJ" },
+            ["FL"] = new[] { "AL", "GA" },
+            ["GA"] = new[] { "FL", "AL", "TN", "NC", "SC" },
+            ["ID"] = new[] { "WA", "OR", "NV", "UT", "WY", "MT" },
+            ["IL"] = new[] { "WI", "IA", "MO", "KY", "IN" },
+            ["IN"] = new[] { "MI", "OH", "KY", "IL" },
+            ["IA"] = new[] { "MN", "WI", "IL", "MO", "NE", "SD" },
+            ["KS"] = new[] { "NE", "MO", "OK", "CO" },
+            ["KY"] = new[] { "IL", "IN", "OH", "WV", "VA", "TN", "MO" },
+            ["LA"] = new[] { "TX", "AR", "MS" },
+            ["ME"] = new[] { "NH" },
+            ["MD"] = new[] { "VA", "WV", "PA", "DE" },
+            ["MA"] = new[] { "RI", "CT", "NY", "NH", "VT" },
+            ["MI"] = new[] { "OH", "IN", "WI" },
+            ["MN"] = new[] { "ND", "SD", "IA", "WI" },
+            ["MS"] = new[] { "LA", "AR", "TN", "AL" },
+            ["MO"] = new[] { "IA", "IL", "KY", "TN", "AR", "OK", "KS", "NE" },
+            ["MT"] = new[] { "ID", "WY", "SD", "ND" },
+            ["NE"] = new[] { "SD", "IA", "MO", "KS", "CO", "WY" },
+            ["NV"] = new[] { "OR", "ID", "UT", "AZ", "CA" },
+            ["NH"] = new[] { "ME", "MA", "VT" },
+            ["NJ"] = new[] { "NY", "PA", "DE" },
+            ["NM"] = new[] { "AZ", "UT", "CO", "OK", "TX" },
+            ["NY"] = new[] { "NJ", "PA", "CT", "MA", "VT" },
+            ["NC"] = new[] { "VA", "TN", "GA", "SC" },
+            ["ND"] = new[] { "MN", "SD", "MT" },
+            ["OH"] = new[] { "PA", "WV", "KY", "IN", "MI" },
+            ["OK"] = new[] { "KS", "MO", "AR", "TX", "NM", "CO" },
+            ["OR"] = new[] { "WA", "ID", "NV", "CA" },
+            ["PA"] = new[] { "NY", "NJ", "DE", "MD", "WV", "OH" },
+            ["RI"] = new[] { "CT", "MA" },
+            ["SC"] = new[] { "NC", "GA" },
+            ["SD"] = new[] { "ND", "MN", "IA", "NE", "WY", "MT" },
+            ["TN"] = new[] { "KY", "VA", "NC", "GA", "AL", "MS", "AR", "MO" },
+            ["TX"] = new[] { "NM", "OK", "AR", "LA" },
+            ["UT"] = new[] { "ID", "WY", "CO", "NM", "AZ", "NV" },
+            ["VT"] = new[] { "NH", "MA", "NY" },
+            ["VA"] = new[] { "MD", "WV", "KY", "TN", "NC" },
+            ["WA"] = new[] { "ID", "OR" },
+            ["WV"] = new[] { "OH", "PA", "MD", "VA", "KY" },
+            ["WI"] = new[] { "MI", "MN", "IA", "IL" },
+            ["WY"] = new[] { "MT", "SD", "NE", "CO", "UT", "ID" },
+        };
+
+        private static readonly HashSet<string> IndexablePairKeys = new(
+            TopComparisonPairs.Select(p => CanonicalPairSlug(p.Slug1, p.Slug2)), StringComparer.OrdinalIgnoreCase);
+
+        private static readonly HashSet<string> TierOnePairKeys = new(
+            TierOneComparisonPairs.Select(p => CanonicalPairSlug(p.Slug1, p.Slug2)), StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>Pair overview pages are indexable only for curated pairs with real demand (same set as the sitemap).</summary>
+        public static bool IsIndexablePair(string slugA, string slugB) =>
+            IndexablePairKeys.Contains(CanonicalPairSlug(slugA, slugB));
+
+        /// <summary>
+        /// Metrics listed in the compare sitemap (sitemap only; no page is noindex — GSC 2026-11 showed
+        /// metric pages like public-school-rank / best-state-to-live-in / retirement-score earn the clicks).
+        /// </summary>
+        public static readonly IReadOnlySet<string> IndexableMetricSlugs = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "population", "density", "domestic-migration", "population-growth",
+            "median-income", "unemployment-rate", "job-growth",
+            "single-person-living-wage", "minimum-wage",
+            "cost-of-living", "regional-price-parity", "purchasing-power",
+            "gas-price", "electricity-rates",
+            "average-temperature", "summer-temperature", "winter-temperature",
+            "average-wind-speed", "lightning-density",
+            "home-value", "median-rent", "owner-costs-with-mortgage",
+            "homeownership-rate", "home-insurance",
+            "income-tax", "sales-tax", "property-tax", "tax-burden",
+            "grocery-tax", "death-tax", "vehicle-property-tax",
+            "political-lean", "abortion-laws", "marijuana-legalization",
+            "right-to-work", "gun-laws-status",
+            "land-area", "life-expectancy", "violent-crime",
+            "infant-mortality", "overdose-death-rate",
+            "water-quality", "power-outages", "road-quality",
+            "casinos", "ufo-sightings",
+            "public-school-rank", "teacher-salary", "retirement-score",
+            "best-state-to-live-in", "best-healthcare", "livability-score",
+            "car-insurance", "unemployment-benefit",
+            "annual-precipitation", "sunny-days"
+        };
+
+        /// <summary>Metric pages listed in the sitemap: tier-one pair AND a listed metric. Not used for noindex.</summary>
+        public static bool IsIndexableMetricPage(string slugA, string slugB, string metricSlug) =>
+            IsTierOnePair(slugA, slugB) && IndexableMetricSlugs.Contains(metricSlug);
+
+        /// <summary>Metric and category deep-dive pages are indexable only for tier-one pairs (same set as the sitemap).</summary>
+        public static bool IsTierOnePair(string slugA, string slugB) =>
+            TierOnePairKeys.Contains(CanonicalPairSlug(slugA, slugB));
+
         private readonly IStateService _stateService;
         private readonly IComparisonStatsService _statsService;
         private readonly IRankingsContentService _rankingsContentService;
@@ -128,13 +241,20 @@ namespace USASymbol.Services
                 .Select(pair => TryMapFeaturedPair(pair, stateLookup))
                 .Where(pair => pair.HasValue)
                 .Select(pair => pair!.Value)
-                .Take(9)
+                .Take(8)
+                .ToList();
+
+            var neighborPairs = NeighborAndMovePairs
+                .Select(pair => TryMapFeaturedPair(pair, stateLookup))
+                .Where(pair => pair.HasValue)
+                .Select(pair => pair!.Value)
                 .ToList();
 
             return new CompareHubViewModel
             {
                 States = states,
-                FeaturedPairs = featured
+                FeaturedPairs = featured,
+                NeighborPairs = neighborPairs
             };
         }
 
@@ -408,26 +528,39 @@ namespace USASymbol.Services
         private async Task<List<(State, State)>> BuildRelatedPairsAsync(State a, State b)
         {
             var all = await _stateService.GetAllStatesAsync();
+            var bySlug = all.ToDictionary(s => s.Slug, StringComparer.OrdinalIgnoreCase);
             var pairs = new List<(State, State)>();
+            var seen = new HashSet<string> { CanonicalPairSlug(a.Slug, b.Slug) };
 
-            // Same region as A, paired with B
-            var sameRegionAsA = all
-                .Where(s => s.Region == a.Region && s.Slug != a.Slug && s.Slug != b.Slug)
-                .Take(2);
-            foreach (var s in sameRegionAsA)
-                pairs.Add(OrderPair(s, b));
-
-            // Same region as B, paired with A
-            if (b.Region != a.Region)
+            void Add(State x, State y)
             {
-                var sameRegionAsB = all
-                    .Where(s => s.Region == b.Region && s.Slug != a.Slug && s.Slug != b.Slug)
-                    .Take(2);
-                foreach (var s in sameRegionAsB)
-                    pairs.Add(OrderPair(a, s));
+                if (x.Slug == y.Slug) return;
+                if (seen.Add(CanonicalPairSlug(x.Slug, y.Slug))) pairs.Add(OrderPair(x, y));
             }
 
-            return pairs.Take(4).ToList();
+            // 1. Curated pairs with real demand that share a state with this pair (list is demand-ordered).
+            foreach (var (s1, s2) in TopComparisonPairs)
+            {
+                var involvesA = s1 == a.Slug || s2 == a.Slug;
+                var involvesB = s1 == b.Slug || s2 == b.Slug;
+                if (!involvesA && !involvesB) continue;
+                if (bySlug.TryGetValue(s1, out var x) && bySlug.TryGetValue(s2, out var y)) Add(x, y);
+                if (pairs.Count >= 6) return pairs;
+            }
+
+            // 2. Fill with neighbors of each state compared against the other one.
+            foreach (var (self, other) in new[] { (a, b), (b, a) })
+            {
+                if (!StateNeighborsByAbbreviation.TryGetValue(other.Abbreviation, out var nbrs)) continue;
+                foreach (var ab in nbrs)
+                {
+                    var n = all.FirstOrDefault(s => s.Abbreviation == ab);
+                    if (n != null) Add(self, n);
+                    if (pairs.Count >= 6) return pairs;
+                }
+            }
+
+            return pairs;
         }
 
         /// <summary>Returns (A, B) sorted alphabetically by slug — canonical order.</summary>

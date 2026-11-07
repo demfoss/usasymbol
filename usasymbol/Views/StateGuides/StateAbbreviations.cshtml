@@ -24,61 +24,84 @@
             s.Slug
         })
         .ToList();
+    var traditionalByCode = ViewData["TraditionalByCode"] as Dictionary<string, string>
+        ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    var lookupData = states.Select(s => new { c = s.Abbreviation, n = s.Name, s.Slug })
+        .Concat(new[]
+        {
+            new { c = "PR", n = "Puerto Rico", Slug = "" }, new { c = "GU", n = "Guam", Slug = "" },
+            new { c = "VI", n = "U.S. Virgin Islands", Slug = "" }, new { c = "AS", n = "American Samoa", Slug = "" },
+            new { c = "MP", n = "Northern Mariana Islands", Slug = "" },
+            new { c = "AA", n = "Armed Forces Americas (military mail)", Slug = "" },
+            new { c = "AE", n = "Armed Forces Europe, Canada, Middle East, Africa (military mail)", Slug = "" },
+            new { c = "AP", n = "Armed Forces Pacific (military mail)", Slug = "" }
+        }).ToList();
     var svgMapPath = System.IO.Path.Combine(Env.WebRootPath, "maps", "us-states.svg");
     var svgMapMarkup = System.IO.File.Exists(svgMapPath)
         ? System.IO.File.ReadAllText(svgMapPath)
         : string.Empty;
 
-    var confusingPairs = new[]
+    var confusingGroups = new[]
     {
-        new
-        {
-            Heading = "AL vs AK vs AR vs AZ",
-            Copy = "Alabama is AL, Alaska is AK, Arkansas is AR, and Arizona is AZ. All begin with A, so they are worth double-checking on forms and school lists."
-        },
-        new
-        {
-            Heading = "ME, MD, MA, MI, MN, MS, MO, MT",
-            Copy = "The M-states cause more mix-ups than any other group: Maine (ME), Maryland (MD), Massachusetts (MA), Michigan (MI), Minnesota (MN), Mississippi (MS), Missouri (MO), and Montana (MT)."
-        },
-        new
-        {
-            Heading = "PA, RI, SC, SD, TN, TX",
-            Copy = "Pennsylvania (PA), Rhode Island (RI), South Carolina (SC), South Dakota (SD), Tennessee (TN), and Texas (TX) are all worth a second look — their postal codes are not obvious at first glance."
-        }
+        new { Heading = "The A-states", Codes = new[] { ("AL", "Alabama"), ("AK", "Alaska"), ("AR", "Arkansas"), ("AZ", "Arizona") } },
+        new { Heading = "MA, MD, ME", Codes = new[] { ("MA", "Massachusetts"), ("MD", "Maryland"), ("ME", "Maine") } },
+        new { Heading = "MI, MN, MO, MS, MT", Codes = new[] { ("MI", "Michigan"), ("MN", "Minnesota"), ("MO", "Missouri"), ("MS", "Mississippi"), ("MT", "Montana") } },
+        new { Heading = "NE, NV, NH, NJ, NM, NY", Codes = new[] { ("NE", "Nebraska"), ("NV", "Nevada"), ("NH", "New Hampshire"), ("NJ", "New Jersey"), ("NM", "New Mexico"), ("NY", "New York") } },
+        new { Heading = "CA, CO, CT", Codes = new[] { ("CA", "California"), ("CO", "Colorado"), ("CT", "Connecticut") } },
+        new { Heading = "Dakotas and Carolinas", Codes = new[] { ("ND", "North Dakota"), ("SD", "South Dakota"), ("NC", "North Carolina"), ("SC", "South Carolina") } }
+    };
+
+    // AP Stylebook state abbreviations used in text. Eight states are always spelled out.
+    var apStyle = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["AL"] = "Ala.", ["AZ"] = "Ariz.", ["AR"] = "Ark.", ["CA"] = "Calif.", ["CO"] = "Colo.",
+        ["CT"] = "Conn.", ["DE"] = "Del.", ["DC"] = "D.C.", ["FL"] = "Fla.", ["GA"] = "Ga.",
+        ["IL"] = "Ill.", ["IN"] = "Ind.", ["KS"] = "Kan.", ["KY"] = "Ky.", ["LA"] = "La.",
+        ["MD"] = "Md.", ["MA"] = "Mass.", ["MI"] = "Mich.", ["MN"] = "Minn.", ["MS"] = "Miss.",
+        ["MO"] = "Mo.", ["MT"] = "Mont.", ["NE"] = "Neb.", ["NV"] = "Nev.", ["NH"] = "N.H.",
+        ["NJ"] = "N.J.", ["NM"] = "N.M.", ["NY"] = "N.Y.", ["NC"] = "N.C.", ["ND"] = "N.D.",
+        ["OK"] = "Okla.", ["OR"] = "Ore.", ["PA"] = "Pa.", ["RI"] = "R.I.", ["SC"] = "S.C.",
+        ["SD"] = "S.D.", ["TN"] = "Tenn.", ["VT"] = "Vt.", ["VA"] = "Va.", ["WA"] = "Wash.",
+        ["WV"] = "W.Va.", ["WI"] = "Wis.", ["WY"] = "Wyo."
+    };
+
+    var territories = new[]
+    {
+        (Name: "Puerto Rico", Code: "PR", Capital: "San Juan"),
+        (Name: "Guam", Code: "GU", Capital: "Hagåtña"),
+        (Name: "U.S. Virgin Islands", Code: "VI", Capital: "Charlotte Amalie"),
+        (Name: "American Samoa", Code: "AS", Capital: "Pago Pago"),
+        (Name: "Northern Mariana Islands", Code: "MP", Capital: "Saipan")
+    };
+
+    var militaryCodes = new[]
+    {
+        (Code: "AA", Meaning: "Armed Forces Americas (except Canada)"),
+        (Code: "AE", Meaning: "Armed Forces Europe, Canada, Middle East, Africa"),
+        (Code: "AP", Meaning: "Armed Forces Pacific")
     };
 
     var faq = new[]
     {
         new
         {
-            Question = "What is the difference between state abbreviations and postal abbreviations?",
-            Answer = "In everyday use, most people mean the USPS two-letter postal codes such as CA, TX, and NY. Older traditional abbreviations were longer and often used periods, such as Calif., Tex., and N.Y."
+            Question = "What is the difference between postal and traditional abbreviations?",
+            Answer = "Postal abbreviations are the two-letter USPS codes, such as CA, PA, and MA. Traditional abbreviations are the older, longer forms with periods, such as Calif., Pa., and Mass. Use the postal code for addresses and forms, and the traditional form only where a style guide asks for it."
         },
         new
         {
             Question = "When did the two-letter state abbreviations become standard?",
-            Answer = "The USPS standardized the modern two-letter state abbreviations in 1963, alongside the introduction of ZIP Codes."
+            Answer = "The USPS introduced the two-letter codes in 1963, alongside ZIP Codes."
         },
         new
         {
-            Question = "Are state postal abbreviations always written in capital letters?",
-            Answer = "Yes. Standard postal abbreviations are written as two uppercase letters with no periods, such as AL, CA, and NY."
+            Question = "Do postal abbreviations use capital letters and periods?",
+            Answer = "Postal abbreviations are two capital letters with no periods: AL, CA, NY. Periods belong to the traditional forms such as Ala. and N.Y."
         },
         new
         {
-            Question = "Can I use old-style abbreviations like Calif. or Penn.?",
-            Answer = "You can use them in historical or editorial contexts, but for addresses, forms, and most modern writing, the USPS two-letter code is the safer choice."
-        },
-        new
-        {
-            Question = "Which state abbreviations are mixed up most often?",
-            Answer = "The biggest trouble spots are usually the M-states, along with short codes such as AL, AK, AR, AZ, MD, ME, and PA."
-        },
-        new
-        {
-            Question = "Can I use state abbreviations without periods?",
-            Answer = "Yes. The standard postal forms use two uppercase letters with no periods: FL, GA, OH, and so on."
+            Question = "What are the abbreviations for U.S. territories and military mail?",
+            Answer = "Territories use PR (Puerto Rico), GU (Guam), VI (U.S. Virgin Islands), AS (American Samoa), and MP (Northern Mariana Islands). Military mail uses AA, AE, and AP. All of them are listed in the tables above."
         }
     };
 
@@ -126,6 +149,23 @@
         ["mainEntityOfPage"] = $"{baseUrl}/guides/state-abbreviations"
     };
 
+    var itemListSchema = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "ItemList",
+        ["name"] = "U.S. state abbreviations",
+        ["numberOfItems"] = states.Count,
+        ["itemListElement"] = states.Select((st, i) => new Dictionary<string, object?>
+        {
+            ["@type"] = "ListItem",
+            ["position"] = i + 1,
+            ["name"] = $"{st.Name} ({st.Abbreviation})",
+            ["url"] = st.Slug == "district-of-columbia"
+                ? $"{baseUrl}/states/{st.Slug}"
+                : $"{baseUrl}/states/{st.Slug}/abbreviation"
+        }).ToArray()
+    };
+
     var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = null };
 }
 
@@ -133,77 +173,25 @@
 <style>
 /* ── Shell ──────────────────────────────────────────── */
 .sal-shell { max-width: 1440px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+.sal-crumb-inner { max-width: 1440px; margin: 0 auto; padding: .75rem 1rem; }
+.sal-mobile-only { display: none; }
 
 /* ── Hero ───────────────────────────────────────────── */
 .sal-hero {
     border: 1px solid #dbe3ef;
     border-left: 3px solid #C09B4F;
     background: #fff;
-    padding: 1.75rem 2rem 1.5rem;
+    padding: 1.5rem 2rem 1.35rem;
 }
-
-.sal-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: .45rem;
-    margin-bottom: 1rem;
-    padding: .35rem .85rem;
-    border-radius: 9999px;
-    background: #1B2A4A;
-    color: #fff;
-    font-size: .62rem;
-    font-weight: 700;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-}
-
 .sal-hero h1 {
-    margin: 0 0 .6rem;
+    margin: 0 0 .5rem;
     font-size: clamp(1.7rem, 3.5vw, 2.4rem);
     line-height: 1.05;
     font-weight: 800;
     letter-spacing: -.03em;
     color: #0f172a;
 }
-
-.sal-hero-desc {
-    margin: 0 0 1.1rem;
-    color: #475569;
-    font-size: 1rem;
-    line-height: 1.7;
-}
-
-/* Stats bar */
-.sal-statbar {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    background: #f8fafc;
-    border: 1px solid #dbe3ef;
-    margin-top: 1.25rem;
-}
-
-.sal-statbar-cell {
-    padding: .8rem 1.25rem;
-    border-right: 1px solid #dbe3ef;
-}
-
-.sal-statbar-cell:last-child { border-right: none; }
-
-.sal-stat-label {
-    display: block;
-    margin-bottom: .2rem;
-    color: #94a3b8;
-    font-size: .58rem;
-    font-weight: 700;
-    letter-spacing: .13em;
-    text-transform: uppercase;
-}
-
-.sal-stat-value {
-    color: #0f172a;
-    font-size: .96rem;
-    font-weight: 700;
-}
+.sal-hero-desc { margin: 0; color: #475569; font-size: 1rem; line-height: 1.7; }
 
 /* ── Sections ────────────────────────────────────────── */
 .sal-section {
@@ -213,7 +201,6 @@
     padding: 1.35rem 1.6rem 1.5rem;
     overflow: hidden;
 }
-
 .sal-section h2 {
     margin: 0 0 .6rem;
     color: #0f172a;
@@ -222,109 +209,114 @@
     letter-spacing: -.02em;
     line-height: 1.3;
 }
-
-.sal-section p {
-    margin: .7rem 0 0;
-    color: #475569;
-    line-height: 1.73;
-    font-size: .97rem;
-}
-
+.sal-section p { margin: .7rem 0 0; color: #475569; line-height: 1.73; font-size: .97rem; }
 .sal-section h2 + p { margin-top: 0; }
 
-/* ── Map ─────────────────────────────────────────────── */
-.sal-map-shell {
-    overflow: hidden;
-    border: 1px solid #dbe3ef;
-    background: #f8fafc;
-    margin-top: .85rem;
-}
-
-.sal-map-frame {
-    margin: 1rem;
-    padding: 1rem;
-    background: #fff;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 24px 48px -32px rgba(15,23,42,.18);
-}
-
-.sal-us-map svg { display: block; width: 100%; height: auto; }
-
-.sal-us-map .state > a > path,
-.sal-us-map .state > path { cursor: pointer; transition: fill .18s ease, filter .18s ease; }
-.sal-us-map .state > a:hover > path,
-.sal-us-map .state > a:focus > path,
-.sal-us-map .state > a.is-active > path { fill: #bfd0ea; filter: drop-shadow(0 6px 10px rgba(15,23,42,.12)); }
-.sal-us-map .state-labels a { text-decoration: none; }
-.sal-us-map .state-labels a text { pointer-events: none; }
-.sal-us-map .state-labels a:hover text,
-.sal-us-map .state-labels a:focus text,
-.sal-us-map .state-labels a.is-active text { fill: #1B2A4A; }
-
-.sal-map-tip { margin-top: .65rem; color: #64748b; font-size: .86rem; }
-
-/* ── Table ───────────────────────────────────────────── */
+/* ── Toolbar ─────────────────────────────────────────── */
+.sal-toolbar { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .35rem 0 .85rem; }
 .sal-search {
-    width: 100%;
-    margin: .35rem 0 .85rem;
-    padding: .75rem 1rem;
+    flex: 1 1 260px;
+    padding: .7rem 1rem;
     border: 1px solid #dbe3ef;
     font-size: .96rem;
     color: #0f172a;
     background: #f8fafc;
     outline: none;
 }
-
 .sal-search:focus { border-color: #94a3b8; }
-
-.sal-table-wrap {
-    overflow-x: auto;
-    border: 1px solid #dbe3ef;
-    margin-top: .5rem;
-}
-
-.sal-table { width: 100%; border-collapse: collapse; min-width: 540px; }
-
-.sal-table th {
-    padding: .75rem 1rem;
-    text-align: left;
-    background: #f8fafc;
-    color: #94a3b8;
-    font-size: .58rem;
+.sal-btn-group { display: inline-flex; border: 1px solid #dbe3ef; }
+.sal-btn {
+    padding: .62rem .95rem;
+    border: 0;
+    background: #fff;
+    color: #1B2A4A;
+    font-size: .86rem;
     font-weight: 700;
-    letter-spacing: .13em;
-    text-transform: uppercase;
-    border-bottom: 1px solid #dbe3ef;
+    cursor: pointer;
+    white-space: nowrap;
 }
+.sal-btn + .sal-btn { border-left: 1px solid #dbe3ef; }
+.sal-btn:hover { background: #f1f5f9; }
+.sal-btn[aria-pressed="true"] { background: #1B2A4A; color: #fff; }
+.sal-status { min-height: 1.2rem; margin: 0 0 .4rem; color: #166534; font-size: .85rem; font-weight: 700; }
 
+/* ── Map ─────────────────────────────────────────────── */
+.sal-map-shell { overflow: hidden; margin-top: .85rem; border: 1px solid #dbe3ef; background: #fff; }
+.sal-map-frame { padding: .75rem; background: #fff; }
+.sal-us-map svg { display: block; width: 100%; height: auto; }
+.sal-us-map .state path { fill: #d0d0d0; }
+.sal-us-map .state > a > path,
+.sal-us-map .state > path { cursor: pointer; transition: fill .18s ease; }
+.sal-us-map .state > a:hover > path,
+.sal-us-map .state > a:focus > path,
+.sal-us-map .state > a.is-active > path { fill: #9fb6dc; }
+.sal-us-map .state-labels a { text-decoration: none; cursor: pointer; }
+.sal-us-map .state-labels a text { pointer-events: none; }
+.sal-us-map .state-labels a:hover text,
+.sal-us-map .state-labels a:focus text,
+.sal-us-map .state-labels a.is-active text { fill: #1B2A4A; }
+.sal-us-map .sal-callout { cursor: pointer; }
+.sal-us-map .sal-callout rect { fill: #fff; stroke: #94a3b8; stroke-width: 1; transition: fill .15s; }
+.sal-us-map .sal-callout text { fill: #1f2937; font: 700 12px Arial, Helvetica, sans-serif; text-anchor: middle; dominant-baseline: middle; }
+.sal-us-map .sal-callout:hover rect,
+.sal-us-map .sal-callout.is-active rect { fill: #1B2A4A; stroke: #1B2A4A; }
+.sal-us-map .sal-callout:hover text,
+.sal-us-map .sal-callout.is-active text { fill: #fff; }
+.sal-us-map .sal-leader { stroke: #94a3b8; stroke-width: 1; fill: none; pointer-events: none; }
+.sal-map-tip { margin-top: .65rem; color: #64748b; font-size: .86rem; }
+
+/* ── Table ───────────────────────────────────────────── */
+.sal-table-wrap { overflow-x: auto; border: 1px solid #dbe3ef; margin-top: .5rem; }
+.sal-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+.sal-table th {
+    padding: .8rem 1rem;
+    text-align: left;
+    background: #f1f5f9;
+    color: #334155;
+    font-size: .8rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #cbd5e1;
+}
 .sal-table td {
-    padding: .85rem 1rem;
+    padding: .7rem 1rem;
     border-bottom: 1px solid #f1f5f9;
     color: #1e293b;
-    vertical-align: top;
+    font-size: .95rem;
+    vertical-align: middle;
 }
-
-.sal-table tr:last-child td { border-bottom: none; }
+.sal-table tbody tr:last-child td { border-bottom: none; }
 .sal-table tbody tr:hover { background: #f8fafc; }
-
 .sal-state-link { color: #0f172a; font-weight: 700; text-decoration: none; }
-.sal-state-link:hover { color: #1B2A4A; }
+.sal-state-link:hover { color: #1B2A4A; text-decoration: underline; }
+.sal-ap { color: #334155; }
+.sal-ap-none { color: #94a3b8; font-size: .85rem; }
+.sal-lookup { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .35rem 0 .85rem; padding: .75rem 1rem; border: 1px solid #dbe3ef; background: #f8fafc; }
+.sal-lookup label { color: #334155; font-size: .92rem; }
+.sal-lookup input { flex: 0 0 6rem; text-transform: uppercase; text-align: center; font-weight: 800; letter-spacing: .08em; background: #fff; }
+.sal-lookup-result { margin: 0 !important; color: #0f172a !important; font-weight: 700; font-size: 1rem !important; }
+.sal-note { margin: .75rem 0 0; color: #64748b; font-size: .85rem; line-height: 1.6; }
 
-.sal-abbr-badge {
+button.sal-abbr-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-width: 2.6rem;
     padding: .3rem .5rem;
+    border: 0;
     background: #1B2A4A;
     color: #fff;
     font-weight: 900;
     font-size: .88rem;
     letter-spacing: .06em;
+    cursor: copy;
+    transition: background .12s;
 }
+button.sal-abbr-badge:hover { background: #2c4170; }
+button.sal-abbr-badge.is-copied { background: #166534; }
 
-.sal-region { color: #64748b; font-size: .9rem; }
-
-/* ── Confused grid — gap technique ───────────────────── */
+/* ── Confused groups ─────────────────────────────────── */
 .sal-conf-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -333,26 +325,20 @@
     margin: .85rem -1.6rem -1.5rem;
     border-top: 1px solid #dbe3ef;
 }
-
-.sal-conf-cell {
-    padding: .85rem 1.1rem 1rem;
-    background: #fff;
-}
-
-.sal-conf-cell h3 {
-    margin: 0 0 .4rem;
+.sal-conf-cell { padding: .9rem 1.1rem 1.05rem; background: #fff; }
+.sal-conf-cell h3 { margin: 0 0 .6rem; color: #64748b; font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.sal-chips { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.sal-chip {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .22rem .6rem .22rem .25rem;
+    border: 1px solid #dbe3ef;
+    background: #f8fafc;
     color: #0f172a;
-    font-size: .88rem;
-    font-weight: 800;
-    letter-spacing: -.01em;
+    font-size: .85rem;
+    font-weight: 600;
 }
-
-.sal-conf-cell p {
-    margin: 0;
-    color: #475569;
-    font-size: .88rem;
-    line-height: 1.65;
-}
+.sal-chip b { padding: .15rem .4rem; background: #1B2A4A; color: #fff; font-size: .78rem; letter-spacing: .05em; }
+.sal-neq { color: #C09B4F; font-weight: 900; }
 
 /* ── Quiz CTA ────────────────────────────────────────── */
 .sal-quiz {
@@ -362,126 +348,70 @@
     align-items: center;
     border: 1px solid #1B2A4A;
     background: #1B2A4A;
-    padding: 1.5rem 1.6rem;
+    padding: 1.4rem 1.6rem;
     margin-top: .75rem;
 }
-
-.sal-quiz h2 { color: #f8fafc; margin: 0 0 .45rem; font-size: 1.1rem; }
-
-.sal-quiz p { color: #94a3b8; font-size: .9rem; line-height: 1.65; margin: 0; }
-
+.sal-quiz h2 { color: #f8fafc; margin: 0 0 .4rem; font-size: 1.1rem; }
+.sal-quiz p { color: #cbd5e1; font-size: .9rem; line-height: 1.6; margin: 0; }
 .sal-quiz-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
+    display: inline-flex; align-items: center; gap: .5rem;
     padding: .75rem 1.3rem;
-    background: #C09B4F;
-    color: #0f172a;
-    font-weight: 800;
-    font-size: .9rem;
-    text-decoration: none;
-    white-space: nowrap;
-    flex-shrink: 0;
+    background: #C09B4F; color: #0f172a;
+    font-weight: 800; font-size: .9rem; text-decoration: none; white-space: nowrap; flex-shrink: 0;
 }
-
 .sal-quiz-btn:hover { background: #d4aa5a; }
 
 /* ── FAQ ─────────────────────────────────────────────── */
-.sal-faq {
-    margin: .75rem -1.6rem -1.5rem;
-    border-top: 1px solid #dbe3ef;
-}
-
-.sal-faq details {
-    border-bottom: 1px solid #dbe3ef;
-    background: #fff;
-}
-
+.sal-faq { margin: .75rem -1.6rem -1.5rem; border-top: 1px solid #dbe3ef; }
+.sal-faq details { border-bottom: 1px solid #dbe3ef; background: #fff; }
 .sal-faq details:last-child { border-bottom: none; }
-
 .sal-faq summary {
-    padding: .88rem 1.6rem;
-    cursor: pointer;
-    color: #0f172a;
-    font-weight: 700;
-    font-size: .92rem;
-    list-style: none;
-    display: flex;
-    align-items: flex-start;
-    gap: .55rem;
-    line-height: 1.4;
+    padding: .88rem 1.6rem; cursor: pointer; color: #0f172a; font-weight: 700; font-size: .92rem;
+    list-style: none; display: flex; align-items: flex-start; gap: .55rem; line-height: 1.4;
 }
-
 .sal-faq summary::-webkit-details-marker { display: none; }
-
-.sal-faq summary::before {
-    content: '▸';
-    flex-shrink: 0;
-    margin-top: .1em;
-    color: #C09B4F;
-    font-size: .8em;
-}
-
+.sal-faq summary::before { content: '▸'; flex-shrink: 0; margin-top: .1em; color: #C09B4F; font-size: .8em; }
 .sal-faq details[open] summary::before { content: '▾'; }
 .sal-faq details[open] summary { border-bottom: 1px solid #dbe3ef; }
+.sal-faq .faq-answer { padding: .8rem 1.6rem .88rem 2.75rem; margin: 0; color: #475569; line-height: 1.7; font-size: .93rem; }
 
-.sal-faq .faq-answer {
-    padding: .8rem 1.6rem .88rem 2.75rem;
-    margin: 0;
-    color: #475569;
-    line-height: 1.7;
-    font-size: .93rem;
-}
-
-/* ── Related — gap technique ─────────────────────────── */
+/* ── Related ─────────────────────────────────────────── */
 .sal-related {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1px;
     background: #dbe3ef;
     margin: .85rem -1.6rem -1.5rem;
     border-top: 1px solid #dbe3ef;
 }
-
-.sal-related a {
-    display: block;
-    padding: .88rem 1.1rem;
-    background: #fff;
-    text-decoration: none;
-    transition: background .1s;
-}
-
+.sal-related a { display: block; padding: .88rem 1.1rem; background: #fff; text-decoration: none; transition: background .1s; }
 .sal-related a:hover { background: #f8fafc; }
-
-.sal-related strong {
-    display: block;
-    color: #0f172a;
-    font-size: .92rem;
-    font-weight: 700;
-    margin-bottom: .22rem;
-}
-
+.sal-related strong { display: block; color: #0f172a; font-size: .92rem; font-weight: 700; margin-bottom: .22rem; }
 .sal-related span { color: #64748b; font-size: .86rem; line-height: 1.55; }
 
+.sal-author { margin-top: .75rem; }
+
 /* ── Responsive ──────────────────────────────────────── */
+@@media (max-width: 1100px) {
+    .sal-related { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @@media (max-width: 860px) {
-    .sal-conf-grid, .sal-related { grid-template-columns: 1fr; }
-    .sal-statbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .sal-statbar-cell:nth-child(2) { border-right: none; }
-    .sal-statbar-cell:nth-child(3) { border-top: 1px solid #dbe3ef; border-right: none; }
+    .sal-conf-grid { grid-template-columns: 1fr; }
+    .sal-related { grid-template-columns: 1fr; }
     .sal-quiz { grid-template-columns: 1fr; }
     .sal-hero { padding: 1.2rem 1.25rem; }
     .sal-section { padding: 1rem 1.1rem 1.1rem; }
     .sal-map-shell { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .sal-map-frame { min-width: 600px; }
+    .sal-map-frame { min-width: 640px; }
+    .sal-mobile-only { display: block; }
     .sal-conf-grid, .sal-faq, .sal-related { margin-left: -1.1rem; margin-right: -1.1rem; }
 }
 
 @@media print {
-    .sticky, nav, .sal-quiz, footer, header { display: none !important; }
+    .sticky, nav, .sal-quiz, footer, header, .sal-toolbar, .sal-map-section, .sal-faq-section, .sal-related-section, aside { display: none !important; }
     .sal-table-wrap { overflow: visible; border: none; }
     .sal-table { min-width: 0; font-size: 10pt; }
-    .sal-abbr-badge { background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    button.sal-abbr-badge { background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .sal-shell { padding: 0; }
     body::before { content: "usasymbol.com — US State Abbreviations"; display: block; text-align: center; font-size: 14pt; font-weight: bold; margin-bottom: 1rem; }
 }
@@ -489,7 +419,7 @@
 }
 
 <div class="border-b border-slate-200/70 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70">
-    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 py-3">
+    <div class="sal-crumb-inner">
         <nav aria-label="Breadcrumb">
             <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
                 <li><a href="/" class="hover:text-slate-900 transition">Home</a></li>
@@ -506,37 +436,138 @@
 <div class="article-content min-w-0">
 
     <section class="sal-hero">
-        <div class="sal-kicker">
-            <i class="fa-solid fa-table-cells-large"></i>
-            All 50 States
-        </div>
         <h1>US State Abbreviations List</h1>
         <p class="sal-hero-desc">
-            All 50 U.S. state abbreviations in alphabetical order — two-letter USPS postal codes, capitals, and regions. Search below or open any state for the full guide.
+            Every state, D.C., and U.S. territory with its two-letter USPS code, AP style abbreviation, and traditional form. Use the table to look a state up, or type a code to see which state it is. Use the USPS code on envelopes and forms; AP style is for running text. Want to test yourself? <a href="/quizzes/state-abbreviations-quiz" style="color:#1B2A4A;font-weight:700;text-decoration:underline;">Take the state abbreviations quiz</a>.
         </p>
+    </section>
 
-        <div class="sal-statbar">
-            <div class="sal-statbar-cell">
-                <span class="sal-stat-label">States covered</span>
-                <div class="sal-stat-value">All 50</div>
+    <section class="sal-section" id="state-abbreviation-table">
+        <h2>State Abbreviations List</h2>
+        <p>The 50 states plus D.C. Click a code to copy it, or click a state for its own abbreviation guide.</p>
+
+        <div class="sal-lookup">
+            <label for="salLookup"><strong>Code to state:</strong> type a two-letter code</label>
+            <input id="salLookup" class="sal-search" type="text" maxlength="2" autocomplete="off" placeholder="e.g. NE" aria-describedby="salLookupResult" />
+            <p id="salLookupResult" class="sal-lookup-result" role="status" aria-live="polite" data-lookup='@Html.Raw(JsonSerializer.Serialize(lookupData, jsonOptions))'></p>
+        </div>
+
+        <div class="sal-toolbar">
+            <input id="salSearch"
+                   class="sal-search"
+                   type="search"
+                   aria-label="Search state abbreviations"
+                   placeholder="Search Alabama, AL, Montgomery, South…"
+                   autocomplete="off" />
+            <div class="sal-btn-group" role="group" aria-label="Sort table">
+                <button type="button" class="sal-btn" id="salSortName" aria-pressed="true">Sort by state</button>
+                <button type="button" class="sal-btn" id="salSortCode" aria-pressed="false">Sort by code</button>
             </div>
-            <div class="sal-statbar-cell">
-                <span class="sal-stat-label">Format</span>
-                <div class="sal-stat-value">2-letter USPS</div>
+            <div class="sal-btn-group" role="group" aria-label="Export table">
+                <button type="button" class="sal-btn" id="salCopyAll">Copy all</button>
+                <button type="button" class="sal-btn" id="salCsv">Download CSV</button>
+                <button type="button" class="sal-btn" id="salPrint">Print / save PDF</button>
             </div>
-            <div class="sal-statbar-cell">
-                <span class="sal-stat-label">Standard since</span>
-                <div class="sal-stat-value">1963 (ZIP era)</div>
-            </div>
+        </div>
+        <p class="sal-status" id="salStatus" role="status" aria-live="polite"></p>
+
+        <div class="sal-table-wrap">
+            <table class="sal-table" id="salTable">
+                <thead>
+                    <tr>
+                        <th scope="col">State</th>
+                        <th scope="col">USPS code</th>
+                        <th scope="col">AP style</th>
+                        <th scope="col">Capital</th>
+                    </tr>
+                </thead>
+                <tbody id="salTableBody">
+                    @foreach (var state in states)
+                    {
+                        var ap = apStyle.TryGetValue(state.Abbreviation, out var apValue) ? apValue : null;
+                        var trad = traditionalByCode.TryGetValue(state.Abbreviation, out var tradValue) ? tradValue : null;
+                        <tr data-name="@state.Name.ToLowerInvariant()"
+                            data-code="@state.Abbreviation.ToLowerInvariant()"
+                            data-search="@($"{state.Name} {state.Abbreviation} {ap} {trad} {state.Capital}").ToLowerInvariant()">
+                            <td>
+                                @* D.C. has no abbreviation guide page; link to its profile instead. *@
+                                <a href="@(state.Slug == "district-of-columbia" ? $"/states/{state.Slug}" : $"/states/{state.Slug}/abbreviation")" class="sal-state-link">@state.Name</a>
+                            </td>
+                            <td>
+                                <button type="button" class="sal-abbr-badge" data-copy="@state.Abbreviation" title="Copy @state.Abbreviation" aria-label="Copy code @state.Abbreviation">@state.Abbreviation</button>
+                            </td>
+                            <td>
+                                @{
+                                    // One column: AP form, with the traditional form shown only where it differs.
+                                    string Norm(string v) => v.Replace(" ", "").Replace(".", "").ToLowerInvariant();
+                                    var tradDiffers = trad != null && (ap == null || Norm(trad) != Norm(ap));
+                                }
+                                @if (ap != null)
+                                {
+                                    <span class="sal-ap">@ap</span>
+                                }
+                                else
+                                {
+                                    <span class="sal-ap-none">Spelled out in AP</span>
+                                }
+                                @if (tradDiffers)
+                                {
+                                    <span class="sal-ap-none"> (traditional: @trad)</span>
+                                }
+                            </td>
+                            <td>@state.Capital</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <p class="sal-note">AP style spells out Alaska, Hawaii, Idaho, Iowa, Maine, Ohio, Texas, and Utah in running text. Postal codes are two capital letters with no periods.</p>
+    </section>
+
+    <section class="sal-section">
+        <h2>Territory and Military Codes</h2>
+        <p>USPS also assigns two-letter codes to U.S. territories and to military mail.</p>
+        <div class="sal-table-wrap">
+            <table class="sal-table" style="min-width:0;">
+                <thead>
+                    <tr><th scope="col">Territory</th><th scope="col">Postal code</th><th scope="col">Capital</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in territories)
+                    {
+                        <tr>
+                            <td><strong>@t.Name</strong></td>
+                            <td><button type="button" class="sal-abbr-badge" data-copy="@t.Code" title="Copy @t.Code" aria-label="Copy code @t.Code">@t.Code</button></td>
+                            <td>@t.Capital</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="sal-table-wrap">
+            <table class="sal-table" style="min-width:0;">
+                <thead>
+                    <tr><th scope="col">Military mail</th><th scope="col">Postal code</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in militaryCodes)
+                    {
+                        <tr>
+                            <td><strong>@m.Meaning</strong></td>
+                            <td><button type="button" class="sal-abbr-badge" data-copy="@m.Code" title="Copy @m.Code" aria-label="Copy code @m.Code">@m.Code</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </section>
 
     @if (!string.IsNullOrWhiteSpace(svgMapMarkup))
     {
-        <section class="sal-section">
+        <section class="sal-section sal-map-section">
             <h2>US Map With State Abbreviations</h2>
             <p>Click any state to open its abbreviation guide.</p>
-            <p class="sal-map-tip">On mobile, swipe the map to scroll.</p>
+            <p class="sal-map-tip sal-mobile-only">Swipe the map sideways to see all states.</p>
 
             <div class="sal-map-shell">
                 <div id="salUsMap"
@@ -548,55 +579,21 @@
         </section>
     }
 
-    <section class="sal-section" id="state-abbreviation-table">
-        <h2>All 50 State Abbreviations</h2>
-        <p>Alphabetical. Each state name links to its full abbreviation guide.</p>
-
-        <input id="salSearch"
-               class="sal-search"
-               type="text"
-               placeholder="Search Alabama, AL, Montgomery, South…"
-               autocomplete="off" />
-
-        <div class="sal-table-wrap">
-            <table class="sal-table">
-                <thead>
-                    <tr>
-                        <th>State</th>
-                        <th>Abbreviation</th>
-                        <th>Capital</th>
-                        <th>Region</th>
-                    </tr>
-                </thead>
-                <tbody id="salTableBody">
-                    @foreach (var state in states)
-                    {
-                        <tr data-search="@($"{state.Name} {state.Abbreviation} {state.Capital} {state.Region}").ToLowerInvariant()">
-                            <td>
-                                @* D.C. has no abbreviation guide page; link to its profile instead. *@
-                                <a href="@(state.Slug == "district-of-columbia" ? $"/states/{state.Slug}" : $"/states/{state.Slug}/abbreviation")" class="sal-state-link">@state.Name</a>
-                            </td>
-                            <td>
-                                <span class="sal-abbr-badge">@state.Abbreviation</span>
-                            </td>
-                            <td>@state.Capital</td>
-                            <td class="sal-region">@(string.IsNullOrWhiteSpace(state.Region) ? "United States" : state.Region)</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </section>
-
     <section class="sal-section">
         <h2>Commonly Confused State Abbreviations</h2>
-        <p>A few groups trip people up again and again — especially the A-states and M-states.</p>
+        <p>Look-alike codes that get swapped on forms and addresses. Eight states start with M, four with I, and four with A, so the second letter is what matters. A few codes have a story: Nebraska used NB until 1969, when the USPS changed it to NE so it would not be mistaken for NB, the code for New Brunswick, Canada. Maryland is MD because MA belongs to Massachusetts, and West Virginia is WV because VA and WA were already taken.</p>
         <div class="sal-conf-grid">
-            @foreach (var pair in confusingPairs)
+            @foreach (var group in confusingGroups)
             {
                 <div class="sal-conf-cell">
-                    <h3>@pair.Heading</h3>
-                    <p>@pair.Copy</p>
+                    <h3>@group.Heading</h3>
+                    <div class="sal-chips">
+                        @for (var i = 0; i < group.Codes.Length; i++)
+                        {
+                            if (i > 0) { <span class="sal-neq" aria-label="is not">≠</span> }
+                            <span class="sal-chip"><b>@group.Codes[i].Item1</b>@group.Codes[i].Item2</span>
+                        }
+                    </div>
                 </div>
             }
         </div>
@@ -605,7 +602,7 @@
     <div class="sal-quiz">
         <div>
             <h2>Think You Know All 50 Abbreviations?</h2>
-            <p>Free quiz — match states to codes and codes to states. M-states and I-states trip up most people.</p>
+            <p>Free quiz: match states to codes and codes to states.</p>
         </div>
         <a href="/quizzes/state-abbreviations-quiz" class="sal-quiz-btn">
             Take the Quiz
@@ -613,7 +610,7 @@
         </a>
     </div>
 
-    <section class="sal-section">
+    <section class="sal-section sal-faq-section">
         <h2>FAQ</h2>
         <div class="sal-faq">
             @foreach (var item in faq)
@@ -626,16 +623,20 @@
         </div>
     </section>
 
-    <section class="sal-section">
+    <section class="sal-section sal-related-section">
         <h2>Related Guides</h2>
         <div class="sal-related">
+            <a href="/tools/state-capital-flashcards">
+                <strong>State Capital Flashcards</strong>
+                <span>Practice every state capital with quick flashcards.</span>
+            </a>
+            <a href="/tools/state-abbreviation-finder">
+                <strong>Abbreviation Finder</strong>
+                <span>Look up a state from its two-letter code.</span>
+            </a>
             <a href="/guides/state-borders">
                 <strong>State Borders Guide</strong>
                 <span>Which states border each other, plus coastal and landlocked states.</span>
-            </a>
-            <a href="/guides/surnames">
-                <strong>Last Names by State</strong>
-                <span>Common surnames and how they vary from state to state.</span>
             </a>
             <a href="/states">
                 <strong>Browse All 50 States</strong>
@@ -644,8 +645,8 @@
         </div>
     </section>
 
-    <div style="margin-top:1.5rem; max-width:860px;">
-        @await Html.PartialAsync("_AuthorBox", new USASymbol.Models.ViewModels.AuthorBox { DateModified = new DateTime(2026, 5, 28) })
+    <div class="sal-author">
+        @await Html.PartialAsync("_AuthorBox", new USASymbol.Models.ViewModels.AuthorBox { DateModified = new DateTime(2026, 11, 7) })
     </div>
 
 </div>
@@ -658,6 +659,7 @@
 </article>
 
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(pageSchema, jsonOptions))</script>
+<script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(itemListSchema, jsonOptions))</script>
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(breadcrumbSchema, jsonOptions))</script>
 <script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(faqSchema, jsonOptions))</script>
 
@@ -677,40 +679,81 @@
         const labelGroup = svg.querySelector('g.state-labels');
         if (!stateGroup) return;
 
-        for (const path of Array.from(stateGroup.querySelectorAll('path'))) {
-            const key = Array.from(path.classList)[0];
-            const state = byKey.get(key);
-            if (!state || path.parentElement?.tagName.toLowerCase() === 'a') continue;
-            const pathLink = document.createElementNS(svgNs, 'a');
-            pathLink.setAttributeNS(xlinkNs, 'href', `/states/${state.Slug}/abbreviation`);
-            pathLink.setAttribute('href', `/states/${state.Slug}/abbreviation`);
-            pathLink.setAttribute('aria-label', `${state.Name} abbreviation`);
-            pathLink.dataset.stateKey = key;
-            path.parentNode.insertBefore(pathLink, path);
-            pathLink.appendChild(path);
-        }
+        const hrefFor = state => state.Slug === 'district-of-columbia'
+            ? `/states/${state.Slug}`
+            : `/states/${state.Slug}/abbreviation`;
 
+        const makeLink = (key, state) => {
+            const link = document.createElementNS(svgNs, 'a');
+            link.setAttributeNS(xlinkNs, 'href', hrefFor(state));
+            link.setAttribute('href', hrefFor(state));
+            link.setAttribute('aria-label', `${state.Name} abbreviation`);
+            link.dataset.stateKey = key;
+            return link;
+        };
+
+        const wrap = (el, key) => {
+            const state = byKey.get(key);
+            if (!state || el.parentElement?.tagName.toLowerCase() === 'a') return;
+            const link = makeLink(key, state);
+            el.parentNode.insertBefore(link, el);
+            link.appendChild(el);
+        };
+
+        for (const path of Array.from(stateGroup.querySelectorAll('path'))) {
+            wrap(path, Array.from(path.classList)[0]);
+        }
+        const dcCircle = svg.querySelector('circle.dc');
+        if (dcCircle) wrap(dcCircle, 'dc');
+
+        // Small northeastern states: move their labels into callout boxes on the right.
+        const callouts = ['vt', 'nh', 'ma', 'ri', 'ct', 'nj', 'de', 'md', 'dc'];
+        const anchors = {};
         if (labelGroup) {
             for (const text of Array.from(labelGroup.querySelectorAll('text'))) {
                 const key = (text.textContent || '').trim().toLowerCase();
-                const state = byKey.get(key);
-                if (!state || text.parentElement?.tagName.toLowerCase() === 'a') continue;
-                const textLink = document.createElementNS(svgNs, 'a');
-                textLink.setAttributeNS(xlinkNs, 'href', `/states/${state.Slug}/abbreviation`);
-                textLink.setAttribute('href', `/states/${state.Slug}/abbreviation`);
-                textLink.setAttribute('aria-label', `${state.Name} abbreviation`);
-                textLink.dataset.stateKey = key;
-                text.parentNode.insertBefore(textLink, text);
-                textLink.appendChild(text);
+                if (callouts.includes(key)) {
+                    anchors[key] = { x: parseFloat(text.getAttribute('x')), y: parseFloat(text.getAttribute('y')) };
+                    text.remove();
+                    continue;
+                }
+                wrap(text, key);
             }
         }
+        if (dcCircle) anchors.dc = { x: parseFloat(dcCircle.getAttribute('cx')), y: parseFloat(dcCircle.getAttribute('cy')) };
+
+        const vb = svg.viewBox.baseVal;
+        const extra = 70;
+        svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.width + extra} ${vb.height}`);
+        const boxX = vb.width + 6, boxW = 44, boxH = 20, gap = 26;
+        let boxY = 118;
+        const layer = document.createElementNS(svgNs, 'g');
+        for (const key of callouts) {
+            const state = byKey.get(key);
+            const anchor = anchors[key];
+            if (!state || !anchor) continue;
+            const line = document.createElementNS(svgNs, 'polyline');
+            line.setAttribute('class', 'sal-leader');
+            line.setAttribute('points', `${anchor.x},${anchor.y} ${boxX - 8},${boxY + boxH / 2} ${boxX},${boxY + boxH / 2}`);
+            layer.appendChild(line);
+
+            const link = makeLink(key, state);
+            link.setAttribute('class', 'sal-callout');
+            const rect = document.createElementNS(svgNs, 'rect');
+            rect.setAttribute('x', boxX); rect.setAttribute('y', boxY);
+            rect.setAttribute('width', boxW); rect.setAttribute('height', boxH);
+            const label = document.createElementNS(svgNs, 'text');
+            label.setAttribute('x', boxX + boxW / 2); label.setAttribute('y', boxY + boxH / 2);
+            label.textContent = key.toUpperCase();
+            link.append(rect, label);
+            layer.appendChild(link);
+            boxY += gap;
+        }
+        svg.appendChild(layer);
 
         const syncHover = (key, active) => {
-            svg.querySelectorAll(`[data-state-key="${key}"]`).forEach(el => {
-                el.classList.toggle('is-active', active);
-            });
+            svg.querySelectorAll(`[data-state-key="${key}"]`).forEach(el => el.classList.toggle('is-active', active));
         };
-
         svg.querySelectorAll('[data-state-key]').forEach(el => {
             el.addEventListener('mouseenter', () => syncHover(el.dataset.stateKey, true));
             el.addEventListener('mouseleave', () => syncHover(el.dataset.stateKey, false));
@@ -721,8 +764,19 @@
 
     (() => {
         const input = document.getElementById('salSearch');
-        const rows  = Array.from(document.querySelectorAll('#salTableBody tr'));
-        if (!input || rows.length === 0) return;
+        const body = document.getElementById('salTableBody');
+        const status = document.getElementById('salStatus');
+        if (!input || !body) return;
+        const rows = Array.from(body.querySelectorAll('tr'));
+        let statusTimer;
+
+        const say = msg => {
+            if (!status) return;
+            status.textContent = msg;
+            clearTimeout(statusTimer);
+            statusTimer = setTimeout(() => { status.textContent = ''; }, 2500);
+        };
+
         input.addEventListener('input', () => {
             const q = input.value.trim().toLowerCase();
             for (const row of rows) {
@@ -730,5 +784,87 @@
                 row.style.display = !q || haystack.includes(q) ? '' : 'none';
             }
         });
+
+        // Reverse lookup: code -> state
+        const lookup = document.getElementById('salLookup');
+        const lookupOut = document.getElementById('salLookupResult');
+        if (lookup && lookupOut) {
+            const codes = JSON.parse(lookupOut.dataset.lookup || '[]');
+            lookup.addEventListener('input', () => {
+                const q = lookup.value.trim().toUpperCase();
+                lookupOut.textContent = '';
+                if (q.length < 2) return;
+                const hit = codes.find(x => x.c === q);
+                if (!hit) { lookupOut.textContent = `${q} is not a USPS state, territory, or military code.`; return; }
+                if (hit.Slug) {
+                    lookupOut.append(`${q} = `);
+                    const a = document.createElement('a');
+                    a.href = hit.Slug === 'district-of-columbia' ? `/states/${hit.Slug}` : `/states/${hit.Slug}/abbreviation`;
+                    a.textContent = hit.n;
+                    lookupOut.append(a);
+                } else {
+                    lookupOut.textContent = `${q} = ${hit.n}`;
+                }
+            });
+        }
+
+        // Sorting
+        const sortName = document.getElementById('salSortName');
+        const sortCode = document.getElementById('salSortCode');
+        const sortBy = key => {
+            rows.slice().sort((a, b) => a.dataset[key].localeCompare(b.dataset[key])).forEach(r => body.appendChild(r));
+            sortName?.setAttribute('aria-pressed', String(key === 'name'));
+            sortCode?.setAttribute('aria-pressed', String(key === 'code'));
+        };
+        sortName?.addEventListener('click', () => sortBy('name'));
+        sortCode?.addEventListener('click', () => sortBy('code'));
+
+        // Copy on click for every code badge on the page
+        const copyText = async text => {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch {
+                const ta = document.createElement('textarea');
+                ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select();
+                let ok = false;
+                try { ok = document.execCommand('copy'); } catch { }
+                ta.remove();
+                return ok;
+            }
+        };
+        document.querySelectorAll('button.sal-abbr-badge[data-copy]').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (await copyText(btn.dataset.copy)) {
+                    btn.classList.add('is-copied');
+                    say(`Copied ${btn.dataset.copy}`);
+                    setTimeout(() => btn.classList.remove('is-copied'), 1200);
+                }
+            });
+        });
+
+        // Export what is currently visible
+        const tableData = () => {
+            const out = [['State', 'USPS code', 'AP style', 'Capital']];
+            for (const row of Array.from(body.querySelectorAll('tr'))) {
+                if (row.style.display === 'none') continue;
+                out.push(Array.from(row.children).map(td => td.textContent.trim().replace(/\s+/g, ' ')));
+            }
+            return out;
+        };
+        document.getElementById('salCopyAll')?.addEventListener('click', async () => {
+            const ok = await copyText(tableData().map(r => r.join('\t')).join('\n'));
+            say(ok ? 'Table copied. Paste it into Excel or Google Sheets.' : 'Copy failed. Select the table manually.');
+        });
+        document.getElementById('salCsv')?.addEventListener('click', () => {
+            const csv = tableData().map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(',')).join('\r\n');
+            const url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+            const a = document.createElement('a');
+            a.href = url; a.download = 'us-state-abbreviations.csv';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        });
+        document.getElementById('salPrint')?.addEventListener('click', () => window.print());
     })();
 </script>

@@ -5,7 +5,7 @@ namespace USASymbol.Services;
 public static class ComparisonSeoTemplates
 {
     public static string OverviewTitle(StatePairComparisonViewModel model) =>
-        LimitTitle($"{model.StateA.Name} vs {model.StateB.Name} | Cost, Taxes & Living");
+        LimitTitle($"{model.StateA.Name} vs. {model.StateB.Name} | Full State Comparison (2026)");
 
     public static string OverviewDescription(StatePairComparisonViewModel model)
     {
@@ -19,8 +19,33 @@ public static class ComparisonSeoTemplates
     public static string MetricTitle(MetricComparisonViewModel model)
     {
         var label = ShortMetricName(model.Metric.Slug, model.Metric.Name);
-        return LimitTitle($"{model.StateA.Name} vs {model.StateB.Name} | {label}");
+        var pair = $"{model.StateA.Name} vs. {model.StateB.Name}";
+        // Question form for the high-demand metrics, plain "<metric> Compared" for the rest.
+        // No year: the data year differs per metric, so it must not be claimed in the title.
+        var question = MetricQuestion(model.Metric.Slug);
+        var full = question != null ? $"{pair} | {question}" : $"{pair} | {label} Compared";
+        if (full.Length > 68) full = $"{pair} | {label} Compared";
+        return LimitTitle(full);
     }
+
+    private static string? MetricQuestion(string slug) => slug switch
+    {
+        "best-state-to-live-in" => "Which State Is Better to Live In?",
+        "livability-score" => "Which State Is More Livable?",
+        "cost-of-living" => "Which Is Cheaper to Live In?",
+        "public-school-rank" => "Which Has Better Schools?",
+        "best-healthcare" => "Which Has Better Healthcare?",
+        "retirement-score" => "Which Is Better for Retirement?",
+        "violent-crime" => "Which State Is Safer?",
+        "income-tax" => "Which Has Lower Income Tax?",
+        "property-tax" => "Which Has Lower Property Tax?",
+        "sales-tax" => "Which Has Lower Sales Tax?",
+        "median-rent" => "Which Has Cheaper Rent?",
+        "home-value" => "Which Has Cheaper Homes?",
+        "average-temperature" => "Which State Is Warmer?",
+        "teacher-salary" => "Which Pays Teachers More?",
+        _ => null
+    };
 
     public static string MetricDescription(MetricComparisonViewModel model)
     {
@@ -52,7 +77,7 @@ public static class ComparisonSeoTemplates
     }
 
     public static string CategoryPairTitle(CompareCategoryPairViewModel model) =>
-        LimitTitle($"{model.Pair.StateA.Name} vs {model.Pair.StateB.Name} | {model.CategoryName}");
+        LimitTitle($"{model.Pair.StateA.Name} vs. {model.Pair.StateB.Name} | {model.CategoryName} Compared");
 
     private static string ShortMetricName(string slug, string defaultName) => slug switch
     {

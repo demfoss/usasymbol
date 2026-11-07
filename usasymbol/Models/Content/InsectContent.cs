@@ -26,6 +26,8 @@ namespace USASymbol.Models.Content
         public string HeroImageCaption { get; set; } = string.Empty;
         public string IntroText { get; set; } = string.Empty;
 
+        public ExpertQuoteData? ExpertQuote { get; set; }
+        public string ExpertQuoteAfterSectionId { get; set; } = string.Empty;
         public List<InsectSection> Sections { get; set; } = new();
         public List<InsectFaq> Faq { get; set; } = new();
         public List<InsectSource> Sources { get; set; } = new();

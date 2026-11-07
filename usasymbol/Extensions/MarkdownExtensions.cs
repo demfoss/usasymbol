@@ -595,6 +595,23 @@ namespace USASymbol.Extensions
 
             if (target.IsState)
             {
+                // "Virginia" inside "West Virginia" is part of another state's name, even when
+                // the West Virginia link itself is skipped (self-link) on its own page.
+                if (match.Value.Equals("Virginia", StringComparison.Ordinal) &&
+                    match.Index >= 5 &&
+                    string.CompareOrdinal(text, match.Index - 5, "West ", 0, 5) == 0)
+                    return false;
+
+                // County names that match a state ("counties along this border include ..., Wyoming, Mingo").
+                var lookStart = Math.Max(0, match.Index - 250);
+                var lookback = text.Substring(lookStart, match.Index - lookStart);
+                var sentenceEnd = Math.Max(lookback.LastIndexOf(". ", StringComparison.Ordinal), lookback.LastIndexOf(":", StringComparison.Ordinal));
+                var sentence = sentenceEnd >= 0 ? lookback[(sentenceEnd + 1)..] : lookback;
+                if (sentence.Contains("ounties", StringComparison.Ordinal) ||
+                    string.CompareOrdinal(text, end, " County", 0, 7) == 0 ||
+                    string.CompareOrdinal(text, end, " Counties", 0, 9) == 0)
+                    return false;
+
                 // Proper names containing a state name are not references to the state
                 // (Sierra Nevada, Nevada Fall, Washington Post, New York Times, Lake Michigan).
                 foreach (Match compound in CompoundToponymRegex.Matches(text))

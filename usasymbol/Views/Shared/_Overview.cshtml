@@ -1,14 +1,52 @@
+<div class="toc-chip" data-toc-chip>
+    <button type="button" aria-haspopup="dialog"><i class="fa-solid fa-list" aria-hidden="true"></i> On this page <i class="fa-solid fa-chevron-down text-[10px]" aria-hidden="true"></i></button>
+    <span class="toc-chip-current" aria-live="polite"></span>
+</div>
+<script>
+    (function () {
+        var chip = document.currentScript.previousElementSibling;
+        var btn = chip.querySelector('button');
+        var cur = chip.querySelector('.toc-chip-current');
+        var header = document.querySelector('.site-header');
+        function place() {
+            var pos = header ? getComputedStyle(header).position : '';
+            chip.style.top = (pos === 'sticky' || pos === 'fixed') ? header.offsetHeight + 'px' : '0px';
+        }
+        place();
+        window.addEventListener('resize', place);
+        btn.addEventListener('click', function () {
+            var fab = document.getElementById('floatingTocBtn');
+            if (fab) fab.click();
+        });
+        var secs = Array.prototype.slice.call(document.querySelectorAll('section[id^="section-"]'));
+        var tick = false;
+        function update() {
+            tick = false;
+            var name = '';
+            secs.forEach(function (s) {
+                if (s.getBoundingClientRect().top <= 140) {
+                    var h = s.querySelector('h2');
+                    if (h) name = h.textContent.replace(/\s+/g, ' ').trim();
+                }
+            });
+            cur.textContent = name;
+        }
+        window.addEventListener('scroll', function () {
+            if (!tick) { tick = true; requestAnimationFrame(update); }
+        }, { passive: true });
+        update();
+    })();
+</script>
 @{
-    var heading = ViewData["Heading"] as string ?? "";
     var body = ViewData["Body"] as IHtmlContent;
     var extra = ViewData["Extra"] as IHtmlContent;
 }
-<div id="overview" class="mt-10">
-    <div class="bg-stone-50 px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
-        <h2 class="content-h2 mb-5">@heading</h2>
+<div id="overview" class="mt-6 scroll-mt-24">
+    <div class="overview-brief">
+        <h2 class="overview-brief-label">In brief</h2>
         @if (body != null)
         {
-            <div class="prose prose-slate prose-lg max-w-none text-slate-700 overview-dropcap">
+            <div class="overview-brief-body">
                 @body
             </div>
         }

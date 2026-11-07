@@ -101,8 +101,29 @@ namespace USASymbol.Controllers
                 QuizQuestions = quizQuestions
             };
 
-            ViewData["Title"] = borderContent.SeoTitle;
-            ViewData["Description"] = borderContent.SeoDescription;
+            // Single source of truth for borders SEO: the title promises more than the snippet answer
+            // (map + neighbours). States without state neighbours (Alaska, Hawaii) keep their YAML values.
+            var allStateNames = (await _stateService.GetAllStatesAsync())
+                .Select(s => s.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var neighborNames = (borderContent.BorderSummary?.BorderingStatesList ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(n => allStateNames.Contains(n))
+                .ToList();
+            if (neighborNames.Count == 1)
+            {
+                ViewData["Title"] = $"{state.Name} Borders Only One State: {neighborNames[0]} (Map)";
+                ViewData["Description"] = $"{state.Name} shares a land border with just one state, {neighborNames[0]}. See it on a map and compare {state.Name} with {neighborNames[0]}.";
+            }
+            else if (neighborNames.Count > 1)
+            {
+                ViewData["Title"] = $"States That Border {state.Name}: Map & All Neighbors";
+                ViewData["Description"] = $"Which states border {state.Name}? See every neighbor on an interactive map, how each border runs, and compare {state.Name} with each neighboring state.";
+            }
+            else
+            {
+                ViewData["Title"] = borderContent.SeoTitle;
+                ViewData["Description"] = borderContent.SeoDescription;
+            }
             ViewData["OgImage"] = borderContent.Map?.Image ?? state.FlagImageUrl;
 
             return View(model);
@@ -125,14 +146,34 @@ namespace USASymbol.Controllers
             return View();
         }
 
+        private static volatile Dictionary<string, string>? _traditionalByCodeCache;
+
         [Route("guides/state-abbreviations")]
         public async Task<IActionResult> StateAbbreviations()
         {
             var states = await _stateService.GetAllStatesAsync();
             var highIntentSlugs = (await _stateAbbreviationContentService.GetHighIntentSlugsAsync()).ToList();
 
-            ViewData["Title"] = "State Abbreviations and Capitals — All 50 US States";
-            ViewData["Description"] = "All 50 U.S. state abbreviations with capitals in alphabetical order, plus two-letter postal codes, regions, and common abbreviation mistakes.";
+            // Traditional forms change once in years: build the map once per process instead of
+            // 50 content-service calls on every render of a high-traffic page.
+            var traditional = _traditionalByCodeCache;
+            if (traditional == null)
+            {
+                var built = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var s in states)
+                {
+                    var c = await _stateAbbreviationContentService.GetContentAsync(s.Slug);
+                    if (c != null && !string.IsNullOrWhiteSpace(c.TraditionalAbbreviation)
+                        && !string.Equals(c.TraditionalAbbreviation, s.Name, StringComparison.OrdinalIgnoreCase))
+                        built[s.Abbreviation] = c.TraditionalAbbreviation;
+                }
+                if (built.Count > 0) _traditionalByCodeCache = built;
+                traditional = built;
+            }
+            ViewData["TraditionalByCode"] = traditional;
+
+            ViewData["Title"] = "State Abbreviations: Full List With DC & Territories (USPS & AP)";
+            ViewData["Description"] = "Every state abbreviation in one table: USPS two-letter code, AP style, and traditional form, plus DC, territories, military codes, a code-to-state lookup, and a map.";
             ViewData["Canonical"] = "/guides/state-abbreviations";
             ViewData["TopAbbreviationStates"] = states
                 .Where(s => highIntentSlugs.Contains(s.Slug, StringComparer.OrdinalIgnoreCase))
@@ -160,9 +201,26 @@ namespace USASymbol.Controllers
                 .OrderBy(s => s.Name).ToList();
             var stateIndex = alphabetical.FindIndex(s => s.Id == state.Id);
 
+            var borderContent = await _borderService.GetBorderContentAsync(stateSlug);
+            var borderNames = (borderContent?.BorderSummary?.BorderingStatesList ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var bordering = borderNames
+                .Select(n => alphabetical.FirstOrDefault(s => string.Equals(s.Name, n, StringComparison.OrdinalIgnoreCase)))
+                .Where(s => s != null)
+                .Cast<State>()
+                .OrderBy(s => s.Name)
+                .ToList();
+            var confusable = USASymbol.Helpers.StateAbbreviationFacts.ConfusableCodes(state.Abbreviation)
+                .Select(c => alphabetical.FirstOrDefault(s => string.Equals(s.Abbreviation, c, StringComparison.OrdinalIgnoreCase)))
+                .Where(s => s != null)
+                .Cast<State>()
+                .ToList();
+
             var model = new StateAbbreviationGuideViewModel
             {
                 State = state,
+                BorderingStates = bordering,
+                ConfusableStates = confusable,
                 TraditionalAbbreviation = content.TraditionalAbbreviation,
                 FormationSummary = content.FormationSummary,
                 FormationDetail = content.FormationDetail,

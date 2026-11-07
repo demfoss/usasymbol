@@ -23,6 +23,17 @@
             return string.Empty;
         }
 
+        var special = id.Trim().ToLowerInvariant() switch
+        {
+            "answer-fast" => "Quick Answer",
+            "adoption-law" => "Adoption Law",
+            _ => null
+        };
+        if (special != null)
+        {
+            return special;
+        }
+
         var parts = id
             .Split(new[] { '-', '_', ' ' }, StringSplitOptions.RemoveEmptyEntries)
             .Where(part => !string.IsNullOrWhiteSpace(part))
@@ -86,7 +97,7 @@
 
         var sections = (symbolModel.Sections ?? new List<IContentSection>())
             .Where(s => !string.IsNullOrWhiteSpace(s?.Id) && !string.IsNullOrWhiteSpace(s?.Title))
-            .Take(3)
+            .Take(6)
             .ToList();
 
         foreach (var sec in sections)
@@ -184,9 +195,9 @@
         }
     }
 
-    if (items.Count > 6)
+    if (items.Count > 8)
     {
-        items = items.Take(6).ToList();
+        items = items.Take(8).ToList();
     }
 
     var hasToc = items.Any();
@@ -236,18 +247,6 @@
                         <span class="min-w-0 line-clamp-2 leading-5">@it.Title</span>
                     </a>
                 }
-            </div>
-
-            <div class="mt-1">
-                <button type="button"
-                        id="tocBackToTop"
-                        class="toc-link bird-toc-link group flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[0.78rem] font-semibold uppercase tracking-[0.07em] text-slate-900 transition-all duration-200 hover:bg-white/70"
-                        aria-current="false">
-                    <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center text-slate-900">
-                        <i class="fa-solid fa-chevron-up text-xs"></i>
-                    </span>
-                    <span>Top</span>
-                </button>
             </div>
         </div>
     </nav>

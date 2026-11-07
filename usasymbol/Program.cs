@@ -139,6 +139,7 @@ builder.Services.AddScoped<IStateAbbreviationContentService, StateAbbreviationCo
 
 
 builder.Services.AddScoped<ISymbolService, YamlParse>();
+builder.Services.AddScoped<USASymbol.Services.SymbolContextService>();
 builder.Services.AddSingleton<YamlContentLoader>();
 builder.Services.AddScoped<SitemapBuilder>();
 builder.Services.AddScoped<SitemapCacheService>();

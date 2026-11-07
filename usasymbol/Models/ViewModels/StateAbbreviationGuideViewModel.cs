@@ -18,5 +18,7 @@ namespace USASymbol.Models.ViewModels
         public List<State> SimilarStates { get; set; } = new();
         public List<State> RegionalStates { get; set; } = new();
         public List<State> AlphabeticalNeighbors { get; set; } = new();
+        public List<State> BorderingStates { get; set; } = new();
+        public List<State> ConfusableStates { get; set; } = new();
     }
 }

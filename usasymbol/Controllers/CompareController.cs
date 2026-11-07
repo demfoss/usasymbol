@@ -27,6 +27,7 @@ namespace USASymbol.Controllers
         public async Task<IActionResult> Hub()
         {
             var model = await _comparison.GetHubViewModelAsync();
+            await FillGlanceAsync(model);
 
             ViewData["Title"] = $"Compare U.S. States Side by Side ({DateTime.UtcNow.Year})";
             ViewData["Description"] = "Compare any two U.S. states by cost of living, taxes, housing, jobs, climate, safety, laws, health, and quality of life with sourced data.";
@@ -179,6 +180,35 @@ namespace USASymbol.Controllers
         }
 
         // ── helpers ──────────────────────────────────────────────────────────
+
+        private static readonly (string Slug, string Label)[] GlanceMetrics =
+        {
+            ("population", "Population"),
+            ("median-rent", "Median rent"),
+            ("income-tax", "State income tax"),
+            ("cost-of-living", "Cost of living index"),
+            ("average-temperature", "Average temperature"),
+        };
+
+        /// <summary>Fills the hub's example "California vs Texas at a glance" table from the real pair data.</summary>
+        private async Task FillGlanceAsync(CompareHubViewModel model)
+        {
+            const string slugA = "california", slugB = "texas";
+            var pair = await _comparison.GetPairComparisonAsync(slugA, slugB);
+            if (pair == null) return;
+
+            model.GlanceSlugA = pair.StateA.Slug;
+            model.GlanceNameA = pair.StateA.Name;
+            model.GlanceSlugB = pair.StateB.Slug;
+            model.GlanceNameB = pair.StateB.Name;
+
+            foreach (var (slug, label) in GlanceMetrics)
+            {
+                var r = pair.MetricResults.FirstOrDefault(x => x.Metric.Slug == slug);
+                if (r?.DisplayValueA == null || r.DisplayValueB == null) continue;
+                model.GlanceRows.Add(new CompareGlanceRow(label, r.DisplayValueA, r.DisplayValueB, slug));
+            }
+        }
 
         /// <summary>Parses "california-vs-texas" → ("california", "texas"). Returns nulls on failure.</summary>
         private static (string?, string?) ParsePair(string pair)

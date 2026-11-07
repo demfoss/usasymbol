@@ -21,6 +21,8 @@ namespace USASymbol.Models.Content
         public string HeroImageAlt { get; set; } = string.Empty;
         public string HeroImageCaption { get; set; } = string.Empty;
         public string IntroText { get; set; } = string.Empty;
+        public ExpertQuoteData? ExpertQuote { get; set; }
+        public string ExpertQuoteAfterSectionId { get; set; } = string.Empty;
         public List<SportSection> Sections { get; set; } = new();
         public List<SportFaq> Faq { get; set; } = new();
         public List<SportSource> Sources { get; set; } = new();

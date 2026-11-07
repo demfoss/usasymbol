@@ -1,0 +1,60 @@
+@model USASymbol.Models.ViewModels.SymbolPageContext
+@inject IImageUrlService Images
+
+<section class="sc-side" aria-label="@Model.StateName @Model.Noun in context">
+    <h2 class="sc-side-title">Across the states</h2>
+    <div class="mt-3 h-px bg-slate-300/80"></div>
+
+    <div class="sc-tilemap" role="img" aria-label="@Model.MapCaption">
+        @foreach (var t in Model.Tiles)
+        {
+            if (string.IsNullOrEmpty(t.Abbr))
+            {
+                <span class="sc-tile sc-tile--gap" aria-hidden="true"></span>
+            }
+            else
+            {
+                <span class="sc-tile sc-tile--@t.Kind" title="@t.Name@(t.SymbolName != null ? ": " + t.SymbolName : "")">@t.Abbr</span>
+            }
+        }
+    </div>
+
+    <ul class="sc-legend">
+        <li><i class="sc-key sc-tile--current"></i>@Model.StateName</li>
+        <li><i class="sc-key sc-tile--same"></i>Same choice</li>
+        <li><i class="sc-key sc-tile--other"></i>Other choice</li>
+        <li><i class="sc-key sc-tile--none"></i>None</li>
+    </ul>
+
+    <p class="sc-caption">@Model.MapCaption</p>
+    <a href="@Model.HubUrl" class="sc-link">
+        <span>@Model.HubLabel</span> <i class="fa-solid fa-arrow-right text-xs" aria-hidden="true"></i>
+    </a>
+
+    @if (Model.Peers.Count > 0)
+    {
+        <h2 class="sc-side-title mt-10">@Model.PeersHeading</h2>
+        <div class="mt-3 h-px bg-slate-300/80"></div>
+        <div class="mt-5 space-y-4">
+            @foreach (var p in Model.Peers)
+            {
+                var abbr = p.Abbr.ToLowerInvariant();
+                <a href="@p.Url" class="group flex items-center gap-3 text-slate-900 transition-opacity hover:opacity-85">
+                    <img src="@Images.Thumb($"/images/states/flags/small/{abbr}.webp")"
+                         alt="@p.StateName flag"
+                         class="h-11 w-14 shrink-0 object-cover border border-slate-200"
+                         loading="lazy" />
+                    <div class="min-w-0">
+                        <div class="text-[0.95rem] font-semibold leading-5 text-slate-900">@p.StateName</div>
+                        <div class="text-[0.82rem] leading-5 text-slate-600 line-clamp-1">@p.SymbolName@(p.Year.HasValue ? $", {p.Year}" : "")</div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.OldestNewest))
+    {
+        <p class="sc-caption mt-6">@Model.OldestNewest</p>
+    }
+</section>

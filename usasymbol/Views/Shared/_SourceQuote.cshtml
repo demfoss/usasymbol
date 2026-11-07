@@ -1,0 +1,38 @@
+@* Universal quote-from-a-document block.
+   ViewData: Text (string, required), Source (markdown string; may contain [label](url) to the official source),
+   Label (optional small caption, default "From the source") *@
+@using USASymbol.Extensions
+@{
+    var text = ViewData["Text"] as string ?? string.Empty;
+    var source = ViewData["Source"] as string ?? string.Empty;
+    var label = ViewData["Label"] as string ?? "From the source";
+}
+@if (!string.IsNullOrWhiteSpace(text))
+{
+    <figure class="srcquote" data-nosnippet>
+        <div class="srcquote-head">
+            <span class="srcquote-label">@label</span>
+            <button type="button" class="srcquote-copy" aria-label="Copy quote"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button>
+        </div>
+        <blockquote class="srcquote-text">@text</blockquote>
+        @if (!string.IsNullOrWhiteSpace(source))
+        {
+            <figcaption class="srcquote-cite">@source.RenderAutoLinks()</figcaption>
+        }
+    </figure>
+    <script>
+        (function () {
+            var fig = document.currentScript.previousElementSibling;
+            var b = fig.querySelector('.srcquote-copy');
+            b.addEventListener('click', function () {
+                var t = fig.querySelector('blockquote').textContent.trim();
+                var c = fig.querySelector('figcaption');
+                var s = t + (c ? ' (' + c.textContent.trim() + ')' : '');
+                if (navigator.clipboard) navigator.clipboard.writeText(s).then(function () {
+                    var l = b.querySelector('span'); l.textContent = 'Copied';
+                    setTimeout(function () { l.textContent = 'Copy'; }, 1800);
+                });
+            });
+        })();
+    </script>
+}

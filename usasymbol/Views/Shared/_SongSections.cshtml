@@ -56,6 +56,11 @@
 
             <div class="clear-both"></div>
         </div>
+
+        @if (Model.SongContent?.ExpertQuote != null && !string.IsNullOrWhiteSpace(Model.SongContent.ExpertQuoteAfterSectionId) && string.Equals(item.Id, Model.SongContent.ExpertQuoteAfterSectionId, StringComparison.OrdinalIgnoreCase))
+        {
+            @await Html.PartialAsync("Components/Story/_ExpertQuote", Model.SongContent.ExpertQuote)
+        }
     }
 
     var orphanAssets = visualAssets
