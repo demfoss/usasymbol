@@ -282,6 +282,8 @@
                     </section>
                 }
 
+                @await Html.PartialAsync("_CollectionQuizCta", content?.Url ?? "")
+
                 <div class="content-divider">
                     @await Html.PartialAsync("_AuthorBox", Model.AuthorBox)
                 </div>

@@ -4,6 +4,7 @@
 @{
     var rankingViewData = new ViewDataDictionary(ViewData)
     {
+        ["HideInlineQuiz"] = true,
         ["QuickAnswerSectionId"] = $"{Model.IdPrefix}-quick-answer",
         ["RankingTableSectionId"] = $"{Model.IdPrefix}-table",
         ["SectionsSectionId"] = $"{Model.IdPrefix}-sections",

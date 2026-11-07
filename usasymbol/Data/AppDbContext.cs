@@ -18,11 +18,23 @@ namespace USASymbol.Data
         public DbSet<Symbol> Symbols { get; set; }
         public DbSet<SymbolCategory> SymbolCategories { get; set; }
         public DbSet<QuizAttempt> QuizAttempts { get; set; }
+        public DbSet<QuizEvent> QuizEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+
+            modelBuilder.Entity<QuizEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.QuizSlug).IsRequired().HasMaxLength(120);
+                entity.Property(e => e.Mode).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.EventType).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.QuestionKey).HasMaxLength(300);
+                entity.Property(e => e.Choice).HasMaxLength(200);
+                entity.HasIndex(e => new { e.QuizSlug, e.EventType });
+            });
 
             modelBuilder.Entity<State>(entity =>
             {

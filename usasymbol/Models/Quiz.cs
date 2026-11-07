@@ -79,6 +79,13 @@ namespace usasymbol.Models
 
         [JsonPropertyName("explanation")]
         public string Explanation { get; set; } = string.Empty;
+
+        /// <summary>Page about the answer (symbol page or state guide), shown after the answer.</summary>
+        [JsonPropertyName("link_url")]
+        public string LinkUrl { get; set; } = string.Empty;
+
+        [JsonPropertyName("link_label")]
+        public string LinkLabel { get; set; } = string.Empty;
     }
 
     public class QuizFaq
@@ -104,6 +111,33 @@ namespace usasymbol.Models
         public int TimeSpentSeconds { get; set; }
         public DateTime CreatedAt { get; set; }
     }
+    /// <summary>Anonymous quiz event: start, answer or complete. No user data is stored.</summary>
+    public class QuizEvent
+    {
+        public int Id { get; set; }
+        public string QuizSlug { get; set; } = "";
+        public string Mode { get; set; } = "";
+        public string EventType { get; set; } = "";   // start | answer | complete
+        public string? QuestionKey { get; set; }      // question text, trimmed
+        public bool? IsCorrect { get; set; }
+        public string? Choice { get; set; }           // option the player picked (multiple choice only)
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class QuizEventsDto
+    {
+        public string? Mode { get; set; }
+        public List<QuizEventItemDto>? Events { get; set; }
+    }
+
+    public class QuizEventItemDto
+    {
+        public string? T { get; set; }
+        public string? Q { get; set; }
+        public bool? C { get; set; }
+        public string? P { get; set; }
+    }
+
     public class QuizResultDto
     {
         public string? Mode { get; set; }

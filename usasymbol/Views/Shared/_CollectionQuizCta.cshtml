@@ -1,0 +1,23 @@
+@model string?
+@inject usasymbol.Services.QuizService QuizSvc
+
+@{
+    var quizSlug = usasymbol.Services.QuizLinks.QuizForCollection(Model);
+    var quiz = quizSlug == null ? null : QuizSvc.GetBySlug(quizSlug);
+}
+
+@if (quiz != null)
+{
+    <a href="/quizzes/@quiz.Slug"
+       class="group my-8 flex items-center justify-between gap-5 rounded-2xl border border-slate-200 bg-white px-5 py-4 no-underline transition hover:border-slate-400 hover:shadow-sm"
+       data-nosnippet>
+        <span class="min-w-0">
+            <span class="block text-[11px] font-bold uppercase tracking-[0.18em] text-amber-700">Test yourself</span>
+            <span class="mt-1 block text-base font-bold leading-snug text-slate-900">@(quiz.Seo?.Title ?? quiz.Title)</span>
+            <span class="mt-1 block text-sm leading-relaxed text-slate-600 line-clamp-2">@quiz.Description</span>
+        </span>
+        <span class="shrink-0 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition group-hover:bg-slate-700">
+            Play <i class="fa-solid fa-arrow-right text-xs" aria-hidden="true"></i>
+        </span>
+    </a>
+}

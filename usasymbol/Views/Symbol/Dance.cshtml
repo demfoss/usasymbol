@@ -160,6 +160,8 @@
                         @await Html.PartialAsync("_Faq", Model)
                     </div>
 
+                    @await Component.InvokeAsync("InlineQuiz", new { mode = "state", stateName = Model.State?.Name })
+
                     <section id="sources" class="content-divider">
                         @await Html.PartialAsync("_Sources", Model)
                     </section>

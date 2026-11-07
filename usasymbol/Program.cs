@@ -112,6 +112,8 @@ builder.Services.AddScoped<ICountyService, CountyService>();
 builder.Services.AddSingleton<INormalizer, StateMatchNormalizer>();
 builder.Services.AddSingleton<IStateMatchOgImageService, StateMatchOgImageService>();
 builder.Services.AddSingleton<QuizService>();
+builder.Services.AddSingleton<StateSymbolQuizBuilder>();
+builder.Services.AddSingleton<USASymbol.Services.IQuizShareImageService, USASymbol.Services.QuizShareImageService>();
 builder.Services.AddScoped<IParkService, ParkService>();
 builder.Services.AddScoped<ISoilService, SoilService>();
 builder.Services.AddScoped<IFossilService, FossilService>();
@@ -155,11 +157,11 @@ var rebuildBunnyImageManifest = args.Any(x =>
 
 var app = builder.Build();
 
-if (isImageSyncCommand)
-{
 // Build the state -> rankings index in the background so the first ranking page is not slowed down.
 app.Lifetime.ApplicationStarted.Register(() => _ = Task.Run(() => app.Services.GetRequiredService<StateRankIndexService>().WarmUpAsync()));
 
+if (isImageSyncCommand)
+{
     using var scope = app.Services.CreateScope();
     var runner = scope.ServiceProvider.GetRequiredService<BunnyImageSyncRunner>();
     var exitCode = await runner.RunAsync(rebuildBunnyImageManifest, CancellationToken.None);
@@ -293,6 +295,13 @@ using (var scope = app.Services.CreateScope())
     else
     {
         await context.Database.EnsureCreatedAsync();
+
+        // EnsureCreated never alters an existing local SQLite file, so add tables introduced later.
+        await context.Database.ExecuteSqlRawAsync(
+            "CREATE TABLE IF NOT EXISTS QuizEvents (" +
+            "Id INTEGER PRIMARY KEY AUTOINCREMENT, QuizSlug TEXT NOT NULL, Mode TEXT NOT NULL, " +
+            "EventType TEXT NOT NULL, QuestionKey TEXT NULL, IsCorrect INTEGER NULL, Choice TEXT NULL, CreatedAt TEXT NOT NULL)");
+        try { await context.Database.ExecuteSqlRawAsync("ALTER TABLE QuizEvents ADD COLUMN Choice TEXT NULL"); } catch { /* column already there */ }
     }
 
     // DbSeeder is the source of truth for reference data. Run it after every

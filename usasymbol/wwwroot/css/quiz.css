@@ -1,0 +1,201 @@
+/*
+ * Quiz pages. Uses the same tokens as the data heroes (page-data-hero.css):
+ * cold paper, navy ink, gold accent; Bricolage Grotesque / Newsreader / IBM Plex Mono.
+ */
+
+.qz-hero,
+.qz-card {
+    --qz-paper: #eff3f6;
+    --qz-card: #fff;
+    --qz-ink: #0e1a26;
+    --qz-ink-2: #55697b;
+    --qz-ink-3: #8496a5;
+    --qz-line: #d6dfe7;
+    --qz-line-soft: #e7edf2;
+    --qz-gold: #a8791a;
+    --qz-gold-soft: #efe0be;
+    --qz-gold-tint: #fbf4e4;
+    --qz-display: "Bricolage Grotesque", "Manrope", system-ui, sans-serif;
+    --qz-body: "Newsreader", Georgia, "Times New Roman", serif;
+    --qz-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+/* ---------- hero (same paper strip as the breadcrumb above it) ---------- */
+.qz-hero {
+    background: var(--qz-paper);
+    border-bottom: 1px solid var(--qz-line-soft);
+}
+
+.qz-hero-inner {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding: 22px 16px 30px;
+}
+
+@media (min-width: 640px) {
+    .qz-hero-inner { padding-inline: 28px; }
+}
+
+.qz-eyebrow {
+    margin: 0 0 10px;
+    color: var(--qz-gold);
+    font: 600 11px/1.3 var(--qz-mono);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.qz-title {
+    margin: 0;
+    color: var(--qz-ink);
+    font: 800 clamp(1.9rem, 4.4vw, 3rem)/1.05 var(--qz-display);
+    letter-spacing: -.02em;
+    text-wrap: balance;
+}
+
+.qz-lead {
+    max-width: 44rem;
+    margin: 14px 0 0;
+    color: var(--qz-ink-2);
+    font: 400 1.125rem/1.55 var(--qz-body);
+}
+
+/* ---------- start panel ---------- */
+.qz-card {
+    overflow: hidden;
+    border: 1px solid var(--qz-line);
+    border-radius: 10px;
+    background: var(--qz-card);
+}
+
+.qz-start {
+    padding: 22px 18px 22px;
+}
+
+@media (min-width: 640px) {
+    .qz-start { padding: 28px 28px 28px; }
+}
+
+.qz-start-label {
+    margin: 0 0 12px;
+    padding: 0;
+    color: var(--qz-ink);
+    font: 700 1rem/1.3 var(--qz-display);
+}
+
+.qz-modes {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .qz-modes { grid-template-columns: repeat(3, 1fr); }
+}
+
+.qz-mode {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+.qz-mode input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.qz-mode-body {
+    display: block;
+    height: 100%;
+    padding: 14px 16px 15px;
+    border: 1px solid var(--qz-line);
+    border-radius: 8px;
+    background: var(--qz-card);
+    transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease;
+}
+
+.qz-mode:hover .qz-mode-body { border-color: var(--qz-ink-3); }
+
+.qz-mode input:focus-visible + .qz-mode-body {
+    outline: 2px solid var(--qz-ink);
+    outline-offset: 2px;
+}
+
+.qz-mode input:checked + .qz-mode-body {
+    border-color: var(--qz-ink);
+    background: var(--qz-gold-tint);
+    box-shadow: 0 2px 0 var(--qz-gold);
+}
+
+.qz-mode-name {
+    display: block;
+    color: var(--qz-ink);
+    font: 700 1.05rem/1.2 var(--qz-display);
+}
+
+.qz-mode-desc {
+    display: block;
+    margin-top: 6px;
+    color: var(--qz-ink-2);
+    font: 400 .98rem/1.4 var(--qz-body);
+}
+
+.qz-round {
+    margin: 16px 0 0;
+    color: var(--qz-ink-2);
+    font: 400 1.02rem/1.5 var(--qz-body);
+}
+
+.qz-round strong {
+    color: var(--qz-ink);
+    font-weight: 600;
+}
+
+.qz-meta {
+    margin: 4px 0 0;
+    color: var(--qz-ink-3);
+    font: 500 11px/1.5 var(--qz-mono);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.qz-start-btn {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    padding: 15px 20px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--qz-ink);
+    color: #fff;
+    cursor: pointer;
+    font: 700 1.05rem/1.2 var(--qz-display);
+    letter-spacing: .01em;
+    transition: background-color .16s ease, transform .16s ease;
+}
+
+.qz-start-btn:hover { background: #1c3044; }
+.qz-start-btn:active { transform: translateY(1px); }
+.qz-start-btn:focus-visible { outline: 2px solid var(--qz-gold); outline-offset: 3px; }
+
+/* ---------- game screen tweaks ---------- */
+/* The feedback area reserves its space but only looks like a box once it has text. */
+.qz-feedback {
+    min-height: 56px;
+    margin-top: 20px;
+    padding: 14px 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qz-feedback:has(#feedbackText:not(:empty)) {
+    border-color: var(--qz-line-soft);
+    background: var(--qz-paper);
+}

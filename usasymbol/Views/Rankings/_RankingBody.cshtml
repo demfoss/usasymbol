@@ -124,6 +124,11 @@
                 </div>
             }
 
+            @if (ViewData["HideInlineQuiz"] as bool? != true)
+            {
+                @await Component.InvokeAsync("InlineQuiz", new { mode = "rankings" })
+            }
+
             @if (hasMethodology)
             {
                 <div id="@methodologySectionId" class="scroll-mt-24 content-divider">

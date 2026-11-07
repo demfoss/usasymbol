@@ -1,356 +1,456 @@
-﻿@using System.Text.Json
-@using System.Text.Encodings.Web
-@model List<usasymbol.Models.Quiz>
-
-@inject IImageUrlService Images
-
-@{
-    ViewData["Title"] = "U.S. State Symbol Quizzes | USA Symbol";
-    ViewData["Description"] = "Free quizzes on U.S. state symbols—flags, birds, flowers, seals, mottos, and more. Search by category, play quick rounds, and learn with explanations.";
-
-    var allQuizzes = Model ?? new List<usasymbol.Models.Quiz>();
-
-    var categories = allQuizzes
-        .Select(q => (q.Category ?? "").Trim())
-        .Where(c => !string.IsNullOrWhiteSpace(c))
-        .Distinct(StringComparer.OrdinalIgnoreCase)
-        .OrderBy(c => c)
-        .ToList();
-
-    var difficulties = allQuizzes
-        .Select(q => (q.Difficulty ?? "").Trim())
-        .Where(s => !string.IsNullOrWhiteSpace(s))
-        .Distinct(StringComparer.OrdinalIgnoreCase)
-        .OrderBy(s => s)
-        .ToList();
-
-    int CountByCat(string cat) =>
-        allQuizzes.Count(q => string.Equals((q.Category ?? "").Trim(), cat, StringComparison.OrdinalIgnoreCase));
-
-    var featuredCats = categories
-        .Select(c => new { Name = c, Count = CountByCat(c) })
-        .OrderByDescending(x => x.Count)
-        .ThenBy(x => x.Name)
-        .Take(6)
-        .ToList();
-
-    var faq = new[]
-    {
-        new { q = "Are these quizzes free?", a = "Yes. All quizzes on USA Symbol are free to play on desktop and mobile." },
-        new { q = "Do quizzes include all 50 states?", a = allQuizzes.Count == 0 ? "Quizzes are being added." : $"Not necessarily. There are {allQuizzes.Count} quizzes, with {allQuizzes.Where(q => q.QuestionsPerRound > 0).DefaultIfEmpty().Min(q => q?.QuestionsPerRound ?? 0)} to {allQuizzes.Max(q => q.QuestionsPerRound)} questions per round. Each quiz card shows its exact question count, so you can tell how much of the 50-state set a round covers." },
-        new { q = "Do you show answers and explanations?", a = "Yes—each quiz includes correct answers plus short explanations to help you learn faster." },
-        new { q = "Can I filter by topic like flags or birds?", a = "Yes. Use the category filter to quickly find the topic you want." }
-    };
-
-    // --- JSON-LD (SAFE): use dictionaries to avoid @type/@context issues ---
-    var breadcrumb = new Dictionary<string, object>
-    {
-        ["@context"] = "https://schema.org",
-        ["@type"] = "BreadcrumbList",
-        ["itemListElement"] = new object[]
-        {
-            new Dictionary<string, object> { ["@type"]="ListItem", ["position"]=1, ["name"]="Home", ["item"]="https://usasymbol.com/" },
-            new Dictionary<string, object> { ["@type"]="ListItem", ["position"]=2, ["name"]="Quizzes", ["item"]="https://usasymbol.com/quizzes" }
-        }
-    };
-
-    var itemList = new Dictionary<string, object>
-    {
-        ["@context"] = "https://schema.org",
-        ["@type"] = "ItemList",
-        ["name"] = "U.S. State Symbol Quizzes",
-        ["itemListElement"] = allQuizzes.Select((q, idx) => (object)new Dictionary<string, object>
-        {
-            ["@type"] = "ListItem",
-            ["position"] = idx + 1,
-            ["url"] = $"https://usasymbol.com/quizzes/{q.Slug}",
-            ["name"] = (q.Seo?.Title ?? q.Title)
-        }).ToList()
-    };
-
-    var faqJson = new Dictionary<string, object>
-    {
-        ["@context"] = "https://schema.org",
-        ["@type"] = "FAQPage",
-        ["mainEntity"] = faq.Select(f => (object)new Dictionary<string, object>
-        {
-            ["@type"] = "Question",
-            ["name"] = f.q,
-            ["acceptedAnswer"] = new Dictionary<string, object>
-            {
-                ["@type"] = "Answer",
-                ["text"] = f.a
-            }
-        }).ToList()
-    };
-
-    var jsonLd = new object[] { breadcrumb, itemList, faqJson };
-
-    var jsonLdString = JsonSerializer.Serialize(jsonLd, new JsonSerializerOptions
-    {
-        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-        WriteIndented = false
-    });
-}
-
-<section class="bg-gradient-to-b from-blue-50 to-white">
-    <div class="max-w-7xl mx-auto px-4 py-14">
-
-        <!-- Hero -->
-        <div class="text-center">
-            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">U.S. State Symbol Quizzes</h1>
-            <p class="mt-4 text-lg text-gray-700 max-w-2xl mx-auto">
-                Pick a category, play a quick round, and learn with instant explanations.
-            </p>
-            <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
-                <a href="#all-quizzes"
-                   class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-white font-semibold hover:bg-blue-700 transition">
-                    Browse all quizzes
-                </a>
-                <a href="/symbols"
-                   class="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 font-semibold text-blue-700 border border-blue-200 hover:border-blue-400 hover:shadow-sm transition">
-                    Explore state symbols
-                </a>
-            </div>
-        </div>
-
-        <article class="page-shell-2col">
-        <div class="article-content min-w-0">
-        <!-- Featured categories -->
-        @if (featuredCats.Any())
-        {
-            <div class="mt-12">
-                <h2 class="text-2xl font-bold">Browse by category</h2>
-
-                <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    @foreach (var c in featuredCats)
-                    {
-                        <button type="button"
-                                class="catTile text-left rounded-2xl border border-gray-200 bg-white p-6 hover:shadow-lg hover:border-blue-600 transition"
-                                data-category="@c.Name">
-                            <div class="flex items-start justify-between gap-3">
-                                <div>
-                                    <div class="text-lg font-bold">@c.Name</div>
-                                    <div class="mt-1 text-sm text-gray-600">@c.Count quizzes</div>
-                                </div>
-                                <span class="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-100">
-                                    Filter
-                                </span>
-                            </div>
-                            <p class="mt-3 text-sm text-gray-700">
-                                Practice @c.Name.ToLower() quizzes with explanations.
-                            </p>
-                        </button>
-                    }
-                </div>
-            </div>
-        }
-
-        <!-- Controls -->
-        <div id="all-quizzes" class="mt-14">
-            <h2 class="text-2xl font-bold">All quizzes</h2>
-
-            <div class="mt-5 grid lg:grid-cols-12 gap-4">
-                <div class="lg:col-span-5">
-                    <label class="block text-sm font-semibold text-gray-700">Search</label>
-                    <input id="quizSearch" type="text"
-                           class="mt-2 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                           placeholder="Search flags, birds, flowers, seals…" />
-                </div>
-
-                <div class="lg:col-span-4">
-                    <label class="block text-sm font-semibold text-gray-700">Category</label>
-                    <select id="quizCategory"
-                            class="mt-2 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500">
-                        <option value="">All categories</option>
-                        @foreach (var c in categories)
-                        {
-                            <option value="@c">@c</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="lg:col-span-3">
-                    <label class="block text-sm font-semibold text-gray-700">Difficulty</label>
-                    <select id="quizDifficulty"
-                            class="mt-2 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500">
-                        <option value="">All</option>
-                        @foreach (var d in difficulties)
-                        {
-                            <option value="@d">@d</option>
-                        }
-                    </select>
-                </div>
-            </div>
-
-            <!-- Grid -->
-            <div class="mt-8 grid md:grid-cols-2 gap-6" id="quizGrid">
-                @foreach (var quiz in allQuizzes)
-                {
-                    var previewImages = (quiz.Questions ?? new List<usasymbol.Models.QuizQuestion>())
-                    .Select(q => (q.ImageUrl ?? "").Trim())
-                    .Where(u => !string.IsNullOrWhiteSpace(u))
-                    .Take(4)
-                    .ToList();
-
-                    <a href="/quizzes/@quiz.Slug"
-                       class="quizCard group block border border-gray-200 bg-white rounded-2xl p-6 hover:shadow-xl hover:border-blue-600 transition"
-                       data-title="@((quiz.Title ?? "").ToLowerInvariant())"
-                       data-desc="@((quiz.Description ?? "").ToLowerInvariant())"
-                       data-category="@((quiz.Category ?? "").Trim())"
-                       data-difficulty="@((quiz.Difficulty ?? "").Trim())">
-
-                        <div class="flex items-start justify-between gap-3">
-                            <h3 class="font-bold text-xl group-hover:text-blue-700">@quiz.Title</h3>
-
-                            <div class="flex flex-col items-end gap-2">
-                                @if (!string.IsNullOrWhiteSpace(quiz.Category))
-                                {
-                                    <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-100">
-                                        @quiz.Category
-                                    </span>
-                                }
-                                <span class="bg-gray-100 px-3 py-1 rounded-lg text-sm text-gray-700 font-semibold">
-                                    @quiz.Difficulty
-                                </span>
-                            </div>
-                        </div>
-
-                        <p class="text-gray-600 mt-2">@quiz.Description</p>
-
-                        @if (previewImages.Any())
-                        {
-                            <div class="mt-4 flex gap-2">
-                                @foreach (var img in previewImages)
-                                {
-                                    var previewAlt = GetPreviewImageAlt(img, quiz.Title ?? "Quiz preview");
-                                    <div class="w-14 h-10 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 shrink-0">
-                                        <img src="@Images.Thumb(img)" alt="@previewAlt" loading="lazy" class="w-full h-full object-cover" />
-                                    </div>
-                                }
-                            </div>
-                        }
-
-                        <div class="flex justify-between mt-6 text-sm text-gray-500">
-                            <span>@(quiz.Questions?.Count ?? 0) questions</span>
-                            <span>@quiz.EstimatedTime</span>
-                        </div>
-                    </a>
-                }
-            </div>
-
-            <p class="mt-6 text-sm text-gray-500" id="quizCount"></p>
-        </div>
-
-        <!-- FAQ -->
-        <div class="mt-14">
-            <h2 class="text-2xl font-bold">FAQ</h2>
-            <div class="mt-5 grid md:grid-cols-2 gap-6">
-                @foreach (var f in faq)
-                {
-                    <div class="rounded-2xl border border-gray-200 bg-white p-6">
-                        <h3 class="font-bold text-lg">@f.q</h3>
-                        <p class="mt-2 text-gray-700">@f.a</p>
-                    </div>
-                }
-            </div>
-        </div>
-        </div>
-
-        <aside class="article-sidebar hidden lg:block mt-12" aria-label="Explore more">
-            <div class="sidebar-content">
-                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
-            </div>
-        </aside>
-        </article>
-
-    </div>
-</section>
-
-<script type="application/ld+json">
-    @Html.Raw(jsonLdString)
-</script>
-
-<script>
-    (function () {
-        const cards = Array.from(document.querySelectorAll('.quizCard'));
-        const search = document.getElementById('quizSearch');
-        const category = document.getElementById('quizCategory');
-        const difficulty = document.getElementById('quizDifficulty');
-        const count = document.getElementById('quizCount');
-        const catTiles = Array.from(document.querySelectorAll('.catTile'));
-
-        function matches(card, q, cat, diff) {
-            const title = card.dataset.title || "";
-            const desc = card.dataset.desc || "";
-            const c = (card.dataset.category || "");
-            const d = (card.dataset.difficulty || "");
-
-            const okQuery = !q || title.includes(q) || desc.includes(q);
-            const okCat = !cat || c.toLowerCase() === cat.toLowerCase();
-            const okDiff = !diff || d.toLowerCase() === diff.toLowerCase();
-
-            return okQuery && okCat && okDiff;
-        }
-
-        function apply() {
-            const q = (search.value || "").trim().toLowerCase();
-            const cat = (category.value || "").trim();
-            const diff = (difficulty.value || "").trim();
-
-            let visible = 0;
-            cards.forEach(card => {
-                const show = matches(card, q, cat, diff);
-                card.style.display = show ? "" : "none";
-                if (show) visible++;
-            });
-
-            if (count) count.textContent = visible + " quizzes";
-        }
-
-        if (search) search.addEventListener('input', apply);
-        if (category) category.addEventListener('change', apply);
-        if (difficulty) difficulty.addEventListener('change', apply);
-
-        catTiles.forEach(tile => {
-            tile.addEventListener('click', () => {
-                const val = tile.dataset.category || "";
-                category.value = val;
-                document.getElementById('all-quizzes')?.scrollIntoView({ behavior: 'smooth' });
-                apply();
-            });
-        });
-
-        apply();
-    })();
-</script>
-
-@functions {
-    string GetPreviewImageAlt(string imagePath, string quizTitle)
-    {
-        var fileName = System.IO.Path.GetFileNameWithoutExtension(imagePath ?? string.Empty)
-            .Replace('-', ' ')
-            .Replace('_', ' ')
-            .Trim();
-
-        if (string.IsNullOrWhiteSpace(fileName))
-        {
-            return quizTitle;
-        }
-
-        var textInfo = System.Globalization.CultureInfo.CurrentCulture.TextInfo;
-        var name = textInfo.ToTitleCase(fileName.ToLowerInvariant());
-
-        if ((imagePath ?? string.Empty).Contains("/quiz/shape/", StringComparison.OrdinalIgnoreCase))
-        {
-            return $"{name} state outline";
-        }
-
-        if ((imagePath ?? string.Empty).Contains("/quiz/flags/", StringComparison.OrdinalIgnoreCase))
-        {
-            return $"{name} state flag";
-        }
-
-        return $"{quizTitle}: {name}";
-    }
-}
+﻿@using System.Text.Json
+@using System.Text.Encodings.Web
+@model List<usasymbol.Models.Quiz>
+
+@inject IImageUrlService Images
+
+@{
+    ViewData["Title"] = "50 States Quizzes: Capitals, Birds, Flags & Symbols | USA Symbol";
+    ViewData["Description"] = "Free 50 states quizzes: capitals, birds, flags, mottos, nicknames and the symbols of every state. Quick rounds with instant explanations.";
+
+    var allQuizzes = Model ?? new List<usasymbol.Models.Quiz>();
+
+    var categories = allQuizzes
+        .Select(q => (q.Category ?? "").Trim())
+        .Where(c => !string.IsNullOrWhiteSpace(c))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(c => c)
+        .ToList();
+
+    var difficulties = allQuizzes
+        .Select(q => (q.Difficulty ?? "").Trim())
+        .Where(s => !string.IsNullOrWhiteSpace(s))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(s => s)
+        .ToList();
+
+    int CountByCat(string cat) =>
+        allQuizzes.Count(q => string.Equals((q.Category ?? "").Trim(), cat, StringComparison.OrdinalIgnoreCase));
+
+    var featuredCats = categories
+        .Select(c => new { Name = c, Count = CountByCat(c) })
+        .OrderByDescending(x => x.Count)
+        .ThenBy(x => x.Name)
+        .Take(6)
+        .ToList();
+
+    var faq = new[]
+    {
+        new { q = "Are these quizzes free?", a = "Yes. All quizzes on USA Symbol are free to play on desktop and mobile." },
+        new { q = "How many quizzes are there?", a = allQuizzes.Count == 0 ? "Quizzes are being added." : $"There are {allQuizzes.Count} quizzes: {allQuizzes.Count(q => !q.Slug.EndsWith("-state-symbols-quiz")) } topic quizzes such as capitals, birds and flags, plus one symbols quiz for each of the 50 states." },
+        new { q = "Is there a quiz for my state?", a = "Yes. Every state has its own symbols quiz. Pick it from the Quiz by state map on this page." },
+        new { q = "Which bird did the most states choose?", a = "The Northern Cardinal, chosen by seven states. The Western Meadowlark follows with six, and the Northern Mockingbird with five." },
+        new { q = "Do you show answers and explanations?", a = "Yes. Each answer comes with a short explanation and a link to the page about that symbol." }
+    };
+
+    // --- JSON-LD (SAFE): use dictionaries to avoid @type/@context issues ---
+    var breadcrumb = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "BreadcrumbList",
+        ["itemListElement"] = new object[]
+        {
+            new Dictionary<string, object> { ["@type"]="ListItem", ["position"]=1, ["name"]="Home", ["item"]="https://usasymbol.com/" },
+            new Dictionary<string, object> { ["@type"]="ListItem", ["position"]=2, ["name"]="Quizzes", ["item"]="https://usasymbol.com/quizzes" }
+        }
+    };
+
+    var itemList = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "ItemList",
+        ["name"] = "U.S. State Symbol Quizzes",
+        ["itemListElement"] = allQuizzes.Select((q, idx) => (object)new Dictionary<string, object>
+        {
+            ["@type"] = "ListItem",
+            ["position"] = idx + 1,
+            ["url"] = $"https://usasymbol.com/quizzes/{q.Slug}",
+            ["name"] = (q.Seo?.Title ?? q.Title)
+        }).ToList()
+    };
+
+    var faqJson = new Dictionary<string, object>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "FAQPage",
+        ["mainEntity"] = faq.Select(f => (object)new Dictionary<string, object>
+        {
+            ["@type"] = "Question",
+            ["name"] = f.q,
+            ["acceptedAnswer"] = new Dictionary<string, object>
+            {
+                ["@type"] = "Answer",
+                ["text"] = f.a
+            }
+        }).ToList()
+    };
+
+    var jsonLd = new object[] { breadcrumb, itemList, faqJson };
+
+    var jsonLdString = JsonSerializer.Serialize(jsonLd, new JsonSerializerOptions
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        WriteIndented = false
+    });
+
+    var isStateQuiz = new Func<usasymbol.Models.Quiz, bool>(q => q.Slug.EndsWith("-state-symbols-quiz", StringComparison.OrdinalIgnoreCase));
+    var topicQuizzes = allQuizzes.Where(q => !isStateQuiz(q)).OrderBy(q => q.Title).ToList();
+    var stateQuizzes = allQuizzes.Where(isStateQuiz).OrderBy(q => q.Title).ToList();
+    var dailySlug = QuizSvc.GetDailyQuizSlug();
+    var dayQuiz = allQuizzes.FirstOrDefault(q => q.Slug == dailySlug);
+    var pop = ViewData["Popularity"] as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var heroQ = dayQuiz?.Questions?
+        .Where(q => q.Choices.Count >= 3)
+        .OrderBy(q => string.IsNullOrWhiteSpace(q.ImageUrl) ? 0 : 1)
+        .ThenBy(_ => Random.Shared.Next())
+        .FirstOrDefault();
+    var heroJson = heroQ == null ? "null" : JsonSerializer.Serialize(new { q = heroQ.Question, c = heroQ.Choices, a = heroQ.CorrectAnswer, e = heroQ.Explanation }).Replace("</", "<\\/");
+    topicQuizzes = topicQuizzes.OrderByDescending(q => pop.TryGetValue(q.Slug, out var pv) ? pv : 0).ThenBy(q => q.Title).ToList();
+    var stateSlugs = stateQuizzes.Select(q => q.Slug).ToHashSet();
+    var tileDefs = TileDefs
+        .Select(d => new { d.Key, d.Label, d.Icon, Count = topicQuizzes.Count(q => GroupOf(q.Slug) == d.Key) })
+        .Where(d => d.Count > 0)
+        .ToList();
+}
+
+@inject usasymbol.Services.QuizService QuizSvc
+
+@section Styles {
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/quiz-hub.css" asp-append-version="true">
+}
+
+<nav class="pdh-breadcrumb-shell" aria-label="Breadcrumb">
+    <div>
+        <ol class="pdh-breadcrumbs">
+            <li><a href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></li>
+            <li aria-current="page"><span>Quizzes</span></li>
+        </ol>
+    </div>
+</nav>
+
+<div class="qh">
+<header class="qh-hero">
+    <div class="qh-hero-inner">
+        <h1 class="qh-title">50 States Quizzes</h1>
+        <p class="qh-lead">Quick rounds on capitals, birds, flags, mottos and the symbols of every state. Every answer comes with a short explanation and a link to learn more.</p>
+
+        @if (heroQ != null && dayQuiz != null)
+        {
+            <div class="qh-game" id="qhGame" data-slug="@dayQuiz.Slug" data-today="@DateTime.UtcNow.ToString("yyyy-MM-dd")">
+                <div class="qh-game-top">
+                    <span class="qh-eyebrow">Quiz of the day &middot; @DateTime.UtcNow.ToString("MMM d", System.Globalization.CultureInfo.InvariantCulture)</span>
+                    <span class="qh-streak" id="qhStreak" hidden></span>
+                </div>
+                <h2 class="qh-game-q" id="qhQ"></h2>
+                <div class="qh-game-a" id="qhA"></div>
+                <div class="qh-game-r" id="qhR" hidden></div>
+            </div>
+        }
+    </div>
+</header>
+
+<article class="page-shell-2col max-w-[1180px] mx-auto px-4 sm:px-7">
+<div class="article-content min-w-0 pb-14">
+
+
+    <div class="qh-progress mt-8" id="qhProgress" hidden></div>
+
+    <section class="qh-section" id="all-quizzes">
+        <h2 class="qh-h2">Choose a topic</h2>
+        <p class="qh-sub">Tap a topic to filter. Tap it again to see everything.</p>
+        <div class="qh-tiles" id="qhTiles">
+            @foreach (var d in tileDefs)
+            {
+                var tileQuiz = topicQuizzes.FirstOrDefault(q => GroupOf(q.Slug) == d.Key);
+                var tileImg = tileQuiz?.Questions?.Select(x => (x.ImageUrl ?? "").Trim()).FirstOrDefault(u => u.Length > 0);
+                <button type="button" class="qh-tile" data-group="@d.Key" aria-pressed="false">
+                    @if (!string.IsNullOrEmpty(tileImg))
+                    {
+                        <img class="qh-tile-img" src="@Images.Thumb(tileImg)" alt="" loading="lazy" decoding="async">
+                    }
+                    else
+                    {
+                        <i class="@d.Icon" aria-hidden="true"></i>
+                    }
+                    <div><b>@d.Label</b><span>@d.Count @(d.Count == 1 ? "quiz" : "quizzes")</span></div>
+                </button>
+            }
+        </div>
+
+        <div class="qh-sort">
+            <label for="qhSort">Sort by</label>
+            <select id="qhSort">
+                <option value="pop">Popular</option>
+                <option value="easy">Easiest first</option>
+                <option value="hard">Hardest first</option>
+                <option value="az">A to Z</option>
+            </select>
+        </div>
+
+        <div class="qh-grid mt-3" id="qhGrid">
+            @foreach (var quiz in topicQuizzes)
+            {
+                var group = GroupOf(quiz.Slug);
+                var def = TileDefs.FirstOrDefault(x => x.Key == group);
+                var covers = (quiz.Questions ?? new List<usasymbol.Models.QuizQuestion>())
+                    .Select(q => (q.ImageUrl ?? "").Trim())
+                    .Where(u => !string.IsNullOrWhiteSpace(u))
+                    .Distinct()
+                    .Take(4)
+                    .ToList();
+                var dots = DifficultyDots(quiz.Difficulty);
+
+                <a href="/quizzes/@quiz.Slug" class="qh-card" data-group="@group" data-slug="@quiz.Slug" data-title="@(quiz.Seo?.Title ?? quiz.Title)" data-pop="@(pop.TryGetValue(quiz.Slug, out var pc) ? pc : 0)" data-diff="@(DifficultyLevel(quiz.Difficulty))" data-n="@(quiz.Questions?.Count ?? 0)">
+                    <div class="qh-cover" aria-hidden="true">
+                        @if (covers.Any())
+                        {
+                            foreach (var img in covers)
+                            {
+                                <img src="@Images.Thumb(img)" alt="" loading="lazy" decoding="async">
+                            }
+                        }
+                        else
+                        {
+                            <div class="qh-cover-icon"><i class="@(def?.Icon ?? "fa-solid fa-circle-question")"></i></div>
+                        }
+                    </div>
+                    <div class="qh-card-body">
+                        <h3>@(quiz.Seo?.Title ?? quiz.Title)</h3>
+                        <p>@quiz.Description</p>
+                        <div class="qh-meta">
+                            <span>@(quiz.Questions?.Count ?? 0) questions &middot; @NormTime(quiz.EstimatedTime)</span>
+                            <span class="qh-dots" title="@quiz.Difficulty" aria-label="Difficulty: @quiz.Difficulty">@Html.Raw(dots)</span>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </section>
+
+    @if (stateQuizzes.Any())
+    {
+        <section class="qh-section" id="by-state">
+            <h2 class="qh-h2">Quiz by state</h2>
+            <p class="qh-sub">All the official symbols of one state in a single quiz.</p>
+            <div class="qh-usmap" role="list">
+                @foreach (var t in StateTiles)
+                {
+                    var stName = usasymbol.Services.StateLinks.AbbrToName[t.Abbr];
+                    var stSlug = usasymbol.Services.StateSymbolQuizBuilder.SlugFor(stName);
+                    if (stateSlugs.Contains(stSlug))
+                    {
+                        <a role="listitem" class="qh-st" href="/quizzes/@stSlug" title="@stName symbols quiz" aria-label="@stName symbols quiz" style="grid-row:@(t.Row + 1);grid-column:@(t.Col + 1)">@t.Abbr</a>
+                    }
+                }
+            </div>
+        </section>
+    }
+
+    <section class="qh-section">
+        <h2 class="qh-h2">About these quizzes</h2>
+        <p class="qh-sub" style="max-width:44rem">These 50 states quizzes cover the things people actually search for: state capitals, state birds, flags, mottos, nicknames and abbreviations. Rounds are short, answers are shuffled every time, and each question links to the page where you can learn more about that state symbol.</p>
+        <p class="qh-sub" style="max-width:44rem">Looking for one state? Each of the 50 states has its own symbols quiz on the map above. Teachers can use them as a quick warm-up, and students can play at their own pace in Practice mode.</p>
+    </section>
+
+    <section class="qh-section">
+        <h2 class="qh-h2">FAQ</h2>
+        <div class="qh-faq mt-4">
+            @foreach (var f in faq)
+            {
+                <details>
+                    <summary>@f.q</summary>
+                    <p>@f.a</p>
+                </details>
+            }
+        </div>
+    </section>
+</div>
+
+<aside class="article-sidebar hidden lg:block mt-8 pb-14" aria-label="Explore more">
+    <div class="sidebar-content qh-side">
+        <div class="qh-eyebrow">Study first</div>
+        <a href="/symbols"><b>State symbols</b><span>Birds, flowers, trees and more, for all 50 states.</span></a>
+        <a href="/rankings"><b>State rankings</b><span>Biggest, oldest, richest. The facts behind the trivia.</span></a>
+        <a href="/collections"><b>Collections</b><span>Themed lists, like every state that shares the same bird.</span></a>
+    </div>
+</aside>
+</article>
+</div>
+
+<script type="application/ld+json">
+    @Html.Raw(jsonLdString)
+</script>
+
+<script>
+    (function () {
+        // everything here reads this browser's localStorage only; nothing is sent anywhere
+        function load(key) { try { return JSON.parse(localStorage.getItem(key) || "null"); } catch (e) { return null; } }
+
+        // ---- daily streak + hero question ----
+        var game = document.getElementById('qhGame');
+        if (game) {
+            var today = game.dataset.today, slug = game.dataset.slug;
+            var streakBox = document.getElementById('qhStreak');
+            var d = load('usas.quiz.daily');
+            var doneToday = false;
+            if (d && streakBox) {
+                var y = new Date(today + 'T00:00:00Z'); y.setUTCDate(y.getUTCDate() - 1);
+                if (d.last === today) { doneToday = true; streakBox.textContent = '\u2713 Done today \u00B7 ' + d.streak + '-day streak'; streakBox.hidden = false; }
+                else if (d.last === y.toISOString().slice(0, 10) && d.streak > 0) { streakBox.textContent = d.streak + '-day streak. Play today to keep it.'; streakBox.hidden = false; }
+            }
+
+            var Q = @Html.Raw(heroJson);
+            if (Q) {
+                var qEl = document.getElementById('qhQ'), aEl = document.getElementById('qhA'), rEl = document.getElementById('qhR');
+                qEl.textContent = Q.q;
+                var choices = Q.c.slice();
+                for (var i = choices.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = choices[i]; choices[i] = choices[j]; choices[j] = t; }
+                var shown = choices.slice(0, 4);
+                if (shown.indexOf(Q.a) < 0) { shown[shown.length - 1] = Q.a; }
+                shown.forEach(function (c, n) {
+                    var b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'qh-opt';
+                    b.innerHTML = '<kbd>' + (n + 1) + '</kbd><span></span>';
+                    b.querySelector('span').textContent = c;
+                    b.addEventListener('click', function () {
+                        var ok = c === Q.a;
+                        Array.prototype.forEach.call(aEl.children, function (x) {
+                            x.disabled = true;
+                            var txt = x.querySelector('span').textContent;
+                            if (txt === Q.a) x.classList.add('is-ok'); else if (x === b) x.classList.add('is-bad'); else x.classList.add('is-dim');
+                        });
+                        rEl.innerHTML = '<b class="' + (ok ? 'is-ok' : 'is-bad') + '">' + (ok ? 'Correct' : 'Not quite') + '</b> <span></span> <a class="qh-go" href="/quizzes/' + slug + '?daily=1">' + (doneToday ? 'Play today\u2019s 5 again' : 'Play today\u2019s 5 questions') + ' &rarr;</a>';
+                        rEl.querySelector('span').textContent = Q.e || '';
+                        rEl.hidden = false;
+                    });
+                    aEl.appendChild(b);
+                });
+            }
+        }
+
+        // ---- progress from this browser ----
+        var best = load('usas.quiz.best') || {};
+        var cardsAll = Array.prototype.slice.call(document.querySelectorAll('#qhGrid .qh-card'));
+        var played = cardsAll.filter(function (c) { return best[c.dataset.slug]; });
+        var box = document.getElementById('qhProgress');
+        if (box && played.length) {
+            var top = played.slice().sort(function (a, b) {
+                var A = best[a.dataset.slug], B = best[b.dataset.slug];
+                return (B.s / B.n) - (A.s / A.n);
+            })[0];
+            var tb = best[top.dataset.slug];
+            box.innerHTML = '<span class="qh-eyebrow">Your progress</span> Played <b></b> of ' + cardsAll.length + ' topic quizzes. Best: <b></b>.';
+            var bs = box.querySelectorAll('b');
+            bs[0].textContent = played.length;
+            bs[1].textContent = top.dataset.title + ' ' + tb.s + '/' + tb.n;
+            box.hidden = false;
+            played.forEach(function (c) {
+                var m = c.querySelector('.qh-meta span');
+                if (m) m.textContent += '  \u00B7  best ' + best[c.dataset.slug].s + '/' + best[c.dataset.slug].n;
+            });
+        }
+
+        // ---- sorting ----
+        var sort = document.getElementById('qhSort'), grid = document.getElementById('qhGrid');
+        if (sort && grid) {
+            sort.addEventListener('change', function () {
+                var by = sort.value;
+                cardsAll.slice().sort(function (a, b) {
+                    if (by === 'easy') return a.dataset.diff - b.dataset.diff || a.dataset.title.localeCompare(b.dataset.title);
+                    if (by === 'hard') return b.dataset.diff - a.dataset.diff || a.dataset.title.localeCompare(b.dataset.title);
+                    if (by === 'az') return a.dataset.title.localeCompare(b.dataset.title);
+                    return b.dataset.pop - a.dataset.pop || a.dataset.title.localeCompare(b.dataset.title);
+                }).forEach(function (c) { grid.appendChild(c); });
+            });
+        }
+    })();
+    (function () {
+        var tiles = Array.prototype.slice.call(document.querySelectorAll('#qhTiles .qh-tile'));
+        var cards = Array.prototype.slice.call(document.querySelectorAll('#qhGrid .qh-card'));
+        var active = '';
+        function apply() {
+            cards.forEach(function (c) { c.style.display = !active || c.dataset.group === active ? '' : 'none'; });
+            tiles.forEach(function (t) {
+                var on = t.dataset.group === active;
+                t.classList.toggle('is-on', on);
+                t.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+        }
+        tiles.forEach(function (t) {
+            t.addEventListener('click', function () {
+                active = active === t.dataset.group ? '' : t.dataset.group;
+                apply();
+            });
+        });
+    })();
+</script>
+
+@functions {
+    private record TileDef(string Key, string Label, string Icon);
+
+    private static readonly TileDef[] TileDefs =
+    {
+        new("birds", "Birds", "fa-solid fa-dove"),
+        new("flags", "Flags", "fa-solid fa-flag"),
+        new("capitals", "Capitals", "fa-solid fa-landmark"),
+        new("abbreviations", "Abbreviations", "fa-solid fa-spell-check"),
+        new("mottos", "Mottos", "fa-solid fa-scroll"),
+        new("nicknames", "Nicknames", "fa-solid fa-signature"),
+        new("seals", "Seals", "fa-solid fa-stamp"),
+        new("shapes", "Shapes", "fa-solid fa-map"),
+        new("plates", "License plates", "fa-solid fa-car-side"),
+        new("america", "America trivia", "fa-solid fa-flag-usa"),
+    };
+
+    private static string GroupOf(string slug)
+    {
+        var s = (slug ?? "").ToLowerInvariant();
+        if (s.Contains("bird")) return "birds";
+        if (s.Contains("flag")) return "flags";
+        if (s.Contains("capital")) return "capitals";
+        if (s.Contains("abbreviation")) return "abbreviations";
+        if (s.Contains("motto")) return "mottos";
+        if (s.Contains("nickname")) return "nicknames";
+        if (s.Contains("seal")) return "seals";
+        if (s.Contains("shape")) return "shapes";
+        if (s.Contains("license-plate")) return "plates";
+        return "america";
+    }
+
+    private record StateTile(string Abbr, int Row, int Col);
+
+    // NPR-style 11-column tile grid of the 50 states
+    private static readonly StateTile[] StateTiles =
+    {
+        new("AK",0,0), new("ME",0,10),
+        new("WI",1,5), new("VT",1,9), new("NH",1,10),
+        new("WA",2,0), new("ID",2,1), new("MT",2,2), new("ND",2,3), new("MN",2,4), new("IL",2,5), new("MI",2,6), new("NY",2,8), new("MA",2,9),
+        new("OR",3,0), new("NV",3,1), new("WY",3,2), new("SD",3,3), new("IA",3,4), new("IN",3,5), new("OH",3,6), new("PA",3,7), new("NJ",3,8), new("CT",3,9), new("RI",3,10),
+        new("CA",4,0), new("UT",4,1), new("CO",4,2), new("NE",4,3), new("MO",4,4), new("KY",4,5), new("WV",4,6), new("VA",4,7), new("MD",4,8), new("DE",4,9),
+        new("AZ",5,1), new("NM",5,2), new("KS",5,3), new("AR",5,4), new("TN",5,5), new("NC",5,6), new("SC",5,7),
+        new("OK",6,3), new("LA",6,4), new("MS",6,5), new("AL",6,6), new("GA",6,7),
+        new("HI",7,0), new("TX",7,3), new("FL",7,8),
+    };
+
+    private static int DifficultyLevel(string? difficulty) =>
+        (difficulty ?? "").Trim().ToLowerInvariant() switch { "easy" => 1, "hard" => 3, _ => 2 };
+
+    private static string DifficultyDots(string? difficulty)
+    {
+        var n = (difficulty ?? "").Trim().ToLowerInvariant() switch { "easy" => 1, "hard" => 3, _ => 2 };
+        return string.Concat(Enumerable.Range(1, 3).Select(i => i <= n ? "\u25CF" : "<em>\u25CF</em>"));
+    }
+
+    private static string NormTime(string? raw)
+    {
+        var nums = System.Text.RegularExpressions.Regex.Matches(raw ?? "", @"\d+").Select(m => m.Value).ToList();
+        if (nums.Count >= 2) return nums[0] + "\u2013" + nums[1] + " min";
+        if (nums.Count == 1) return nums[0] + " min";
+        return string.IsNullOrWhiteSpace(raw) ? "5 min" : raw!;
+    }
+}

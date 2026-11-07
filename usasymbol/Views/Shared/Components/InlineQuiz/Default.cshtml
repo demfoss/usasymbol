@@ -1,0 +1,181 @@
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@model USASymbol.Views.Shared.Components.InlineQuizViewModel
+
+@{
+    var pool = Model.Pool.Select(q => new
+    {
+        q = q.Question,
+        c = q.Choices,
+        a = q.CorrectAnswer,
+        e = q.Explanation
+    });
+    var poolJson = JsonSerializer.Serialize(pool, new JsonSerializerOptions
+    {
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    }).Replace("</", "<\\/");
+}
+
+<section id="@Model.Id" class="not-prose my-10 clear-both" data-nosnippet aria-label="@Model.Title">
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+        <div class="flex items-start gap-4 border-b border-slate-100 bg-gradient-to-r from-amber-50 via-white to-white px-5 py-5 sm:px-7">
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-amber-300">
+                <i class="fa-solid fa-circle-question text-lg" aria-hidden="true"></i>
+            </span>
+            <div class="min-w-0">
+                <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-amber-600">Quick quiz</div>
+                <h2 class="mt-0.5 text-xl font-bold leading-snug text-slate-900 sm:text-2xl">@Model.Title</h2>
+                <p class="mt-1 text-sm leading-6 text-slate-600">@Model.Intro</p>
+            </div>
+        </div>
+
+        <div class="px-5 py-6 sm:px-7">
+            @* ---- question stage ---- *@
+            <div data-iq="stage">
+                <div class="mb-4 flex items-center justify-between text-xs font-semibold text-slate-500">
+                    <span>Question <span data-iq="num">1</span> of @Model.PerRound</span>
+                    <span>Score <span data-iq="score" class="text-slate-900">0</span></span>
+                </div>
+                <div class="mb-5 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                    <div data-iq="bar" class="h-full rounded-full bg-amber-500 transition-all duration-300" style="width:0%"></div>
+                </div>
+
+                <h3 data-iq="question" class="mb-4 text-lg font-semibold leading-7 text-slate-900"></h3>
+                <div data-iq="answers" class="grid grid-cols-1 gap-3 sm:grid-cols-2"></div>
+
+                <div data-iq="feedback" class="mt-4 hidden rounded-xl px-4 py-3 text-sm leading-6" role="status" aria-live="polite"></div>
+
+                <button type="button" data-iq="next"
+                        class="mt-4 hidden w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 sm:w-auto sm:px-8">
+                    Next question <i class="fa-solid fa-arrow-right ml-1 text-xs" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            @* ---- result ---- *@
+            <div data-iq="result" class="hidden text-center">
+                <div class="text-5xl" data-iq="emoji" aria-hidden="true"></div>
+                <div class="mt-2 text-3xl font-bold text-slate-900"><span data-iq="final">0</span> / @Model.PerRound</div>
+                <p data-iq="verdict" class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600"></p>
+                <div class="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                    <button type="button" data-iq="again"
+                            class="w-full rounded-xl bg-amber-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-amber-400 sm:w-auto">
+                        <i class="fa-solid fa-rotate-right mr-1 text-xs" aria-hidden="true"></i> Play again with new questions
+                    </button>
+                    <a href="@Model.FullQuizUrl"
+                       class="w-full rounded-xl border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-800 no-underline transition hover:bg-slate-50 sm:w-auto">
+                        @Model.FullQuizLabel
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.More.Any())
+        {
+            <div class="border-t border-slate-100 bg-slate-50 px-5 py-5 sm:px-7">
+                <div class="mb-3 flex items-center justify-between gap-3">
+                    <div class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">More quizzes</div>
+                    <a href="/quizzes" class="text-xs font-semibold text-blue-700 no-underline hover:underline">All quizzes <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i></a>
+                </div>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    @foreach (var q in Model.More)
+                    {
+                        <a href="/quizzes/@q.Slug"
+                           class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 no-underline transition hover:border-slate-300 hover:shadow-sm">
+                            <span class="min-w-0 text-sm font-semibold leading-snug text-slate-800">@q.Title</span>
+                            <span class="shrink-0 text-xs font-medium text-slate-400">@q.Difficulty</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <script>
+    (function () {
+        var root = document.getElementById('@Model.Id');
+        if (!root) return;
+        var POOL = @Html.Raw(poolJson);
+        var PER = @Model.PerRound;
+        var $ = function (n) { return root.querySelector('[data-iq="' + n + '"]'); };
+        var stage = $('stage'), result = $('result'), answers = $('answers'), feedback = $('feedback'),
+            nextBtn = $('next'), qEl = $('question'), numEl = $('num'), scoreEl = $('score'), bar = $('bar');
+        var round, idx, score, locked;
+
+        function shuffle(a) {
+            a = a.slice();
+            for (var i = a.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var t = a[i]; a[i] = a[j]; a[j] = t;
+            }
+            return a;
+        }
+
+        function start() {
+            round = shuffle(POOL).slice(0, PER);
+            idx = 0; score = 0;
+            result.classList.add('hidden');
+            stage.classList.remove('hidden');
+            scoreEl.textContent = '0';
+            show();
+        }
+
+        function show() {
+            var q = round[idx];
+            locked = false;
+            numEl.textContent = idx + 1;
+            bar.style.width = (idx / PER * 100) + '%';
+            qEl.textContent = q.q;
+            feedback.className = 'mt-4 hidden rounded-xl px-4 py-3 text-sm leading-6';
+            nextBtn.classList.add('hidden');
+            nextBtn.textContent = idx === PER - 1 ? 'See my result' : 'Next question';
+            answers.innerHTML = '';
+            shuffle(q.c).forEach(function (choice) {
+                var b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'iq-choice w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50';
+                b.textContent = choice;
+                b.addEventListener('click', function () { pick(b, choice, q); });
+                answers.appendChild(b);
+            });
+        }
+
+        function pick(btn, choice, q) {
+            if (locked) return;
+            locked = true;
+            var ok = choice === q.a;
+            if (ok) { score++; scoreEl.textContent = score; }
+            Array.prototype.forEach.call(answers.children, function (b) {
+                b.disabled = true;
+                b.classList.remove('hover:border-slate-400', 'hover:bg-slate-50');
+                if (b.textContent === q.a) b.className = b.className.replace('border-slate-200 bg-white', 'border-emerald-500 bg-emerald-50 text-emerald-900');
+                else if (b === btn) b.className = b.className.replace('border-slate-200 bg-white', 'border-rose-400 bg-rose-50 text-rose-900');
+                else b.classList.add('opacity-50');
+            });
+            feedback.textContent = (ok ? 'Correct! ' : 'Not quite. ') + (q.e || '');
+            feedback.className = 'mt-4 rounded-xl px-4 py-3 text-sm leading-6 ' + (ok ? 'bg-emerald-50 text-emerald-900' : 'bg-rose-50 text-rose-900');
+            nextBtn.classList.remove('hidden');
+            nextBtn.focus({ preventScroll: true });
+        }
+
+        nextBtn.addEventListener('click', function () {
+            idx++;
+            if (idx < PER) { show(); return; }
+            bar.style.width = '100%';
+            stage.classList.add('hidden');
+            result.classList.remove('hidden');
+            $('final').textContent = score;
+            var r = score / PER;
+            $('emoji').textContent = r === 1 ? '🏆' : r >= 0.8 ? '🎉' : r >= 0.6 ? '👍' : r >= 0.4 ? '🙂' : '📚';
+            $('verdict').textContent = r === 1 ? 'Perfect round. Nothing got past you.'
+                : r >= 0.8 ? 'Very strong. Just a slip or two.'
+                : r >= 0.6 ? 'Solid. You know more than most people.'
+                : r >= 0.4 ? 'Not bad. A fresh round might go better.'
+                : 'Good news: there are plenty more questions to learn from.';
+        });
+
+        $('again').addEventListener('click', function () { start(); root.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); });
+        start();
+    })();
+    </script>
+</section>
