@@ -86,6 +86,7 @@ namespace USASymbol.Models.Content
         public string Icon { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string? Style { get; set; }
+        public string? NavLabel { get; set; }
 
         public string? Img { get; set; }
         public List<string>? Paragraphs { get; set; }

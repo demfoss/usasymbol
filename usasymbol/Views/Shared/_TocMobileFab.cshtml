@@ -4,6 +4,7 @@
 @{
     var isBird = false;
     var hasSharedStates = false;
+    var usedTocLabels = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "Overview", "FAQ", "Sources" };
     var items = new List<(string Id, string Title)>();
 
     void Add(string id, string title)
@@ -57,7 +58,7 @@
         var topSections = (symbolModel.Sections ?? new List<IContentSection>()).Take(6).ToList();
         foreach (var sec in topSections)
         {
-            Add($"section-{sec.Id}", LabelFromSectionId(sec.Id));
+            Add($"section-{sec.Id}", USASymbol.Helpers.TocLabels.For(sec, usedTocLabels));
         }
 
         if (symbolModel.HasFaq) Add("faq", "FAQ");

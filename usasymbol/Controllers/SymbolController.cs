@@ -2057,13 +2057,13 @@ namespace USASymbol.Controllers
                 : RedirectPermanent(symbol.ToSymbolUrl(stateSlug));
         }
 
-        private async Task<List<USASymbol.Models.Symbol>> GetRelatedSymbolsAsync(int stateId, int currentSymbolId, int take = 6)
+        private async Task<List<USASymbol.Models.Symbol>> GetRelatedSymbolsAsync(int stateId, int currentSymbolId, int take = 8)
         {
             var allSymbols = await _symbolService.GetSymbolsByStateAsync(stateId);
             return GetRelatedSymbols(allSymbols, currentSymbolId, take);
         }
 
-        private static List<USASymbol.Models.Symbol> GetRelatedSymbols(IEnumerable<USASymbol.Models.Symbol> symbols, int currentSymbolId, int take = 6)
+        private static List<USASymbol.Models.Symbol> GetRelatedSymbols(IEnumerable<USASymbol.Models.Symbol> symbols, int currentSymbolId, int take = 8)
         {
             var list = symbols.ToList();
             var current = list.FirstOrDefault(s => s.Id == currentSymbolId);

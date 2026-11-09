@@ -159,10 +159,25 @@ namespace USASymbol.Controllers
                     Title = links.RelatedHeading,
                     Items = relatedItems.Take(sidebarRelatedCount).ToList()
                 };
+
+                // In-article block: two rankings with a real photo that the sidebar does not already link.
+                var inlineItems = relatedItems.Skip(sidebarRelatedCount)
+                    .Where(r => !string.IsNullOrWhiteSpace(r.ImageUrl)
+                                && !r.ImageUrl.EndsWith("/usasymbol.png", System.StringComparison.OrdinalIgnoreCase))
+                    .Take(2).ToList();
+                if (inlineItems.Count == 2)
+                {
+                    ViewData["InlineMore"] = new InlineMoreViewModel
+                    {
+                        Label = "More Rankings",
+                        Items = inlineItems.Select(r => new InlineMoreItem(r.Title, r.Url, r.ImageUrl)).ToList()
+                    };
+                }
+
                 ViewData["LatestContentRail"] = new LatestContentRailViewModel
                 {
                     Title = links.RelatedHeading,
-                    Items = relatedItems.Skip(sidebarRelatedCount).ToList()
+                    Items = relatedItems.Skip(sidebarRelatedCount).Where(r => !inlineItems.Contains(r)).ToList()
                 };
                 return View("Ranking", new PageDetailViewModel { Content = content });
             }

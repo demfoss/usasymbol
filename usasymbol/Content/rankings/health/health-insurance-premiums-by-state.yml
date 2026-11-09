@@ -1,0 +1,549 @@
+type: ranking
+slug: health-insurance-premiums-by-state
+category: health
+url: /rankings/health/health-insurance-premiums-by-state
+auto_link_phrases:
+  - "health insurance premiums by state"
+  - "average health insurance premium by state"
+  - "employer health insurance cost by state"
+  - "family health insurance premium by state"
+  - "cost of health insurance by state"
+extremes_mode: both
+extremes_title: "States With the Highest and Lowest Health Insurance Premiums"
+hero_image: "/images/rankings/health/health-insurance-premiums-by-state/hero.jpg"
+hero_image_alt: "Doctor and patient at a clinic appointment with a stethoscope and paperwork on the desk"
+
+author: "USA Symbol Team"
+date_published: "2026-11-09"
+date_modified: "2026-11-09"
+
+seo:
+  title: "Health Insurance Premiums by State | Map & Rankings"
+  description: "Alaska has the highest employer family health insurance premium at $30,132 a year. Mississippi has the lowest at $21,932."
+
+page:
+  h1: "Health Insurance Premiums by State"
+
+  quick_answer:
+    - "Health insurance premiums are highest in Alaska at $30,132 a year for employer family coverage, a result of remote communities and few hospitals competing on price."
+    - "Mississippi has the lowest family premium at $21,932 and the lowest single premium at $7,612, in the state with the lowest median household income in the country."
+    - "New York has the highest single premium at $10,913, ahead of Alaska at $10,630. Five of the seven most expensive family premiums belong to Northeastern states."
+
+  methodology: "Average total annual premium per enrolled employee at private-sector establishments that offer health insurance, 2025, from the AHRQ Medical Expenditure Panel Survey Insurance Component as published by KFF. The District of Columbia is not ranked."
+
+  sources:
+    - name: "KFF, Average Annual Family Premium per Enrolled Employee For Employer-Based Health Insurance"
+      url: "https://www.kff.org/private-insurance/state-indicator/family-coverage/"
+      description: "State family premiums, employee and employer contributions, 2025, from the AHRQ MEPS Insurance Component"
+    - name: "KFF, Average Annual Single Premium per Enrolled Employee For Employer-Based Health Insurance"
+      url: "https://www.kff.org/private-insurance/state-indicator/single-coverage/"
+      description: "State single-coverage premiums and contributions, 2025, from the AHRQ MEPS Insurance Component"
+    - name: "AHRQ Medical Expenditure Panel Survey Insurance Component"
+      url: "https://meps.ahrq.gov/mepsweb/survey_comp/Insurance.jsp"
+      description: "Annual federal survey of employers that is the underlying source of the premium estimates"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    family_premium: "Family Premium"
+    single_premium: "Single Premium"
+    family_employee: "Employee Share (Family)"
+
+  metric_default: family_premium
+  sort_default: desc
+  higher_is_better: false
+
+  column_formats:
+    family_premium: "C0"
+    single_premium: "C0"
+    family_employee: "C0"
+
+  national:
+    value: 26281
+    label: "U.S. average"
+    source: "AHRQ MEPS-IC via KFF"
+    year: 2025
+
+  rows:
+    - rank: 1
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      family_premium: 30132
+      single_premium: 10630
+      family_employee: 6171
+    - rank: 2
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      family_premium: 29752
+      single_premium: 10913
+      family_employee: 7075
+    - rank: 3
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      family_premium: 29666
+      single_premium: 9743
+      family_employee: 7053
+    - rank: 4
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      family_premium: 29619
+      single_premium: 10436
+      family_employee: 7501
+    - rank: 5
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      family_premium: 28700
+      single_premium: 9987
+      family_employee: 4979
+    - rank: 6
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      family_premium: 28248
+      single_premium: 9724
+      family_employee: 7838
+    - rank: 7
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      family_premium: 28161
+      single_premium: 9502
+      family_employee: 7434
+    - rank: 8
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      family_premium: 27618
+      single_premium: 8712
+      family_employee: 8222
+    - rank: 9
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      family_premium: 27361
+      single_premium: 9388
+      family_employee: 7028
+    - rank: 10
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      family_premium: 27309
+      single_premium: 9557
+      family_employee: 6148
+    - rank: 11
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      family_premium: 27257
+      single_premium: 8970
+      family_employee: 8692
+    - rank: 12
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      family_premium: 27182
+      single_premium: 9225
+      family_employee: 9374
+    - rank: 13
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      family_premium: 27084
+      single_premium: 8997
+      family_employee: 6830
+    - rank: 14
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      family_premium: 27057
+      single_premium: 9162
+      family_employee: 7847
+    - rank: 15
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      family_premium: 26830
+      single_premium: 8907
+      family_employee: 6369
+    - rank: 16
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      family_premium: 26623
+      single_premium: 9421
+      family_employee: 6720
+    - rank: 17
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      family_premium: 26482
+      single_premium: 9447
+      family_employee: 6761
+    - rank: 18
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      family_premium: 26439
+      single_premium: 8907
+      family_employee: 7224
+    - rank: 19
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      family_premium: 26110
+      single_premium: 8985
+      family_employee: 6892
+    - rank: 20
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      family_premium: 26106
+      single_premium: 9803
+      family_employee: 7079
+    - rank: 21
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      family_premium: 26094
+      single_premium: 8878
+      family_employee: 5129
+    - rank: 22
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      family_premium: 25957
+      single_premium: 8770
+      family_employee: 6439
+    - rank: 23
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      family_premium: 25947
+      single_premium: 8586
+      family_employee: 7013
+    - rank: 24
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      family_premium: 25647
+      single_premium: 8806
+      family_employee: 7808
+    - rank: 25
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      family_premium: 25600
+      single_premium: 9459
+      family_employee: 6993
+    - rank: 26
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      family_premium: 25520
+      single_premium: 8084
+      family_employee: 6797
+    - rank: 27
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      family_premium: 25493
+      single_premium: 8657
+      family_employee: 8222
+    - rank: 28
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      family_premium: 25450
+      single_premium: 10004
+      family_employee: 7870
+    - rank: 29
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      family_premium: 25396
+      single_premium: 8919
+      family_employee: 7976
+    - rank: 30
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      family_premium: 25311
+      single_premium: 8612
+      family_employee: 8073
+    - rank: 31
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      family_premium: 25181
+      single_premium: 8620
+      family_employee: 7533
+    - rank: 32
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      family_premium: 25123
+      single_premium: 8667
+      family_employee: 5972
+    - rank: 33
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      family_premium: 25122
+      single_premium: 8448
+      family_employee: 5567
+    - rank: 34
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      family_premium: 25055
+      single_premium: 8816
+      family_employee: 6733
+    - rank: 35
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      family_premium: 25053
+      single_premium: 8543
+      family_employee: 7913
+    - rank: 36
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      family_premium: 25046
+      single_premium: 8552
+      family_employee: 8269
+    - rank: 37
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      family_premium: 24903
+      single_premium: 9318
+      family_employee: 5586
+    - rank: 38
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      family_premium: 24717
+      single_premium: 8760
+      family_employee: 6502
+    - rank: 39
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      family_premium: 24661
+      single_premium: 8804
+      family_employee: 6453
+    - rank: 40
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      family_premium: 24520
+      single_premium: 8936
+      family_employee: 5982
+    - rank: 41
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      family_premium: 24483
+      single_premium: 8124
+      family_employee: 6955
+    - rank: 42
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      family_premium: 23800
+      single_premium: 8230
+      family_employee: 6437
+    - rank: 43
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      family_premium: 23603
+      single_premium: 8285
+      family_employee: 5531
+    - rank: 44
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      family_premium: 23554
+      single_premium: 8169
+      family_employee: 7540
+    - rank: 45
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      family_premium: 23497
+      single_premium: 8355
+      family_employee: 6650
+    - rank: 46
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      family_premium: 23143
+      single_premium: 7734
+      family_employee: 8493
+    - rank: 47
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      family_premium: 23075
+      single_premium: 8215
+      family_employee: 7902
+    - rank: 48
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      family_premium: 22956
+      single_premium: 7804
+      family_employee: 7824
+    - rank: 49
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      family_premium: 21989
+      single_premium: 8899
+      family_employee: 4967
+    - rank: 50
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      family_premium: 21932
+      single_premium: 7612
+      family_employee: 6228
+
+map:
+  title: "Employer Family Health Insurance Premiums by State Map"
+  image_alt: "U.S. map color-coded by average annual employer family health insurance premium in each state"
+  caption: "Alaska ($30,132), New York ($29,752), and New Jersey ($29,666) have the costliest family premiums. Mississippi ($21,932) and Montana ($21,989) have the cheapest."
+  metric_key: family_premium
+  metric_label: "Family Premium"
+  color_scheme: red
+  color_scale: linear
+  detail_keys: [family_premium, single_premium, family_employee]
+
+sections:
+  - id: "highest-health-insurance-premiums-by-state"
+    title: "Highest Health Insurance Premiums by State"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        family_premium: "Family Premium"
+        single_premium: "Single Premium"
+      rows:
+        - rank: 1
+          state: "Alaska"
+          state_slug: "alaska"
+          family_premium: "$30,132"
+          single_premium: "$10,630"
+        - rank: 2
+          state: "New York"
+          state_slug: "new-york"
+          family_premium: "$29,752"
+          single_premium: "$10,913"
+        - rank: 3
+          state: "New Jersey"
+          state_slug: "new-jersey"
+          family_premium: "$29,666"
+          single_premium: "$9,743"
+        - rank: 4
+          state: "Massachusetts"
+          state_slug: "massachusetts"
+          family_premium: "$29,619"
+          single_premium: "$10,436"
+        - rank: 5
+          state: "Connecticut"
+          state_slug: "connecticut"
+          family_premium: "$28,700"
+          single_premium: "$9,987"
+        - rank: 6
+          state: "Illinois"
+          state_slug: "illinois"
+          family_premium: "$28,248"
+          single_premium: "$9,724"
+        - rank: 7
+          state: "New Hampshire"
+          state_slug: "new-hampshire"
+          family_premium: "$28,161"
+          single_premium: "$9,502"
+        - rank: 8
+          state: "Washington"
+          state_slug: "washington"
+          family_premium: "$27,618"
+          single_premium: "$8,712"
+        - rank: 9
+          state: "Rhode Island"
+          state_slug: "rhode-island"
+          family_premium: "$27,361"
+          single_premium: "$9,388"
+        - rank: 10
+          state: "Wisconsin"
+          state_slug: "wisconsin"
+          family_premium: "$27,309"
+          single_premium: "$9,557"
+    paragraphs:
+      - "Alaska leads at $30,132 a year, followed by New York at $29,752, New Jersey at $29,666, and Massachusetts at $29,619. Five of the top seven are Northeastern states, a region packed with academic medical centers and large hospital systems that command high prices."
+      - "Single coverage reshuffles the order. New York's $10,913 beats Alaska's $10,630, and Vermont ranks fourth at $10,004 even though its family premium of $25,450 is only 28th."
+
+  - id: "why-alaska-has-the-highest-premiums"
+    title: "Why Alaska Has the Highest Premiums"
+    paragraphs:
+      - "Alaska employers pay more for family coverage than any others in the country because care there is expensive to deliver. Most communities are off the road network, so patients often fly to Anchorage or Seattle for specialty treatment, and a small population leaves few hospitals competing on price."
+      - "Alaska also posts the highest [average doctor visit cost](/rankings/health/average-doctor-visit-cost-by-state) of any state, which points to high prices rather than rich benefits."
+
+  - id: "lowest-health-insurance-premiums-by-state"
+    title: "Lowest Health Insurance Premiums by State"
+    paragraphs:
+      - "Mississippi's family premium of $21,932 is $8,200 below Alaska's. The state has the [lowest median household income](/rankings/economy/states-by-median-income) of any state, and lower wages go along with cheaper plans. Montana is the odd one out, 49th for family coverage at $21,989 but 25th for single coverage at $8,899."
+      - "Hawaii has required employers to cover workers who log 20 hours a week since its 1974 Prepaid Health Care Act, the first law of its kind. Even so, its family premium of $23,603 ranks 43rd, well below every Northeastern state."
+
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/health/health-insurance-premiums-by-state/section-1.jpg"
+    alt: "Snow-capped Alaska mountain peak above a glacier under a clear sky"
+    section: "why-alaska-has-the-highest-premiums"
+    layout: full-width-tall
+  - id: section-2
+    src: "/images/rankings/health/health-insurance-premiums-by-state/section-2.jpg"
+    alt: "Bridge over the Mississippi River at Vicksburg under a cloudy sky"
+    section: "lowest-health-insurance-premiums-by-state"
+    layout: full-width-tall
+
+faq:
+  - question: "What is the average health insurance premium in the United States?"
+    answer: "Employer-sponsored coverage averages $26,281 a year for a family and $9,025 for a single worker."
+
+  - question: "Which state has the highest health insurance premiums?"
+    answer: "Alaska has the highest family premium, $3,851 above the U.S. average. New York leads for single coverage instead, with Alaska second."
+
+  - question: "Which state has the cheapest health insurance premiums?"
+    answer: "Mississippi is cheapest for both family and single coverage. Montana sits only $57 above it for family coverage."
+
+  - question: "How much is health insurance in California?"
+    answer: "California employers pay an average of $27,057 for family coverage, which ranks 14th, and $9,162 for single coverage. Both are above the U.S. averages of $26,281 and $9,025."
+
+  - question: "What is the average health insurance premium in Texas?"
+    answer: "Texas averages $25,053 a year for family coverage and $8,543 for single coverage, both below the national figures."
+
+  - question: "How much of the family premium do employees pay?"
+    answer: "Employees pay $7,314 on average. Oregon workers pay the most at $9,374, while Montana ($4,967) and Connecticut ($4,979) pay the least, even though Connecticut's total premium is the fifth highest at $28,700."
+
+related:
+  - title: "Average Doctor Visit Cost by State"
+    url: "/rankings/health/average-doctor-visit-cost-by-state"
+  - title: "States by Median Household Income"
+    url: "/rankings/economy/states-by-median-income"
+  - title: "Uninsured Rate by State"
+    url: "/rankings/health/states-by-uninsured-rate"
+  - title: "Best Healthcare by State"
+    url: "/rankings/health/best-healthcare-by-state"
+  - title: "Car Insurance Cost by State"
+    url: "/rankings/economy/car-insurance-cost-by-state"
+  - title: "Compare States"
+    url: "/compare-states"

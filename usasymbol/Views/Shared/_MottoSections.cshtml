@@ -51,8 +51,21 @@
 
 @if (sections?.Any() == true)
 {
+    var imIdx = -1;
+    var imAt = USASymbol.Models.ViewModels.InlineMoreViewModel.AfterIndexFor(sections.Cast<object>().Count()) + 1;
+    var imAt2 = USASymbol.Models.ViewModels.InlineMoreViewModel.SecondAfterIndexFor(sections.Cast<object>().Count()) + 1;
     foreach (var item in sections)
     {
+        imIdx++;
+        if (imIdx == imAt && imAt > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel)
+        }
+        if (imIdx == imAt2 && imAt2 > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel2)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel2, new ViewDataDictionary(ViewData) { ["InlineMorePart"] = 2 })
+        }
+
         var sectionAssets = Model.VisualAssets?
             .Where(v => v != null &&
                         !string.IsNullOrWhiteSpace(v.Src) &&
@@ -65,12 +78,6 @@
             <div id="section-@item.Id" class="scroll-mt-28 py-10 lg:py-12 border-t border-slate-200/70 first:border-t-0 first:pt-0">
                 <header class="mb-5">
                     <div class="flex items-center gap-2.5 mb-2">
-                        @if (!string.IsNullOrWhiteSpace(item.Icon))
-                        {
-                            <span class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-900 text-white text-xs">
-                                <i class="@item.Icon leading-none" aria-hidden="true"></i>
-                            </span>
-                        }
                         <span class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">Overview</span>
                     </div>
                     <h2 class="text-[1.6rem] lg:text-[2rem] font-bold text-slate-900 leading-tight tracking-tight">

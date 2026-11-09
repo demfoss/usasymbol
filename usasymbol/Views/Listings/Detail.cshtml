@@ -122,7 +122,7 @@
 
             @if (Model.HasQuickAnswer && content?.Map == null)
             {
-                <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+                <div class="my-4 md:my-5" aria-hidden="true"></div>
             }
 
             @if (Model.HasRows && Model.HasColumns)
@@ -161,7 +161,7 @@
             }
 
             <div class="min-w-0">
-                <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+                <div class="my-4 md:my-5" aria-hidden="true"></div>
 
                 <div id="sections" class="scroll-mt-24">
                     @await Html.PartialAsync("Pages/_Sections", Model)
@@ -169,14 +169,14 @@
 
                 @if (hasFaq)
                 {
-                    <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+                    <div class="my-4 md:my-5" aria-hidden="true"></div>
 
                     @await Html.PartialAsync("Pages/_Faq", Model)
                 }
 
                 @if (hasMethodology)
                 {
-                    <div class="my-8 md:my-10 h-px bg-slate-200"></div>
+                    <div class="my-4 md:my-5" aria-hidden="true"></div>
 
                     <div id="sources" class="scroll-mt-24">
                         @await Html.PartialAsync("Pages/_MethodologySources", Model)

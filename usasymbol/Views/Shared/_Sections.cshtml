@@ -71,23 +71,9 @@
 
             <!-- Section header -->
             <header class="mb-4 lg:mb-5">
-                @if (!string.IsNullOrWhiteSpace(item.Icon))
-                {
-                    <div class="flex items-center gap-3">
-                        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-500">
-                            <i class="@item.Icon text-xs"></i>
-                        </span>
-                        <h2 class="content-h2">
+                <h2 class="content-h2">
                             @item.Title
                         </h2>
-                    </div>
-                }
-                else
-                {
-                    <h2 class="content-h2">
-                        @item.Title
-                    </h2>
-                }
             </header>
 
             @* ─── Inline visual asset (float-right on desktop, full-width on mobile) ─ *@
@@ -246,8 +232,6 @@
                     <div class="mt-8 space-y-8">
                         @foreach (var sub in item.Subsections)
                         {
-                            LinkData? relatedLink = sub.Link;
-                            var thumb = GetConnectionThumb(relatedLink?.Url);
 
                             <article>
                                 <h3 class="text-lg lg:text-xl font-semibold text-gray-900 mb-3">
@@ -259,49 +243,6 @@
                 <div class="prose prose-lg text-gray-800">
                                         <p>@sub.Text.RenderAutoLinks()</p>
                                     </div>
-                                }
-
-                                @if (relatedLink != null && !string.IsNullOrWhiteSpace(relatedLink.Url))
-                                {
-                                    var label = string.IsNullOrWhiteSpace(relatedLink.Label) ? "Learn more" : relatedLink.Label;
-
-                                    <a href="@relatedLink.Url"
-                                       target="@(relatedLink.Url.IsExternalUrl() ? "_blank" : null)"
-                                       rel="@(relatedLink.Url.IsExternalUrl() ? "nofollow noopener noreferrer" : null)"
-                            class="mt-5 group flex items-center justify-between gap-4 rounded-lg border border-slate-200 bg-white p-4 transition hover:border-slate-300">
-                                        <div class="flex items-center gap-4 min-w-0">
-                                            @if (!string.IsNullOrEmpty(thumb))
-                                            {
-                                                <div class="shrink-0 w-14 h-14 rounded-md bg-gray-50 overflow-hidden border border-slate-100">
-                                                    <img src="@Images.Thumb(thumb)"
-                                                         alt="@label"
-                                                         class="w-full h-full object-cover"
-                                                         loading="lazy"
-                                                         onerror="this.closest('div').remove();" />
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div class="shrink-0 w-14 h-14 rounded-md bg-gray-50 flex items-center justify-center border border-slate-100">
-                                                    <i class="fas fa-link text-gray-400"></i>
-                                                </div>
-                                            }
-
-                                            <div class="min-w-0">
-                                                <div class="text-sm font-semibold text-gray-900 truncate">
-                                                    @label
-                                                </div>
-                                                <div class="text-xs text-gray-600 truncate">
-                                                    Related state symbol
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="shrink-0 inline-flex items-center gap-2 text-sm font-semibold text-gray-900 group-hover:text-gray-700 transition">
-                                            <span>Open</span>
-                                            <i class="fas fa-arrow-right shrink-0 text-xs"></i>
-                                        </div>
-                                    </a>
                                 }
                             </article>
                         }
@@ -504,6 +445,22 @@
                     { "Source", story.ExpertQuote.Source }
                 })
             </section>
+        }
+
+        @if (Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel inlineMoreModel
+            && ViewData["SuppressInlineMore"] as bool? != true
+            && sectionsOverride == null
+            && renderedSections.IndexOf(item) == USASymbol.Models.ViewModels.InlineMoreViewModel.AfterIndexFor(renderedSections.Count))
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", inlineMoreModel)
+        }
+
+        @if (Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel inlineMoreModel2
+            && ViewData["SuppressInlineMore"] as bool? != true
+            && sectionsOverride == null
+            && renderedSections.IndexOf(item) == USASymbol.Models.ViewModels.InlineMoreViewModel.SecondAfterIndexFor(renderedSections.Count))
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", inlineMoreModel2, new ViewDataDictionary(ViewData) { ["InlineMorePart"] = 2 })
         }
     }
 }

@@ -11,14 +11,21 @@
 {
     <figure class="srcquote" data-nosnippet>
         <div class="srcquote-head">
-            <span class="srcquote-label">@label</span>
-            <button type="button" class="srcquote-copy" aria-label="Copy quote"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button>
+            <span class="srcquote-mark" aria-hidden="true">§</span>
+            @if (!string.IsNullOrWhiteSpace(source))
+            {
+                <div class="srcquote-cite">@source.RenderAutoLinks()</div>
+            }
+            else
+            {
+                <span class="srcquote-label">@label</span>
+            }
         </div>
         <blockquote class="srcquote-text">@text</blockquote>
-        @if (!string.IsNullOrWhiteSpace(source))
-        {
-            <figcaption class="srcquote-cite">@source.RenderAutoLinks()</figcaption>
-        }
+        <div class="srcquote-foot">
+            <span class="srcquote-label">@label</span>
+            <button type="button" class="srcquote-copy" aria-label="Copy quote" title="Copy quote"><i class="fa-regular fa-copy" aria-hidden="true"></i><span class="srcquote-copied" aria-live="polite"></span></button>
+        </div>
     </figure>
     <script>
         (function () {
@@ -26,11 +33,11 @@
             var b = fig.querySelector('.srcquote-copy');
             b.addEventListener('click', function () {
                 var t = fig.querySelector('blockquote').textContent.trim();
-                var c = fig.querySelector('figcaption');
+                var c = fig.querySelector('.srcquote-cite');
                 var s = t + (c ? ' (' + c.textContent.trim() + ')' : '');
                 if (navigator.clipboard) navigator.clipboard.writeText(s).then(function () {
-                    var l = b.querySelector('span'); l.textContent = 'Copied';
-                    setTimeout(function () { l.textContent = 'Copy'; }, 1800);
+                    var l = b.querySelector('.srcquote-copied'); l.textContent = 'Copied';
+                    setTimeout(function () { l.textContent = ''; }, 1800);
                 });
             });
         })();

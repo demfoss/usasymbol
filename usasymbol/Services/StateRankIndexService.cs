@@ -19,13 +19,21 @@ public sealed record StateRankEntry(
     bool HigherIsBetter,
     string SourceName,
     string SourceUrl,
-    DateTime? DateModified)
+    DateTime? DateModified,
+    string HeroImage,
+    string HeroImageAlt)
 {
     public bool IsHighest => Rank == 1;
     public bool IsGoodNews => (IsHighest && HigherIsBetter) || (IsLowest && !HigherIsBetter);
 }
 
-public sealed record StateTeaser(string Title, string Url, string Badge, string Value);
+public sealed record StateTeaser(
+    string Title,
+    string Url,
+    string Badge,
+    string Value,
+    string HeroImage,
+    string HeroImageAlt);
 
 public sealed record StateTeaserSet(string StateName, string StateSlug, IReadOnlyList<StateTeaser> Items);
 
@@ -38,7 +46,7 @@ public sealed record StateTeaserSet(string StateName, string StateSlug, IReadOnl
 public sealed class StateRankIndexService(IWebHostEnvironment environment, IMemoryCache cache,
     ILogger<StateRankIndexService> logger)
 {
-    private const string CacheKey = "state-rank-index-v1";
+    private const string CacheKey = "state-rank-index-v2";
     private const int MinStates = 30;           // below this "top 3" means little
     private const int MaxInboundPerRanking = 15; // spreads link weight across the section
     private const int TeasersPerPage = 3;
@@ -158,7 +166,9 @@ public sealed class StateRankIndexService(IWebHostEnvironment environment, IMemo
                 chosen.Select(c => new StateTeaser(
                     c.Entry.Title, c.Entry.Url,
                     c.Entry.IsLowest && c.Entry.Rank > 3 ? "Lowest" : $"#{c.Entry.Rank}",
-                    c.Entry.Value)).ToList());
+                    c.Entry.Value,
+                    c.Entry.HeroImage,
+                    c.Entry.HeroImageAlt)).ToList());
         }
 
         logger.LogInformation("State rank index built: {Rankings} rankings, {States} states, {Teasers} pages with teasers",
@@ -214,6 +224,8 @@ public sealed class StateRankIndexService(IWebHostEnvironment environment, IMemo
 
         var title = (root.GetValueOrDefault("page") as Dictionary<object, object>)?.GetValueOrDefault("h1")?.ToString();
         if (string.IsNullOrWhiteSpace(title)) title = slug.Replace('-', ' ');
+        var heroImage = root.GetValueOrDefault("hero_image")?.ToString()?.Trim() ?? "";
+        var heroImageAlt = root.GetValueOrDefault("hero_image_alt")?.ToString()?.Trim() ?? title!;
         var url = root.GetValueOrDefault("url")?.ToString();
         if (string.IsNullOrWhiteSpace(url)) url = $"/rankings/{category}/{slug}";
         var page = root.GetValueOrDefault("page") as Dictionary<object, object>;
@@ -244,7 +256,9 @@ public sealed class StateRankIndexService(IWebHostEnvironment environment, IMemo
                 higherIsBetter,
                 sourceName,
                 sourceUrl,
-                dateModified);
+                dateModified,
+                heroImage,
+                heroImageAlt);
             entries.Add((p.Slug, entry));
             if (rank == 1 && (leader == null || string.CompareOrdinal(p.Slug, leaderSlug) < 0))
             {

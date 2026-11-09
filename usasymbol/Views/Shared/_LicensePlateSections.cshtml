@@ -38,27 +38,26 @@
 {
     var fallbackMeaningSectionId = displaySections.LastOrDefault()?.Id ?? string.Empty;
 
+    var imIdx = -1;
+    var imAt = USASymbol.Models.ViewModels.InlineMoreViewModel.AfterIndexFor(displaySections.Cast<object>().Count()) + 1;
+    var imAt2 = USASymbol.Models.ViewModels.InlineMoreViewModel.SecondAfterIndexFor(displaySections.Cast<object>().Count()) + 1;
     foreach (var item in displaySections)
     {
+        imIdx++;
+        if (imIdx == imAt && imAt > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel)
+        }
+        if (imIdx == imAt2 && imAt2 > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel2)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel2, new ViewDataDictionary(ViewData) { ["InlineMorePart"] = 2 })
+        }
+
         <div id="section-@item.Id" class="scroll-mt-24 py-6 lg:py-8 flow-root border-t border-slate-200/70 first:border-t-0 first:pt-0">
             <header class="mb-4 lg:mb-5">
-                @if (!string.IsNullOrWhiteSpace(item.Icon))
-                {
-                    <div class="flex items-center gap-3">
-                        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-500">
-                            <i class="@item.Icon text-xs"></i>
-                        </span>
-                        <h2 class="content-h2">
+                <h2 class="content-h2">
                             @item.Title
                         </h2>
-                    </div>
-                }
-                else
-                {
-                    <h2 class="content-h2">
-                        @item.Title
-                    </h2>
-                }
             </header>
 
             @{

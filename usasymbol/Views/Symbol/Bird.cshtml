@@ -247,6 +247,7 @@
                     @if (firstSection.Any())
                     {
                         @await Html.PartialAsync("_Sections", Model, firstSectionsViewData)
+                        @await Html.PartialAsync("_InlineMoreSymbols", Model)
                     }
 
                     @if (hasQuote && ((hasPlacementStoryBlocks && quoteAfterFirstSection) || (!hasPlacementStoryBlocks)))
@@ -370,6 +371,10 @@
                     @if (thirdSection.Any())
                     {
                         @await Html.PartialAsync("_Sections", Model, thirdSectionsViewData)
+                        @if (sections.Count >= 8)
+                        {
+                            @await Html.PartialAsync("_InlineMoreSymbols", Model, new ViewDataDictionary(ViewData) { ["InlineMorePart"] = 2 })
+                        }
 
                         @if (hasQuote && hasPlacementStoryBlocks && quoteAfterThirdSection)
                         {

@@ -63,23 +63,9 @@
              class="scroll-mt-24 @(isFirst ? "pt-2 pb-8 md:pb-10" : "py-8 md:py-10")"
              aria-label="@sect.Title">
 
-            @if (!string.IsNullOrWhiteSpace(sect.Icon))
-            {
-                <div class="mb-5 lg:mb-6 flex items-center gap-3 md:gap-4 section-title-row">
-                    <span class="inline-flex h-9 w-9 shrink-0 min-h-[2.25rem] min-w-[2.25rem] items-center justify-center rounded-xl bg-slate-900 text-white">
-                        <i class="@sect.Icon text-sm" aria-hidden="true"></i>
-                    </span>
-                    <h2 class="content-h2 !leading-[1.12]">
-                        @sect.Title
-                    </h2>
-                </div>
-            }
-            else
-            {
-                <h2 class="content-h2 mb-5 lg:mb-6">
+            <h2 class="content-h2 mb-5 lg:mb-6">
                     @sect.Title
                 </h2>
-            }
 
             @if (sectionAssets.Any() && style != "compare-cards")
             {
@@ -340,9 +326,11 @@
             statDone = true;
         }
 
-        if (i != sections.Count - 1)
+        if (ViewData["InlineMore"] is USASymbol.Models.ViewModels.InlineMoreViewModel inlineMore
+            && inlineMore.Items.Count == 2
+            && i == USASymbol.Models.ViewModels.InlineMoreViewModel.AfterIndexFor(sections.Count))
         {
-            <div class="my-6 md:my-7 h-px bg-slate-200"></div>
+            @await Html.PartialAsync("_InlineMore", inlineMore)
         }
     }
 }

@@ -1,0 +1,23 @@
+@* In-article "keep exploring" block: caps label, thin rule, two photo cards. Photos only. *@
+@model USASymbol.Models.ViewModels.InlineMoreViewModel
+@inject IImageUrlService Images
+
+@if (Model.Items.Count > 0)
+{
+    <nav class="inline-more" aria-label="@Model.Label" data-nosnippet>
+        <p class="inline-more__label">@Model.Label</p>
+        <div class="inline-more__grid">
+            @foreach (var item in Model.Items.Take(2))
+            {
+                <a href="@item.Url" class="inline-more__item">
+                    <img src="@Images.Crop(item.ImageUrl, 200, 200)"
+                         alt=""
+                         width="100" height="100"
+                         loading="lazy" decoding="async"
+                         class="inline-more__img" />
+                    <span class="inline-more__title">@item.Title</span>
+                </a>
+            }
+        </div>
+    </nav>
+}

@@ -34,8 +34,21 @@
                                  string.Equals(asset.Layout, "full-width", StringComparison.OrdinalIgnoreCase) &&
                                  string.IsNullOrWhiteSpace(asset.Section));
 
+    var imIdx = -1;
+    var imAt = USASymbol.Models.ViewModels.InlineMoreViewModel.AfterIndexFor(sections.Cast<object>().Count()) + 1;
+    var imAt2 = USASymbol.Models.ViewModels.InlineMoreViewModel.SecondAfterIndexFor(sections.Cast<object>().Count()) + 1;
     foreach (var item in sections)
     {
+        imIdx++;
+        if (imIdx == imAt && imAt > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel)
+        }
+        if (imIdx == imAt2 && imAt2 > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel2)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel2, new ViewDataDictionary(ViewData) { ["InlineMorePart"] = 2 })
+        }
+
         var isFeatureFlagHistory = string.Equals(item.Id, "previous-versions", StringComparison.OrdinalIgnoreCase);
         var isFeatureFlagSymbol = string.Equals(item.Id, "symbols", StringComparison.OrdinalIgnoreCase);
         var isFeatureFlagFacts = string.Equals(item.Id, "facts", StringComparison.OrdinalIgnoreCase);
@@ -45,12 +58,6 @@
             {
                 <header class="mb-6 lg:mb-8">
                     <div class="flex items-start gap-3">
-                        @if (!string.IsNullOrWhiteSpace(item.Icon))
-                        {
-                            <span class="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 text-white text-sm mt-1">
-                                <i class="@item.Icon leading-none" aria-hidden="true"></i>
-                            </span>
-                        }
                         <h2 class="text-[2rem] leading-[1.04] font-bold tracking-tight text-slate-900 lg:text-[3.1rem]">
                             @item.Title
                         </h2>
@@ -61,12 +68,6 @@
             {
                 <header class="mb-4">
                     <div class="flex items-center gap-2.5">
-                        @if (!string.IsNullOrWhiteSpace(item.Icon))
-                        {
-                            <span class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-900 text-white text-xs">
-                                <i class="@item.Icon leading-none" aria-hidden="true"></i>
-                            </span>
-                        }
                         <h2 class="text-xl lg:text-2xl font-bold text-slate-900 leading-tight">Interesting Facts</h2>
                     </div>
                 </header>

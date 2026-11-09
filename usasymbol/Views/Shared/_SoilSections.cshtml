@@ -32,8 +32,21 @@
 {
     var visualAssets = Model.SoilContent?.VisualAssets?.ToList() ?? new List<VisualAsset>();
 
+    var imIdx = -1;
+    var imAt = USASymbol.Models.ViewModels.InlineMoreViewModel.AfterIndexFor(sections.Cast<SoilSection>().Cast<object>().Count()) + 1;
+    var imAt2 = USASymbol.Models.ViewModels.InlineMoreViewModel.SecondAfterIndexFor(sections.Cast<SoilSection>().Cast<object>().Count()) + 1;
     foreach (var item in sections.Cast<SoilSection>())
     {
+        imIdx++;
+        if (imIdx == imAt && imAt > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel)
+        }
+        if (imIdx == imAt2 && imAt2 > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel2)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel2, new ViewDataDictionary(ViewData) { ["InlineMorePart"] = 2 })
+        }
+
         var hasLayers = item.Layers?.Any() == true;
         var hasCounties = item.Counties?.Any() == true && !string.IsNullOrWhiteSpace(stateFips);
 

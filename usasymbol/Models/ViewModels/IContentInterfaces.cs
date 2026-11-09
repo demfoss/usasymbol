@@ -10,6 +10,9 @@ namespace USASymbol.Models.ViewModels
         string Title { get; }
         string? Style { get; }
 
+        /// <summary>Optional short label for the table of contents (nav_label in YAML).</summary>
+        string? NavLabel => null;
+
         string? Img { get; }
         List<string>? Paragraphs { get; }
         List<IContentSubsection>? Subsections { get; }

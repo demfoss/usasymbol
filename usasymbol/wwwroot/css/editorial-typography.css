@@ -8,7 +8,7 @@
     --gold:          #C09B4F;    
     --gold-border:   rgba(192, 155, 79, 0.35);
     --gold-muted:    rgba(192, 155, 79, 0.12);
-    --ink:           #1A1A2E;    
+    --ink:           #1A1A1A;
     --slate-ed:      #6B7D8A;    
     --white:         #FFFFFF;
 
@@ -76,7 +76,22 @@ h1, h2, h3, h4, h5, h6 {
 .site-content section .max-w-prose > p:first-of-type {
     font-size: 19px;
     line-height: 34px;
-    color: #2d2d2d;
+    color: var(--article-color);
+}
+
+/* Body links: near-black, thin offset underline (book-like, no blue) */
+.site-content section p a:not([class]),
+.site-content section li a:not([class]) {
+    color: var(--article-color);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(26, 26, 26, 0.4);
+    text-underline-offset: 3px;
+}
+.site-content section p a:not([class]):hover,
+.site-content section li a:not([class]):hover {
+    color: #7a5a14;
+    text-decoration-color: var(--gold);
 }
 
 h1, h2, h3, h4, h5, h6 {

@@ -1,0 +1,29 @@
+@* Two more symbols of the same state, with photos only, never repeating the sidebar (which shows the first 5). *@
+@model USASymbol.Models.ViewModels.ISymbolDetailViewModel
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+@using USASymbol.Models.ViewModels
+@using USASymbol.Extensions
+
+@{
+    var part = ViewData["InlineMorePart"] as int? ?? 1;
+    var slug = Model.State?.Slug;
+    var items = (Model.RelatedSymbols ?? Enumerable.Empty<USASymbol.Models.Symbol>())
+        .Skip(5)
+        .Select(s => new { Symbol = s, Image = USASymbol.Helpers.SymbolImageResolver.Resolve(s, slug, Env.WebRootPath) })
+        .Where(x => !string.IsNullOrWhiteSpace(x.Image))
+        .Skip((part - 1) * 2)
+        .Take(2)
+        .Select(x => new InlineMoreItem(x.Symbol.Name, x.Symbol.ToSymbolUrl(slug), x.Image))
+        .ToList();
+    var stateName = Model.State?.Name?.Trim();
+    var vm = new InlineMoreViewModel
+    {
+        Label = string.IsNullOrWhiteSpace(stateName) ? "More State Symbols" : $"More {stateName} Symbols",
+        Items = items
+    };
+}
+
+@if (items.Count == 2)
+{
+    @await Html.PartialAsync("_InlineMore", vm)
+}

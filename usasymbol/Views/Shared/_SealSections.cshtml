@@ -38,8 +38,21 @@
                                  string.IsNullOrWhiteSpace(asset.Section));
     var fallbackMeaningSectionId = sections.Cast<SealSection>().FirstOrDefault()?.Id ?? string.Empty;
 
+    var imIdx = -1;
+    var imAt = USASymbol.Models.ViewModels.InlineMoreViewModel.AfterIndexFor(sections.Cast<SealSection>().Cast<object>().Count()) + 1;
+    var imAt2 = USASymbol.Models.ViewModels.InlineMoreViewModel.SecondAfterIndexFor(sections.Cast<SealSection>().Cast<object>().Count()) + 1;
     foreach (var item in sections.Cast<SealSection>())
     {
+        imIdx++;
+        if (imIdx == imAt && imAt > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel)
+        }
+        if (imIdx == imAt2 && imAt2 > 0 && ViewData["SuppressInlineMore"] as bool? != true && Model is USASymbol.Models.ViewModels.ISymbolDetailViewModel imModel2)
+        {
+            @await Html.PartialAsync("_InlineMoreSymbols", imModel2, new ViewDataDictionary(ViewData) { ["InlineMorePart"] = 2 })
+        }
+
         var isVersionsSection = item.Versions?.Any() == true;
         var isElementsSection = item.Elements?.Any() == true;
 
@@ -48,12 +61,6 @@
             {
                 <header class="mb-6 lg:mb-8">
                     <div class="flex items-start gap-3">
-                        @if (!string.IsNullOrWhiteSpace(item.Icon))
-                        {
-                            <span class="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 text-white text-sm mt-1">
-                                <i class="@item.Icon leading-none" aria-hidden="true"></i>
-                            </span>
-                        }
                         <h2 class="text-[2rem] leading-[1.04] font-bold tracking-tight text-slate-900 lg:text-[3.1rem]">
                             @item.Title
                         </h2>

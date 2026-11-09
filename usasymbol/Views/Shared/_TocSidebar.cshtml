@@ -8,6 +8,8 @@
     var subtitle = "";
     var imageUrl = "";
     var preserveFullImage = false;
+    var isScientific = false;
+    var usedTocLabels = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "Overview", "FAQ", "Sources" };
 
     void Add(string id, string text, string iconClass)
     {
@@ -58,14 +60,19 @@
         return text[..cut].TrimEnd() + "...";
     }
 
-    string GetSectionIcon(IContentSection sec)
+    // Small fixed icon set for the TOC; per-section "icon" values from content files are ignored.
+    string GetSectionIcon(string label)
     {
-        if (!string.IsNullOrWhiteSpace(sec?.Icon))
+        return label switch
         {
-            return sec.Icon!;
-        }
-
-        return "fa-solid fa-plus";
+            "Adoption" or "History" => "fa-solid fa-landmark",
+            "Meaning" => "fa-regular fa-lightbulb",
+            "Identification" or "Habitat" or "Behavior" => "fa-solid fa-magnifying-glass",
+            "Conservation" => "fa-solid fa-leaf",
+            "Compare" => "fa-solid fa-scale-balanced",
+            "Facts" => "fa-regular fa-star",
+            _ => "fa-solid fa-circle"
+        };
     }
 
     if (Model is ISymbolDetailViewModel symbolModel)
@@ -84,6 +91,7 @@
 
         title = shouldUseCompactTitle ? compactTitle : rawTitle;
         subtitle = shouldUseCompactTitle ? rawTitle : FirstNonEmpty(symbolModel.Symbol?.ScientificName);
+        isScientific = !shouldUseCompactTitle && !string.IsNullOrWhiteSpace(subtitle);
         imageUrl = FirstNonEmpty(symbolModel.Symbol?.ImageUrl);
         preserveFullImage = symbolModel is SealDetailViewModel;
 
@@ -102,7 +110,8 @@
 
         foreach (var sec in sections)
         {
-            Add($"section-{sec.Id}", CompactTocLabel(LabelFromSectionId(sec.Id)), GetSectionIcon(sec));
+            var tocLabel = USASymbol.Helpers.TocLabels.For(sec, usedTocLabels);
+            Add($"section-{sec.Id}", tocLabel, GetSectionIcon(tocLabel));
         }
 
         if (symbolModel.HasFaq)
@@ -228,7 +237,7 @@
 
                 @if (!string.IsNullOrWhiteSpace(subtitle))
                 {
-                    <p class="mt-1 line-clamp-1 text-[0.85rem] leading-5 text-slate-500">
+                    <p class="toc-subtitle mt-1 line-clamp-1 text-[0.85rem] leading-5 text-slate-500 @(isScientific ? "toc-subtitle--latin" : "")">
                         @subtitle
                     </p>
                 }
@@ -239,12 +248,12 @@
                 {
                     <a href="#@it.Id"
                        data-toc-id="@it.Id"
-                       class="toc-link bird-toc-link group flex items-center gap-2.5 rounded-xl px-3 py-2 text-[0.78rem] font-semibold uppercase tracking-[0.07em] text-slate-900 transition-all duration-200 hover:bg-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+                       class="toc-link bird-toc-link group flex items-center gap-2.5 px-1 py-1.5 text-[0.78rem] font-semibold uppercase tracking-[0.07em] text-slate-900 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
                        aria-current="false">
                         <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center text-slate-900">
                             <i class="@it.IconClass text-xs"></i>
                         </span>
-                        <span class="min-w-0 line-clamp-2 leading-5">@it.Title</span>
+                        <span class="toc-link-text min-w-0 leading-5">@it.Title</span>
                     </a>
                 }
             </div>
@@ -253,14 +262,18 @@
 }
 
 <style>
+    /* Active item: a pill hugging the text (not the whole column) */
+    .toc-minimal .bird-toc-link { display: flex; width: fit-content; max-width: 100%; border-radius: 8px; }
     .toc-minimal .bird-toc-link.toc-active,
     .toc-minimal .bird-toc-link[aria-current="true"] {
         background: rgba(243, 211, 154, 0.58) !important;
-        box-shadow: inset 3px 0 0 #d8b36a;
+        box-shadow: none;
         color: #161b26 !important;
         border-left-color: transparent !important;
-        padding-left: 0.75rem !important;
+        padding: 0.375rem 0.625rem !important;
+        margin-left: -0.375rem;
     }
+    .toc-minimal .toc-subtitle--latin { font-family: var(--font-serif, Georgia, serif); font-style: italic; }
 
     .toc-minimal .bird-toc-link.toc-active i,
     .toc-minimal .bird-toc-link.toc-active span,

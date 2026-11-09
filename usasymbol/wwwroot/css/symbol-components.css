@@ -71,15 +71,35 @@
 .cite-actions button:hover { border-color: #566879; }
 @media (max-width: 639px) { .cite-pop { left: 0; right: auto; } }
 
+/* In-article "keep exploring" block (2 photo cards) */
+.site-content .inline-more { margin: 2.25rem 0; padding: 0; }
+.site-content .inline-more .inline-more__label { margin: 0; font-size: 12px; line-height: 1.2; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #14110a; }
+.inline-more__grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
+.site-content .inline-more a.inline-more__item { display: flex; align-items: flex-start; gap: 16px; color: #14110a; text-decoration: none; }
+.inline-more__img { flex: none; width: 80px; height: 80px; border-radius: 14px; object-fit: cover; background: #eef0f2; }
+.site-content .inline-more .inline-more__title { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-family: var(--font-serif, Georgia, serif); font-size: 18px; line-height: 1.3; font-weight: 600; letter-spacing: 0; color: #14110a; }
+.site-content .inline-more a.inline-more__item:hover .inline-more__title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+@media (min-width: 640px) {
+    .inline-more__grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .inline-more__img { width: 100px; height: 100px; }
+    .site-content .inline-more .inline-more__title { font-size: 19px; }
+}
+
 /* Quote from a document */
-.srcquote { margin: 0; padding: 16px 20px; border-left: 3px solid #a8791a; background: #faf6ec; border-radius: 0 6px 6px 0; }
-.srcquote-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.srcquote-label { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #6b4a08; }
-.srcquote-copy { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border: 1px solid #e2c987; border-radius: 5px; background: #fff; font-size: 12px; color: #6b4a08; cursor: pointer; }
-.srcquote-text { margin: 10px 0 0; font-family: var(--font-serif, Georgia, serif); font-size: 1.15rem; line-height: 1.6; color: #1c1405; }
-.srcquote-cite { margin-top: 10px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; color: #4a3a12; }
-.srcquote-cite p { margin: 0; }
-.srcquote-cite a { color: #6b4a08; text-decoration: underline; text-underline-offset: 3px; }
+.srcquote { margin: 0; padding: 22px 28px 14px; background: #fff; border: 1px solid #e3e0d8; border-radius: 12px; }
+.srcquote-head { display: flex; align-items: baseline; gap: 10px; font-family: inherit; font-size: 13px; letter-spacing: .02em; color: #5f6b76; }
+.srcquote-mark { font-family: var(--font-serif, Georgia, serif); font-size: 22px; line-height: 1; color: #a8791a; }
+.srcquote-cite, .srcquote-cite p { margin: 0; font-size: 13px; line-height: 1.4; font-weight: 600; letter-spacing: .02em; color: #1c1405; }
+.srcquote-cite a { color: inherit; text-decoration: none; border-bottom: 1px solid currentColor; }
+.srcquote-cite a:hover { color: #a8791a; }
+.srcquote-label { font-size: 12px; letter-spacing: .02em; color: #6b7480; }
+/* higher specificity: beats the global .site-content blockquote rules (grey, sans, left rule) */
+.site-content figure.srcquote blockquote.srcquote-text { margin: 14px 0 18px; padding: 0; border: 0; background: none; font-family: var(--font-serif, Georgia, serif); font-style: normal; font-weight: 400; font-size: clamp(1.2rem, 1.05rem + .6vw, 1.45rem); line-height: 1.45; letter-spacing: 0; color: #14110a; }
+.site-content figure.srcquote blockquote.srcquote-text::before { content: "\201C"; }
+.site-content figure.srcquote blockquote.srcquote-text::after { content: "\201D"; }
+.srcquote-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 8px; border-top: 1px solid #ece9e1; }
+.srcquote-copy { display: inline-flex; align-items: center; gap: 8px; min-width: 32px; height: 32px; justify-content: center; padding: 0 8px; border: 0; border-radius: 8px; background: transparent; font-size: 12px; color: #6b7480; cursor: pointer; }
+.srcquote-copy:hover { background: #f3f1ea; color: #14110a; }
 
 /* Key figure strip */
 .bigstat { display: flex; align-items: baseline; gap: 18px; padding: 14px 0; border-top: 1px solid #d6dfe7; border-bottom: 1px solid #d6dfe7; }

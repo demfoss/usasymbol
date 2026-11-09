@@ -99,7 +99,29 @@ namespace USASymbol.Controllers
                 ViewData["Title"]       = content.Seo?.Title;
                 ViewData["Description"] = content.Seo?.Description;
                 ViewData["Canonical"]   = content.Url;
-                ViewData["LatestContentRail"] = await _latestContentRailService.GetLatestItemsAsync(8);
+                var latestRail = await _latestContentRailService.GetLatestItemsAsync(8);
+
+                // In-article block: two recent pages with a real photo, never the page itself.
+                var inlineItems = latestRail.Items
+                    .Where(r => !string.IsNullOrWhiteSpace(r.ImageUrl)
+                                && !r.ImageUrl.EndsWith("/usasymbol.png", System.StringComparison.OrdinalIgnoreCase)
+                                && !r.ImageUrl.EndsWith("/og-default.webp", System.StringComparison.OrdinalIgnoreCase)
+                                && !string.Equals(r.Url, content.Url, System.StringComparison.OrdinalIgnoreCase))
+                    .Take(2).ToList();
+                if (inlineItems.Count == 2)
+                {
+                    ViewData["InlineMore"] = new InlineMoreViewModel
+                    {
+                        Label = "Keep Exploring",
+                        Items = inlineItems.Select(r => new InlineMoreItem(r.Title, r.Url, r.ImageUrl)).ToList()
+                    };
+                    latestRail = new LatestContentRailViewModel
+                    {
+                        Title = latestRail.Title,
+                        Items = latestRail.Items.Where(r => !inlineItems.Contains(r)).ToList()
+                    };
+                }
+                ViewData["LatestContentRail"] = latestRail;
 
                 if (string.IsNullOrWhiteSpace(content.HeroImage) && content.Map != null && content.Table?.Rows?.Count > 0)
                 {

@@ -619,7 +619,6 @@
                         {
                             var sectionId = $"section-{contentSection.Id}";
                             <a href="#@sectionId" class="toc-link flex items-center gap-3 border border-slate-200 p-3 hover:bg-slate-50 transition group min-h-[48px]">
-                                <i class="@($"{contentSection.Icon} text-slate-600 text-sm group-hover:scale-110 transition-transform")" aria-hidden="true"></i>
                                 <span class="text-slate-800 font-medium text-sm md:text-base group-hover:text-slate-900">@contentSection.Title</span>
                             </a>
                         }
@@ -673,9 +672,6 @@
                     {
                         var sectionId = $"section-{contentSection.Id}";
                         <a href="#@sectionId" class="toc-mobile-link flex items-center gap-3 p-4 hover:bg-slate-50 transition border border-slate-200 min-h-[64px]">
-                            <div class="w-10 h-10 border border-slate-200 bg-slate-50 flex items-center justify-center flex-shrink-0">
-                                <i class="@($"{contentSection.Icon} text-slate-700")" aria-hidden="true"></i>
-                            </div>
                             <span class="text-slate-800 font-semibold text-base">@contentSection.Title</span>
                         </a>
                     }
@@ -903,10 +899,6 @@
                     <div class="@(isKeyFacts ? "" : "bg-white p-6 md:p-8 border border-slate-200 shadow-sm")">
                         <!-- H2 Section Title -->
                         <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                            @if (!string.IsNullOrEmpty(contentSection.Icon))
-                            {
-                                <i class="@contentSection.Icon text-blue-700" aria-hidden="true"></i>
-                            }
                             @contentSection.Title
                         </h2>
 

@@ -1,0 +1,553 @@
+type: ranking
+slug: std-rates-by-state
+category: health
+url: /rankings/health/std-rates-by-state
+auto_link_phrases:
+  - "std rates by state"
+  - "chlamydia rate by state"
+  - "chlamydia rates by state"
+  - "sexually transmitted infection rates by state"
+  - "states with the highest std rates"
+extremes_mode: both
+extremes_title: "States With the Highest and Lowest Chlamydia Rates"
+hero_image: "/images/rankings/health/std-rates-by-state/hero.jpg"
+hero_image_alt: "Modern glass and metal hospital building under a cloudy sky"
+
+author: "USA Symbol Team"
+date_published: "2026-11-10"
+date_modified: "2026-11-10"
+
+seo:
+  title: "Chlamydia and STD Rates by State | Map & Rankings"
+  description: "Louisiana has the highest reported chlamydia rate at 792.4 cases per 100,000 people. New Hampshire has the lowest at 196.6."
+
+page:
+  h1: "Chlamydia and STD Rates by State"
+
+  quick_answer:
+    - "Chlamydia rates are highest in Louisiana at 792.4 reported cases per 100,000 people, about four times New Hampshire's rate. Most infections cause no symptoms, so reported rates follow how much testing a state does."
+    - "New Hampshire has the lowest rate at 196.6, followed by Vermont at 201.9 and Maine at 217.4. All three are among the oldest states by median age, and chlamydia is most common among people under 25."
+    - "Alaska ranks third for chlamydia at 697.7 but first for gonorrhea at 310.9. South Dakota leads for primary and secondary syphilis at 73.4, about twice the 36.6 of runner-up New Mexico."
+
+  methodology: "Reported chlamydia cases per 100,000 population in 2023, the latest year with state tables in CDC Sexually Transmitted Infections Surveillance. Gonorrhea and primary and secondary syphilis rates come from the same report. The District of Columbia is not ranked."
+
+  sources:
+    - name: "CDC, Sexually Transmitted Infections Surveillance, 2023"
+      url: "https://www.cdc.gov/sti-statistics/annual/"
+      description: "Annual national report on reported chlamydia, gonorrhea and syphilis cases"
+    - name: "CDC, Table 28. Chlamydia, Reported Cases and Rates of Reported Cases by State, Ranked by Rates"
+      url: "https://www.cdc.gov/sti-statistics/data-vis/table-ct-state-ranked.html"
+      description: "State chlamydia cases and rates per 100,000 population, 2023, with the U.S. total"
+    - name: "CDC, Gonorrhea, Reported Cases and Rates of Reported Cases by State, Ranked by Rates"
+      url: "https://www.cdc.gov/sti-statistics/data-vis/table-gc-state-ranked.html"
+      description: "State gonorrhea cases and rates per 100,000 population, 2023"
+    - name: "CDC, Primary and Secondary Syphilis, Reported Cases and Rates of Reported Cases by State, Ranked by Rates"
+      url: "https://www.cdc.gov/sti-statistics/data-vis/table-syph-ps-state-ranked.html"
+      description: "State primary and secondary syphilis cases and rates per 100,000 population, 2023"
+
+table:
+  columns:
+    rank: "Rank"
+    state: "State"
+    chlamydia_rate: "Chlamydia per 100,000"
+    gonorrhea_rate: "Gonorrhea per 100,000"
+    syphilis_rate: "P&S Syphilis per 100,000"
+
+  metric_default: chlamydia_rate
+  sort_default: desc
+  higher_is_better: false
+
+  column_formats:
+    chlamydia_rate: "N1"
+    gonorrhea_rate: "N1"
+    syphilis_rate: "N1"
+
+  national:
+    value: 492.2
+    label: "U.S. rate"
+    source: "CDC STI Surveillance"
+    year: 2023
+
+  rows:
+    - rank: 1
+      state: "Louisiana"
+      state_slug: "louisiana"
+      postal_code: "LA"
+      chlamydia_rate: 792.4
+      gonorrhea_rate: 288.4
+      syphilis_rate: 26.1
+    - rank: 2
+      state: "Mississippi"
+      state_slug: "mississippi"
+      postal_code: "MS"
+      chlamydia_rate: 700.9
+      gonorrhea_rate: 251.1
+      syphilis_rate: 30.1
+    - rank: 3
+      state: "Alaska"
+      state_slug: "alaska"
+      postal_code: "AK"
+      chlamydia_rate: 697.7
+      gonorrhea_rate: 310.9
+      syphilis_rate: 22.5
+    - rank: 4
+      state: "Alabama"
+      state_slug: "alabama"
+      postal_code: "AL"
+      chlamydia_rate: 651.1
+      gonorrhea_rate: 226.9
+      syphilis_rate: 28.6
+    - rank: 5
+      state: "Georgia"
+      state_slug: "georgia"
+      postal_code: "GA"
+      chlamydia_rate: 646.4
+      gonorrhea_rate: 274.8
+      syphilis_rate: 20.0
+    - rank: 6
+      state: "South Carolina"
+      state_slug: "south-carolina"
+      postal_code: "SC"
+      chlamydia_rate: 612.1
+      gonorrhea_rate: 222.4
+      syphilis_rate: 17.3
+    - rank: 7
+      state: "North Carolina"
+      state_slug: "north-carolina"
+      postal_code: "NC"
+      chlamydia_rate: 607.9
+      gonorrhea_rate: 243.2
+      syphilis_rate: 19.9
+    - rank: 8
+      state: "Maryland"
+      state_slug: "maryland"
+      postal_code: "MD"
+      chlamydia_rate: 579.8
+      gonorrhea_rate: 207.1
+      syphilis_rate: 14.2
+    - rank: 9
+      state: "Arkansas"
+      state_slug: "arkansas"
+      postal_code: "AR"
+      chlamydia_rate: 579.6
+      gonorrhea_rate: 193.4
+      syphilis_rate: 29.2
+    - rank: 10
+      state: "New York"
+      state_slug: "new-york"
+      postal_code: "NY"
+      chlamydia_rate: 558.4
+      gonorrhea_rate: 235.6
+      syphilis_rate: 14.8
+    - rank: 11
+      state: "Illinois"
+      state_slug: "illinois"
+      postal_code: "IL"
+      chlamydia_rate: 557.7
+      gonorrhea_rate: 202.3
+      syphilis_rate: 11.6
+    - rank: 12
+      state: "Delaware"
+      state_slug: "delaware"
+      postal_code: "DE"
+      chlamydia_rate: 552.7
+      gonorrhea_rate: 151.9
+      syphilis_rate: 17.4
+    - rank: 13
+      state: "Arizona"
+      state_slug: "arizona"
+      postal_code: "AZ"
+      chlamydia_rate: 552.5
+      gonorrhea_rate: 190.7
+      syphilis_rate: 24.1
+    - rank: 14
+      state: "South Dakota"
+      state_slug: "south-dakota"
+      postal_code: "SD"
+      chlamydia_rate: 531.6
+      gonorrhea_rate: 253.3
+      syphilis_rate: 73.4
+    - rank: 15
+      state: "New Mexico"
+      state_slug: "new-mexico"
+      postal_code: "NM"
+      chlamydia_rate: 523.6
+      gonorrhea_rate: 169.0
+      syphilis_rate: 36.6
+    - rank: 16
+      state: "Tennessee"
+      state_slug: "tennessee"
+      postal_code: "TN"
+      chlamydia_rate: 517.4
+      gonorrhea_rate: 186.4
+      syphilis_rate: 14.8
+      notes: "Tennessee changed its STI surveillance system in September 2023, which may have affected case counts."
+    - rank: 17
+      state: "Florida"
+      state_slug: "florida"
+      postal_code: "FL"
+      chlamydia_rate: 498.9
+      gonorrhea_rate: 206.7
+      syphilis_rate: 19.3
+    - rank: 18
+      state: "Missouri"
+      state_slug: "missouri"
+      postal_code: "MO"
+      chlamydia_rate: 498.6
+      gonorrhea_rate: 201.9
+      syphilis_rate: 21.5
+    - rank: 19
+      state: "Nevada"
+      state_slug: "nevada"
+      postal_code: "NV"
+      chlamydia_rate: 493.6
+      gonorrhea_rate: 204.7
+      syphilis_rate: 22.7
+    - rank: 20
+      state: "Texas"
+      state_slug: "texas"
+      postal_code: "TX"
+      chlamydia_rate: 491.9
+      gonorrhea_rate: 176.4
+      syphilis_rate: 15.0
+    - rank: 21
+      state: "California"
+      state_slug: "california"
+      postal_code: "CA"
+      chlamydia_rate: 491.1
+      gonorrhea_rate: 190.2
+      syphilis_rate: 16.3
+    - rank: 22
+      state: "Indiana"
+      state_slug: "indiana"
+      postal_code: "IN"
+      chlamydia_rate: 491.0
+      gonorrhea_rate: 144.0
+      syphilis_rate: 8.7
+    - rank: 23
+      state: "Rhode Island"
+      state_slug: "rhode-island"
+      postal_code: "RI"
+      chlamydia_rate: 480.8
+      gonorrhea_rate: 152.6
+      syphilis_rate: 8.2
+    - rank: 24
+      state: "Virginia"
+      state_slug: "virginia"
+      postal_code: "VA"
+      chlamydia_rate: 472.8
+      gonorrhea_rate: 158.3
+      syphilis_rate: 10.7
+    - rank: 25
+      state: "Oklahoma"
+      state_slug: "oklahoma"
+      postal_code: "OK"
+      chlamydia_rate: 471.3
+      gonorrhea_rate: 170.3
+      syphilis_rate: 27.7
+    - rank: 26
+      state: "Nebraska"
+      state_slug: "nebraska"
+      postal_code: "NE"
+      chlamydia_rate: 468.8
+      gonorrhea_rate: 115.5
+      syphilis_rate: 10.4
+    - rank: 27
+      state: "Ohio"
+      state_slug: "ohio"
+      postal_code: "OH"
+      chlamydia_rate: 461.7
+      gonorrhea_rate: 168.0
+      syphilis_rate: 16.3
+    - rank: 28
+      state: "Kansas"
+      state_slug: "kansas"
+      postal_code: "KS"
+      chlamydia_rate: 453.8
+      gonorrhea_rate: 144.0
+      syphilis_rate: 13.5
+    - rank: 29
+      state: "North Dakota"
+      state_slug: "north-dakota"
+      postal_code: "ND"
+      chlamydia_rate: 436.4
+      gonorrhea_rate: 147.2
+      syphilis_rate: 12.4
+    - rank: 30
+      state: "Hawaii"
+      state_slug: "hawaii"
+      postal_code: "HI"
+      chlamydia_rate: 435.6
+      gonorrhea_rate: 126.7
+      syphilis_rate: 12.7
+    - rank: 31
+      state: "Colorado"
+      state_slug: "colorado"
+      postal_code: "CO"
+      chlamydia_rate: 435.1
+      gonorrhea_rate: 128.7
+      syphilis_rate: 16.0
+    - rank: 32
+      state: "Michigan"
+      state_slug: "michigan"
+      postal_code: "MI"
+      chlamydia_rate: 429.5
+      gonorrhea_rate: 152.2
+      syphilis_rate: 8.4
+    - rank: 33
+      state: "Iowa"
+      state_slug: "iowa"
+      postal_code: "IA"
+      chlamydia_rate: 426.8
+      gonorrhea_rate: 116.8
+      syphilis_rate: 10.3
+    - rank: 34
+      state: "Wisconsin"
+      state_slug: "wisconsin"
+      postal_code: "WI"
+      chlamydia_rate: 422.8
+      gonorrhea_rate: 118.5
+      syphilis_rate: 9.1
+    - rank: 35
+      state: "Pennsylvania"
+      state_slug: "pennsylvania"
+      postal_code: "PA"
+      chlamydia_rate: 421.2
+      gonorrhea_rate: 144.7
+      syphilis_rate: 9.1
+    - rank: 36
+      state: "Massachusetts"
+      state_slug: "massachusetts"
+      postal_code: "MA"
+      chlamydia_rate: 412.7
+      gonorrhea_rate: 139.8
+      syphilis_rate: 10.6
+    - rank: 37
+      state: "New Jersey"
+      state_slug: "new-jersey"
+      postal_code: "NJ"
+      chlamydia_rate: 384.1
+      gonorrhea_rate: 109.1
+      syphilis_rate: 8.1
+    - rank: 38
+      state: "Kentucky"
+      state_slug: "kentucky"
+      postal_code: "KY"
+      chlamydia_rate: 381.9
+      gonorrhea_rate: 134.4
+      syphilis_rate: 14.1
+    - rank: 39
+      state: "Minnesota"
+      state_slug: "minnesota"
+      postal_code: "MN"
+      chlamydia_rate: 379.5
+      gonorrhea_rate: 134.5
+      syphilis_rate: 8.7
+    - rank: 40
+      state: "Connecticut"
+      state_slug: "connecticut"
+      postal_code: "CT"
+      chlamydia_rate: 364.8
+      gonorrhea_rate: 113.3
+      syphilis_rate: 7.3
+    - rank: 41
+      state: "Oregon"
+      state_slug: "oregon"
+      postal_code: "OR"
+      chlamydia_rate: 362.5
+      gonorrhea_rate: 117.2
+      syphilis_rate: 19.2
+    - rank: 42
+      state: "Washington"
+      state_slug: "washington"
+      postal_code: "WA"
+      chlamydia_rate: 354.4
+      gonorrhea_rate: 129.6
+      syphilis_rate: 21.3
+    - rank: 43
+      state: "Montana"
+      state_slug: "montana"
+      postal_code: "MT"
+      chlamydia_rate: 322.6
+      gonorrhea_rate: 67.7
+      syphilis_rate: 27.5
+    - rank: 44
+      state: "Utah"
+      state_slug: "utah"
+      postal_code: "UT"
+      chlamydia_rate: 322.0
+      gonorrhea_rate: 77.9
+      syphilis_rate: 9.7
+    - rank: 45
+      state: "Wyoming"
+      state_slug: "wyoming"
+      postal_code: "WY"
+      chlamydia_rate: 313.2
+      gonorrhea_rate: 42.3
+      syphilis_rate: 2.2
+    - rank: 46
+      state: "Idaho"
+      state_slug: "idaho"
+      postal_code: "ID"
+      chlamydia_rate: 294.9
+      gonorrhea_rate: 39.6
+      syphilis_rate: 3.8
+    - rank: 47
+      state: "West Virginia"
+      state_slug: "west-virginia"
+      postal_code: "WV"
+      chlamydia_rate: 249.0
+      gonorrhea_rate: 54.7
+      syphilis_rate: 10.9
+    - rank: 48
+      state: "Maine"
+      state_slug: "maine"
+      postal_code: "ME"
+      chlamydia_rate: 217.4
+      gonorrhea_rate: 44.4
+      syphilis_rate: 5.3
+    - rank: 49
+      state: "Vermont"
+      state_slug: "vermont"
+      postal_code: "VT"
+      chlamydia_rate: 201.9
+      gonorrhea_rate: 34.0
+      syphilis_rate: 0.5
+    - rank: 50
+      state: "New Hampshire"
+      state_slug: "new-hampshire"
+      postal_code: "NH"
+      chlamydia_rate: 196.6
+      gonorrhea_rate: 41.9
+      syphilis_rate: 3.9
+
+map:
+  title: "Chlamydia Rate by State Map"
+  image_alt: "U.S. map color-coded by reported chlamydia cases per 100,000 people in each state"
+  caption: "Louisiana (792.4), Mississippi (700.9), and Alaska (697.7) have the highest reported chlamydia rates. New Hampshire (196.6), Vermont (201.9), and Maine (217.4) have the lowest."
+  metric_key: chlamydia_rate
+  metric_label: "Chlamydia per 100,000"
+  color_scheme: purple
+  color_scale: linear
+  detail_keys: [chlamydia_rate, gonorrhea_rate, syphilis_rate]
+
+sections:
+  - id: "highest-chlamydia-rates-by-state"
+    title: "Highest Chlamydia Rates by State"
+    table:
+      columns:
+        rank: "Rank"
+        state: "State"
+        chlamydia_rate: "Chlamydia"
+        gonorrhea_rate: "Gonorrhea"
+      rows:
+        - rank: 1
+          state: "Louisiana"
+          state_slug: "louisiana"
+          chlamydia_rate: "792.4"
+          gonorrhea_rate: "288.4"
+        - rank: 2
+          state: "Mississippi"
+          state_slug: "mississippi"
+          chlamydia_rate: "700.9"
+          gonorrhea_rate: "251.1"
+        - rank: 3
+          state: "Alaska"
+          state_slug: "alaska"
+          chlamydia_rate: "697.7"
+          gonorrhea_rate: "310.9"
+        - rank: 4
+          state: "Alabama"
+          state_slug: "alabama"
+          chlamydia_rate: "651.1"
+          gonorrhea_rate: "226.9"
+        - rank: 5
+          state: "Georgia"
+          state_slug: "georgia"
+          chlamydia_rate: "646.4"
+          gonorrhea_rate: "274.8"
+        - rank: 6
+          state: "South Carolina"
+          state_slug: "south-carolina"
+          chlamydia_rate: "612.1"
+          gonorrhea_rate: "222.4"
+        - rank: 7
+          state: "North Carolina"
+          state_slug: "north-carolina"
+          chlamydia_rate: "607.9"
+          gonorrhea_rate: "243.2"
+        - rank: 8
+          state: "Maryland"
+          state_slug: "maryland"
+          chlamydia_rate: "579.8"
+          gonorrhea_rate: "207.1"
+        - rank: 9
+          state: "Arkansas"
+          state_slug: "arkansas"
+          chlamydia_rate: "579.6"
+          gonorrhea_rate: "193.4"
+        - rank: 10
+          state: "New York"
+          state_slug: "new-york"
+          chlamydia_rate: "558.4"
+          gonorrhea_rate: "235.6"
+    paragraphs:
+      - "Louisiana, Mississippi, and Alaska lead at 792.4, 700.9, and 697.7 cases per 100,000. Six of the top seven are Southern states, running from Alabama at 651.1 and Georgia at 646.4 down to North Carolina at 607.9."
+      - "Gonorrhea follows a similar pattern, but Alaska leads it at 310.9, ahead of Louisiana at 288.4 and Georgia at 274.8. Both infections are curable with antibiotics, and because chlamydia often causes no symptoms, most cases are found through screening."
+
+  - id: "why-louisiana-has-the-highest-chlamydia-rate"
+    title: "Why Louisiana Has the Highest Chlamydia Rate"
+    paragraphs:
+      - "Louisiana reports 792.4 chlamydia cases per 100,000 residents, about four times New Hampshire's 196.6. An infection with no symptoms enters the statistics only when someone is tested, and CDC identifies adolescents and young adults as the group with the highest rates."
+      - "Louisiana has sat at or near the top of CDC's state tables for years, alongside Mississippi and Alaska. CDC notes that reported rates reflect how much testing a state does and how fully clinics and labs report, so a high number can partly signal an active screening program."
+
+  - id: "lowest-chlamydia-rates-by-state"
+    title: "Lowest Chlamydia Rates by State"
+    paragraphs:
+      - "New Hampshire reports 196.6 cases per 100,000, with Vermont at 201.9 and Maine at 217.4. All three rank among the oldest states by median age, while CDC data show chlamydia is most common among people aged 15 to 24."
+      - "West Virginia is the lowest state outside New England at 249.0, ahead of Idaho at 294.9 and Wyoming at 313.2. The District of Columbia is not ranked because it is not a state, but its 1,228.0 cases per 100,000 in an entirely urban jurisdiction would top every state."
+
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/health/std-rates-by-state/section-1.jpg"
+    alt: "Stethoscope resting on a gray surface"
+    section: "why-louisiana-has-the-highest-chlamydia-rate"
+    layout: full-width-tall
+  - id: section-2
+    src: "/images/rankings/health/std-rates-by-state/section-2.jpg"
+    alt: "Microscope on a laboratory bench"
+    section: "lowest-chlamydia-rates-by-state"
+    layout: full-width-tall
+
+faq:
+  - question: "What is the chlamydia rate in the United States?"
+    answer: "CDC reported 492.2 chlamydia cases per 100,000 people for 2023. The national gonorrhea rate was 179.5 and the primary and secondary syphilis rate was 15.8."
+
+  - question: "Which state has the highest STD rate?"
+    answer: "It depends on the infection. Louisiana leads for chlamydia at 792.4, Alaska for gonorrhea at 310.9, and South Dakota for primary and secondary syphilis at 73.4."
+
+  - question: "Which state has the lowest chlamydia rate?"
+    answer: "New Hampshire has the lowest rate at 196.6. Vermont is lowest for gonorrhea at 34.0 and for primary and secondary syphilis at 0.5, a rate built on only 3 reported cases."
+
+  - question: "Which state has the highest syphilis rate?"
+    answer: "South Dakota reports 73.4 primary and secondary syphilis cases per 100,000, from 675 cases. New Mexico is next at 36.6 and Mississippi third at 30.1."
+
+  - question: "What is the chlamydia rate in Texas?"
+    answer: "Texas reports 491.9 chlamydia cases per 100,000, which ranks 20th and sits just under the U.S. rate of 492.2. Its gonorrhea rate is 176.4 and its primary and secondary syphilis rate is 15.0."
+
+  - question: "Why does Alaska have such high STD rates?"
+    answer: "Alaska ranks third for chlamydia at 697.7 and first for gonorrhea at 310.9. It has a young population and large Army and Air Force bases, and remote communities depend on a small network of clinics for testing."
+
+related:
+  - title: "Uninsured Rate by State"
+    url: "/rankings/health/states-by-uninsured-rate"
+  - title: "Teen Birth Rate by State"
+    url: "/rankings/health/teen-birth-rate-by-state"
+  - title: "Medicaid Expansion States"
+    url: "/rankings/health/medicaid-expansion-states"
+  - title: "Best Healthcare by State"
+    url: "/rankings/health/best-healthcare-by-state"
+  - title: "Doctors per Capita by State"
+    url: "/rankings/health/doctors-per-capita-by-state"
+  - title: "Compare States"
+    url: "/compare-states"

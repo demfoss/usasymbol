@@ -1,5 +1,6 @@
 @model USASymbol.Models.ViewModels.PageDetailViewModel
 @inject USASymbol.Services.StateRankIndexService StateRankIndex
+@inject IImageUrlService Images
 
 @* "Kentucky also ranks #1 in ..." - state-based internal links computed once from all ranking tables
    (deterministic, capped inbound links per page). Rendered on the server, plain links. *@
@@ -18,9 +19,16 @@
             {
                 <li>
                     <a href="@t.Url">
-                        <span class="state-teasers__badge">@t.Badge</span>
-                        <span class="state-teasers__name">@t.Title</span>
-                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        <img class="state-teasers__image"
+                             src="@Images.Card(string.IsNullOrWhiteSpace(t.HeroImage) ? "/images/og-default.webp" : t.HeroImage)"
+                             alt="@t.HeroImageAlt"
+                             loading="lazy"
+                             width="240"
+                             height="180" />
+                        <span class="state-teasers__content">
+                            <span class="state-teasers__badge">@t.Badge</span>
+                            <span class="state-teasers__name">@t.Title</span>
+                        </span>
                     </a>
                 </li>
             }

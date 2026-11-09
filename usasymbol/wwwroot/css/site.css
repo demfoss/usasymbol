@@ -96,7 +96,7 @@
 .content-divider {
     margin-top: clamp(2.25rem, 3vw, 3rem);
     padding-top: clamp(1.5rem, 2.2vw, 2rem);
-    border-top: 1px solid rgb(226 232 240);
+    border-top: 0; /* no rules between blocks/components */
 }
 
 .page-flow-shell {
@@ -106,7 +106,7 @@
 .page-map-stage {
     margin-top: clamp(1.5rem, 2.8vw, 2.5rem);
     padding-top: clamp(1.25rem, 2vw, 1.8rem);
-    border-top: 1px solid rgb(226 232 240 / 0.9);
+    border-top: 0;
 }
 
 .page-map-stage--after-qa {

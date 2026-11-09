@@ -1,0 +1,244 @@
+type: ranking
+slug: registered-vehicles-by-state
+category: infrastructure
+url: /rankings/infrastructure/registered-vehicles-by-state
+auto_link_phrases:
+  - "registered vehicles by state"
+  - "number of registered vehicles by state"
+  - "vehicles per capita by state"
+  - "vehicles per 1,000 residents by state"
+  - "states with the most registered vehicles"
+extremes_mode: both
+extremes_title: "Most and Fewest Registered Vehicles per 1,000 Residents"
+
+hero_image: "/images/rankings/infrastructure/registered-vehicles-by-state/hero.jpg"
+hero_image_alt: "Evening traffic on a wide multi-lane highway with headlights on"
+
+author: "USA Symbol Team"
+date_published: "2026-11-10"
+date_modified: "2026-11-10"
+
+seo:
+  title: "Registered Vehicles by State | Map & Rankings"
+  description: "Montana has the most registered vehicles per 1,000 residents at 2,174.8. Delaware has the fewest at 425.0. California leads in total at 30,940,652."
+
+page:
+  h1: "Registered Vehicles by State"
+
+  quick_answer:
+    - "Registered vehicles by state are most numerous per resident in Montana, at 2,174.8 per 1,000 residents. Long distances and a huge fleet of trucks and motorcycles give it more than two vehicles for every person."
+    - "Delaware has the fewest at 425.0 per 1,000 residents. Its 447,094 reported vehicles look low, because the state's own records count 990,678 registered that year."
+    - "California registers the most vehicles in total at 30,940,652, yet ranks only 41st per 1,000 residents at 784.7. New York is 8th at 1,056.6, and its total of 20,991,098 is third in the country."
+
+  methodology: "FHWA Highway Statistics 2024, Table MV-1, all registered motor vehicles including publicly owned ones. Per 1,000 residents uses Census Bureau July 1, 2024 estimates. D.C. is excluded. The U.S. figure is the population-weighted average of the 50 states."
+
+  sources:
+    - name: "FHWA, Highway Statistics 2024, Table MV-1 State Motor-Vehicle Registrations"
+      url: "https://www.fhwa.dot.gov/policyinformation/statistics/2024/mv1.cfm"
+      description: "Total registered motor vehicles by state for 2024, published January 2026"
+    - name: "U.S. Census Bureau, Annual Estimates of the Resident Population (NST-EST2024)"
+      url: "https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html"
+      description: "State population estimates for July 1, 2024"
+    - name: "Delaware State Police, 2024 Annual Traffic Statistical Report"
+      url: "https://dsp.delaware.gov/wp-content/uploads/sites/118/2025/07/2024-Annual-Traffic-Statistical-Report.pdf"
+      description: "Registered vehicle count for Delaware cited in the row note and text"
+
+table:
+  caption: "Registered Vehicles by State"
+  note: "Per 1,000 residents divides 2024 registrations by July 1, 2024 population. Vehicles registered in more than one state can be counted twice."
+  columns:
+    rank: "Rank"
+    state: "State"
+    per_1000: "Vehicles per 1,000 Residents"
+    vehicles: "Registered Vehicles (2024)"
+    population: "Population (July 1, 2024)"
+  column_formats:
+    per_1000: "#,##0.0"
+  metric_default: per_1000
+  sort_default: desc
+  national:
+    weight_key: population
+    weight_kind: population
+  rows:
+    - { rank: 1, state: Montana, state_slug: montana, postal_code: MT, per_1000: 2174.8, vehicles: 2473269, population: 1137233 }
+    - { rank: 2, state: South Dakota, state_slug: south-dakota, postal_code: SD, per_1000: 1521.5, vehicles: 1406923, population: 924669 }
+    - { rank: 3, state: Wyoming, state_slug: wyoming, postal_code: WY, per_1000: 1492.7, vehicles: 877152, population: 587618 }
+    - { rank: 4, state: North Dakota, state_slug: north-dakota, postal_code: ND, per_1000: 1351.7, vehicles: 1076690, population: 796568 }
+    - { rank: 5, state: Iowa, state_slug: iowa, postal_code: IA, per_1000: 1189.8, vehicles: 3856647, population: 3241488 }
+    - { rank: 6, state: Alabama, state_slug: alabama, postal_code: AL, per_1000: 1096.5, vehicles: 5655344, population: 5157699 }
+    - { rank: 7, state: Arkansas, state_slug: arkansas, postal_code: AR, per_1000: 1090.1, vehicles: 3366650, population: 3088354 }
+    - { rank: 8, state: New York, state_slug: new-york, postal_code: NY, per_1000: 1056.6, vehicles: 20991098, population: 19867248, notes: "State-reported 2024 registrations. FHWA estimated the figure for 2022 and 2023." }
+    - { rank: 9, state: Vermont, state_slug: vermont, postal_code: VT, per_1000: 1035.3, vehicles: 671376, population: 648493 }
+    - { rank: 10, state: Minnesota, state_slug: minnesota, postal_code: MN, per_1000: 1024.9, vehicles: 5937412, population: 5793151 }
+    - { rank: 11, state: Idaho, state_slug: idaho, postal_code: ID, per_1000: 1014.2, vehicles: 2030069, population: 2001619 }
+    - { rank: 12, state: Oregon, state_slug: oregon, postal_code: OR, per_1000: 995.8, vehicles: 4254488, population: 4272371 }
+    - { rank: 13, state: Kentucky, state_slug: kentucky, postal_code: KY, per_1000: 994.2, vehicles: 4561539, population: 4588372 }
+    - { rank: 14, state: Tennessee, state_slug: tennessee, postal_code: TN, per_1000: 992.8, vehicles: 7175641, population: 7227750 }
+    - { rank: 15, state: Nebraska, state_slug: nebraska, postal_code: NE, per_1000: 991.9, vehicles: 1989172, population: 2005465 }
+    - { rank: 16, state: Louisiana, state_slug: louisiana, postal_code: LA, per_1000: 991.0, vehicles: 4556436, population: 4597740 }
+    - { rank: 17, state: New Hampshire, state_slug: new-hampshire, postal_code: NH, per_1000: 986.9, vehicles: 1390610, population: 1409032 }
+    - { rank: 18, state: Wisconsin, state_slug: wisconsin, postal_code: WI, per_1000: 979.2, vehicles: 5836776, population: 5960975 }
+    - { rank: 19, state: Ohio, state_slug: ohio, postal_code: OH, per_1000: 956.5, vehicles: 11366695, population: 11883304 }
+    - { rank: 20, state: Michigan, state_slug: michigan, postal_code: MI, per_1000: 947.4, vehicles: 9606801, population: 10140459 }
+    - { rank: 21, state: Washington, state_slug: washington, postal_code: WA, per_1000: 944.8, vehicles: 7519050, population: 7958180 }
+    - { rank: 22, state: South Carolina, state_slug: south-carolina, postal_code: SC, per_1000: 924.5, vehicles: 5065151, population: 5478831 }
+    - { rank: 23, state: Alaska, state_slug: alaska, postal_code: AK, per_1000: 922.8, vehicles: 683022, population: 740133 }
+    - { rank: 24, state: Utah, state_slug: utah, postal_code: UT, per_1000: 915.4, vehicles: 3207140, population: 3503613 }
+    - { rank: 25, state: Virginia, state_slug: virginia, postal_code: VA, per_1000: 906.3, vehicles: 7985530, population: 8811195 }
+    - { rank: 26, state: New Mexico, state_slug: new-mexico, postal_code: NM, per_1000: 906.2, vehicles: 1930353, population: 2130256 }
+    - { rank: 27, state: Oklahoma, state_slug: oklahoma, postal_code: OK, per_1000: 905.3, vehicles: 3707717, population: 4095393 }
+    - { rank: 28, state: Colorado, state_slug: colorado, postal_code: CO, per_1000: 885.7, vehicles: 5276703, population: 5957493 }
+    - { rank: 29, state: Arizona, state_slug: arizona, postal_code: AZ, per_1000: 882.7, vehicles: 6692631, population: 7582384 }
+    - { rank: 30, state: Indiana, state_slug: indiana, postal_code: IN, per_1000: 881.1, vehicles: 6100731, population: 6924275 }
+    - { rank: 31, state: Hawaii, state_slug: hawaii, postal_code: HI, per_1000: 878.3, vehicles: 1270153, population: 1446146 }
+    - { rank: 32, state: Missouri, state_slug: missouri, postal_code: MO, per_1000: 868.2, vehicles: 5422419, population: 6245466 }
+    - { rank: 33, state: Maine, state_slug: maine, postal_code: ME, per_1000: 859.0, vehicles: 1206967, population: 1405012 }
+    - { rank: 34, state: Florida, state_slug: florida, postal_code: FL, per_1000: 842.7, vehicles: 19696080, population: 23372215 }
+    - { rank: 35, state: West Virginia, state_slug: west-virginia, postal_code: WV, per_1000: 835.7, vehicles: 1479130, population: 1769979 }
+    - { rank: 36, state: Georgia, state_slug: georgia, postal_code: GA, per_1000: 832.6, vehicles: 9309408, population: 11180878 }
+    - { rank: 37, state: Illinois, state_slug: illinois, postal_code: IL, per_1000: 829.7, vehicles: 10546027, population: 12710158 }
+    - { rank: 38, state: Pennsylvania, state_slug: pennsylvania, postal_code: PA, per_1000: 811.4, vehicles: 10612158, population: 13078751 }
+    - { rank: 39, state: North Carolina, state_slug: north-carolina, postal_code: NC, per_1000: 802.3, vehicles: 8862420, population: 11046024 }
+    - { rank: 40, state: Maryland, state_slug: maryland, postal_code: MD, per_1000: 792.8, vehicles: 4965605, population: 6263220 }
+    - { rank: 41, state: California, state_slug: california, postal_code: CA, per_1000: 784.7, vehicles: 30940652, population: 39431263 }
+    - { rank: 42, state: Connecticut, state_slug: connecticut, postal_code: CT, per_1000: 764.5, vehicles: 2809456, population: 3675069 }
+    - { rank: 43, state: Texas, state_slug: texas, postal_code: TX, per_1000: 754.4, vehicles: 23606401, population: 31290831 }
+    - { rank: 44, state: Rhode Island, state_slug: rhode-island, postal_code: RI, per_1000: 754.2, vehicles: 838866, population: 1112308 }
+    - { rank: 45, state: Mississippi, state_slug: mississippi, postal_code: MS, per_1000: 752.4, vehicles: 2214249, population: 2943045 }
+    - { rank: 46, state: Nevada, state_slug: nevada, postal_code: NV, per_1000: 731.1, vehicles: 2388916, population: 3267467 }
+    - { rank: 47, state: Massachusetts, state_slug: massachusetts, postal_code: MA, per_1000: 713.9, vehicles: 5094689, population: 7136171 }
+    - { rank: 48, state: Kansas, state_slug: kansas, postal_code: KS, per_1000: 675.8, vehicles: 2007586, population: 2970606 }
+    - { rank: 49, state: New Jersey, state_slug: new-jersey, postal_code: NJ, per_1000: 658.5, vehicles: 6256097, population: 9500851 }
+    - { rank: 50, state: Delaware, state_slug: delaware, postal_code: DE, per_1000: 425.0, vehicles: 447094, population: 1051917, notes: "State records list 990,678 registered vehicles for 2024, far above the figure reported to FHWA." }
+
+map:
+  title: "Registered Vehicles by State Map"
+  image_alt: "U.S. map shaded by registered vehicles per 1,000 residents, from 2,174.8 in Montana to 425.0 in Delaware"
+  caption: "Montana (2,174.8), South Dakota (1,521.5), and Wyoming (1,492.7) have the most registered vehicles per 1,000 residents. Delaware (425.0) and New Jersey (658.5) have the fewest."
+  metric_key: per_1000
+  metric_label: "Vehicles per 1,000 Residents"
+  name_key: state
+  color_scheme: orange
+  color_scale: linear
+
+sections:
+  - id: "why-montana-has-the-most-registered-vehicles"
+    title: "Why Montana Has the Most Registered Vehicles"
+    paragraphs:
+      - "Montana has 2,473,269 registered vehicles for 1,137,233 residents. Trucks make up 1,494,471 of them and motorcycles 447,943, a huge count for so few people. The state has no general sales tax, and its registration rules have long drawn owners from other states who register vehicles through Montana companies."
+      - "South Dakota follows at 1,521.5, Wyoming at 1,492.7, and North Dakota at 1,351.7. Ranch work, long drives between towns, and the pickup truck as the default family vehicle push counts up in all three, and public transit barely exists outside a few cities."
+
+  - id: "states-with-the-most-registered-vehicles"
+    title: "States With the Most Registered Vehicles"
+    paragraphs:
+      - "California registers 30,940,652 vehicles, the most of any state, followed by Texas with 23,606,401 and New York with 20,991,098. Population does the work here, and California lands only 41st per 1,000 residents at 784.7. Texas ranks 43rd at 754.4."
+      - "New York is the exception among the giants, at 1,056.6 per 1,000 residents in 8th place. Upstate and Long Island households drive everywhere, even though most New York City households do without a car. Florida counts 19,696,080 vehicles but ranks 34th at 842.7."
+    table:
+      columns:
+        state: "State"
+        count: "Registered Vehicles"
+        per: "Per 1,000 Residents"
+      rows:
+        - state: "California"
+          count: "30,940,652"
+          per: "784.7"
+        - state: "Texas"
+          count: "23,606,401"
+          per: "754.4"
+        - state: "New York"
+          count: "20,991,098"
+          per: "1056.6"
+        - state: "Florida"
+          count: "19,696,080"
+          per: "842.7"
+        - state: "Ohio"
+          count: "11,366,695"
+          per: "956.5"
+        - state: "Pennsylvania"
+          count: "10,612,158"
+          per: "811.4"
+        - state: "Illinois"
+          count: "10,546,027"
+          per: "829.7"
+        - state: "Michigan"
+          count: "9,606,801"
+          per: "947.4"
+        - state: "Georgia"
+          count: "9,309,408"
+          per: "832.6"
+        - state: "North Carolina"
+          count: "8,862,420"
+          per: "802.3"
+
+  - id: "states-with-the-fewest-registered-vehicles"
+    title: "States With the Fewest Registered Vehicles"
+    paragraphs:
+      - "Delaware sits last at 425.0 per 1,000 residents, with 447,094 vehicles reported for 1,051,917 people. State records count 990,678 registered vehicles for 2024, well above the federal figure."
+      - "New Jersey (658.5) and Massachusetts (713.9) come next among large states. Commuter rail into New York and Boston, plus dense towns, let many households do without a second car, a pattern also seen in [public transit usage by state](/rankings/infrastructure/public-transit-usage-by-state). Kansas (675.8) and Nevada (731.1) round out the bottom five."
+    table:
+      columns:
+        state: "State"
+        per: "Per 1,000 Residents"
+        count: "Registered Vehicles"
+      rows:
+        - state: "Delaware"
+          per: "425.0"
+          count: "447,094"
+        - state: "New Jersey"
+          per: "658.5"
+          count: "6,256,097"
+        - state: "Kansas"
+          per: "675.8"
+          count: "2,007,586"
+        - state: "Massachusetts"
+          per: "713.9"
+          count: "5,094,689"
+        - state: "Nevada"
+          per: "731.1"
+          count: "2,388,916"
+        - state: "Mississippi"
+          per: "752.4"
+          count: "2,214,249"
+
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/infrastructure/registered-vehicles-by-state/section-1.jpg"
+    alt: "Aerial view of rows of parked cars in a large parking lot"
+    section: "why-montana-has-the-most-registered-vehicles"
+    layout: full-width-tall
+  - id: section-2
+    src: "/images/rankings/infrastructure/registered-vehicles-by-state/section-2.jpg"
+    alt: "Densely packed cars parked in a large lot seen from above"
+    section: "states-with-the-most-registered-vehicles"
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the most registered vehicles?"
+    answer: "California has the most at 30,940,652, ahead of Texas at 23,606,401 and New York at 20,991,098. Their large populations explain most of that."
+
+  - question: "Which state has the most vehicles per capita?"
+    answer: "Montana, with 2,174.8 per 1,000 residents, followed by South Dakota (1,521.5) and Wyoming (1,492.7). Montana's count includes 447,943 motorcycles."
+
+  - question: "How many registered vehicles are in Texas?"
+    answer: "Texas has 23,606,401 registered vehicles, second only to California. That works out to 754.4 per 1,000 residents, 43rd in the country."
+
+  - question: "How many registered vehicles are in California?"
+    answer: "California has 30,940,652, the most of any state. Per 1,000 residents it ranks 41st at 784.7."
+
+  - question: "Which state has the fewest cars per person?"
+    answer: "Delaware is lowest at 425.0 per 1,000 residents, followed by New Jersey at 658.5 and Kansas at 675.8."
+
+  - question: "Why do rural states have more vehicles per person?"
+    answer: "Distances between towns are long and public transit is scarce, so each adult often needs a vehicle and many households keep several pickups. For the models people buy, see the [most popular car by state](/rankings/culture/most-popular-car-by-state), and for where they are sold, [car dealerships by state](/rankings/economy/car-dealerships-by-state)."
+
+related:
+  - title: "Most Popular Car by State"
+    url: "/rankings/culture/most-popular-car-by-state"
+  - title: "Car Dealerships by State"
+    url: "/rankings/economy/car-dealerships-by-state"
+  - title: "Public Transit Usage by State"
+    url: "/rankings/infrastructure/public-transit-usage-by-state"
+  - title: "Gas Stations by State"
+    url: "/rankings/economy/gas-stations-by-state"
+  - title: "States by Population"
+    url: "/rankings/demographics/states-by-population"

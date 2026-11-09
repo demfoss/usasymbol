@@ -1,0 +1,170 @@
+type: ranking
+slug: michelin-star-restaurants-by-state
+category: food
+url: /rankings/food/michelin-star-restaurants-by-state
+auto_link_phrases:
+  - "michelin star restaurants by state"
+  - "michelin starred restaurants by state"
+  - "states with the most michelin stars"
+  - "michelin star restaurants in the us"
+extremes_mode: both
+extremes_title: "States With the Most and Fewest Michelin Star Restaurants"
+
+hero_image: "/images/rankings/food/michelin-star-restaurants-by-state/hero.jpg"
+hero_image_alt: "Chef plating an elegant fine dining dish in a restaurant kitchen"
+hero_image_caption: "California has 83 Michelin star restaurants, the most of any state. New York follows with 71."
+
+author: "USA Symbol Team"
+date_published: "2026-11-10"
+date_modified: "2026-11-10"
+
+seo:
+  title: "Michelin Star Restaurants by State | Map & Rankings"
+  description: "California has 83 Michelin star restaurants, more than any other state. New York follows with 71 and Florida with 25."
+
+page:
+  h1: "Michelin Star Restaurants by State"
+
+  quick_answer:
+    - "Michelin star restaurants by state are led by California with 83, including 10 with three stars. Michelin has covered the Bay Area since 2007 and the whole state since 2019."
+    - "New York ranks second with 71 and Florida third with 25. Illinois has 19, and its single three-star restaurant, Smyth in Chicago, is one of only 16 in the country."
+    - "Massachusetts and North Carolina each have one starred restaurant. Virginia also has one, The Inn at Little Washington, and it holds two stars."
+
+  methodology: "MICHELIN Guide USA listings on guide.michelin.com in November 2026, counting the latest published selection of each guide region. Only the 14 states with at least one starred restaurant appear, and a state with no current guide is not ranked. Rank 1 is the most starred restaurants, ties are broken by total stars (a three-star counts as 3), and states still tied share a rank. Three Las Vegas restaurants listed only from the discontinued 2008-2009 guide are not counted."
+
+  sources:
+    - name: "MICHELIN Guide USA, Restaurants by Star Level"
+      url: "https://guide.michelin.com/us/en/restaurants/3-stars-michelin/2-stars-michelin/1-star-michelin"
+      description: "Official listings of one, two, and three star restaurants filtered by state and guide region"
+    - name: "MICHELIN Guide, All the Stars in the American South"
+      url: "https://guide.michelin.com/us/en/article/michelin-guide-ceremony/all-the-stars-in-the-michelin-guide-to-the-american-south"
+      description: "Official star announcement for the American South guide"
+    - name: "MICHELIN Guide, All the Stars in Texas"
+      url: "https://guide.michelin.com/us/en/article/michelin-guide-ceremony/all-the-stars-in-the-michelin-guide-texas-2025"
+      description: "Official star announcement for the Texas guide"
+
+table:
+  caption: "Michelin Star Restaurants by State"
+  note: "Only the 14 states with at least one starred restaurant appear. The District of Columbia has 20 starred restaurants, 2 with two stars and 18 with one, and is not ranked."
+  columns:
+    rank: "Rank"
+    state: "State"
+    restaurants: "Starred Restaurants"
+    three_star: "Three Stars"
+    two_star: "Two Stars"
+    one_star: "One Star"
+  metric_default: restaurants
+  sort_default: desc
+  rows:
+    - { rank: 1, state: "California", state_slug: california, postal_code: CA, restaurants: 83, three_star: 10, two_star: 13, one_star: 60 }
+    - { rank: 2, state: "New York", state_slug: new-york, postal_code: NY, restaurants: 71, three_star: 5, two_star: 15, one_star: 51 }
+    - { rank: 3, state: "Florida", state_slug: florida, postal_code: FL, restaurants: 25, three_star: 0, two_star: 2, one_star: 23 }
+    - { rank: 4, state: "Illinois", state_slug: illinois, postal_code: IL, restaurants: 19, three_star: 1, two_star: 4, one_star: 14, notes: "Ties Texas at 19 and ranks higher with 25 total stars to 19" }
+    - { rank: 5, state: "Texas", state_slug: texas, postal_code: TX, restaurants: 19, three_star: 0, two_star: 0, one_star: 19 }
+    - { rank: 6, state: "Colorado", state_slug: colorado, postal_code: CO, restaurants: 10, three_star: 0, two_star: 1, one_star: 9, notes: "Ties Georgia at 10 and ranks higher with 11 total stars to 10" }
+    - { rank: 7, state: "Georgia", state_slug: georgia, postal_code: GA, restaurants: 10, three_star: 0, two_star: 0, one_star: 10 }
+    - { rank: 8, state: "Louisiana", state_slug: louisiana, postal_code: LA, restaurants: 4, three_star: 0, two_star: 1, one_star: 3, notes: "Ties South Carolina at 4 and ranks higher with 5 total stars to 4" }
+    - { rank: 9, state: "South Carolina", state_slug: south-carolina, postal_code: SC, restaurants: 4, three_star: 0, two_star: 0, one_star: 4 }
+    - { rank: 10, state: "Tennessee", state_slug: tennessee, postal_code: TN, restaurants: 3, three_star: 0, two_star: 0, one_star: 3 }
+    - { rank: 10, state: "Pennsylvania", state_slug: pennsylvania, postal_code: PA, restaurants: 3, three_star: 0, two_star: 0, one_star: 3 }
+    - { rank: 12, state: "Virginia", state_slug: virginia, postal_code: VA, restaurants: 1, three_star: 0, two_star: 1, one_star: 0, notes: "One restaurant with two stars, which ranks it above the one-star states" }
+    - { rank: 13, state: "Massachusetts", state_slug: massachusetts, postal_code: MA, restaurants: 1, three_star: 0, two_star: 0, one_star: 1 }
+    - { rank: 13, state: "North Carolina", state_slug: north-carolina, postal_code: NC, restaurants: 1, three_star: 0, two_star: 0, one_star: 1 }
+
+map:
+  title: "Michelin Star Restaurants by State Map"
+  image_alt: "U.S. map shaded by Michelin star restaurants, from California with 83 to states with a single starred restaurant"
+  caption: "California (83) and New York (71) hold most of the country's Michelin stars, while Massachusetts, North Carolina, and Virginia have one starred restaurant each."
+  metric_key: restaurants
+  metric_label: "Starred restaurants"
+  name_key: state
+  color_scheme: red
+  color_scale: log
+
+sections:
+  - id: "why-california-has-the-most-michelin-star-restaurants"
+    title: "Why California Has the Most Michelin Star Restaurants"
+    paragraphs:
+      - "California has 83 starred restaurants and 10 of the 16 three-star restaurants in the country, four of them in San Francisco. Michelin reached the Bay Area in 2007, a year after New York, and extended its inspections to the whole state in 2019."
+      - "Napa and Sonoma add tasting-menu destinations such as The French Laundry in Yountville, built around the same farmland that drives [wine production by state](/rankings/food/wine-production-by-state). Los Angeles and San Diego supply more, including Providence and Addison."
+    table:
+      columns:
+        state: "State"
+        three_star: "Three-Star Restaurants"
+      rows:
+        - state: "California"
+          three_star: "10"
+        - state: "New York"
+          three_star: "5"
+        - state: "Illinois"
+          three_star: "1"
+
+  - id: "michelin-stars-in-texas-and-the-south"
+    title: "Michelin Stars in Texas and the South"
+    paragraphs:
+      - "Texas has 19 starred restaurants, every one with a single star, and four of them are barbecue joints. LeRoy and Lewis and InterStellar BBQ in Austin, Goldee's Bar-B-Q in Fort Worth, and CorkScrew BBQ in Spring earned stars for brisket cooked over wood. The guide reached Texas in 2024."
+      - "Florida ranks third with 25, mostly in Miami, Orlando, and Tampa, and has two restaurants with two stars. Louisiana's one two-star restaurant is Emeril's in New Orleans. Georgia has 10 starred restaurants, from Atlanta to the town of Gay."
+
+  - id: "states-with-one-michelin-star-restaurant"
+    title: "States With One Michelin Star Restaurant"
+    paragraphs:
+      - "Massachusetts has one starred restaurant, 311 Omakase in Boston, and North Carolina has one, Counter in Charlotte. Each state is covered through a single city, which keeps the count at one."
+      - "Virginia's lone restaurant is The Inn at Little Washington, a country inn in Washington, Virginia, and it holds two stars. The District of Columbia, which is not ranked, has 20 starred restaurants, including two-star Jônt and minibar by José Andrés."
+    table:
+      columns:
+        state: "State"
+        restaurant: "Starred Restaurant"
+        stars: "Stars"
+      rows:
+        - state: "Virginia"
+          restaurant: "The Inn at Little Washington"
+          stars: "2"
+        - state: "Massachusetts"
+          restaurant: "311 Omakase"
+          stars: "1"
+        - state: "North Carolina"
+          restaurant: "Counter"
+          stars: "1"
+
+visual_assets:
+  - id: section-1
+    src: "/images/rankings/food/michelin-star-restaurants-by-state/section-1.jpg"
+    alt: "Elegant restaurant dining room with set tables seen through a window"
+    section: "why-california-has-the-most-michelin-star-restaurants"
+    layout: full-width-tall
+  - id: section-2
+    src: "/images/rankings/food/michelin-star-restaurants-by-state/section-2.jpg"
+    alt: "Chef preparing a plated dish in a professional kitchen"
+    section: "michelin-stars-in-texas-and-the-south"
+    layout: full-width-tall
+
+faq:
+  - question: "Which state has the most Michelin star restaurants?"
+    answer: "California has the most with 83, ahead of New York with 71. California also has 10 three-star restaurants, the most of any state."
+
+  - question: "How many Michelin star restaurants are in New York?"
+    answer: "New York has 71 starred restaurants, 5 with three stars, 15 with two, and 51 with one. Most are in New York City, where Michelin published its first U.S. guide in 2006."
+
+  - question: "Which states have Michelin star restaurants?"
+    answer: "Fourteen states have at least one, from California, New York, and Florida to Massachusetts, North Carolina, and Virginia. The District of Columbia has 20 as well."
+
+  - question: "Which states have three-star Michelin restaurants?"
+    answer: "Only three. California has 10, New York has 5, and Illinois has 1, Smyth in Chicago."
+
+  - question: "How many Michelin star restaurants are in Texas?"
+    answer: "Texas has 19, all with one star, in Austin, Houston, San Antonio, Dallas, Fort Worth, and Spring. Four are barbecue restaurants."
+
+  - question: "How many Michelin star restaurants are in Washington, D.C.?"
+    answer: "The District of Columbia has 20, with two stars at Jônt and minibar by José Andrés and one star at the other 18. See [chef salary by state](/rankings/economy/chef-salary-by-state) for what the cooks behind such kitchens earn."
+
+related:
+  - title: "Most Famous Chef by State"
+    url: "/collections/culture/most-famous-chef-by-state"
+  - title: "Chef Salary by State"
+    url: "/rankings/economy/chef-salary-by-state"
+  - title: "Wine Production by State"
+    url: "/rankings/food/wine-production-by-state"
+  - title: "Tourism Spending by State"
+    url: "/rankings/economy/tourism-spending-by-state"
+  - title: "Fast Food Restaurants per Capita by State"
+    url: "/rankings/food/fast-food-restaurants-per-capita-by-state"
