@@ -563,7 +563,8 @@
         document.addEventListener("click", function (event) {
             var save = event.target.closest("[data-save]");
             if (save) {
-                toggleSaved(save.dataset.save);
+                event.preventDefault();
+                toggleSaved(save.dataset.save, save);
                 return;
             }
             var open = event.target.closest("[data-open]");
@@ -791,7 +792,7 @@
             BOOKMARK.replace("FILL", on ? "currentColor" : "none") + '</button>';
     }
 
-    function toggleSaved(slug) {
+    function toggleSaved(slug, source) {
         var index = saved.indexOf(slug);
         if (index !== -1) {
             saved.splice(index, 1);
@@ -802,7 +803,28 @@
             saved.push(slug);
             track("sm_save", { state: slug });
         }
-        renderAll();
+
+        // Update the bookmarks in place (no full re-render) and keep the tapped button where the
+        // finger is: the shortlist block appears above the list and would otherwise push it away.
+        var anchor = source && source.isConnected ? source : null;
+        var before = anchor ? anchor.getBoundingClientRect().top : 0;
+        document.querySelectorAll("[data-save]").forEach(function (button) {
+            if (!button.classList.contains("smx-save")) {
+                return;
+            }
+            var on = saved.indexOf(button.dataset.save) !== -1;
+            var place = placeBySlug.get(button.dataset.save);
+            button.setAttribute("aria-pressed", String(on));
+            button.setAttribute("aria-label", (on ? "Remove " : "Save ") + place.name + (on ? " from" : " to") + " shortlist");
+            button.innerHTML = BOOKMARK.replace("FILL", on ? "currentColor" : "none");
+        });
+        renderShortlist();
+        if (anchor && anchor.isConnected) {
+            var shift = anchor.getBoundingClientRect().top - before;
+            if (shift) {
+                window.scrollBy(0, shift);
+            }
+        }
     }
 
     function setView(next) {

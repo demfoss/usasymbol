@@ -2904,3 +2904,19 @@ body {
     .ranking-primary-table__meta a,
     .ranking-primary-table__meta button { white-space: nowrap; }
 }
+
+/* Mobile: the table title takes its own line; Download CSV/PDF wrap below it
+   (previously the nowrap buttons squeezed the h2 into a one-letter-per-line column). */
+@media (max-width: 767px) {
+    .ranking-primary-table__heading {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        row-gap: 0.75rem;
+    }
+    .ranking-primary-table__heading h2 {
+        flex: 1 1 100%;
+        overflow-wrap: break-word;
+    }
+    .ranking-primary-table__meta { flex: 1 1 100%; flex-wrap: wrap; }
+    .ranking-table-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+}
