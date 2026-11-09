@@ -448,3 +448,8 @@
 .state-teasers__name { min-width: 0; }
 .kt-rank__geo { margin: .6rem 0 0; color: var(--kt-ink-2); font-size: .78rem; }
 .kt-rank__compare-any select { min-height: 44px; max-width: 15rem; padding: .5rem .7rem; border: 1px solid #b7c5d0; border-radius: var(--r-sm, 4px); background: #fff; color: var(--kt-ink); font: inherit; font-size: .86rem; cursor: pointer; }
+@media (max-width: 480px) {
+    .kt-rank__actions { gap: .6rem; }
+    .kt-rank__compare-any { width: 100%; }
+    .kt-rank__compare-any select { width: 100%; max-width: none; text-align-last: center; }
+}
