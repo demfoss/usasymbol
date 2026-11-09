@@ -483,7 +483,7 @@
             renderPlot();
             var again = listHost.querySelector('.cm-row-toggle[data-slug="' + button.dataset.slug + '"]');
             if (again) {
-                again.focus();
+                again.focus({ preventScroll: true });
             }
         });
 

@@ -216,7 +216,7 @@
                 if (status) status.textContent = "Embed code copied to your clipboard.";
                 window.setTimeout(function () { button.textContent = "Copy code"; }, 1800);
             } catch (_) {
-                codeBox.focus();
+                codeBox.focus({ preventScroll: true });
                 codeBox.select();
                 if (status) status.textContent = "Select and copy the highlighted code.";
             }

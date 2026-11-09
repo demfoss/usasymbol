@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
                 mobileMenuButton.click();
-                mobileMenuButton.focus();
+                mobileMenuButton.focus({ preventScroll: true });
             }
         });
     }

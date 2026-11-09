@@ -347,7 +347,7 @@
             trigger.classList.add('border-slate-500', 'ring-2', 'ring-slate-200');
             search.value = '';
             filterList('');
-            setTimeout(() => search.focus(), 30);
+            setTimeout(() => search.focus({ preventScroll: true }), 30);
         }
 
         function closeDropdown() {
@@ -394,7 +394,7 @@
         });
 
         search.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeDropdown(); trigger.focus(); return; }
+            if (e.key === 'Escape') { closeDropdown(); trigger.focus({ preventScroll: true }); return; }
             if (e.key === 'Enter') {
                 const visible = list.querySelector('.picker-item:not([style*="none"])');
                 if (visible) selectItem(visible);

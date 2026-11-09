@@ -533,7 +533,7 @@
             if (open) {
                 track("sm_sheet_open");
             } else {
-                mobileToggle.focus();
+                mobileToggle.focus({ preventScroll: true });
             }
         }
         mobileToggle.addEventListener("click", function () { setSheet(!controlsBody.classList.contains("is-open")); });
@@ -1270,7 +1270,7 @@
         window.setTimeout(function () {
             var close = document.getElementById("sm-drawer-close");
             if (close) {
-                close.focus();
+                close.focus({ preventScroll: true });
             }
         }, 30);
     }
@@ -1289,7 +1289,7 @@
         updateUrlState();
 
         if (lastFocused && typeof lastFocused.focus === "function") {
-            lastFocused.focus();
+            lastFocused.focus({ preventScroll: true });
         }
     }
 

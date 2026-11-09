@@ -198,7 +198,7 @@
             if (opening) {
                 search.value = '';
                 renderList(picker, '');
-                setTimeout(() => search.focus(), 20);
+                setTimeout(() => search.focus({ preventScroll: true }), 20);
             }
         });
 
@@ -206,7 +206,7 @@
         search.addEventListener('keydown', event => {
             if (event.key === 'Escape') {
                 menu.classList.add('hidden');
-                trigger.focus();
+                trigger.focus({ preventScroll: true });
             }
         });
     });

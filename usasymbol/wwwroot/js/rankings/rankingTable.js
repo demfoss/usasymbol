@@ -282,7 +282,7 @@ function initFlagListingFilters() {
             });
             syncClearButton();
             applyFilters();
-            controls[0].focus();
+            controls[0].focus({ preventScroll: true });
         });
     }
 }

@@ -276,7 +276,7 @@
             renderTable();
             var reopened = el.list.querySelector('.th-row-toggle[data-abbr="' + abbr + '"]');
             if (reopened) {
-                reopened.focus();
+                reopened.focus({ preventScroll: true });
             }
         });
     }

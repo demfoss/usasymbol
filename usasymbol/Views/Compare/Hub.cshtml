@@ -288,7 +288,7 @@
             if (!sel[slot]) { var exact = states.filter(function (s) { return s.name.toLowerCase() === input.value.trim().toLowerCase(); })[0]; if (exact) choose(exact); }
         });
         clear.addEventListener('click', function () {
-            sel[slot] = null; input.value = ''; paint(); field.classList.remove('has-value'); refresh(); input.focus();
+            sel[slot] = null; input.value = ''; paint(); field.classList.remove('has-value'); refresh(); input.focus({ preventScroll: true });
         });
         field._paint = paint;
     }

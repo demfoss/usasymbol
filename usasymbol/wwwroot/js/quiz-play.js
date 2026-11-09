@@ -313,7 +313,7 @@
       e.preventDefault();
       if (locked || paused) return;
       var typed = el.input.value;
-      if (!norm(typed)) { el.input.focus(); return; }
+      if (!norm(typed)) { el.input.focus({ preventScroll: true }); return; }
       var q = current();
       var answer = field(q, "correct_answer", "correctAnswer");
       resolve(q, norm(typed) === norm(answer), typed, null);
