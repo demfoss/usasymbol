@@ -2,53 +2,27 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/state-match.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/state-match-v2.css" asp-append-version="true" />
 }
 
-<div class="sm-page">
-    <section class="sm-hero">
-        <div class="sm-shell sm-hero-grid">
-            <div>
-                <nav class="sm-breadcrumb" aria-label="Breadcrumb">
-                    <a href="/">Home</a>
-                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-                    <span aria-current="page">State Match</span>
+<div class="smx">
+    <header class="smx-head">
+        <div class="smx-shell smx-head-inner">
+            <div class="smx-head-text">
+                <nav class="smx-breadcrumb" aria-label="Breadcrumb">
+                    <a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">State Match</span>
                 </nav>
-                <p class="sm-eyebrow"><span></span> Interactive relocation planner</p>
-                <h1>Find the state that <em>fits your life.</em></h1>
-                <p class="sm-lede">
-                    Tell us what matters most. We score every state using the same sourced data
-                    that powers USA Symbol comparisons, then show where each state stands.
-                </p>
-                <a class="sm-hero-guide-link" href="/states/living">
-                    Browse all 50 state living guides
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                </a>
+                <h1>Find the state that fits your life</h1>
+                <p class="smx-lede">Pick what matters to you. Every state is scored on the same sourced data, and the list updates as you go.</p>
             </div>
-            <div class="sm-hero-note">
-                <span class="sm-note-number">01</span>
-                <div>
-                    <strong>Set your priorities</strong>
-                    <p>Move a slider higher when that factor matters more. Zero removes it from your score.</p>
-                </div>
-                <span class="sm-note-number">02</span>
-                <div>
-                    <strong>Explore your matches</strong>
-                    <p>Use the map or ranked list to inspect the raw numbers behind every result.</p>
-                </div>
-            </div>
+            <a class="smx-head-link" href="#method">How scoring works</a>
         </div>
-    </section>
+    </header>
 
-    <article class="page-shell-2col page-shell-2col--xl">
+    <article class="smx-shell">
         <div class="article-content min-w-0">
             @await Html.PartialAsync("_Tool", Model)
         </div>
-
-        <aside class="article-sidebar hidden xl:block" style="padding-top:28px" aria-label="Explore more">
-            <div class="sidebar-content">
-                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
-            </div>
-        </aside>
     </article>
 </div>
 

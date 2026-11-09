@@ -18,102 +18,45 @@
     }
 
     ViewData["InitialWeights"] = Model.InitialWeights;
+    ViewData["SsrRanked"] = Model.Top10;
 
-    // Mirrors matchColor() in state-match.js: paper at 0, dark teal-ink at 100 — wider
-    // range than a straight teal mix so mid-scores stay visually distinguishable.
-    string MatchColor(int score)
-    {
-        var t = Math.Clamp(score, 0, 100) / 100.0;
-        var r = (int)Math.Round(0xf5 + (0x12 - 0xf5) * t);
-        var g = (int)Math.Round(0xf1 + (0x33 - 0xf1) * t);
-        var b = (int)Math.Round(0xe8 + (0x3a - 0xe8) * t);
-        return $"rgb({r},{g},{b})";
-    }
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/state-match.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/state-match-v2.css" asp-append-version="true" />
 }
 
-<div class="sm-page">
-    <section class="sm-hero">
-        <div class="sm-shell sm-hero-grid">
-            <div>
-                <nav class="sm-breadcrumb" aria-label="Breadcrumb">
-                    <a href="/">Home</a>
-                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-                    <a href="/state-match">State Match</a>
-                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-                    <span aria-current="page">@Model.Heading</span>
+<div class="smx">
+    <header class="smx-head">
+        <div class="smx-shell smx-head-inner">
+            <div class="smx-head-text">
+                <nav class="smx-breadcrumb" aria-label="Breadcrumb">
+                    <a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/state-match">State Match</a> <span aria-hidden="true">/</span> <span aria-current="page">@Model.Heading</span>
                 </nav>
-                <p class="sm-eyebrow"><span></span> Interactive relocation planner</p>
                 <h1>@Model.Heading</h1>
-                <p class="sm-lede">@Model.Lede</p>
-                <a class="sm-hero-guide-link" href="/state-match">
-                    Build your own custom ranking
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                </a>
+                <p class="smx-lede">@Model.Lede</p>
+                <p class="smx-lede smx-narrative">@narrative</p>
             </div>
+            <a class="smx-head-link" href="/state-match">Build your own ranking</a>
         </div>
-    </section>
+    </header>
 
-    <article class="page-shell-2col page-shell-2col--xl">
+    <article class="smx-shell">
     <div class="article-content min-w-0">
-    <section class="sm-shell sm-ranking-card sm-preset-static" aria-labelledby="sm-preset-ranking-title">
-        <div class="sm-card-head sm-ranking-head">
-            <div>
-                <p class="sm-section-kicker">Top 10 right now</p>
-                <h2 id="sm-preset-ranking-title">@Model.Heading</h2>
-            </div>
-        </div>
-        <div class="sm-table-head" aria-hidden="true">
-            <span>Rank</span>
-            <span>State</span>
-            <span>Best fit</span>
-            <span>Match</span>
-        </div>
-        <div class="sm-ranking-list">
-            @foreach (var row in Model.Top10)
-            {
-                <a class="sm-state-row" href="/states/@row.Place.Slug/living">
-                    <span class="sm-row-rank">@row.Rank.ToString("00")</span>
-                    <span class="sm-row-state">
-                        <img class="sm-row-flag" src="@row.Place.FlagImageUrl" alt="@row.Place.Name flag" width="34" height="23" loading="lazy">
-                        <span class="sm-row-name">
-                            <strong>@row.Place.Name</strong>
-                            <small>@(string.IsNullOrEmpty(row.Place.Region) ? "United States" : row.Place.Region) &middot; @row.Place.Abbreviation</small>
-                        </span>
-                    </span>
-                    <span class="sm-row-fit">@(row.StrongestMetricName ?? "Balanced")</span>
-                    <span class="sm-row-score">
-                        <span class="sm-score-number">@row.Score</span>
-                        <span class="sm-score-track"><i class="sm-score-dot" style="left:@(row.Score)%;background:@MatchColor(row.Score)"></i></span>
-                    </span>
-                </a>
-            }
-        </div>
-        <p class="sm-preset-narrative">@narrative</p>
-    </section>
-
     @await Html.PartialAsync("_Tool", Model.Tool)
 
-    <section class="sm-shell sm-preset-links">
-        <p class="sm-section-kicker">Looking for something else?</p>
-        <div class="sm-preset-chip-row">
-            <a class="sm-preset-chip" href="/state-match">Custom ranking</a>
+    <section class="smx-links">
+        <p class="smx-links-label">Looking for something else?</p>
+        <div class="smx-chip-row">
+            <a class="smx-chip" href="/state-match">Custom ranking</a>
             @foreach (var link in Model.OtherPresets)
             {
-                <a class="sm-preset-chip" href="/match/@link.Slug">@link.NavLabel</a>
+                <a class="smx-chip" href="/match/@link.Slug">@link.NavLabel</a>
             }
         </div>
     </section>
     </div>
-
-    <aside class="article-sidebar hidden xl:block" style="padding-top:28px" aria-label="Explore more">
-        <div class="sidebar-content">
-            @await Html.PartialAsync("_GuidesAndRankingsSidebar")
-        </div>
-    </aside>
     </article>
 </div>
 

@@ -24,6 +24,8 @@ namespace USASymbol.Controllers
         public async Task<IActionResult> Index(string? state, string? w)
         {
             var model = await _stateMatchService.BuildAsync();
+            var defaultWeights = model.MetricOptions.ToDictionary(option => option.Key, option => option.DefaultWeight);
+            ViewData["SsrRanked"] = (await _stateMatchService.RankAsync(defaultWeights, model)).Take(10).ToList();
 
             ViewData["Title"] = "Find Your Best State to Live In | State Match";
             ViewData["Description"] = "Adjust cost, jobs, housing, safety, climate, healthcare, education, and tax priorities to find the U.S. states that fit you best.";

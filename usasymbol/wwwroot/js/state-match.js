@@ -34,6 +34,19 @@
     var quizProgressBar = document.getElementById("sm-quiz-progress-bar");
     var manualControlsEl = document.getElementById("sm-manual-controls");
     var coupleLink = document.getElementById("sm-couple-link");
+    var topHost = document.getElementById("sm-top");
+    var darkHorseEl = document.getElementById("sm-dark-horse");
+    var shortlistEl = document.getElementById("sm-shortlist");
+    var emptyEl = document.getElementById("sm-empty");
+    var fineToggle = document.getElementById("sm-fine-toggle");
+    var fineLabel = document.getElementById("sm-fine-label");
+    var tabList = document.getElementById("sm-tab-list");
+    var tabMap = document.getElementById("sm-tab-map");
+    var viewList = document.getElementById("sm-view-list");
+    var viewMap = document.getElementById("sm-view-map");
+    var compareLabel = document.getElementById("sm-compare-label");
+    var controlsSummary = document.getElementById("sm-controls-summary");
+    var homeHint = document.getElementById("sm-home-hint");
     var sensitivityPanel = document.getElementById("sm-sensitivity");
     var placeByAbbr = new Map(places.map(function (place) { return [place.abbreviation, place]; }));
 
@@ -88,6 +101,43 @@
     var home = readHome();
     var money = { data: null, paycheck: null, loading: null, failed: false, salary: readSalary() };
     var sensitivitySuggestion = null;
+    var openTop = null;
+    var saved = [];
+    var prevRanks = null;
+    var currentRanks = null;
+    var moveTimer = null;
+    var activePresetName = null;
+    var view = "list";
+    // Keep identical to StateMatchPhrases.cs so server-rendered card text matches this.
+    var PHRASES = {
+        cost: ["low everyday costs", "high everyday costs"],
+        income: ["high incomes", "lower incomes"],
+        jobs: ["a strong job market", "a tighter job market"],
+        housing: ["affordable homes", "pricey homes"],
+        safety: ["low crime", "higher crime"],
+        health: ["good healthcare", "weaker healthcare"],
+        education: ["strong schools", "weaker schools"],
+        warmth: ["a warm climate", "cold winters"],
+        incometax: ["low income tax", "high income tax"],
+        propertytax: ["low property tax", "high property tax"],
+        salestax: ["low sales tax", "high sales tax"],
+        jobgrowth: ["fast job growth", "slow job growth"],
+        childcare: ["cheaper childcare", "costly childcare"],
+        commute: ["short commutes", "long commutes"],
+        rent: ["low rent", "high rent"],
+        lifeexpectancy: ["long life expectancy", "shorter life expectancy"],
+        sunny: ["lots of sunshine", "fewer sunny days"]
+    };
+
+    var PRESET_NAMES = { balanced: "Balanced", budget: "Budget", career: "Career", family: "Family", warm: "Warmth" };
+    var LEVELS = [
+        { label: "Skip", value: 0 },
+        { label: "Some", value: 25 },
+        { label: "High", value: 60 },
+        { label: "Top", value: 100 }
+    ];
+    var FILTER_LABELS = { noIncomeTax: "No state income tax", popMillion: "Population over 1 million", warmClimate: "Warm climate" };
+    var BOOKMARK = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h8v11l-4-3-4 3z" fill="FILL" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg>';
 
     var SLIDER_GROUPS = [
         { name: "Economy", icon: "fa-solid fa-sack-dollar", keys: ["cost", "income", "jobs", "housing"] },
@@ -340,88 +390,78 @@
         return true;
     }
 
+    function levelIndex(value) {
+        var best = 0;
+        var bestDistance = Infinity;
+        LEVELS.forEach(function (level, index) {
+            var distance = Math.abs(level.value - value);
+            if (distance < bestDistance) {
+                best = index;
+                bestDistance = distance;
+            }
+        });
+        return best;
+    }
+
     function buildSliders() {
         var grouped = {};
         SLIDER_GROUPS.forEach(function (group) { group.keys.forEach(function (key) { grouped[key] = true; }); });
         var groups = SLIDER_GROUPS.map(function (group) {
             return {
                 name: group.name,
-                icon: group.icon,
                 optional: Boolean(group.optional),
                 metrics: group.keys.map(function (key) { return metricByKey.get(key); }).filter(Boolean)
             };
         });
         var leftover = metrics.filter(function (metric) { return !grouped[metric.key]; });
         if (leftover.length) {
-            groups.push({ name: "Other", icon: "fa-solid fa-ellipsis", optional: true, metrics: leftover });
+            groups.push({ name: "Other", optional: true, metrics: leftover });
         }
 
         var visibleGroups = groups.filter(function (group) { return group.metrics.length && !group.optional; });
         var optionalGroups = groups.filter(function (group) { return group.metrics.length && group.optional; });
 
         function groupHtml(group) {
-            return '<div class="sm-slider-group" role="group" aria-label="' + escapeHtml(group.name) + '">' +
-                '<p class="sm-slider-group-title"><i class="' + escapeHtml(group.icon) + '" aria-hidden="true"></i>' + escapeHtml(group.name) + '</p>' +
-                group.metrics.map(sliderHtml).join("") +
-                '</div>';
+            return '<div class="smx-level-group" role="group" aria-label="' + escapeHtml(group.name) + '">' +
+                '<p class="smx-level-title">' + escapeHtml(group.name) + '</p>' +
+                group.metrics.map(levelHtml).join("") + '</div>';
+        }
+
+        function levelHtml(metric) {
+            var safeKey = escapeHtml(metric.key);
+            return '<div class="smx-level">' +
+                '<div class="smx-level-head"><span class="smx-level-name" id="sm-level-name-' + safeKey + '">' + escapeHtml(metric.name) + '</span>' +
+                '<span class="smx-level-hint">' + escapeHtml(metric.hint) + '</span></div>' +
+                '<div class="smx-seg" role="radiogroup" aria-labelledby="sm-level-name-' + safeKey + '" data-key="' + safeKey + '">' +
+                LEVELS.map(function (level, index) {
+                    return '<button type="button" role="radio" class="smx-seg-btn" aria-checked="false" data-index="' + index + '">' + level.label + '</button>';
+                }).join("") + '</div></div>';
         }
 
         sliderHost.innerHTML = visibleGroups.map(groupHtml).join("") +
             (optionalGroups.length
-                ? '<details class="sm-more-priorities"><summary>More priorities <span>6 optional factors</span></summary><div>' +
-                    optionalGroups.map(groupHtml).join("") + '</div></details>'
+                ? '<details class="smx-more"><summary>More priorities</summary>' + optionalGroups.map(groupHtml).join("") + '</details>'
                 : '');
 
-        function sliderHtml(metric) {
-            var safeKey = escapeHtml(metric.key);
-            return [
-                '<div class="sm-metric-control">',
-                '<label class="sm-metric-head" for="sm-weight-' + safeKey + '">',
-                '<i class="' + escapeHtml(metric.icon) + ' sm-metric-icon" aria-hidden="true"></i>',
-                '<span><span class="sm-metric-name">' + escapeHtml(metric.name) + '</span>',
-                '<span class="sm-metric-hint">' + escapeHtml(metric.hint) + '</span></span>',
-                '<output class="sm-metric-value" id="sm-value-' + safeKey + '" for="sm-weight-' + safeKey + '">' + weights[metric.key] + '</output>',
-                '</label>',
-                '<div class="sm-range-row">',
-                '<span class="sm-range-endpoint">0</span>',
-                '<input class="sm-range" id="sm-weight-' + safeKey + '" type="range" min="0" max="100" step="5" value="' + weights[metric.key] + '"',
-                ' data-key="' + safeKey + '" aria-label="' + escapeHtml(metric.name) + ' importance, 0 to 100. 0 removes it from your score." title="' + escapeHtml(metric.description) + '">',
-                '<span class="sm-range-endpoint">100</span>',
-                '</div>',
-                '</div>'
-            ].join("");
-        }
-
-        sliderHost.querySelectorAll(".sm-range").forEach(function (input) {
-            updateRangeFill(input);
-            applyZeroState(input.dataset.key);
-            input.addEventListener("input", function () {
-                var key = input.dataset.key;
-                weights[key] = Number(input.value);
-                document.getElementById("sm-value-" + key).textContent = input.value;
-                updateRangeFill(input);
-                applyZeroState(key);
-                setActivePreset(null);
-                renderAll();
-                scheduleUrlUpdate();
-            });
+        sliderHost.addEventListener("click", function (event) {
+            var button = event.target.closest(".smx-seg-btn");
+            if (!button) {
+                return;
+            }
+            var key = button.parentElement.dataset.key;
+            trackMoves();
+            // Snap every priority to its nearest level first, so what the buttons show is exactly what is scored.
+            Object.keys(weights).forEach(function (name) { weights[name] = LEVELS[levelIndex(weights[name] || 0)].value; });
+            weights[key] = LEVELS[Number(button.dataset.index)].value;
+            syncSliderValues();
+            setActivePreset(null);
+            track("sm_level_change", { metric: key, level: LEVELS[Number(button.dataset.index)].label });
+            renderAll();
+            scheduleUrlUpdate();
         });
 
+        syncSliderValues();
         syncPresetState();
-    }
-
-    function updateRangeFill(input) {
-        var min = Number(input.min) || 0;
-        var max = Number(input.max) || 100;
-        var percent = ((Number(input.value) - min) / (max - min)) * 100;
-        input.style.setProperty("--sm-range-fill", percent + "%");
-    }
-
-    function applyZeroState(key) {
-        var output = document.getElementById("sm-value-" + key);
-        if (output) {
-            output.classList.toggle("is-zero", weights[key] === 0);
-        }
     }
 
     function bindControls() {
@@ -431,15 +471,18 @@
                 if (!presets[name]) {
                     return;
                 }
+                trackMoves();
                 weights = Object.assign({}, presets[name]);
                 syncSliderValues();
                 setActivePreset(name);
+                track("sm_preset", { preset: name });
                 renderAll();
                 scheduleUrlUpdate();
             });
         });
 
         resetButton.addEventListener("click", function () {
+            trackMoves();
             weights = defaults();
             syncSliderValues();
             setActivePreset("balanced");
@@ -459,7 +502,9 @@
                 if (!event.target.closest(".sm-try") || !sensitivitySuggestion) {
                     return;
                 }
+                trackMoves();
                 weights[sensitivitySuggestion.key] = sensitivitySuggestion.weight;
+                track("sm_nudge_try", { metric: sensitivitySuggestion.key });
                 syncSliderValues();
                 setActivePreset(null);
                 renderAll();
@@ -479,9 +524,60 @@
             }
         });
 
-        mobileToggle.addEventListener("click", function () {
-            var collapsed = controlsBody.classList.toggle("is-collapsed");
-            mobileToggle.setAttribute("aria-expanded", String(!collapsed));
+        var sheetBackdrop = document.getElementById("sm-sheet-backdrop");
+        function setSheet(open) {
+            controlsBody.classList.toggle("is-open", open);
+            sheetBackdrop.classList.toggle("is-open", open);
+            mobileToggle.setAttribute("aria-expanded", String(open));
+            document.body.classList.toggle("sm-drawer-lock", open);
+            if (open) {
+                track("sm_sheet_open");
+            } else {
+                mobileToggle.focus();
+            }
+        }
+        mobileToggle.addEventListener("click", function () { setSheet(!controlsBody.classList.contains("is-open")); });
+        sheetBackdrop.addEventListener("click", function () { setSheet(false); });
+        document.getElementById("sm-sheet-close").addEventListener("click", function () { setSheet(false); });
+        document.getElementById("sm-sheet-done").addEventListener("click", function () { setSheet(false); });
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && controlsBody.classList.contains("is-open")) {
+                setSheet(false);
+            }
+        });
+
+        fineToggle.addEventListener("click", function () {
+            var open = sliderHost.hidden;
+            sliderHost.hidden = !open;
+            fineToggle.setAttribute("aria-expanded", String(open));
+            fineLabel.textContent = open ? "Hide" : (activePresetName ? "Show" : "Adjusted");
+            if (open) {
+                track("sm_fine_tune_open");
+            }
+        });
+
+        tabList.addEventListener("click", function () { setView("list"); });
+        tabMap.addEventListener("click", function () { setView("map"); });
+
+        // Save buttons (cards + rows) and shortlist chips are rendered by JS, so delegate.
+        document.addEventListener("click", function (event) {
+            var save = event.target.closest("[data-save]");
+            if (save) {
+                toggleSaved(save.dataset.save);
+                return;
+            }
+            var open = event.target.closest("[data-open]");
+            if (open) {
+                openDetail(open.dataset.open, true);
+                return;
+            }
+            var clear = event.target.closest("[data-clear-filter]");
+            if (clear) {
+                filters[clear.dataset.clearFilter] = false;
+                document.querySelectorAll('.sm-filter-toggle input[data-filter="' + clear.dataset.clearFilter + '"]').forEach(function (input) { input.checked = false; });
+                renderAll();
+                scheduleUrlUpdate();
+            }
         });
     }
 
@@ -490,7 +586,9 @@
             var key = input.dataset.filter;
             input.checked = Boolean(filters[key]);
             input.addEventListener("change", function () {
+                trackMoves();
                 filters[key] = input.checked;
+                track("sm_filter", { filter: key, on: input.checked });
                 renderAll();
                 scheduleUrlUpdate();
             });
@@ -512,6 +610,7 @@
     }
 
     function startQuiz() {
+        track("sm_quiz_start");
         quizStep = 0;
         quizTally = {};
         quizLaunchButton.hidden = true;
@@ -564,6 +663,7 @@
             }
         });
 
+        trackMoves();
         weights = result;
         syncSliderValues();
         setActivePreset(null);
@@ -579,17 +679,11 @@
     }
 
     function syncSliderValues() {
-        metrics.forEach(function (metric) {
-            var input = document.getElementById("sm-weight-" + metric.key);
-            var output = document.getElementById("sm-value-" + metric.key);
-            if (input) {
-                input.value = weights[metric.key];
-                updateRangeFill(input);
-            }
-            if (output) {
-                output.textContent = weights[metric.key];
-            }
-            applyZeroState(metric.key);
+        sliderHost.querySelectorAll(".smx-seg").forEach(function (group) {
+            var active = levelIndex(weights[group.dataset.key] || 0);
+            group.querySelectorAll(".smx-seg-btn").forEach(function (button) {
+                button.setAttribute("aria-checked", String(Number(button.dataset.index) === active));
+            });
         });
     }
 
@@ -603,26 +697,158 @@
     }
 
     function setActivePreset(name) {
+        activePresetName = name;
         controlsBody.querySelectorAll(".sm-preset").forEach(function (button) {
-            button.classList.toggle("is-active", button.dataset.preset === name);
+            var on = button.dataset.preset === name;
+            button.classList.toggle("is-active", on);
+            button.setAttribute("aria-pressed", String(on));
         });
+    }
+
+    function track(name, data) {
+        try {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push(Object.assign({ event: name }, data || {}));
+        } catch (_) { /* analytics is optional */ }
+    }
+
+    /** Remember the current order so the next render can show how far each state moved. */
+    function trackMoves() {
+        prevRanks = currentRanks;
+        window.clearTimeout(moveTimer);
+        moveTimer = window.setTimeout(function () {
+            prevRanks = null;
+            renderAll();
+        }, 2600);
+    }
+
+    function moveHtml(slug) {
+        if (!prevRanks || !prevRanks[slug] || !currentRanks || !currentRanks[slug]) {
+            return "";
+        }
+        var diff = prevRanks[slug] - currentRanks[slug];
+        if (diff === 0) {
+            return "";
+        }
+        return '<span class="smx-move ' + (diff > 0 ? "is-up" : "is-down") + '">' + (diff > 0 ? "↑" : "↓") + Math.abs(diff) + '</span>';
+    }
+
+    function lowerFirst(text) {
+        return /^[A-Z][a-z]/.test(text) ? text.charAt(0).toLowerCase() + text.slice(1) : text;
+    }
+
+    /**
+     * One short sentence: up to two strengths, then the main trade-off. With no home state it
+     * ranks metrics by their 0–1 score (same rule as StateMatchService); with one it uses the
+     * real gap to that state.
+     */
+    function summaryText(row, list) {
+        var strong = [];
+        var weak = null;
+        if (baselineFor(row.place)) {
+            strong = list.pros.slice(0, 2).map(function (item) { return item.key; });
+            weak = list.cons[0] ? list.cons[0].key : null;
+        } else {
+            var items = [];
+            row.place.metrics.forEach(function (metric) {
+                if ((weights[metric.key] || 0) > 0 && row.normalized[metric.key] != null && metricRanges.get(metric.key).max > metricRanges.get(metric.key).min) {
+                    items.push({ key: metric.key, value: row.normalized[metric.key] });
+                }
+            });
+            strong = items.slice().sort(function (x, y) { return y.value - x.value; })
+                .filter(function (item) { return item.value >= 0.6; }).slice(0, 2).map(function (item) { return item.key; });
+            var low = items.slice().sort(function (x, y) { return x.value - y.value; })[0];
+            weak = low && low.value <= 0.4 ? low.key : null;
+        }
+        var good = strong.filter(function (key) { return PHRASES[key]; }).map(function (key) { return PHRASES[key][0]; });
+        var bad = weak && PHRASES[weak] ? PHRASES[weak][1] : null;
+        if (!good.length) {
+            return bad ? "A balanced match across your priorities, though " + bad + "." : "A balanced match across your priorities.";
+        }
+        var text = good.join(" and ");
+        return text.charAt(0).toUpperCase() + text.slice(1) + (bad ? ", but " + bad : "") + ".";
+    }
+
+    function homeLineText(place) {
+        if (homePlace() === place) {
+            return "This is where you live now.";
+        }
+        var base = baselineFor(place);
+        if (!base) {
+            return "";
+        }
+        var parts = ["housing", "income", "warmth"].map(function (key) {
+            var item = facts.fact(place, key, base);
+            return item ? item.chip : null;
+        }).filter(Boolean);
+        return parts.length ? "vs " + base.name + ": " + parts.join(" · ") : "";
+    }
+
+    function saveButton(slug, name) {
+        var on = saved.indexOf(slug) !== -1;
+        return '<button type="button" class="smx-save" data-save="' + escapeHtml(slug) + '" aria-pressed="' + on +
+            '" aria-label="' + (on ? "Remove " : "Save ") + escapeHtml(name) + (on ? " from" : " to") + ' shortlist">' +
+            BOOKMARK.replace("FILL", on ? "currentColor" : "none") + '</button>';
+    }
+
+    function toggleSaved(slug) {
+        var index = saved.indexOf(slug);
+        if (index !== -1) {
+            saved.splice(index, 1);
+        } else {
+            if (saved.length >= 3) {
+                saved.shift();
+            }
+            saved.push(slug);
+            track("sm_save", { state: slug });
+        }
+        renderAll();
+    }
+
+    function setView(next) {
+        view = next;
+        var isList = next === "list";
+        viewList.hidden = !isList;
+        viewMap.hidden = isList;
+        tabList.classList.toggle("is-active", isList);
+        tabMap.classList.toggle("is-active", !isList);
+        tabList.setAttribute("aria-selected", String(isList));
+        tabMap.setAttribute("aria-selected", String(!isList));
+        if (!isList) {
+            track("sm_map_view");
+        }
     }
 
     function renderAll() {
         scored = scorePlaces();
+        var eligible = scored.filter(function (row) { return row.eligible; });
+        currentRanks = {};
+        scored.forEach(function (row) { currentRanks[row.place.slug] = row.rank; });
+
+        var presetLabel = activePresetName ? PRESET_NAMES[activePresetName] : "Custom priorities";
+        var mine = homePlace();
+        compareLabel.textContent = presetLabel + " · compared with " + (mine ? mine.name : "US average");
+        controlsSummary.textContent = presetLabel;
+        homeHint.textContent = mine
+            ? "Every comparison below is against " + mine.name + "."
+            : "Optional. We’ll compare every state with yours instead of the US average.";
+        fineLabel.textContent = sliderHost.hidden ? (activePresetName ? "Show" : "Adjusted") : "Hide";
+
+        renderTop(eligible);
+        renderDarkHorse(eligible);
         renderRanking();
         updateTileGrid();
+        renderShortlist();
 
-        var eligible = scored.filter(function (row) { return row.eligible; });
         var activeWeight = metrics.reduce(function (sum, metric) {
             return sum + (weights[metric.key] || 0);
         }, 0);
         var excludedCount = scored.length - eligible.length;
         var summary = activeWeight > 0
-            ? eligible.length + " of " + scored.length + " places scored · top match " + (eligible[0] ? eligible[0].place.name : "—")
+            ? eligible.length + " of " + scored.length + " places scored"
             : "Choose at least one priority";
         if (excludedCount > 0) {
-            summary += " · " + excludedCount + " excluded by your filters";
+            summary += " · " + excludedCount + " removed by your must-haves";
         }
         if (noDataPlaces.length) {
             summary += " · " + noDataPlaces.map(function (place) { return place.abbreviation; }).join(", ") + ": not enough data";
@@ -633,54 +859,158 @@
             renderDrawer(currentSlug);
         }
 
-        // Carry the current sliders over as "your" side of the couples tool.
+        // Carry the current priorities over as "your" side of the couples tool.
         if (coupleLink) {
             coupleLink.href = "/tools/where-should-we-move?a=" + encodeURIComponent(weightVector());
         }
     }
 
+    function renderTop(eligible) {
+        if (!eligible.length || !hasActiveWeights()) {
+            topHost.innerHTML = "";
+            return;
+        }
+        topHost.innerHTML = eligible.slice(0, 3).map(function (row, index) {
+            var place = row.place;
+            var base = baselineFor(place);
+            var list = facts.prosAndCons(place, weights, base);
+            var homeLine = homeLineText(place);
+            var isOpen = openTop === place.slug;
+            var chips = list.pros.slice(0, 2).map(function (item) { return factChip(item, true); })
+                .concat(list.cons.slice(0, 1).map(function (item) { return factChip(item, false); })).join("");
+            return '<article class="smx-top-card' + (index === 0 ? " is-first" : "") + '" data-slug="' + escapeHtml(place.slug) + '">' +
+                '<p class="smx-top-rank">' + (index === 0 ? "Best match" : "#" + (index + 1)) + ' ' + moveHtml(place.slug) + '</p>' +
+                '<div class="smx-top-main"><div><h3>' + escapeHtml(place.name) + '</h3>' +
+                '<p class="smx-top-region">' + escapeHtml(place.region || "United States") + '</p></div>' +
+                '<div class="smx-top-side"><span class="smx-top-score">' + row.score + '</span>' + saveButton(place.slug, place.name) + '</div></div>' +
+                '<p class="smx-top-summary">' + escapeHtml(summaryText(row, list)) + '</p>' +
+                (homeLine ? '<p class="smx-home-line">' + escapeHtml(homeLine) + '</p>' : '') +
+                (isOpen ? '<div class="smx-top-chips">' + chips + '</div>' : '') +
+                '<div class="smx-top-actions">' +
+                '<button type="button" class="smx-btn smx-btn-ghost" data-toggle-top="' + escapeHtml(place.slug) + '" aria-expanded="' + isOpen + '">' + (isOpen ? "Hide details" : "See details") + '</button>' +
+                (isOpen ? '<button type="button" class="smx-btn smx-btn-ghost" data-open="' + escapeHtml(place.slug) + '">Full breakdown</button>' +
+                    '<a class="smx-link" href="/states/' + encodeURIComponent(place.slug) + '/living">' + escapeHtml(place.name) + ' living guide</a>' : '') +
+                '</div></article>';
+        }).join("");
+
+        topHost.querySelectorAll("[data-toggle-top]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                openTop = openTop === button.dataset.toggleTop ? null : button.dataset.toggleTop;
+                if (openTop) {
+                    track("sm_details_open", { state: openTop });
+                }
+                renderTop(scored.filter(function (row) { return row.eligible; }));
+            });
+        });
+    }
+
+    /** A state outside the top 3 that is unusually strong on your single biggest priority. */
+    function renderDarkHorse(eligible) {
+        darkHorseEl.hidden = true;
+        if (!hasActiveWeights() || eligible.length < 8) {
+            return;
+        }
+        var max = 0;
+        metrics.forEach(function (metric) { max = Math.max(max, weights[metric.key] || 0); });
+        var leaders = metrics.filter(function (metric) { return (weights[metric.key] || 0) === max; });
+        if (leaders.length !== 1) {
+            return; // no single top priority (e.g. Balanced) means nothing to be "unexpected" about
+        }
+        var metric = leaders[0];
+        var best = null;
+        eligible.slice(3, 15).forEach(function (row) {
+            var rank = facts.rankOf(row.place, metric.key);
+            if (rank && rank.rank <= 5 && (!best || rank.rank < best.rank.rank)) {
+                best = { row: row, rank: rank };
+            }
+        });
+        if (!best) {
+            return;
+        }
+        darkHorseEl.hidden = false;
+        darkHorseEl.innerHTML = '<div><p class="smx-dark-label">Unexpected match</p>' +
+            '<p class="smx-dark-text"><strong>' + escapeHtml(best.row.place.name) + '</strong> is only #' + best.row.rank +
+            ' overall, but #' + best.rank.rank + ' of ' + best.rank.of + ' for ' + escapeHtml(metric.name.toLowerCase()) + ', your top priority.</p></div>' +
+            '<button type="button" class="smx-btn smx-btn-ghost" data-open="' + escapeHtml(best.row.place.slug) + '">Take a look</button>';
+    }
+
+    function renderShortlist() {
+        if (!saved.length) {
+            shortlistEl.hidden = true;
+            shortlistEl.innerHTML = "";
+            return;
+        }
+        shortlistEl.hidden = false;
+        var chips = saved.map(function (slug) {
+            var place = placeBySlug.get(slug);
+            return '<span class="smx-chip-saved">' + escapeHtml(place.name) +
+                '<button type="button" class="smx-chip-x" data-save="' + escapeHtml(slug) + '" aria-label="Remove ' + escapeHtml(place.name) + '">×</button></span>';
+        }).join("");
+        var compare;
+        if (saved.length < 2) {
+            compare = '<span class="smx-btn smx-btn-gold is-disabled" aria-disabled="true">Save one more to compare</span>';
+        } else {
+            compare = saved.slice(1).map(function (slug, index) {
+                var a = placeBySlug.get(saved[index]);
+                var b = placeBySlug.get(slug);
+                return '<a class="smx-btn smx-btn-gold" href="/compare/' + [a.slug, b.slug].sort().join("-vs-") + '">Compare ' +
+                    escapeHtml(a.abbreviation) + ' vs ' + escapeHtml(b.abbreviation) + '</a>';
+            }).join("");
+        }
+        shortlistEl.innerHTML = '<span class="smx-shortlist-label">Shortlist</span>' + chips + '<span class="smx-shortlist-go">' + compare + '</span>';
+    }
+
     function renderRanking() {
         var query = searchInput.value.trim().toLowerCase();
-        var filtered = scored.filter(function (row) {
-            return row.eligible && (!query ||
+        var eligible = scored.filter(function (row) { return row.eligible; });
+        var filtered = eligible.filter(function (row) {
+            return !query ||
                 row.place.name.toLowerCase().includes(query) ||
-                row.place.abbreviation.toLowerCase().includes(query));
+                row.place.abbreviation.toLowerCase().includes(query);
         });
-        var visible = query || showAll ? filtered : filtered.slice(0, 10);
+        var shown = query ? filtered : filtered.slice(3);
+        var visible = query || showAll ? shown : shown.slice(0, 9);
+        var mine = homePlace();
+
+        // Must-have filters can leave very few states; say so and offer the way back.
+        var activeFilters = FILTER_KEYS.filter(function (key) { return filters[key]; });
+        if (activeFilters.length && eligible.length < 4) {
+            emptyEl.hidden = false;
+            emptyEl.innerHTML = '<p>' + (eligible.length
+                ? 'Only ' + eligible.length + (eligible.length === 1 ? ' state passes' : ' states pass') + ' your must-haves.'
+                : 'No state passes all your must-haves.') + ' Remove one to see more:</p><div class="smx-empty-actions">' +
+                activeFilters.map(function (key) {
+                    return '<button type="button" class="smx-btn smx-btn-ghost" data-clear-filter="' + key + '">Remove “' + escapeHtml(FILTER_LABELS[key]) + '”</button>';
+                }).join("") + '</div>';
+        } else {
+            emptyEl.hidden = true;
+            emptyEl.innerHTML = "";
+        }
 
         if (!visible.length) {
-            rankingHost.innerHTML = query
-                ? '<p class="sm-empty">No state matches that search.</p>'
-                : '<p class="sm-empty">No state passes your filters. Try loosening one.</p>';
+            rankingHost.innerHTML = query ? '<li class="smx-row-empty">No state matches that search.</li>' : "";
         } else {
-            var mine = homePlace();
             rankingHost.innerHTML = visible.map(function (row) {
                 var list = facts.prosAndCons(row.place, weights, baselineFor(row.place));
                 var chips = list.pros.slice(0, 2).map(function (item) { return factChip(item, true); })
                     .concat(list.cons.slice(0, 1).map(function (item) { return factChip(item, false); }))
                     .join("");
-                var isHome = mine === row.place;
-                return [
-                    '<button class="sm-state-row" type="button" data-slug="' + escapeHtml(row.place.slug) + '"',
-                    ' aria-label="Open ' + escapeHtml(row.place.name) + ', rank ' + row.rank + ', ' + row.score + ' percent match">',
-                    '<span class="sm-row-rank">' + String(row.rank).padStart(2, "0") + '</span>',
-                    '<span class="sm-row-state">',
-                    '<img class="sm-row-flag" src="' + escapeHtml(row.place.flagImageUrl) + '" alt="' + escapeHtml(row.place.name) + ' flag" width="34" height="23" loading="lazy">',
-                    '<span class="sm-row-name"><strong>' + escapeHtml(row.place.name) + '</strong>',
-                    '<small>' + escapeHtml(row.place.region || "United States") + ' · ' + escapeHtml(row.place.abbreviation) +
-                        (isHome ? ' <em class="sm-home-tag">Your state</em>' : '') + '</small></span>',
-                    '</span>',
-                    '<span class="sm-row-score">',
-                    '<span class="sm-score-track"><i class="sm-score-fill" style="width:' + row.score + '%"></i></span>',
-                    '<span class="sm-score-number">' + row.score + '</span>',
-                    '</span>',
-                    chips ? '<span class="sm-row-chips">' + chips + '</span>' : '',
-                    '</button>'
-                ].join("");
+                return '<li class="smx-row" data-slug="' + escapeHtml(row.place.slug) + '">' +
+                    '<button class="smx-row-main" type="button" data-slug="' + escapeHtml(row.place.slug) + '"' +
+                    ' aria-label="Open ' + escapeHtml(row.place.name) + ', rank ' + row.rank + ', ' + row.score + ' percent match">' +
+                    '<span class="smx-row-rank">' + String(row.rank).padStart(2, "0") + '</span>' +
+                    '<span class="smx-row-name"><strong>' + escapeHtml(row.place.name) + (mine === row.place ? ' <em class="sm-home-tag">Your state</em>' : '') + '</strong>' +
+                    '<small>' + escapeHtml(row.place.region || "United States") + '</small></span>' +
+                    '<span class="smx-row-move">' + moveHtml(row.place.slug) + '</span>' +
+                    '<span class="smx-row-bar"><i style="width:' + row.score + '%"></i></span>' +
+                    '<span class="smx-row-score">' + row.score + '</span></button>' +
+                    saveButton(row.place.slug, row.place.name) +
+                    (chips ? '<span class="smx-row-chips">' + chips + '</span>' : '') +
+                    '</li>';
             }).join("");
         }
 
-        rankingHost.querySelectorAll(".sm-state-row").forEach(function (button) {
+        rankingHost.querySelectorAll(".smx-row-main").forEach(function (button) {
             button.addEventListener("click", function () {
                 openDetail(button.dataset.slug, true);
             });
@@ -692,12 +1022,12 @@
             });
         });
 
-        showAllButton.hidden = Boolean(query) || filtered.length <= 10;
+        showAllButton.hidden = Boolean(query) || shown.length <= 9;
         showAllButton.innerHTML = showAll
-            ? 'Show top 10 <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>'
-            : 'Show all states <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>';
+            ? 'Show fewer <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>'
+            : 'Show all ' + eligible.length + ' states <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>';
 
-        renderSensitivity(scored.filter(function (row) { return row.eligible; }));
+        renderSensitivity(eligible);
     }
 
     function factChip(item, isPro) {
@@ -730,7 +1060,11 @@
                     return;
                 }
 
-                for (var trialWeight = currentWeight + 5; trialWeight <= 100; trialWeight += 5) {
+                for (var step = 0; step < LEVELS.length; step++) {
+                    var trialWeight = LEVELS[step].value;
+                    if (trialWeight <= currentWeight) {
+                        continue;
+                    }
                     var trialWeights = Object.assign({}, weights);
                     trialWeights[metric.key] = trialWeight;
                     var scoreIn = scoreWithWeights(inRank.place, trialWeights);
@@ -738,7 +1072,7 @@
                     if (scoreOut > scoreIn) {
                         var delta = trialWeight - currentWeight;
                         if (!best || delta < best.delta) {
-                            best = { metric: metric, delta: delta, trialWeight: trialWeight };
+                            best = { metric: metric, delta: delta, trialWeight: trialWeight, label: LEVELS[step].label };
                         }
                         break;
                     }
@@ -757,8 +1091,8 @@
         panel.hidden = false;
         // One text element + the button, so the flex row doesn't split the sentence into pieces.
         panel.innerHTML = '<i class="fa-solid fa-arrows-left-right" aria-hidden="true"></i>' +
-            '<span class="sm-sensitivity-text"><strong>One slider from changing:</strong> raise ' + escapeHtml(best.metric.name) + ' by +' + best.delta +
-            ' (to ' + best.trialWeight + ') and <strong>' + escapeHtml(outRank.place.name) + '</strong> (#11) passes ' +
+            '<span class="sm-sensitivity-text"><strong>Close call:</strong> set ' + escapeHtml(best.metric.name) + ' to “' + best.label +
+            '” and <strong>' + escapeHtml(outRank.place.name) + '</strong> (#11) passes ' +
             '<strong>' + escapeHtml(inRank.place.name) + '</strong> (#10) in your top 10.</span>' +
             '<button type="button" class="sm-try">Try it</button>';
     }
@@ -840,6 +1174,14 @@
 
         var activeWeights = hasActiveWeights();
         var bySlug = new Map(scored.map(function (row) { return [row.place.slug, row]; }));
+        // Stretch the colour over the scores actually on screen, so 61 and 68 look different.
+        var live = scored.filter(function (row) { return row.eligible; }).map(function (row) { return row.score; });
+        var min = live.length ? Math.min.apply(null, live) : 0;
+        var max = live.length ? Math.max.apply(null, live) : 100;
+        document.getElementById("sm-legend-min").textContent = min;
+        document.getElementById("sm-legend-max").textContent = max;
+        var mine = homePlace();
+
         document.querySelectorAll(".sm-tile").forEach(function (tile) {
             var row = bySlug.get(tile.dataset.slug);
             var scoreEl = tile.querySelector(".sm-tile-score");
@@ -851,12 +1193,16 @@
                 tile.title = "Not enough data to score";
                 return;
             }
-            var excluded = Boolean(row && !row.eligible);
-            var active = Boolean(row && activeWeights && !excluded);
-            var color = active ? matchColor(row.score) : null;
-            tile.style.background = color ? color.fill : "";
-            tile.classList.toggle("is-strong", Boolean(color && color.isDark));
+            var excluded = !row.eligible;
+            var active = activeWeights && !excluded;
+            var t = max > min ? (row.score - min) / (max - min) : 0.5;
+            tile.style.background = active
+                ? "rgb(" + Math.round(217 + (27 - 217) * t) + "," + Math.round(226 + (47 - 226) * t) + "," + Math.round(235 + (78 - 235) * t) + ")"
+                : "";
+            tile.classList.toggle("is-strong", active && t > 0.5);
             tile.classList.toggle("is-excluded", excluded);
+            tile.classList.toggle("is-top", active && row.rank <= 5);
+            tile.classList.toggle("is-home", Boolean(mine) && mine === row.place);
             scoreEl.textContent = excluded ? "×" : (active ? row.score : "—");
             tile.classList.toggle("is-selected", tile.dataset.slug === currentSlug);
         });
@@ -887,6 +1233,7 @@
 
         lastFocused = document.activeElement;
         currentSlug = slug;
+        track("sm_detail_open", { state: slug });
         renderDrawer(slug);
         drawer.classList.add("is-open");
         drawerBackdrop.classList.add("is-open");

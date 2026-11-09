@@ -212,6 +212,7 @@ namespace USASymbol.Services
                 var strongestValue = double.MinValue;
                 MetricValue? weakest = null;
                 var weakestValue = double.MaxValue;
+                var weighted = new List<(string Key, double Value)>();
 
                 foreach (var metric in place.Metrics)
                 {
@@ -223,6 +224,7 @@ namespace USASymbol.Services
                     var normalized = _normalizer.Normalize(
                         metric.Key, metric.Raw, range.Min, range.Max, metric.Direction, NormalizationFrame.Nation50States);
 
+                    weighted.Add((metric.Key, normalized));
                     var effective = EffectiveWeight(weight);
                     weightedTotal += normalized * effective;
                     usedWeight += effective;
@@ -243,10 +245,18 @@ namespace USASymbol.Services
                     ? (int)Math.Round(weightedTotal / usedWeight * 100)
                     : 0;
 
+                // Same rule as summaryText() in state-match.js (no "home" state chosen):
+                // up to two strongest metrics at 0.6+, and the weakest at 0.4 or below.
+                var strongKeys = weighted.OrderByDescending(item => item.Value)
+                    .Where(item => item.Value >= 0.6).Take(2).Select(item => item.Key).ToList();
+                var weakItem = weighted.OrderBy(item => item.Value).FirstOrDefault();
+                var weakKey = weakItem.Key != null && weakItem.Value <= 0.4 ? weakItem.Key : null;
+
                 return new StateMatchRankedPlace
                 {
                     Place = place,
                     Score = score,
+                    Summary = StateMatchPhrases.Sentence(strongKeys, weakKey),
                     StrongestMetricName = strongest?.Name,
                     WeakestMetricName = weakest?.Name
                 };

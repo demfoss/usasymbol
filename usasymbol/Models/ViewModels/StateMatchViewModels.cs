@@ -84,6 +84,9 @@ namespace USASymbol.Models.ViewModels
         public int Rank { get; set; }
         public string? StrongestMetricName { get; init; }
         public string? WeakestMetricName { get; init; }
+
+        /// <summary>One plain sentence ("Affordable homes and strong schools, but high property tax."), same wording state-match.js builds.</summary>
+        public string Summary { get; init; } = string.Empty;
     }
 
     /// <summary>Cross-link to another preset landing page, shown at the bottom of each one.</summary>
