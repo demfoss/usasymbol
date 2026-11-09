@@ -125,6 +125,9 @@
             <div class="smx-dark" id="sm-dark-horse" hidden></div>
         </section>
 
+        @* Shortlist is deliberately inline, not a sticky bar: sticky bars cover the page's ad slots. *@
+        <section class="smx-shortlist" id="sm-shortlist" aria-label="Your shortlist" hidden></section>
+
         <section class="smx-board" aria-labelledby="sm-board-title">
             <h2 class="sr-only" id="sm-board-title">All states ranked for you</h2>
             <div class="smx-board-bar">
@@ -178,9 +181,6 @@
 
             <p class="smx-summary" id="sm-result-summary">@Model.Places.Count places scored</p>
         </section>
-
-        @* Shortlist is deliberately inline, not a sticky bar: sticky bars cover the page's ad slots. *@
-        <section class="smx-shortlist" id="sm-shortlist" aria-label="Your shortlist" hidden></section>
 
         <p class="smx-nudge" id="sm-sensitivity" hidden></p>
 

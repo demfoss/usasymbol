@@ -422,23 +422,6 @@
     })();
     </script>
 
-    <div class="cmp2-sticky" id="cmp2-sticky">
-        <span class="cmp2-sticky-name" style="color:@accent.HexA">@Model.StateA.Abbreviation @overviewScore.WinsA</span>
-        <div class="cmp2-sticky-track" style="background:@accent.HexB;">
-            <div class="cmp2-sticky-fill" style="width:@(aSharePct.ToString("F1", System.Globalization.CultureInfo.InvariantCulture))%;background:@accent.HexA;"></div>
-        </div>
-        <span class="cmp2-sticky-name" style="color:@accent.HexB">@overviewScore.WinsB @Model.StateB.Abbreviation</span>
-    </div>
-    <script>
-        (function () {
-            var hero = document.querySelector('.cmp2-hero');
-            var sticky = document.getElementById('cmp2-sticky');
-            if (!hero || !sticky) return;
-            window.addEventListener('scroll', function () {
-                sticky.classList.toggle('is-visible', window.scrollY > hero.offsetHeight);
-            }, { passive: true });
-        })();
-    </script>
 
     <article class="cmp2-page-shell max-w-[1440px] mx-auto px-4 lg:px-6 xl:px-8">
     <div class="min-w-0 article-content">

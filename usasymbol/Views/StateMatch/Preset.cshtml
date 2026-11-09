@@ -42,7 +42,7 @@
         </div>
     </header>
 
-    <article class="smx-shell">
+    <article class="page-shell-2col page-shell-2col--xl">
     <div class="article-content min-w-0">
     @await Html.PartialAsync("_Tool", Model.Tool)
 
@@ -57,6 +57,12 @@
         </div>
     </section>
     </div>
+
+        <aside class="article-sidebar hidden xl:block" aria-label="Explore more">
+            <div class="sidebar-content">
+                @await Html.PartialAsync("_GuidesAndRankingsSidebar")
+            </div>
+        </aside>
     </article>
 </div>
 

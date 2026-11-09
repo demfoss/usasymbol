@@ -78,7 +78,7 @@
 /* ---------- Workspace ---------- */
 .smx-workspace { display: flex; align-items: flex-start; gap: 28px; padding-bottom: 32px; }
 .smx-controls { flex: 0 0 320px; width: 320px; min-width: 0; }
-.smx-results { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
+.smx-results { container-type: inline-size; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
 .smx-controls-body { display: flex; flex-direction: column; gap: 14px; }
 .smx-manual { display: flex; flex-direction: column; gap: 14px; }
 .smx-controls-toggle { display: none; }
@@ -211,6 +211,8 @@
 
 /* Top matches */
 .smx-top { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+/* With the right sidebar the results column can get narrow: stack the top cards instead of squeezing them. */
+@container (max-width: 680px) { .smx-top { grid-template-columns: 1fr; } }
 .smx-top-card {
     position: relative; display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 20px;
     border: 1px solid var(--smx-line); border-radius: var(--smx-radius); background: var(--smx-card);
@@ -228,7 +230,9 @@
 .smx-top-score { flex: none; color: var(--smx-ink); font: 600 32px/1 var(--font-mono, var(--font-sans)); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
 .smx-top-summary { margin: 0; color: var(--smx-ink); font-size: 15px; line-height: 1.5; }
 .smx-home-line { margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--smx-soft); color: var(--smx-muted); font-size: 14px; line-height: 1.45; }
-.smx-top-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.smx-top-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0; }
+.smx-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; color: var(--smx-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.smx-link:hover { color: var(--smx-gold-ink); }
 .smx-top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: auto; }
 .smx-top-card > .smx-btn { margin-top: auto; align-self: flex-start; }
 .smx-top-card > .smx-save { position: absolute; top: 14px; right: 14px; }
@@ -393,7 +397,8 @@
 }
 .smx-chip-x:hover { background: rgba(255, 255, 255, .25); }
 .smx-shortlist :focus-visible { outline-color: #F6EBD3; }
-.smx-shortlist .smx-btn-gold { margin-left: auto; }
+.smx-shortlist-go { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.smx-shortlist .smx-btn-gold { margin-left: 0; }
 .smx-shortlist .smx-btn-gold.is-disabled, .smx-shortlist .smx-btn-gold[aria-disabled="true"] {
     background: rgba(255, 255, 255, .14); border-color: transparent; color: rgba(255, 255, 255, .65); cursor: not-allowed; pointer-events: none;
 }
@@ -531,7 +536,7 @@ nav.smx-morelinks a:hover { color: var(--smx-gold-ink); }
     .smx-map-wrap { padding: 14px; }
     .smx-tilegrid { min-width: 560px; }
     .smx-legend { padding-inline: 14px; }
-    .smx-shortlist .smx-btn-gold { margin-left: 0; }
+    .smx-shortlist-go { margin-left: 0; width: 100%; }
 }
 
 @media (max-width: 640px) {
