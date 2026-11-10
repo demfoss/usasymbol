@@ -250,6 +250,116 @@
 - Страницы ссылок обновлять первыми при выходе новых данных (Fortune 500 — июнь, Big Mac — январь/июль).
 - [x] 2026-11-09: написаны десять новых рейтингов по ranking.md + фото Pixabay: average-rainfall, tourism-spending, small-businesses, health-insurance-premiums, women-owned-businesses, medical-debt, community-college-tuition, hunting-license-cost, fishing-license-cost, bird-species. Не закоммичено, не добавлено в хабы. Проверить вручную: слаг tourism-spending при метрике «доля отелей и общепита в ВВП» (переименовать в tourism-economy?), цены Kansas/Nebraska/California в лицензиях, North Carolina охота ($124/$32 против $119/$30 в правилах), факты «из головы» (Colorado — запрет мед. долгов, Hawaii 1974, Alaska/South Dakota/Colorado в women-owned), фото Pixabay 1280 px растянуты до 1600×900.
 - [x] 2026-11-10: вторая десятка по ranking.md + фото Pixabay: alzheimers, std-rates, stem-degrees, mineral-production, er-wait-times, food-deserts, rural-hospital-closures, growing-season, financial-literacy-requirement-states, electric-bike-laws. Проверить: mineral-production (у 21 штата сумма неполная, USGS скрывает часть, ранги не совпадают с USGS, Wyoming 36-й против 11-го — переименовать «Reported…» или убрать ранги), food-deserts (значения агрегированы вручную по районам из ERS, в выпуске 2025 в магазины входят dollar stores, Connecticut №1 выглядит странно), e-bike (вторичные гиды, не NCSL), alzheimers (44 штата из перепечатки 247wallst), stem (2021-22), rural-hospital (37 штатов), факты «из головы» (Maryland в alzheimers/er-wait, SNHU/UMGC/WGU в stem, model bill/California 2015 в e-bike).
+- [x] 2026-11-10: третья партия по ranking.md + фото Pixabay (17 страниц). Сети: michelin-star-restaurants (14 штатов), papa-johns, little-caesars, jimmy-johns (44), cracker-barrel (43), zaxbys (25), churchs-texas-chicken (28), hooters (30), buffalo-wild-wings; данные сетей — StoreLocationData (скрейп локаторов, ноябрь 2026), закрывают 3 из 11 битых `related` (papa-johns, little-caesars, jimmy-johns; добавить сюда ещё ссылку из subway/jimmys-johns-страниц при правке). Прочее: car-washes (Census CBP 2023), registered-vehicles (FHWA MV-1 2024), population-65-and-older (Census V2025), gender-ratio (Census V2025), young-professionals (ACS 2024), wage-growth (BLS QCEW Q1 2026), strip-clubs (TUSCL, 49 штатов), prostitution-laws (сводки Super Lawyers и др., часть значений приблизительная). Проверить: strip-clubs — убрать ссылку на tuscl.net из sources (риск для рекламы) или удалить страницу; prostitution-laws — значения штрафов и сроков приблизительные (NH, NC, IA 730 дн., AR/KS, KY/MS/WV/VT/DE/WA); papa-johns Vermont = 0 (убрать строку) и Michigan 32 (занижено?); gender-ratio — hero с немецкой надписью «Ausgang», заменить; Delaware в registered-vehicles (447 094 у FHWA против 990 678 у полиции); сети — год основания «из головы» (Papa John's 1984, Little Caesars 1959, Jimmy John's 1983, Hooters 1983 и банкротство 2025).
+- [x] 2026-11-10: идеи из видео ES-Data. Написаны: nature/deadliest-natural-disaster-by-state (50 штатов, слабые строки: Delaware, New Mexico, Nevada, Maryland, Idaho, South Carolina/Georgia, Arkansas), economy/largest-shopping-mall-by-state (22 из 50 строк «Approximate», годы открытия Arkansas/Oregon/Connecticut/Arizona по памяти — проверить), economy/most-popular-supermarket-by-state (один источник Capital One Shopping без методологии, «Walmart Neighborhood Market» как сеть в AR/OK/LA/MS, странные доли AK/HI/ND — перепроверить или отложить). Подходят как коллекции (редакторские списки): придорожные достопримечательности, вымышленные персонажи, десерты/BBQ/завтраки/печенье/чипсы/хлопья/пончики/мороженое (бренд)/газировка — «по версии» с названием источника. Четвертаки штатов (дизайн, год, порядок выпуска, U.S. Mint) — коллекция collections/culture. Хаб «Origin of State Names» (язык, год) — по желанию. Пропустить: «где хотят отдыхать жители каждого штата» (данные закрыты), «худшая вещь в штате» (субъективно).
+- [ ] **«В чём штат лучший / худший» — решение владельца 2026-11-10: вариант A** (отдельная страница на штат `/states/<state>/best-and-worst`, ~50 страниц), делать позже по плану; B и C пока не нужны. Первый шаг при старте: 3–5 штатов (Texas, California, Florida, Alaska, Vermont) и проверка в GSC. Исходное обсуждение. Данные уже есть: StateRankIndexService (индекс штат→места из 800+ рейтингов, блок «X also stands out in»). Варианты: (A) отдельная страница на штат `/states/<state>/best-and-worst` — «в чём Texas №1 и в чём последний», топ-10 сильных и слабых мест с ссылками на рейтинги, ~50 страниц, максимум поискового трафика («what is Texas best at»); (B) один рейтинг «Best-ranked states by number of #1 places» (сколько раз штат в топ-5 / низ-5) — 1 страница, хорошо для вирусности, мало длинных запросов; (C) оба: A как основа, B как хаб-индекс и точка входа. Моя рекомендация — C, сначала A на 3–5 штатах (Texas, California, Florida, Alaska, Vermont) и проверить в GSC. Учесть: higher_is_better в рейтингах расставлен не везде (лучше/хуже считать только по рейтингам с флагом), не выпускать страницы-шаблоны без текста, ad-layout contract.
+### 4c. Ещё 100 идей рейтингов (добавлено 2026-11-10, проверено: нет ни в Content/rankings, collections, quizzes, ranking-hubs, ни в BACKLOG.md и PLAN.md)
+
+Из ~330 придуманных тем 190 уже есть на сайте или в бэклоге, остались эти 100. Источники — стартовые, сверять перед написанием. Сети (StoreLocationData) вперемешку с официальными данными, не больше 5–7 однотипных подряд. Статус: `[ ]`. Пересечения: adverse-possession (есть страница про squatters) писать как «сроки и условия»; light-pollution и dark-sky-parks можно слить в одну; pharmacy-deserts может задеть hospitals/pharmacies. Темы на чувствительные данные (пособия, перепись) — только сухо, без стереотипов.
+
+| # | slug | Угол | Источник | Статус |
+|---|---|---|---|---|
+| 1 | crime/car-break-ins-by-state | Взломы авто | NICB | [ ] |
+| 2 | crime/jail-population-by-state | Население окружных тюрем | BJS | [ ] |
+| 3 | crime/package-theft-by-state | Кражи посылок | SafeWise | [ ] |
+| 4 | culture/emmy-winners-by-state | Лауреаты Emmy по штату рождения | Television Academy | [ ] |
+| 5 | culture/pulitzer-prize-winners-by-state | Лауреаты Пулитцера | Pulitzer.org | [ ] |
+| 6 | culture/rappers-by-state | Хип-хоп артисты | Billboard | [ ] |
+| 7 | culture/renaissance-faires-by-state | Ренессанс-ярмарки | RenFair.com | [ ] |
+| 8 | demographics/asian-population-by-state | Азиатское население | Census | [ ] |
+| 9 | demographics/child-population-by-state | Доля детей до 18 | Census | [ ] |
+| 10 | demographics/disability-rate-by-state | Люди с инвалидностью | ACS | [ ] |
+| 11 | demographics/high-school-dropout-rate-by-state | Отсев в школе | NCES | [ ] |
+| 12 | demographics/households-without-a-car-by-state | Домохозяйства без машины | ACS | [ ] |
+| 13 | demographics/multiracial-population-by-state | Две и более расы | Census | [ ] |
+| 14 | demographics/never-married-adults-by-state | Никогда не состоявшие в браке | ACS | [ ] |
+| 15 | demographics/new-residents-moved-from-out-of-state | Приезжие из других штатов | ACS | [ ] |
+| 16 | demographics/pacific-islander-population-by-state | Жители тихоокеанских островов | Census | [ ] |
+| 17 | demographics/people-living-alone-by-state | Живущие одни | ACS | [ ] |
+| 18 | demographics/same-sex-couples-by-state | Однополые пары | ACS | [ ] |
+| 19 | demographics/single-parent-households-by-state | Неполные семьи | ACS | [ ] |
+| 20 | demographics/vacant-homes-by-state | Пустующие дома | ACS | [ ] |
+| 21 | economy/bakeries-per-capita-by-state | Пекарни на душу населения (NAICS 311811) | Census CBP | [ ] |
+| 22 | economy/bank-branches-per-capita-by-state | Отделения банков на душу населения | FDIC | [ ] |
+| 23 | economy/daycare-centers-per-capita-by-state | Детские сады и ясли на душу населения | Census CBP | [ ] |
+| 24 | economy/dollar-stores-per-capita-by-state | Dollar stores на душу населения | StoreLocationData | [ ] |
+| 25 | economy/enterprise-rent-a-car-locations-by-state | Enterprise Rent-A-Car: штаб в Сент-Луисе, аэропорты и город | StoreLocationData | [ ] |
+| 26 | economy/inc-5000-companies-by-state | Быстрорастущие компании Inc. 5000 | Inc. | [ ] |
+| 27 | economy/jcpenney-locations-by-state | JCPenney: Техас | StoreLocationData | [ ] |
+| 28 | economy/jiffy-lube-locations-by-state | Jiffy Lube | StoreLocationData | [ ] |
+| 29 | economy/largest-private-companies-by-state | Крупнейшие частные компании | Forbes | [ ] |
+| 30 | economy/laundromats-by-state | Прачечные самообслуживания (NAICS 812320) | Census CBP | [ ] |
+| 31 | economy/liquor-stores-per-capita-by-state | Алкогольные магазины на душу населения | Census CBP | [ ] |
+| 32 | economy/movie-theaters-by-state | Кинотеатры на душу населения | Census CBP | [ ] |
+| 33 | economy/nail-salons-by-state | Маникюрные салоны, Калифорния | Census CBP | [ ] |
+| 34 | economy/pawn-shops-by-state | Ломбарды (CBP NAICS 522298) | Census CBP | [ ] |
+| 35 | economy/pharmacy-deserts-by-state | Аптечные пустыни | Rutgers/ NCPA | [ ] |
+| 36 | economy/real-estate-agents-per-capita-by-state | Агенты по недвижимости на душу населения | BLS OEWS | [ ] |
+| 37 | economy/rv-parks-by-state | Кемпинги для автодомов | Census CBP | [ ] |
+| 38 | economy/tax-preparers-by-state | Налоговые консультанты | BLS OEWS | [ ] |
+| 39 | economy/thrift-stores-by-state | Секонд-хенды и комиссионки | Census CBP | [ ] |
+| 40 | economy/truck-stops-by-state | Truck stops (Love's, Pilot, TA) | StoreLocationData | [ ] |
+| 41 | economy/u-haul-locations-by-state | U-Haul: Аризона, миграции | StoreLocationData | [ ] |
+| 42 | economy/venture-capital-by-state | Венчурные инвестиции | PitchBook | [ ] |
+| 43 | economy/veterinary-clinics-by-state | Ветеринарные клиники на душу населения | Census CBP | [ ] |
+| 44 | education/community-colleges-by-state | Число общественных колледжей | NCES | [ ] |
+| 45 | education/online-college-enrollment-by-state | Онлайн-обучение | NCES | [ ] |
+| 46 | education/school-spending-per-pupil-by-state | Расходы на ученика | Census | [ ] |
+| 47 | education/school-superintendent-salary-by-state | Зарплата директоров школьных округов | NCES | [ ] |
+| 48 | food/bob-evans-locations-by-state | Bob Evans: Огайо | StoreLocationData | [ ] |
+| 49 | food/buffets-by-state | Шведские столы | Census CBP | [ ] |
+| 50 | food/cheesecake-factory-locations-by-state | Cheesecake Factory: Калифорния | StoreLocationData | [ ] |
+| 51 | food/coffee-roasters-by-state | Обжарщики кофе | SCA | [ ] |
+| 52 | food/food-trucks-by-state | Фудтраки | Census CBP | [ ] |
+| 53 | food/ice-cream-shops-per-capita-by-state | Магазины мороженого | Census CBP | [ ] |
+| 54 | food/mexican-restaurants-per-capita-by-state | Мексиканские рестораны | Census CBP | [ ] |
+| 55 | food/seafood-restaurants-by-state | Рестораны морепродуктов | Census CBP | [ ] |
+| 56 | food/sushi-restaurants-by-state | Суши-рестораны | Census CBP | [ ] |
+| 57 | food/vegan-restaurants-by-state | Веганские рестораны | HappyCow | [ ] |
+| 58 | government/federal-spending-per-capita-by-state | Федеральные расходы на душу населения | USASpending | [ ] |
+| 59 | government/legislator-salary-by-state | Зарплата законодателей | NCSL | [ ] |
+| 60 | health/cesarean-rate-by-state | Кесарево сечение | CDC NVSS | [ ] |
+| 61 | health/copd-rate-by-state | ХОБЛ, Аппалачи | CDC | [ ] |
+| 62 | health/dialysis-centers-by-state | Центры диализа на душу населения | CMS | [ ] |
+| 63 | health/hospice-providers-by-state | Хосписы и их число | CMS | [ ] |
+| 64 | health/hospital-beds-per-capita-by-state | Больничные койки | AHA | [ ] |
+| 65 | health/kidney-disease-rate-by-state | Болезни почек | CDC | [ ] |
+| 66 | health/liver-disease-death-rate-by-state | Цирроз и болезни печени | CDC | [ ] |
+| 67 | health/medicare-advantage-share-by-state | Доля Medicare Advantage | KFF | [ ] |
+| 68 | health/opioid-prescriptions-by-state | Рецепты на опиоиды на 100 человек | CDC | [ ] |
+| 69 | health/psychiatrists-per-capita-by-state | Психиатры на душу населения | HRSA | [ ] |
+| 70 | health/telehealth-use-by-state | Телемедицина | Census Pulse | [ ] |
+| 71 | health/urgent-care-centers-by-state | Центры неотложной помощи | Urgent Care Association | [ ] |
+| 72 | law/adverse-possession-laws-by-state | Приобретательная давность (squatters уже есть) | state codes | [ ] |
+| 73 | law/animal-cruelty-felony-by-state | Жестокое обращение с животными | ALDF | [ ] |
+| 74 | law/cannabis-dispensaries-per-capita-by-state | Диспансеры на душу населения | state agencies | [ ] |
+| 75 | law/ghost-gun-laws-by-state | Призрачное оружие | state codes | [ ] |
+| 76 | law/hands-free-driving-laws-by-state | Hands-free законы | GHSA | [ ] |
+| 77 | law/lottery-age-by-state | Возраст покупки лотереи | NCSL | [ ] |
+| 78 | law/lottery-tax-by-state | Налог на выигрыш | state codes | [ ] |
+| 79 | law/moped-laws-by-state | Мопеды | state DMVs | [ ] |
+| 80 | law/name-change-laws-by-state | Смена имени | state codes | [ ] |
+| 81 | law/notary-fees-by-state | Плата нотариуса | state codes | [ ] |
+| 82 | law/permitless-carry-states | Ношение без разрешения | state codes | [ ] |
+| 83 | law/state-income-tax-on-social-security | Налог на Social Security | Tax Foundation | [ ] |
+| 84 | law/tobacco-21-laws-by-state | Возраст покупки табака 21 | CDC | [ ] |
+| 85 | law/trespassing-laws-by-state | Правонарушение «вторжение» | state codes | [ ] |
+| 86 | nature/campgrounds-by-state | Кемпинги | Recreation.gov | [ ] |
+| 87 | nature/dark-sky-parks-by-state | Парки тёмного неба | IDA | [ ] |
+| 88 | nature/days-below-freezing-by-state | Дни ниже нуля | NOAA | [ ] |
+| 89 | nature/deer-vehicle-collisions-by-state | Столкновения с оленями | State Farm | [ ] |
+| 90 | nature/light-pollution-by-state | Световое загрязнение и тёмное небо | IDA | [ ] |
+| 91 | nature/rare-earth-and-lithium-by-state | Литий и редкоземельные | USGS | [ ] |
+| 92 | nature/state-park-visitors-by-state | Посещаемость парков штатов | NASPD | [ ] |
+| 93 | nature/sunny-days-by-state | Солнечные дни | NOAA | [ ] |
+| 94 | nature/west-nile-virus-by-state | Вирус Западного Нила | CDC | [ ] |
+| 95 | sports/fishing-participation-by-state | Участие в рыбалке | RBFF | [ ] |
+| 96 | sports/high-school-football-participation-by-state | Школьный футбол | NFHS | [ ] |
+| 97 | sports/pro-sports-teams-by-state | Команды NFL, NBA, MLB, NHL по штатам | лиги | [ ] |
+| 98 | transport/ferry-systems-by-state | Паромы | BTS | [ ] |
+| 99 | transport/roundabouts-by-state | Кольцевые развязки | IIHS | [ ] |
+| 100 | transport/walkability-by-state | Пешеходная доступность | Walk Score | [ ] |
+
 - Другие идеи без данных пока (из пустых пунктов бэклога): headlight-laws, left-lane-laws, electric-bike-laws, deer-population, growing-season, largest-dam, mountains-over-14000-feet.
 - Картинки: аудит 2026-11-09 — у всех рейтингов есть hero и минимум 1 фото в тексте; не хватает файла hero у economy/easiest-hardest-states-to-save-money, hero в svg у most-popular-fast-food-by-state и biggest-church-by-state.
 
@@ -581,6 +691,7 @@
 
 | Дата | Что сделано | Проверить |
 |---|---|---|
+| 2026-11-10 | Третья партия: 17 новых рейтингов параллельно по ranking.md с фото Pixabay (9 сетей, автомойки, число машин, 65+, мужчины и женщины, молодые специалисты, рост зарплат, стрип-клубы, законы о проституции). Часть агентов упала на лимите расходов и была возобновлена через SendMessage без потери данных. YAML парсится, картинки на месте | Сверить шаткое (см. 4b), убрать ссылку на tuscl.net, заменить hero у gender-ratio, добавить в хабы и теги RankingTopicTags, поправить `related` у subway/jersey-mikes |
 | 2026-11-10 | Вторая десятка новых рейтингов параллельно по ranking.md с фото Pixabay: alzheimers-by-state (Alzheimer's Association, 2020), std-rates-by-state (CDC 2023), stem-degrees-by-state (NCES 2021-22), mineral-production-by-state (USGS MCS 2026), er-wait-times-by-state (CMS), food-deserts-by-state (USDA ERS, агрегат по районам), rural-hospital-closures-by-state (Sheps, 37 штатов), growing-season-by-state (NOAA normals, среднее по станциям), financial-literacy-requirement-states (NGPF), electric-bike-laws-by-state (вторичные гиды). Первую десятку дополнили Alaska (колледжи), Kentucky (женщины-владельцы), Mississippi и Tennessee (рыбалка) приблизительными значениями с пометкой. YAML парсится, картинки на месте, длинных тире нет | Сверить шаткое (см. пункт 4b), добавить обе партии в хабы и теги, после деплоя открыть 3–4 страницы и посмотреть фото (все Pixabay 1280 px растянуты до 1600×900) |
 | 2026-11-09 | Десять новых рейтингов параллельно (по 3–4 агента) строго по ranking.md с фото Pixabay (hero + 2 в тексте): average-rainfall (NOAA), tourism-spending (BEA, доля NAICS 72), small-businesses (SBA 2022), health-insurance-premiums (KFF 2025), women-owned-businesses (Census ABS 2023, 49 штатов), medical-debt (Urban Institute 2023), community-college-tuition (College Board 2026-27, 49 штатов), hunting-license-cost (50), fishing-license-cost (48), bird-species (eBird). YAML и картинки проверены, длинных тире и «;» нет. Идеи из внешних ссылок — раздел 4b | Сверить шаткие цены лицензий, слаг tourism, факты «из головы»; добавить в хабы и теги; после деплоя открыть 3–4 страницы и посмотреть фото |
 | 2026-11-07 | Редакторский проход по H2 страниц символов штатов (6817 H2): ключи, короткие заголовки, без двоеточий/тире/кавычек; шаблонные секции переименованы; 12 тонких страниц цветов дополнены; пустышки со ссылками на рейтинг убраны; дубли текста про пчёл переписаны | Собрать сайт и открыть 3–5 страниц (птица, цвет, mammal, рыба); тонкие секции (~455) расширить отдельно |
