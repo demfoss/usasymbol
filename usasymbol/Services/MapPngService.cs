@@ -38,8 +38,12 @@ namespace USASymbol.Services
                 return null;
 
             var safeSlug = Regex.Replace(slug, @"[^a-z0-9\-]", "");
+            var fingerprint = string.Join("|", entries.OrderBy(e => e.PostalCode)
+                .Select(e => e.PostalCode + e.FillColor));
+            var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+                Encoding.UTF8.GetBytes(fingerprint)))[..8].ToLowerInvariant();
             var dir = Path.Combine(_env.WebRootPath, "images", "maps");
-            var fileName = $"{safeSlug}.png";
+            var fileName = $"{safeSlug}-{hash}.png";
             var fullPath = Path.Combine(dir, fileName);
             var relativePath = $"/images/maps/{fileName}";
 

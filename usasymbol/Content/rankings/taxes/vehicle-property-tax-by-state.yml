@@ -13,18 +13,18 @@ hero_image_alt: "Map of the United States showing which states charge an annual 
 
 author: "USA Symbol Team"
 date_published: "2026-04-25"
-date_modified: "2026-10-02"
+date_modified: "2026-11-12"
 
 seo:
   title: "Vehicle Property Tax by State | Map & Car Tax Rules"
-  description: "Does your state tax your car every year? Twenty-one do, including Virginia, Missouri, and Connecticut. Texas, Florida, and Ohio do not. See the full map."
+  description: "Does your state tax your car every year? Twenty-two do, including Virginia, Missouri, and Indiana. Texas, Florida, and Ohio do not. See the full map."
 
 page:
   h1: "Vehicle Property Tax by State"
 
   quick_answer:
-    - "Vehicle property tax by state is charged every year in 21 states, from Virginia and Missouri to Connecticut, where a car is taxed much like a house."
-    - "Twenty-four states have no annual vehicle property tax, including Texas, Florida, and California. Drivers there still pay registration and title fees, and California folds a value-based license fee into each renewal."
+    - "Vehicle property tax by state is charged every year in 22 states, from Virginia and Missouri to Indiana, where the annual vehicle excise tax is based on a car's original value and age."
+    - "Twenty-three states have no annual vehicle property tax, including Texas, Florida, and California. Drivers there still pay registration and title fees, and California folds a value-based license fee into each renewal."
     - "Georgia is the odd case. Lawmakers dropped its yearly car tax in 2013 for a one-time title tax, so Georgia drivers pay the whole bill when a car changes hands."
 
   methodology: "Vehicle tax rules published by state revenue and motor vehicle agencies, as of 2026. Status shows whether a state or its localities charge an annual value-based tax on cars. Rates and exemptions vary by locality."
@@ -39,6 +39,9 @@ page:
     - name: "Connecticut Department of Revenue Services – Motor Vehicles"
       url: "https://portal.ct.gov/DRS/Individuals/Individual-Tax-Page/Property-Tax/Motor-Vehicle-Assessment"
       description: "Connecticut DRS explanation of how municipalities assess motor vehicles at 70 percent of fair market value for annual property tax purposes"
+    - name: "Indiana BMV - Excise Tax Information"
+      url: "https://www.in.gov/bmv/fees-taxes/vehicle-registration-fees-and-taxes/excise-tax-information/"
+      description: "Indiana Bureau of Motor Vehicles explanation of the annual vehicle excise tax, value-and-age schedule, trailer tax, and local excise or wheel taxes"
 
 table:
   caption: "Vehicle Property Tax by State"
@@ -160,8 +163,10 @@ table:
       state: "Indiana"
       state_slug: "indiana"
       postal_code: "IN"
-      status: "No"
-      note: "Fees still apply"
+      status: "Yes"
+      tax_type: "Excise tax"
+      based_on: "Original value and age"
+      note: "Annual, collected at registration"
 
     - rank: 15
       state: "Iowa"
@@ -461,7 +466,7 @@ map:
   title: "Vehicle Property Tax by State Map"
   image: "/images/rankings/taxes/vehicle-property-tax-by-state/vehicle-property-tax-by-state-map.webp"
   image_alt: "Map of the United States color-coded by vehicle property tax status, marking states with annual car property tax, states without it, special systems such as Georgia's TAVT, and states where rules vary by locality"
-  caption: "Twenty-one states tax cars every year and 24 do not. Georgia, Iowa, and Minnesota use special value-based taxes, while Tennessee and Wyoming leave the rules to local governments."
+  caption: "Twenty-two states tax cars every year and 23 do not. Georgia, Iowa, and Minnesota use special value-based taxes, while Tennessee and Wyoming leave the rules to local governments."
   metric_key: status
   metric_label: "Vehicle property tax"
   name_key: state
@@ -478,9 +483,10 @@ sections:
   - id: "states-with-vehicle-property-tax"
     title: "States With Vehicle Property Tax"
     paragraphs:
-      - "Twenty-one states tax cars every year as personal property, and most sit in the South, New England, and the Plains. Counties, cities, or towns usually set the rate, so two neighbors on either side of a county line can owe different bills for the same car. Louisiana collects through its parishes, the state's version of counties."
+      - "Twenty-two states tax cars every year through a property or value-based excise tax, and most sit in the South, New England, and the Plains. Counties, cities, or towns often set the rate, so two neighbors on either side of a county line can owe different bills for the same car. Louisiana collects through its parishes, the state's version of counties."
       - "Missouri asks owners to list every vehicle they hold on January 1, and the county mails a bill due by the end of the year. Drivers there cannot renew their plates without a paid tax receipt. Connecticut goes further and puts cars on the same municipal grand list as houses, assessed at 70 percent of market value."
       - "Massachusetts and Maine call their version an excise. Both base it on the original sticker price and the model year, not on what the owner paid, so a buyer who landed a bargain still owes tax on the full list price."
+      - "Indiana also collects an annual vehicle excise tax at registration. Passenger-car tax is based on the manufacturer's original retail price and the vehicle's age; trailers pay a flat or weight-based excise tax, and some counties or municipalities add an excise surtax or wheel tax."
 
   - id: "why-virginia-taxes-cars-every-year"
     title: "Why Virginia Still Taxes Cars Every Year"
@@ -491,7 +497,7 @@ sections:
   - id: "states-with-no-vehicle-property-tax"
     title: "States With No Vehicle Property Tax"
     paragraphs:
-      - "Twenty-four states, including Texas, Florida, New York, and Illinois, have no annual vehicle property tax. Car owners there pay sales tax once at purchase, then registration and title fees each cycle. That one-time bill at the dealer follows [sales tax by state](/rankings/taxes/sales-tax-by-state), so a pricey car can still cost plenty in a state with no yearly car tax."
+      - "Twenty-three states, including Texas, Florida, New York, and Illinois, have no annual vehicle property tax. Car owners there pay sales tax once at purchase, then registration and title fees each cycle. That one-time bill at the dealer follows [sales tax by state](/rankings/taxes/sales-tax-by-state), so a pricey car can still cost plenty in a state with no yearly car tax."
       - "Ohio eliminated its vehicle property tax in 2005. Washington abolished its value-based motor vehicle excise in 2000, a year after voters approved an initiative to cut car tab costs. California never adopted a yearly property tax on cars, but its Vehicle License Fee rises with a car's value, so a new car still costs more to renew."
 
   - id: "car-property-tax-and-registration-renewal"
@@ -516,7 +522,10 @@ visual_assets:
 
 faq:
   - question: "Which states have vehicle property tax?"
-    answer: "Twenty-one states tax cars every year, among them Virginia, Missouri, Connecticut, North Carolina, Kansas, and Mississippi. Georgia, Iowa, and Minnesota use special value-based taxes instead."
+    answer: "Twenty-two states tax cars every year, among them Virginia, Missouri, Connecticut, Indiana, North Carolina, Kansas, and Mississippi. Georgia, Iowa, and Minnesota use special value-based taxes instead."
+
+  - question: "Does Indiana have a vehicle property tax?"
+    answer: "Indiana charges an annual vehicle excise tax rather than a conventional personal property tax. For passenger cars, the bill is based on the manufacturer's original retail price and vehicle age and is collected at registration; local excise surtaxes or wheel taxes may also apply."
 
   - question: "Does Texas have a car property tax?"
     answer: "No. Texas drivers pay sales tax when they buy a car and a registration fee each year, but no tax based on the car's value."
